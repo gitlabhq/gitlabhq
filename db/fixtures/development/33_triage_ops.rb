@@ -170,7 +170,7 @@ class Gitlab::Seeder::TriageOps
       password: SecureRandom.hex.slice(0, 16),
       user_type: :project_bot
     ) do |user|
-      user.assign_personal_namespace(Organizations::Organization.default_organization)
+      user.assign_personal_namespace(@organization)
     end
   end
 
@@ -220,7 +220,7 @@ class Gitlab::Seeder::TriageOps
       name: group_path.titleize,
       path: group_path,
       parent: parent,
-      organization_id: organization.id
+      organization_id: @organization.id
     )
     group.description = FFaker::Lorem.sentence
     group.save!
@@ -247,7 +247,8 @@ class Gitlab::Seeder::TriageOps
       path: project_path,
       description: FFaker::Lorem.sentence,
       visibility_level: Gitlab::VisibilityLevel::PRIVATE,
-      skip_disk_validation: true
+      skip_disk_validation: true,
+      organization_id: @organization.id
     }
 
     project = ::Projects::CreateService.new(User.first, params).execute
@@ -260,7 +261,9 @@ end
 
 if ENV['SEED_TRIAGE_OPS']
   Gitlab::Seeder.quiet do
-    seeder = Gitlab::Seeder::TriageOps.new(organization: Organizations::Organization.default_organization)
+    organization = User.admins.first.organizations.first
+
+    seeder = Gitlab::Seeder::TriageOps.new(organization: organization)
     seeder.seed!
   end
 else

@@ -1,7 +1,6 @@
 <script>
 import {
   GlLoadingIcon,
-  GlButton,
   GlIcon,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
@@ -42,7 +41,6 @@ export default {
   },
   components: {
     GlLoadingIcon,
-    GlButton,
     GlIcon,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -224,7 +222,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-w-full gl-justify-end" data-testid="merge-request-actions">
+  <div class="gl-self-start" data-testid="merge-request-actions">
     <gl-disclosure-dropdown
       id="new-actions-header-dropdown"
       ref="mrMoreActionsDropdown"
@@ -235,31 +233,15 @@ export default {
       block
       class="gl-w-full"
       :auto-close="false"
+      icon="ellipsis_v"
+      category="tertiary"
+      text-sr-only
+      no-caret
+      :toggle-text="$options.i18n.mergeRequestActions"
+      toggle-class="gl-flex"
       @shown="showDropdown"
       @hidden="hideDropdown"
     >
-      <template #toggle>
-        <div class="gl-mb-2 gl-min-h-7 sm:!gl-mb-0">
-          <gl-button
-            class="gl-new-dropdown-toggle gl-w-full sm:!gl-hidden"
-            button-text-classes="gl-flex gl-justify-between gl-w-full"
-            category="secondary"
-            tabindex="0"
-            :aria-label="$options.i18n.mergeRequestActions"
-          >
-            <span class="">{{ $options.i18n.mergeRequestActions }}</span>
-            <gl-icon class="dropdown-chevron" name="chevron-down" />
-          </gl-button>
-          <gl-button
-            class="gl-new-dropdown-toggle gl-new-dropdown-icon-only gl-new-dropdown-toggle-no-caret gl-hidden sm:!gl-flex"
-            category="tertiary"
-            icon="ellipsis_v"
-            tabindex="0"
-            :aria-label="$options.i18n.mergeRequestActions"
-            :title="$options.i18n.mergeRequestActions"
-          />
-        </div>
-      </template>
       <gl-disclosure-dropdown-group v-if="isLoggedIn && !isNotificationsTodosButtons">
         <sidebar-subscriptions-widget
           :iid="String(mr.iid)"

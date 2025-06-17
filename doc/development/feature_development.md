@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Feature development
 ---
 
@@ -27,7 +27,6 @@ Consult these topics for information on contributing to specific GitLab features
 - [Kubernetes integration guidelines](kubernetes.md)
 - [Permissions](permissions.md)
 - [Code comments](code_comments.md)
-- [Windows Development on GCP](windows.md)
 - [FIPS 140-2 and 140-3](fips_gitlab.md)
 - [`Gemfile` guidelines](gemfile.md)
 - [Ruby upgrade guidelines](ruby_upgrade.md)

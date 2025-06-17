@@ -3,26 +3,34 @@
 module Gitlab
   module Redis
     class CursorStore
-      def initialize(cache_key, ttl: 1.hour)
-        @cache_key = cache_key
+      def initialize(namespace, ttl: 1.hour)
+        @namespace = namespace
         @ttl = ttl.to_i
       end
 
       def commit(payload)
         Gitlab::Redis::SharedState.with do |redis|
-          redis.hset(cache_key, payload, ex: ttl)
+          redis.set(cache_key, payload.to_json, ex: ttl)
         end
       end
 
       def cursor
-        Gitlab::Redis::SharedState.with do |redis|
-          redis.hgetall(cache_key)
-        end.except('ex')
+        Gitlab::Json.parse(value_on_redis).to_h
       end
 
       private
 
-      attr_reader :cache_key, :ttl
+      attr_reader :namespace, :ttl
+
+      def cache_key
+        "CursorStore:#{namespace}"
+      end
+
+      def value_on_redis
+        Gitlab::Redis::SharedState.with do |redis|
+          redis.get(cache_key)
+        end
+      end
     end
   end
 end

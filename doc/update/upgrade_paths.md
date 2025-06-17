@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Latest version instructions.
 title: Upgrade paths
@@ -13,7 +13,7 @@ title: Upgrade paths
 
 {{< /details >}}
 
-Upgrading across multiple GitLab versions in one go is *only possible by accepting downtime*.
+Upgrading across multiple GitLab versions in one go is only possible by accepting downtime.
 If you don't want any downtime, read how to [upgrade with zero downtime](zero_downtime.md).
 
 Upgrade paths include required upgrade stops, which are versions of GitLab that you must upgrade to before upgrading to
@@ -51,6 +51,7 @@ To determine your upgrade path:
      - [`17.11.z`](versions/gitlab_17_changes.md#17110). The latest GitLab 17.11 release.
 
 1. Consult the version-specific upgrade instructions:
+   - [GitLab 18 changes](versions/gitlab_18_changes.md)
    - [GitLab 17 changes](versions/gitlab_17_changes.md)
    - [GitLab 16 changes](versions/gitlab_16_changes.md)
    - [GitLab 15 changes](versions/gitlab_15_changes.md)
@@ -68,7 +69,7 @@ releases.
 
 To quickly calculate which upgrade stops are required based on your current and desired target GitLab version, see the
 [Upgrade Path tool](https://gitlab-com.gitlab.io/support/toolbox/upgrade-path/). This tool is
-maintained by the [GitLab Support team](https://handbook.gitlab.com/handbook/support/#about-the-support-team).
+maintained by the GitLab Support team.
 
 To share feedback and help improve the tool, create an issue or merge request in the [upgrade-path project](https://gitlab.com/gitlab-com/support/toolbox/upgrade-path).
 

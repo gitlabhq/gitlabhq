@@ -105,6 +105,28 @@ RSpec.describe Gitlab::GitalyClient::RepositoryService, feature_category: :gital
     end
   end
 
+  describe '#migrate_reference_backend' do
+    it 'sends a migrate_reference_backend message with reftable target' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:migrate_reference_backend)
+              .with(gitaly_request_with_params(
+                target_reference_backend: :REFERENCE_BACKEND_REFTABLE
+              ), kind_of(Hash))
+
+      client.migrate_reference_backend(to_reftable: true)
+    end
+
+    it 'sends a migrate_reference_backend message with files target' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:migrate_reference_backend)
+              .with(gitaly_request_with_params(
+                target_reference_backend: :REFERENCE_BACKEND_FILES
+              ), kind_of(Hash))
+
+      client.migrate_reference_backend(to_reftable: false)
+    end
+  end
+
   describe '#info_attributes' do
     it 'reads the info attributes' do
       expect_any_instance_of(Gitaly::RepositoryService::Stub)

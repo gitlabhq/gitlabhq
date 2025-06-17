@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::Organization, type: :model, feature_category: :cell do
+RSpec.describe Organizations::Organization, type: :model, feature_category: :organization do
   let_it_be_with_refind(:organization) { create(:organization) }
 
   describe 'associations' do

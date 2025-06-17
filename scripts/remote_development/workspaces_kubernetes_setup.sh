@@ -76,7 +76,7 @@ if [ -z "${GITLAB_WORKSPACES_PROXY_DOMAIN}" ]; then
   )
   if [ -z "${GITLAB_WORKSPACES_PROXY_DOMAIN}" ]; then
     echo "Unable to fetch the value from existing helm release. Using default."
-    GITLAB_WORKSPACES_PROXY_DOMAIN="workspaces.localdev.me"
+    GITLAB_WORKSPACES_PROXY_DOMAIN="workspaces.localtest.me"
   fi
 fi
 
@@ -88,7 +88,7 @@ if [ -z "${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" ]; then
   )
   if [ -z "${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" ]; then
     echo "Unable to fetch the value from existing helm release. Using default."
-    GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN="*.workspaces.localdev.me"
+    GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN="*.workspaces.localtest.me"
   fi
 fi
 
@@ -113,7 +113,7 @@ if [ -z "${GITLAB_WORKSPACES_PROXY_TLS_CERT_FILE}" ]; then
   echo "GITLAB_WORKSPACES_PROXY_TLS_CERT_FILE is not explicitly set. Using default."
   GITLAB_WORKSPACES_PROXY_TLS_CERT_FILE="${ROOT_DIR}/gitlab_workspaces_proxy_tls_cert"
 
-  if [ "${GITLAB_WORKSPACES_PROXY_DOMAIN}" != "workspaces.localdev.me" ]; then
+  if [ "${GITLAB_WORKSPACES_PROXY_DOMAIN}" != "workspaces.localtest.me" ]; then
     echo "GITLAB_WORKSPACES_PROXY_DOMAIN is non-default. Trying to fetch the value from existing helm release"
     kubectl get secret "${GITLAB_WORKSPACES_PROXY_TLS_SECRET}" \
       --namespace="${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" \
@@ -129,7 +129,7 @@ if [ -z "${GITLAB_WORKSPACES_PROXY_TLS_KEY_FILE}" ]; then
   echo "GITLAB_WORKSPACES_PROXY_TLS_KEY_FILE is not explicitly set. Using default."
   GITLAB_WORKSPACES_PROXY_TLS_KEY_FILE="${ROOT_DIR}/gitlab_workspaces_proxy_tls_key"
 
-  if [ "${GITLAB_WORKSPACES_PROXY_DOMAIN}" != "workspaces.localdev.me" ]; then
+  if [ "${GITLAB_WORKSPACES_PROXY_DOMAIN}" != "workspaces.localtest.me" ]; then
     echo "GITLAB_WORKSPACES_PROXY_DOMAIN is non-default. Trying to fetch the value from existing helm release"
     kubectl get secret "${GITLAB_WORKSPACES_PROXY_TLS_SECRET}" \
       --namespace="${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" \
@@ -163,7 +163,7 @@ if [ -z "${GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_CERT_FILE}" ]; then
   echo "GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_CERT_FILE is not explicitly set. Using default."
   GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_CERT_FILE="${ROOT_DIR}/gitlab_workspaces_proxy_wildcard_tls_cert"
 
-  if [ "${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" != "*.workspaces.localdev.me" ]; then
+  if [ "${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" != "*.workspaces.localtest.me" ]; then
     echo "GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN is non-default. Trying to fetch the value from existing helm release"
     kubectl get secret "${GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_SECRET}" \
     --namespace="${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" \
@@ -179,7 +179,7 @@ if [ -z "${GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_KEY_FILE}" ]; then
   echo "GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_KEY_FILE is not explicitly set. Using default."
   GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_KEY_FILE="${ROOT_DIR}/gitlab_workspaces_proxy_wildcard_tls_key"
 
-  if [ "${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" != "*.workspaces.localdev.me" ]; then
+  if [ "${GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN}" != "*.workspaces.localtest.me" ]; then
     echo "GITLAB_WORKSPACES_PROXY_WILDCARD_DOMAIN is non-default. Trying to fetch the value from existing helm release"
     kubectl get secret "${GITLAB_WORKSPACES_PROXY_WILDCARD_TLS_SECRET}" \
     --namespace="${GITLAB_WORKSPACES_PROXY_HELM_RELEASE_NAMESPACE}" \
@@ -271,11 +271,18 @@ helm repo update
 
 helm --namespace ingress-nginx uninstall ingress-nginx --ignore-not-found --timeout=600s --wait
 
+# Helm 3.18.0 which is packaged with Rancher Desktop 1.19.1 has introduced a bug
+# which renders integers as floats in the helm templates.
+# https://github.com/helm/helm/issues/30878#issuecomment-2894349468
+# To avoid the issue, we explicitly set the problematic field to `null`.
+# This issue has been fixed in helm 3.18.1 - https://github.com/helm/helm/releases/tag/v3.18.1
+# Once Rancher Desktop packages this new version, we can remove this patch.
 helm upgrade --install \
   ingress-nginx ingress-nginx/ingress-nginx \
   --namespace="ingress-nginx" \
   --create-namespace \
   --version="${INGRESS_NGINX_HELM_CHART_VERSION}" \
+  --set="controller.progressDeadlineSeconds=null" \
   --timeout=600s --wait --wait-for-jobs
 
 kubectl wait pod \

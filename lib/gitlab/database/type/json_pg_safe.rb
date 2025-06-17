@@ -15,8 +15,15 @@ module Gitlab
       #     attribute :a_field, Gitlab::Database::Type::JsonPgSafe.new
       #   end
       class JsonPgSafe < ActiveRecord::Type::Json
+        def initialize(replace_with: '')
+          super()
+
+          @replace_with = replace_with
+        end
+
         def serialize(value)
-          super&.gsub('\u0000', '')
+          # Replace unicode null character(\u0000) that isn't escaped (not preceded by odd number of backslashes)
+          super&.gsub(/(?<!\\)(?:\\\\)*\\u0000/, @replace_with)
         end
       end
     end

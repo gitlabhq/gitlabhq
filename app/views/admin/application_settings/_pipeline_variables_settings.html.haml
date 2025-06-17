@@ -1,0 +1,13 @@
+= gitlab_ui_form_for @application_setting, url: admin_application_settings_path(anchor: 'js-ci-cd-variables'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  .form-group
+    = f.gitlab_ui_checkbox_component :pipeline_variables_default_allowed, s_('CICD|Allow pipeline variables by default'), checkbox_options: { data: { testid: 'disable-pipeline-variables-checkbox' } } do |c|
+      - c.with_help_text do
+        - pipeline_variables_help_link = help_page_path('administration/settings/continuous_integration.md', anchor: 'allow-pipeline-variables-by-default')
+        - default_role_help_link = help_page_path('user/group/access_and_permissions.md', anchor: 'set-the-default-role-that-can-use-pipeline-variables')
+        - default_role_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: default_role_help_link }
+        - pipeline_variables_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: pipeline_variables_help_link }
+        = (s_('CICD|When disabled (recommended), the %{default_role_link_start}default role to use pipeline variables%{default_role_link_end} setting is set to %{strongStart}No one allowed%{strongEnd} for new groups, which cascades to new projects in the new groups. When enabled, the setting defaults to %{strongStart}Developer%{strongEnd} instead. %{link_start}Learn more%{link_end}.') % { strongStart: '<strong>', strongEnd: '</strong>', default_role_link_start: default_role_help_link_start, default_role_link_end: '</a>'.html_safe, link_start: pipeline_variables_help_link_start, link_end: '</a>'.html_safe }).html_safe
+
+  = f.submit _('Save changes'), pajamas_button: true, data: { testid: 'save-pipeline-variables-button' }

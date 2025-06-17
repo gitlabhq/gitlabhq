@@ -2,8 +2,7 @@
 - return unless context.scheduled_for_deletion_in_hierarchy_chain?
 
 - context_pending_deletion = context.first_scheduled_for_deletion_in_hierarchy_chain
--# FIXME: Replace `context_pending_deletion.marked_for_deletion_on` with `context_pending_deletion` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
-- date = permanent_deletion_date_formatted(context_pending_deletion.marked_for_deletion_on)
+- date = permanent_deletion_date_formatted(context_pending_deletion)
 - context_name = context.is_a?(Group) ? _('group') : _('project')
 
 - group_marked_for_deletion = _("This group and its subgroups and projects are pending deletion, and will be deleted on %{date}.").html_safe % { date: tag.strong(date) }

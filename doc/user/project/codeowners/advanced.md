@@ -111,12 +111,6 @@ The Code Owner for `terms.md` would be `@legal-team`.
 
 ## Require multiple approvals from Code Owners
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/335451) in GitLab 15.9.
-
-{{< /history >}}
-
 You can require multiple approvals for the Code Owners sections in the Approvals area in merge requests.
 Append the section name with a number `n` in brackets, for example, `[2]` or `[3]`.
 This requires `n` approvals from the Code Owners in this section.
@@ -150,7 +144,7 @@ For example, to require two approvals for the `[Documentation]` section:
 
 The `Documentation` Code Owners section in the Approvals area displays two approvals are required:
 
-![MR widget - Multiple Approval Code Owners sections](../img/multi_approvals_code_owners_sections_v15_9.png)
+![MR widget - Multiple Approval Code Owners sections](img/multi_approvals_code_owners_sections_v15_9.png)
 
 ## Group inheritance and eligibility
 

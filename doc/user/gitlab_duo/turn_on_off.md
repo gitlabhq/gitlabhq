@@ -343,7 +343,7 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > GitLab Duo**.
 1. Under **GitLab Duo** section, select **Change configuration**.
-1. Select **Turn on experiment and beta GitLab Duo features**.
+1. Under **Feature preview**, select **Turn on experiment and beta GitLab Duo features**.
 1. Select **Save changes**.
 
 {{< /tab >}}

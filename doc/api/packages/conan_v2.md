@@ -49,7 +49,7 @@ These endpoints all return `404 Not Found`.
 Creates a JSON Web Token (JWT) for use as a Bearer header in other requests.
 
 ```shell
-"Authorization: Bearer <token>
+"Authorization: Bearer <authenticate_token>
 ```
 
 The Conan 2 package manager client automatically uses this token.
@@ -65,14 +65,14 @@ GET /projects/:id/packages/conan/v2/users/authenticate
 Generate a base64-encoded Basic Auth token:
 
 ```shell
-echo -n "<username>:<personal_access_token>"|base64
+echo -n "<username>:<your_access_token>"|base64
 ```
 
 Use the base64-encoded Basic Auth token to get a JWT token:
 
 ```shell
 curl --request GET \
-     --header 'Authorization: Basic <base64-encoded-token>' \
+     --header 'Authorization: Basic <base64_encoded_token>' \
      --url "https://gitlab.example.com/api/v4/packages/conan/v2/users/authenticate"
 ```
 
@@ -158,8 +158,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `package_channel`  | string | yes      | Channel of a package.                                                                       |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/latest"
 ```
 
@@ -189,8 +188,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `package_channel`  | string | yes      | Channel of a package.                                                                       |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions"
 ```
 
@@ -212,6 +210,29 @@ Example response:
 }
 ```
 
+## Delete a recipe revision
+
+Delete the recipe revision from the registry. If the package has only one recipe revision, the package is deleted as well.
+
+```plaintext
+DELETE /projects/:id/packages/conan/conans/:package_name/package_version/:package_username/:package_channel/revisions/:recipe_revision
+```
+
+| Attribute          | Type   | Required | Description                                                                                 |
+| ------------------ | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`               | string | yes      | The project ID or full project path.                                                        |
+| `package_name`     | string | yes      | Name of a package.                                                                          |
+| `package_version`  | string | yes      | Version of a package.                                                                       |
+| `package_username` | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`  | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`  | string | yes      | Revision hash of the recipe revision to delete.                                                |
+
+```shell
+curl --request DELETE \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/2be19f5a69b2cb02ab576755252319b9"
+```
+
 ## List all recipe files
 
 Lists all recipe files from the package registry.
@@ -230,8 +251,7 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `recipe_revision`  | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files"
 ```
 
@@ -266,16 +286,14 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 | `file_name`        | string | yes      | The name and file extension of the requested file.                                          |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py"
 ```
 
 You can also write the output to a file by using:
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-username/stable/revisions/df28fd816be3a119de5ce4d374436b25/files/conanfile.py" \
      >> conanfile.py
 ```
@@ -338,6 +356,47 @@ Example response:
 }
 ```
 
+## List all package revisions
+
+Lists all package revisions for a specific recipe revision and package reference.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions
+```
+
+| Attribute                 | Type   | Required | Description                                                                                 |
+| ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`                      | string | yes      | The project ID or full project path.                                                        |
+| `package_name`            | string | yes      | Name of a package.                                                                          |
+| `package_version`         | string | yes      | Version of a package.                                                                       |
+| `package_username`        | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`         | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`         | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+| `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value.                              |
+
+```shell
+curl --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions"
+```
+
+Example response:
+
+```json
+{
+  "reference": "my-package/1.0@my-group+my-project/stable#75151329520e7685dcf5da49ded2fec0:103f6067a947f366ef91fc1b7da351c588d1827f",
+  "revisions": [
+    {
+      "revision": "2bfb52659449d84ed11356c353bfbe86",
+      "time": "2024-12-17T09:16:40.334+0000"
+    },
+    {
+      "revision": "3bdd2d8c8e76c876ebd1ac0469a4e72c",
+      "time": "2024-12-17T09:15:30.123+0000"
+    }
+  ]
+}
+```
+
 ## Get latest package revision
 
 Gets the revision hash and creation date of the latest package revision for a specific recipe revision and package reference.
@@ -346,15 +405,15 @@ Gets the revision hash and creation date of the latest package revision for a sp
 GET /api/v4/projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest
 ```
 
-| Attribute                 | Type   | Required | Description |
-|---------------------------|--------|----------|-------------|
-| `id`                      | string | yes      | The project ID or full project path. |
-| `package_name`            | string | yes      | Name of a package. |
-| `package_version`         | string | yes      | Version of a package. |
+| Attribute                 | Type   | Required | Description                                                                                 |
+| ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`                      | string | yes      | The project ID or full project path.                                                        |
+| `package_name`            | string | yes      | Name of a package.                                                                          |
+| `package_version`         | string | yes      | Version of a package.                                                                       |
 | `package_username`        | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
-| `package_channel`         | string | yes      | Channel of a package. |
-| `recipe_revision`         | string | yes      | Revision of the recipe. Does not accept a value of `0`. |
-| `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value. |
+| `package_channel`         | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`         | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+| `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value.                              |
 
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" \
@@ -370,6 +429,31 @@ Example response:
 }
 ```
 
+## Delete a package revision
+
+Deletes the package revision from the registry. If the package reference has only one package revision, the package reference is deleted as well.
+
+```plaintext
+DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision
+```
+
+| Attribute                 | Type   | Required | Description                                                                                 |
+| ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`                      | string | yes      | The project ID or full project path.                                                        |
+| `package_name`            | string | yes      | Name of a package.                                                                          |
+| `package_version`         | string | yes      | Version of a package.                                                                       |
+| `package_username`        | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`         | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`         | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                             |
+| `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value.                              |
+| `package_revision`        | string | yes      | Revision of the package. Does not accept a value of `0`.                                    |
+
+```shell
+curl --request DELETE \
+     --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c"
+```
+
 ## Get a package file
 
 Gets a package file from the package registry.
@@ -378,29 +462,27 @@ Gets a package file from the package registry.
 GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name
 ```
 
-| Attribute                 | Type | Required | Description |
-| ------------------------- | ---- | -------- | ----------- |
-| `id`                      | string | yes | The project ID or full project path. |
-| `package_name`            | string | yes | Name of a package. |
-| `package_version`         | string | yes | Version of a package. |
-| `package_username`        | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
-| `package_channel`         | string | yes | Channel of a package. |
-| `recipe_revision`         | string | yes | Revision of the recipe. Does not accept a value of `0`. |
-| `conan_package_reference` | string | yes | Reference hash of a Conan package. Conan generates this value. |
-| `package_revision`        | string | yes | Revision of the package. Does not accept a value of `0`. |
-| `file_name`               | string | yes | The name and file extension of the requested file. |
+| Attribute                 | Type   | Required | Description                                                                                 |
+| ------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------- |
+| `id`                      | string | yes      | The project ID or full project path.                                                        |
+| `package_name`            | string | yes      | Name of a package.                                                                          |
+| `package_version`         | string | yes      | Version of a package.                                                                       |
+| `package_username`        | string | yes      | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`         | string | yes      | Channel of a package.                                                                       |
+| `recipe_revision`         | string | yes      | Revision of the recipe. Does not accept a value of `0`.                                     |
+| `conan_package_reference` | string | yes      | Reference hash of a Conan package. Conan generates this value.                              |
+| `package_revision`        | string | yes      | Revision of the package. Does not accept a value of `0`.                                    |
+| `file_name`               | string | yes      | The name and file extension of the requested file.                                          |
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt"
 ```
 
 You can also write the output to a file by using:
 
 ```shell
-curl --request GET \
-     --header "Authorization: Bearer <authenticate_token>" \
+curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/packages/103f6067a947f366ef91fc1b7da351c588d1827f/revisions/3bdd2d8c8e76c876ebd1ac0469a4e72c/files/conaninfo.txt" \
      >> conaninfo.txt
 ```
@@ -486,6 +568,59 @@ GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:packa
 ```shell
 curl --header "Authorization: Bearer <authenticate_token>" \
      --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/search"
+```
+
+Example response:
+
+```json
+{
+  "103f6067a947f366ef91fc1b7da351c588d1827f": {
+    "settings": {
+      "arch": "x86_64",
+      "build_type": "Release",
+      "compiler": "gcc",
+      "compiler.libcxx": "libstdc++",
+      "compiler.version": "9",
+      "os": "Linux"
+    },
+    "options": {
+      "shared": "False"
+    },
+    "requires": {
+      "zlib/1.2.11": null
+    },
+    "recipe_hash": "75151329520e7685dcf5da49ded2fec0"
+  }
+}
+```
+
+The response includes the following metadata for each package reference:
+
+- `settings`: The build settings used for the package.
+- `options`: The package options.
+- `requires`: The required dependencies for the package.
+- `recipe_hash`: The hash of the recipe.
+
+## Get package references metadata by recipe revision
+
+Gets the metadata for all package references associated with a specific recipe revision.
+
+```plaintext
+GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id`                | string | yes | The project ID or full project path. |
+| `package_name`      | string | yes | Name of a package. |
+| `package_version`   | string | yes | Version of a package. |
+| `package_username`  | string | yes | Conan username of a package. This attribute is the `+`-separated full path of your project. |
+| `package_channel`   | string | yes | Channel of a package. |
+| `recipe_revision`   | string | yes | Revision of the recipe. Does not accept a value of `0`. |
+
+```shell
+curl --header "Authorization: Bearer <authenticate_token>" \
+     --url "https://gitlab.example.com/api/v4/projects/9/packages/conan/v2/conans/my-package/1.0/my-group+my-project/stable/revisions/75151329520e7685dcf5da49ded2fec0/search"
 ```
 
 Example response:

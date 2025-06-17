@@ -9,7 +9,6 @@ import {
 } from '@gitlab/ui';
 import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import InputsAdoptionBanner from '~/ci/common/pipeline_inputs/inputs_adoption_banner.vue';
 import { VARIABLE_TYPE, FILE_TYPE } from '../constants';
 
@@ -25,7 +24,6 @@ export default {
     InputsAdoptionBanner,
     GlIcon,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     initialVariables: {
       type: Array,
@@ -60,9 +58,6 @@ export default {
   computed: {
     varSecurityBtnText() {
       return this.showVarValues ? __('Hide values') : __('Reveal values');
-    },
-    isPipelineInputsFeatureAvailable() {
-      return this.glFeatures.ciInputsForPipelines;
     },
     hasExistingScheduleVariables() {
       return this.variables.length > 0;
@@ -140,11 +135,7 @@ export default {
       class="gl-mb-0"
       :label="s__('Pipeline|Variables')"
     >
-      <inputs-adoption-banner
-        v-if="isPipelineInputsFeatureAvailable"
-        class="gl-mt-0"
-        :feature-name="$options.userCalloutsFeatureName"
-      />
+      <inputs-adoption-banner class="gl-mt-0" :feature-name="$options.userCalloutsFeatureName" />
       <div v-for="(variable, index) in variables" :key="`var-${index}`" class="gl-mb-4">
         <div
           v-if="!variable.destroy"

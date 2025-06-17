@@ -7,6 +7,7 @@ module RuboCop
         MSG = "Don't establish new database connections, as this slows down " \
           'tests and may result in new connections using an incorrect configuration'
 
+        # @!method establish_connection?(node)
         def_node_matcher :establish_connection?, <<~PATTERN
           (send (const ...) :establish_connection ...)
         PATTERN

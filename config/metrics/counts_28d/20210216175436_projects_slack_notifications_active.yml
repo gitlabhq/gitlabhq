@@ -3,7 +3,7 @@ data_category: optional
 key_path: usage_activity_by_stage_monthly.configure.projects_slack_notifications_active
 description: Unique projects created in the past 28 days that have Slack notifications
   enabled
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 time_frame: 28d

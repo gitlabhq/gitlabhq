@@ -191,7 +191,7 @@ With the extended Docker configuration options, instead of:
 
 You can now define an `entrypoint` in the `.gitlab-ci.yml` file.
 
-**For Docker 17.06 and later:**
+**For Docker 17.06 and later**:
 
 ```yaml
 image:
@@ -199,7 +199,7 @@ image:
   entrypoint: [""]
 ```
 
-**For Docker 17.03 and earlier:**
+**For Docker 17.03 and earlier**:
 
 ```yaml
 image:
@@ -265,7 +265,7 @@ You can access a private registry using two approaches. Both require setting the
    private registry, add `DOCKER_AUTH_CONFIG` as an environment variable in the
    runner's configuration.
 
-See below for examples of each.
+See the following sections for examples of each.
 
 #### Determine your `DOCKER_AUTH_CONFIG` data
 
@@ -355,11 +355,11 @@ follow these steps:
    image: registry.example.com:5000/namespace/image:tag
    ```
 
-   In the example above, GitLab Runner looks at `registry.example.com:5000` for the
+   In the previous example, GitLab Runner looks at `registry.example.com:5000` for the
    image `namespace/image:tag`.
 
 You can add configuration for as many registries as you want, adding more
-registries to the `"auths"` hash as described above.
+registries to the `"auths"` hash as described previously.
 
 The full `hostname:port` combination is required everywhere
 for the runner to match the `DOCKER_AUTH_CONFIG`. For example, if
@@ -418,7 +418,7 @@ To configure a Credentials Store:
        }
      ```
 
-   - Or, if you're running self-managed runners, add the above JSON to
+   - Or, if you're running self-managed runners, add the JSON to
      `${GITLAB_RUNNER_HOME}/.docker/config.json`. GitLab Runner reads this configuration file
      and uses the needed helper for this specific repository.
 
@@ -554,7 +554,7 @@ and manual credential management.
    COPY --from=aws-tools /root/.docker/config.json /root/.docker/config.json
    ```
 
-1. To build the custom GitLab Runner Docker image in a `.gitlab-ci.yml`, include the following example below:
+1. To build the custom GitLab Runner Docker image in a `.gitlab-ci.yml`, include the following example:
 
    ```yaml
    variables:

@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Migration Style Guide
 ---
 
@@ -113,11 +113,11 @@ The result of a [database migration pipeline](database/database_migration_pipeli
 includes the timing information for migrations.
 {{< /alert >}}
 
-| Migration Type | Recommended Duration | Notes |
-|----|----|---|
-| Regular migrations | `<= 3 minutes` | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
-| Post-deployment migrations | `<= 10 minutes` | A valid exception are schema changes, since they must not happen in background migrations. |
-| Background migrations | `> 10 minutes` | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
+| Migration Type             | Recommended Duration | Notes |
+|----------------------------|----------------------|-------|
+| Regular migrations         | `<= 3 minutes`       | A valid exception are changes without which application functionality or performance would be severely degraded and which cannot be delayed. |
+| Post-deployment migrations | `<= 10 minutes`      | A valid exception are schema changes, since they must not happen in background migrations. |
+| Background migrations      | `> 10 minutes`       | Since these are suitable for larger tables, it's not possible to set a precise timing guideline, however, any single query must stay below [`1 second` execution time](database/query_performance.md#timing-guidelines-for-queries) with cold caches. |
 
 ## Large Tables Limitations
 
@@ -462,7 +462,7 @@ are run. It's important to maintain a rough correlation between:
 1. When a migration is added to the GitLab codebase.
 1. The timestamp of the migration itself.
 
-A new migration's timestamp should *never* be before the previous [required upgrade stop](database/required_stops.md).
+A new migration's timestamp should never be before the previous [required upgrade stop](database/required_stops.md).
 Migrations are occasionally squashed, and if a migration is added whose timestamp
 falls before the previous required stop, a problem like what happened in
 [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) can occur.
@@ -1281,11 +1281,13 @@ class BuildMetadata
 end
 ```
 
-When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time.
+When using a `JSONB` column, use the [JsonSchemaValidator](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/validators/json_schema_validator.rb) to keep control of the data being inserted over time. You must also specify a `size_limit` to prevent performance issues from large JSONB data, with **64 KB** as the recommended maximum.
+
+The `JsonbSizeLimit` cop enforces this requirement for new validations, as unbounded JSONB growth can cause memory pressure and slow query performance across millions of database records. For larger datasets, use object storage and store references in the database instead.
 
 ```ruby
 class BuildMetadata
-  validates :config_options, json_schema: { filename: 'build_metadata_config_option' }
+  validates :config_options, json_schema: { filename: 'build_metadata_config_option', size_limit: 64.kilobytes }
 end
 ```
 

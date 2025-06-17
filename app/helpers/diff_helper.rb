@@ -45,6 +45,10 @@ module DiffHelper
     options
   end
 
+  def with_custom_diff_options
+    yield diff_options.dup
+  end
+
   def rapid_diffs?
     return false unless defined? current_user
 
@@ -299,6 +303,10 @@ module DiffHelper
 
   def params_with_whitespace
     hide_whitespace? ? safe_params.except(:w) : safe_params.merge(w: 1)
+  end
+
+  def file_heading_id(diff_file)
+    "#{diff_file.file_hash[0..8]}-heading"
   end
 
   private

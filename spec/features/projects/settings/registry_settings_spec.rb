@@ -147,7 +147,7 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
   end
 
   shared_examples 'container registry settings' do
-    describe 'Container repository protection rules' do
+    describe 'Container protection repository rules' do
       let(:settings_block_id) { 'project-container-repository-protection-rules-settings' }
 
       it 'shows available section' do
@@ -165,19 +165,27 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
             click_button 'Add protection rule'
             fill_in 'Repository path pattern', with: "#{project.full_path}/*test*"
             select 'Owner', from: 'Minimum access level for push'
+            select 'Developer (default)', from: 'Minimum access level for delete'
             click_button 'Add rule'
           end
 
+          expect(page).not_to have_selector 'h2', text: 'Add protection rule'
+          expect(page).to have_content('Protection rule created.')
+
           settings_block = find_by_testid(settings_block_id)
-          expect(settings_block).not_to have_button 'Add rule'
           expect(settings_block).to have_content("#{project.full_path}/*test*")
-          expect(settings_block).to have_select('Minimum access level for push', selected: 'Owner')
+          expect(find_by_testid('minimum-access-level-push-value', context: settings_block)).to have_content('Owner')
+          expect(find_by_testid('minimum-access-level-delete-value', context: settings_block)).to have_content('Developer (default)')
         end
       end
 
       context 'with protection rule' do
         let_it_be(:container_repository_protection_rule) do
-          create(:container_registry_protection_rule, project: project)
+          create(:container_registry_protection_rule,
+            project: project,
+            minimum_access_level_for_push: :maintainer,
+            minimum_access_level_for_delete: :owner
+          )
         end
 
         it 'renders the rule' do
@@ -185,17 +193,32 @@ RSpec.describe 'Project > Settings > Packages and registries', :aggregate_failur
 
           settings_block = find_by_testid(settings_block_id)
           expect(settings_block).to have_content(container_repository_protection_rule.repository_path_pattern)
-          expect(settings_block).to have_select('Minimum access level for push', selected: 'Maintainer')
+          expect(find_by_testid('minimum-access-level-push-value', context: settings_block)).to have_content('Maintainer')
+          expect(find_by_testid('minimum-access-level-delete-value', context: settings_block)).to have_content('Owner')
         end
 
-        it 'edits rule' do
+        it 'updates rule' do
           visit_method
 
           within_testid settings_block_id do
-            select 'Admin', from: 'Minimum access level for push'
+            click_button 'Edit'
           end
 
-          expect(page).to have_content('Container protection rule updated.')
+          within_testid settings_block_id do |settings_block|
+            expect(settings_block).to have_selector 'h2', text: 'Edit protection rule'
+            fill_in 'Repository path pattern', with: "#{project.full_path}/*test*-updated"
+            select 'Administrator', from: 'Minimum access level for push'
+            click_button 'Save changes'
+          end
+
+          expect(page).not_to have_selector 'h2', text: 'Edit protection rule'
+          expect(page).to have_content('Protection rule updated.')
+
+          within_testid settings_block_id do |settings_block|
+            expect(settings_block).to have_content("#{project.full_path}/*test*-updated")
+            expect(find_by_testid('minimum-access-level-push-value', context: settings_block)).to have_content('Administrator')
+            expect(find_by_testid('minimum-access-level-delete-value', context: settings_block)).to have_content('Owner')
+          end
         end
 
         it 'deletes rule' do

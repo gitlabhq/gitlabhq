@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
+RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
   let_it_be(:other_organization) { create(:organization) }
   let_it_be(:organization) { create(:organization, name: 'Current Organization') }
   let_it_be(:default_organization) { create(:organization, :default) }

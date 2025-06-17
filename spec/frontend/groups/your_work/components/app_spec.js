@@ -1,5 +1,6 @@
-import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMount } from '@vue/test-utils';
 import YourWorkGroupsApp from '~/groups/your_work/components/app.vue';
+import groupCountsQuery from '~/groups/your_work/graphql/queries/group_counts.query.graphql';
 import {
   GROUP_DASHBOARD_TABS,
   SORT_OPTIONS,
@@ -24,7 +25,7 @@ describe('YourWorkGroupsApp', () => {
   };
 
   const createComponent = () => {
-    wrapper = shallowMountExtended(YourWorkGroupsApp, { propsData: defaultPropsData });
+    wrapper = shallowMount(YourWorkGroupsApp, { propsData: defaultPropsData });
   };
 
   beforeEach(() => {
@@ -38,6 +39,7 @@ describe('YourWorkGroupsApp', () => {
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
+      filteredSearchInputPlaceholder: 'Search',
       sortOptions: SORT_OPTIONS,
       defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
@@ -48,8 +50,9 @@ describe('YourWorkGroupsApp', () => {
       initialSort: defaultPropsData.initialSort,
       programmingLanguages: [],
       eventTracking: {},
-      tabCountsQuery: {},
-      tabCountsQueryErrorMessage: 'An error occurred loading the tab counts.',
+      tabCountsQuery: groupCountsQuery,
+      tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
+      shouldUpdateActiveTabCountFromTabQuery: false,
       paginationType: PAGINATION_TYPE_OFFSET,
     });
   });

@@ -45,7 +45,7 @@ export default {
     title: __('Files'),
     deleteLabel: __('Delete File'),
     uploadLabel: __('Upload File'),
-    uploadingLabel: __('Uploading...'),
+    uploadingLabel: __('Uploading…'),
     noFilesMessage: __('There are no secure files yet.'),
     uploadErrorMessages: {
       duplicate: __('A file with this name already exists.'),

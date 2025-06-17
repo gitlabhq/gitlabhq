@@ -5,11 +5,18 @@ module Packages
     class GenerateDistributionKeyService
       include Gitlab::Utils::StrongMemoize
 
+      NEWLINE_REGEX = /\R/
+      INVALID_PASSPHRASE_ERROR = ServiceResponse.error(
+        message: 'Passphrase contains invalid characters', reason: :invalid_passphrase
+      ).freeze
+
       def initialize(params: {})
         @params = params
       end
 
       def execute
+        return INVALID_PASSPHRASE_ERROR if invalid_passphrase?
+
         using_pinentry do |ctx|
           # Generate key
           ctx.generate_key generate_key_params
@@ -29,12 +36,14 @@ module Packages
           data.seek 0
           public_key = data.read
 
-          {
-            private_key: private_key,
-            public_key: public_key,
-            passphrase: passphrase,
-            fingerprint: fingerprint
-          }
+          ServiceResponse.success(
+            payload: {
+              private_key: private_key,
+              public_key: public_key,
+              passphrase: passphrase,
+              fingerprint: fingerprint
+            }
+          )
         end
       end
 
@@ -92,6 +101,10 @@ module Packages
             Passphrase: passphrase
           }.map { |k, v| "#{k}: #{v}\n" }.join +
           '</GnupgKeyParms>'
+      end
+
+      def invalid_passphrase?
+        params[:passphrase]&.match?(NEWLINE_REGEX)
       end
     end
   end

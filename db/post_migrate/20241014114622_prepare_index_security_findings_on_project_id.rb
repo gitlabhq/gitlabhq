@@ -9,7 +9,9 @@ class PrepareIndexSecurityFindingsOnProjectId < Gitlab::Database::Migration[2.2]
   INDEX_NAME = 'index_security_findings_on_project_id'
 
   def up
+    # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
     prepare_partitioned_async_index :security_findings, :project_id, name: INDEX_NAME
+    # rubocop:enable Migration/PreventIndexCreation
   end
 
   def down

@@ -43,17 +43,17 @@ If your organization is facing any of the following challenges, a DevSecOps appr
 
 <!-- Do not delete the double spaces at the end of these lines. They improve the rendered view. -->
 
-- **Development, security, and operations teams are siloed.**
+- Development, security, and operations teams are siloed.
   If development and operations are isolated from security issues,
   they can't build secure software. And if security teams aren't part of the development process,
   they can't identify risks proactively. DevSecOps brings teams together to improve workflows
   and share ideas. Organizations might even see improved employee morale and retention.
 
-- **Long development cycles are making it difficult to meet customer or stakeholder demands.**
+- Long development cycles are making it difficult to meet customer or stakeholder demands.
   One reason for the struggle could be security. DevSecOps implements security at every step of
   the development lifecycle, meaning that solid security doesn't require the whole process to come to a halt.
 
-- **You're migrating to the cloud (or considering it).**
+- You're migrating to the cloud (or considering it).
   Moving to the cloud often means bringing on new development processes, tools, and systems.
   It's a great time to make processes faster and more secure, and DevSecOps could make that a lot easier.
 

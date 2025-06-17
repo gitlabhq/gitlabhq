@@ -230,7 +230,13 @@ export function parseChronicDuration(string, opts = {}) {
 // returns a formatted string representing elapsed time
 export function outputChronicDuration(seconds, opts = {}) {
   if (opts.hoursOnly) {
-    const hours = Math.round(seconds / 3600);
+    const decimalHours = seconds / 3600;
+    const hours = Math.floor(decimalHours);
+    if (decimalHours % 1 !== 0) {
+      const minutes = Math.round((decimalHours % 1) * 60);
+      // eslint-disable-next-line @gitlab/require-i18n-strings
+      return `${hours}h ${minutes}m`;
+    }
     return `${hours}h`;
   }
 

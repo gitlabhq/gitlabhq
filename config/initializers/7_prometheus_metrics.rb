@@ -99,9 +99,19 @@ Gitlab::Cluster::LifecycleEvents.on_worker_start do
   end
 
   if Gitlab::Runtime.sidekiq?
-    Gitlab::Metrics::Samplers::ConcurrencyLimitSampler.instance(logger: logger).start
-    Gitlab::Metrics::Samplers::StatActivitySampler.instance(logger: logger).start
-    Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start if Gitlab.ee?
+    @samplers_started = false
+
+    Rails.application.config.after_routes_loaded do
+      # Rails will reload this hook every time routes are changed.
+      unless @samplers_started
+        # These samplers may attempt to retrieve database connections (e.g. for feature flag checks)
+        # in the background, so wait until all the code is loaded before starting.
+        Gitlab::Metrics::Samplers::ConcurrencyLimitSampler.instance(logger: logger).start
+        Gitlab::Metrics::Samplers::StatActivitySampler.instance(logger: logger).start
+        Gitlab::Metrics::Samplers::GlobalSearchSampler.instance(logger: logger).start if Gitlab.ee?
+        @samplers_started = true
+      end
+    end
   end
 
   Gitlab::Ci::Parsers.instrument!

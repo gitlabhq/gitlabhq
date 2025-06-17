@@ -37,7 +37,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
     it 'returns a hash of name and schema mappings' do
       expect(dictionary.to_name_and_schema_mapping).to include(
         {
-          'application_settings' => :gitlab_main_clusterwide_setting,
+          'application_settings' => :gitlab_main_cell_setting,
           'members' => :gitlab_main_cell
         }
       )
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       entry = dictionary.find_by_table_name('application_settings')
       expect(entry).to be_instance_of(Gitlab::Database::Dictionary::Entry)
       expect(entry.key_name).to eq('application_settings')
-      expect(entry.gitlab_schema).to eq('gitlab_main_clusterwide_setting')
+      expect(entry.gitlab_schema).to eq('gitlab_main_cell_setting')
     end
 
     it 'returns nil if the entry is not found' do
@@ -81,7 +81,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
   describe '.any_entry' do
     it 'loads an entry from any scope' do
-      expect(described_class.any_entry('ci_pipelines')).to be_present # Regular table
+      expect(described_class.any_entry('p_ci_pipelines')).to be_present # Regular table
       expect(described_class.any_entry('audit_events_archived')).to be_present # Deleted table
       expect(described_class.any_entry('postgres_constraints')).to be_present # View
       expect(described_class.any_entry('not_a_table_ever')).to be_nil
@@ -90,7 +90,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
 
   describe '.entry' do
     it 'loads an Entry from the given scope' do
-      expect(described_class.entry('ci_pipelines')).to be_present # Regular table
+      expect(described_class.entry('p_ci_pipelines')).to be_present # Regular table
       expect(described_class.entry('audit_events_archived')).not_to be_present # Deleted table
       expect(described_class.entry('postgres_constraints')).not_to be_present # Deleted table
       expect(described_class.entry('audit_events_archived', 'deleted_tables')).to be_present # Deleted table
@@ -108,7 +108,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
         it 'returns the name of the table and its gitlab schema' do
           expect(database_dictionary.name_and_schema).to match_array([
             'application_settings',
-            :gitlab_main_clusterwide_setting
+            :gitlab_main_cell_setting
           ])
         end
       end
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       describe '#schema?' do
         it 'checks if the given schema matches the schema of the table' do
           expect(database_dictionary.schema?('gitlab_main')).to eq(false)
-          expect(database_dictionary.schema?('gitlab_main_clusterwide_setting')).to eq(true)
+          expect(database_dictionary.schema?('gitlab_main_cell_setting')).to eq(true)
         end
       end
 
@@ -182,11 +182,11 @@ RSpec.describe Gitlab::Database::Dictionary, feature_category: :database do
       end
 
       describe '#desired_sharding_key_migration_job_name' do
-        let(:file_path) { 'db/docs/work_item_progresses.yml' }
+        let(:file_path) { 'db/docs/issue_assignees.yml' }
 
         it 'returns the name of the migration that backfills the desired sharding key' do
           expect(database_dictionary.desired_sharding_key_migration_job_name)
-            .to eq('BackfillWorkItemProgressesNamespaceId')
+            .to eq('BackfillIssueAssigneesNamespaceId')
         end
       end
 

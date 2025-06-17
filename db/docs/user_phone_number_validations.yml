@@ -7,5 +7,7 @@ feature_categories:
 description: Stores whether the user has verified their phone number
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97762
 milestone: '15.5'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

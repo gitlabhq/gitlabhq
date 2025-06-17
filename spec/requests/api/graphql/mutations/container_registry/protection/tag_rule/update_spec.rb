@@ -13,10 +13,6 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
 
   let_it_be(:current_user) { create(:user, maintainer_of: project) }
 
-  let(:container_protection_tag_rule_attributes) do
-    build_stubbed(:container_protection_tag_rule, project: project)
-  end
-
   let(:mutation) do
     graphql_mutation(:update_container_protection_tag_rule, input,
       <<~QUERY
@@ -68,8 +64,8 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
       post_graphql_mutation_request.tap do
         expect(container_protection_tag_rule.reload).to have_attributes(
           tag_name_pattern: input[:tag_name_pattern],
-          minimum_access_level_for_push: input[:minimum_access_level_for_push]&.downcase,
-          minimum_access_level_for_delete: input[:minimum_access_level_for_delete]&.downcase
+          minimum_access_level_for_push: input[:minimum_access_level_for_push].downcase,
+          minimum_access_level_for_delete: input[:minimum_access_level_for_delete].downcase
         )
       end
     end
@@ -119,12 +115,6 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
     let(:input) { super().merge(tag_name_pattern: '') }
 
     it_behaves_like 'returning a GraphQL error', /tagNamePattern can't be blank/
-  end
-
-  context 'with blank input fields `minimumAccessLevelForPush` and `minimumAccessLevelForDelete`' do
-    let(:input) { super().merge(minimum_access_level_for_push: nil, minimum_access_level_for_delete: nil) }
-
-    it_behaves_like 'a successful response'
   end
 
   context 'with only `minimumAccessLevelForDelete` blank' do

@@ -1,20 +1,28 @@
-query getProjectCounts {
+# Since GraphQL doesn't support string comparison in @skip(if:)
+# we use the naming convention of skip${tabValue} in camelCase
+query getProjectCounts(
+  $skipContributed: Boolean = false
+  $skipStarred: Boolean = false
+  $skipPersonal: Boolean = false
+  $skipMember: Boolean = false
+  $skipInactive: Boolean = false
+) {
   currentUser {
     id
-    contributed: contributedProjects {
+    contributed: contributedProjects @skip(if: $skipContributed) {
       count
     }
-    starred: starredProjects {
+    starred: starredProjects @skip(if: $skipStarred) {
       count
     }
   }
-  personal: projects(personal: true) {
+  personal: projects(personal: true) @skip(if: $skipPersonal) {
     count
   }
-  member: projects(membership: true) {
+  member: projects(membership: true) @skip(if: $skipMember) {
     count
   }
-  inactive: projects(archived: ONLY, membership: true) {
+  inactive: projects(archived: ONLY, membership: true) @skip(if: $skipInactive) {
     count
   }
 }

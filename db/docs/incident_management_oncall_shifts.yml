@@ -9,14 +9,6 @@ description: Tracks past and present on-call shifts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/49423
 milestone: '13.8'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: rotation_id
-        table: incident_management_oncall_rotations
-        sharding_key: project_id
-        belongs_to: rotation
+sharding_key:
+  project_id: projects
 table_size: small
-desired_sharding_key_migration_job_name: BackfillIncidentManagementOncallShiftsProjectId

@@ -1,4 +1,4 @@
-import ensureSingleLine from '~/locale/ensure_single_line.cjs';
+import { ensureSingleLine } from '~/locale/ensure_single_line';
 
 describe('locale', () => {
   describe('ensureSingleLine', () => {

@@ -548,13 +548,18 @@ class NotificationService
     mailer.project_was_not_exported_email(current_user, project, errors).deliver_later
   end
 
+  def email_template_name(status)
+    "pipeline_#{status}_email"
+  end
+
   def pipeline_finished(pipeline, ref_status: nil, recipients: nil)
     # Must always check project configuration since recipients could be a list of emails
     # from the PipelinesEmailService integration.
     return if pipeline.project.emails_disabled?
 
+    # If changing the next line don't forget to do the same in EE section
     status = pipeline_notification_status(ref_status, pipeline)
-    email_template = "pipeline_#{status}_email"
+    email_template = email_template_name(status)
 
     return unless mailer.respond_to?(email_template)
 
@@ -568,6 +573,12 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.public_send(email_template, pipeline, recipient).deliver_later
+    end
+  end
+
+  def pipeline_schedule_owner_unavailable(schedule)
+    schedule.project.owners_and_maintainers.each do |recipient|
+      mailer.pipeline_schedule_owner_unavailable_email(schedule, recipient).deliver_later
     end
   end
 
@@ -864,7 +875,7 @@ class NotificationService
   private
 
   def send_new_note_notifications(note)
-    notify_method = "note_#{note.noteable_ability_name}_email".to_sym
+    notify_method = :"note_#{note.noteable_ability_name}_email"
 
     recipients = NotificationRecipients::BuildService.build_new_note_recipients(note)
     recipients.each do |recipient|

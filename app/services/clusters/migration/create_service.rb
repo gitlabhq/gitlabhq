@@ -44,9 +44,7 @@ module Clusters
       private
 
       def validate_inputs
-        message = if !feature_enabled?
-                    _('Feature disabled')
-                  elsif !current_user.can?(:admin_cluster, cluster)
+        message = if !current_user.can?(:admin_cluster, cluster)
                     _('Unauthorized')
                   elsif configuration_project.nil?
                     s_('ClusterIntegration|Invalid configuration project')
@@ -76,10 +74,6 @@ module Clusters
 
         # User permissions for this project are checked in Agents::CreateService
         clusterable.root_ancestor.all_projects.find_by_id(project_id)
-      end
-
-      def feature_enabled?
-        Feature.enabled?(:cluster_agent_migrations, clusterable)
       end
 
       def error_response(message:)

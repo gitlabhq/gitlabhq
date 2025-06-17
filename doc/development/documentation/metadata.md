@@ -72,6 +72,7 @@ The `description` tag:
 - Is used to populate text on the documentation home page.
 - Is shown in social media previews.
 - Can be used in search result snippets.
+- Is shown when the page is included in a [`cards` shortcode](styleguide/_index.md#cards).
 
 For the top-level pages, like **Use GitLab** and one level underneath,
 the descriptions are lists of nouns. For example, for **Set up your organization**,

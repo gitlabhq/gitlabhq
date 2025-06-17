@@ -34,7 +34,7 @@ If no jobs in the child pipeline can run due to missing or incorrect `rules` con
 
 ## Variable with `$` character does not get passed to a downstream pipeline properly
 
-You cannot use [`$$` to escape the `$` character in a CI/CD variable](../variables/_index.md#use-the--character-in-cicd-variables),
+You cannot use [`$$` to escape the `$` character in a CI/CD variable](../variables/job_scripts.md#use-the--character-in-cicd-variables),
 when [passing a CI/CD variable to a downstream pipeline](downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline).
 The downstream pipeline still treats the `$` as the start of a variable reference.
 

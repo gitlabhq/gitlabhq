@@ -12,10 +12,24 @@ title: Deploy keys API
 
 {{< /details >}}
 
-The deploy keys API can return in responses fingerprints of the public key in the following fields:
+Use this API to interact with [deploy keys](../user/project/deploy_keys/_index.md).
 
-- `fingerprint` (MD5 hash). Not available on FIPS-enabled systems.
-- `fingerprint_sha256` (SHA256 hash). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302) in GitLab 15.2.
+## Deploy key fingerprints
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91302) `fingerprint_sha256` attribute in GitLab 15.2.
+
+{{< /history >}}
+
+Some endpoints return public key fingerprints as part of the response. You can use these fingerprints
+to identify the user that created the deploy key. For more information,
+see [get user by deploy key fingerprint](keys.md#get-user-by-deploy-key-fingerprint).
+
+The following attributes contain the deploy key fingerprint:
+
+- `fingerprint`: Uses an MD5 hash. Not available on FIPS-enabled systems.
+- `fingerprint_sha256`: Uses a SHA256 hash.
 
 ## List all deploy keys
 
@@ -90,7 +104,7 @@ Example response:
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ==",
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
-    "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
+    "": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
     "expires_at": null,
     "projects_with_write_access": [],
@@ -198,7 +212,7 @@ Example response:
     "title": "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDIJFwIL6YNcCgVBLTHgM6hzmoL5vf0ThDKQMWT3HrwCjUCGPwR63vBwn6+/Gx+kx+VTo9FuojzR0O4XfwD3LrYA+oT3ETbn9U4e/VS4AH/G4SDMzgSLwu0YuPe517FfGWhWGQhjiXphkaQ+6bXPmcASWb0RCO5+pYlGIfxv4eFGQ==",
     "fingerprint": "0b:cf:58:40:b9:23:96:c7:ba:44:df:0e:9e:87:5e:75",
-    "fingerprint_sha256": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
+    "": "SHA256:lGI/Ys/Wx7PfMhUO1iuBH92JQKYN+3mhJZvWO4Q5ims",
     "created_at": "2013-10-02T11:12:29Z",
     "expires_at": null,
     "can_push": false
@@ -244,7 +258,7 @@ Parameters:
     "expires_at": null,
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDNJAkI3Wdf0r13c8a5pEExB2YowPWCSVzfZV22pNBc1CuEbyYLHpUyaD0GwpGvFdx2aP7lMEk35k6Rz3ccBF6jRaVJyhsn5VNnW92PMpBJ/P1UebhXwsFHdQf5rTt082cSxWuk61kGWRQtk4ozt/J2DF/dIUVaLvc+z4HomT41fQ==",
     "fingerprint": "4a:9d:64:15:ed:3a:e6:07:6e:89:36:b3:3b:03:05:d9",
-    "fingerprint_sha256": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU"
+    "": "SHA256:Jrs3LD1Ji30xNLtTVf9NDCj7kkBgPBb2pjvTZ3HfIgU"
   }
 ]
 ```

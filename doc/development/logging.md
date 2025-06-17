@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Platform Insights
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Logging development guidelines
 ---
 
@@ -215,7 +215,7 @@ end
 #### Logging durations
 
 Similar to timezones, choosing the right time unit to log can impose avoidable overhead. So, whenever
-challenged to choose between seconds, milliseconds or any other unit, lean towards _seconds_ as float
+challenged to choose between seconds, milliseconds or any other unit, lean towards seconds as float
 (with microseconds precision, that is, `Gitlab::InstrumentationHelper::DURATION_PRECISION`).
 
 In order to make it easier to track timings in the logs, make sure the log key has `_s` as

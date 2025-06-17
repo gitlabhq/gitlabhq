@@ -52,7 +52,7 @@ module Resolvers
 
       track_bot_user if current_user.bot?
 
-      TodosFinder.new(current_user, todo_finder_params(args)).execute.with_entity_associations
+      TodosFinder.new(users: current_user, **todo_finder_params(args)).execute.with_entity_associations
     end
 
     private

@@ -32,12 +32,14 @@ export const ListType = {
   backlog: 'backlog',
   closed: 'closed',
   label: 'label',
+  status: 'status',
 };
 
 export const ListTypeTitles = {
   assignee: __('Assignee'),
   milestone: __('Milestone'),
   iteration: __('Iteration'),
+  status: __('Status'),
   label: __('Label'),
   backlog: __('Open'),
 };
@@ -161,6 +163,7 @@ export const FilterFields = {
     'search',
     'types',
     'weight',
+    'status',
   ],
 };
 

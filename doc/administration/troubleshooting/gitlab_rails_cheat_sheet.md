@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab Rails Console Cheat Sheet
 ---
@@ -38,7 +38,7 @@ backup of the instance ready to be restored, just in case.
 As GitLab changes, changes to the code are inevitable,
 and so some scripts may not work as they once used to. These are not kept
 up-to-date as these scripts/commands were added as they were found/needed. As
-mentioned above, we recommend running these scripts under the supervision of a
+mentioned previously, we recommend running these scripts under the supervision of a
 Support Engineer, who can also verify that they continue to work as they
 should and, if needed, update the script for the latest version of GitLab.
 {{< /alert >}}

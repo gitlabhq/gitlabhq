@@ -213,7 +213,8 @@ module Members
       {
         created_by: member.created_by || current_user,
         access_level: access_level,
-        expires_at: args[:expires_at]
+        expires_at: args[:expires_at],
+        importing: skip_authorization? && source&.importing?
       }
     end
 

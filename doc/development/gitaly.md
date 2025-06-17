@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Gitaly
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Gitaly development guidelines
 ---
 
@@ -42,7 +42,7 @@ in `lib/gitlab/git` changes have to be made to Gitaly.
 
 There should be no new code that touches Git repositories by using disk access
 anywhere in the `gitlab` repository. Anything that
-needs direct access to the Git repository *must* be implemented in Gitaly, and
+needs direct access to the Git repository must be implemented in Gitaly, and
 exposed through an RPC.
 
 It's often easier to develop a new feature in Gitaly if you make the changes to

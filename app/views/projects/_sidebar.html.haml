@@ -42,7 +42,7 @@
               alt: 'Project badge' }>
 
   -# Invite members
-  - if @project.empty_repo? && can_admin_project_member?(@project)
+  - if @project.empty_repo? && can?(current_user, :invite_member, @project)
     .project-page-sidebar-block.gl-py-4.gl-border-b.gl-border-b-subtle
       = render "invite_members_empty_project"
 

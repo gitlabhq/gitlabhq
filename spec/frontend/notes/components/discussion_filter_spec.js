@@ -2,8 +2,8 @@ import { GlDisclosureDropdown, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import AxiosMockAdapter from 'axios-mock-adapter';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { TEST_HOST } from 'helpers/test_constants';
 import createEventHub from '~/helpers/event_hub_factory';
 import * as urlUtility from '~/lib/utils/url_utility';
@@ -18,21 +18,21 @@ import {
   ASC,
   DESC,
 } from '~/notes/constants';
-import notesModule from '~/notes/stores/modules';
 
+import { useNotes } from '~/notes/store/legacy_notes';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { discussionFiltersMock, discussionMock } from '../mock_data';
 
-Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 const DISCUSSION_PATH = `${TEST_HOST}/example`;
 
 describe('DiscussionFilter component', () => {
   let wrapper;
-  let store;
+  let pinia;
   let eventHub;
   let mock;
-
-  const filterDiscussion = jest.fn();
 
   const findFilter = (filterType) =>
     wrapper.find(`.gl-new-dropdown-item[data-filter-type="${filterType}"]`);
@@ -49,22 +49,12 @@ describe('DiscussionFilter component', () => {
       },
     ];
 
-    const defaultStore = { ...notesModule() };
+    useNotes().notesData.discussionsPath = DISCUSSION_PATH;
 
-    store = new Vuex.Store({
-      ...defaultStore,
-      actions: {
-        ...defaultStore.actions,
-        filterDiscussion,
-      },
-    });
-
-    store.state.notesData.discussionsPath = DISCUSSION_PATH;
-
-    store.state.discussions = discussions;
+    useNotes().discussions = discussions;
 
     wrapper = mount(DiscussionFilter, {
-      store,
+      pinia,
       propsData: {
         filters: discussionFiltersMock,
         selectedValue: DISCUSSION_FILTERS_DEFAULT_VALUE,
@@ -74,6 +64,9 @@ describe('DiscussionFilter component', () => {
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useLegacyDiffs();
+    useNotes();
     mock = new AxiosMockAdapter(axios);
 
     // We are mocking the discussions retrieval,
@@ -90,7 +83,6 @@ describe('DiscussionFilter component', () => {
   describe('default', () => {
     beforeEach(() => {
       mountComponent();
-      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
     it('has local storage sync with the correct props', () => {
@@ -100,21 +92,20 @@ describe('DiscussionFilter component', () => {
     it('calls setDiscussionSortDirection when update is emitted', () => {
       findLocalStorageSync().vm.$emit('input', ASC);
 
-      expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', { direction: ASC });
+      expect(useNotes().setDiscussionSortDirection).toHaveBeenCalledWith({ direction: ASC });
     });
   });
 
   describe('when asc', () => {
     beforeEach(() => {
       mountComponent();
-      jest.spyOn(store, 'dispatch').mockImplementation();
     });
 
     describe('when the dropdown is clicked', () => {
       it('calls the right actions', () => {
         wrapper.find('.js-newest-first').vm.$emit('action');
 
-        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
+        expect(useNotes().setDiscussionSortDirection).toHaveBeenCalledWith({
           direction: DESC,
         });
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
@@ -127,15 +118,14 @@ describe('DiscussionFilter component', () => {
   describe('when desc', () => {
     beforeEach(() => {
       mountComponent();
-      store.state.discussionSortOrder = DESC;
-      jest.spyOn(store, 'dispatch').mockImplementation();
+      useNotes().discussionSortOrder = DESC;
     });
 
     describe('when the dropdown item is clicked', () => {
       it('calls the right actions', () => {
         wrapper.find('.js-oldest-first').vm.$emit('action');
 
-        expect(store.dispatch).toHaveBeenCalledWith('setDiscussionSortDirection', {
+        expect(useNotes().setDiscussionSortDirection).toHaveBeenCalledWith({
           direction: ASC,
         });
         expect(Tracking.event).toHaveBeenCalledWith(undefined, 'change_discussion_sort_direction', {
@@ -167,7 +157,7 @@ describe('DiscussionFilter component', () => {
     });
 
     it('disables the dropdown when discussions are loading', () => {
-      store.state.isLoading = true;
+      useNotes().isLoading = true;
 
       expect(wrapper.findComponent(GlDisclosureDropdown).props('disabled')).toBe(true);
     });
@@ -183,27 +173,27 @@ describe('DiscussionFilter component', () => {
     it('only updates when selected filter changes', () => {
       findFilter(DISCUSSION_FILTER_TYPES.ALL).vm.$emit('action');
 
-      expect(filterDiscussion).not.toHaveBeenCalled();
+      expect(useNotes().filterDiscussion).not.toHaveBeenCalled();
     });
 
     it('disables timeline view if it was enabled', () => {
-      store.state.isTimelineEnabled = true;
+      useNotes().isTimelineEnabled = true;
 
       findFilter(DISCUSSION_FILTER_TYPES.HISTORY).vm.$emit('action');
 
-      expect(store.state.isTimelineEnabled).toBe(false);
+      expect(useNotes().isTimelineEnabled).toBe(false);
     });
 
     it('disables commenting when "Show history only" filter is applied', () => {
       findFilter(DISCUSSION_FILTER_TYPES.HISTORY).vm.$emit('action');
 
-      expect(store.state.commentsDisabled).toBe(true);
+      expect(useNotes().commentsDisabled).toBe(true);
     });
 
     it('enables commenting when "Show history only" filter is not applied', () => {
       findFilter(DISCUSSION_FILTER_TYPES.ALL).vm.$emit('action');
 
-      expect(store.state.commentsDisabled).toBe(false);
+      expect(useNotes().commentsDisabled).toBe(false);
     });
   });
 
@@ -262,10 +252,9 @@ describe('DiscussionFilter component', () => {
 
     it('does not fetch discussions when there is no hash', async () => {
       mountComponent();
-      const dispatchSpy = jest.spyOn(store, 'dispatch');
 
       await nextTick();
-      expect(dispatchSpy).not.toHaveBeenCalled();
+      expect(useNotes().filterDiscussion).not.toHaveBeenCalled();
     });
 
     describe('selected value is not default state', () => {
@@ -276,12 +265,11 @@ describe('DiscussionFilter component', () => {
       });
       it('fetch discussions when there is hash', async () => {
         jest.spyOn(urlUtility, 'getLocationHash').mockReturnValueOnce('note_123');
-        const dispatchSpy = jest.spyOn(store, 'dispatch');
 
         window.dispatchEvent(new Event('hashchange'));
 
         await nextTick();
-        expect(dispatchSpy).toHaveBeenCalledWith('filterDiscussion', {
+        expect(useNotes().filterDiscussion).toHaveBeenCalledWith({
           filter: 0,
           path: 'http://test.host/example',
           persistFilter: false,

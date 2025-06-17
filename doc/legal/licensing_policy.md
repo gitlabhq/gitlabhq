@@ -77,7 +77,7 @@ Customers may have multiple instances of Free tier, subject to some exceptions.
 
 For the Free tier of GitLab.com, [there is a five-user maximum on a top-level namespace with private visibility](../user/free_user_limit.md) per customer or entity.
 This five-user maximum is in the aggregate of any Free tier instances. So, for example, if a customer has one Free tier instance with five users,
-that customer is prohibited from activating an additional Free tier instance of any user level since the five-user maximum has been met.
+that customer is prohibited from activating an additional Free tier instance of any user level because the five-user maximum has been met.
 
 For the Free tier of self-managed, there is no five-user maximum.
 
@@ -124,12 +124,14 @@ Cloud Licensing and whenever customers on Offline licenses share their usage dat
 To view this data, the customer can search by `Company` name or `Subscription` name. Also recorded with this data is `Hostname` and `Instance identifier` ID,
 which can help to indicate if the data is from a production or development instance.
 
+In GitLab 18.1 and later, the `Unique instance` ID field can also be used to identify a customer's GitLab Self-Managed instance.
+
 <!-- markdownlint-enable MD013 -->
 
 ### Ability to have some instances using Cloud Licensing, and others air-gapped or offline
 
 If any of the customer's instances require a legacy or offline license file, the customer will need to request a [Cloud Licensing opt out](https://docs.google.com/presentation/d/1gbdHGCLTc0yis0VFyBBZkriMomNo8audr0u8XXTY2iI/edit#slide=id.g137e73c15b5_0_298) during quoting for VP approval.
-This will provide the customer with the relevant license file, but also with an activation code that the customer can apply to the Cloud Licensing-eligible instances. Note that in this scenario, GitLab will receive seat count data only for the Cloud Licensing instance, and this is what will be used for calculating overages.
+This will provide the customer with the relevant license file, but also with an activation code that the customer can apply to the Cloud Licensing-eligible instances. In this scenario, GitLab will receive a seat count data only for the Cloud Licensing instance, and this will be used for calculating overages.
 
 ### Scenarios when one or more of the instances are a dev environment
 
@@ -147,7 +149,7 @@ The following scenarios reflect questions a customer may ask related to multiple
 
 - Q: I want to buy a license for 50 total users, but want to split these users into two instances. Can I do this?
 - A: Yes, provided it is for two GitLab Self-Managed instances, you can apply one Cloud Licensing activation code (or license key) to multiple GitLab Self-Managed instances,
-  provided that the users on the instances are the same, or are a subset of the total users. In this case, since there are 50 total or unique users, you may split
+  provided that the users on the instances are the same, or are a subset of the total users. In this case, because there are 50 total or unique users, you may split
   those users into two subset instances.
 
 #### Example 2

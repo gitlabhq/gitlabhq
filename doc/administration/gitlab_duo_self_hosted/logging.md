@@ -34,7 +34,7 @@ logging for GitLab Duo Self-Hosted.
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate subscription.
+- You must have a Premium or Ultimate subscription.
 - You must have a GitLab Duo Enterprise add-on.
 
 To enable logging:
@@ -295,7 +295,7 @@ In this configuration, both GitLab and the AI gateway are hosted by the customer
 In this scenario, the customer hosts GitLab but relies on the GitLab-managed AI gateway for AI processing.
 
 - **Logging Behavior**: Prompts and inputs sent to the AI gateway are **not logged** in the cloud-connected AI gateway to prevent exposure of sensitive information such as personally identifiable information (PII).
-- **Expanded Logging**: Even if the `:expanded_ai_logging` feature flag is enabled, no detailed logs are generated in the GitLab-managed AI gateway to avoid unintended leaks of sensitive information.
+- **Expanded Logging**: Even if [AI logs are enabled](#enable-logging), no detailed logs are generated in the GitLab-managed AI gateway to avoid unintended leaks of sensitive information.
   - Logging remains **minimal** in this setup, and the expanded logging features are disabled by default.
 - **Privacy**: This configuration is designed to ensure that sensitive data is not logged in a cloud environment.
 

@@ -64,11 +64,9 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
   end
 
   describe '#index', :with_current_organization do
-    let(:virtual_registry_maven_enabled) { true }
     let(:dependency_proxy_enabled) { true }
 
     before do
-      stub_feature_flags(virtual_registry_maven: virtual_registry_maven_enabled)
       stub_config(dependency_proxy: { enabled: dependency_proxy_enabled })
 
       get admin_user_impersonation_tokens_path(user_id: user.username)
@@ -85,8 +83,7 @@ RSpec.describe Admin::ImpersonationTokensController, :enable_admin_mode, feature
       )
     end
 
-    context 'with virtual_registry_maven feature flag disabled and dependency proxy disabled' do
-      let(:virtual_registry_maven_enabled) { false }
+    context 'with dependency proxy disabled' do
       let(:dependency_proxy_enabled) { false }
 
       it 'does not include the virtual registry scopes' do

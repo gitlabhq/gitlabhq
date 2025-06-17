@@ -3,6 +3,7 @@ import { nextTick } from 'vue';
 import { TEST_HOST } from 'helpers/test_constants';
 import ReviewerAvatarLink from '~/sidebar/components/reviewers/reviewer_avatar_link.vue';
 import UncollapsedReviewerList from '~/sidebar/components/reviewers/uncollapsed_reviewer_list.vue';
+import { createAlert } from '~/alert';
 
 const userDataMock = ({ approved = true, reviewState = 'UNREVIEWED' } = {}) => ({
   id: 1,
@@ -19,6 +20,8 @@ const userDataMock = ({ approved = true, reviewState = 'UNREVIEWED' } = {}) => (
     reviewState,
   },
 });
+
+jest.mock('~/alert');
 
 describe('UncollapsedReviewerList component', () => {
   let wrapper;
@@ -264,5 +267,48 @@ describe('UncollapsedReviewerList component', () => {
         expect(findAllRerequestButtons().exists()).toBe(expectedButtonVisibility);
       },
     );
+  });
+
+  describe('handling review request with error messages', () => {
+    const user = userDataMock();
+
+    beforeAll(() => {
+      createAlert.mockImplementation(jest.fn());
+    });
+
+    afterAll(() => {
+      createAlert.mockRestore();
+    });
+
+    beforeEach(() => {
+      createAlert.mockClear();
+
+      createComponent({
+        users: [user],
+      });
+    });
+
+    it('shows an alert when requestReviewComplete receives an error message', async () => {
+      await findAllRerequestButtons().at(0).vm.$emit('click');
+
+      const errorMessage = "Your account doesn't have GitLab Duo access.";
+      wrapper.vm.requestReviewComplete(user.id, false, errorMessage);
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: errorMessage,
+      });
+
+      expect(wrapper.vm.loadingStates[user.id]).toBeNull();
+    });
+
+    it('does not show an alert when requestReviewComplete fails without an error message', async () => {
+      await findAllRerequestButtons().at(0).vm.$emit('click');
+
+      wrapper.vm.requestReviewComplete(user.id, false);
+
+      expect(createAlert).not.toHaveBeenCalled();
+
+      expect(wrapper.vm.loadingStates[user.id]).toBeNull();
+    });
   });
 });

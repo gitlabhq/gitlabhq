@@ -2278,6 +2278,77 @@ paths:
       tags:
       - groups
       operationId: getApiV4GroupsIdAuditEventsAuditEventId
+  "/api/v4/groups/{id}/saml_users":
+    get:
+      description: Get a list of SAML users of the group
+      produces:
+      - application/json
+      parameters:
+      - in: query
+        name: username
+        description: Return single user with a specific username.
+        type: string
+        required: false
+      - in: query
+        name: search
+        description: Search users by name, email, username.
+        type: string
+        required: false
+      - in: query
+        name: active
+        description: Return only active users.
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: blocked
+        description: Return only blocked users.
+        type: boolean
+        default: false
+        required: false
+      - in: query
+        name: created_after
+        description: Return users created after the specified time.
+        type: string
+        format: date-time
+        required: false
+      - in: query
+        name: created_before
+        description: Return users created before the specified time.
+        type: string
+        format: date-time
+        required: false
+      - in: query
+        name: page
+        description: Current page number
+        type: integer
+        format: int32
+        default: 1
+        required: false
+        example: 1
+      - in: query
+        name: per_page
+        description: Number of items per page
+        type: integer
+        format: int32
+        default: 20
+        required: false
+        example: 20
+      - in: path
+        name: id
+        type: integer
+        format: int32
+        required: true
+      responses:
+        '200':
+          description: Get a list of SAML users of the group
+          schema:
+            type: array
+            items:
+              "$ref": "#/definitions/API_Entities_UserPublic"
+      tags:
+      - groups
+      operationId: getApiV4GroupsIdSamlUsers
   "/api/v4/groups/{id}/provisioned_users":
     get:
       description: Get a list of users provisioned by the group
@@ -13524,6 +13595,12 @@ paths:
         type: string
         required: true
       - in: query
+        name: state
+        description: Filter merge-requests by state
+        type: string
+        required: false
+        example: merged
+      - in: query
         name: page
         description: Current page number
         type: integer
@@ -15089,6 +15166,62 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisions
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}"
+  : delete:
+      summary: Delete recipe revision
+      description: This feature was introduced in GitLab 18.1
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      responses:
+        '204':
+          description: Delete recipe revision
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: deleteApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevision
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/files"
   : get:
       summary: List recipe files
@@ -15362,6 +15495,62 @@ paths:
       tags:
       - conan_packages
       operationId: putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionFilesFileNameAuthorize
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/search"
+  : get:
+      summary: Get package references metadata
+      description: This feature was introduced in GitLab 18.1
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      responses:
+        '200':
+          description: Get package references metadata
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionSearch
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/latest"
   : get:
       summary: Get the latest package revision
@@ -15426,6 +15615,138 @@ paths:
       tags:
       - conan_packages
       operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceLatest
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions"
+  : get:
+      summary: Get the list of package revisions
+      description: This feature was introduced in GitLab 18.0
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: conan_package_reference
+        description: Package reference
+        type: string
+        required: true
+        example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+      responses:
+        '200':
+          description: Get the list of package revisions
+          schema:
+            "$ref": "#/definitions/API_Entities_Packages_Conan_PackageRevisions"
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: getApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisions
+  ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}"
+  : delete:
+      summary: Delete package revision
+      description: This feature was introduced in GitLab 18.1
+      produces:
+      - application/json
+      parameters:
+      - in: path
+        name: id
+        description: The ID or URL-encoded path of the project
+        type: string
+        required: true
+      - in: path
+        name: package_name
+        description: Package name
+        type: string
+        required: true
+        example: my-package
+      - in: path
+        name: package_version
+        description: Package version
+        type: string
+        required: true
+        example: '1.0'
+      - in: path
+        name: package_username
+        description: Package username
+        type: string
+        required: true
+        example: my-group+my-project
+      - in: path
+        name: package_channel
+        description: Package channel
+        type: string
+        required: true
+        example: stable
+      - in: path
+        name: recipe_revision
+        description: Recipe revision
+        type: string
+        required: true
+        example: df28fd816be3a119de5ce4d374436b25
+      - in: path
+        name: conan_package_reference
+        description: Package reference
+        type: string
+        required: true
+        example: 5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+      - in: path
+        name: package_revision
+        description: Package revision
+        type: string
+        required: true
+        example: 3bdd2d8c8e76c876ebd1ac0469a4e72c
+      responses:
+        '204':
+          description: Delete package revision
+        '400':
+          description: Bad Request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      tags:
+      - conan_packages
+      operationId: deleteApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevision
   ? "/api/v4/projects/{id}/packages/conan/v2/conans/{package_name}/{package_version}/{package_username}/{package_channel}/revisions/{recipe_revision}/packages/{conan_package_reference}/revisions/{package_revision}/files"
   : get:
       summary: List package files
@@ -41969,7 +42290,7 @@ paths:
           schema:
             type: array
             items:
-              "$ref": "#/definitions/API_Entities_PersonalAccessToken"
+              "$ref": "#/definitions/API_Entities_PersonalAccessTokenWithLastUsedIps"
         '401':
           description: Unauthorized
       tags:
@@ -42023,7 +42344,7 @@ paths:
   "/api/v4/personal_access_tokens/{id}/rotate":
     post:
       summary: Rotate personal access token
-      description: Roates a personal access token.
+      description: Rotates a personal access token.
       produces:
       - application/json
       consumes:
@@ -44065,6 +44386,8 @@ definitions:
         type: string
       lock_duo_features_enabled:
         type: string
+      web_based_commit_signing_enabled:
+        type: string
     description: API_Entities_Group model
   API_Entities_Namespace_RootStorageStatistics:
     type: object
@@ -44346,6 +44669,13 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      ai_settings_attributes:
+        type: object
+        description: AI-related settings
+        properties:
+          duo_workflow_mcp_enabled:
+            type: boolean
+            description: Enable MCP support for Duo Workflow
     required:
     - name
     - path
@@ -44536,6 +44866,13 @@ definitions:
       model_prompt_cache_enabled:
         type: boolean
         description: Enable model prompt cache for this group
+      ai_settings_attributes:
+        type: object
+        description: AI-related settings
+        properties:
+          duo_workflow_mcp_enabled:
+            type: boolean
+            description: Enable MCP support for Duo Workflow
       prevent_sharing_groups_outside_hierarchy:
         type: boolean
         description: Prevent sharing groups within this namespace with any groups
@@ -44604,6 +44941,9 @@ definitions:
         type: boolean
         description: Indicates if the GitLab Duo features enabled setting is enforced
           for all subgroups
+      web_based_commit_signing_enabled:
+        type: boolean
+        description: Enable web based commit signing for this group
     description: Update a group. Available only for users who can administrate groups.
   API_Entities_GroupDetail:
     type: object
@@ -44719,6 +45059,8 @@ definitions:
       duo_features_enabled:
         type: string
       lock_duo_features_enabled:
+        type: string
+      web_based_commit_signing_enabled:
         type: string
       shared_with_groups:
         type: string
@@ -45436,6 +45778,8 @@ definitions:
         type: string
       website_url:
         type: string
+      github:
+        type: string
       organization:
         type: string
       job_title:
@@ -45593,6 +45937,12 @@ definitions:
       online:
         type: boolean
         example: true
+      created_by:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      created_at:
+        type: string
+        format: date-time
+        example: '2025-05-03T00:00:00.000Z'
       status:
         type: string
         example: online
@@ -48566,8 +48916,6 @@ definitions:
         type: boolean
       read_compliance_dashboard:
         type: boolean
-      read_admin_dashboard:
-        type: boolean
       read_admin_cicd:
         type: boolean
       read_crm_contact:
@@ -49828,6 +50176,8 @@ definitions:
       discord:
         type: string
       website_url:
+        type: string
+      github:
         type: string
       organization:
         type: string
@@ -51665,6 +52015,19 @@ definitions:
     required:
     - file
     description: Upload recipe package files
+  API_Entities_Packages_Conan_PackageRevisions:
+    type: object
+    properties:
+      packageReference:
+        type: string
+        example: packageTest/1.2.3@gitlab-org+conan/stable#1883c9f810f2d6e5b59d5285c7141970:133a1f2158ff2cf69739f316ec21143785be54c7
+        description: The Conan package reference
+      revisions:
+        type: array
+        items:
+          "$ref": "#/definitions/API_Entities_Packages_Conan_Revision"
+        description: List of package revisions
+    description: API_Entities_Packages_Conan_PackageRevisions model
   ? putApiV4ProjectsIdPackagesConanV2ConansPackageNamePackageVersionPackageUsernamePackageChannelRevisionsRecipeRevisionPackagesConanPackageReferenceRevisionsPackageRevisionFilesFileName
   : type: object
     properties:
@@ -58610,6 +58973,8 @@ definitions:
         "$ref": "#/definitions/API_Entities_UserBasic"
       resolved_at:
         type: string
+      suggestions:
+        "$ref": "#/definitions/API_Entities_Suggestion"
       confidential:
         type: string
       internal:
@@ -58623,6 +58988,24 @@ definitions:
         type: string
       commands_changes:
         type: string
+  API_Entities_Suggestion:
+    type: object
+    properties:
+      id:
+        type: string
+      from_line:
+        type: string
+      to_line:
+        type: string
+      appliable:
+        type: string
+      applied:
+        type: string
+      from_content:
+        type: string
+      to_content:
+        type: string
+    description: API_Entities_Suggestion model
   API_Entities_PushEventPayload:
     type: object
     properties:
@@ -59235,6 +59618,8 @@ definitions:
         description: Package type protected by the rule. For example npm.
         enum:
         - conan
+        - generic
+        - helm
         - maven
         - npm
         - nuget
@@ -59276,6 +59661,8 @@ definitions:
         description: Package type protected by the rule. For example npm.
         enum:
         - conan
+        - generic
+        - helm
         - maven
         - npm
         - nuget
@@ -62110,11 +62497,24 @@ definitions:
       size:
         type: integer
         format: int32
-        description: Repository size in bytes.
       references:
         "$ref": "#/definitions/API_Entities_RepositoryHealth_References"
       objects:
         "$ref": "#/definitions/API_Entities_RepositoryHealth_Objects"
+      commit_graph:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_CommitGraph"
+      bitmap:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_Bitmap"
+      multi_pack_index:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_MultiPackIndex"
+      multi_pack_index_bitmap:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_Bitmap"
+      alternates:
+        type: object
+      is_object_pool:
+        type: boolean
+      last_full_repack:
+        "$ref": "#/definitions/API_Entities_RepositoryHealth_LastFullRepack"
       updated_at:
         type: string
         format: date-time
@@ -62126,36 +62526,87 @@ definitions:
       loose_count:
         type: integer
         format: int32
-        description: Number of loose references in the repository.
       packed_size:
         type: integer
         format: int32
-        description: Size in bytes of packed references in the repository.
       reference_backend:
         type: string
-        description: Type of backend used to store references. Either 'REFERENCE_BACKEND_REFTABLE'
-          or 'REFERENCE_BACKEND_FILES'.
   API_Entities_RepositoryHealth_Objects:
     type: object
     properties:
       size:
         type: integer
         format: int32
-        description: Size in bytes of all objects in the repository.
       recent_size:
         type: integer
         format: int32
-        description: Size in bytes of all recent objects in the repository. Recent
-          objects are those which are reachable.
       stale_size:
         type: integer
         format: int32
-        description: Size in bytes of all stale objects in the repository. Stale objects
-          are those which are unreachable and may be deleted during housekeeping.
       keep_size:
         type: integer
         format: int32
-        description: Size in bytes of all packfiles with the .keep extension.
+      packfile_count:
+        type: integer
+        format: int32
+      reverse_index_count:
+        type: integer
+        format: int32
+      cruft_count:
+        type: integer
+        format: int32
+      keep_count:
+        type: integer
+        format: int32
+      loose_objects_count:
+        type: integer
+        format: int32
+      stale_loose_objects_count:
+        type: integer
+        format: int32
+      loose_objects_garbage_count:
+        type: integer
+        format: int32
+  API_Entities_RepositoryHealth_CommitGraph:
+    type: object
+    properties:
+      commit_graph_chain_length:
+        type: integer
+        format: int32
+      has_bloom_filters:
+        type: boolean
+      has_generation_data:
+        type: boolean
+      has_generation_data_overflow:
+        type: boolean
+  API_Entities_RepositoryHealth_Bitmap:
+    type: object
+    properties:
+      has_hash_cache:
+        type: boolean
+      has_lookup_table:
+        type: boolean
+      version:
+        type: integer
+        format: int32
+  API_Entities_RepositoryHealth_MultiPackIndex:
+    type: object
+    properties:
+      packfile_count:
+        type: integer
+        format: int32
+      version:
+        type: integer
+        format: int32
+  API_Entities_RepositoryHealth_LastFullRepack:
+    type: object
+    properties:
+      seconds:
+        type: integer
+        format: int32
+      nanos:
+        type: integer
+        format: int32
   API_Entities_Contributor:
     type: object
     properties:
@@ -63204,6 +63655,12 @@ definitions:
       online:
         type: boolean
         example: true
+      created_by:
+        "$ref": "#/definitions/API_Entities_UserBasic"
+      created_at:
+        type: string
+        format: date-time
+        example: '2025-05-03T00:00:00.000Z'
       status:
         type: string
         example: online
@@ -63656,6 +64113,8 @@ definitions:
       group:
         type: string
       default_enabled:
+        type: string
+      intended_to_rollout_by:
         type: string
     description: API_Entities_Feature_Definition model
   postApiV4FeaturesName:
@@ -64989,6 +65448,8 @@ definitions:
         type: string
       website_url:
         type: string
+      github:
+        type: string
       organization:
         type: string
       job_title:
@@ -65761,24 +66222,6 @@ definitions:
         description: A custom commit message to use instead of the default generated
           message or the project's default message
     description: Apply suggestion patch in the Merge Request it was created
-  API_Entities_Suggestion:
-    type: object
-    properties:
-      id:
-        type: string
-      from_line:
-        type: string
-      to_line:
-        type: string
-      appliable:
-        type: string
-      applied:
-        type: string
-      from_content:
-        type: string
-      to_content:
-        type: string
-    description: API_Entities_Suggestion model
   putApiV4SuggestionsBatchApply:
     type: object
     properties:

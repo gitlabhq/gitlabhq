@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Upgrading self-compiled instances
 ---
@@ -468,4 +468,4 @@ cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:restore RAILS_ENV=production
 ```
 
-If you have more than one backup `*.tar` file, add `BACKUP=timestamp_of_backup` to the above.
+If you have more than one backup `*.tar` file, add `BACKUP=timestamp_of_backup` to the previous code block.

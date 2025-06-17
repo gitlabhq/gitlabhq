@@ -1,7 +1,7 @@
 ---
 key_path: counts.groups_inheriting_clickup_active
 description: Count of active groups inheriting integrations for ClickUp
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "16.1"

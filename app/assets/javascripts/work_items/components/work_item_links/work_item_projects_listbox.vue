@@ -39,6 +39,11 @@ export default {
       type: String,
       default: null,
     },
+    toggleId: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -57,14 +62,15 @@ export default {
         return {
           fullPath: this.fullPath,
           projectSearch: this.searchKey,
-          includeArchived: false,
         };
       },
       update(data) {
         return data.namespace?.projects?.nodes;
       },
       result() {
-        this.selectedProject = this.findSelectedProject(this.selectedProjectFullPath);
+        this.selectedProject =
+          this.findSelectedProject(this.selectedProjectFullPath) || this.projects?.at(0);
+        this.$emit('selectProject', this.selectedProject?.fullPath);
       },
     },
   },
@@ -78,7 +84,7 @@ export default {
          * name_with_namespace doesn't exist. Therefore we rely on
          * namespace directly.
          * */
-        return this.selectedProject.nameWithNamespace || this.selectedProject.namespace;
+        return this.selectedProject.name || this.selectedProject.namespace;
       }
       return this.selectedProjectFullPath && this.currentProjectName
         ? this.currentProjectName
@@ -213,6 +219,7 @@ export default {
     is-check-centered
     :items="listItems"
     :selected="selectedProjectFullPath"
+    :toggle-id="toggleId"
     :toggle-text="dropdownToggleText"
     :searching="projectsLoading"
     fluid-width

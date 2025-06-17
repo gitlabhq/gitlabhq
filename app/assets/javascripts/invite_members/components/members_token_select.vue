@@ -2,13 +2,10 @@
 import { GlTokenSelector, GlAvatar, GlAvatarLabeled, GlIcon, GlSprintf } from '@gitlab/ui';
 import { debounce, isEmpty } from 'lodash';
 import { __ } from '~/locale';
-import { getUsers } from '~/rest_api';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { memberName } from '../utils/member_utils';
+import { memberName, searchUsers } from '../utils/member_utils';
 import {
   SEARCH_DELAY,
-  USERS_FILTER_ALL,
-  USERS_FILTER_SAML_PROVIDER_ID,
   VALID_TOKEN_BACKGROUND,
   WARNING_TOKEN_BACKGROUND,
   INVALID_TOKEN_BACKGROUND,
@@ -22,6 +19,7 @@ export default {
     GlIcon,
     GlSprintf,
   },
+  inject: ['searchUrl'],
   props: {
     placeholder: {
       type: String,
@@ -36,16 +34,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    usersFilter: {
-      type: String,
-      required: false,
-      default: USERS_FILTER_ALL,
-    },
-    filterId: {
-      type: Number,
-      required: false,
-      default: null,
     },
     usersWithWarning: {
       type: Object,
@@ -82,15 +70,6 @@ export default {
         return this.placeholder;
       }
       return '';
-    },
-    queryOptions() {
-      if (this.usersFilter === USERS_FILTER_SAML_PROVIDER_ID) {
-        return {
-          saml_provider_id: this.filterId,
-          ...this.$options.defaultQueryOptions,
-        };
-      }
-      return this.$options.defaultQueryOptions;
     },
     hasErrorOrWarning() {
       return !isEmpty(this.invalidMembers) || !isEmpty(this.usersWithWarning);
@@ -133,7 +112,7 @@ export default {
       }));
     },
     retrieveUsersRequest() {
-      return getUsers(this.query, this.queryOptions);
+      return searchUsers(this.searchUrl, this.query);
     },
     retrieveUsers: debounce(async function debouncedRetrieveUsers() {
       try {
@@ -192,7 +171,6 @@ export default {
       return Object.prototype.hasOwnProperty.call(this.invalidMembers, memberName(token));
     },
   },
-  defaultQueryOptions: { without_project_bots: true, active: true },
   i18n: {
     inviteTextMessage: __('Invite "%{email}" by email'),
   },

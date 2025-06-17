@@ -26,6 +26,8 @@ describe('Packages Protection Rule Form', () => {
     glFeatures: {
       packagesProtectedPackagesNuget: true,
       packagesProtectedPackagesDelete: true,
+      packagesProtectedPackagesHelm: true,
+      packagesProtectedPackagesGeneric: true,
     },
   };
 
@@ -94,7 +96,15 @@ describe('Packages Protection Rule Form', () => {
         mountComponent();
 
         expect(findPackageTypeSelect().exists()).toBe(true);
-        expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'NUGET', 'PYPI']);
+        expect(packageTypeSelectOptions()).toEqual([
+          'CONAN',
+          'GENERIC',
+          'HELM',
+          'MAVEN',
+          'NPM',
+          'NUGET',
+          'PYPI',
+        ]);
       });
 
       describe('when feature flag packagesProtectedPackagesNuget is disabled', () => {
@@ -110,7 +120,62 @@ describe('Packages Protection Rule Form', () => {
           });
 
           expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual(['CONAN', 'MAVEN', 'NPM', 'PYPI']);
+          expect(packageTypeSelectOptions()).toEqual([
+            'CONAN',
+            'GENERIC',
+            'HELM',
+            'MAVEN',
+            'NPM',
+            'PYPI',
+          ]);
+        });
+      });
+
+      describe('when feature flag packagesProtectedPackagesHelm is disabled', () => {
+        it('contains available options without option "HELM"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesHelm: false,
+              },
+            },
+          });
+
+          expect(findPackageTypeSelect().exists()).toBe(true);
+          expect(packageTypeSelectOptions()).toEqual([
+            'CONAN',
+            'GENERIC',
+            'MAVEN',
+            'NPM',
+            'NUGET',
+            'PYPI',
+          ]);
+        });
+      });
+
+      describe('when feature flag packagesProtectedPackagesGeneric is disabled', () => {
+        it('contains available options without option "Generic"', () => {
+          mountComponent({
+            provide: {
+              ...defaultProvidedValues,
+              glFeatures: {
+                ...defaultProvidedValues.glFeatures,
+                packagesProtectedPackagesGeneric: false,
+              },
+            },
+          });
+
+          expect(findPackageTypeSelect().exists()).toBe(true);
+          expect(packageTypeSelectOptions()).toEqual([
+            'CONAN',
+            'HELM',
+            'MAVEN',
+            'NPM',
+            'NUGET',
+            'PYPI',
+          ]);
         });
       });
     });
@@ -227,31 +292,31 @@ describe('Packages Protection Rule Form', () => {
     });
   });
 
-  describe.each`
-    description                       | props                                       | submitButtonText
-    ${'when form has no prop "rule"'} | ${{}}                                       | ${'Add rule'}
-    ${'when form has prop "rule"'}    | ${{ rule: packagesProtectionRulesData[0] }} | ${'Save changes'}
-  `('$description', ({ props, submitButtonText }) => {
-    beforeEach(() => {
-      mountComponent({
-        props,
-      });
-    });
-
-    describe('submit button', () => {
-      it(`renders text: ${submitButtonText}`, () => {
-        expect(findSubmitButton().text()).toBe(submitButtonText);
-      });
-    });
-
-    describe('cancel button', () => {
-      it('renders with text: "Cancel"', () => {
-        expect(findCancelButton().text()).toBe('Cancel');
-      });
-    });
-  });
-
   describe('form actions', () => {
+    describe.each`
+      description                       | props                                       | submitButtonText
+      ${'when form has no prop "rule"'} | ${{}}                                       | ${'Add rule'}
+      ${'when form has prop "rule"'}    | ${{ rule: packagesProtectionRulesData[0] }} | ${'Save changes'}
+    `('$description', ({ props, submitButtonText }) => {
+      beforeEach(() => {
+        mountComponent({
+          props,
+        });
+      });
+
+      describe('submit button', () => {
+        it(`renders text: ${submitButtonText}`, () => {
+          expect(findSubmitButton().text()).toBe(submitButtonText);
+        });
+      });
+
+      describe('cancel button', () => {
+        it('renders with text: "Cancel"', () => {
+          expect(findCancelButton().text()).toBe('Cancel');
+        });
+      });
+    });
+
     describe('submit button', () => {
       it.each`
         packageNamePattern                                              | submitButtonDisabled

@@ -3,6 +3,8 @@
 RSpec.shared_context 'for loose foreign keys' do
   include LooseForeignKeysHelper
 
+  # Normally model.class.table_name should be used, but if targeting a specific partition, this needs to be overridden.
+  let(:model_table_name) { nil }
   # Generally it's reasonable to assume only one FK between tables. If there is more than one, you need
   # to specify which column you want to be testing with `lfk_column`.
   let(:lfk_column) { nil }
@@ -10,7 +12,7 @@ RSpec.shared_context 'for loose foreign keys' do
     foreign_keys_for_parent = Gitlab::Database::LooseForeignKeys.definitions_by_table[parent.class.table_name]
 
     definitions = foreign_keys_for_parent.select do |definition|
-      definition.from_table == model.class.table_name &&
+      definition.from_table == (model_table_name || model.class.table_name) &&
         (lfk_column.nil? || definition.options[:column].to_sym == lfk_column.to_sym)
     end
 

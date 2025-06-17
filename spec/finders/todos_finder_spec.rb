@@ -11,128 +11,109 @@ RSpec.describe TodosFinder, feature_category: :notifications do
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
     let_it_be(:banned_user) { create(:user, :banned) }
 
-    let(:finder) { described_class }
-
     before_all do
       group.add_developer(user)
     end
 
     describe '#execute' do
       it 'returns no todos if user is nil' do
-        expect(described_class.new(nil, {}).execute).to be_empty
+        expect(execute(users: nil)).to be_empty
       end
 
-      context 'filtering' do
+      context 'when users is not passed' do
+        it 'raises an argument error' do
+          expect { described_class.new.execute }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'with filtering' do
         let!(:todo1) { create(:todo, user: user, project: project, target: issue) }
         let!(:todo2) { create(:todo, user: user, group: group, target: merge_request) }
-        let!(:banned_pending_todo) { create(:todo, :pending, user: user, project: project, target: issue, author: banned_user) }
+        let!(:banned_pending_todo) do
+          create(:todo, :pending, user: user, project: project, target: issue, author: banned_user)
+        end
 
         it 'returns excluding pending todos authored by banned users' do
-          todos = finder.new(user, {}).execute
-
-          expect(todos).to match_array([todo1, todo2])
+          expect(execute).to match_array([todo1, todo2])
         end
 
         it 'returns correct todos when filtered by a project' do
-          todos = finder.new(user, { project_id: project.id }).execute
-
-          expect(todos).to match_array([todo1])
+          expect(execute(project_id: project.id)).to match_array([todo1])
         end
 
         it 'returns correct todos when filtered by a group' do
-          todos = finder.new(user, { group_id: group.id }).execute
+          expect(execute(group_id: group.id)).to match_array([todo1, todo2])
+        end
 
-          expect(todos).to match_array([todo1, todo2])
+        context 'with multiple users sent to the finder' do
+          it 'returns correct todos for the users passed' do
+            todo3 = create(:todo)
+            user2 = todo3.user
+            create(:todo)
+
+            expect(execute(users: [user, user2])).to match_array([todo1, todo2, todo3])
+          end
         end
 
         context 'when filtering by type' do
           it 'returns todos by type when filtered by a single type' do
-            todos = finder.new(user, { type: 'Issue' }).execute
-
-            expect(todos).to match_array([todo1])
+            expect(execute(type: 'Issue')).to match_array([todo1])
           end
 
           it 'returns todos by type when filtered by multiple types' do
-            design_todo = create(:todo, user: user, group: group, target: create(:design))
+            create(:todo, user: user, group: group, target: create(:design))
 
-            todos = finder.new(user, { type: %w[Issue MergeRequest] }).execute
-
-            expect(todos).to contain_exactly(todo1, todo2)
-            expect(todos).not_to include(design_todo)
+            expect(execute(type: %w[Issue MergeRequest])).to contain_exactly(todo1, todo2)
           end
 
           it 'returns all todos when type is nil' do
-            todos = finder.new(user, { type: nil }).execute
-
-            expect(todos).to contain_exactly(todo1, todo2)
+            expect(execute(type: nil)).to contain_exactly(todo1, todo2)
           end
 
           it 'returns all todos when type is an empty collection' do
-            todos = finder.new(user, { type: [] }).execute
-
-            expect(todos).to contain_exactly(todo1, todo2)
+            expect(execute(type: [])).to contain_exactly(todo1, todo2)
           end
 
           it 'returns all todos when type is blank' do
-            todos = finder.new(user, { type: '' }).execute
-
-            expect(todos).to contain_exactly(todo1, todo2)
+            expect(execute(type: '')).to contain_exactly(todo1, todo2)
           end
 
           it 'returns todos by type when blank type is in type collection' do
-            todos = finder.new(user, { type: ['', 'MergeRequest'] }).execute
-
-            expect(todos).to contain_exactly(todo2)
+            expect(execute(type: ['', 'MergeRequest'])).to contain_exactly(todo2)
           end
 
           it 'returns todos of all types when only blanks are in a collection' do
-            todos = finder.new(user, { type: ['', ''] }).execute
-
-            expect(todos).to contain_exactly(todo1, todo2)
-          end
-
-          it 'returns all todos when no type param' do
-            todos = finder.new(user).execute
-
-            expect(todos).to contain_exactly(todo1, todo2)
+            expect(execute(type: ['', ''])).to contain_exactly(todo1, todo2)
           end
 
           it 'raises an argument error when invalid type is passed' do
-            todos_finder = finder.new(user, { type: %w[Issue MergeRequest NotAValidType] })
-
-            expect { todos_finder.execute }.to raise_error(ArgumentError)
+            expect { execute(type: %w[Issue MergeRequest NotAValidType]) }.to raise_error(ArgumentError)
           end
         end
 
         context 'when filtering for actions' do
           let!(:todo1) { create(:todo, user: user, project: project, target: issue, action: Todo::ASSIGNED) }
-          let!(:todo2) { create(:todo, user: user, group: group, target: merge_request, action: Todo::DIRECTLY_ADDRESSED) }
+          let!(:todo2) do
+            create(:todo, user: user, group: group, target: merge_request, action: Todo::DIRECTLY_ADDRESSED)
+          end
 
-          context 'by action ids' do
+          context 'with by action ids' do
             it 'returns the expected todos' do
-              todos = finder.new(user, { action_id: Todo::DIRECTLY_ADDRESSED }).execute
-
-              expect(todos).to match_array([todo2])
+              expect(execute(action_id: Todo::DIRECTLY_ADDRESSED)).to match_array([todo2])
             end
 
             it 'returns the expected todos when filtering for multiple action ids' do
-              todos = finder.new(user, { action_id: [Todo::DIRECTLY_ADDRESSED, Todo::ASSIGNED] }).execute
-
-              expect(todos).to match_array([todo2, todo1])
+              expect(execute(action_id: [Todo::DIRECTLY_ADDRESSED, Todo::ASSIGNED])).to match_array([todo2, todo1])
             end
           end
 
-          context 'by action names' do
+          context 'with by action names' do
             it 'returns the expected todos' do
-              todos = finder.new(user, { action: :directly_addressed }).execute
-
-              expect(todos).to match_array([todo2])
+              expect(execute(action: :directly_addressed)).to match_array([todo2])
             end
 
             it 'returns the expected todos when filtering for multiple action names' do
-              todos = finder.new(user, { action: [:directly_addressed, :assigned] }).execute
-
-              expect(todos).to match_array([todo2, todo1])
+              expect(execute(action: [:directly_addressed, :assigned])).to match_array([todo2, todo1])
             end
           end
         end
@@ -145,34 +126,28 @@ RSpec.describe TodosFinder, feature_category: :notifications do
           let!(:todo2) { create(:todo, user: user, author: author2) }
 
           it 'returns correct todos when filtering by an author' do
-            todos = finder.new(user, { author_id: author1.id }).execute
-
-            expect(todos).to match_array([todo1])
+            expect(execute(author_id: author1.id)).to match_array([todo1])
           end
 
-          context 'querying for multiple authors' do
+          context 'with querying for multiple authors' do
             it 'returns the correct todo items' do
-              todos = finder.new(user, { author_id: [author2.id, author1.id] }).execute
-
-              expect(todos).to match_array([todo2, todo1])
+              expect(execute(author_id: [author2.id, author1.id])).to match_array([todo2, todo1])
             end
           end
         end
 
-        context 'by groups' do
+        context 'with by groups' do
           context 'with subgroups' do
             let_it_be(:subgroup) { create(:group, parent: group) }
 
             let!(:todo3) { create(:todo, user: user, group: subgroup, target: issue) }
 
             it 'returns todos from subgroups when filtered by a group' do
-              todos = finder.new(user, { group_id: group.id }).execute
-
-              expect(todos).to match_array([todo1, todo2, todo3])
+              expect(execute(group_id: group.id)).to match_array([todo1, todo2, todo3])
             end
           end
 
-          context 'filtering for multiple groups' do
+          context 'with filtering for multiple groups' do
             let_it_be(:group2) { create(:group) }
             let_it_be(:group3) { create(:group) }
             let_it_be(:subgroup1) { create(:group, parent: group) }
@@ -186,53 +161,53 @@ RSpec.describe TodosFinder, feature_category: :notifications do
             let!(:todo6) { create(:todo, user: user, group: group3, target: issue) }
 
             it 'returns the expected groups' do
-              todos = finder.new(user, { group_id: [group.id, group2.id] }).execute
-
-              expect(todos).to match_array([todo1, todo2, todo3, todo4, todo5])
+              expect(execute(group_id: [group.id, group2.id])).to match_array([todo1, todo2, todo3, todo4, todo5])
             end
           end
         end
 
-        context 'by state' do
+        context 'with by state' do
           let!(:todo1) { create(:todo, user: user, group: group, target: issue, state: :done) }
           let!(:todo2) { create(:todo, user: user, group: group, target: issue, state: :done, author: banned_user) }
           let!(:todo3) { create(:todo, user: user, group: group, target: issue, state: :pending) }
           let!(:todo4) { create(:todo, user: user, group: group, target: issue, state: :pending, author: banned_user) }
-          let!(:todo5) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.from_now) }
-          let!(:todo6) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.ago) }
+          let!(:todo5) do
+            create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.from_now)
+          end
+
+          let!(:todo6) do
+            create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.ago)
+          end
 
           it 'returns the expected items when no state is provided' do
-            todos = finder.new(user, {}).execute
-
-            expect(todos).to match_array([todo3, todo6])
+            expect(execute).to match_array([todo3, todo6])
           end
 
           it 'returns the expected items when a state is provided' do
-            todos = finder.new(user, { state: :done }).execute
-
-            expect(todos).to match_array([todo1, todo2])
+            expect(execute(state: :done)).to match_array([todo1, todo2])
           end
 
           it 'returns the expected items when multiple states are provided' do
-            todos = finder.new(user, { state: [:pending, :done] }).execute
-
-            expect(todos).to match_array([todo1, todo2, todo3, todo5, todo6])
+            expect(execute(state: [:pending, :done])).to match_array([todo1, todo2, todo3, todo5, todo6])
           end
         end
 
-        context 'by snoozed state' do
+        context 'with by snoozed state' do
           let_it_be(:todo1) { create(:todo, user: user, group: group, target: issue, state: :pending) }
-          let_it_be(:todo2) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.from_now) }
-          let_it_be(:todo3) { create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.ago) }
+          let_it_be(:todo2) do
+            create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.from_now)
+          end
+
+          let_it_be(:todo3) do
+            create(:todo, user: user, group: group, target: issue, state: :pending, snoozed_until: 1.hour.ago)
+          end
 
           it 'returns the snoozed todos only' do
-            todos = finder.new(user, { is_snoozed: true }).execute
-
-            expect(todos).to match_array([todo2])
+            expect(execute(is_snoozed: true)).to match_array([todo2])
           end
         end
 
-        context 'by project' do
+        context 'with by project' do
           let_it_be(:project1) { create(:project) }
           let_it_be(:project2) { create(:project) }
           let_it_be(:project3) { create(:project) }
@@ -242,84 +217,75 @@ RSpec.describe TodosFinder, feature_category: :notifications do
           let!(:todo3) { create(:todo, user: user, project: project3, state: :pending) }
 
           it 'returns the expected todos for one project' do
-            todos = finder.new(user, { project_id: project2.id }).execute
-
-            expect(todos).to match_array([todo2])
+            expect(execute(project_id: project2.id)).to match_array([todo2])
           end
 
           it 'returns the expected todos for many projects' do
-            todos = finder.new(user, { project_id: [project2.id, project1.id] }).execute
-
-            expect(todos).to match_array([todo2, todo1])
+            expect(execute(project_id: [project2.id, project1.id])).to match_array([todo2, todo1])
           end
         end
 
         context 'when filtering by target id' do
           it 'returns the expected todos for the target' do
-            todos = finder.new(user, { type: 'Issue', target_id: issue.id }).execute
-
-            expect(todos).to match_array([todo1])
+            expect(execute(type: 'Issue', target_id: issue.id)).to match_array([todo1])
           end
 
           it 'returns the expected todos for multiple target ids' do
             another_issue = create(:issue, project: project)
             todo3 = create(:todo, user: user, project: project, target: another_issue)
 
-            todos = finder.new(user, { type: 'Issue', target_id: [issue.id, another_issue.id] }).execute
-
-            expect(todos).to match_array([todo1, todo3])
+            expect(execute(type: 'Issue', target_id: [issue.id, another_issue.id])).to match_array([todo1, todo3])
           end
 
           it 'returns the expected todos for empty target id collection' do
-            todos = finder.new(user, { target_id: [] }).execute
-
-            expect(todos).to match_array([todo1, todo2])
+            expect(execute(target_id: [])).to match_array([todo1, todo2])
           end
         end
       end
 
-      context 'external authorization' do
+      context 'with external authorization' do
         it_behaves_like 'a finder with external authorization service' do
-          let!(:subject) { create(:todo, project: project, user: user) }
-          let(:project_params) { { project_id: project.id } }
+          let!(:subject) { create(:todo, project: project, user: user) } # rubocop:disable RSpec/SubjectDeclaration -- In context subject is the right word
+          let(:execute) { described_class.new(users: user).execute }
+          let(:project_execute) { described_class.new(users: user, project_id: project.id).execute }
         end
       end
     end
 
     describe '#sort' do
-      context 'by date' do
+      context 'with by date' do
         let!(:todo1) { create(:todo, user: user, project: project) }
         let!(:todo2) { create(:todo, user: user, project: project, created_at: 3.hours.ago) }
         let!(:todo3) { create(:todo, user: user, project: project, snoozed_until: 1.hour.ago) }
 
         context 'when sorting by ascending date' do
-          subject { finder.new(user, { sort: :created_asc }).execute }
+          subject { execute(sort: :created_asc) }
 
           it { is_expected.to eq([todo2, todo3, todo1]) }
         end
 
         context 'when sorting by descending date' do
-          subject { finder.new(user, { sort: :created_desc }).execute }
+          subject { execute(sort: :created_desc) }
 
           it { is_expected.to eq([todo1, todo3, todo2]) }
         end
 
         context 'when not querying pending to-dos only' do
           context 'when sorting by ascending date' do
-            subject { finder.new(user, { sort: :created_asc, state: [:done, :pending] }).execute }
+            subject { execute(sort: :created_asc, state: [:done, :pending]) }
 
             it { is_expected.to eq([todo1, todo2, todo3]) }
           end
 
           context 'when sorting by descending date' do
-            subject { finder.new(user, { sort: :created_desc, state: [:done, :pending] }).execute }
+            subject { execute(sort: :created_desc, state: [:done, :pending]) }
 
             it { is_expected.to eq([todo3, todo2, todo1]) }
           end
         end
       end
 
-      it "sorts by priority" do
+      it 'sorts by priority' do
         project_2 = create(:project)
 
         label_1         = create(:label, title: 'label_1', project: project, priority: 1)
@@ -350,15 +316,19 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
         project_2.add_developer(user)
 
-        todos_asc_1 = finder.new(user, { sort: :priority }).execute
+        todos_asc_1 = execute(sort: :priority)
         expect(todos_asc_1).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
 
-        todos_asc_2 = finder.new(user, { sort: :label_priority_asc }).execute
+        todos_asc_2 = execute(sort: :label_priority_asc)
         expect(todos_asc_2).to eq([todo_3, todo_5, todo_4, todo_2, todo_1])
 
-        todos_desc = finder.new(user, { sort: :label_priority_desc }).execute
+        todos_desc = execute(sort: :label_priority_desc)
         expect(todos_desc).to eq([todo_1, todo_2, todo_4, todo_5, todo_3])
       end
+    end
+
+    def execute(users: user, **kwargs)
+      described_class.new(users: users, **kwargs).execute
     end
   end
 
@@ -369,28 +339,12 @@ RSpec.describe TodosFinder, feature_category: :notifications do
 
       expected_result =
         if Gitlab.ee?
-          %w[Epic Vulnerability] + shared_types
+          %w[Epic Vulnerability User] + shared_types
         else
           shared_types
         end
 
-      expect(described_class.todo_types).to contain_exactly(*expected_result)
-    end
-  end
-
-  describe '#any_for_target?' do
-    it 'returns true if there are any todos for the given target' do
-      todo = create(:todo, :pending)
-      finder = described_class.new(todo.user)
-
-      expect(finder.any_for_target?(todo.target)).to eq(true)
-    end
-
-    it 'returns false if there are no todos for the given target' do
-      issue = create(:issue)
-      finder = described_class.new(issue.author)
-
-      expect(finder.any_for_target?(issue)).to eq(false)
+      expect(described_class.todo_types).to match_array(expected_result)
     end
   end
 end

@@ -127,7 +127,7 @@ following is most likely true:
 - The users don't fall under the [configured `base`](_index.md#configure-ldap).
 - The [configured `user_filter`](_index.md#set-up-ldap-user-filter) blocks access to the users.
 
-In this case, you con confirm which of the above is true using
+In this case, you can confirm which of the previous is true using
 [ldapsearch](#ldapsearch) with the existing LDAP configuration in your
 `/etc/gitlab/gitlab.rb`.
 
@@ -143,7 +143,7 @@ here are some questions to ask yourself:
   user must also pass through this filter to be allowed to sign in.
   - Refer to our documentation on [debugging the `user_filter`](#debug-ldap-user-filter).
 
-If the above are both okay, the next place to look for the problem is
+If the previous questions are both okay, the next place to look for the problem is
 the logs themselves while reproducing the issue.
 
 - Ask the user to sign in and let it fail.
@@ -424,18 +424,18 @@ things to debug the situation.
   and press **Sync now** (sync one group) or [run the group sync Rake task](../../raketasks/ldap.md#run-a-group-sync)
   (sync all groups).
 
-If all of the above looks good, jump in to a little more advanced debugging in
+If all of the checks looks good, jump in to a little more advanced debugging in
 the rails console.
 
 1. Enter the [rails console](#rails-console).
 1. Choose a GitLab group to test with. This group should have an LDAP group link
    already configured.
-1. [Enable debug logging, find the above GitLab group, and sync it with LDAP](#sync-one-group).
+1. Enable debug logging, find the chosen GitLab group, and [sync it with LDAP](#sync-one-group).
 1. Look through the output of the sync. See [example log output](#example-console-output-after-a-group-sync)
    for how to read the output.
 1. If you still aren't able to see why the user isn't being added, [query the LDAP group directly](#query-a-group-in-ldap)
    to see what members are listed.
-1. Is the user's DN or UID in one of the lists from the above output? One of the DNs or
+1. Is the user's DN or UID in one of the lists from the queried group? One of the DNs or
    UIDs here should match the 'Identifier' from the LDAP identity checked earlier. If it doesn't,
    the user does not appear to be in the LDAP group.
 
@@ -449,7 +449,7 @@ To resolve this issue in GitLab 16.8 and later, you can invite service accounts 
 
 When [Administrator sync](ldap_synchronization.md#administrator-sync) has been configured
 but the configured users aren't granted the correct administrator privileges, confirm
-the following are true:
+that the following conditions are true:
 
 - A [`group_base` is also configured](ldap_synchronization.md#group-sync).
 - The configured `admin_group` in the `gitlab.rb` is a CN, rather than a DN or an array.
@@ -458,7 +458,7 @@ the following are true:
   credentials. GitLab only grants administrator access to the users whose
   accounts are already connected to LDAP.
 
-If all the above are true and the users are still not getting access,
+If all the previous conditions are true and the users are still not getting access,
 [run a manual group sync](#sync-all-groups) in the rails console and
 [look through the output](#example-console-output-after-a-group-sync) to see what happens when
 GitLab syncs the `admin_group`.
@@ -569,7 +569,7 @@ Members in 'ldap_group_1' LDAP group: ["uid=john0,ou=people,dc=example,dc=com",
 "uid=mary4,ou=people,dc=example,dc=com"]
 ```
 
-Shortly after each of the above entries, you see a hash of resolved member
+Shortly after each of the entries, you see a hash of resolved member
 access levels. This hash represents all user DNs GitLab thinks should have
 access to this group, and at which access level (role). This hash is additive,
 and more DNs may be added, or existing entries modified, based on additional

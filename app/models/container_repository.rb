@@ -309,16 +309,19 @@ class ContainerRepository < ApplicationRecord
     self.find_by(project: path.repository_project, name: path.repository_name)
   end
 
-  def has_protected_tag_rules_for_delete?(user)
-    return true if user.nil?
+  def protected_from_delete_by_tag_rules?(user)
+    return true unless user
+
+    # Admins are not restricted by mutable tag protection rules
     return false if user.can_admin_all_resources?
 
+    # Check for mutable tag protection rules
     return false unless project.has_container_registry_protected_tag_rules?(
       action: 'delete',
-      access_level: project.team.max_member_access(user.id)
+      access_level: project.team.max_member_access(user.id),
+      include_immutable: false
     )
 
-    # This is an API call so we put it last
     return false unless has_tags?
 
     true

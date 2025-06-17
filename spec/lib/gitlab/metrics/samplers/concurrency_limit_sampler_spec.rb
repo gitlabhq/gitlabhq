@@ -22,7 +22,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
       before do
         allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap)
           .to receive(:workers).and_return(workers_with_limits)
-        allow(sampler.exclusive_lease).to receive(:exists?).and_return(true, false) # run sample once
+        allow(sampler.exclusive_lease).to receive(:same_uuid?).and_return(true, false) # run sample once
       end
 
       it 'fetches data for each worker and sets gauge' do
@@ -77,8 +77,7 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
 
       context 'when lease exists for more than 1 cycle' do
         before do
-          stub_exclusive_lease(lease_key, timeout: described_class::LEASE_TIMEOUT)
-          allow(sampler.exclusive_lease).to receive(:exists?).and_return(true, true, true, false)
+          allow(sampler.exclusive_lease).to receive(:same_uuid?).and_return(true, true, true, false)
         end
 
         it 'report metrics while lease exists and afterwards reset the metrics' do

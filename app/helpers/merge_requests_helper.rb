@@ -151,20 +151,6 @@ module MergeRequestsHelper
     end
   end
 
-  def user_merge_requests_counts
-    @user_merge_requests_counts ||= begin
-      assigned_count = assigned_issuables_count(:merge_requests)
-      review_requested_count = review_requested_merge_requests_count
-      total_count = assigned_count + review_requested_count
-
-      {
-        assigned: assigned_count,
-        review_requested: review_requested_count,
-        total: total_count
-      }
-    end
-  end
-
   def reviewers_label(merge_request, include_value: true)
     reviewers = merge_request.reviewers
 
@@ -360,10 +346,6 @@ module MergeRequestsHelper
 
   private
 
-  def review_requested_merge_requests_count
-    current_user.review_requested_open_merge_requests_count
-  end
-
   def default_suggestion_commit_message(project)
     project.suggestion_commit_message.presence || Gitlab::Suggestions::CommitMessage::DEFAULT_SUGGESTION_COMMIT_MESSAGE
   end
@@ -518,8 +500,9 @@ module MergeRequestsHelper
                 query: is_author_or_assignee ? 'authorOrAssigneeMergeRequests' : 'assignedMergeRequests',
                 variables: {
                   or: {
-                    reviewerWildcard: 'NONE',
-                    reviewStates: %w[REQUESTED_CHANGES REVIEWED]
+                    reviewerWildcard: "NONE",
+                    onlyReviewerUsername: ::Users::Internal.duo_code_review_bot.username,
+                    reviewStates: %w[REVIEWED REQUESTED_CHANGES]
                   },
                   perPage: 10
                 }
@@ -583,10 +566,7 @@ module MergeRequestsHelper
     is_author_or_assignee = ::Feature.enabled?(:merge_request_dashboard_author_or_assignee, current_user,
       type: :gitlab_com_derisk)
 
-    if Feature.enabled?(:mr_dashboard_list_type_toggle, current_user, type: :beta) &&
-        current_user.merge_request_dashboard_list_type == 'role_based'
-      return merge_request_dashboard_role_based_data
-    end
+    return merge_request_dashboard_role_based_data if current_user.user_preference.role_based?
 
     {
       tabs: [

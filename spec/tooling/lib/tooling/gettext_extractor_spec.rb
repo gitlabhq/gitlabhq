@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rspec/parameterized'
-require 'gitlab/rspec/all'
+require 'fast_spec_helper'
 
 require_relative '../../../../tooling/lib/tooling/gettext_extractor'
 require_relative '../../../support/tmpdir'

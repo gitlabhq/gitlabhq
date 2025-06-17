@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::BackfillIssueSearchDataNamespaceId,
-  schema: 20231220225325, feature_category: :team_planning do
+  schema: 20240116205430, feature_category: :team_planning do
   let(:organizations) { table(:organizations) }
   let(:namespaces) { table(:namespaces) }
   let(:projects) { table(:projects) }

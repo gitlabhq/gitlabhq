@@ -132,6 +132,6 @@ export default {
       </runner-summary-field>
     </div>
 
-    <runner-tags class="gl-flex gl-flex-wrap gl-gap-2" :tag-list="runner.tagList" />
+    <runner-tags class="gl-flex gl-flex-wrap gl-gap-2" :tag-list="runner.tagList" :limit="20" />
   </div>
 </template>

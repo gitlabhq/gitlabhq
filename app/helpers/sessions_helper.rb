@@ -36,8 +36,14 @@ module SessionsHelper
       obfuscated_email: obfuscated_email(verification_email(user)),
       verify_path: session_path(:user),
       resend_path: users_resend_verification_code_path,
-      offer_email_reset: user.email_reset_offered_at.nil?.to_s,
+      offer_email_reset: offer_email_reset_enabled?(user).to_s,
       update_email_path: users_update_email_path
     }
+  end
+
+  private
+
+  def offer_email_reset_enabled?(user)
+    Feature.enabled?(:offer_email_reset, :instance) && !user.email_reset_offered_at
   end
 end

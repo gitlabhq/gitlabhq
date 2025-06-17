@@ -117,7 +117,7 @@ module Projects
         when :mysql
           s_('CloudSeed|Create MySQL Instance')
         else
-          s_('CloudSeed|Create MySQL Instance')
+          s_('CloudSeed|Create SQL Server Instance')
         end
       end
 

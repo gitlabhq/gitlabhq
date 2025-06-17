@@ -127,7 +127,6 @@ export default {
         visitUrl(this.item.webUrl);
         return;
       }
-      e.preventDefault();
 
       const isMultiSelect = e.ctrlKey || e.metaKey;
       if (isMultiSelect && gon?.features?.boardMultiSelect) {
@@ -174,9 +173,7 @@ export default {
     changeFocusInColumn(currentCard, i) {
       // Building a list using data-col-index instead of just traversing the ul is necessary for swimlanes
       const columnCards = [
-        ...document.querySelectorAll(
-          `button.board-card-button[data-col-index="${this.columnIndex}"]`,
-        ),
+        ...document.querySelectorAll(`a.board-card-button[data-col-index="${this.columnIndex}"]`),
       ];
       const currentIndex = columnCards.indexOf(currentCard);
       if (currentIndex + i < 0 || currentIndex + i > columnCards.length - 1) {
@@ -206,7 +203,7 @@ export default {
         return;
       }
       // Focus the same index if possible, or last card
-      const targetCards = lists[currentIndex + i].querySelectorAll('button.board-card-button');
+      const targetCards = lists[currentIndex + i].querySelectorAll('a.board-card-button');
       if (targetCards.length <= this.index) {
         targetCards[targetCards.length - 1].focus();
       } else {
@@ -241,26 +238,28 @@ export default {
     data-testid="board-card"
     class="board-card gl-border gl-relative gl-mb-3 gl-rounded-base gl-border-section gl-bg-section gl-leading-normal hover:gl-bg-subtle dark:hover:gl-bg-gray-200"
   >
-    <button
-      :id="boardItemUniqueId"
-      :class="[
-        {
-          'focus:gl-bg-subtle dark:focus:gl-bg-gray-200': showFocusBackground,
-          'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
-        },
-      ]"
-      :aria-label="item.title"
-      :data-col-index="columnIndex"
-      :data-row-index="rowIndex"
-      :style="cardStyle"
-      data-testid="board-card-button"
-      class="board-card-button gl-block gl-h-full gl-w-full gl-rounded-base gl-border-0 gl-bg-transparent gl-p-4 gl-text-left gl-outline-none focus:gl-focus"
-      @click="toggleIssue"
-      @keydown.left.exact.prevent="focusLeft"
-      @keydown.right.exact.prevent="focusRight"
-      @keydown.down.exact.prevent="focusNext"
-      @keydown.up.exact.prevent="focusPrev"
-    >
+    <div @click="toggleIssue">
+      <a
+        :id="boardItemUniqueId"
+        :class="[
+          {
+            'focus:gl-bg-subtle dark:focus:gl-bg-gray-200': showFocusBackground,
+            'gl-border-l-4 gl-pl-4 gl-border-l-solid': itemColor,
+          },
+        ]"
+        :href="item.webUrl"
+        :aria-label="item.title"
+        :data-col-index="columnIndex"
+        :data-row-index="rowIndex"
+        :style="cardStyle"
+        data-testid="board-card-button"
+        class="board-card-button gl-absolute gl-inset-0 gl-block gl-rounded-base gl-border-0 gl-bg-transparent gl-p-0 gl-outline-none focus:gl-focus"
+        @click.stop.prevent="toggleIssue"
+        @keydown.left.exact.prevent="focusLeft"
+        @keydown.right.exact.prevent="focusRight"
+        @keydown.down.exact.prevent="focusNext"
+        @keydown.up.exact.prevent="focusPrev"
+      ></a>
       <board-card-inner
         :list="list"
         :item="formattedItem"
@@ -271,6 +270,6 @@ export default {
       >
         <slot></slot>
       </board-card-inner>
-    </button>
+    </div>
   </li>
 </template>

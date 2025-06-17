@@ -620,6 +620,37 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         end
       end
     end
+
+    context 'when security features are enabled' do
+      let(:params) do
+        {
+          name: 'New Project',
+          path: 'new-project',
+          description: 'New project description',
+          namespace_id: user.namespace.id,
+          initialize_with_sast: '1',
+          initialize_with_secret_detection: '1'
+        }
+      end
+
+      it 'calls appropriate create service methods' do
+        expect_next_instance_of(Projects::CreateService) do |service|
+          expect(service.instance_variable_get(:@initialize_with_sast)).to eq(true)
+          expect(service.instance_variable_get(:@initialize_with_secret_detection)).to eq(true)
+        end
+
+        subject
+      end
+
+      it 'creates a project with security features enabled' do
+        expect { subject }.to change { Project.count }.by(1)
+
+        project = Project.last
+        expect(project.name).to eq('New Project')
+        expect(project.path).to eq('new-project')
+        expect(response).to have_gitlab_http_status(:redirect)
+      end
+    end
   end
 
   describe 'GET edit' do
@@ -881,7 +912,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           create(:container_repository, project: project, name: :image)
         end
 
-        let(:message) { 'UpdateProject|Cannot rename project because it contains container registry tags!' }
+        let(:message) { 'UpdateProject|Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories' }
 
         shared_examples 'not allowing the rename of the project' do
           it 'does not allow to rename the project' do
@@ -1228,18 +1259,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       expect(flash[:alert]).to include(message)
     end
 
-    context 'when instance setting is set to 0 days' do
-      it 'deletes project right away' do
-        stub_application_setting(deletion_adjourned_period: 0)
-
-        delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-        expect(project.marked_for_deletion?).to be_falsey
-        expect(response).to have_gitlab_http_status(:found)
-        expect(response).to redirect_to(dashboard_projects_path)
-      end
-    end
-
     context 'when project is already marked for deletion' do
       let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
@@ -1311,18 +1330,6 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         expect(flash[:alert]).to include(message)
       end
 
-      context 'when instance setting is set to 0 days' do
-        it 'deletes project right away' do
-          stub_application_setting(deletion_adjourned_period: 0)
-
-          delete :destroy, params: { namespace_id: project.namespace, id: project }
-
-          expect(project.marked_for_deletion?).to be_falsey
-          expect(response).to have_gitlab_http_status(:found)
-          expect(response).to redirect_to(dashboard_projects_path)
-        end
-      end
-
       context 'when project is already marked for deletion' do
         let_it_be(:project) { create(:project, group: group, marked_for_deletion_at: Date.current) }
 
@@ -1360,7 +1367,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
   end
 
   describe 'POST #restore', feature_category: :groups_and_projects do
-    let_it_be(:project) { create(:project, namespace: user.namespace) }
+    let_it_be(:project) { create(:project, :aimed_for_deletion, namespace: user.namespace) }
 
     before do
       sign_in(user)

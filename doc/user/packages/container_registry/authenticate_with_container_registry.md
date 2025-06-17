@@ -2,6 +2,7 @@
 stage: Package
 group: Container Registry
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to authenticate with the container registry using your GitLab login credentials, a token, or CI/CD variables such as a CI job token.
 title: Authenticate with the container registry
 ---
 

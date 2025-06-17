@@ -9,6 +9,7 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
   let(:skip_table_creation) { false }
   let(:logger) { instance_double(Logger) }
   let(:dry_run) { false }
+  let(:force) { true }
 
   subject(:lock_writes_manager) do
     described_class.new(
@@ -17,7 +18,8 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       database_name: 'main',
       with_retries: true,
       logger: logger,
-      dry_run: dry_run
+      dry_run: dry_run,
+      force: force
     )
   end
 
@@ -125,36 +127,58 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       }
     end
 
-    it 'replaces the trigger if the table is already locked' do
-      subject.lock_writes
+    context 'when running in force mode' do
+      it 'replaces the trigger if the table is already locked' do
+        subject.lock_writes
 
-      expect(connection).to receive(:execute).with(/CREATE OR REPLACE TRIGGER/)
+        expect(connection).to receive(:execute).with(/CREATE OR REPLACE TRIGGER/)
 
-      expect do
-        result = subject.lock_writes
-        expect(result).to eq({ action: "locked", database: "main", dry_run: false, table: test_table })
-      end.not_to change {
-        number_of_triggers_on(connection, test_table)
-      }
-    end
-
-    context 'when table does not exist' do
-      let(:skip_table_creation) { true }
-      let(:test_table) { non_existent_table }
-
-      # In tests if we don't add the fake table to the gitlab schema then our test only schema checks will fail.
-      before do
-        allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
-        allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(
-          non_existent_table
-        ).and_return(:gitlab_main_cell)
+        expect do
+          result = subject.lock_writes
+          expect(result).to eq({ action: "locked", database: "main", dry_run: false, table: test_table })
+        end.not_to change {
+          number_of_triggers_on(connection, test_table)
+        }
       end
 
-      it 'tries to lock the table anyways, and logs the failure' do
-        expect(logger).to receive(:warn).with(
-          /Failed lock_writes, because #{test_table} raised an error. Error:/
+      context 'when table does not exist' do
+        let(:skip_table_creation) { true }
+        let(:test_table) { non_existent_table }
+
+        # In tests if we don't add the fake table to the gitlab schema then our test only schema checks will fail.
+        before do
+          allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
+          allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(
+            non_existent_table
+          ).and_return(:gitlab_main_cell)
+        end
+
+        it 'tries to lock the table anyways, and logs the failure' do
+          expect(logger).to receive(:warn).with(
+            /Failed lock_writes, because #{test_table} raised an error. Error:/
+          )
+          expect(connection).to receive(:execute).with(/CREATE OR REPLACE TRIGGER/)
+
+          expect do
+            result = subject.lock_writes
+            expect(result).to eq({ action: "skipped", database: "main", dry_run: false, table: test_table })
+          end.not_to change {
+            number_of_triggers_on(connection, test_table)
+          }
+        end
+      end
+    end
+
+    context 'when running in force mode false' do
+      let(:force) { false }
+
+      it 'skips the operation if the table is already locked for writes' do
+        subject.lock_writes
+
+        expect(logger).to receive(:info).with(
+          "Skipping lock_writes, because #{test_table} is already locked for writes"
         )
-        expect(connection).to receive(:execute).with(/CREATE OR REPLACE TRIGGER/)
+        expect(connection).not_to receive(:execute).with(/CREATE OR REPLACE TRIGGER/)
 
         expect do
           result = subject.lock_writes
@@ -162,6 +186,31 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
         end.not_to change {
           number_of_triggers_on(connection, test_table)
         }
+      end
+
+      context 'when table does not exist' do
+        let(:skip_table_creation) { true }
+        let(:test_table) { non_existent_table }
+
+        # In tests if we don't add the fake table to the gitlab schema then our test only schema checks will fail.
+        before do
+          allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).and_call_original
+          allow(Gitlab::Database::GitlabSchema).to receive(:table_schema).with(
+            non_existent_table
+          ).and_return(:gitlab_main_cell)
+        end
+
+        it 'skips locking table' do
+          expect(logger).to receive(:info).with("Skipping lock_writes, because #{test_table} does not exist")
+          expect(connection).not_to receive(:execute).with(/CREATE OR REPLACE TRIGGER/)
+
+          expect do
+            result = subject.lock_writes
+            expect(result).to eq({ action: "skipped", database: "main", dry_run: false, table: test_table })
+          end.not_to change {
+            number_of_triggers_on(connection, test_table)
+          }
+        end
       end
     end
 
@@ -227,15 +276,6 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       end.not_to raise_error
     end
 
-    it 'idempotently drops the lock even if it does not exist' do
-      subject.unlock_writes
-
-      expect(subject).to receive(:execute_sql_statement)
-      expect(subject.unlock_writes).to eq(
-        { action: "unlocked", database: "main", dry_run: dry_run, table: test_table }
-      )
-    end
-
     it 'removes the write protection triggers from the gitlab_main tables on the ci database' do
       expect do
         subject.unlock_writes
@@ -252,14 +292,54 @@ RSpec.describe Gitlab::Database::LockWritesManager, :delete, feature_category: :
       subject.unlock_writes
     end
 
-    context 'when table does not exist' do
-      let(:skip_table_creation) { true }
-      let(:test_table) { non_existent_table }
+    context 'when running in force mode true' do
+      it 'idempotently drops the lock even if it does not exist' do
+        subject.unlock_writes
 
-      it 'tries to unlock the table which postgres handles gracefully' do
-        expect(subject).to receive(:execute_sql_statement).and_call_original
+        expect(subject).to receive(:execute_sql_statement)
+        expect(subject.unlock_writes).to eq(
+          { action: "unlocked", database: "main", dry_run: dry_run, table: test_table }
+        )
+      end
 
-        expect(subject.unlock_writes).to eq({ action: "unlocked", database: "main", dry_run: false, table: test_table })
+      context 'when table does not exist' do
+        let(:skip_table_creation) { true }
+        let(:test_table) { non_existent_table }
+
+        it 'tries to unlock the table which postgres handles gracefully' do
+          expect(subject).to receive(:execute_sql_statement).and_call_original
+
+          expect(subject.unlock_writes).to eq(
+            { action: "unlocked", database: "main", dry_run: false, table: test_table }
+          )
+        end
+      end
+    end
+
+    context 'when running in force mode false' do
+      let(:force) { false }
+
+      it 'skips unlocking the table if the table was already unlocked for writes' do
+        subject.unlock_writes
+
+        expect(subject).not_to receive(:execute_sql_statement)
+        expect(subject.unlock_writes).to eq(
+          { action: "skipped", database: "main", dry_run: dry_run, table: test_table }
+        )
+      end
+
+      context 'when table does not exist' do
+        let(:skip_table_creation) { true }
+        let(:test_table) { non_existent_table }
+
+        it 'skips unlocking table' do
+          subject.unlock_writes
+
+          expect(subject).not_to receive(:execute_sql_statement)
+          expect(subject.unlock_writes).to eq(
+            { action: "skipped", database: "main", dry_run: dry_run, table: test_table }
+          )
+        end
       end
     end
 

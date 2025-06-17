@@ -122,7 +122,8 @@ module Gitlab
           Gitlab::Throttle.throttle_authenticated_git_lfs_options,
           ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_git_lfs? }
         ),
-        **throttle_definitions_unauthenticated_git_http
+        **throttle_definitions_unauthenticated_git_http,
+        **throttle_definitions_authenticated_git_http
       }
     end
 
@@ -131,6 +132,15 @@ module Gitlab
         'throttle_unauthenticated_git_http' => ThrottleDefinition.new(
           Gitlab::Throttle.throttle_unauthenticated_git_http_options,
           ->(req) { req.ip if req.throttle_unauthenticated_git_http? }
+        )
+      }
+    end
+
+    def self.throttle_definitions_authenticated_git_http
+      {
+        'throttle_authenticated_git_http' => ThrottleDefinition.new(
+          Gitlab::Throttle.throttle_authenticated_git_http_options,
+          ->(req) { req.throttled_identifer([:api]) if req.throttle_authenticated_git_http? }
         )
       }
     end

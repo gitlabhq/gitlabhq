@@ -8,30 +8,12 @@ module QA
       #   * quarantine issue links
       #   * failure issues search link
       #   * ci job link
-      #   * flaky status and test pass rate
-      #   * devops stage and group as epic and feature behaviour tags
+      #   * devops stage and group as epic and feature behavior tags
       #
       class AllureMetadataFormatter < ::RSpec::Core::Formatters::BaseFormatter
         include Support::InfluxdbTools
 
-        ::RSpec::Core::Formatters.register(
-          self,
-          :start,
-          :example_finished
-        )
-
-        # Starts test run
-        # Fetch flakiness data in mr pipelines to help identify unrelated flaky failures
-        #
-        # @param [RSpec::Core::Notifications::StartNotification] _start_notification
-        # @return [void]
-        def start(_start_notification)
-          save_flaky_specs
-          log(:debug, "Fetched #{flaky_specs.length} flaky testcases!")
-        rescue StandardError => e
-          log(:error, "Failed to fetch flaky spec data for report: #{e}")
-          @flaky_specs = {}
-        end
+        ::RSpec::Core::Formatters.register(self, :example_finished)
 
         # Finished example
         # Add additional metadata to report
@@ -44,8 +26,7 @@ module QA
           add_quarantine_issue_link(example)
           add_failure_issues_link(example, example_notification)
           add_ci_job_link(example)
-          set_flaky_status(example)
-          set_behaviour_categories(example)
+          set_behavior_categories(example)
         end
 
         private
@@ -59,7 +40,8 @@ module QA
 
           return unless issue_link
           return example.issue('Quarantine issue', issue_link) if issue_link.is_a?(String)
-          return issue_link.each { |link| example.issue('Quarantine issue', link) } if issue_link.is_a?(Array)
+
+          issue_link.each { |link| example.issue('Quarantine issue', link) } if issue_link.is_a?(Array)
         rescue StandardError => e
           log(:error, "Failed to add quarantine issue link for example '#{example.description}', error: #{e}")
         end
@@ -107,67 +89,17 @@ module QA
           log(:error, "Failed to add ci job link for example '#{example.description}', error: #{e}")
         end
 
-        # Mark test as flaky
+        # Add behavior categories to report
         #
         # @param [RSpec::Core::Example] example
         # @return [void]
-        def set_flaky_status(example)
-          return unless flaky_specs.key?(example.metadata[:testcase]) && example.execution_result.status != :pending
-
-          example.set_flaky
-          log(:debug, "Setting spec as flaky because it's pass rate is below 98%")
-        rescue StandardError => e
-          log(:error, "Failed to add spec pass rate data for example '#{example.description}', error: #{e}")
-        end
-
-        # Add behaviour categories to report
-        #
-        # @param [RSpec::Core::Example] example
-        # @return [void]
-        def set_behaviour_categories(example)
+        def set_behavior_categories(example)
           file_path = example.file_path.gsub('./qa/specs/features', '')
           devops_stage = file_path.match(%r{\d{1,2}_(\w+)/})&.captures&.first
           product_group = example.metadata[:product_group]
 
           example.epic(devops_stage) if devops_stage
           example.feature(product_group) if product_group
-        end
-
-        # Flaky specs with pass rate below 98%
-        #
-        # @return [Array]
-        def flaky_specs
-          @flaky_specs ||= influx_data.lazy.each_with_object({}) do |data, result|
-            records = data.records
-
-            runs = records.count
-            failed = records.count { |r| r.values["status"] == "failed" }
-            pass_rate = 100 - ((failed.to_f / runs) * 100)
-
-            # Consider spec with a pass rate less than 98% as flaky
-            result[records.last.values["testcase"]] = pass_rate if pass_rate < 98
-          end.compact
-        end
-
-        alias_method :save_flaky_specs, :flaky_specs
-
-        # Records of previous failures for runs of same type
-        #
-        # @return [Array]
-        def influx_data
-          return [] unless run_type
-
-          query_api.query(query: <<~QUERY)
-            from(bucket: "#{Support::InfluxdbTools::INFLUX_MAIN_TEST_METRICS_BUCKET}")
-              |> range(start: -30d)
-              |> filter(fn: (r) => r._measurement == "test-stats")
-              |> filter(fn: (r) => r.run_type == "#{run_type}" and
-                r.status != "pending" and
-                r.quarantined == "false" and
-                r._field == "id"
-              )
-              |> group(columns: ["testcase"])
-          QUERY
         end
 
         # Print log message

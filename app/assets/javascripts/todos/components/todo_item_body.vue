@@ -31,11 +31,8 @@ export default {
   directives: {
     SafeHtml,
   },
+  inject: ['currentUserId'],
   props: {
-    currentUserId: {
-      type: String,
-      required: true,
-    },
     todo: {
       type: Object,
       required: true,
@@ -64,7 +61,11 @@ export default {
       );
     },
     showAvatarOnNote() {
-      return !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action);
+      // do not show avatar on duo todo's which were authored by the user
+      return (
+        !DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action) ||
+        this.todo.author.id !== this.currentUserId
+      );
     },
     author() {
       if (this.isHiddenBySaml) {
@@ -158,9 +159,7 @@ export default {
       }
 
       if (DUO_ACCESS_GRANTED_ACTIONS.includes(this.todo.action)) {
-        name = s__(
-          'Todos|You now have access to AI-powered features. Learn how to set up Code Suggestions and Chat in your IDE',
-        );
+        name = this.todo.body;
       }
 
       if (!name) {

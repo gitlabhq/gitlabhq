@@ -1,16 +1,17 @@
 - page_title _('Milestones')
 - add_page_specific_style 'page_bundles/milestone'
 
+%h1.gl-sr-only= page_title
+
 = render ::Layouts::PageHeadingComponent.new(_('Milestones')) do |c|
   - c.with_actions do
     - if current_user
       = render 'shared/new_project_item_vue_select'
 
 - if @milestone_states.any? { |name, count| count > 0 }
-  .top-area
+  .gl-flex.gl-flex-wrap.gl-items-center.gl-flex-wrap-reverse.gl-border-b
     = render 'shared/milestones_filter', counts: @milestone_states
-    .nav-controls
-      = render 'shared/milestones/search_form'
+    = render 'shared/milestones/search_form'
 
   - if @milestones.blank?
     = render 'shared/empty_states/milestones_tab', active_tab: params[:state] do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes, feature_category: :kubernetes_management do
+RSpec.describe Gitlab::Ci::Config::Entry::Kubernetes, feature_category: :deployment_management do
   let(:config) { Hash(namespace: 'namespace') }
 
   subject { described_class.new(config) }

@@ -32,6 +32,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
       data-testid="crud-actions"
     >
       <gl-button-stub
+        aria-label="Approved list help popover"
         buttontextclasses=""
         category="primary"
         class="gl-mr-2 gl-self-center"
@@ -49,13 +50,18 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           aria-label="Collapse"
           buttontextclasses=""
           category="tertiary"
-          class="-gl-mr-2 gl-self-start"
+          class="-gl-mr-2 btn-icon gl-self-start"
           data-testid="crud-collapse-toggle"
-          icon="chevron-lg-up"
+          icon=""
           size="small"
           title="Collapse"
           variant="default"
-        />
+        >
+          <gl-animated-chevron-lg-down-up-icon-stub
+            is-on="true"
+            variant="default"
+          />
+        </gl-button-stub>
       </div>
     </div>
   </header>
@@ -63,12 +69,7 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
     class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-lg"
     data-testid="crud-body"
   >
-    <div
-      class="gl-contents"
-      data-testid="section-content"
-    >
-      content
-    </div>
+    content
     <div
       class="crud-pagination gl-border-t gl-border-t-section gl-flex gl-justify-center gl-p-5"
       data-testid="crud-pagination"

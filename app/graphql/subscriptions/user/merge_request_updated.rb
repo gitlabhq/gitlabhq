@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Subscriptions # rubocop:disable Gitlab/BoundedContexts -- Existing module
+module Subscriptions
   module User
     class MergeRequestUpdated < ::Subscriptions::BaseSubscription
       include Gitlab::Graphql::Laziness

@@ -25,17 +25,8 @@ module ContainerRegistry
         protection_rule =
           project.container_registry_protection_tag_rules.new(params.slice(*ALLOWED_ATTRIBUTES))
 
-        if protection_rule.immutable?
-          unless Feature.enabled?(:container_registry_immutable_tags, project)
-            return service_response_error(message: _('Not available'))
-          end
-
-          unless can?(current_user, :create_container_registry_protection_immutable_tag_rule, project)
-            return service_response_error(
-              message: _('Unauthorized to create an immutable protection rule for container image tags')
-            )
-          end
-        end
+        validation_error_msg = validate(protection_rule)
+        return service_response_error(message: validation_error_msg) if validation_error_msg
 
         protection_rule.save
         return service_response_error(message: protection_rule.errors.full_messages) unless protection_rule.persisted?
@@ -59,6 +50,11 @@ module ContainerRegistry
 
         project.container_registry_protection_tag_rules.limit(limit).count < limit
       end
+
+      # Overridden in EE
+      def validate(_protection_rule); end
     end
   end
 end
+
+ContainerRegistry::Protection::CreateTagRuleService.prepend_mod

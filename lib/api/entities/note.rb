@@ -29,6 +29,10 @@ module API
       expose :resolved_by, using: Entities::UserBasic, if: ->(note, options) { note.resolvable? }
       expose :resolved_at, if: ->(note, options) { note.resolvable? }
 
+      expose :suggestions,
+        if: ->(note, options) { note.noteable_type == "MergeRequest" && note.is_a?(DiffNote) },
+        using: Entities::Suggestion
+
       expose :confidential?, as: :confidential
       expose :confidential?, as: :internal
       expose :imported?, as: :imported

@@ -24,9 +24,9 @@ and adapt your configuration if you use other external services.
 
 ![Architecture for running Geo in a multi-node configuration with primary and secondary backend services](img/geo-ha-diagram_v11_11.png)
 
-_[diagram source - GitLab team members only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)_
+**[diagram source - GitLab team members only](https://docs.google.com/drawings/d/1z0VlizKiLNXVVVaERFwgsIOuEgjcUqDTWPdQYsE7Z4c/edit)**
 
-The topology above assumes the **primary** and **secondary** Geo sites
+The topology diagram assumes the **primary** and **secondary** Geo sites
 are located in two separate locations, on their own virtual network
 with private IP addresses. The network is configured such that all machines in
 one geographic location can communicate with each other using their private IP addresses.
@@ -34,7 +34,7 @@ The IP addresses given are examples and may be different depending on the
 network topology of your deployment.
 
 The only external way to access the two Geo sites is by HTTPS at
-`gitlab.us.example.com` and `gitlab.eu.example.com` in the example above.
+`gitlab.us.example.com` and `gitlab.eu.example.com` in the previous example.
 
 {{< alert type="note" >}}
 
@@ -222,7 +222,7 @@ Do not use [`geo_secondary_role`](https://docs.gitlab.com/omnibus/roles/#gitlab-
 
 {{< /alert >}}
 
-In the minimal [architecture diagram](#architecture-overview) above, there are two
+In the minimal [architecture diagram](#architecture-overview), there are two
 machines running the GitLab application services. These services are enabled
 selectively in the configuration.
 
@@ -332,7 +332,7 @@ application nodes.
 
 ### Step 5: Set up the LoadBalancer for the Geo **secondary** site
 
-The minimal [architecture diagram](#architecture-overview) above shows a load
+The minimal [architecture diagram](#architecture-overview) shows a load
 balancer at each geographic location to route traffic to the application nodes.
 
 See [Load Balancer for GitLab with multiple nodes](../../load_balancer.md) for
@@ -340,12 +340,12 @@ more information.
 
 ### Step 6: Configure the backend application nodes on the Geo **secondary** site
 
-The minimal [architecture diagram](#architecture-overview) above shows all application services
+The minimal [architecture diagram](#architecture-overview) shows all application services
 running together on the same machines. However, for multiple nodes we
 [strongly recommend running all services separately](../../reference_architectures/_index.md).
 
 For example, a Sidekiq node could be configured similarly to the frontend
-application nodes above, with some changes to run only the `sidekiq` service:
+application nodes documented previously, with some changes to run only the `sidekiq` service:
 
 1. Edit `/etc/gitlab/gitlab.rb` on each Sidekiq node in the Geo **secondary**
    site, and add the following:

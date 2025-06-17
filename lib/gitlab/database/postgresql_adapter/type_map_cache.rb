@@ -32,14 +32,12 @@ module Gitlab
         end
 
         def reload_type_map
-          if ::Gitlab.next_rails? && @type_map.blank?
-            @type_map = ActiveRecord::Type::HashLookupTypeMap.new
-
-            return initialize_type_map
-          end
-
-          TYPE_MAP_CACHE_MONITOR.synchronize do
-            self.class.type_map_cache[@connection_parameters.hash] = nil
+          # This method is also called when a connection is initialized.
+          # We only want to clear the cache when @type_map is present and we are actually reloading.
+          if @type_map
+            TYPE_MAP_CACHE_MONITOR.synchronize do
+              self.class.type_map_cache[@connection_parameters.hash] = nil
+            end
           end
 
           super

@@ -31,7 +31,10 @@ use a personal fork of a public repository.
 {{< alert type="note" >}}
 
 If the upstream project is archived, the fork relationship is automatically removed.
-For more information, see [Archive a project](../working_with_projects.md#archive-a-project)
+Merge requests that were closed due to a broken fork relationship are not reopened
+if the fork relationship is later restored.
+
+For more information, see [Archive a project](../working_with_projects.md#archive-a-project).
 
 {{< /alert >}}
 
@@ -86,7 +89,6 @@ or the command line. GitLab Premium and Ultimate tiers can also automate updates
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 15.11 [with a flag](../../../administration/feature_flags.md) named `synchronize_fork`. Disabled by default, but enabled for projects in the `gitlab-org/gitlab` and `gitlab-com/www-gitlab-com` namespaces only.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/330243) in GitLab 16.0. Feature flag `synchronize_fork` removed.
 
 {{< /history >}}

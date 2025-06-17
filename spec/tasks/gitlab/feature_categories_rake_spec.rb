@@ -30,7 +30,7 @@ RSpec.describe 'gitlab:feature_categories:index', :silence_stdout, feature_categ
         )
       ),
       'database_tables' => a_hash_including(
-        'continuous_integration' => a_collection_including('ci_pipelines'),
+        'continuous_integration' => a_collection_including('p_ci_pipelines'),
         'user_profile' => a_collection_including('users')
       )
     }

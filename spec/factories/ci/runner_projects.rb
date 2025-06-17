@@ -8,7 +8,8 @@ FactoryBot.define do
       if runner_project.runner.nil?
         runner_project.project = evaluator.project
         runner_project.runner =
-          build(:ci_runner, :project, runner_projects: [runner_project], sharding_key_id: evaluator.project.id)
+          build(:ci_runner, :project, runner_projects: [runner_project], sharding_key_id: evaluator.project.id,
+            organization_id: runner_project.project.organization_id)
       end
     end
   end

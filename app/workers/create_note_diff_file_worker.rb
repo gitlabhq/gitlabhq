@@ -15,5 +15,10 @@ class CreateNoteDiffFileWorker # rubocop:disable Scalability/IdempotentWorker
     diff_note = DiffNote.find_by_id(diff_note_id)
 
     diff_note&.create_diff_file
+  rescue DiffNote::NoteDiffFileCreationError => e
+    # We rescue DiffNote::NoteDiffFileCreationError since we don't want to
+    # fail the job and retry as it won't make any difference if we can't find
+    # the diff or diff line.
+    Gitlab::ErrorTracking.track_exception(e, diff_note_id: diff_note_id)
   end
 end

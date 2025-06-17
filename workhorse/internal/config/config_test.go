@@ -247,3 +247,27 @@ func createTempFile(t *testing.T, contents []byte) string {
 
 	return tmpFile.Name()
 }
+
+func TestCircuitBreakerConfig(t *testing.T) {
+	config := `
+[circuit_breaker]
+timeout = 90
+interval = 360
+max_requests = 2
+consecutive_failures = 10
+`
+
+	cfg, err := LoadConfig(config)
+	require.NoError(t, err)
+
+	require.NotNil(t, cfg.CircuitBreakerConfig, "Expected circuit breaker config")
+
+	expected := CircuitBreakerConfig{
+		Timeout:             90,
+		Interval:            360,
+		MaxRequests:         2,
+		ConsecutiveFailures: 10,
+	}
+
+	require.Equal(t, expected, cfg.CircuitBreakerConfig)
+}

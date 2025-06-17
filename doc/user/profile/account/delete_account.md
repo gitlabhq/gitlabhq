@@ -181,7 +181,7 @@ Prerequisites:
 
 To delete the root account:
 
-1. In the **Admin** area, [create a new user with administrator access](create_accounts.md#create-users-in-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
+1. In the **Admin** area, [create a new user with administrator access](create_accounts.md#create-a-user-in-the-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
 1. [Delete the root account](#delete-users-and-user-contributions).
 
 ### Use the GitLab Rails console

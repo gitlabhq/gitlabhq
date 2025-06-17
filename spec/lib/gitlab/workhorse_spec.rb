@@ -630,7 +630,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       end
     end
 
-    context 'when `allowed_endpoints` parameter is set' do
+    context 'when `allowed_endpoints` paramter is set' do
       let(:allowed_endpoints) { [URI('http://172.16.123.1:9000')] }
 
       it 'sets the header correctly' do

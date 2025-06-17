@@ -9,23 +9,23 @@ jest.mock('~/sentry/sentry_browser_wrapper');
 describe('BeforeSubmitApproveUsersModal', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
-  let beforeSubmitHook;
+  let addBeforeSubmitHook;
   let beforeSubmitHookContexts = {};
 
   const modalId = 'before-submit-modal-id';
 
   const findModal = () => wrapper.findComponent(GlModal);
-  const verifyApproveUsers = () => beforeSubmitHook.mock.calls[0][0]();
+  const verifyApproveUsers = () => addBeforeSubmitHook.mock.calls[0][0]();
   const modalStub = { show: jest.fn(), hide: jest.fn() };
   const GlModalStub = stubComponent(GlModal, { methods: modalStub });
 
   const createComponent = ({ provide = {} } = {}) => {
-    beforeSubmitHook = jest.fn();
+    addBeforeSubmitHook = jest.fn();
 
     wrapper = shallowMountExtended(BeforeSubmitApproveUsersModal, {
       propsData: { id: modalId },
       provide: {
-        beforeSubmitHook,
+        addBeforeSubmitHook,
         beforeSubmitHookContexts,
         pendingUserCount: 10,
         ...provide,
@@ -70,7 +70,7 @@ describe('BeforeSubmitApproveUsersModal', () => {
     });
 
     it('registers the hook', () => {
-      expect(beforeSubmitHook).toHaveBeenCalledWith(expect.any(Function));
+      expect(addBeforeSubmitHook).toHaveBeenCalledWith(expect.any(Function));
     });
 
     it.each(['hide', 'primary', 'secondary'])('emits %s event', (event) => {

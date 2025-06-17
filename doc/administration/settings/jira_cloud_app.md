@@ -123,14 +123,14 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
 - The instance must be publicly available.
 - The instance must be on GitLab version 15.7 or later.
 - You must set up [OAuth authentication](#set-up-oauth-authentication).
-- Your GitLab instance must use HTTPS _and_ your GitLab certificate must be publicly trusted or contain the full chain certificate.
+- Your GitLab instance must use HTTPS and your GitLab certificate must be publicly trusted or contain the full chain certificate.
 - Your network configuration must allow:
   - Outbound connections from your GitLab Self-Managed instance to Jira Cloud ([Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections))
   - Inbound and outbound connections between your GitLab Self-Managed instance and GitLab.com ([GitLab.com IP addresses](../../user/gitlab_com/_index.md#ip-range))
   - For instances behind a firewall:
     1. Set up an internet-facing [reverse proxy](#using-a-reverse-proxy) in front of your GitLab Self-Managed instance.
     1. Configure the reverse proxy to allow inbound connections from GitLab.com ([GitLab.com IP addresses](../../user/gitlab_com/_index.md#ip-range))
-    1. Ensure your GitLab Self-Managed instance can still make the outbound connections described above.
+    1. Ensure your GitLab Self-Managed instance can still make the outbound connections described previously.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
 ### Set up your instance for Atlassian Marketplace installation
@@ -210,7 +210,7 @@ To support your GitLab Self-Managed instance with Jira Cloud, do one of the foll
   - For instances behind a firewall:
     1. Set up an internet-facing [reverse proxy](#using-a-reverse-proxy) in front of your GitLab Self-Managed instance.
     1. Configure the reverse proxy to allow inbound connections from Jira Cloud ([Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections)).
-    1. Ensure your GitLab Self-Managed instance can still make the outbound connections described above.
+    1. Ensure your GitLab Self-Managed instance can still make the outbound connections described previously.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
 ### Set up your instance for manual installation

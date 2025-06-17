@@ -1,0 +1,10 @@
+---
+name: git_authenticated_http_limit
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/543784
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/543768
+milestone: '18.1'
+group: group::source code
+type: beta
+default_enabled: false

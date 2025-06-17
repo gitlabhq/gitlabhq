@@ -7,7 +7,7 @@ describe('Merge request dashboard collapsible section', () => {
   let wrapper;
 
   const collapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
-  const sectionContent = () => wrapper.findByTestId('section-content');
+  const sectionContent = () => wrapper.findByTestId('crud-body');
   const emptyState = () => wrapper.findByTestId('crud-empty');
 
   function createComponent({ count = 3, hasMergeRequests = count > 0, loading = false } = {}) {
@@ -30,14 +30,14 @@ describe('Merge request dashboard collapsible section', () => {
   it('renders section', () => {
     createComponent();
 
-    expect(wrapper.element).toMatchSnapshot();
+    // Transform snapshot for Vue2 compatiblity
+    expect(wrapper.html().replace(/ison=/g, 'is-on=')).toMatchSnapshot();
   });
 
   it('show empty state when count is 0', () => {
     createComponent({ count: 0 });
 
     expect(emptyState().exists()).toBe(true);
-    expect(sectionContent().exists()).toBe(false);
   });
 
   it('hides badge when count is null', () => {

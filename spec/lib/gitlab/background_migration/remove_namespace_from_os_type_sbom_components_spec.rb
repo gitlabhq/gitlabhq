@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::RemoveNamespaceFromOsTypeSbomComponents, schema: 20240909204952, feature_category: :software_composition_analysis do
-  let(:components) { table(:sbom_components) }
+  let(:components) { table(:sbom_components, database: :sec) }
   let(:expected) do
     (0...os_prefix_to_purl_type_mapping.size).map { |n| "package-#{n}" }
   end
@@ -33,11 +33,6 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveNamespaceFromOsTypeSbomCompone
   end
 
   before do
-    # This test shares the db connection to establish it's fixtures, resulting in
-    # incorrect connection usage, so we're skipping it.
-    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
-    skip_if_multiple_databases_are_setup(:sec)
-
     os_prefix_to_purl_type_mapping.each.with_index do |(namespace, purl_type), index|
       components.create!(name: "#{namespace}/package-#{index}", purl_type: purl_type, component_type: 0)
     end

@@ -806,29 +806,6 @@ For more information about updating your storage driver configuration, see [use 
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
-### Single database connection is deprecated
-
-<div class="deprecation-notes">
-
-- Announced in GitLab <span class="milestone">15.9</span>
-- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/387898).
-
-</div>
-
-Previously, the [GitLab database](https://docs.gitlab.com/omnibus/settings/database/)
-configuration had a single `main:` section. This is being deprecated. The new
-configuration has both a `main:` and a `ci:` section.
-
-This deprecation affects users compiling GitLab from source, who will need
-to [add the `ci:` section](https://docs.gitlab.com/install/installation/#configure-gitlab-db-settings).
-Omnibus, the Helm chart, and Operator will handle this configuration
-automatically from GitLab 16.0 onwards.
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="19.0">
-
 ### Slack notifications integration
 
 <div class="deprecation-notes">
@@ -964,12 +941,12 @@ These changes affect you if your pipelines use the [`auto-build-image`](https://
 
 Starting in GitLab 18.0, the internal process that releases CI/CD components to the Catalog will be changed.
 If you use the [recommended CI/CD component release process](https://docs.gitlab.com/ci/components/#publish-a-new-release), which makes use of the `release` keyword and the `registry.gitlab.com/gitlab-org/release-cli:latest` container image, you do not need to make any changes.
-The `latest` version of this container image (`v0.22.0`) contains [GLab](https://gitlab.com/gitlab-org/cli/) `v1.53.0`, which will be used for all releases to the CI/CD Catalog in GitLab 18.0 and later.
+The `latest` version of this container image (`v0.24.0`) contains [GLab](https://gitlab.com/gitlab-org/cli/) `v1.58.0`, which will be used for all releases to the CI/CD Catalog in GitLab 18.0 and later.
 In other cases:
 
-- If you need to pin the container image to a specific version, use `v0.22.0` or later (`registry.gitlab.com/gitlab-org/release-cli:v0.22.0`),
+- If you need to pin the container image to a specific version, use `v0.24.0` or later (`registry.gitlab.com/gitlab-org/release-cli:v0.24.0`),
   to ensure GLab is available for the release process.
-- If you've manually installed the Release CLI tool on your runners, you must install GLab `v1.53.0` or later on those runners.
+- If you've manually installed the Release CLI tool on your runners, you must install GLab `v1.58.0` or later on those runners.
 
 </div>
 
@@ -1444,7 +1421,7 @@ In GitLab 18.0, the Dependency Proxy will require both `read_registry` and `writ
 
 This is a breaking change. Before you upgrade, create new access tokens with the [required scopes](https://docs.gitlab.com/user/packages/dependency_proxy/#authenticate-with-the-dependency-proxy-for-container-images), and update your workflow variables and scripts with these new tokens.
 
-To assess how this change impacts your GitLab Self-Managed instance, you can monitor authentication logs for warning messages in GitLab 17.10 and later. In your `auth_json.log` file, look for entries that contain `Dependency proxy missing authentication abilities`. These entries show authentication attempts using tokens without the required scopes, which will fail after upgrading to GitLab 18.0.
+To assess how this change impacts your GitLab Self-Managed instance, you can monitor authentication logs for warning messages in GitLab 17.10 and later. In your `auth_json.log` file, look for entries that contain `Dependency proxy missing authentication abilities`. If you're using GitLab Helm charts or GitLab Dedicated, then the logs will be in `component: "gitlab"` and `subcomponent: "auth_json"`. These entries show authentication attempts using tokens without the required scopes, which will fail after upgrading to GitLab 18.0.
 
 </div>
 
@@ -4265,7 +4242,7 @@ However, enabling the bundled Grafana will no longer work from GitLab 16.3.
 
 </div>
 
-**Update:** We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
+**Update**: We previously announced we would remove the existing License Compliance CI template in GitLab 16.0. However, due to performance issues with the [license scanning of CycloneDX files](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/) we will do this in 16.3 instead.
 
 The GitLab [**License Compliance**](https://docs.gitlab.com/user/compliance/license_approval_policies/) CI/CD template is now deprecated and is scheduled for removal in the GitLab 16.3 release.
 
@@ -4464,7 +4441,7 @@ When using the native HashiCorp Vault integration, CI/CD jobs will fail when no 
 
 </div>
 
-**Update:** We previously announced a change to how the MobSF-based GitLab SAST analyzer would scan multi-module Android projects.
+**Update**: We previously announced a change to how the MobSF-based GitLab SAST analyzer would scan multi-module Android projects.
 We've canceled that change, and no action is required.
 
 Instead of changing which single module would be scanned, we [improved multi-module support](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/merge_requests/73).
@@ -5412,7 +5389,7 @@ See [Vulnerability translation documentation](https://docs.gitlab.com/user/appli
 
 If you applied customizations to the affected analyzer, or if you currently disable the Semgrep-based analyzer in your pipelines, you must take action as detailed in the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change).
 
-**Update:** We've reduced the scope of this change. We will no longer make the following changes in GitLab 16.0:
+**Update**: We've reduced the scope of this change. We will no longer make the following changes in GitLab 16.0:
 
 1. Remove support for the analyzer based on [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) and replace it with GitLab-managed detection rules in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 1. Remove Scala from the scope of the [SpotBugs-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) and replace it with GitLab-managed detection rules in the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
@@ -5498,7 +5475,7 @@ The following templates will be updated:
 
 We recommend that you test your pipelines before the 16.0 release if you use one of the templates listed above and you use the `_DISABLED` variables but set a value other than `"true"`.
 
-**Update:** We previously announced that we would update the `rules` on the affected templates to run in [merge request pipelines](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/) by default.
+**Update**: We previously announced that we would update the `rules` on the affected templates to run in [merge request pipelines](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/) by default.
 However, due to compatibility issues [discussed in the deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/388988#note_1372629948), we will no longer make this change in GitLab 16.0. We will still release the changes to the `_DISABLED` variables as described above.
 
 </div>
@@ -5721,7 +5698,7 @@ You can use the `vulnerabilityFindingDismiss` GraphQL mutation to set the status
 
 Using third-party container registries with GitLab as an auth endpoint is deprecated in GitLab 15.8 and the [end of support](https://docs.gitlab.com/development/deprecation_guidelines/#terminology) is scheduled for GitLab 16.0. This impacts users on GitLab Self-Managed that have connected their external registry to the GitLab user interface to find, view, and delete container images.
 
-Supporting both the GitLab container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility. This hinders our ability to stay [efficient](https://handbook.gitlab.com/handbook/values/#efficiency). As a result we will not support this functionality moving forward.
+Supporting both the GitLab container registry as well as third-party container registries is challenging for maintenance, code quality, and backward compatibility, and hinders our ability to stay efficient. As a result we will not support this functionality moving forward.
 
 This change will not impact your ability to pull and push container images to external registries using pipelines.
 
@@ -6064,7 +6041,7 @@ This is not expected to cause any incompatibilities with the previous version of
 GitLab SAST uses various [analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
 
 We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
-Streamlining the set of analyzers will also enable faster [iteration](https://handbook.gitlab.com/handbook/values/#iteration), better [results](https://handbook.gitlab.com/handbook/values/#results), and greater [efficiency](https://handbook.gitlab.com/handbook/values/#efficiency) (including a reduction in CI runner usage in most cases).
+Streamlining the set of analyzers will also enable faster iteration, better results, and greater efficiency (including a reduction in CI runner usage in most cases).
 
 In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 
@@ -6078,7 +6055,7 @@ This change was originally planned for GitLab 15.0 and was postponed to GitLab 1
 These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 Effective immediately, they will receive only security updates; other routine improvements or updates are not guaranteed.
 After these analyzers reach End of Support, no further updates will be provided.
-We will not delete container images previously published for these analyzers; any such change would be announced as a [deprecation, removal, or breaking change announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+We will not delete container images previously published for these analyzers; any such change would be announced as a deprecation, removal, or breaking change announcement.
 
 We will also remove Java from the scope of the [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) analyzer and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 This change will make it simpler to scan Java code; compilation will no longer be required.
@@ -7018,7 +6995,7 @@ For more information, check the [summary section of the deprecation issue](https
 
 The [required pipeline configuration](https://docs.gitlab.com/administration/settings/continuous_integration/#required-pipeline-configuration-deprecated) feature is deprecated in GitLab 14.8 for Premium customers and is scheduled for removal in GitLab 15.0. This feature is not deprecated for GitLab Ultimate customers.
 
-This change to move the feature to GitLab Ultimate tier is intended to help our features better align with our [pricing philosophy](https://handbook.gitlab.com/handbook/company/pricing/#three-tiers) as we see demand for this feature originating primarily from executives.
+This change to move the feature to GitLab Ultimate tier is intended to help our features better align with our pricing philosophy as we see demand for this feature originating primarily from executives.
 
 This change will also help GitLab remain consistent in its tiering strategy with the other related Ultimate-tier features of:
 [Security policies](https://docs.gitlab.com/user/application_security/policies/) and [compliance framework pipelines](https://docs.gitlab.com/user/project/settings/#compliance-pipeline-configuration).

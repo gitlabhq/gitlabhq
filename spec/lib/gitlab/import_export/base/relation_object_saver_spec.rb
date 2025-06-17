@@ -93,6 +93,59 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
         end
       end
 
+      describe 'ImportRecordPreparer' do
+        let_it_be(:position) do
+          Gitlab::Diff::Position.new(
+            base_sha: "ae73cb07c9eeaf35924a10f713b364d32b2dd34f",
+            head_sha: "b83d6e391c22777fca1ed3012fce84f633d7fed0",
+            ignore_whitespace_change: false,
+            line_range: nil,
+            new_line: 9,
+            new_path: 'lib/ruby/popen.rb',
+            old_line: 8,
+            old_path: "files/ruby/popen.rb",
+            position_type: "text",
+            start_sha: "0b4bc9a49b562e85de7cc9e834518ea6828729b9"
+          )
+        end
+
+        let(:relation_key) { 'merge_requests' }
+        let(:relation_definition) { { 'notes' => {} } }
+        let(:relation_object) { build(:merge_request, source_project: project, target_project: project, notes: [note]) }
+
+        let(:diff_note) { create(:diff_note_on_commit) }
+        let(:note_diff_file) { diff_note.note_diff_file }
+
+        let(:note) do
+          build(
+            :diff_note_on_merge_request, project: project, importing: true,
+            line_code: "8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_4_7",
+            position: position, original_position: position,
+            note_diff_file: note_diff_file
+          )
+        end
+
+        context 'when records need preparing by ImportRecordPreparer' do
+          let(:note_diff_file) { nil }
+
+          it 'prepares the records' do
+            saver.execute
+            notes = project.reload.merge_requests.first.notes
+            expect(notes.count).to eq(1)
+            expect(notes.first).to be_a(DiscussionNote)
+          end
+        end
+
+        context 'when record does not need preparing by ImportRecordPreparer' do
+          it 'does not change the record' do
+            saver.execute
+            notes = project.reload.merge_requests.first.notes
+            expect(notes.count).to eq(1)
+            expect(notes.first).to be_a(DiffNote)
+          end
+        end
+      end
+
       context 'when importable is group' do
         let(:relation_key) { 'labels' }
         let(:relation_definition) { { 'priorities' => {} } }
@@ -106,6 +159,109 @@ RSpec.describe Gitlab::ImportExport::Base::RelationObjectSaver, feature_category
 
           expect(importable.labels.last.priorities.count).to eq(1)
         end
+      end
+    end
+
+    context 'when database timeout (ActiveRecord::QueryCanceled) occurs during batch processing' do
+      let(:notes) { build_list(:note, 10, project: project, importing: true) }
+      let(:relation_object) { build(:issue, project: project, notes: notes) }
+      let(:relation_definition) { { 'notes' => {} } }
+
+      before do
+        stub_feature_flags(import_rescue_query_canceled: true)
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(import_rescue_query_canceled: false)
+        end
+
+        it 're-raises the exception without retrying' do
+          allow(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+
+          expect { saver.execute }.to raise_error(ActiveRecord::QueryCanceled)
+          expect(saver).not_to receive(:process_with_smaller_batch_size)
+        end
+      end
+
+      context 'when maximum exception rescue count is exceeded' do
+        it 're-raises the exception after MAX_EXCEPTION_RESCUE_COUNT attempts' do
+          allow(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+
+          saver.instance_variable_set(:@exceptions_rescued, described_class::MAX_EXCEPTION_RESCUE_COUNT - 1)
+
+          expect { saver.execute }.to raise_error(ActiveRecord::QueryCanceled)
+          expect(saver.instance_variable_get(:@exceptions_rescued)).to eq(described_class::MAX_EXCEPTION_RESCUE_COUNT)
+        end
+
+        it 'increments exception counter on each rescue' do
+          call_count = 0
+          allow(saver).to receive(:save_valid_records) do
+            call_count += 1
+            raise ActiveRecord::QueryCanceled if call_count <= 2
+          end
+
+          saver.execute
+
+          expect(saver.instance_variable_get(:@exceptions_rescued)).to eq(2)
+        end
+      end
+
+      it 'retries with smaller batch size' do
+        expect(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+        allow(saver).to receive(:save_valid_records).and_call_original
+
+        expect(saver).to receive(:save_batch_with_retry)
+          .with('notes', notes)
+          .and_call_original
+        smaller_batch_size = (notes.size / described_class::BATCH_SIZE_REDUCTION_FACTOR.to_f).ceil
+
+        (0...described_class::BATCH_SIZE_REDUCTION_FACTOR).each do |i|
+          start_index = i * smaller_batch_size
+          end_index = [start_index + smaller_batch_size, notes.size].min - 1
+          batch = notes[start_index..end_index]
+
+          next if batch.empty?
+
+          expect(saver).to receive(:save_batch_with_retry)
+            .with('notes', batch, 1)
+            .and_call_original
+        end
+
+        saver.execute
+      end
+
+      it 'tracks error with Gitlab::ErrorTracking' do
+        expect(saver).to receive(:save_valid_records).and_raise(ActiveRecord::QueryCanceled)
+        allow(saver).to receive(:save_valid_records).and_call_original
+
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).at_least(:once).with(
+          instance_of(ActiveRecord::QueryCanceled),
+          hash_including(
+            relation_name: 'notes',
+            relation_key: 'issues',
+            batch_size: kind_of(Integer),
+            retry_count: kind_of(Integer)
+          )
+        )
+
+        saver.execute
+      end
+
+      it 'tracks failed subrelations when max retries exceeded' do
+        call_count = 0
+
+        allow(saver).to receive(:save_valid_records) do |*args|
+          call_count += 1
+          raise ActiveRecord::QueryCanceled if call_count <= 4
+
+          saver.method(:save_valid_records).super_method.call(*args)
+        end
+
+        saver.execute
+        expect(saver.failed_subrelations.present?).to eq(true)
+        expect(saver.failed_subrelations.pluck(:record)).to match_array(notes.first)
+        expect(saver.failed_subrelations.pluck(:exception)).to all(be_a(ActiveRecord::QueryCanceled))
       end
     end
   end

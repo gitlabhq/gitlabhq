@@ -25,6 +25,7 @@ export const DEFAULT_I18N = Object.freeze({
   branchesErrorMessage: __('An error occurred while fetching branches. Retry the search.'),
   tagsErrorMessage: __('An error occurred while fetching tags. Retry the search.'),
   commitsErrorMessage: __('An error occurred while fetching commits. Retry the search.'),
+  selected: __('Selected'),
   branches: __('Branches'),
   tags: __('Tags'),
   commits: __('Commits'),

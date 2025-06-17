@@ -8,4 +8,4 @@
       %span{ id: :merge_request_title_hint }
         = s_('ProjectSettings|Regex that all merge request titles must match')
 
-    = form.text_field :merge_request_title_regex, class: "form-control", placeholder: '/title/', aria: { describedby: :merge_request_title_regex_hint }
+    = form.text_field :merge_request_title_regex, class: "form-control", placeholder: '\w{4}-\d{4,8}\s.*', aria: { describedby: :merge_request_title_hint }

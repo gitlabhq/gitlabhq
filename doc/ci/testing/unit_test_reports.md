@@ -12,101 +12,70 @@ title: Unit test reports
 
 {{< /details >}}
 
-You can configure your [CI/CD pipeline](../pipelines/_index.md) to display unit test results directly in merge requests and pipeline details.
-This makes it easier to identify test failures without searching through job logs.
+Unit test reports display test results directly in merge requests and pipeline details,
+so you can identify failures without searching through job logs.
 
-Unit test reports:
+Use unit test reports when you want to:
 
-- Require the JUnit report format.
-- Do not affect the job status. To make a job fail when unit tests fail, your job's [script](../yaml/_index.md#script) must exit with a non-zero status.
+- See test failures immediately in merge requests.
+- Compare test results between branches.
+- Debug failing tests with error details and screenshots.
+- Track test failure patterns over time.
 
-Consider the following workflow:
+Unit test reports require the JUnit XML format and do not affect job status.
+To make a job fail when tests fail, your job's [script](../yaml/_index.md#script) must exit with a non-zero status.
 
-1. Your default branch is rock solid, your project is using GitLab CI/CD and
-   your pipelines indicate that there isn't anything broken.
-1. Someone from your team submits a merge request, a test fails and the pipeline
-   gets the known red icon. To investigate more, you have to go through the job
-   logs to figure out the cause of the failed test, which usually contain
-   thousands of lines.
-1. You configure the Unit test reports and immediately GitLab collects and
-   exposes them in the merge request. No more searching in the job logs.
-1. Your development and debugging workflow becomes easier, faster and efficient.
+GitLab Runner uploads your test results in [JUnit XML format](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format)
+as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit).
+When you go to a merge request, your test results are compared between the source branch (head) and target branch (base) to show what changed.
 
-## Unit test reporting workflow
+## File format and size limits
 
-First, GitLab Runner uploads all [JUnit report format XML files](https://www.ibm.com/docs/en/developer-for-zos/16.0?topic=formats-junit-xml-format)
-as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab. Then, when you visit a merge request, GitLab starts
-comparing the head and base branch's JUnit report format XML files, where:
+Unit test reports must use JUnit XML format with specific requirements to ensure proper parsing and display.
 
-- The base branch is the target branch (usually the default branch).
-- The head branch is the source branch (the latest pipeline in each merge request).
+Your test report files must:
 
-The **Test summary** panel shows how many tests failed, how many had errors,
-and how many were fixed. If no comparison can be done because data for the base branch
-is not available, the panel shows only the list of failed tests for the source branch.
+- Use JUnit XML format with `.xml` file extension.
+- Be smaller than 30 MB per individual file.
+- Have a total size under 100 MB for all JUnit files in a job.
 
-The types of results are:
+If you have duplicate test names, only the first test is used and others with the same name are ignored.
 
-- **Newly failed tests:** Test cases which passed on the base branch and failed on the head branch.
-- **Newly encountered errors:** Test cases which passed on the base branch and failed due to a
-  test error on the head branch.
-- **Existing failures:** Test cases which failed on the base branch and failed on the head branch.
-- **Resolved failures:** Test cases which failed on the base branch and passed on the head branch.
+For test case limits, see [Maximum test cases per unit test report](../../user/gitlab_com/_index.md#cicd).
 
-### View failed tests
+## Test result types
 
-Each entry in the **Test summary** panel shows the test name and result type.
-Select the test name to open a modal window with details of its execution time and
-the error output.
+Test results are compared between the merge request's source and target branches to show what changed:
 
-![Test Reports Widget](img/junit_test_report_v13_9.png)
+- Newly failed tests: Tests that passed on the target branch but failed on your branch.
+- Newly encountered errors: Tests that passed on the target branch but had errors on your branch.
+- Existing failures: Tests that failed on both branches.
+- Resolved failures: Tests that failed on the target branch but passed on your branch.
 
-#### Copy failed test names
+If branches cannot be compared, for example when there is no target branch data yet, only the failed tests from your branch are shown.
 
-{{< history >}}
+For tests that failed in the default branch in the last 14 days,
+you see a message like `Failed {n} time(s) in {default_branch} in the last 14 days`.
+This count includes failed tests from completed pipelines, but not [blocked pipelines](../jobs/job_control.md#types-of-manual-jobs).
+Support for blocked pipelines is proposed in [issue 431265](https://gitlab.com/gitlab-org/gitlab/-/issues/431265).
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91552) in GitLab 15.2.
+## Configure unit test reports
 
-{{< /history >}}
+Configure unit test reports to display test results in merge requests and pipelines.
 
-You can copy the name and path of failed tests when there are failed tests listed
-in the **Test summary** panel. Use name and path to find and rerun the
-test locally for verification.
+To configure unit test reports:
 
-To copy the name of all failed tests, at the top of the **Test summary** panel,
-select **Copy failed tests**. The failed tests are listed as a string with the tests
-separated by spaces. This option is only available if the JUnit report populates
-the `<file>` attributes for failed tests.
+1. Configure your test job to output JUnit XML format test reports.
+   For configuration details, review your testing framework's documentation.
+1. In your `.gitlab-ci.yml` file, add
+   [`artifacts:reports:junit`](../yaml/artifacts_reports.md#artifactsreportsjunit) to your test job.
+1. Specify the path to your XML test report files.
+1. Optional. To make report files browsable, include them with [`artifacts:paths`](../yaml/_index.md#artifactspaths).
+1. Optional. To upload reports even when jobs fail, use [`artifacts:when:always`](../yaml/_index.md#artifactswhen).
 
-To copy the name of a single failed test:
-
-1. Expand the **Test summary** panel by selecting **Show test summary details** ({{< icon name="chevron-lg-down" >}}).
-1. Select the test you want to review.
-1. Select **Copy test name to rerun locally** ({{< icon name="copy-to-clipboard" >}}).
-
-### Number of recent failures
-
-If a test failed in the project's default branch in the last 14 days, a message like
-`Failed {n} time(s) in {default_branch} in the last 14 days` is displayed for that test.
-
-The calculation includes failed tests in completed pipelines, but not [blocked pipelines](../jobs/job_control.md#types-of-manual-jobs).
-[Issue 431265](https://gitlab.com/gitlab-org/gitlab/-/issues/431265) proposes to
-also include blocked pipelines in the calculation.
-
-## How to set it up
-
-To enable the Unit test reports in merge requests, you must add
-[`artifacts:reports:junit`](../yaml/artifacts_reports.md#artifactsreportsjunit)
-in `.gitlab-ci.yml`, and specify the paths of the generated test reports.
-The reports must be `.xml` files, otherwise [GitLab returns an Error 500](https://gitlab.com/gitlab-org/gitlab/-/issues/216575).
-
-In the following example for Ruby, the job in the `test` stage runs and GitLab
-collects the unit test report from the job. After the job is executed, the
-XML report is stored in GitLab as an artifact, and the results are shown in the
-merge request widget.
+Example configuration for Ruby with RSpec:
 
 ```yaml
-## Use https://github.com/sj26/rspec_junit_formatter to generate a JUnit report format XML file with rspec
 ruby:
   stage: test
   script:
@@ -120,77 +89,163 @@ ruby:
       junit: rspec.xml
 ```
 
-To make the Unit test report output files browsable, include them with the
-[`artifacts:paths`](../yaml/_index.md#artifactspaths) keyword as well, as shown in the example.
-To upload the report even if the job fails (for example if the tests do not pass),
-use the [`artifacts:when:always`](../yaml/_index.md#artifactswhen) keyword.
+You can view test results:
 
-You cannot have multiple tests with the same name and class in your JUnit report format XML file.
+- In the **Tests** tab of pipeline details after your test job completes.
+- In the **Test summary** panel of merge requests after your pipeline completes.
 
-In GitLab 15.0 and earlier, test reports from [parallel:matrix](../yaml/_index.md#parallelmatrix)
-jobs are aggregated together, which can cause some report information to not be displayed.
-In GitLab 15.1 and later, [this bug is fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/296814),
-and all report information is displayed.
+## View test results in merge requests
 
-## View Unit test reports on GitLab
+View detailed information about test failures in merge requests.
 
-If JUnit report format XML files are generated and uploaded as part of a pipeline, these reports
-can be viewed inside the pipelines details page. The **Tests** tab on this page
-displays a list of test suites and cases reported from the XML file.
+The **Test summary** panel shows an overview of your test results,
+including how many tests failed and passed.
 
-![Test Reports Widget](img/pipelines_junit_test_report_v13_10.png)
+![Expanded Test summary panel that shows one failed test with the View details link](img/test_summary_panel_expanded_v18_1.png)
 
-You can view all the known test suites and select each of these to see further
-details, including the cases that make up the suite.
+To view test failure details:
 
-You can also retrieve the reports via the [GitLab API](../../api/pipelines.md#get-a-pipelines-test-report).
+1. In a merge request, go to the **Test summary** panel.
+1. To expand the **Test summary** panel, select **Show details** ({{< icon name="chevron-lg-down" >}}).
+1. Select **View details** next to a failed test.
 
-### Unit test reports parsing errors
+The dialog displays the test name, file path, execution time, screenshot attachment (if configured),
+and error output.
 
-If parsing JUnit report XML results in an error, an indicator is shown next to the job name. Hovering over the icon shows the parser error in a tooltip. If multiple parsing errors come from [grouped jobs](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views), GitLab shows only the first error from the group.
+To view all test results:
 
-![Test Reports With Errors](img/pipelines_junit_test_report_with_errors_v13_10.png)
+- From the **Test summary** panel, select **Full report**
+  to go to the **Tests** tab in the pipeline details.
 
-For test case parsing limits, see [Max test cases per unit test report](../../user/gitlab_com/_index.md#cicd).
+### Copy failed test names
 
-GitLab does not parse very [large nodes](https://nokogiri.org/tutorials/parsing_an_html_xml_document.html#parse-options) of JUnit reports. There is [an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/268035) open to make this optional.
+Copy test names to rerun them locally for debugging.
 
-## View JUnit screenshots on GitLab
+Prerequisites:
 
-You can upload your screenshots as [artifacts](../yaml/artifacts_reports.md#artifactsreportsjunit) to GitLab.
-If JUnit report format XML files contain an `attachment` tag, GitLab parses the attachment.
-When uploading screenshot artifacts:
+- Your JUnit report must include `<file>` attributes for failed tests.
 
-- The `attachment` tags **must** contain the paths of the screenshots you uploaded relative to `$CI_PROJECT_DIR`. For
-  example:
+To copy all failed test names:
 
-  ```xml
-  <testcase time="1.00" name="Test">
-    <system-out>[[ATTACHMENT|/path/to/some/file]]</system-out>
-  </testcase>
-  ```
+- From the **Test summary** panel, select **Copy failed tests** ({{< icon name="copy-to-clipboard" >}}).
 
-- You should set the job that uploads the screenshot to
-  [`artifacts:when: always`](../yaml/_index.md#artifactswhen) so that it still uploads a screenshot
-  when a test fails.
+The failed tests are copied as a space-separated string.
 
-After the attachment is uploaded, [the pipeline test report](#view-unit-test-reports-on-gitlab)
-contains a link to the screenshot, for example:
+To copy a single failed test name:
 
-![A failed unit test report with test details and screenshot attachment](img/unit_test_report_screenshot_v13_12.png)
+1. To expand the **Test summary** panel, select **Show details** ({{< icon name="chevron-lg-down" >}}).
+1. Select **View details** next to the test you want to copy.
+1. In the dialog, select **Copy test name to rerun locally** ({{< icon name="copy-to-clipboard" >}}).
+
+The test name is copied to your clipboard.
+
+## View test results in pipelines
+
+View all test suites and cases in pipeline details.
+
+To view pipeline test results:
+
+1. Go to your pipeline details page.
+1. Select the **Tests** tab.
+1. Select any test suite to see individual test cases.
+
+![Pipeline test results](img/pipelines_junit_test_report_v18_1.png)
+
+You can also retrieve test reports with the [Pipelines API](../../api/pipelines.md#get-a-test-report-for-a-pipeline).
+
+## Add screenshots to test reports
+
+Add screenshots to test reports to help debug test failures.
+
+To add screenshots to test reports:
+
+1. In your JUnit XML file, add attachment tags with screenshot paths relative to `$CI_PROJECT_DIR`:
+
+   ```xml
+   <testcase time="1.00" name="Test">
+     <system-out>[[ATTACHMENT|/path/to/some/file]]</system-out>
+   </testcase>
+   ```
+
+1. In your `.gitlab-ci.yml` file, configure your job to upload screenshots as artifacts:
+
+   - Specify the path to your screenshot files.
+   - Optional. Use [`artifacts:when: always`](../yaml/_index.md#artifactswhen) to upload screenshots when tests fail.
+
+   For example:
+
+   ```yaml
+   ruby:
+     stage: test
+     script:
+       - bundle install
+       - bundle exec rspec --format progress --format RspecJunitFormatter --out rspec.xml
+       - # Your test framework should save screenshots to a directory
+     artifacts:
+       when: always
+       paths:
+         - rspec.xml
+         - screenshots/
+       reports:
+         junit: rspec.xml
+   ```
+
+1. Run your pipeline.
+
+You can access the screenshot link in the test details dialog
+when you select **View details** for a failed test in the **Test summary** panel.
+
+![A failed unit test report with test details and screenshot attachment](img/unit_test_report_screenshot_v18_1.png)
 
 ## Troubleshooting
 
 ### Test report appears empty
 
-When you view a unit test report in a merge request, it might appear empty for these reasons:
+You might see an empty **Test summary** panel in merge requests.
 
-1. The artifact containing the report has expired. To resolve this issue, you can either:
-   - Set a longer [`expire_in`](../yaml/_index.md#artifactsexpire_in) value for the report artifact.
-   - Run a new pipeline to generate a new report.
+This issue occurs when:
 
-1. The JUnit files exceed size limits. To resolve this issue:
-   - Ensure individual JUnit files are less than 30 MB.
-   - Ensure the total JUnit size for the job is less than 100 MB.
+- Report artifacts have expired.
+- JUnit files exceed size limits.
 
-   Support for custom limits is proposed [epic 16374](https://gitlab.com/groups/gitlab-org/-/epics/16374).
+To resolve this issue, set a longer [`expire_in`](../yaml/_index.md#artifactsexpire_in) value for the report artifact,
+or run a new pipeline to generate a new report.
+
+If JUnit files exceed size limits, ensure:
+
+- Individual JUnit files are less than 30 MB.
+- The total size of all JUnit files for the job is less than 100 MB.
+
+Support for custom limits is proposed in [epic 16374](https://gitlab.com/groups/gitlab-org/-/epics/16374).
+
+### Test results are missing
+
+You might see fewer test results than expected in your reports.
+
+This can happen when you have duplicate test names in your JUnit XML file.
+Only the first test for each name is used and duplicates are ignored.
+
+To resolve this issue, ensure all test names and classes are unique.
+
+### No test reports appear in merge requests
+
+You might not see the **Test summary** panel at all in merge requests.
+
+This issue can happen when the target branch has no test data for comparison.
+
+To resolve this issue, run a pipeline on your target branch to generate baseline test data.
+
+### JUnit XML parsing errors
+
+You might see parsing error indicators next to job names in your pipeline.
+
+This can happen when JUnit XML files contain formatting errors or invalid elements.
+
+To resolve this issue:
+
+- Verify your JUnit XML files follow the standard format.
+- Check that all XML elements are properly closed.
+- Ensure attribute names and values are correctly formatted.
+
+For [grouped jobs](../jobs/_index.md#group-similar-jobs-together-in-pipeline-views),
+only the first parsing error from the group is displayed.

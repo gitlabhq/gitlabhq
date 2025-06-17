@@ -33,7 +33,24 @@ export default {
     MaxExpirationDateMessage: () =>
       import('ee_component/vue_shared/components/access_tokens/max_expiration_date_message.vue'),
   },
-  inject: ['accessTokenMaxDate', 'accessTokenMinDate'],
+  inject: ['accessTokenMaxDate', 'accessTokenMinDate', 'accessTokenAvailableScopes'],
+  props: {
+    name: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    description: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    scopes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+  },
   data() {
     const maxDate = this.accessTokenMaxDate ? new Date(this.accessTokenMaxDate) : null;
     if (maxDate) {
@@ -43,7 +60,11 @@ export default {
     }
     const minDate = new Date(this.accessTokenMinDate);
     const expiresAt = defaultDate(maxDate);
-    return { maxDate, minDate, values: { expiresAt } };
+    return {
+      maxDate,
+      minDate,
+      values: { expiresAt, name: this.name, description: this.description, scopes: this.scopes },
+    };
   },
   computed: {
     ...mapState(useAccessTokens, ['busy']),
@@ -64,72 +85,6 @@ export default {
   helpScopes: helpPagePath('user/profile/personal_access_tokens', {
     anchor: 'personal-access-token-scopes',
   }),
-  scopes: [
-    {
-      value: 'read_service_ping',
-      text: s__(
-        'AccessTokens|Grant access to download Service Ping payload via API when authenticated as an admin user.',
-      ),
-    },
-    {
-      value: 'read_user',
-      text: s__(
-        'AccessTokens|Grants read-only access to your profile through the /user API endpoint, which includes username, public email, and full name. Also grants access to read-only API endpoints under /users.',
-      ),
-    },
-    {
-      value: 'read_repository',
-      text: s__(
-        'AccessTokens|Grants read-only access to repositories on private projects using Git-over-HTTP or the Repository Files API.',
-      ),
-    },
-    {
-      value: 'read_api',
-      text: s__(
-        'AccessTokens|Grants read access to the API, including all groups and projects, the container registry, and the package registry.',
-      ),
-    },
-    {
-      value: 'self_rotate',
-      text: s__('AccessTokens|Grants permission for token to rotate itself.'),
-    },
-    {
-      value: 'write_repository',
-      text: s__(
-        'AccessTokens|Grants read-write access to repositories on private projects using Git-over-HTTP (not using the API).',
-      ),
-    },
-    {
-      value: 'api',
-      text: s__(
-        'AccessTokens|Grants complete read/write access to the API, including all groups and projects, the container registry, the dependency proxy, and the package registry.',
-      ),
-    },
-    {
-      value: 'ai_features',
-      text: s__('AccessTokens|Grants access to GitLab Duo related API endpoints.'),
-    },
-    { value: 'create_runner', text: s__('AccessTokens|Grants create access to the runners.') },
-    { value: 'manage_runner', text: s__('AccessTokens|Grants access to manage the runners.') },
-    {
-      value: 'k8s_proxy',
-      text: s__(
-        'AccessTokens|Grants permission to perform Kubernetes API calls using the agent for Kubernetes.',
-      ),
-    },
-    {
-      value: 'sudo',
-      text: s__(
-        'AccessTokens|Grants permission to perform API actions as any user in the system, when authenticated as an admin user.',
-      ),
-    },
-    {
-      value: 'admin_mode',
-      text: s__(
-        'AccessTokens|Grants permission to perform API actions as an administrator, when Admin Mode is enabled.',
-      ),
-    },
-  ],
   fields: {
     name: {
       label: s__('AccessTokens|Token name'),
@@ -151,7 +106,9 @@ export default {
     },
     scopes: {
       label: s__('AccessTokens|Select scopes'),
-      validators: [formValidators.required(s__('AccessTokens|At least one scope is required.'))],
+      validators: [
+        (value) => (value?.length ? '' : s__('AccessTokens|At least one scope is required.')),
+      ],
     },
   },
 };
@@ -209,7 +166,7 @@ export default {
       <template #input(scopes)="{ id, input, validation, value }">
         <gl-form-checkbox-group :id="id" :state="validation.state" :checked="value" @input="input">
           <gl-form-checkbox
-            v-for="scope in $options.scopes"
+            v-for="scope in accessTokenAvailableScopes"
             :key="scope.value"
             :value="scope.value"
             :state="validation.state"

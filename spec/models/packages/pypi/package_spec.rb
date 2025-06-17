@@ -74,6 +74,10 @@ RSpec.describe Packages::Pypi::Package, type: :model, feature_category: :package
       it { is_expected.not_to allow_value('../../../../../1.2.3').for(:version) }
       it { is_expected.not_to allow_value('%2e%2e%2f1.2.3').for(:version) }
     end
+
+    describe '#name' do
+      it_behaves_like 'validate package name format', :pypi_package
+    end
   end
 
   describe '.with_normalized_pypi_name' do

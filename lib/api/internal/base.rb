@@ -6,6 +6,8 @@ module API
     class Base < ::API::Base
       include Gitlab::RackLoadBalancingHelpers
 
+      WORKHORSE_CIRCUIT_BREAKER_HEADER = 'Enable-Workhorse-Circuit-Breaker'
+
       before { authenticate_by_gitlab_shell_token! }
 
       before do
@@ -113,7 +115,16 @@ module API
             end
 
             unless Feature.enabled?(:log_git_streaming_audit_events, project)
-              send_git_audit_streaming_event(protocol: params[:protocol], action: params[:action])
+              audit_message = { protocol: params[:protocol], action: params[:action] }
+
+              # If the protocol is SSH, we need to send the original IP from the PROXY
+              # protocol to the audit streaming event. The original IP from gitlab-shell
+              # is set through the `check_ip` parameter.
+              if include_ip_address_in_audit_event?(Gitlab::IpAddressState.current)
+                audit_message[:ip_address] = Gitlab::IpAddressState.current
+              end
+
+              send_git_audit_streaming_event(audit_message)
             end
 
             response_with_status(**payload)
@@ -138,6 +149,12 @@ module API
         def two_factor_push_otp_check
           { success: false, message: 'Feature is not available' }
         end
+
+        def add_workhorse_circuit_breaker_header(params)
+          return unless params[:protocol] == 'ssh' && request.headers['Gitlab-Shell-Api-Request'].present?
+
+          header(WORKHORSE_CIRCUIT_BREAKER_HEADER, "true")
+        end
       end
 
       namespace 'internal' do
@@ -161,6 +178,7 @@ module API
         post "/allowed", feature_category: :source_code_management do
           # It was moved to a separate method so that EE can alter its behaviour more
           # easily.
+          add_workhorse_circuit_breaker_header(params) if Feature.enabled?(:workhorse_circuit_breaker, project)
           check_allowed(params)
         end
 
@@ -286,7 +304,7 @@ module API
           end
 
           result = ::PersonalAccessTokens::CreateService.new(
-            current_user: user, target_user: user, organization_id: Current.organization&.id, params: { name: params[:name], scopes: params[:scopes], expires_at: expires_at }
+            current_user: user, target_user: user, organization_id: Current.organization.id, params: { name: params[:name], scopes: params[:scopes], expires_at: expires_at }
           ).execute
 
           unless result.status == :success

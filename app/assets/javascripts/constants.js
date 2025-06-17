@@ -11,13 +11,12 @@ const DEFAULT_DOCS_URL = 'https://docs.gitlab.com';
 // eslint-disable-next-line no-restricted-syntax
 const DEFAULT_PROMO_URL = 'https://about.gitlab.com';
 
-const DEFAULT_CONTRIBUTE_URL = 'https://contributors.gitlab.com';
+const CONTRIBUTE_URL = 'https://contributors.gitlab.com';
 
 const {
   forum_url: FORUM_URL = DEFAULT_FORUM_URL,
   docs_url: DOCS_URL = DEFAULT_DOCS_URL,
   promo_url: PROMO_URL = DEFAULT_PROMO_URL,
-  contribute_url: CONTRIBUTE_URL = DEFAULT_CONTRIBUTE_URL,
 } = window.gon;
 
 // eslint-disable-next-line no-restricted-syntax

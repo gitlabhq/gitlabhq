@@ -42,7 +42,18 @@ module Ci
       return unless runner
       raise Gitlab::Access::AccessDeniedError unless can?(current_user, :read_builds, runner)
 
-      jobs_by_type(runner, type).relevant
+      return jobs_by_type(runner, type).relevant unless params[:match_compatible_runner_only]
+
+      # rubocop:disable CodeReuse/ServiceClass -- service contains logic to find pending builds for a given runner type
+      pending_builds = Ci::Queue::BuildQueueService.new(runner).build_candidates
+      # rubocop:enable CodeReuse/ServiceClass
+
+      # rubocop:disable CodeReuse/ActiveRecord -- Remove ordering on inner query for performance, and allow custom query to include partition information
+      subquery = pending_builds.reorder(nil).select(:build_id, :partition_id)
+      Ci::Build.joins("JOIN (#{subquery.to_sql}) AS pending_subquery ON
+        #{Ci::Build.table_name}.id = pending_subquery.build_id AND
+        #{Ci::Build.table_name}.partition_id = pending_subquery.partition_id")
+      # rubocop:enable CodeReuse/ActiveRecord
     end
 
     def project_jobs
@@ -60,7 +71,7 @@ module Ci
       params[:include_retried] ? jobs_scope : jobs_scope.latest
     end
 
-    # Overriden in EE
+    # Overridden in EE
     def filter_builds(builds)
       builds = filter_by_with_artifacts(builds)
       builds = filter_by_runner_types(builds)
@@ -88,7 +99,7 @@ module Ci
       builds.with_runner_type(params[:runner_type])
     end
 
-    # Overriden in EE
+    # Overridden in EE
     def use_runner_type_filter?
       params[:runner_type].present? && Feature.enabled?(:admin_jobs_filter_runner_type, project, type: :ops)
     end

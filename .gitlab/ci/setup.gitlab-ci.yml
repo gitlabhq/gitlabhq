@@ -90,7 +90,6 @@ gitlab_git_test:
 verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
-    - .failure_category_after_script
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: preflight
   needs: []
@@ -112,7 +111,6 @@ generate-frontend-fixtures-mapping:
   extends:
     - .setup:rules:generate-frontend-fixtures-mapping
     - .use-pg16
-    - .failure_category_after_script
     - .ruby-cache
   needs: ["setup-test-env"]
   stage: prepare
@@ -130,21 +128,21 @@ generate-frontend-fixtures-mapping:
 detect-tests:
   extends:
     - .rails:rules:detect-tests
-    - .failure_category_after_script
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
   needs: []
   stage: prepare
   variables:
     RSPEC_TESTS_MAPPING_ENABLED: "true"
+    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_PATH
   before_script:
     - apt update && apt install -y curl
-  script:
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
     - install_gitlab_gem
     - install_tff_gem
-    - retrieve_tests_mapping
+    - retrieve_tests_mapping "$MAPPING_ARCHIVE"
     - retrieve_frontend_fixtures_mapping
+  script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml
       if [ -n "$CI_MERGE_REQUEST_IID" ] || [ -n "$FIND_CHANGES_MERGE_REQUEST_IID" ]; then
@@ -152,8 +150,8 @@ detect-tests:
 
         tooling/bin/predictive_tests
 
-        filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
-        filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TESTS_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
+        filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
+        filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
 
         echoinfo 'Changed files:'
         echoinfo "$(tr ' ' '\n' < $RSPEC_CHANGED_FILES_PATH)"
@@ -179,8 +177,16 @@ detect-tests:
       - ${RSPEC_MATCHING_JS_FILES_PATH}
       - ${RSPEC_MATCHING_TESTS_EE_PATH}
       - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
-      - ${RSPEC_MATCHING_TESTS_PATH}
+      - ${RSPEC_MATCHING_TEST_FILES_PATH}
       - ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH}
+
+# This job is used for evaluating rspec test mappings created based on coverage strategy
+# See: https://gitlab.com/groups/gitlab-org/quality/analytics/-/epics/13
+detect-tests-alt:
+  extends: detect-tests
+  variables:
+    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_ALT_PATH
+    PREDICTIVE_TESTS_STRATEGY: coverage
 
 detect-previous-failed-tests:
   extends:

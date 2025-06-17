@@ -6,6 +6,12 @@ mutation createWorkItemNote($input: CreateNoteInput!) {
       id
       discussion {
         id
+        resolved
+        resolvable
+        resolvedBy {
+          id
+          name
+        }
         notes {
           nodes {
             ...WorkItemNote

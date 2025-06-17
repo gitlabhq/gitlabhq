@@ -221,12 +221,63 @@ By providing advanced context, the resolver providers the LLM with a more
 holistic understanding of the project structure, enabling more accurate and
 context-aware code suggestions and generation.
 
+### AI Context Abstraction Layer
+
+A [Ruby gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-active-context) that provides a unified interface for Retrieval Augmented Generation (RAG) across multiple vector databases within GitLab. The system abstracts away the differences between Elasticsearch, OpenSearch, and PostgreSQL with pgvector, enabling AI features to work regardless of the underlying storage solution.
+
+Key components include collections that define data schemas and reference classes that handle serialization, migrations for schema management, and preprocessors for chunking and embedding generation. The layer supports automatic model migration between different LLMs without downtime, asynchronous processing through Redis-backed queues, and permission-aware search with automatic redaction.
+
+This [architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_abstraction_layer/) prevents vendor lock-in and enables GitLab customers without Elasticsearch to access RAG-powered features through pgvector.
+
 ### AI Context Policies
 
 A user-defined and user-managed mechanism allowing precise control over the
 content that can be sent to LLMs as contextual information.
 GitLab has an [architecture document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_context_management/)
 that proposes a format for AI Context Policies.
+
+### Codebase as Chat Context
+
+This refers to a repository that the user explicitly provides using the `/include` command. The user may narrow the scope by choosing a directory within a repository.
+This feature allows the user to ask questions about an entire repository, or a subset of that repository by selecting specific directories.
+
+This is automatically enhanced by performing a semantic search of the user's question over the [Code Embeddings](#code-embeddings) of the included repository,
+with the search results then added to the context sent to the LLM. This gives the LLM information about the included repository or directory that is specifically
+targeted to the user's question, allowing the LLM to generate a more helpful response.
+
+This [architecture document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/codebase_as_chat_context/) proposes
+Codebase as Chat Context enhanced by semantic search over Code Embeddings.
+
+In the future, the repository or directory context may also be enhanced by a [Knowledge Graph](#knowledge-graph) search.
+
+### Code Embeddings
+
+The [Code Embeddings initiative](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/codebase_as_chat_context/code_embeddings/)
+aims to build vector embeddings representation of files in a repository. The file contents are chunked into logical segments, then embeddings are generated
+for the chunked content and stored in a vector store.
+
+With Code Embeddings, we can perform a semantic search over a given repository, with the search results then used as additional context for an LLM.
+(See [Codebase as Chat Context](#codebase-as-chat-context) for how Code Embeddings will be used in Duo Chat.)
+
+### GitLab Zoekt
+
+A scalable exact code search service and file-based database system, with flexible architecture supporting various AI context use cases beyond traditional search. It's built on top of open-source code search engine Zoekt.
+
+The system consists of a unified `gitlab-zoekt` binary that can operate in both indexer and webserver modes, managing index files on persistent storage for fast searches. Key features include bi-directional communication with GitLab and self-registering node [architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/code_search_with_zoekt/) for easy scaling.
+
+The system is designed to handle enterprise-scale deployments, with GitLab.com successfully operating over 48 TiB of indexed data.
+
+Most likely, this distributed database system will be used to power [Knowledge Graph](#knowledge-graph). Also, we might leverage Exact Code Search to provide additional context and/or tools for GitLab Duo.
+
+### Knowledge Graph
+
+The [Knowledge Graph](https://gitlab.com/gitlab-org/rust/knowledge-graph) project aims to create a structured, queryable graph database from code repositories to power AI features and enhance developer productivity within GitLab.
+
+Think of it like creating a detailed blueprint that shows which functions call other functions, how classes relate to each other, and where variables are used throughout the codebase. Instead of GitLab Duo having to read through thousands of files every time you ask it something, it can quickly navigate this pre-built map to give you better code suggestions, find related code snippets, or help debug issues. It gives Duo a much smarter way to understand your codebase so it can assist you more effectively with things like code reviews, refactoring, or finding where to make changes when you're working on a feature.
+
+### One Parser (GitLab Code Parser)
+
+The [GitLab Code Parser](https://gitlab.com/gitlab-org/code-creation/gitlab-code-parser#) establishes a single, efficient, and reliable static code analysis library. This library will serve as the foundation for diverse code intelligence features across GitLab, from server-side indexing (Knowledge Graph, Embeddings) to client-side analysis (Language Server, Web IDE). Initially scoped to AI and Editor Features.
 
 ### Supplementary User Context
 

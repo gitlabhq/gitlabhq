@@ -18,6 +18,7 @@ RSpec.describe Mutations::AlertManagement::CreateAlertIssue, feature_category: :
 
     context 'user has access to project' do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.add_developer(current_user)
       end
 
@@ -64,6 +65,12 @@ RSpec.describe Mutations::AlertManagement::CreateAlertIssue, feature_category: :
           let(:action) { 'incident_management_incident_created' }
           let(:label) { 'redis_hll_counters.incident_management.incident_management_total_unique_counts_monthly' }
         end
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      it 'raises a resource not available error' do
+        expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)
       end
     end
 

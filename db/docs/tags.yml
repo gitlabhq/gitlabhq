@@ -5,9 +5,9 @@ classes:
 feature_categories:
 - continuous_integration
 - runner
-description: Tags applied to arbitrary models through the 'taggings' table
+description: Tags applied to CI builds and CI runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/b946da44695c9c8fe8867bb87bcdf801c52177d3
 milestone: "<6.0"
-gitlab_schema: gitlab_ci
+gitlab_schema: gitlab_ci_cell_local
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470872
 table_size: small

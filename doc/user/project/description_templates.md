@@ -3,6 +3,7 @@ stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Description templates
+description: Issue templates, merge request templates, instance, and group templates.
 ---
 
 {{< details >}}
@@ -182,7 +183,7 @@ To re-use templates [you've created](description_templates.md#create-an-issue-te
 1. From the dropdown list, select your template project as the template repository at group level.
 1. Select **Save changes**.
 
-![Group template settings](../group/img/group_file_template_settings_v11_5.png)
+![Group template settings](img/group_file_template_settings_v11_5.png)
 
 You might also be interested in templates for various
 [file types in groups](../group/manage.md#group-file-templates).

@@ -18,4 +18,11 @@ RSpec.describe Transactions do
       expect(model.class).to be_inside_transaction
     end
   end
+
+  it 'does not attempt to checkout a connection when not connected' do
+    allow(model.class).to receive(:connected?).and_return(false)
+    expect(model.class).not_to receive(:connection)
+
+    expect(model.class).not_to be_inside_transaction
+  end
 end

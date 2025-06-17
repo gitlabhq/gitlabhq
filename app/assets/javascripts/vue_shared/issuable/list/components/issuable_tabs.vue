@@ -28,11 +28,6 @@ export default {
       required: false,
       default: false,
     },
-    addPadding: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   methods: {
     isTabActive(tabName) {
@@ -50,8 +45,8 @@ export default {
 
 <template>
   <div class="top-area">
-    <slot name="title"></slot>
     <gl-tabs
+      v-if="tabs.length > 0"
       class="mobile-separator issuable-state-filters gl-m-0 gl-flex gl-grow gl-p-0"
       nav-class="gl-border-b-0"
     >
@@ -75,7 +70,7 @@ export default {
         </template>
       </gl-tab>
     </gl-tabs>
-    <div :class="['nav-controls', { 'gl-py-3': addPadding }]">
+    <div class="nav-controls">
       <slot name="nav-actions"></slot>
     </div>
   </div>

@@ -478,6 +478,22 @@ describe('List Page', () => {
               DELETE_IMAGE_ERROR_MESSAGE.replace('%{title}', wrapper.vm.itemToDelete.path),
             );
           });
+
+          it('shows an alert with multiple errors', async () => {
+            mountComponent();
+
+            await selectImageForDeletion();
+
+            const errors = [{ message: 'Error 1' }, { message: 'Error 2' }, { message: 'Error 3' }];
+            findDeleteImage().vm.$emit('error', errors);
+            await nextTick();
+
+            expect(findDeleteAlert().exists()).toBe(true);
+            expect(findDeleteAlert().text()).toMatch(/^Something went wrong while scheduling/);
+            expect(findDeleteAlert().text()).toContain('Error 1');
+            expect(findDeleteAlert().text()).toContain('Error 2');
+            expect(findDeleteAlert().text()).toContain('Error 3');
+          });
         });
       });
     });

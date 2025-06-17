@@ -1,25 +1,32 @@
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 import { GlButton } from '@gitlab/ui';
-import { shallowMount, RouterLinkStub } from '@vue/test-utils';
-import waitForPromises from 'helpers/wait_for_promises';
+import { mount } from '@vue/test-utils';
+
 import CloseButton from '~/design_management/components/toolbar/close_button.vue';
-import { DESIGNS_ROUTE_NAME } from '~/design_management/router/constants';
 
 describe('Design management toolbar close button', () => {
+  Vue.use(VueRouter);
+
+  const router = new VueRouter({
+    routes: [
+      { path: '/', name: 'workItemList', component: { template: '<div>Designs</div>' } },
+      { path: '/designs', name: 'designs', component: { template: '<div>Design detail</div>' } },
+    ],
+    mode: 'history',
+  });
+
   let wrapper;
 
   function createComponent() {
-    wrapper = shallowMount(CloseButton, {
-      stubs: {
-        RouterLink: RouterLinkStub,
-      },
+    wrapper = mount(CloseButton, {
+      router,
     });
   }
 
-  it('links back to designs list', async () => {
+  it('links back to designs list', () => {
     createComponent();
 
-    await waitForPromises();
-
-    expect(wrapper.findComponent(GlButton).attributes('to')).toBe(DESIGNS_ROUTE_NAME);
+    expect(wrapper.findComponent(GlButton).attributes().href).toEqual('/designs');
   });
 });

@@ -34,13 +34,7 @@ Before you begin troubleshooting, you should:
 - Know the endpoint where your:
   - AI gateway is hosted.
   - Model is hosted.
-- Enable the feature flag `expanded_ai_logging` on the `gitlab-rails` console:
-
-  ```ruby
-  Feature.enable(:expanded_ai_logging)
-  ```
-
-  Now, requests and responses from GitLab to the AI gateway are logged to [`llm.log`](../logs/_index.md#llmlog)
+- [Enable logging](logging.md#enable-logging) to make sure that requests and responses from GitLab to the AI gateway are being logged to [`llm.log`](../logs/_index.md#llmlog).
 
 For more information on troubleshooting GitLab Duo, see:
 
@@ -89,7 +83,7 @@ We provide two debugging scripts to help administrators verify their self-hosted
       | `--model-identifier` | Model identifier. | - | `--model-identifier=custom_openai/Mixtral-8x7B-Instruct-v0.1` |
       | `--api-key` | Model API key. | - | `--api-key=your-api-key` |
 
-     **Examples:**
+     **Examples**:
 
      For a `claude_3` model running on AWS Bedrock:
 
@@ -186,7 +180,7 @@ To check if GitLab Duo was configured correctly:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Self-hosted models**
-1. Expand **AI-powered features**.
+1. Expand **AI-native features**.
 1. Under **Features**, check that **Code Suggestions** and **Code generation** are set to **Self-hosted model**.
 
 ## Check that the AI gateway URL is set up correctly
@@ -378,12 +372,7 @@ gitlab-rake gitlab:duo:verify_self_hosted_setup
 
 If no logs are generated in the **AI gateway server**, follow these steps to troubleshoot:
 
-1. Ensure the `expanded_ai_logging` feature flag is enabled:
-
-   ```ruby
-   Feature.enable(:expanded_ai_logging)
-   ```
-
+1. Ensure that [AI logs are enabled](logging.md#enable-logging).
 1. Run the following commands to view the GitLab Rails logs for any errors:
 
    ```shell
@@ -450,7 +439,7 @@ This error typically occurs due to issues with streaming from the model to the A
    'http://localhost:5052/v2/chat/agent' \
    --header 'accept: application/json' \
    --header 'Content-Type: application/json' \
-   --header 'x-gitlab-enabled-feature-flags: expanded_ai_logging' \
+   --header 'x-gitlab-enabled-instance-verbose-ai-logs: true' \
    --data '{
      "messages": [
        {
@@ -515,7 +504,7 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 
    {{< alert type="warning" >}}
 
-   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production.** Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
+   **Do not use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in production**. Development environments should closely mirror production, with no hidden flags or internal-only workarounds.
 
    {{< /alert >}}
 

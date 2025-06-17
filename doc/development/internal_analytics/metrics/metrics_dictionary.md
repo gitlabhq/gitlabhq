@@ -1,7 +1,7 @@
 ---
 stage: Monitor
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Metrics Dictionary Guide
 ---
 
@@ -17,7 +17,7 @@ This guide describes the dictionary and how it's implemented.
 
 We are using [JSON Schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json) to validate the metrics definition.
 
-This process is meant to ensure consistent and valid metrics defined for Service Ping. All metrics *must*:
+This process is meant to ensure consistent and valid metrics defined for Service Ping. All metrics must:
 
 - Comply with the defined [JSON schema](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/metrics/schema.json).
 - Have a unique `key_path` .

@@ -10,20 +10,45 @@ export default {
     TreeList,
     FileBrowserHeight,
   },
+  props: {
+    projectPath: {
+      type: String,
+      required: true,
+    },
+    currentRef: {
+      type: String,
+      required: true,
+    },
+    refType: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
   data() {
     return {
       treeWidth: TREE_WIDTH,
-      isLoading: false,
-      totalFilesCount: 0,
     };
+  },
+  computed: {
+    isProjectOverview() {
+      return this.$route.name === 'projectRoot';
+    },
   },
 };
 </script>
 
 <template>
-  <div>
-    <file-browser-height :style="{ width: `${treeWidth}px` }" class="repository-tree-list">
-      <tree-list v-if="!isLoading" class="gl-mr-5 gl-mt-5" :total-files-count="totalFilesCount" />
-    </file-browser-height>
-  </div>
+  <file-browser-height
+    v-if="!isProjectOverview"
+    :style="{ width: `${treeWidth}px` }"
+    class="repository-tree-list gl-mt-5"
+  >
+    <tree-list
+      class="gl-mr-5"
+      :project-path="projectPath"
+      :current-ref="currentRef"
+      :ref-type="refType"
+    />
+  </file-browser-height>
 </template>

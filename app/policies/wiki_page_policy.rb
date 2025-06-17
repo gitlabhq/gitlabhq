@@ -9,5 +9,6 @@ class WikiPagePolicy < BasePolicy
     enable :read_wiki_page
     enable :read_note
     enable :create_note
+    enable :update_subscription
   end
 end

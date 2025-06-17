@@ -13,6 +13,7 @@ module Projects
       @params = params.dup
       @skip_wiki = @params.delete(:skip_wiki)
       @initialize_with_sast = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_sast))
+      @initialize_with_secret_detection = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_secret_detection))
       @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
       @import_data = @params.delete(:import_data)
       @relations_block = @params.delete(:relations_block)
@@ -30,6 +31,7 @@ module Projects
       params[:snippets_enabled] = params[:snippets_access_level] if params[:snippets_access_level]
       params[:merge_requests_enabled] = params[:merge_requests_access_level] if params[:merge_requests_access_level]
       params[:issues_enabled] = params[:issues_access_level] if params[:issues_access_level]
+      params[:protect_merge_request_pipelines] = true
 
       if create_from_template?
         return ::Projects::CreateFromTemplateService.new(current_user, params).execute
@@ -146,6 +148,7 @@ module Projects
 
       create_readme if @initialize_with_readme
       create_sast_commit if @initialize_with_sast
+      create_secret_detection_commit if @initialize_with_secret_detection
 
       publish_event
     end
@@ -210,6 +213,13 @@ module Projects
 
     def create_sast_commit
       ::Security::CiConfiguration::SastCreateService.new(@project, current_user, { initialize_with_sast: true }, commit_on_default: true).execute
+    end
+
+    def create_secret_detection_commit
+      params = { initialize_with_secret_detection: true }
+      params[:sast_also_enabled] = true if @initialize_with_sast
+
+      ::Security::CiConfiguration::SecretDetectionCreateService.new(@project, current_user, params, commit_on_default: true).execute
     end
 
     def execute_hooks

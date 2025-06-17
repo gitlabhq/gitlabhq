@@ -1,7 +1,16 @@
 #import "ee_else_ce/ci/runner/graphql/show/runner_details.fragment.graphql"
+#import "ee_else_ce/ci/runner/graphql/show/runner_manager.fragment.graphql"
 
 query getRunner($id: CiRunnerID!) {
   runner(id: $id) {
     ...RunnerDetails
+
+    # runner managers details
+    managers {
+      count
+      nodes {
+        ...CiRunnerManager
+      }
+    }
   }
 }

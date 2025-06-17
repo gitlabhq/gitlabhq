@@ -453,6 +453,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `enable`                                | Enable or disable GitLab Pages on the current system.                                                                                                                                                                                                                                                      |
 | `external_http`                         | Configure Pages to bind to one or more secondary IP addresses, serving HTTP requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_http`. If running GitLab Pages behind a reverse proxy with TLS termination, specify `listen_proxy` instead of `external_http`. |
 | `external_https`                        | Configure Pages to bind to one or more secondary IP addresses, serving HTTPS requests. Multiple addresses can be given as an array, along with exact ports, for example `['1.2.3.4', '1.2.3.5:8063']`. Sets value for `listen_https`.                                                                      |
+| `custom_domain_mode`                    | Configure Pages to enable custom domain: `http` or `https`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), configure this setting on the GitLab server as well. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/285089) in GitLab 18.1.|
 | `server_shutdown_timeout`               | GitLab Pages server shutdown timeout in seconds (default: `30s`).                                                                                                                                                                                                                                          |
 | `gitlab_client_http_timeout`            | GitLab API HTTP client connection timeout in seconds (default: `10s`).                                                                                                                                                                                                                                     |
 | `gitlab_client_jwt_expiry`              | JWT Token expiry time in seconds (default: `30s`).                                                                                                                                                                                                                                                         |
@@ -545,6 +546,7 @@ world. Custom domains are supported, but no TLS.
    nginx['listen_addresses'] = ['192.0.2.1'] # The primary IP of the GitLab instance
    pages_nginx['enable'] = false
    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
+   gitlab_pages['custom_domain_mode'] = 'http' # Enable custom domain
    ```
 
    If you don't have IPv6, you can omit the IPv6 address.
@@ -575,6 +577,7 @@ world. Custom domains and TLS are supported.
    pages_nginx['enable'] = false
    gitlab_pages['external_http'] = ['192.0.2.2:80', '[2001:db8::2]:80'] # The secondary IPs for the GitLab Pages daemon
    gitlab_pages['external_https'] = ['192.0.2.2:443', '[2001:db8::2]:443'] # The secondary IPs for the GitLab Pages daemon
+   gitlab_pages['custom_domain_mode'] = 'https' # Enable custom domain
    # Redirect pages from HTTP to HTTPS
    gitlab_pages['redirect_http'] = true
    ```
@@ -606,7 +609,7 @@ adding a GitLab-controlled verification code to the DNS records for that domain.
 {{< alert type="warning" >}}
 
 Disabling domain verification is unsafe and can lead to various vulnerabilities.
-If you *do* disable it, either ensure that the Pages root domain itself does not point to the
+If you do disable it, either ensure that the Pages root domain itself does not point to the
 secondary IP or add the root domain as custom domain to a project; otherwise, any user can add this
 domain as a custom domain to their project.
 
@@ -811,7 +814,7 @@ archive. You can modify the cache behavior by changing the following configurati
 | `zip_cache_expiration` | The cache expiration interval of ZIP archives. Must be greater than zero to avoid serving stale content. Default is `60s`. |
 | `zip_cache_cleanup` | The interval at which archives are cleaned from memory if they have already expired. Default is `30s`. |
 | `zip_cache_refresh` | The time interval in which an archive is extended in memory if accessed before `zip_cache_expiration`. This works together with `zip_cache_expiration` to determine if an archive is extended in memory. See the [example below](#zip-cache-refresh-example) for important details. Default is `30s`. |
-| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections, as doing so may affect the latency of serving Pages. Default is 30 s. |
+| `zip_open_timeout` | The maximum time allowed to open a ZIP archive. Increase this time for big archives or slow network connections because doing so may affect the latency of serving Pages. Default is 30 s. |
 | `zip_http_client_timeout` | The maximum time for the ZIP HTTP client. Default is `30m`. |
 
 #### ZIP cache refresh example
@@ -1126,6 +1129,11 @@ database encryption. Proceed with caution.
    cp /etc/gitlab/gitlab-secrets.json /etc/gitlab/gitlab-secrets.json.bak
    ```
 
+1. To enable custom domains for individual GitLab Pages sites, set up the **Pages server** using either:
+
+   - [Custom domains](#custom-domains)
+   - [Custom domains with TLS support](#custom-domains-with-tls-support)
+
 1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the **GitLab server**
    to the **Pages server**.
 
@@ -1147,13 +1155,28 @@ database encryption. Proceed with caution.
    pages_nginx['enable'] = false
    ```
 
+1. To enable custom domains for individual GitLab Pages sites, on the **GitLab server**,
+   make the following changes to `/etc/gitlab/gitlab.rb`:
+
+   - Custom domains
+
+     ```ruby
+        gitlab_pages['custom_domain_mode'] = 'http' # Enable custom domain mode to http
+     ```
+
+   - Custom domains with TLS support
+
+     ```ruby
+        gitlab_pages['custom_domain_mode'] = 'https' # Enable custom domain mode to https
+     ```
+
 1. [Reconfigure the **GitLab server**](../restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
 
 It's possible to run GitLab Pages on multiple servers if you wish to distribute
 the load. You can do this through standard load balancing practices such as
 configuring your DNS server to return multiple IPs for your Pages server, or
 configuring a load balancer to work at the IP level. If you wish to
-set up GitLab Pages on multiple servers, perform the above procedure for each
+set up GitLab Pages on multiple servers, perform the previous procedure for each
 Pages server.
 
 ## Domain source configuration

@@ -6,6 +6,10 @@ module ListboxHelpers
     select_listbox_item(text, exact_text: exact_item_text)
   end
 
+  def select_first_listbox_item(text, exact_text: false)
+    find('.gl-new-dropdown-item[role="option"]', match: :first, text: text, exact_text: exact_text).click
+  end
+
   def select_listbox_item(text, exact_text: false)
     find('.gl-new-dropdown-item[role="option"]', text: text, exact_text: exact_text).click
   end

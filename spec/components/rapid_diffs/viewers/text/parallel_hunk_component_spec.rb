@@ -16,7 +16,7 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
 
   it "renders header" do
     render_component
-    expect(page).to have_text(hunk.header.text, count: 2)
+    expect(page).to have_text(hunk.header.text)
   end
 
   it "renders lines" do
@@ -41,12 +41,6 @@ RSpec.describe RapidDiffs::Viewers::Text::ParallelHunkComponent, type: :componen
     render_component
     expect(page).to have_selector("a[href='##{old_line_id}']")
     expect(page).to have_selector("a[href='##{new_line_id}']")
-  end
-
-  it "renders legacy line id" do
-    line_id = diff_file.line_code(old_line)
-    render_component
-    expect(page).to have_selector("[data-legacy-id='#{line_id}']")
   end
 
   it "renders expand up" do

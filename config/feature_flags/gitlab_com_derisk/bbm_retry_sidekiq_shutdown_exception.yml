@@ -1,0 +1,10 @@
+---
+name: bbm_retry_sidekiq_shutdown_exception
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/366720
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182060
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/542900
+milestone: '18.1'
+group: group::database frameworks
+type: gitlab_com_derisk
+default_enabled: false

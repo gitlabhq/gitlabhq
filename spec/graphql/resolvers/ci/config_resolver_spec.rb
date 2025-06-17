@@ -46,7 +46,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
     context 'when the user can create a pipeline' do
       let(:ci_lint) do
         ci_lint_double = instance_double(::Gitlab::Ci::Lint)
-        allow(ci_lint_double).to receive(:validate).and_return(fake_result)
+        allow(ci_lint_double).to receive(:legacy_validate).and_return(fake_result)
 
         ci_lint_double
       end
@@ -93,7 +93,7 @@ RSpec.describe Resolvers::Ci::ConfigResolver, feature_category: :continuous_inte
 
         let(:ci_lint) do
           ci_lint_double = instance_double(::Gitlab::Ci::Lint)
-          allow(ci_lint_double).to receive(:validate).and_raise(GRPC::InvalidArgument)
+          allow(ci_lint_double).to receive(:legacy_validate).and_raise(GRPC::InvalidArgument)
 
           ci_lint_double
         end

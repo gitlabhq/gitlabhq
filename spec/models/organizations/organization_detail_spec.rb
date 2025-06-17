@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationDetail, type: :model, feature_category: :cell do
+RSpec.describe Organizations::OrganizationDetail, type: :model, feature_category: :organization do
   describe 'associations' do
     it { is_expected.to belong_to(:organization).inverse_of(:organization_detail) }
   end

@@ -2,7 +2,7 @@
 
 module Admin
   class OrganizationsController < ApplicationController
-    feature_category :cell
+    feature_category :organization
 
     before_action :check_feature_flag!
     before_action only: [:index] do

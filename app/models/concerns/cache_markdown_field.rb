@@ -73,7 +73,7 @@ module CacheMarkdownField
       # save_markdown updates DB columns directly, so compute and save mentions
       # by calling store_mentions! or we end-up with missing mentions although those
       # would appear in the notes, descriptions, etc in the UI
-      store_mentions! if mentionable_attributes_changed?(updates)
+      store_mentions! if store_mentions? && mentionable_attributes_changed?(updates)
     end
   end
 
@@ -187,6 +187,10 @@ module CacheMarkdownField
     end
   end
 
+  def store_mentions?
+    true
+  end
+
   def store_mentions_after_commit?
     false
   end
@@ -213,7 +217,7 @@ module CacheMarkdownField
       cached_markdown_fields[markdown_field] = context
 
       html_field = cached_markdown_fields.html_field(markdown_field)
-      invalidation_method = "#{html_field}_invalidated?".to_sym
+      invalidation_method = :"#{html_field}_invalidated?"
 
       # The HTML becomes invalid if any dependent fields change. For now, assume
       # author and project invalidate the cache in all circumstances.

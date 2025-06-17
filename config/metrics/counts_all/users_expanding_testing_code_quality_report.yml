@@ -1,0 +1,23 @@
+---
+data_category: optional
+key_path: redis_hll_counters.testing.users_expanding_testing_code_quality_report
+description: Count of expanding the code quality widget
+product_group: static_analysis
+product_categories:
+- code_quality
+value_type: number
+status: active
+milestone: '13.11'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/57133
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - users_expanding_testing_code_quality_report
+tiers:
+  - free
+  - premium
+  - ultimate

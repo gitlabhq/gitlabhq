@@ -4,7 +4,6 @@ module Banzai
   module Filter
     class MarkdownFilter < HTML::Pipeline::TextFilter
       GLFM_ENGINE    = :glfm_markdown # glfm_markdown/comrak
-      CMARK_ENGINE   = :cmark         # original commonmarker/cmark-gfm
       DEFAULT_ENGINE = GLFM_ENGINE
 
       def initialize(text, context = nil, result = nil)

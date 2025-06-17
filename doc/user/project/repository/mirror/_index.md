@@ -13,7 +13,7 @@ title: Repository mirroring
 
 {{< /details >}}
 
-You can _mirror_ a repository to and from external sources. You can select which repository
+You can mirror a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits are synced automatically.
 
 Several mirroring methods exist:
@@ -115,8 +115,6 @@ To use this option, select **Only mirror protected branches** when you create a 
 
 {{< history >}}
 
-- Mirroring branches matching a regex as an option in API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102608) in GitLab 15.8 [with a flag](../../../../administration/feature_flags.md) named `mirror_only_branches_match_regex`. Disabled by default.
-- Option in the project setting [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102499) in GitLab 15.9.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/381667) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/410354) in GitLab 16.2. Feature flag `mirror_only_branches_match_regex` removed.
 
@@ -177,10 +175,10 @@ use the username (not token name) and the token as the password.
 SSH authentication is mutual:
 
 - You must prove to the server that you're allowed to access the repository.
-- The server must also *prove to you* that it's who it claims to be.
+- The server must also prove to you that it's who it claims to be.
 
-For SSH authentication, you provide your credentials as a password or _public key_.
-The server that the other repository resides on provides its credentials as a _host key_.
+For SSH authentication, you provide your credentials as a password or public key.
+The server that the other repository resides on provides its credentials as a host key.
 You must [verify the fingerprint](#verify-a-host-key) of this host key manually.
 
 If you're mirroring over SSH (using an `ssh://` URL), you can authenticate using:

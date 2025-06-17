@@ -43,6 +43,13 @@ FactoryBot.define do
       # rubocop: enable RSpec/FactoryBot/InlineAssociation
     end
 
+    trait :with_organization do
+      after(:create) do |user|
+        organization = create(:organization)
+        create(:organization_user, user: user, organization: organization)
+      end
+    end
+
     trait :admin do
       admin { true }
     end

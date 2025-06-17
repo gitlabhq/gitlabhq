@@ -12,7 +12,7 @@ module Gitlab
           before_update :refresh_markdown_cache, if: :invalidated_markdown_cache?
           # The import case needs to be fixed to avoid large number of
           # SQL queries: https://gitlab.com/gitlab-org/gitlab/-/issues/21801
-          after_save :run_store_mentions!, if: :mentionable_attributes_changed?, unless: ->(obj) { obj.is_a?(Importable) && obj.importing? }
+          after_save :run_store_mentions!, if: -> { store_mentions? && mentionable_attributes_changed? }, unless: ->(obj) { obj.is_a?(Importable) && obj.importing? }
         end
 
         def run_store_mentions!

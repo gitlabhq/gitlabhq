@@ -3,6 +3,7 @@ stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'Tutorial: Use GitLab to facilitate Scrum'
+description: Sprints, backlog, user stories, and scrum lifecycle.
 ---
 
 {{< details >}}
@@ -160,11 +161,11 @@ To create each label:
 
 Repeat these steps to create all the labels you'll need:
 
-- **Priority:** You will use these on an epic board to facilitate feature-level release prioritization.
+- **Priority**: You will use these on an epic board to facilitate feature-level release prioritization.
   - `priority::now`
   - `priority::next`
   - `priority::later`
-- **Status:** You will use these labels on an issue board to understand a story's current step in the
+- **Status**: You will use these labels on an issue board to understand a story's current step in the
   overall development lifecycle.
   - `status::triage`
   - `status::refine`
@@ -173,7 +174,7 @@ Repeat these steps to create all the labels you'll need:
   - `status::in review`
   - `status::acceptance`
   - `status::done`
-- **Type:** You will use these labels to represent the different types of work typically pulled into a single iteration:
+- **Type**: You will use these labels to represent the different types of work typically pulled into a single iteration:
   - `type::story`
   - `type::bug`
   - `type::maintenance`
@@ -326,11 +327,11 @@ You'll use these lists to facilitate moving features through your board from lef
 
 Use each list in your release planning board to represent the following time horizons:
 
-- **Open:** Features that are not yet ready for prioritization.
-- **Later:** Features that will be prioritized into a later release.
-- **Next:** Features tentatively planned for the next release.
-- **Now:** Features prioritized for your current release.
-- **Closed:** Features that have been completed or canceled.
+- **Open**: Features that are not yet ready for prioritization.
+- **Later**: Features that will be prioritized into a later release.
+- **Next**: Features tentatively planned for the next release.
+- **Now**: Features prioritized for your current release.
+- **Closed**: Features that have been completed or canceled.
 
 ### Create your first epic
 

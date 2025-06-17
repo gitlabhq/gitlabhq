@@ -1,7 +1,4 @@
 - page_title _("Edit"), "#{@issue.title} (#{@issue.to_reference})", _("Issues")
 
-%h1.page-title.gl-text-size-h-display
-  Edit Issue ##{@issue.iid}
-%hr
-
+= render ::Layouts::PageHeadingComponent.new("#{_('Edit issue')} ##{@issue.iid}")
 = render "form"

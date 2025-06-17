@@ -104,14 +104,14 @@ your application. The default installation method changed in GitLab 13.0, and
 upgrading existing databases requires user involvement. The two installation
 methods are:
 
-- **channel 1 (deprecated):** Pulls in the database as a dependency of the associated
+- **channel 1 (deprecated)**: Pulls in the database as a dependency of the associated
   Helm chart. Only supports Kubernetes versions up to version 1.15.
-- **channel 2 (current):** Installs the database as an independent Helm chart. Required
+- **channel 2 (current)**: Installs the database as an independent Helm chart. Required
   for using the in-cluster database feature with Kubernetes versions 1.16 and greater.
 
 If you receive this error, you can do one of the following actions:
 
-- You can *safely* ignore the warning and continue using the channel 1 PostgreSQL
+- You can safely ignore the warning and continue using the channel 1 PostgreSQL
   database by setting `AUTO_DEVOPS_POSTGRES_CHANNEL` to `1` and redeploying.
 
 - You can delete the channel 1 PostgreSQL database and install a fresh channel 2
@@ -129,7 +129,7 @@ If you receive this error, you can do one of the following actions:
 
 - If you are not using the in-cluster database, you can set
   `POSTGRES_ENABLED` to `false` and re-deploy. This option is especially relevant to
-  users of *custom charts without the in-chart PostgreSQL dependency*.
+  users of custom charts without the in-chart PostgreSQL dependency.
   Database auto-detection is based on the `postgresql.enabled` Helm value for
   your release. This value is set based on the `POSTGRES_ENABLED` CI/CD variable
   and persisted by Helm, regardless of whether or not your chart uses the
@@ -183,7 +183,7 @@ that works for this problem. Follow these steps to use the tool in Auto DevOps:
      - remote: https://gitlab.com/shinya.maeda/ci-templates/-/raw/master/map-deprecated-api.gitlab-ci.yml
 
    variables:
-     HELM_VERSION_FOR_MAPKUBEAPIS: "v2" # If you're using auto-depoy-image v2 or above, please specify "v3".
+     HELM_VERSION_FOR_MAPKUBEAPIS: "v2" # If you're using auto-depoy-image v2 or later, please specify "v3".
    ```
 
 1. Run the job `<environment-name>:map-deprecated-api`. Ensure that this job succeeds before moving

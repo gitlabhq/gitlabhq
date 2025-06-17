@@ -247,6 +247,8 @@ export default {
               v-for="metric in group.data"
               :key="metric.identifier"
               :metric="metric"
+              :namespace-path="requestPath"
+              :is-project-namespace="isProjectNamespace"
               class="gl-mt-5 gl-pr-10"
             />
             <value-streams-dashboard-link
@@ -262,6 +264,8 @@ export default {
           v-for="metric in metrics"
           :key="metric.identifier"
           :metric="metric"
+          :namespace-path="requestPath"
+          :is-project-namespace="isProjectNamespace"
           class="gl-mt-5 gl-pr-10"
         />
       </div>

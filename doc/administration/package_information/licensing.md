@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Build
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Package Licensing
 ---
@@ -41,7 +41,7 @@ online, at: <https://gitlab-org.gitlab.io/omnibus-gitlab/licenses.html>
 
 The Linux package is made up of many pieces of software, comprising code
 that is covered by many different licenses. Those licenses are provided and
-compiled as stated above.
+compiled as stated previously.
 
 Starting with version 8.13, GitLab has placed an additional step into
 Linux package installation. The `license_check` step calls
@@ -79,6 +79,6 @@ All trademarks, materials, documentation, and other intellectual property remain
 Use of GitLab Trademarks must be in compliance with the standards set forth in our guidelines (as updated from time to time).
 CHEF® and all Chef marks are owned by Progress Software Corporation and must be used in accordance with the [Progress Software Trademark Usage Policy](https://www.progress.com/legal/trademarks).
 
-When using a GitLab or third-party trademark in documentation, include the (R) symbol in the first instance, for example, "Chef(R) is used for configuring…" You may omit the symbol in subsequent instances.
+When using a GitLab or third-party trademark in documentation, include the (R) symbol in the first instance, for example, "Chef(R) is used for configuring…". You may omit the symbol in subsequent instances.
 
 If a trademark owner requires a particular notice or trademark requirement, such notice or requirement should be stated above.

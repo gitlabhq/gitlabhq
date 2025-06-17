@@ -409,6 +409,8 @@ export default {
             :parent-id="parentId"
             :hide-fullscreen-markdown-button="hideFullscreenMarkdownButton"
             :uploads-path="uploadsPath"
+            @focus="$emit('focus')"
+            @blur="$emit('blur')"
             @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"

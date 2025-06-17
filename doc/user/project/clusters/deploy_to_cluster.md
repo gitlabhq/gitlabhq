@@ -101,7 +101,7 @@ an environment's deployment job. This includes `KUBECONFIG`, which gives access 
 any secret available to the associated service account in your cluster.
 To keep your production credentials safe, consider using
 [protected environments](../../../ci/environments/protected_environments.md),
-combined with *one* of the following:
+combined with one of the following:
 
 - A GitLab-managed cluster and namespace per environment.
 - An environment-scoped cluster per protected environment. The same cluster
@@ -113,7 +113,7 @@ The Kubernetes integration adds [web terminal](../../../ci/environments/_index.m
 support to your [environments](../../../ci/environments/_index.md). This is based
 on the `exec` functionality found in Docker and Kubernetes, so you get a new
 shell session in your existing containers. To use this integration, you
-should deploy to Kubernetes using the deployment variables above, ensuring any
+should deploy to Kubernetes using the deployment variables on this page, ensuring any
 deployments, replica sets, and pods are annotated with:
 
 - `app.gitlab.com/env: $CI_ENVIRONMENT_SLUG`

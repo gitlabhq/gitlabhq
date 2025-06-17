@@ -151,7 +151,7 @@ Now you are ready to update the commit messages:
    the command from `pick` to `reword` for the commits you want to update.
    Type `i` to enter `INSERT` mode, and then start editing the text.
 
-   For example, to update the text of the second and fourth commits in the sample above,
+   For example, to update the text of the second and fourth commits in the previous sample,
    edit it to look like:
 
    ```shell

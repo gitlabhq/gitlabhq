@@ -157,6 +157,8 @@ To delete only the custom HTTP headers for a streaming destination:
 Each streaming destination has a unique verification token (`verificationToken`) that can be used to verify the authenticity of the event. This
 token is either specified by the Owner or generated automatically when the event destination is created and cannot be changed.
 
+The `verificationToken` parameter can only be set by using the [GraphQL API](../../api/graphql/audit_event_streaming_groups.md#add-a-new-streaming-destination).
+
 Each streamed event contains the verification token in the `X-Gitlab-Event-Streaming-Token` HTTP header that can be verified against
 the destination's value when listing streaming destinations.
 

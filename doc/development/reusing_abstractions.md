@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Guidelines for reusing abstractions
 ---
 
@@ -94,7 +94,7 @@ This is just a sketch, but it shows the general idea: we would use whatever the
 
 ## End goal
 
-The guidelines in this document are meant to foster _better_ code reuse, by
+The guidelines in this document are meant to foster better code reuse, by
 clearly defining what can be reused where, and what to do when you cannot reuse
 something. Clearly separating abstractions makes it harder to use the wrong one,
 makes it easier to debug the code, and (hopefully) results in fewer performance

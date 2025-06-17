@@ -18,7 +18,9 @@ title: Troubleshooting two-factor authentication
 When making a request, you might get an error that states:
 
 ```plaintext
-HTTP Basic: Access denied. If a password was provided for Git authentication, the password was incorrect or you're required to use a token instead of a password. If a token was provided, it was either incorrect, expired, or improperly scoped.
+HTTP Basic: Access denied. If a password was provided for Git authentication,
+the password was incorrect or you're required to use a token instead of a password.
+If a token was provided, it was either incorrect, expired, or improperly scoped.
 ```
 
 This error occurs when:
@@ -138,4 +140,4 @@ To create a support request:
 ### Reset 2FA for enterprise users
 
 If you are a top-level group Owner on a paid plan, you can disable 2FA for enterprise users.
-For more information, see [Disable two-factor-authentication](../../enterprise_user/_index.md#disable-two-factor-authentication).
+For more information, see [disable 2FA for enterprise users](../../../security/two_factor_authentication.md#enterprise-users).

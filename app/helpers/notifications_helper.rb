@@ -36,7 +36,7 @@ module NotificationsHelper
   end
 
   def show_unsubscribe_title?(noteable)
-    can?(current_user, "read_#{noteable.to_ability_name}".to_sym, noteable)
+    can?(current_user, :"read_#{noteable.to_ability_name}", noteable)
   end
 
   def can_read_project?(project)

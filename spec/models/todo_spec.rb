@@ -79,7 +79,7 @@ RSpec.describe Todo, feature_category: :notifications do
     context 'for parentless types' do
       where(:action_type) do
         [
-          [Todo::DUO_PRO_ACCESS_GRANTED],
+          [Todo::SSH_KEY_EXPIRING_SOON],
           [Todo::SSH_KEY_EXPIRED]
         ]
       end
@@ -91,6 +91,42 @@ RSpec.describe Todo, feature_category: :notifications do
           it { is_expected.not_to validate_presence_of(:project) }
           it { is_expected.not_to validate_presence_of(:group) }
         end
+      end
+    end
+  end
+
+  describe '#action_name' do
+    let(:todo) { build(:todo) }
+
+    it 'returns the symbolic name for a valid action code on one standard action' do
+      todo.action = Todo::ASSIGNED
+      expect(todo.action_name).to eq(:assigned)
+    end
+
+    it 'returns nil for an undefined action code' do
+      todo.action = 999 # An undefined action code
+      expect(todo.action_name).to be_nil
+    end
+  end
+
+  describe '#parentless_type?' do
+    let(:todo) { build(:todo) }
+
+    context 'when action is a parentless action type' do
+      it 'returns true when action is included in parentless_action_types' do
+        parentless_action = described_class.parentless_action_types.first
+        todo.action = parentless_action
+
+        expect(todo).to be_parentless_type
+      end
+    end
+
+    context 'when action is not a parentless action type' do
+      it 'returns false when action is not included in parentless_action_types' do
+        non_parentless_action = (described_class::ACTION_NAMES.keys - described_class.parentless_action_types).first
+        todo.action = non_parentless_action
+
+        expect(todo).not_to be_parentless_type
       end
     end
   end

@@ -48,9 +48,9 @@ Called by [Gitaly](https://gitlab.com/gitlab-org/gitaly) and
 [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell) to check access to a
 repository.
 
-- **When called from GitLab Shell**: No changes are passed, and the internal
+- When called from GitLab Shell: No changes are passed, and the internal
   API replies with the information needed to pass the request on to Gitaly.
-- **When called from Gitaly in a `pre-receive` hook**: The changes are passed
+- When called from Gitaly in a `pre-receive` hook: The changes are passed
   and validated to determine if the push is allowed.
 
 Calls are limited to 50 seconds each.
@@ -285,7 +285,7 @@ recovery codes based on their SSH key.
 | Attribute | Type   | Required | Description |
 |:----------|:-------|:---------|:------------|
 | `key_id`  | integer | no | The ID of the SSH key used as found in the authorized-keys file or through the `/authorized_keys` check |
-| `user_id` | integer | no | **Deprecated** User ID for which to generate new recovery codes |
+| `user_id` | integer | no | Deprecated. User ID for which to generate new recovery codes |
 
 ```plaintext
 GET /internal/two_factor_recovery_codes
@@ -365,7 +365,6 @@ Example response:
 ## Authenticate Error Tracking requests
 
 This endpoint is called by the error tracking Go REST API application to authenticate a project.
-> [Introduced](https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/1693) in GitLab 15.1.
 
 | Attribute    | Type    | Required | Description                                                        |
 |:-------------|:--------|:---------|:-------------------------------------------------------------------|
@@ -854,7 +853,7 @@ Example response:
 {{< /details >}}
 
 The group SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/groups/:group_path/Users` and `/groups/:group_path/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
-**system** use for SCIM provider integration, it is subject to change without notice.
+system use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [Group SSO](../../user/group/saml_sso/_index.md) for the group.
 This API is only in use where [SCIM for Group SSO](../../user/group/saml_sso/scim_setup.md) is enabled. It's a prerequisite to the creation of SCIM identities.
@@ -1118,12 +1117,11 @@ Returns an empty response with a `204` status code if successful.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/378599) in GitLab 15.8.
+- Group sync support [added](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0.
 
 {{< /history >}}
 
-The instance SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides the `/application/Users` and `/application/Users/:id` endpoints. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for
-**system** use for SCIM provider integration, it is subject to change without notice.
+The instance SCIM API partially implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644). This API provides endpoints for managing users and groups. The base URL is `<http|https>://<GitLab host>/api/scim/v2`. Because this API is for system use for SCIM provider integration, it is subject to change without notice.
 
 To use this API, enable [SAML SSO](../../integration/saml.md) for the instance.
 
@@ -1131,8 +1129,9 @@ This instance SCIM API:
 
 - Is for system use for SCIM provider integration.
 - Implements the [RFC7644 protocol](https://www.rfc-editor.org/rfc/rfc7644).
-- Gets a list of SCIM provisioned users for the group.
-- Creates, deletes and updates SCIM provisioned users for the group.
+- Gets a list of SCIM provisioned users.
+- Creates, deletes, and updates SCIM provisioned users.
+- Manages group memberships through [SAML group links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links).
 
 The [group SCIM API](#group-scim-api) does the same for groups.
 
@@ -1148,7 +1147,11 @@ This API does not require the `Gitlab-Shell-Api-Request` header.
 
 {{< /alert >}}
 
-### Get a list of SCIM provisioned users
+### User endpoints
+
+Use user endpoints to manage SCIM provisioned users.
+
+#### Get a list of SCIM provisioned users
 
 This endpoint is used as part of the SCIM syncing mechanism. It returns a list of users depending on the filter used.
 
@@ -1210,7 +1213,7 @@ Example response:
 }
 ```
 
-### Get a single SCIM provisioned user
+#### Get a single SCIM provisioned user
 
 ```plaintext
 GET /api/scim/v2/application/Users/:id
@@ -1251,7 +1254,7 @@ Example response:
 }
 ```
 
-### Create a SCIM provisioned user
+#### Create a SCIM provisioned user
 
 ```plaintext
 POST /api/scim/v2/application/Users
@@ -1299,7 +1302,7 @@ Example response:
 
 Returns a `201` status code if successful.
 
-### Update a single SCIM provisioned user
+#### Update a single SCIM provisioned user
 
 Fields that can be updated are:
 
@@ -1329,7 +1332,7 @@ curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/applicati
 
 Returns an empty response with a `204` status code if successful.
 
-### Block a single SCIM provisioned user
+#### Block a single SCIM provisioned user
 
 The user is placed in a `blocked` state and signed out. This means
 the user cannot sign in or push or pull code.
@@ -1352,6 +1355,223 @@ curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/applicat
 ```
 
 Returns an empty response with a `204` status code if successful.
+
+### Group endpoints
+
+Use group endpoints to automatically synchronize GitLab with the SCIM identity provider.
+
+This API uses [SAML group links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links) to connect IdP groups with GitLab groups.
+Before using these endpoints, you must create the necessary SAML group links for the groups you want to synchronize.
+
+#### Get a list of SCIM groups
+
+This endpoint returns a list of groups that have SCIM IDs assigned.
+
+```plaintext
+GET /api/scim/v2/application/Groups
+```
+
+Parameters:
+
+| Attribute | Type    | Required | Description                                                                                                               |
+|:----------|:--------|:---------|:--------------------------------------------------------------------------------------------------------------------------|
+| `filter`   | string  | no     | A filter expression to search groups by name. |
+| `startIndex` | integer | no    | The 1-based index indicating where to start returning results from. |
+| `count` | integer | no    | Desired maximum number of query results. |
+| `excludedAttributes` | string | no | Comma-separated list of attributes to exclude from the response. |
+
+{{< alert type="note" >}}
+
+Pagination follows the [SCIM spec](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.4), not the GitLab pagination.
+
+{{< /alert >}}
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/application/Groups?filter=displayName%20eq%20%22Developers%22" \
+     --header "Authorization: Bearer <your_scim_token>" \
+     --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": [
+    "urn:ietf:params:scim:api:messages:2.0:ListResponse"
+  ],
+  "totalResults": 1,
+  "itemsPerPage": 20,
+  "startIndex": 1,
+  "Resources": [
+    {
+      "schemas": [
+        "urn:ietf:params:scim:schemas:core:2.0:Group"
+      ],
+      "id": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+      "displayName": "Developers",
+      "members": [],
+      "meta": {
+        "resourceType": "Group"
+      }
+    }
+  ]
+}
+```
+
+#### Get a single SCIM group
+
+```plaintext
+GET /api/scim/v2/application/Groups/:id
+```
+
+Parameters:
+
+| Attribute | Type    | Required | Description                                                                                                               |
+|:----------|:--------|:---------|:--------------------------------------------------------------------------------------------------------------------------|
+| `id`   | string  | yes     | SCIM group ID (UUID format). |
+
+Example request:
+
+```shell
+curl "https://gitlab.example.com/api/scim/v2/application/Groups/86e7d437-1a55-4731-b3a3-2867fb4d2a94" \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": [
+    "urn:ietf:params:scim:schemas:core:2.0:Group"
+  ],
+  "id": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+  "displayName": "Developers",
+  "members": [],
+  "meta": {
+    "resourceType": "Group"
+  }
+}
+```
+
+#### Create a SCIM group
+
+This endpoint associates a SCIM group ID with existing SAML group links that have the same name.
+
+```plaintext
+POST /api/scim/v2/application/Groups
+```
+
+Parameters:
+
+| Attribute      | Type    | Required | Description            |
+|:---------------|:----------|:----|:--------------------------|
+| `displayName` | string      | yes | Name of the group as configured in GitLab SAML group links. |
+| `externalId` | string      | no | Optional SCIM group ID. If not provided, a UUID is generated. |
+
+Example request:
+
+```shell
+curl --verbose --request POST "https://gitlab.example.com/api/scim/v2/application/Groups" \
+     --data '{"displayName":"Developers","schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"]}' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Example response:
+
+```json
+{
+  "schemas": [
+    "urn:ietf:params:scim:schemas:core:2.0:Group"
+  ],
+  "id": "86e7d437-1a55-4731-b3a3-2867fb4d2a94",
+  "displayName": "Developers",
+  "members": [],
+  "meta": {
+    "resourceType": "Group"
+  }
+}
+```
+
+Returns a `201` status code if successful.
+
+{{< alert type="note" >}}
+
+This endpoint does not create GitLab groups. It only associates a SCIM ID with existing SAML group links that have the specified display name.
+
+{{< /alert >}}
+
+#### Update a SCIM group
+
+Updates the members of a SCIM group. Used to add or remove users from GitLab groups associated with the SCIM group.
+
+```plaintext
+PATCH /api/scim/v2/application/Groups/:id
+```
+
+Parameters:
+
+| Attribute | Type    | Required | Description                                                                                                               |
+|:----------|:--------|:---------|:--------------------------------------------------------------------------------------------------------------------------|
+| `id`   | string  | yes     | SCIM group ID. |
+| `Operations`   | JSON array  | yes     | Array of operations to perform. Each operation includes `op` (operation type), `path` (attribute to modify), and `value` (new value). |
+
+Supported operations:
+
+- `add` with path `members` to add members to the group
+- `remove` with path `members` to remove members from the group
+
+Example request to add a member:
+
+```shell
+curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/application/Groups/86e7d437-1a55-4731-b3a3-2867fb4d2a94" \
+     --data '{"schemas":["urn:ietf:params:scim:api:messages:2.0:PatchOp"],"Operations":[{"op":"add","path":"members","value":[{"value":"f0b1d561c-21ff-4092-beab-8154b17f82f2"}]}]}' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Example request to remove a member:
+
+```shell
+curl --verbose --request PATCH "https://gitlab.example.com/api/scim/v2/application/Groups/86e7d437-1a55-4731-b3a3-2867fb4d2a94" \
+     --data '{"schemas":["urn:ietf:params:scim:api:messages:2.0:PatchOp"],"Operations":[{"op":"remove","path":"members","value":[{"value":"f0b1d561c-21ff-4092-beab-8154b17f82f2"}]}]}' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Returns an empty response with a `204` status code if successful.
+
+#### Replace a SCIM group
+
+Replaces all members of a SCIM group with a new set of members.
+
+```plaintext
+PUT /api/scim/v2/application/Groups/:id
+```
+
+Parameters:
+
+| Attribute    | Type   | Required | Description               |
+| ------------ | ------ | -------- | ------------------------- |
+| `id`         | string | yes      | SCIM group ID. |
+| `schemas`    | array  | yes      | SCIM schemas array. Must include `["urn:ietf:params:scim:schemas:core:2.0:Group"]`. |
+| `displayName` | string | yes     | Group display name. |
+| `members`    | array  | no       | Array of members, each with a `value` attribute containing the user's SCIM ID. |
+
+Example request:
+
+```shell
+curl --verbose --request PUT "https://gitlab.example.com/api/scim/v2/application/Groups/86e7d437-1a55-4731-b3a3-2867fb4d2a94" \
+     --data '{"schemas":["urn:ietf:params:scim:schemas:core:2.0:Group"],"displayName":"Developers","members":[{"value":"f0b1d561c-21ff-4092-beab-8154b17f82f2"}]}' \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Response includes the updated group information.
+
+{{< alert type="warning" >}}
+
+The `PUT` operation replaces all group members. Any existing members not included in the request are removed from all GitLab groups associated with this SCIM group.
+
+{{< /alert >}}
 
 ### Available filters
 

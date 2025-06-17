@@ -17,7 +17,7 @@ Here's an overview of what you're going to do:
 1. Create a GitLab project.
 1. Push your Hugo site to GitLab.
 1. Build your Hugo site with a CI/CD pipeline.
-1. Deploy and view your Hugo site with GitLab Pages.
+1. Deploy your Hugo site with GitLab Pages.
 
 ## Before you begin
 
@@ -27,19 +27,19 @@ Here's an overview of what you're going to do:
 
 ## Prepare your Hugo site
 
-First, make sure your Hugo site is ready to push to GitLab. You need to have your content, a theme, and a configuration file.
+First, make sure your Hugo site is ready to push to GitLab. You need to have your content, a theme, and a Hugo configuration file.
 
-Don't *build* your site, as GitLab does that for you. In fact, it's important to **not** upload your `public` folder, as this can cause conflicts later on.
+Don't build your site, as GitLab does that for you. In fact, it's important to **not** upload your `public` folder, as this can cause conflicts later on.
 
-The easiest way to exclude your `public` folder is by creating a `.gitignore` file and adding your `public` folder to it.
+The easiest way to exclude your `public` folder is by creating a `.gitignore` file and adding a new line with `public/` as the text.
 
 You can do this with the following command at the top level of your Hugo project:
 
 ```shell
-echo "/public/" >> .gitignore
+echo "public/" >> .gitignore
 ```
 
-This either adds `/public/` to a new `.gitignore` file or appends it to an existing file.
+This either adds `public/` to a new `.gitignore` file or appends it to an existing file.
 
 OK, your Hugo site is ready to push, after you create a GitLab project.
 
@@ -79,13 +79,26 @@ After you've pushed your site, you should see all the content except the `public
 
 In the next step, you'll use a CI/CD pipeline to build your site and recreate that `public` folder.
 
-## Build your Hugo site
+## Build your Hugo site with a CI/CD pipeline
 
 To build a Hugo site with GitLab, you first need to create a `.gitlab-ci.yml` file to specify instructions for the CI/CD pipeline. If you've not done this before, it might sound daunting. However, GitLab provides everything you need.
 
-### Add your configuration options
+To use the `.gitlab-ci.yml` file shown below, make sure your `hugo.toml` file also indicates a matching theme path. The example `hugo.toml` file below also shows the `baseURL` settings for a GitLab Pages project.
 
-You specify your configuration options in a special file called `.gitlab-ci.yml`. To create a `.gitlab-ci.yml` file:
+```yaml
+baseURL = 'https://<your-namespace>.gitlab.io/<project-path>'
+languageCode = 'en-us'
+title = 'Hugo on GitLab'
+[module]
+[[module.imports]]
+  path = 'github.com/adityatelange/hugo-PaperMod'
+```
+
+### Add your GitLab configuration options
+
+You specify your configuration options in a special file called `.gitlab-ci.yml`.
+
+To create a `.gitlab-ci.yml` file using the Hugo template:
 
 1. On the left sidebar, select **Code > Repository**.
 1. Above the file list, select the plus icon ( + ), then select **New file** from the dropdown list.
@@ -97,10 +110,11 @@ Let's take a closer look at what's happening in this `.gitlab-ci.yml` file.
 
 ```yaml
 default:
-  image: "${CI_TEMPLATE_REGISTRY_HOST}/pages/hugo:latest"
+  image: "hugomods/hugo:exts"
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  THEME_URL: "github.com/adityatelange/hugo-PaperMod"
 
 test:  # builds and tests your site
   script:
@@ -122,7 +136,7 @@ create-pages:  # a user-defined job that builds your pages and saves them to the
 
 - `image` specifies an image from the GitLab Registry that contains Hugo. This image is used to create the environment where your site is built.
 - The `GIT_SUBMODULE_STRATEGY` variable ensures GitLab also looks at your Git submodules, which are sometimes used for Hugo themes.
-- `test` is a job where you can run tests on your Hugo site before it's deployed. The test job runs in all cases, *except* if you're committing a change to your default branch. You place any commands under `script`. The command in this job - `hugo`- builds your site so it can be tested.
+- `test` is a job where you can run tests on your Hugo site before it's deployed. The test job runs in all cases, except if you're committing a change to your default branch. You place any commands under `script`. The command in this job - `hugo`- builds your site so it can be tested.
 - `deploy-pages` is a user-defined job for creating pages from Static Site Generators. Again, this job uses
   [user-defined job names](../../user/project/pages/_index.md#user-defined-job-names) and runs the `hugo` command to
   build your site. Then `pages: true` specifies that this is a Pages job and `artifacts` specifies that those resulting pages are added to a directory called `public`. With
@@ -133,21 +147,17 @@ You don't need to add anything else to this file. When you're ready, select **Co
 
 You've just triggered a pipeline to build your Hugo site!
 
-## Deploy and view your Hugo site
+## Deploy your Hugo site with GitLab Pages
 
 If you're quick, you can see GitLab build and deploy your site.
 
 From the left-hand navigation, select **Build > Pipelines**.
 
-You'll see that GitLab has run your `test` and `deploy-pages` jobs.
+You see that GitLab has run your `test` and `deploy-pages` jobs.
 
-To view your site, on the left-hand navigation, select **Deploy > Pages**
+To view your site, when the pipeline is finished, on the left-hand navigation, select **Deploy > Pages** to find the link to your Pages website.
 
-The `pages` job in your pipeline has deployed the contents of your `public` directory to GitLab Pages. Under **Access pages**, you should see the link in the format: `https://<your-namespace>.gitlab.io/<project-path>`.
-
-You won't see this link if you haven't yet run your pipeline.
-
-Select the displayed link to view your site.
+### Add your Hugo configuration options
 
 When you first view your Hugo site, the stylesheet won't work. Don't worry, you need to make a small change in your Hugo configuration file. Hugo needs to know the URL of your GitLab Pages site so it can build relative links to stylesheets and other assets:
 
@@ -155,18 +165,28 @@ When you first view your Hugo site, the stylesheet won't work. Don't worry, you 
 1. Change the value of the `BaseURL` parameter to match the URL that appears in your GitLab Pages settings.
 1. Push your changed file to GitLab, and your pipeline is triggered again.
 
-When the pipeline has finished, your site should be working at the URL you just specified.
+### Find your GitLab Pages URL
 
-If your Hugo site is stored in a private repository, you'll need to change your permissions so the Pages site is visible. Otherwise, it's visible only to authorized users. To change your permissions:
+When the pipeline is finished, go to **Deploy > Pages** to find the link to your Pages website.
+
+The `pages` job in your pipeline has deployed the contents of your `public` directory to GitLab Pages. Under **Access pages**, you should see the link in the format: `https://<your-namespace>.gitlab.io/<project-path>`.
+
+You won't see this link if you haven't yet run your pipeline.
+
+Select the displayed link to view your site. You need to change the `BaseURL` setting in your Hugo configuration to match the GitLab deployment URL.
+
+### Set your GitLab Pages Visibility
+
+If your Hugo site is stored in a private repository, you'll need to change your permissions so the Pages site is visible. Otherwise, it's visible to project members only. To change the site permissions:
 
 1. Go to **Settings > General > Visibility, project features, permissions**.
 1. Scroll down to the **Pages** section and select **Everyone** from the dropdown list.
 1. Select **Save changes**.
 
-Now everyone can see it.
+Now everyone can see the site at the URL.
 
 You've built, tested, and deployed your Hugo site with GitLab. Great work!
 
-Every time you change your site and push it to GitLab, your site is built, tested, and deployed automatically.
+Each time you change your site and push it to GitLab, your site is built, tested, and deployed automatically, using the rules in the `.gitlab-ci.yml` file.
 
 To learn more about CI/CD pipelines, try [this tutorial on how to create a complex pipeline](../../ci/quick_start/tutorial.md). You can also learn more about the [different types of testing available](../../ci/testing/_index.md).

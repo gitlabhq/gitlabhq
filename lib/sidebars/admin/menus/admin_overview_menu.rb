@@ -32,74 +32,79 @@ module Sidebars
           { testid: 'admin-overview-submenu-content' }
         end
 
+        override :render_with_abilities
+        def render_with_abilities
+          super + %i[access_admin_area]
+        end
+
         private
 
         def dashboard_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Dashboard'),
             link: admin_root_path,
             active_routes: { controller: 'dashboard' },
             item_id: :dashboard
-          )
+          ) { can?(current_user, :read_application_statistics) }
         end
 
         def projects_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Projects'),
             link: admin_projects_path,
             active_routes: { controller: 'admin/projects' },
             item_id: :projects
-          )
+          ) { can?(current_user, :admin_all_resources) }
         end
 
         def users_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Users'),
             link: admin_users_path,
             active_routes: { controller: 'users' },
             item_id: :users,
             container_html_options: { 'data-testid': 'admin-overview-users-link' }
-          )
+          ) { can?(current_user, :read_admin_users) }
         end
 
         def groups_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Groups'),
             link: admin_groups_path,
             active_routes: { controller: 'groups' },
             item_id: :groups,
             container_html_options: { 'data-testid': 'admin-overview-groups-link' }
-          )
+          ) { can?(current_user, :admin_all_resources) }
         end
 
         def organizations_menu_item
           return unless Feature.enabled?(:ui_for_organizations, current_user)
 
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Organizations'),
             link: admin_organizations_path,
             active_routes: { controller: 'organizations' },
             item_id: :organizations,
             container_html_options: { 'data-testid': 'admin-overview-organizations-link' }
-          )
+          ) { can?(current_user, :admin_all_resources) }
         end
 
         def topics_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Topics'),
             link: admin_topics_path,
             active_routes: { controller: 'admin/topics' },
             item_id: :topics
-          )
+          ) { can?(current_user, :admin_all_resources) }
         end
 
         def gitaly_servers_menu_item
-          ::Sidebars::MenuItem.new(
+          build_menu_item(
             title: _('Gitaly servers'),
             link: admin_gitaly_servers_path,
             active_routes: { controller: 'gitaly_servers' },
             item_id: :gitaly_servers
-          )
+          ) { can?(current_user, :read_admin_gitaly_servers) }
         end
       end
     end

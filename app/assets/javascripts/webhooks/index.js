@@ -14,6 +14,7 @@ export default () => {
     description: initialDescription,
     url: initialUrl,
     urlVariables,
+    secretToken: initialSecretToken,
     customHeaders,
   } = el.dataset;
 
@@ -25,6 +26,7 @@ export default () => {
         props: {
           initialName,
           initialDescription,
+          initialSecretToken,
           initialUrl,
           initialUrlVariables: JSON.parse(urlVariables),
           initialCustomHeaders: JSON.parse(customHeaders),

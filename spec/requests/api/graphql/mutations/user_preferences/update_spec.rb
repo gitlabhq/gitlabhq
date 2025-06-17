@@ -18,7 +18,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       'organizationGroupsProjectsSort' => 'NAME_DESC',
       'visibilityPipelineIdType' => 'IID',
       'useWorkItemsView' => true,
-      'mergeRequestDashboardListType' => 'ROLE_BASED'
+      'mergeRequestDashboardListType' => 'ROLE_BASED',
+      'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false }
     }
   end
 
@@ -26,7 +27,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
   let(:mutation_response) { graphql_mutation_response(:userPreferencesUpdate) }
 
   before do
-    stub_application_setting(vscode_extension_marketplace: {
+    Gitlab::CurrentSettings.update!(vscode_extension_marketplace: {
       enabled: false,
       preset: 'custom',
       custom_values: {
@@ -50,6 +51,9 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
       expect(mutation_response['userPreferences']['useWorkItemsView']).to eq(true)
       expect(mutation_response['userPreferences']['mergeRequestDashboardListType']).to eq('ROLE_BASED')
+      expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
+        'shouldOpenItemsInSidePanel' => false
+      })
 
       expect(current_user.user_preference.persisted?).to eq(true)
       expect(current_user.user_preference.extensions_marketplace_opt_in_status).to eq('enabled')
@@ -58,6 +62,7 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
+      expect(current_user.user_preference.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
     end
   end
 
@@ -71,7 +76,8 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
         organization_groups_projects_sort: 'NAME_DESC',
         visibility_pipeline_id_type: 'id',
         use_work_items_view: false,
-        merge_request_dashboard_list_type: 'action_based'
+        merge_request_dashboard_list_type: 'action_based',
+        work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true }
       }
     end
 
@@ -90,11 +96,17 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
       expect(mutation_response['userPreferences']['organizationGroupsProjectsDisplay']).to eq('GROUPS')
       expect(mutation_response['userPreferences']['organizationGroupsProjectsSort']).to eq('NAME_DESC')
       expect(mutation_response['userPreferences']['visibilityPipelineIdType']).to eq('IID')
+      expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({
+        'shouldOpenItemsInSidePanel' => false
+      })
 
       expect(current_user.user_preference.issues_sort).to eq(Types::IssueSortEnum.values[sort_value].value.to_s)
       expect(current_user.user_preference.visibility_pipeline_id_type).to eq('iid')
       expect(current_user.user_preference.use_work_items_view).to eq(true)
       expect(current_user.user_preference.merge_request_dashboard_list_type).to eq('role_based')
+      expect(current_user.user_preference.work_items_display_settings).to eq({
+        'shouldOpenItemsInSidePanel' => false
+      })
     end
 
     context 'when input has nil attributes' do
@@ -126,8 +138,69 @@ RSpec.describe Mutations::UserPreferences::Update, feature_category: :user_profi
           organization_groups_projects_display: init_user_preference[:organization_groups_projects_display],
           extensions_marketplace_opt_in_status: init_user_preference[:extensions_marketplace_opt_in_status],
           visibility_pipeline_id_type: init_user_preference[:visibility_pipeline_id_type],
-          use_work_items_view: init_user_preference[:use_work_items_view]
+          use_work_items_view: init_user_preference[:use_work_items_view],
+          work_items_display_settings: init_user_preference[:work_items_display_settings]
         })
+      end
+    end
+  end
+
+  describe 'work_items_display_settings specific tests' do
+    context 'when updating work_items_display_settings' do
+      let(:input) do
+        {
+          'workItemsDisplaySettings' => { 'shouldOpenItemsInSidePanel' => false }
+        }
+      end
+
+      before do
+        current_user.create_user_preference!(
+          work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true }
+        )
+      end
+
+      it 'merges with existing settings' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(current_user.user_preference.reload.work_items_display_settings).to eq({
+          'shouldOpenItemsInSidePanel' => false
+        })
+      end
+    end
+
+    context 'when work_items_display_settings has invalid schema' do
+      let(:input) do
+        {
+          'workItemsDisplaySettings' => { 'invalidKey' => 'value' }
+        }
+      end
+
+      it 'returns validation error' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['errors']).to include('Work items display settings must be a valid json schema')
+        expect(mutation_response['userPreferences']).to be_nil
+      end
+    end
+
+    context 'when work_items_display_settings is empty' do
+      let(:input) do
+        {
+          'workItemsDisplaySettings' => {}
+        }
+      end
+
+      before do
+        current_user.user_preference.update!(work_items_display_settings: { 'shouldOpenItemsInSidePanel' => true })
+      end
+
+      it 'allows empty object' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(mutation_response['userPreferences']['workItemsDisplaySettings']).to eq({})
       end
     end
   end

@@ -1,5 +1,6 @@
 <script>
 import { clamp } from 'lodash';
+import { fetchPolicies } from '~/lib/graphql';
 import { QUERIES } from '../constants';
 import eventHub from '../event_hub';
 
@@ -44,9 +45,6 @@ export default {
       },
     },
     count: {
-      context: {
-        batchKey: 'MergeRequestListsCounts',
-      },
       query() {
         return QUERIES[this.query].countQuery;
       },
@@ -54,11 +52,9 @@ export default {
         return d.currentUser?.mergeRequests?.count;
       },
       variables() {
-        return {
-          ...this.variables,
-          perPage: PER_PAGE,
-        };
+        return this.variables;
       },
+      fetchPolicy: fetchPolicies.CACHE_ONLY,
       skip() {
         return this.hideCount;
       },

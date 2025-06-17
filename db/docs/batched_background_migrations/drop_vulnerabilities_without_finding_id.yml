@@ -1,8 +1,0 @@
----
-migration_job_name: DropVulnerabilitiesWithoutFindingId
-description: Remove Vulnerabilities without associated finding_id
-feature_category: vulnerability_management
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140532
-milestone: '16.8'
-queued_migration_version: 20231221223259
-finalized_by: 20240214204757

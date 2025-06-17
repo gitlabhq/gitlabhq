@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Set up Postfix for incoming email
 ---
@@ -177,7 +177,7 @@ Courier, which we install later to add IMAP authentication, requires mailboxes t
    If `mail` returns an error `Maildir: Is a directory` then your
    version of `mail` doesn't support Maildir style mailboxes. Install
    `heirloom-mailx` by running `sudo apt-get install heirloom-mailx`. Then,
-   try the above steps again, substituting `heirloom-mailx` for the `mail`
+   try the previous steps again, substituting `heirloom-mailx` for the `mail`
    command.
 
 1. Sign out of the `incoming` account, and go back to being `root`:

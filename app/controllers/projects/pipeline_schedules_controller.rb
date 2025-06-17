@@ -12,10 +12,6 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :authorize_update_pipeline_schedule!, only: [:edit, :update]
   before_action :authorize_admin_pipeline_schedule!, only: [:take_ownership, :destroy]
 
-  before_action do
-    push_frontend_feature_flag(:ci_inputs_for_pipelines, project)
-  end
-
   feature_category :continuous_integration
   urgency :low
 

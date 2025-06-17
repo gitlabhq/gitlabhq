@@ -1,8 +1,6 @@
 - page_title _('Import repository')
-%h1.page-title.gl-text-size-h-display
-  = _('Import repository')
 
-%hr
+= render ::Layouts::PageHeadingComponent.new(_('Import repository'))
 
 - if @project.import_failed?
   = render Pajamas::AlertComponent.new(title: s_('Import|The repository could not be imported.'),

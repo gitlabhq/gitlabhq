@@ -239,28 +239,118 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
               ))
             end
           end
-
-          def descendant_ids(data)
-            return [] if data.blank?
-
-            data = Array.wrap(data)
-
-            ids = []
-            data.each do |item|
-              ids << item['id']
-              ids << descendant_ids(item['children'])
-            end
-
-            ids.flatten
-          end
         end
 
         it 'includes pagination headers' do
-          2.times { |i| create(:group, :public, parent: public_subgroup, name: "filterme#{i}") }
+          create_list(:group, 2, :public, parent: public_subgroup)
 
-          get :index, params: { group_id: group.to_param, filter: 'filter', per_page: 1 }, format: :json
+          get :index, params: { group_id: group.to_param, per_page: 1 }, format: :json
 
           expect(response).to include_pagination_headers
+        end
+      end
+
+      context 'with active parameter' do
+        let_it_be(:group) { create(:group) }
+
+        let_it_be(:active_subgroup) { create(:group, parent: group) }
+        let_it_be(:active_project) { create(:project, :public, group: group) }
+
+        let_it_be(:inactive_subgroup) { create(:group, :archived, parent: group) }
+        let_it_be(:inactive_project) { create(:project, :archived, :public, group: group) }
+
+        subject(:make_request) { get :index, params: { group_id: group.to_param, active: active_param }, format: :json }
+
+        shared_examples 'request with no parameter' do
+          it 'returns direct child', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to contain_exactly(
+              active_subgroup.id,
+              active_project.id,
+              inactive_subgroup.id,
+              inactive_project.id
+            )
+          end
+        end
+
+        context 'when true' do
+          let_it_be(:active_param) { true }
+
+          it 'returns active direct children', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to include(active_subgroup.id, active_project.id)
+            expect(descendant_ids(json_response)).not_to include(inactive_subgroup.id, inactive_project.id)
+          end
+
+          context 'when `group_descendants_active_filter` flag is disabled' do
+            before do
+              stub_feature_flags(group_descendants_active_filter: false)
+            end
+
+            it_behaves_like 'request with no parameter'
+          end
+        end
+
+        context 'when false' do
+          let_it_be(:active_param) { false }
+
+          it 'returns inactive direct children', :aggregate_failures do
+            make_request
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(descendant_ids(json_response)).to include(inactive_subgroup.id, inactive_project.id)
+            expect(descendant_ids(json_response)).not_to include(active_subgroup.id, active_project.id)
+          end
+
+          context 'when active subgroup has children' do
+            let_it_be(:active_descendant_group) { create(:group, parent: active_subgroup) }
+            let_it_be(:active_descendant_project) { create(:project, :public, group: active_subgroup) }
+
+            let_it_be(:inactive_descendant_group) { create(:group, :archived, parent: active_subgroup) }
+            let_it_be(:inactive_descendant_project) { create(:project, :public, :archived, group: active_subgroup) }
+
+            it 'returns inactive descendants', :aggregate_failures do
+              make_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(descendant_ids(json_response))
+                .to include(inactive_descendant_group.id, inactive_descendant_project.id)
+              expect(descendant_ids(json_response))
+                .not_to include(active_descendant_group.id, active_descendant_project.id)
+            end
+          end
+
+          context 'when inactive subgroup has children' do
+            let_it_be(:active_descendant_group) { create(:group, parent: inactive_subgroup) }
+            let_it_be(:active_descendant_project) { create(:project, :public, group: inactive_subgroup) }
+
+            let_it_be(:inactive_descendant_group) { create(:group, :archived, parent: inactive_subgroup) }
+            let_it_be(:inactive_descendant_project) { create(:project, :public, :archived, group: inactive_subgroup) }
+
+            it 'returns all descendants' do
+              make_request
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(descendant_ids(json_response)).to include(
+                active_descendant_group.id,
+                active_descendant_project.id,
+                inactive_descendant_group.id,
+                inactive_descendant_project.id
+              )
+            end
+          end
+
+          context 'when `group_descendants_active_filter` flag is disabled' do
+            before do
+              stub_feature_flags(group_descendants_active_filter: false)
+            end
+
+            it_behaves_like 'request with no parameter'
+          end
         end
       end
 
@@ -340,7 +430,9 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
             matched_project.update!(namespace: public_subgroup)
 
-            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies)
+            # TODO remove + 1 after we stop manually reloading namespace_details in
+            # https://gitlab.com/gitlab-org/gitlab/-/issues/545723
+            expect { get_filtered_list }.not_to exceed_query_limit(control).with_threshold(extra_queries_for_hierarchies + 1)
           end
         end
       end
@@ -420,6 +512,12 @@ RSpec.describe Groups::ChildrenController, feature_category: :groups_and_project
 
         expect(response).to have_gitlab_http_status(:ok)
       end
+    end
+  end
+
+  def descendant_ids(data)
+    Array.wrap(data).flat_map do |item|
+      [item['id'], descendant_ids(item['children'])].flatten
     end
   end
 end

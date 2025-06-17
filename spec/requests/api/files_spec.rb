@@ -123,11 +123,25 @@ RSpec.describe API::Files, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(expected_status)
       end
 
+      context 'when the user has agentic chat permission for the project' do
+        before do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(user, :access_duo_agentic_chat, project)
+                                              .and_return(true)
+        end
+
+        it 'is successful' do
+          file_action
+
+          expect(response).to have_gitlab_http_status(expected_status)
+        end
+      end
+
       context 'when the user does not have duo_workflow permission for the project' do
         before do
           allow(Ability).to receive(:allowed?).and_call_original
           allow(Ability).to receive(:allowed?).with(user, :duo_workflow, project)
-                                            .and_return(false)
+            .and_return(false)
         end
 
         it 'returns a forbidden error' do

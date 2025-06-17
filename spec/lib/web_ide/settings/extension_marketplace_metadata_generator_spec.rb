@@ -46,26 +46,17 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
   where(
     :user_exists,
     :opt_in_status,
-    :flag_exists,
-    :flag_enabled,
     :app_settings_enabled,
     :expected_vscode_extension_marketplace_metadata
   ) do
     # @formatter:off - Turn off RubyMine autoformatting
-
-    # rubocop:disable Layout/LineLength -- Parameterized rows overflow and its better than the alternative
-    # user exists | opt_in_status | flag exists | flag_enabled | app_settings_enabled | expected_settings
-    false         | :undefined    | false       | :undefined   | true                 | { enabled: false, disabled_reason: :no_user }
-    false         | :undefined    | true        | true         | true                 | { enabled: false, disabled_reason: :no_user }
-    true          | :unset        | false       | :undefined   | true                 | { enabled: false, disabled_reason: :no_flag }
-    true          | :unset        | true        | false        | true                 | { enabled: false, disabled_reason: :instance_disabled }
-    true          | :unset        | true        | true         | true                 | { enabled: false, disabled_reason: :opt_in_unset }
-    true          | :disabled     | true        | true         | true                 | { enabled: false, disabled_reason: :opt_in_disabled }
-    true          | :enabled      | true        | true         | false                | { enabled: false, disabled_reason: :instance_disabled }
-    true          | :enabled      | true        | true         | true                 | { enabled: true }
-    true          | :invalid      | true        | true         | true                 | RuntimeError
-    # rubocop:enable Layout/LineLength
-
+    # user exists | opt_in_status | app_settings_enabled | expected_settings
+    false         | :undefined    | true                 | { enabled: false, disabled_reason: :no_user }
+    true          | :unset        | true                 | { enabled: false, disabled_reason: :opt_in_unset }
+    true          | :disabled     | true                 | { enabled: false, disabled_reason: :opt_in_disabled }
+    true          | :enabled      | false                | { enabled: false, disabled_reason: :instance_disabled }
+    true          | :enabled      | true                 | { enabled: true }
+    true          | :invalid      | true                 | RuntimeError
     # @formatter:on
   end
 
@@ -87,7 +78,6 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
     let(:options) do
       options = {}
       options[:user] = user if user_exists
-      options[:vscode_extension_marketplace_feature_flag_enabled] = flag_enabled if flag_exists
       options
     end
 
@@ -100,7 +90,6 @@ RSpec.describe WebIde::Settings::ExtensionMarketplaceMetadataGenerator, feature_
       allow(user).to receive(:enterprise_user?).and_return(false)
       allow(enums).to receive(:statuses).and_return({ unset: :unset, enabled: :enabled, disabled: :disabled })
       allow(::WebIde::ExtensionMarketplace).to receive(:feature_enabled_from_application_settings?)
-        .with(user: user)
         .and_return(app_settings_enabled)
     end
 

@@ -11,8 +11,7 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project, :public, group: group) }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
   let_it_be(:job) { create(:ci_build, :running, user: user, project: project) }
 
   let(:snowplow_gitlab_standard_context) { snowplow_context }
@@ -442,9 +441,9 @@ RSpec.describe API::PypiPackages, feature_category: :package_registry do
 
       it 'does not create a new package', :aggregate_failures do
         expect { subject }
-          .to change { Packages::Pypi::Package.for_projects(project).count }.by(0)
+          .to not_change { Packages::Pypi::Package.for_projects(project).count }
           .and change { Packages::PackageFile.count }.by(1)
-          .and change { Packages::Pypi::Metadatum.count }.by(0)
+          .and not_change { Packages::Pypi::Metadatum.count }
         expect(response).to have_gitlab_http_status(:created)
       end
 

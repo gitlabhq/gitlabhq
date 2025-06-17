@@ -68,7 +68,7 @@ By default, when you run a pipeline:
   - On an **existing, non-default branch**, the content of all commits from the last pushed commit to the latest commit is scanned.
 - On a **merge request**, the content of all commits on the branch is scanned. If the analyzer can't access every commit,
   the content of all commits from the parent to the latest commit is scanned. To scan all commits, you must enable
-  [merge request pipelines](../../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+  [merge request pipelines](../../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 To override the default behavior, use the [available CI/CD variables](configure.md#available-cicd-variables).
 
@@ -140,8 +140,8 @@ URLs.
 
 When a secret is detected a vulnerability is created for it. The vulnerability remains as "Still
 detected" even if the secret is removed from the scanned file and pipeline secret detection has been
-run again. This is because the secret remains in the Git repository's history. To remove a secret
-from the Git repository's history, see
+run again. This is because the leaked secret continues to be a security risk until it has been revoked.
+Removed secrets also persist in the Git history. To remove a secret from the Git repository's history, see
 [Redact text from repository](../../../project/merge_requests/revert_changes.md#redact-text-from-repository).
 
 ## Enable the analyzer

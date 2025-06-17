@@ -1,0 +1,29 @@
+fragment Group on Group {
+  id
+  name
+  fullPath
+  fullName
+  parent {
+    id
+  }
+  webUrl
+  descriptionHtml
+  avatarUrl
+  descendantGroupsCount
+  projectsCount
+  groupMembersCount
+  visibility
+  createdAt
+  updatedAt
+  userPermissions {
+    canLeave
+    removeGroup
+    viewEditPage
+  }
+  maxAccessLevel {
+    integerValue
+  }
+  isLinkedToSubscription
+  markedForDeletionOn
+  permanentDeletionDate
+}

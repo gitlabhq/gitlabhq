@@ -1,6 +1,11 @@
 import * as timeago from 'timeago.js';
+import { diffSec } from 'timeago.js/lib/utils/date';
 import { newDate } from '~/lib/utils/datetime/date_calculation_utility';
-import { DEFAULT_DATE_TIME_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import {
+  DEFAULT_DATE_TIME_FORMAT,
+  DATE_ONLY_FORMAT,
+  localeDateFormat,
+} from '~/lib/utils/datetime/locale_dateformat';
 import { languageCode, getPluralFormIndex, s__, n__ } from '~/locale';
 
 /**
@@ -149,10 +154,36 @@ timeago.register(timeagoLanguageCode, memoizedLocale());
 timeago.register(`${timeagoLanguageCode}-remaining`, memoizedLocaleRemaining());
 timeago.register(`${timeagoLanguageCode}-duration`, memoizedLocaleDuration());
 
-export const getTimeago = (formatName) =>
-  window.gon?.time_display_relative === false
-    ? localeDateFormat[formatName] ?? localeDateFormat[DEFAULT_DATE_TIME_FORMAT]
-    : timeago;
+const ONE_YEAR_IN_SECONDS = 60 * 60 * 24 * 365;
+
+/*
+  Relative times that are over a year can be confusing to users.
+  "1 year ago" could mean 1 year and 1 day or 1 year and 364 days.
+  To avoid this confusion, we fallback to showing the absolute date.
+*/
+const timeagoWithDateFallback = {
+  format: (date, locale, opts) => {
+    const diffInSeconds = diffSec(date, opts && opts.relativeDate);
+
+    if (Math.abs(diffInSeconds) >= ONE_YEAR_IN_SECONDS) {
+      return localeDateFormat[DATE_ONLY_FORMAT].format(date);
+    }
+
+    return timeago.format(date, locale, opts);
+  },
+};
+
+export const getTimeago = (absoluteTimeformatName, { showDateWhenOverAYear = true } = {}) => {
+  if (window.gon?.time_display_relative === false) {
+    return localeDateFormat[absoluteTimeformatName] ?? localeDateFormat[DEFAULT_DATE_TIME_FORMAT];
+  }
+
+  if (showDateWhenOverAYear && gon.features?.showDateWhenRelativeTimeOverAYear) {
+    return timeagoWithDateFallback;
+  }
+
+  return timeago;
+};
 
 /**
  * For the given elements, sets a tooltip with a formatted date.

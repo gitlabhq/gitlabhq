@@ -20,12 +20,9 @@ module RapidDiffs
           @position == :old ? @line.old_pos : @line.new_pos
         end
 
-        def legacy_id
-          @line.legacy_id(@file_path)
-        end
-
         def change_type
           return unless @line
+          return 'meta' if @line.meta?
           return 'added' if @line.added?
 
           'removed' if @line.removed?
@@ -46,7 +43,7 @@ module RapidDiffs
         end
 
         def visible?
-          return false unless @line
+          return false unless @line && !@line.meta?
 
           case @position
           when :old then !@line.added?

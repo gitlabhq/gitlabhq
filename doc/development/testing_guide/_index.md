@@ -1,14 +1,14 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Testing standards and style guidelines
 ---
 
 This document describes various guidelines and best practices for automated
 testing of the GitLab project.
 
-It is meant to be an _extension_ of the
+It is meant to be an extension of the
 [thoughtbot testing style guide](https://github.com/thoughtbot/guides/tree/master/testing-rspec). If
 this guide defines a rule that contradicts the thoughtbot guide, this guide
 takes precedence. Some guidelines may be repeated verbatim to stress their

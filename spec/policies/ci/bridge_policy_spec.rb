@@ -18,21 +18,42 @@ RSpec.describe Ci::BridgePolicy do
   describe '#play_job' do
     context 'when downstream project exists' do
       before do
+        project.add_developer(user) if can_update_build
         fake_access = double('Gitlab::UserAccess')
         expect(fake_access).to receive(:can_update_branch?).with('master').and_return(can_update_branch)
         expect(Gitlab::UserAccess).to receive(:new).with(user, container: downstream_project).and_return(fake_access)
       end
 
-      context 'when user can update the downstream branch' do
+      context 'when user can update the build and the downstream branch' do
         let(:can_update_branch) { true }
+        let(:can_update_build) { true }
 
         it 'allows' do
           expect(policy).to be_allowed :play_job
         end
       end
 
-      context 'when user can not update the downstream branch' do
+      context 'when user can update the downstream branch but not the build' do
+        let(:can_update_branch) { true }
+        let(:can_update_build) { false }
+
+        it 'does not allow' do
+          expect(policy).not_to be_allowed :play_job
+        end
+      end
+
+      context 'when user can update the build but not the downstream branch' do
         let(:can_update_branch) { false }
+        let(:can_update_build) { true }
+
+        it 'does not allow' do
+          expect(policy).not_to be_allowed :play_job
+        end
+      end
+
+      context 'when user can update neither the build nor the downstream branch' do
+        let(:can_update_branch) { false }
+        let(:can_update_build) { false }
 
         it 'does not allow' do
           expect(policy).not_to be_allowed :play_job
@@ -42,6 +63,7 @@ RSpec.describe Ci::BridgePolicy do
 
     context 'when downstream project does not exist' do
       before do
+        project.add_developer(user)
         bridge.update!(options: { trigger: { project: 'deleted-project' } })
       end
 

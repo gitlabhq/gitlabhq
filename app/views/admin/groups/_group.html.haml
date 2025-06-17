@@ -11,7 +11,7 @@
 
     - if group.description.present?
       .description
-        = markdown_field(group, :description)
+        = markdown_field(group.namespace_details, :description)
 
   .stats.gl-text-subtle.gl-shrink-0.gl-hidden.sm:gl-flex
     = gl_badge_tag storage_counter(group.storage_size)

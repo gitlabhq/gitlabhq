@@ -399,4 +399,39 @@ RSpec.describe CommitsHelper do
       end
     end
   end
+
+  describe '#path_to_browse_file_or_directory' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:ref) { 'my-branch' }
+
+    before do
+      assign(:repo, project.repository)
+    end
+
+    context 'if path is empty' do
+      let(:path) { '' }
+
+      it 'links to tree at root directory' do
+        expect(helper.path_to_browse_file_or_directory(project, ref, path)).to eq("/#{project.full_path}/-/tree/#{ref}")
+      end
+    end
+
+    context 'if the path is a directory' do
+      let(:path) { 'path/to/directory' }
+
+      it 'links to tree at path' do
+        allow(helper).to receive(:commit_blob).and_return(nil)
+        expect(helper.path_to_browse_file_or_directory(project, ref, path)).to eq("/#{project.full_path}/-/tree/#{ref}/#{path}")
+      end
+    end
+
+    context 'if the path is a file' do
+      let(:path) { 'path/to/file.txt' }
+
+      it 'links to blob at path' do
+        allow(helper).to receive(:commit_blob).and_return(true)
+        expect(helper.path_to_browse_file_or_directory(project, ref, path)).to eq("/#{project.full_path}/-/blob/#{ref}/#{path}")
+      end
+    end
+  end
 end

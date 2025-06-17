@@ -1,7 +1,6 @@
 ---
 RSpec/AvoidConditionalStatements:
   Exclude:
-    - 'ee/spec/features/admin/admin_settings_spec.rb'
     - 'ee/spec/features/analytics/code_analytics_spec.rb'
     - 'ee/spec/features/billings/billing_plans_spec.rb'
     - 'ee/spec/features/boards/scoped_issue_board_spec.rb'
@@ -63,6 +62,5 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/projects/settings/user_transfers_a_project_spec.rb'
     - 'spec/features/projects/show/user_sees_git_instructions_spec.rb'
     - 'spec/features/projects_spec.rb'
-    - 'spec/features/search/user_uses_header_search_field_spec.rb'
     - 'spec/features/usage_stats_consent_spec.rb'
     - 'spec/features/users/login_spec.rb'

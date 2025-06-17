@@ -442,7 +442,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                     },
                     {
                       "name" => "release",
-                      "script" => [a_string_including("glab -R $CI_PROJECT_PATH release create")],
+                      "script" => [a_string_including("glab release create -R $CI_PROJECT_PATH")],
                       "timeout" => 3600,
                       "when" => "on_success",
                       "allow_failure" => false
@@ -1091,7 +1091,7 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             }
           end
 
-          it 'returns the image with docker options' do
+          it 'returns the image with kubernetes options' do
             request_job
 
             expect(response).to have_gitlab_http_status(:created)
@@ -1101,6 +1101,41 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                            'executor_opts' => {
                              'kubernetes' => {
                                'user' => '1001'
+                             }
+                           },
+                           'pull_policy' => nil,
+                           'entrypoint' => nil,
+                           'ports' => [] }
+            )
+          end
+        end
+
+        context 'when image has kubernetes options with user an int' do
+          let(:job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
+
+          let(:options) do
+            {
+              image: {
+                name: 'ruby',
+                executor_opts: {
+                  kubernetes: {
+                    user: 1001
+                  }
+                }
+              }
+            }
+          end
+
+          it 'returns the image with kubernetes options' do
+            request_job
+
+            expect(response).to have_gitlab_http_status(:created)
+            expect(json_response).to include(
+              'id' => job.id,
+              'image' => { 'name' => 'ruby',
+                           'executor_opts' => {
+                             'kubernetes' => {
+                               'user' => 1001
                              }
                            },
                            'pull_policy' => nil,

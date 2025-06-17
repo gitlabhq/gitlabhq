@@ -59,6 +59,12 @@ valid_image_with_kubernetes_uid:
     kubernetes:
       user: "1001"
 
+valid_image_with_kubernetes_uid_int:
+  image:
+    name: ubuntu:latest
+    kubernetes:
+      user: 1001
+
 valid_image_with_kubernetes_uid_and_gid:
   image:
     name: ubuntu:latest

@@ -1,4 +1,4 @@
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -31,6 +31,7 @@ describe('BoardAddNewColumn', () => {
 
   const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
   const findAddNewColumnForm = () => wrapper.findComponent(BoardAddNewColumnForm);
+  const findDropdownButton = () => wrapper.findComponent(GlButton);
   const selectLabel = (id) => {
     findDropdown().vm.$emit('select', id);
   };
@@ -75,6 +76,7 @@ describe('BoardAddNewColumn', () => {
       },
       stubs: {
         GlCollapsibleListbox,
+        GlButton,
       },
     });
 
@@ -183,6 +185,29 @@ describe('BoardAddNewColumn', () => {
       await waitForPromises();
 
       expect(cacheUpdates.setError).toHaveBeenCalled();
+    });
+  });
+
+  describe('Accessibility features', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('has the dropdown button with correct ID attribute', () => {
+      expect(findDropdownButton().attributes('id')).toBe('board-value-dropdown');
+    });
+
+    it('should show dropdown button in a valid state', () => {
+      expect(findDropdownButton().classes()).not.toContain('!gl-shadow-inner-1-red-400');
+    });
+
+    it('adds proper error styling to dropdown button when field is invalid', async () => {
+      selectLabel('');
+      findAddNewColumnForm().vm.$emit('add-list');
+
+      await nextTick();
+
+      expect(findDropdownButton().classes()).toContain('!gl-shadow-inner-1-red-400');
     });
   });
 });

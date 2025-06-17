@@ -28,7 +28,8 @@ module Gitlab
           # @param scope [Symbol] the scope to check configuration for (default: :admin_mode)
           # @return [Boolean] true if configuration exists
           def enabled_for_provider?(provider_name:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
-            has_required_claims?(provider_name, scope)
+            has_required_claims?(provider_name, scope) ||
+              has_included_claims?(provider_name, scope)
           end
 
           # Verifies if step-up authentication has succeeded for any provider
@@ -59,7 +60,19 @@ module Gitlab
           # @param scope [Symbol] the scope to validate conditions for (default: :admin_mode)
           # @return [Boolean] true if all conditions are fulfilled
           def conditions_fulfilled?(oauth_extra_metadata:, provider:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
-            required_conditions_fulfilled?(oauth_extra_metadata: oauth_extra_metadata, provider: provider, scope: scope)
+            conditions = []
+
+            if has_required_claims?(provider, scope)
+              conditions << required_conditions_fulfilled?(oauth_extra_metadata: oauth_extra_metadata,
+                provider: provider, scope: scope)
+            end
+
+            if has_included_claims?(provider, scope)
+              conditions << included_conditions_fulfilled?(oauth_extra_metadata: oauth_extra_metadata,
+                provider: provider, scope: scope)
+            end
+
+            conditions.present? && conditions.all?
           end
 
           def build_flow(provider:, session:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
@@ -73,7 +86,10 @@ module Gitlab
           # @param scope [String] The scope of the authentication request, default is STEP_UP_AUTH_SCOPE_ADMIN_MODE.
           # @return [Hash] A hash containing only the relevant ID token claims.
           def slice_relevant_id_token_claims(oauth_raw_info:, provider:, scope: STEP_UP_AUTH_SCOPE_ADMIN_MODE)
-            relevant_id_token_claims = (get_id_token_claims_required_conditions(provider, scope) || {}).keys
+            relevant_id_token_claims = [
+              *get_id_token_claims_required_conditions(provider, scope)&.keys,
+              *get_id_token_claims_included_conditions(provider, scope)&.keys
+            ]
             oauth_raw_info.slice(*relevant_id_token_claims)
           end
 
@@ -91,8 +107,16 @@ module Gitlab
             get_id_token_claims_required_conditions(provider_name, scope).present?
           end
 
+          def has_included_claims?(provider_name, scope)
+            get_id_token_claims_included_conditions(provider_name, scope).present?
+          end
+
           def get_id_token_claims_required_conditions(provider_name, scope)
             dig_provider_config(provider_name, scope, 'required')
+          end
+
+          def get_id_token_claims_included_conditions(provider_name, scope)
+            dig_provider_config(provider_name, scope, 'included')
           end
 
           def dig_provider_config(provider_name, scope, claim_type)
@@ -101,9 +125,27 @@ module Gitlab
               &.dig('step_up_auth', scope.to_s, 'id_token', claim_type)
           end
 
+          def included_conditions_fulfilled?(oauth_extra_metadata:, provider:, scope:)
+            conditions = get_id_token_claims_included_conditions(provider, scope)
+
+            raw_info = (oauth_extra_metadata.presence || {}).with_indifferent_access
+            conditions.to_h.all? do |claim_key, expected_included_value|
+              raw_info_value = raw_info[claim_key]
+              next false if raw_info_value.blank?
+
+              Array.wrap(expected_included_value).any? do |v|
+                case raw_info_value
+                when String, Hash, Array
+                  raw_info_value.include?(v)
+                else
+                  raw_info_value == v
+                end
+              end
+            end
+          end
+
           def required_conditions_fulfilled?(oauth_extra_metadata:, provider:, scope:)
             conditions = get_id_token_claims_required_conditions(provider, scope)
-            return false if conditions.blank?
 
             raw_info = oauth_extra_metadata.presence || {}
             subset?(raw_info, conditions)

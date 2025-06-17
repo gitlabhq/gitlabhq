@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Rails console
 ---
@@ -513,7 +513,7 @@ We can also add the bang (Ruby speak for `!`) to `.update`:
 user.update!(password: 'password', password_confirmation: 'hunter2')
 ```
 
-In Ruby, method names ending with `!` are commonly known as "bang methods". By
+In Ruby, method names ending with `!` are commonly known as "bang methods." By
 convention, the bang indicates that the method directly modifies the object it
 is acting on, as opposed to returning the transformed result and leaving the
 underlying object untouched. For Active Record methods that write to the
@@ -640,14 +640,14 @@ back to a good state is direct manipulation via Rails console.
 
 ### Commonly used Active Record models and how to look up objects
 
-**Get a user by primary email address or username:**
+**Get a user by primary email address or username**:
 
 ```ruby
 User.find_by(email: 'admin@example.com')
 User.find_by(username: 'root')
 ```
 
-**Get a user by primary OR secondary email address:**
+**Get a user by primary OR secondary email address**:
 
 ```ruby
 User.find_by_any_email('user@example.com')
@@ -656,7 +656,7 @@ User.find_by_any_email('user@example.com')
 The `find_by_any_email` method is a custom method added by GitLab developers rather
 than a Rails-provided default method.
 
-**Get a collection of administrator users:**
+**Get a collection of administrator users**:
 
 ```ruby
 User.admins
@@ -665,7 +665,7 @@ User.admins
 `admins` is a [scope convenience method](https://guides.rubyonrails.org/active_record_querying.html#scopes)
 which does `where(admin: true)` under the hood.
 
-**Get a project by its path:**
+**Get a project by its path**:
 
 ```ruby
 Project.find_by_full_path('group/subgroup/project')
@@ -674,7 +674,7 @@ Project.find_by_full_path('group/subgroup/project')
 `find_by_full_path` is a custom method added by GitLab developers rather
 than a Rails-provided default method.
 
-**Get a project's issue or merge request by its numeric ID:**
+**Get a project's issue or merge request by its numeric ID**:
 
 ```ruby
 project = Project.find_by_full_path('group/subgroup/project')
@@ -685,13 +685,13 @@ project.merge_requests.find_by(iid: 42)
 `iid` means "internal ID" and is how we keep issue and merge request IDs
 scoped to each GitLab project.
 
-**Get a group by its path:**
+**Get a group by its path**:
 
 ```ruby
 Group.find_by_full_path('group/subgroup')
 ```
 
-**Get a group's related groups:**
+**Get a group's related groups**:
 
 ```ruby
 group = Group.find_by_full_path('group/subgroup')
@@ -703,7 +703,7 @@ group.parent
 group.children
 ```
 
-**Get a group's projects:**
+**Get a group's projects**:
 
 ```ruby
 group = Group.find_by_full_path('group/subgroup')
@@ -715,7 +715,7 @@ group.projects
 group.all_projects
 ```
 
-**Get CI pipeline or builds:**
+**Get CI pipeline or builds**:
 
 ```ruby
 Ci::Pipeline.find(4151)
@@ -726,7 +726,7 @@ The pipeline and job ID numbers increment globally across your GitLab
 instance, so there's no requirement to use an internal ID attribute to look them up,
 unlike with issues or merge requests.
 
-**Get the current application settings object:**
+**Get the current application settings object**:
 
 ```ruby
 ApplicationSetting.current

@@ -75,9 +75,29 @@ RSpec.describe SessionsHelper, feature_category: :system_access do
         obfuscated_email: obfuscated_email(user.email),
         verify_path: helper.session_path(:user),
         resend_path: users_resend_verification_code_path,
-        offer_email_reset: user.email_reset_offered_at.nil?.to_s,
+        offer_email_reset: 'true',
         update_email_path: users_update_email_path
       })
+    end
+
+    context 'when email reset has already been offered' do
+      before do
+        user.email_reset_offered_at = Time.now
+      end
+
+      it 'returns offer_email_reset as `false`' do
+        expect(helper.verification_data(user)).to include(offer_email_reset: 'false')
+      end
+    end
+
+    context 'when the `offer_email_reset` feature flag is disabled' do
+      before do
+        stub_feature_flags(offer_email_reset: false)
+      end
+
+      it 'returns offer_email_reset as `false`' do
+        expect(helper.verification_data(user)).to include(offer_email_reset: 'false')
+      end
     end
   end
 

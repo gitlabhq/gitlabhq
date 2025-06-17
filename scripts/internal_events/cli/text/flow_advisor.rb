@@ -27,7 +27,7 @@ module InternalEventsCli
             https://docs.gitlab.com/ee/user/analytics/
 
         #{format_warning('Customer wants usage data for their own products:')}
-            https://docs.gitlab.com/ee/operations/product_analytics/
+            https://docs.gitlab.com/development/internal_analytics/product_analytics/
       TEXT
 
       EVENT_TRACKING_EXAMPLES = <<~TEXT

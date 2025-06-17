@@ -9,8 +9,13 @@ module Gitlab
         LIMIT_FIXES = 20
         RUBOCOP_TODO_DIR_PATTERN = ".rubocop_todo/**/*.yml"
 
-        def initialize(logger: nil, todo_dir_pattern: RUBOCOP_TODO_DIR_PATTERN, limit_fixes: LIMIT_FIXES)
-          super(logger: logger)
+        def initialize(
+          logger: nil,
+          filter_identifiers: nil,
+          todo_dir_pattern: RUBOCOP_TODO_DIR_PATTERN,
+          limit_fixes: LIMIT_FIXES
+        )
+          super(logger: logger, filter_identifiers: filter_identifiers)
           @todo_dir_pattern = todo_dir_pattern
           @limit_fixes = limit_fixes
         end

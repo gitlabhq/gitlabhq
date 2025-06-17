@@ -17,6 +17,19 @@ describe('Diff File Options Menu', () => {
     return elements[element]?.();
   }
 
+  const delegatedClick = (element) => {
+    let event;
+    element.addEventListener(
+      'click',
+      (e) => {
+        event = e;
+      },
+      { once: true },
+    );
+    element.click();
+    get('file').onClick(event);
+  };
+
   const mount = () => {
     const viewer = 'any';
     document.body.innerHTML = `
@@ -35,7 +48,11 @@ describe('Diff File Options Menu', () => {
         </div>
       </diff-file>
     `;
-    get('file').mount({ adapterConfig: { [viewer]: [OptionsMenuAdapter] }, appData: {} });
+    get('file').mount({
+      adapterConfig: { [viewer]: [OptionsMenuAdapter] },
+      appData: {},
+      unobserve: jest.fn(),
+    });
   };
 
   beforeAll(() => {
@@ -56,7 +73,7 @@ describe('Diff File Options Menu', () => {
     expect(get('vueButton')).toBeNull();
     expect(button).not.toBeNull();
 
-    button.click();
+    delegatedClick(button);
 
     expect(get('vueButton')).not.toBeNull();
     /*
@@ -70,7 +87,7 @@ describe('Diff File Options Menu', () => {
   it('renders the correct menu items in the GlDisclosureDropdown as provided by the back end', () => {
     const button = get('serverButton');
 
-    button.click();
+    delegatedClick(button);
 
     const items = Array.from(get('menuItems'));
 

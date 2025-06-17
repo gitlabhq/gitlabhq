@@ -657,4 +657,133 @@ RSpec.describe API::API, feature_category: :system_access do
       it_behaves_like 'not audited request'
     end
   end
+
+  describe 'Language Server client restrictions', feature_category: :editor_extensions do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:oauth_access_token) { create(:oauth_access_token, user: user, scopes: [:api]) }
+    let_it_be(:personal_access_token) { create(:personal_access_token, user: user, scopes: [:api]) }
+    # It does not matter which endpoint is used because language server restrictions
+    # should apply to every request. `/user` is used as an example
+    # to represent any API endpoint.
+    let(:request_path) { '/version' }
+
+    shared_examples 'an allowed client' do
+      it 'returns 200 when using an OAuth token' do
+        get(api(request_path, oauth_access_token: oauth_access_token), headers: headers)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'returns 200 when using a Personal Access Token' do
+        get(api(request_path, personal_access_token: personal_access_token), headers: headers)
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+    end
+
+    shared_examples 'an unallowed client' do
+      it 'returns 401 when using an OAuth token' do
+        get(api(request_path, oauth_access_token: oauth_access_token), headers: headers)
+
+        expect(json_response["error_description"]).to a_string_including(
+          "Requests from Editor Extension clients are restricted")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+
+      it 'returns 401 when using a Personal Access Token' do
+        get(api(request_path, personal_access_token: personal_access_token), headers: headers)
+
+        expect(json_response["error_description"]).to a_string_including(
+          "Requests from Editor Extension clients are restricted")
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
+    context 'with allowed clients' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:is_dedicated, :enforce_language_server_version, :enable_language_server_restrictions, :client_version,
+        :user_agent) do
+        false | false | false | '0.1.0' | 'gitlab-language-server 0.1.0'
+        false | false | true  | '0.1.0' | 'gitlab-language-server 0.1.0'
+        false | false | false | nil     | 'code-completions-language-server-experiment (gitlab.vim: 1.0.0)'
+        false | false | false | nil     | 'gitlab-language-server 1.0.0'
+        false | false | false | nil     | 'unknown-app 1.0.0'
+        false | false | false | nil     | nil
+        false | true  | true  | '1.0.0' | 'gitlab-language-server 1.0.0'
+        false | true  | true  | '2.0.0' | 'gitlab-language-server 2.0.0'
+        true  | false | true  | '1.0.0' | 'gitlab-language-server 1.0.0'
+        true  | false | true  | '2.0.0' | 'gitlab-language-server 2.0.0'
+      end
+
+      with_them do
+        before do
+          stub_feature_flags(enforce_language_server_version: enforce_language_server_version)
+
+          allow(Gitlab::CurrentSettings.current_application_settings).to receive_messages(
+            enable_language_server_restrictions: enable_language_server_restrictions,
+            gitlab_dedicated_instance?: is_dedicated,
+            minimum_language_server_version: '1.0.0')
+        end
+
+        let(:headers) do
+          {
+            'User-Agent' => user_agent,
+            'X-GitLab-Language-Server-Version' => client_version
+          }
+        end
+
+        it_behaves_like 'an allowed client'
+      end
+    end
+
+    shared_examples 'unallowed clients' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:client_version, :user_agent) do
+        '0.1.0' | 'code-completions-language-server-experiment (gl-visual-studio-extension:1.0.0.0; arch:X64;)'
+        '0.1.0' | 'gitlab-language-server 1.0.0'
+        '0.1.0' | nil
+        nil     | 'code-completions-language-server-experiment (gl-visual-studio-extension:1.0.0.0; arch:X64;)'
+        nil     | 'gitlab-language-server 0.1.0'
+      end
+
+      with_them do
+        let(:headers) do
+          {
+            'User-Agent' => user_agent,
+            'X-GitLab-Language-Server-Version' => client_version
+          }
+        end
+
+        it_behaves_like 'an unallowed client'
+      end
+    end
+
+    context 'with unallowed clients on dedicated' do
+      before do
+        stub_feature_flags(enforce_language_server_version: false)
+
+        allow(Gitlab::CurrentSettings.current_application_settings).to receive_messages(
+          enable_language_server_restrictions: true,
+          gitlab_dedicated_instance?: true,
+          minimum_language_server_version: '1.0.0')
+      end
+
+      it_behaves_like 'unallowed clients'
+    end
+
+    context 'with unallowed clients outside of dedicated' do
+      before do
+        stub_feature_flags(enforce_language_server_version: true)
+
+        allow(Gitlab::CurrentSettings.current_application_settings).to receive_messages(
+          enable_language_server_restrictions: true,
+          gitlab_dedicated_instance?: false,
+          minimum_language_server_version: '1.0.0')
+      end
+
+      it_behaves_like 'unallowed clients'
+    end
+  end
 end

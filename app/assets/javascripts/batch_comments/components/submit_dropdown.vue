@@ -244,7 +244,7 @@ export default {
     placement="bottom-end"
     class="submit-review-dropdown"
     :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
-    data-testid="submit-review-dropdown"
+    data-testid="review-drawer-toggle"
     fluid-width
     @beforeClose="onBeforeClose"
     @shown="setDropdownVisible(true)"

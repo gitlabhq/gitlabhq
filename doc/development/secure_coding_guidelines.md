@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Secure coding development guidelines
 ---
 
@@ -14,24 +14,24 @@ goal of reducing the number of vulnerabilities released over time.
 
 For each of the vulnerabilities listed in this document, AppSec aims to have a SAST rule either in the form of a semgrep rule (or a RuboCop rule) that runs in the CI pipeline. Below is a table of all existing guidelines and their coverage status:
 
-| Guideline | Rule | Status |
-|---|---|---|
-| [Regular Expressions](#regular-expressions-guidelines)  | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_regex.yml)  | ✅ |
-| [ReDOS](#denial-of-service-redos--catastrophic-backtracking) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_2.yml), [3](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/59#note_2443657926)  | ✅ |
-| [JWT](#json-web-tokens-jwt) | Pending | ❌ |
-| [SSRF](#server-side-request-forgery-ssrf) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url-1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads)  | ✅ |
-| [XSS](#xss-guidelines) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml)  | ✅ |
-| [XXE](#xml-external-entities) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_change_unsafe_nokogiri_parse_option.yml?ref_type=heads), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_initialize_unsafe_nokogiri_parse_option.yml?ref_type=heads), [3](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_set_unsafe_nokogiri_parse_option.yml?ref_type=heads), [4](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_unsafe_xml_libraries.yml?ref_type=heads)  | ✅ |
-| [Path traversal](#path-traversal-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_path_traversal.yml?ref_type=heads) | ✅ |
-| [Path traversal](#path-traversal-guidelines) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/39)  | ✅ |
-| [OS command injection](#os-command-injection-guidelines) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_command_injection.yml?ref_type=heads) | ✅ |
-| [OS command injection](#os-command-injection-guidelines) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_dangerous_exec_command.yml?ref_type=heads) | ✅ |
-| [Insecure TLS ciphers](#tls-minimum-recommended-version) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_ciphers.yml?ref_type=heads)  | ✅ |
-| [Archive operations](#working-with-archive-files) (Ruby) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_archive_operations.yml?ref_type=heads)  | ✅ |
-| [Archive operations](#working-with-archive-files) (Go) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_insecure_archive_operations.yml)  | ✅ |
-| [URL spoofing](#url-spoofing) | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_url_spoofing.yml)  | ✅ |
-| [Request Parameter Typing](#request-parameter-typing) | `StrongParams` RuboCop | ✅ |
-| [Paid tiers for vulnerability mitigation](#paid-tiers-for-vulnerability-mitigation) | N/A <!-- This cannot be validated programmatically //--> | |
+| Guideline                                                                           | Status | Rule |
+|-------------------------------------------------------------------------------------|--------|------|
+| [Regular Expressions](#regular-expressions-guidelines)                              | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_regex.yml) |
+| [ReDOS](#denial-of-service-redos--catastrophic-backtracking)                        | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_redos_2.yml), [3](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/59#note_2443657926) |
+| [JWT](#json-web-tokens-jwt)                                                         | ❌      | Pending |
+| [SSRF](#server-side-request-forgery-ssrf)                                           | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_url-1.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_http.yml?ref_type=heads) |
+| [XSS](#xss-guidelines)                                                              | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_redirect.yml), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xss_html_safe.yml) |
+| [XXE](#xml-external-entities)                                                       | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_change_unsafe_nokogiri_parse_option.yml?ref_type=heads), [2](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_initialize_unsafe_nokogiri_parse_option.yml?ref_type=heads), [3](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_set_unsafe_nokogiri_parse_option.yml?ref_type=heads), [4](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_xml_injection_unsafe_xml_libraries.yml?ref_type=heads) |
+| [Path traversal](#path-traversal-guidelines) (Ruby)                                 | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_path_traversal.yml?ref_type=heads) |
+| [Path traversal](#path-traversal-guidelines) (Go)                                   | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/merge_requests/39) |
+| [OS command injection](#os-command-injection-guidelines) (Ruby)                     | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_command_injection.yml?ref_type=heads) |
+| [OS command injection](#os-command-injection-guidelines) (Go)                       | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_dangerous_exec_command.yml?ref_type=heads) |
+| [Insecure TLS ciphers](#tls-minimum-recommended-version)                            | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_ciphers.yml?ref_type=heads) |
+| [Archive operations](#working-with-archive-files) (Ruby)                            | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_insecure_archive_operations.yml?ref_type=heads) |
+| [Archive operations](#working-with-archive-files) (Go)                              | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/go/go_insecure_archive_operations.yml) |
+| [URL spoofing](#url-spoofing)                                                       | ✅      | [1](https://gitlab.com/gitlab-com/gl-security/product-security/appsec/sast-custom-rules/-/blob/main/secure-coding-guidelines/ruby/ruby_url_spoofing.yml) |
+| [Request Parameter Typing](#request-parameter-typing)                               | ✅      | `StrongParams` RuboCop |
+| [Paid tiers for vulnerability mitigation](#paid-tiers-for-vulnerability-mitigation) |        | N/A <!-- This cannot be validated programmatically //--> |
 
 ## Process for creating new guidelines and accompanying rules
 
@@ -1665,7 +1665,7 @@ GitLab-specific example can be found in [this issue](https://gitlab.com/gitlab-o
 
 **Example 2:** you have a feature which schedules jobs. When the user schedules the job, they have permission to do so. But imagine if, between the time they schedule the job and the time it is run, their permissions are restricted. Unless you re-check permissions at time of use, you could inadvertently allow unauthorized activity.
 
-**Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things _have_ changed between time of check and time of use).
+**Example 3:** you need to fetch a remote file, and perform a `HEAD` request to get and validate the content length and content type. When you subsequently make a `GET` request, the file delivered is a different size or different file type. (This is stretching the definition of TOCTOU, but things have changed between time of check and time of use).
 
 **Example 4:** you allow users to upvote a comment if they haven't already. The server is multi-threaded, and you aren't using transactions or an applicable database index. By repeatedly selecting upvote in quick succession a malicious user is able to add multiple upvotes: the requests arrive at the same time, the checks run in parallel and confirm that no upvote exists yet, and so each upvote is written to the database.
 
@@ -1719,7 +1719,7 @@ This sensitive data must be handled carefully to avoid leaks which could lead to
 - Never commit credentials to repositories.
   - The [Gitleaks Git hook](https://gitlab.com/gitlab-com/gl-security/security-research/gitleaks-endpoint-installer) is recommended for preventing credentials from being committed.
 - Never log credentials under any circumstance. Issue [#353857](https://gitlab.com/gitlab-org/gitlab/-/issues/353857) is an example of credential leaks through log file.
-- When credentials are required in a CI/CD job, use [masked variables](../ci/variables/_index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/_index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/_index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
+- When credentials are required in a CI/CD job, use [masked variables](../ci/variables/_index.md#mask-a-cicd-variable) to help prevent accidental exposure in the job logs. Be aware that when [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Also consider using [protected variables](../ci/variables/_index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
 - Proper scanners must be enabled depending on what data those credentials are protecting. See the [Application Security Inventory Policy](https://handbook.gitlab.com/handbook/security/product-security/application-security/inventory/#policies) and our [Data Classification Standards](https://handbook.gitlab.com/handbook/security/data-classification-standard/#standard).
 - To store and/or share credentials between teams, refer to [1Password for Teams](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-for-teams) and follow [the 1Password Guidelines](https://handbook.gitlab.com/handbook/security/password-guidelines/#1password-guidelines).
 - If you need to share a secret with a team member, use 1Password. Do not share a secret over email, Slack, or other service on the Internet.
@@ -1965,7 +1965,7 @@ Logging helps track events for debugging. Logging also allows the application to
 
 - Personal data, except for integer-based identifiers and UUIDs, or IP address, which can be logged when necessary.
 - Credentials like access tokens or passwords. If credentials must be captured for debugging purposes, log the internal ID of the credential (if available) instead. Never log credentials under any circumstances.
-  - When [debug logging](../ci/variables/_index.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Consider using [protected variables](../ci/variables/_index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
+  - When [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging) is enabled, all masked CI/CD variables are visible in job logs. Consider using [protected variables](../ci/variables/_index.md#protect-a-cicd-variable) when possible so that sensitive CI/CD variables are only available to pipelines running on protected branches or protected tags.
 - Any data supplied by the user without proper validation.
 - Any information that might be considered sensitive (for example, credentials, passwords, tokens, keys, or secrets). Here is an [example](https://gitlab.com/gitlab-org/gitlab/-/issues/383142) of sensitive information being leaked through logs.
 
@@ -2000,7 +2000,7 @@ helper method to redirect the user to a warning page first. For example:
 ```ruby
 # Bad :(
 # This URL comes from User-Land and may not be safe...
-# We need the user to *see* where they are going.
+# We need the user to see where they are going.
 link_to foo_social_url(@user), title: "Foo Social" do
   sprite_icon('question-o')
 end

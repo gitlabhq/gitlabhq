@@ -1,9 +1,11 @@
 ---
 stage: Monitor
 group: Analytics Instrumentation
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Internal Events Payload Samples
 ---
+
+> **Important:** Internal Event Tracking collects data solely for GitLab internal analytics purposes. This data is not shared with any third-party services or tools. GitLab uses components like Snowplow for implementation, but all data is collected, processed, and stored within GitLab infrastructure. User IDs are pseudonymized to protect privacy, and GitLab does not undertake any processes to re-identify users. For more information about data privacy, see [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
 
 ## Internal Events Payload
 

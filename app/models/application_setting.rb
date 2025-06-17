@@ -20,20 +20,6 @@ class ApplicationSetting < ApplicationRecord
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
-  ignore_columns %i[
-    package_registry_allow_anyone_to_pull_option
-    package_registry_cleanup_policies_worker_capacity
-    packages_cleanup_package_file_worker_capacity
-    npm_package_requests_forwarding
-    lock_npm_package_requests_forwarding
-    maven_package_requests_forwarding
-    lock_maven_package_requests_forwarding
-    pypi_package_requests_forwarding
-    lock_pypi_package_requests_forwarding
-  ], remove_with: '18.1', remove_after: '2025-05-20'
-
-  ignore_column :duo_nano_features_enabled, remove_with: '18.1', remove_after: '2025-06-19'
-
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
     'Admin area > Settings > General > Kroki'
 
@@ -57,6 +43,9 @@ class ApplicationSetting < ApplicationRecord
   INACTIVE_RESOURCE_ACCESS_TOKENS_DELETE_AFTER_DAYS = 30
 
   DEFAULT_HELM_MAX_PACKAGES_COUNT = 1000
+
+  DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT = 3600
+  DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD = 3600
 
   enum :whats_new_variant, { all_tiers: 0, current_tier: 1, disabled: 2 }, prefix: true
   enum :email_confirmation_setting, { off: 0, soft: 1, hard: 2 }, prefix: true
@@ -262,6 +251,9 @@ class ApplicationSetting < ApplicationRecord
   validates :container_expiration_policies_enable_historic_entries,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  validates :pipeline_variables_default_allowed,
+    inclusion: { in: [true, false], message: N_('must be a boolean value') }
+
   validate :check_repository_storages_weighted
 
   validates :auto_devops_domain,
@@ -344,10 +336,10 @@ class ApplicationSetting < ApplicationRecord
     allow_blank: true
 
   jsonb_accessor :token_prefixes,
-    instance_token_prefix: [:string, { default: 'gl' }]
+    instance_token_prefix: [:string, { default: '' }]
 
   validates :instance_token_prefix,
-    format: { with: %r{\A[a-zA-Z0-9-]+\z} },
+    format: { with: %r{\A[a-zA-Z0-9]+\z} },
     length: { maximum: 20, message: N_('is too long (maximum is %{count} characters)') },
     allow_blank: true
 
@@ -529,6 +521,7 @@ class ApplicationSetting < ApplicationRecord
     if: ->(setting) { setting.external_auth_client_cert.present? }
 
   jsonb_accessor :ci_cd_settings,
+    pipeline_variables_default_allowed: [:boolean, { default: true }],
     ci_job_live_trace_enabled: [:boolean, { default: false }],
     ci_partitions_size_limit: [::Gitlab::Database::Type::JsonbInteger.new, { default: 100.gigabytes }],
     ci_delete_pipelines_in_seconds_limit: [:integer, { default: ChronicDuration.parse('1 year') }],
@@ -613,6 +606,8 @@ class ApplicationSetting < ApplicationRecord
       :throttle_authenticated_deprecated_api_requests_per_period,
       :throttle_authenticated_files_api_period_in_seconds,
       :throttle_authenticated_files_api_requests_per_period,
+      :throttle_authenticated_git_http_period_in_seconds,
+      :throttle_authenticated_git_http_requests_per_period,
       :throttle_authenticated_git_lfs_period_in_seconds,
       :throttle_authenticated_git_lfs_requests_per_period,
       :throttle_authenticated_packages_api_period_in_seconds,
@@ -876,7 +871,8 @@ class ApplicationSetting < ApplicationRecord
   validates :pages, json_schema: { filename: "application_setting_pages" }
 
   jsonb_accessor :anti_abuse_settings,
-    enforce_email_subaddress_restrictions: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
+    enforce_email_subaddress_restrictions: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }],
+    require_email_verification_on_account_locked: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
 
   validates :anti_abuse_settings, json_schema: { filename: "anti_abuse_settings", detail_errors: true }
 
@@ -884,7 +880,7 @@ class ApplicationSetting < ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
-  attr_encrypted :asset_proxy_secret_key,
+  migrate_to_encrypts :asset_proxy_secret_key,
     mode: :per_attribute_iv,
     key: :db_key_base_truncated,
     algorithm: 'aes-256-cbc',
@@ -996,6 +992,13 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :vscode_extension_marketplace,
     vscode_extension_marketplace_enabled: [:boolean, { default: false, store_key: :enabled }]
+
+  jsonb_accessor :editor_extensions,
+    enable_language_server_restrictions: [:boolean, { default: false }],
+    minimum_language_server_version: [:string, { default: '0.1.0' }]
+
+  validates :editor_extensions,
+    json_schema: { filename: 'application_setting_editor_extensions', detail_errors: true }
 
   before_validation :ensure_uuid!
   before_validation :coerce_repository_storages_weighted, if: :repository_storages_weighted_changed?
@@ -1132,6 +1135,11 @@ class ApplicationSetting < ApplicationRecord
       group_archive_unarchive_api_limit: [:integer, { default: 60 }],
       project_invited_groups_api_limit: [:integer, { default: 60 }],
       projects_api_limit: [:integer, { default: 2000 }],
+      throttle_authenticated_git_http_enabled: [:boolean, { default: false }],
+      throttle_authenticated_git_http_requests_per_period:
+        [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT }],
+      throttle_authenticated_git_http_period_in_seconds:
+        [:integer, { default: DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD }],
       user_contributed_projects_api_limit: [:integer, { default: 100 }],
       user_projects_api_limit: [:integer, { default: 300 }],
       user_starred_projects_api_limit: [:integer, { default: 100 }],

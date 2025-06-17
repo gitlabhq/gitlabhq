@@ -80,4 +80,4 @@ Example response:
 
 ## Related topics
 
-- [External controls](../user/compliance/compliance_frameworks.md)
+- [External controls](../user/compliance/compliance_frameworks/_index.md)

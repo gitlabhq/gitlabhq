@@ -50,7 +50,7 @@ describe('Package registry project settings section', () => {
 
     it('renders the help page link with correct href', () => {
       const link = findLink();
-      const docsPath = helpPagePath('user/packages/package_registry/supported_package_managers.md');
+      const docsPath = helpPagePath('user/packages/package_registry/supported_functionality.md');
 
       expect(link.attributes('href')).toBe(docsPath);
     });

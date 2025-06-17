@@ -209,7 +209,7 @@ describe('NestedGroupsProjectsListItem', () => {
           });
 
           expect(findMoreChildrenLink().props('href')).toBe(topLevelGroupA.webUrl);
-          expect(findMoreChildrenLink().text()).toBe('23 more items');
+          expect(findMoreChildrenLink().text()).toBe('View all (23 more items)');
         });
       });
     });

@@ -23,11 +23,11 @@ describe('HelpPopover', () => {
     });
   };
 
-  describe('with title and content', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+  beforeEach(() => {
+    createComponent();
+  });
 
+  describe('with title and content', () => {
     it('renders a link button with an icon question', () => {
       expect(findQuestionButton().props()).toMatchObject({
         icon: 'question-o',
@@ -54,13 +54,13 @@ describe('HelpPopover', () => {
   });
 
   describe('aria label', () => {
-    it('renders default "Help" label', () => {
-      createComponent();
+    it('renders default "Help" label when no content or custom aria label is provided', () => {
+      createComponent({ props: { options: {} } });
 
       expect(findQuestionButton().attributes('aria-label')).toBe('Help');
     });
 
-    it('renders custom label', () => {
+    it('renders custom aria label', () => {
       createComponent({
         props: {
           ariaLabel: 'Learn more',
@@ -68,6 +68,22 @@ describe('HelpPopover', () => {
       });
 
       expect(findQuestionButton().attributes('aria-label')).toBe('Learn more');
+    });
+
+    it('renders popover content as aria label', () => {
+      createComponent({
+        props: {
+          options: {
+            content: 'This is the content',
+          },
+        },
+      });
+
+      expect(findQuestionButton().attributes('aria-label')).toBe('This is the content');
+    });
+
+    it('renders combined title and content as aria label', () => {
+      expect(findQuestionButton().attributes('aria-label')).toBe('popover title popover content');
     });
   });
 

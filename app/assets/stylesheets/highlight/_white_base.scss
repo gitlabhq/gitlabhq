@@ -89,6 +89,11 @@ $white-gc-bg: #eaf2f5;
   --code-new-diff-background-color: #{$line-added};
   --code-old-inline-diff-background-color: #fac5cd;
   --code-new-inline-diff-background-color: #c7f0d2;
+  --code-meta-diff-background-color: #{$gl-color-neutral-10};
+  --code-meta-diff-color: #{$gl-color-alpha-dark-24};
+
+  --code-highlighted-line-background-color: #{$gl-color-blue-50};
+  --code-highlighted-line-border-color: #{$gl-color-blue-300};
 
   // Line numbers
   .file-line-blame {

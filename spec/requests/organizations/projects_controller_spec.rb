@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::ProjectsController, feature_category: :cell do
+RSpec.describe Organizations::ProjectsController, feature_category: :organization do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:project) { create(:project, organization: organization) }
 

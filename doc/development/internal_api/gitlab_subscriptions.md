@@ -34,7 +34,7 @@ To authenticate using the JWT, clients:
 ### Admin personal access token (PAT)
 
 This authentication method is deprecated as it is not supported in the Cells architecture. It will be
-[removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625). Please use JWT authentication instead.
+[removed in a future milestone](https://gitlab.com/gitlab-org/gitlab/-/issues/473625). Use JWT authentication instead.
 
 To authenticate as an administrator, generate a personal access token for an administrator with the
 `api` and `admin_mode` scopes. This token can then be supplied in the `PRIVATE-TOKEN` header.

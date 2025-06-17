@@ -16,6 +16,11 @@ RSpec.describe UserPreference, feature_category: :user_profile do
                        .is_less_than_or_equal_to(Gitlab::TabWidth::MAX)
     end
 
+    describe 'dark_color_scheme_id' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:dark_color_scheme_id) }
+      it { is_expected.not_to allow_value(Gitlab::ColorSchemes.available_schemes.size + 1).for(:dark_color_scheme_id) }
+    end
+
     describe 'diffs_deletion_color and diffs_addition_color' do
       using RSpec::Parameterized::TableSyntax
 
@@ -88,10 +93,10 @@ RSpec.describe UserPreference, feature_category: :user_profile do
     end
 
     describe 'organization_groups_projects_display' do
-      it 'is set to 0 by default' do
+      it 'is set to 1 by default' do
         pref = described_class.new
 
-        expect(pref.organization_groups_projects_display).to eq('projects')
+        expect(pref.organization_groups_projects_display).to eq('groups')
       end
 
       it { is_expected.to define_enum_for(:organization_groups_projects_display).with_values(projects: 0, groups: 1) }
@@ -123,6 +128,41 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
           expect(user_preference).to be_invalid
           expect(user_preference.errors.messages[:user].first).to eq(_("is not part of the given organization"))
+        end
+      end
+    end
+
+    describe 'timezone_valid' do
+      context 'when timezone is nil' do
+        it { is_expected.to be_valid }
+      end
+
+      context 'when timezone is valid' do
+        it do
+          user_preference.timezone = 'Hawaii'
+
+          is_expected.to be_valid
+        end
+      end
+
+      context 'when timezone is invalid' do
+        it 'adds a validation error for invalid timezones' do
+          user_preference.timezone = 'invalid-timezone'
+
+          expect(user_preference).not_to be_valid
+          expect(user_preference.errors.messages[:timezone].first).to eq("timezone is not valid")
+        end
+      end
+
+      context 'when updating a record with invalid timezone but not changing the timezone' do
+        it 'remains valid when other attributes change' do
+          user_preference.timezone = 'invalid-timezone'
+          user_preference.save!(validate: false)
+          user_preference.reload
+
+          user_preference.roadmaps_sort = 'created_desc'
+
+          expect(user_preference).to be_valid
         end
       end
     end
@@ -351,6 +391,53 @@ RSpec.describe UserPreference, feature_category: :user_profile do
 
       it 'returns correct value for text_editor' do
         expect(pref.text_editor).to eq(text_editor_type)
+      end
+    end
+  end
+
+  describe '#timezone=' do
+    context 'when timezone is blank' do
+      it 'sets the timezone to nil' do
+        user_preference.timezone = ''
+
+        expect(user_preference).to be_valid
+        expect(user_preference.timezone).to be_nil
+      end
+    end
+  end
+
+  describe 'work_items_display_settings' do
+    describe 'validations' do
+      it 'validates json schema' do
+        user_preference.work_items_display_settings = { 'shouldOpenItemsInSidePanel' => true }
+        expect(user_preference).to be_valid
+
+        user_preference.work_items_display_settings = { 'shouldOpenItemsInSidePanel' => false }
+        expect(user_preference).to be_valid
+
+        user_preference.work_items_display_settings = { 'invalidKey' => 'value' }
+        expect(user_preference).not_to be_valid
+        expect(user_preference.errors[:work_items_display_settings]).to include('must be a valid json schema')
+
+        user_preference.work_items_display_settings = { 'shouldOpenItemsInSidePanel' => 'not_boolean' }
+        expect(user_preference).not_to be_valid
+        expect(user_preference.errors[:work_items_display_settings]).to include('must be a valid json schema')
+      end
+
+      it 'allows empty object' do
+        user_preference.work_items_display_settings = {}
+        expect(user_preference).to be_valid
+      end
+
+      it 'has default empty hash' do
+        new_preference = described_class.new(user: user)
+        expect(new_preference.work_items_display_settings).to eq({})
+      end
+
+      it 'persists changes correctly' do
+        user_preference.update!(work_items_display_settings: { 'shouldOpenItemsInSidePanel' => false })
+
+        expect(user_preference.reload.work_items_display_settings).to eq({ 'shouldOpenItemsInSidePanel' => false })
       end
     end
   end

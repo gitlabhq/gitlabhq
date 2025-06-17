@@ -39,15 +39,25 @@ class MergeRequestDiffCommit < ApplicationRecord
 
   # Deprecated; use `bulk_insert!` from `BulkInsertSafe` mixin instead.
   # cf. https://gitlab.com/gitlab-org/gitlab/issues/207989 for progress
-  def self.create_bulk(merge_request_diff_id, commits, skip_commit_data: false)
-    commit_hashes, user_tuples = prepare_commits_for_bulk_insert(commits)
-    users = MergeRequest::DiffCommitUser.bulk_find_or_create(user_tuples)
+  def self.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: false)
+    organization_id = project.organization_id
+    with_organization = Feature.enabled?(:add_organization_to_diff_commit_users, project)
+    commit_hashes, user_triples = prepare_commits_for_bulk_insert(commits, organization_id)
+    users = MergeRequest::DiffCommitUser.bulk_find_or_create(
+      user_triples,
+      with_organization: with_organization
+    )
 
     rows = commit_hashes.map.with_index do |commit_hash, index|
       sha = commit_hash.delete(:id)
-      author = users[[commit_hash[:author_name], commit_hash[:author_email]]]
-      committer =
-        users[[commit_hash[:committer_name], commit_hash[:committer_email]]]
+
+      if with_organization
+        author = users[[commit_hash[:author_name], commit_hash[:author_email], organization_id]]
+        committer = users[[commit_hash[:committer_name], commit_hash[:committer_email], organization_id]]
+      else
+        author = users[[commit_hash[:author_name], commit_hash[:author_email]]]
+        committer = users[[commit_hash[:committer_name], commit_hash[:committer_email]]]
+      end
 
       # These fields are only used to determine the author/committer IDs, we
       # don't store them in the DB.
@@ -80,8 +90,8 @@ class MergeRequestDiffCommit < ApplicationRecord
     ApplicationRecord.legacy_bulk_insert(self.table_name, rows) # rubocop:disable Gitlab/BulkInsert
   end
 
-  def self.prepare_commits_for_bulk_insert(commits)
-    user_tuples = Set.new
+  def self.prepare_commits_for_bulk_insert(commits, organization_id)
+    user_triples = Set.new
     hashes = commits.map do |commit|
       hash = commit.to_hash.except(:parent_ids, :referenced_by)
 
@@ -89,13 +99,13 @@ class MergeRequestDiffCommit < ApplicationRecord
         hash[key] = MergeRequest::DiffCommitUser.prepare(hash[key])
       end
 
-      user_tuples << [hash[:author_name], hash[:author_email]]
-      user_tuples << [hash[:committer_name], hash[:committer_email]]
+      user_triples << [hash[:author_name], hash[:author_email], organization_id]
+      user_triples << [hash[:committer_name], hash[:committer_email], organization_id]
 
       hash
     end
 
-    [hashes, user_tuples]
+    [hashes, user_triples]
   end
 
   def self.oldest_merge_request_id_per_commit(project_id, shas)

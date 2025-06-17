@@ -27,12 +27,29 @@ module Types
         description: 'Supported conversion types for the work item type.',
         experiment: { milestone: '17.8' }
 
+      field :unavailable_widgets_on_conversion, [::Types::WorkItems::WidgetDefinitionInterface],
+        null: true,
+        description: 'Widgets that will be lost when converting from source work item type to target work item type.' do
+          argument :target, ::Types::GlobalIDType[::WorkItems::Type],
+            required: true,
+            description: 'Target work item type to convert to.'
+        end
+
       def widget_definitions
         object.widgets(context[:resource_parent])
       end
 
       def supported_conversion_types
         object.supported_conversion_types(context[:resource_parent], current_user)
+      end
+
+      def unavailable_widgets_on_conversion(target:)
+        source_type = object
+        target_type = GitlabSchema.find_by_gid(target).sync
+
+        return [] unless source_type && target_type
+
+        source_type.unavailable_widgets_on_conversion(target_type, context[:resource_parent])
       end
     end
   end

@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Push rules development guidelines
 ---
 
@@ -41,9 +41,9 @@ change the push behavior.
 - `EE::Gitlab::Checks::PushRules::CommitCheck`: Executes push rule checks
   related to commit rules.
   - Defined in `ee/lib/ee/gitlab/checks/push_rules/commit_check.rb`.
-- `EE::Gitlab::Checks::PushRules::FileSizeCheck`: Executes push rule checks
+- `EE::Gitlab::Checks::FileSizeLimtCheck`: Executes push rule checks
   related to file size rules.
-  - Defined in `ee/lib/ee/gitlab/checks/push_rules/file_size_check.rb`.
+  - Defined in `ee/lib/ee/gitlab/checks/file_size_limit_check.rb`.
 - `EE::Gitlab::Checks::PushRules::TagCheck`: Executes push rule checks
   related to tag rules.
   - Defined in `ee/lib/ee/gitlab/checks/push_rules/tag_check.rb`.
@@ -82,7 +82,7 @@ graph TD
   Gitlab::Checks::SingleChangeAccess --> Gitlab::Checks::DiffCheck
   EE::Gitlab::Checks::PushRuleCheck -->|Only if pushing to a tag| EE::Gitlab::Checks::PushRules::TagCheck
   EE::Gitlab::Checks::PushRuleCheck -->|Only if pushing to a branch| EE::Gitlab::Checks::PushRules::BranchCheck
-  EE::Gitlab::Checks::PushRuleCheck --> EE::Gitlab::Checks::PushRules::FileSizeCheck
+  Gitlab::Checks::ChangesAccess --> EE::Gitlab::Checks::FileSizeLimitCheck
 ```
 
 {{< alert type="note" >}}

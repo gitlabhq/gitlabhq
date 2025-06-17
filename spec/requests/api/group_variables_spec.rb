@@ -176,7 +176,7 @@ RSpec.describe API::GroupVariables, feature_category: :ci_variables do
         it 'does not allow to duplicate variable key' do
           expect do
             post api("/groups/#{group.id}/variables", user), params: { key: variable.key, value: 'VALUE_2' }
-          end.to change { group.variables.count }.by(0)
+          end.not_to change { group.variables.count }
 
           expect(response).to have_gitlab_http_status(:bad_request)
         end

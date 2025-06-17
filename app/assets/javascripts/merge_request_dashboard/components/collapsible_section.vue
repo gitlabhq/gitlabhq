@@ -75,6 +75,9 @@ export default {
     newMergeRequestsBadgeText() {
       return sprintf(__('+%{count} new'), { count: this.newMergeRequests.length });
     },
+    helpPopoverAriaLabel() {
+      return sprintf(__('%{list} list help popover'), { list: this.title });
+    },
   },
   watch: {
     loading(newVal) {
@@ -119,6 +122,7 @@ export default {
       <gl-button
         v-gl-tooltip
         :title="helpContent"
+        :aria-label="helpPopoverAriaLabel"
         icon="information-o"
         variant="link"
         class="gl-mr-2 gl-self-center"
@@ -132,9 +136,7 @@ export default {
     </template>
 
     <template #default>
-      <div class="gl-contents" data-testid="section-content">
-        <slot></slot>
-      </div>
+      <slot></slot>
     </template>
 
     <template v-if="open" #pagination>

@@ -31,6 +31,7 @@ module API
               bad_request!('Found more than one set of credentials') if found.size > 1
 
               location, raw = found.first
+              set_current_token(raw)
               find_token_from_raw_credentials(strategies[location], raw)
             end
 
@@ -58,6 +59,10 @@ module API
           end
 
           private
+
+          def set_current_token(raw)
+            self.current_token = raw.password
+          end
 
           def find_token_from_raw_credentials(token_types, raw)
             token_types.each do |token_type|

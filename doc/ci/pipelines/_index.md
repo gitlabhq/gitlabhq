@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD pipelines
+description: Configuration, automation, stages, schedules, and efficiency.
 ---
 
 {{< details >}}
@@ -83,6 +84,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 
 - **Run pipeline** name [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
 - **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
+- **Inputs** option [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
 {{< /history >}}
 
@@ -226,7 +228,7 @@ You can do this straight from the pipeline graph. Select **Run** ({{< icon name=
 
 For example, your pipeline can start automatically, but require a manual action to
 [deploy to production](../environments/deployments.md#configure-manual-deployments).
-In the example below, the `production` stage has a job with a manual action:
+In the following example, the `production` stage has a job with a manual action:
 
 ![Pipeline graph that shows four stages: build, test, canary, and production. First three stages show completed jobs with green checkmarks, while production stage shows a pending deploy job.](img/manual_job_v17_9.png)
 
@@ -261,7 +263,7 @@ See [issue 39503](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) for more 
 
 Deleting a pipeline expires all pipeline caches, and deletes all immediately
 related objects, such as jobs, logs, artifacts, and triggers.
-**This action cannot be undone.**
+**This action cannot be undone**.
 
 {{< /alert >}}
 

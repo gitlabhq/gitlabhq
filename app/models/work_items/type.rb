@@ -157,6 +157,13 @@ module WorkItems
       WorkItems::Type.by_type(type_names).order_by_name_asc
     end
 
+    def unavailable_widgets_on_conversion(target_type, resource_parent)
+      source_widgets = widgets(resource_parent)
+      target_widgets = target_type.widgets(resource_parent)
+      target_widget_types = target_widgets.map(&:widget_type).to_set
+      source_widgets.reject { |widget| target_widget_types.include?(widget.widget_type) }
+    end
+
     def allowed_child_types(cache: false, authorize: false, resource_parent: nil)
       cached_data = cache ? with_reactive_cache { |query_data| query_data[:allowed_child_types_by_name] } : nil
 

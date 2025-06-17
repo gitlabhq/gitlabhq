@@ -1,9 +1,10 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlTab, GlBadge } from '@gitlab/ui';
+import { GlAlert, GlTab, GlBadge, GlLoadingIcon } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import RunnerList from '~/ci/runner/components/runner_list.vue';
 import RunnerPagination from '~/ci/runner/components/runner_pagination.vue';
+import RunnerActionsCell from '~/ci/runner/components/cells/runner_actions_cell.vue';
 import { PROJECT_TYPE } from '~/ci/runner/constants';
 import { projectRunnersData, runnerJobCountData } from 'jest/ci/runner/mock_data';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -11,10 +12,13 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import projectRunnersQuery from '~/ci/runner/graphql/list/project_runners.query.graphql';
 import runnerJobCountQuery from '~/ci/runner/graphql/list/runner_job_count.query.graphql';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { captureException } from '~/ci/runner/sentry_utils';
 
 import RunnersTab from '~/ci/runner/project_runners_settings/components/runners_tab.vue';
 
 Vue.use(VueApollo);
+
+jest.mock('~/ci/runner/sentry_utils');
 
 const mockRunners = projectRunnersData.data.project.runners.edges;
 const mockPageInfo = projectRunnersData.data.project.runners.pageInfo;
@@ -42,6 +46,8 @@ describe('RunnersTab', () => {
         GlTab,
       },
       slots: {
+        settings: 'Some settings',
+        description: 'Some description',
         empty: 'No runners found',
       },
     });
@@ -56,8 +62,10 @@ describe('RunnersTab', () => {
 
   const findTab = () => wrapper.findComponent(GlTab);
   const findBadge = () => wrapper.findComponent(GlBadge);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerPagination = () => wrapper.findComponent(RunnerPagination);
+  const findRunnerActionsCell = () => wrapper.findComponent(RunnerActionsCell);
   const findEmptyMessage = () => wrapper.findByTestId('empty-message');
 
   describe('when rendered', () => {
@@ -87,11 +95,20 @@ describe('RunnersTab', () => {
     });
 
     it('shows runner list in loading state', () => {
+      expect(findLoadingIcon().exists()).toBe(true);
       expect(findRunnerList().props('loading')).toBe(true);
     });
 
     it('shows a disabled pagination', () => {
       expect(findRunnerPagination().attributes('disabled')).toBeDefined();
+    });
+
+    it('renders settings slot', () => {
+      expect(wrapper.text()).toContain('Some settings');
+    });
+
+    it('renders description slot', () => {
+      expect(wrapper.findComponent(GlAlert).text()).toContain('Some description');
     });
   });
 
@@ -123,6 +140,16 @@ describe('RunnersTab', () => {
       expect(wrapper.findByTestId('runner-link').text()).toBe(
         `#${mockRunnerId} (${mockRunnerSha})`,
       );
+    });
+
+    it('shows runner actions', async () => {
+      await createComponent({ mountFn: mountExtended });
+
+      expect(findRunnerActionsCell().props()).toMatchObject({
+        size: 'small',
+        runner: mockRunners[0].node,
+        editUrl: mockRunners[0].editUrl,
+      });
     });
 
     describe('pagination', () => {
@@ -165,6 +192,26 @@ describe('RunnersTab', () => {
     await createComponent();
 
     expect(findEmptyMessage().exists()).toBe(true);
-    expect(wrapper.emitted('error')).toEqual([[error]]);
+    expect(wrapper.emitted('error')).toEqual([
+      [
+        {
+          error,
+          message: 'Something went wrong while fetching runner data.',
+        },
+      ],
+    ]);
+    expect(captureException).toHaveBeenCalledWith({ error, component: 'RunnersTab' });
+  });
+
+  describe('component API', () => {
+    it('refresh()', async () => {
+      await createComponent();
+
+      expect(projectRunnersHandler).toHaveBeenCalledTimes(1);
+
+      wrapper.vm.refresh();
+
+      expect(projectRunnersHandler).toHaveBeenCalledTimes(2);
+    });
   });
 });

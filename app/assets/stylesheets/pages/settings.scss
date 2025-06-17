@@ -83,7 +83,7 @@
     position: sticky;
     top: calc(#{$calc-application-header-height} + #{$settings-sticky-header-height - $gl-spacing-scale-3});
     left: 0;
-    margin-top: -1px;
+    margin-top: -2px; // Fix retina issue with half pixel rendering
     width: 100%;
     height: 1px;
     box-shadow: 0 #{$gl-spacing-scale-3} 0 var(--gl-border-color-default);

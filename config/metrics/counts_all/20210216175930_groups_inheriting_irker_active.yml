@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.groups_inheriting_irker_active
 description: Count of active groups inheriting integrations for Irker
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

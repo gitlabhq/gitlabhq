@@ -93,9 +93,13 @@ function run_rspec_non_fast {
 
   files_for_non_fast=()
 
+  # Note that we do NOT exclude the fast_spec_helper specs here, because sometimes specs may pass
+  # when run with fast_spec_helper, but fail when run with the full spec_helper. This happens when
+  # they are run as part of a larger suite of mixed fast and slow files, for example, in CI jobs.
+  # Running all fast and slow specs here ensures that we catch those cases.
   while IFS='' read -r file; do
       files_for_non_fast+=("$file")
-  done < <(git grep -L -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
+  done < <(git ls-files -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
   files_for_non_fast+=(
       "ee/spec/graphql/resolvers/clusters/agents_resolver_spec.rb"

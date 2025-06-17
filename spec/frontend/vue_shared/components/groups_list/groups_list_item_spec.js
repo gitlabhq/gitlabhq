@@ -68,6 +68,9 @@ describe('GroupsListItem', () => {
   const findLeaveModal = () => wrapper.findComponent(GroupListItemLeaveModal);
   const findAccessLevelBadge = () => wrapper.findByTestId('user-access-role');
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
+  const findSubgroupCount = () => wrapper.findByTestId('subgroups-count');
+  const findProjectsCount = () => wrapper.findByTestId('projects-count');
+  const findMembersCount = () => wrapper.findByTestId('members-count');
 
   const findInactiveBadge = () => wrapper.findComponent(GroupListItemInactiveBadge);
 
@@ -117,30 +120,54 @@ describe('GroupsListItem', () => {
   it('renders subgroup count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('subgroups-count').props()).toMatchObject({
+    expect(findSubgroupCount().props()).toMatchObject({
       tooltipText: 'Subgroups',
       iconName: 'subgroup',
       stat: group.descendantGroupsCount.toString(),
     });
   });
 
+  describe('when subgroup count is not available', () => {
+    it.each([undefined, null])('does not render subgroup count', (descendantGroupsCount) => {
+      createComponent({ propsData: { group: { ...group, descendantGroupsCount } } });
+
+      expect(findSubgroupCount().exists()).toBe(false);
+    });
+  });
+
   it('renders projects count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('projects-count').props()).toMatchObject({
+    expect(findProjectsCount().props()).toMatchObject({
       tooltipText: 'Projects',
       iconName: 'project',
       stat: group.projectsCount.toString(),
     });
   });
 
+  describe('when projects count is not available', () => {
+    it.each([undefined, null])('does not render projects count', (projectsCount) => {
+      createComponent({ propsData: { group: { ...group, projectsCount } } });
+
+      expect(findProjectsCount().exists()).toBe(false);
+    });
+  });
+
   it('renders members count', () => {
     createComponent();
 
-    expect(wrapper.findByTestId('members-count').props()).toMatchObject({
+    expect(findMembersCount().props()).toMatchObject({
       tooltipText: 'Direct members',
       iconName: 'users',
       stat: group.groupMembersCount.toString(),
+    });
+  });
+
+  describe('when members count is not available', () => {
+    it.each([undefined, null])('does not render members count', (groupMembersCount) => {
+      createComponent({ propsData: { group: { ...group, groupMembersCount } } });
+
+      expect(findMembersCount().exists()).toBe(false);
     });
   });
 
@@ -165,25 +192,15 @@ describe('GroupsListItem', () => {
     );
   });
 
-  describe('when access level is not available', () => {
-    const { accessLevel, ...groupWithoutAccessLevel } = group;
+  describe.each`
+    accessLevel
+    ${{ accessLevel: undefined }}
+    ${{ accessLevel: { integerValue: null } }}
+    ${{ accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } }}
+  `('when access level is $accessLevel', ({ accessLevel }) => {
     beforeEach(() => {
       createComponent({
-        propsData: { group: groupWithoutAccessLevel },
-      });
-    });
-
-    it('does not render level role badge', () => {
-      expect(findAccessLevelBadge().exists()).toBe(false);
-    });
-  });
-
-  describe('when access level is `No access`', () => {
-    beforeEach(() => {
-      createComponent({
-        propsData: {
-          group: { ...group, accessLevel: { integerValue: ACCESS_LEVEL_NO_ACCESS_INTEGER } },
-        },
+        propsData: { group: { ...group, accessLevel } },
       });
     });
 

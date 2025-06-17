@@ -10,7 +10,7 @@ RSpec.describe GitlabSchema.types['WikiPage'], feature_category: :wiki do
   let_it_be(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
 
   it 'has the correct fields' do
-    expected_fields = [:id, :title, :notes, :discussions, :commenters, :user_permissions, :web_url, :name]
+    expected_fields = [:id, :title, :notes, :discussions, :commenters, :user_permissions, :web_url, :name, :subscribed]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

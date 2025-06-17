@@ -3,6 +3,11 @@
 module API
   class Lint < ::API::Base
     feature_category :pipeline_composition
+    include APIGuard
+
+    allow_access_with_scope :ai_workflows, if: ->(request) do
+      request.post?
+    end
 
     resource :projects, requirements: API::NAMESPACE_OR_PROJECT_REQUIREMENTS do
       desc 'Validates a CI YAML configuration with a namespace' do
@@ -42,7 +47,7 @@ module API
         content = user_project.repository.blob_data_at(commit.sha, user_project.ci_config_path_or_default)
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user, sha: commit.sha)
-          .validate(content, dry_run: params[:dry_run], ref: dry_run_ref)
+          .legacy_validate(content, dry_run: params[:dry_run], ref: dry_run_ref)
 
         present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]
       end
@@ -67,7 +72,7 @@ module API
 
         result = Gitlab::Ci::Lint
           .new(project: user_project, current_user: current_user)
-          .validate(params[:content], dry_run: params[:dry_run], ref: params[:ref] || user_project.default_branch)
+          .legacy_validate(params[:content], dry_run: params[:dry_run], ref: params[:ref] || user_project.default_branch)
 
         status 200
         present result, with: Entities::Ci::Lint::Result, current_user: current_user, include_jobs: params[:include_jobs]

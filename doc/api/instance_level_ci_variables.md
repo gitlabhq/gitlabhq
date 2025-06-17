@@ -12,6 +12,8 @@ title: Instance-level CI/CD variables API
 
 {{< /details >}}
 
+Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-an-instance) for your instance.
+
 ## List all instance variables
 
 {{< history >}}

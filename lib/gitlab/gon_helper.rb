@@ -86,13 +86,12 @@ module Gitlab
       push_frontend_feature_flag(:find_and_replace, current_user)
       # To be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/399248
       push_frontend_feature_flag(:remove_monitor_metrics)
-      push_frontend_feature_flag(:work_items_view_preference, current_user)
       push_frontend_feature_flag(:work_item_view_for_issues)
-      push_frontend_feature_flag(:search_button_top_right, current_user)
       push_frontend_feature_flag(:merge_request_dashboard, current_user, type: :wip)
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
+      push_frontend_feature_flag(:show_date_when_relative_time_over_a_year, current_user, type: :gitlab_com_derisk)
     end
 
     # Exposes the state of a feature flag to the frontend code.

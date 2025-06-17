@@ -45,12 +45,12 @@ For example, the `X-Requested-With` header can't be used for preflight requests.
 
 GitLab supports the following authorization flows:
 
-- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636):**
+- **Authorization code with [Proof Key for Code Exchange (PKCE)](https://www.rfc-editor.org/rfc/rfc7636)**:
   Most secure. Without PKCE, you'd have to include client secrets on mobile clients,
   and is recommended for both client and server apps.
-- **Authorization code:** Secure and common flow. Recommended option for secure
+- **Authorization code**: Secure and common flow. Recommended option for secure
   server-side apps.
-- **Resource owner password credentials:** To be used **only** for securely
+- **Resource owner password credentials**: To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
 - **Device Authorization Grant** (GitLab 17.1 and later) Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
 
@@ -113,7 +113,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
   - The SHA256 hash must be in binary format before encoding.
   - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER), padding: false)`.
   - For reference, a `CODE_VERIFIER` string of `ks02i3jdikdo2k0dkfodf3m39rjfjsdk0wk349rj3jrhf` when hashed
-    and encoded using the Ruby snippet above produces a `CODE_CHALLENGE` string
+    and encoded using the previous Ruby snippet produces a `CODE_CHALLENGE` string
     of `2i0WFA-0AerkjQm4X4oDEhqA17QIAKNjXpagHBXmO_U`.
 
 1. Request authorization code. To do that, you should redirect the user to the
@@ -414,7 +414,7 @@ detailed flow description.
 Resource owner password credentials are disabled for users with
 [two-factor authentication](../user/profile/account/two_factor_authentication.md) turned on
 and [enterprise users](../user/enterprise_user/_index.md)
-with [password authentication disabled for their group](../user/enterprise_user/_index.md#disable-authentication-methods).
+with [password authentication disabled for their group](../user/enterprise_user/_index.md#restrict-authentication-methods).
 These users can access the API using [personal access tokens](../user/profile/personal_access_tokens.md)
 instead.
 {{< /alert >}}

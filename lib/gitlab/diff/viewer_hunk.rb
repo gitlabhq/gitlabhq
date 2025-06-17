@@ -115,8 +115,8 @@ module Gitlab
         return [:both] if (1..MAX_EXPANDABLE_LINES).cover?(line_count_between)
 
         directions = []
-        directions << :down if @previous_line_pos&.positive?
         directions << :up if @next_line_pos&.positive?
+        directions << :down if @previous_line_pos&.positive?
         directions
       end
 

@@ -338,7 +338,7 @@ formatting happens in a computed property inside the `diff_content.vue` componen
 
 {{< alert type="note" >}}
 
-This _might_ not be required any more. Some investigation work is required to decide
+This might not be required any more. Some investigation work is required to decide
 the future of the render queue. The virtual scroll bar we created has probably removed
 any performance benefit we got from this approach.
 

@@ -27,6 +27,7 @@ RSpec.describe 'getting user information', feature_category: :user_management do
     let_it_be(:user, reload: true) { create(:user, developer_of: [project_a, project_b]) }
     let_it_be(:authorised_user) { create(:user, developer_of: [project_a, project_b]) }
     let_it_be(:unauthorized_user) { create(:user) }
+    let_it_be(:admin) { create(:user, :admin) }
 
     let_it_be(:assigned_mr) do
       create(:merge_request, :unique_branches, :unique_author, source_project: project_a, assignees: [user])
@@ -433,6 +434,37 @@ RSpec.describe 'getting user information', feature_category: :user_management do
             expect(project_memberships).to include(
               a_graphql_entity_for(membership_a)
             )
+          end
+        end
+      end
+
+      context 'when requesting the projectCount' do
+        let(:project_count) { graphql_data_at(:user, :project_count) }
+        let(:user_fields) { 'projectCount' }
+
+        it_behaves_like 'a working graphql query'
+
+        context 'when the current user is unauthorized' do
+          let(:current_user) { unauthorized_user }
+
+          it 'returns nil' do
+            expect(project_count).to be_nil
+          end
+        end
+
+        context 'when the current user is the user' do
+          let(:current_user) { user }
+
+          it 'returns the count' do
+            expect(project_count).to eq(2)
+          end
+        end
+
+        context 'when the current user is an admin' do
+          let(:current_user) { admin }
+
+          it 'returns the count' do
+            expect(project_count).to eq(2)
           end
         end
       end

@@ -52,6 +52,9 @@ describe('NamespaceStorageApp', () => {
         ...defaultNamespaceProvideValues,
         ...provide,
       },
+      stubs: {
+        StorageUsageStatistics,
+      },
     });
   };
 

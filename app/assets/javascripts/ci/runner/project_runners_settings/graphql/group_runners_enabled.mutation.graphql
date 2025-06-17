@@ -1,0 +1,8 @@
+mutation setGroupRunnersEnabled($input: ProjectCiCdSettingsUpdateInput!) {
+  projectCiCdSettingsUpdate(input: $input) {
+    ciCdSettings {
+      groupRunnersEnabled
+    }
+    errors
+  }
+}

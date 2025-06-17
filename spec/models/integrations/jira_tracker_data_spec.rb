@@ -12,7 +12,7 @@ RSpec.describe Integrations::JiraTrackerData, feature_category: :integrations do
   end
 
   describe 'encrypted attributes' do
-    subject { described_class.attr_encrypted_attributes.keys }
+    subject { described_class.attr_encrypted_encrypted_attributes.keys }
 
     it { is_expected.to contain_exactly(:api_url, :password, :url, :username) }
   end

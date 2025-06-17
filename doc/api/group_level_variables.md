@@ -12,6 +12,8 @@ title: Group-level Variables API
 
 {{< /details >}}
 
+Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-a-group) for a group.
+
 ## List group variables
 
 Get list of a group's variables.

@@ -31,6 +31,8 @@ const TEST_BRANCH_NAME = '12345-foo-patch';
 const TEST_USER_PREFERENCES_PATH = '/user/preferences';
 const TEST_GITLAB_WEB_IDE_PUBLIC_PATH = 'test/webpack/assets/gitlab-web-ide/public/path';
 const TEST_FILE_PATH = 'foo/README.md';
+const TEST_LINE_NUMBER = { beginning: 42, end: 42 };
+const TEST_LINE_RANGE = { beginning: 42, end: 46 };
 const TEST_MR_ID = '7';
 const TEST_MR_TARGET_PROJECT = 'gitlab-org/the-real-gitlab';
 const TEST_SIGN_IN_PATH = 'sign-in';
@@ -124,6 +126,7 @@ describe('ide/init_gitlab_web_ide', () => {
         projectPath: TEST_PROJECT_PATH,
         ref: TEST_BRANCH_NAME,
         filePath: TEST_FILE_PATH,
+        lineRange: null,
         mrId: TEST_MR_ID,
         mrTargetProject: '',
         forkInfo: null,
@@ -188,6 +191,39 @@ describe('ide/init_gitlab_web_ide', () => {
         findRootElement(),
         expect.objectContaining({
           mrTargetProject: TEST_MR_TARGET_PROJECT,
+        }),
+      );
+    });
+  });
+
+  describe('when URL has lineNumber in hash', () => {
+    beforeEach(() => {
+      setWindowLocation(`https://example.com/-/ide/path/to/file#L42`);
+
+      createSubject();
+    });
+
+    it('includes line number', () => {
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          lineRange: TEST_LINE_NUMBER,
+        }),
+      );
+    });
+  });
+
+  describe('when URL has lineRange in hash', () => {
+    beforeEach(() => {
+      setWindowLocation(`https://example.com/-/ide/path/to/file#L42-46`);
+
+      createSubject();
+    });
+    it('includes line range', () => {
+      expect(start).toHaveBeenCalledWith(
+        findRootElement(),
+        expect.objectContaining({
+          lineRange: TEST_LINE_RANGE,
         }),
       );
     });

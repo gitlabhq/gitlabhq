@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    gitlab-duo-workflow-service-client (0.1)
+    gitlab-duo-workflow-service-client (0.2)
       grpc
 
 GEM
@@ -33,7 +33,7 @@ GEM
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
-    google-protobuf (4.27.3)
+    google-protobuf (4.27.2)
       bigdecimal
       rake (>= 13)
     googleapis-common-protos-types (1.15.0)

@@ -11,7 +11,8 @@ module Projects
     self.table_name = 'project_repository_storage_moves'
 
     belongs_to :container, class_name: 'Project', inverse_of: :repository_storage_moves, foreign_key: :project_id
-    alias_attribute :project, :container
+    alias_method :project, :container
+
     alias_attribute :container_id, :project_id
     scope :with_projects, -> { includes(container: :route) }
 

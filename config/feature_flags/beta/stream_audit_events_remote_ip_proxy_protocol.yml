@@ -1,0 +1,10 @@
+---
+name: stream_audit_events_remote_ip_proxy_protocol
+description: Fixes remote IP in stream audit events of Git over SSH
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/378590
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191408
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/543033
+milestone: '18.1'
+group: group::source code
+type: beta
+default_enabled: true

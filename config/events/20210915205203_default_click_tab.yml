@@ -3,7 +3,7 @@ category: default
 action: click_tab
 extra_properties:
 identifiers:
-product_group: import_and_integrate
+product_group: import
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59452
 tiers:

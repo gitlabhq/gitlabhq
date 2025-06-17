@@ -133,11 +133,11 @@ Set up cronjobs to perform Gitaly server-side backups:
 
 1. Configure Gitaly server-side backup destination on all Gitaly nodes by following [Configure server-side backups](../gitaly/configure_gitaly.md#configure-server-side-backups).
    This bucket is used exclusively by Gitaly to store repository data.
-1. While Gitaly backs up all Git repository data in its designated object storage bucket configured above,
+1. While Gitaly backs up all Git repository data in its designated object storage bucket configured previously,
    the backup utility tool (`gitlab-backup`) uploads additional backup data to a separate bucket. This data includes a `tar` file containing essential metadata for restores.
    Ensure this backup data is properly uploaded to remote (cloud) storage by following
    [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) to set up the upload bucket.
-1. (Optional) To solidify the durability of this backup data, back up both buckets configured above with their respective object store provider by adding them to
+1. (Optional) To solidify the durability of this backup data, back up both buckets configured previously with their respective object store provider by adding them to
    [backups of object storage data](#configure-backup-of-object-storage-data).
 1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
 1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable, and skip PostgreSQL data:
@@ -180,13 +180,13 @@ Set up cronjobs to perform Gitaly server-side backups:
 
 1. Configure Gitaly server-side backup destination on all Gitaly nodes by following
    [Configure server-side backups](../gitaly/configure_gitaly.md#configure-server-side-backups). This bucket is used exclusively by Gitaly to store repository data.
-1. While Gitaly backs up all Git repository data in its designated object storage bucket configured above,
+1. While Gitaly backs up all Git repository data in its designated object storage bucket configured previously,
    the backup utility tool (`gitlab-backup`) uploads additional backup data to a separate bucket. This data includes a `tar` file containing essential metadata for restores.
    Ensure this backup data is properly uploaded to remote (cloud) storage by following
    [Upload backups to a remote (cloud) storage](backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) to set up the upload bucket.
-1. (Optional) To solidify the durability of this backup data, both buckets configured above can be backed up by their respective object store provider by adding them
+1. (Optional) To solidify the durability of this backup data, both buckets configured previously can be backed up by their respective object store provider by adding them
    to [backups of object storage data](#configure-backup-of-object-storage-data).
-1. Ensure backup of both buckets by following [Configure backup of object storage data](#configure-backup-of-object-storage-data). Both storage buckets configured above
+1. Ensure backup of both buckets by following [Configure backup of object storage data](#configure-backup-of-object-storage-data). Both storage buckets configured previously
    should also be backed up by their respective object storage provider.
 1. SSH into a GitLab Rails node, which is a node that runs Puma or Sidekiq.
 1. Take a full backup of your Git data. Use the `REPOSITORIES_SERVER_SIDE` variable and skip all other data:

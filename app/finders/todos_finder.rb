@@ -5,15 +5,14 @@
 # Used to filter Todos by set of params
 #
 # Arguments:
-#   current_user - which user use
-#   params:
-#     action_id: integer
-#     author_id: integer
-#     project_id; integer
-#     target_id; integer
-#     state: 'pending' (default) or 'done'
-#     is_snoozed: boolean
-#     type: 'Issue' or 'MergeRequest' or ['Issue', 'MergeRequest']
+#   users: which user or users, provided as a list, to use.
+#   action_id: integer
+#   author_id: integer
+#   project_id; integer
+#   target_id; integer
+#   state: 'pending' (default) or 'done'
+#   is_snoozed: boolean
+#   type: 'Issue' or 'MergeRequest' or ['Issue', 'MergeRequest']
 #
 
 class TodosFinder
@@ -31,7 +30,7 @@ class TodosFinder
       WikiPage::Meta]
   ).freeze
 
-  attr_accessor :current_user, :params
+  attr_accessor :params
 
   class << self
     def todo_types
@@ -39,16 +38,17 @@ class TodosFinder
     end
   end
 
-  def initialize(current_user, params = {})
-    @current_user = current_user
+  def initialize(users:, **params)
+    @users = users
     @params = params
+    self.should_skip_cross_project_check = true if skip_cross_project_check?
   end
 
   def execute
-    return Todo.none if current_user.nil?
+    return Todo.none if users.blank?
     raise ArgumentError, invalid_type_message unless valid_types?
 
-    items = current_user.todos
+    items = Todo.for_user(users)
     items = without_hidden(items)
     items = by_action_id(items)
     items = by_action(items)
@@ -65,18 +65,30 @@ class TodosFinder
     sort(items)
   end
 
-  # Returns `true` if the current user has any todos for the given target with the optional given state.
-  #
-  # target - The value of the `target_type` column, such as `Issue`.
-  # state - The value of the `state` column, such as `pending` or `done`.
-  def any_for_target?(target, state = nil)
-    current_user.todos.any_for_target?(target, state)
-  end
-
   private
 
+  attr_reader :users
+
+  def skip_cross_project_check?
+    users.blank? || users_list.size > 1
+  end
+
+  def current_user
+    # This is needed by the FinderMethods module and by the FinderWithCrossProjectAccess module
+    # when they do permission checks for a user.
+    # When there are multiple users, we should find another way to check permissions if needed
+    # outside this layer.
+    raise NoMethodError, 'This method is not available when executing with multiple users' if skip_cross_project_check?
+
+    users_list.first
+  end
+
+  def users_list
+    Array.wrap(users)
+  end
+
   def action_id?
-    action_id.present? && Todo::ACTION_NAMES.key?(action_id.to_i)
+    action_id.present? && Todo.action_names.key?(action_id.to_i)
   end
 
   def action_id
@@ -88,14 +100,14 @@ class TodosFinder
   end
 
   def map_actions_to_ids
-    params[:action].map { |item| Todo::ACTION_NAMES.key(item.to_sym) }
+    params[:action].map { |item| Todo.action_names.key(item.to_sym) }
   end
 
   def to_action_id
     if action_array_provided?
       map_actions_to_ids
     else
-      Todo::ACTION_NAMES.key(action.to_sym)
+      Todo.action_names.key(action.to_sym)
     end
   end
 
@@ -249,9 +261,13 @@ class TodosFinder
 
   def without_hidden(items)
     return items.pending_without_hidden if filter_pending_only?
-    return items if filter_done_only?
+    return items if filter_done_only? || filter_all?
 
     items.all_without_hidden
+  end
+
+  def filter_all?
+    Array.wrap(params[:state]).map(&:to_sym) == [:all]
   end
 
   def filter_pending_only?

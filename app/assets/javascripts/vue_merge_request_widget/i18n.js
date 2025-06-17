@@ -21,7 +21,9 @@ export const SQUASH_BEFORE_MERGE = {
 };
 
 export const I18N_SHA_MISMATCH = {
-  warningMessage: s__('mrWidget|%{boldStart}Merge blocked:%{boldEnd} new changes were just added.'),
+  warningMessage: s__(
+    'mrWidget|%{boldStart}Merge blocked:%{boldEnd} to see new changes and rerun this merge check, refresh this page.',
+  ),
   actionButtonLabel: __('Review changes'),
 };
 

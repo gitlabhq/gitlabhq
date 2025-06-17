@@ -69,9 +69,6 @@ export default {
         return response;
       });
     },
-    fetchFullData() {
-      return Promise.resolve(this.prepareReports());
-    },
     parsedTECHSCode(code) {
       /*
        * In issue code looks like "WCAG2AA.Principle1.Guideline1_4.1_4_3.G18.Fail"

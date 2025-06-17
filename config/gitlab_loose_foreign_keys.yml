@@ -35,6 +35,10 @@ approval_merge_request_rules:
   - table: approval_policy_rules
     column: approval_policy_rule_id
     on_delete: async_nullify
+chat_names:
+  - table: users
+    column: user_id
+    on_delete: async_delete
 ci_build_needs:
   - table: projects
     column: project_id
@@ -167,6 +171,10 @@ ci_runner_projects:
   - table: projects
     column: project_id
     on_delete: async_delete
+ci_runner_taggings:
+  - table: tags
+    column: tag_id
+    on_delete: async_delete
 ci_runner_taggings_group_type:
   - table: namespaces
     column: sharding_key_id
@@ -179,6 +187,9 @@ ci_runners:
   - table: users
     column: creator_id
     on_delete: async_nullify
+  - table: organizations
+    column: organization_id
+    on_delete: async_delete
 ci_running_builds:
   - table: projects
     column: project_id
@@ -319,7 +330,7 @@ dependency_list_exports:
     column: organization_id
     on_delete: async_delete
 deployment_approvals:
-  - table: ci_builds
+  - table: p_ci_builds
     column: ci_build_id
     on_delete: async_delete
 deployment_clusters:
@@ -421,8 +432,8 @@ notes:
   - table: vulnerabilities
     column: noteable_id
     conditions:
-      - column: noteable_type
-        value: "Vulnerability"
+    - column: noteable_type
+      value: Vulnerability
     on_delete: async_delete
 notification_settings:
   - table: users
@@ -493,7 +504,8 @@ p_ci_pipelines:
     on_delete: async_delete
   - table: ci_triggers
     column: trigger_id
-    on_delete: async_delete
+    on_delete: async_nullify
+    delete_limit: 50
 p_ci_runner_machine_builds:
   - table: ci_runner_machines
     column: runner_machine_id
@@ -509,6 +521,10 @@ p_ci_workloads:
   - table: projects
     column: project_id
     on_delete: async_delete
+p_knowledge_graph_replicas:
+  - table: p_knowledge_graph_enabled_namespaces
+    column: knowledge_graph_enabled_namespace_id
+    on_delete: async_nullify
 packages_build_infos:
   - table: p_ci_pipelines
     column: pipeline_id
@@ -532,6 +548,10 @@ pool_repositories:
     column: source_project_id
     on_delete: async_nullify
 project_authorizations:
+  - table: users
+    column: user_id
+    on_delete: async_delete
+project_authorizations_for_migration:
   - table: users
     column: user_id
     on_delete: async_delete
@@ -611,6 +631,10 @@ sbom_sources:
   - table: organizations
     column: organization_id
     on_delete: async_delete
+security_policy_settings:
+  - table: namespaces
+    column: csp_namespace_id
+    on_delete: async_nullify
 security_scans:
   - table: p_ci_builds
     column: build_id

@@ -189,7 +189,6 @@ module Gitlab
             .deep_merge(license_values)
             .deep_merge(env_values)
             .deep_merge(configuration.values)
-            .deep_merge(ResourcePresets.resource_values(ci ? ResourcePresets::HIGH : ResourcePresets::DEFAULT))
             .deep_stringify_keys
             .to_yaml
 

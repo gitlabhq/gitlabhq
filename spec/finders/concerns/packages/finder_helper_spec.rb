@@ -96,8 +96,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     end
 
     context 'with a deploy token' do
-      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true, groups: [group.reload]) }
 
       where(:group_visibility, :subgroup_visibility, :shared_example_name) do
         'public'  | 'public'  | 'returning both packages'
@@ -245,8 +244,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       end
 
       context 'with a group deploy token' do
-        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true, groups: [group.reload]) }
 
         where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
           'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both packages'
@@ -324,8 +322,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     end
 
     shared_examples 'handles a group deploy token' do
-      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true, groups: [group.reload]) }
 
       before do
         project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get('PRIVATE', false))

@@ -48,7 +48,7 @@ To follow along, you must have:
 - A Vault server that you are already using.
 - CI/CD jobs retrieving secrets from Vault with `CI_JOB_JWT`.
 
-In the examples below, replace:
+In the following examples, replace:
 
 - `vault.example.com` with the URL of your Vault server.
 - `gitlab.example.com` with the URL of your GitLab instance.
@@ -172,8 +172,8 @@ $ vault write auth/jwt/role/myproject-staging - <<EOF
 EOF
 ```
 
-You do not need to alter any existing role configurations except for the `bound_claims` section
-Make sure to add the `iss` configuration as shown above to ensure Vault accepts
+You do not need to alter any existing role configurations except for the `bound_claims` section.
+Make sure to add the `iss` configuration as shown previously, to ensure Vault accepts
 the prefixed and non-prefixed `iss` claim for this role.
 
 You must apply this change to all JWT roles used for the GitLab integration before moving on to the next step.

@@ -97,8 +97,13 @@ module Types
       null: true,
       resolver: Resolvers::Namespaces::WorkItemResolver,
       experiment: { milestone: '16.10' },
-      description: 'Find a work item by IID directly associated with the namespace(project or group).  Returns ' \
-        '`null` for group level work items if the `namespace_level_work_items` feature flag is disabled.'
+      description: 'Find a work item by IID directly associated with the namespace (project or group)'
+
+    field :work_items,
+      null: true,
+      description: 'Work items that belong to the namespace (project or group). Returns `null` for user namespaces.',
+      experiment: { milestone: '18.1' },
+      resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
       resolver: Resolvers::WorkItems::TypesResolver,
@@ -133,7 +138,28 @@ module Types
       calls_gitaly: true,
       description: 'Work item description templates available to the namespace.'
 
-    markdown_field :description_html, null: true
+    field :link_paths,
+      Types::Namespaces::LinkPaths,
+      null: true,
+      description: 'Namespace relevant paths to create links on the UI.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
+    field :markdown_paths,
+      Types::Namespaces::MarkdownPaths,
+      null: true,
+      description: 'Namespace relevant paths to create markdown links on the UI.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
+    field :licensed_features,
+      Types::Namespaces::LicensedFeaturesType,
+      null: false,
+      description: 'Licensed features available on the namespace.',
+      method: :itself,
+      experiment: { milestone: '18.1' }
+
+    markdown_field :description_html, null: true, &:namespace_details
 
     def achievements_path
       return unless Feature.enabled?(:achievements, object)

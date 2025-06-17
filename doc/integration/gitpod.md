@@ -70,7 +70,7 @@ you can launch it from GitLab in one of these ways:
 
 - From a project repository:
   1. On the left sidebar, select **Search or go to** and find your project.
-  1. In the upper right, select **Edit > Gitpod**.
+  1. In the upper right, select **Code > Gitpod**.
 
 - From a merge request:
   1. Go to your merge request.

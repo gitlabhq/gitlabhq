@@ -79,9 +79,9 @@ You can view compliance and certification details, and download compliance artif
 
 GitLab Dedicated implements strict access controls to protect your environment:
 
-- Follows the [principle of least privilege](https://handbook.gitlab.com/handbook/security/access-management-policy/#principle-of-least-privilege).
+- Follows the principle of least privilege, which grants only the minimum permissions necessary.
 - Restricts access to the AWS organization to select GitLab team members.
-- User accounts follow the [Access Management Policy](https://handbook.gitlab.com/handbook/security/access-management-policy/).
+- Implements comprehensive security policies and access requests for user accounts.
 - Uses a single Hub account for automated actions and emergency access.
 - GitLab Dedicated engineers do not have direct access to customer environments.
 
@@ -249,14 +249,37 @@ The following operational features are not available:
 GitLab uses [feature flags](../../user/feature_flags.md) to support the development and rollout of new or experimental features.
 In GitLab Dedicated:
 
-- Features using feature flags that are **enabled by default** are available.
-- Features using feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
+- Features behind feature flags that are **enabled by default** are available.
+- Features behind feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
 
 Features behind flags that are disabled by default are not ready for production use and therefore unsafe for GitLab Dedicated.
 
 When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in
 GitLab Dedicated in the same GitLab version. GitLab Dedicated follows its own
 [release schedule](maintenance.md) for version deployments.
+
+## Service level availability
+
+GitLab Dedicated maintains a monthly service level objective of 99.5% availability.
+
+Service level availability measures the percentage of time that GitLab Dedicated is available for use during a calendar month. GitLab calculates availability based on the following core services:
+
+| Service area | Included features |
+|--|--|
+| Web interface | GitLab issues, merge requests, CI job logs, GitLab API, Git operations over HTTPS |
+| Container Registry | Registry HTTPS requests |
+| Git operations | Git push, pull, and clone operations over SSH |
+
+### Service level exclusions
+
+The following are not included in service level availability calculations:
+
+- Service interruptions caused by customer misconfigurations
+- Issues with customer or cloud provider infrastructure outside of GitLab control
+- Scheduled maintenance windows
+- Emergency maintenance for critical security or data issues
+- Service disruptions caused by natural disasters, widespread internet outages, 
+  datacenter failures, or other events outside of GitLab control.
 
 ## Migrate to GitLab Dedicated
 

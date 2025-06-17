@@ -10,6 +10,7 @@ import AccessToken from './access_token.vue';
 import AccessTokenForm from './access_token_form.vue';
 import AccessTokenTable from './access_token_table.vue';
 import AccessTokenStatistics from './access_token_statistics.vue';
+import UserAvatar from './user_avatar.vue';
 
 export default {
   components: {
@@ -22,12 +23,33 @@ export default {
     AccessTokenForm,
     AccessTokenTable,
     AccessTokenStatistics,
+    UserAvatar,
   },
   inject: ['accessTokenCreate', 'accessTokenRevoke', 'accessTokenRotate', 'accessTokenShow'],
   props: {
     id: {
       type: Number,
       required: true,
+    },
+    showAvatar: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    tokenName: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tokenDescription: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    tokenScopes: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   computed: {
@@ -47,6 +69,7 @@ export default {
     this.setup({
       ...initializeValuesFromQuery(),
       id: this.id,
+      showCreateForm: Boolean(this.tokenName || this.tokenDescription || this.tokenScopes.length),
       urlCreate: this.accessTokenCreate,
       urlRevoke: this.accessTokenRevoke,
       urlRotate: this.accessTokenRotate,
@@ -94,6 +117,7 @@ export default {
 
 <template>
   <div>
+    <user-avatar v-if="showAvatar" :id="id" />
     <page-heading :heading="s__('AccessTokens|Personal access tokens')">
       <template #description>
         {{
@@ -109,7 +133,12 @@ export default {
       </template>
     </page-heading>
     <access-token v-if="token" />
-    <access-token-form v-if="showCreateForm" />
+    <access-token-form
+      v-if="showCreateForm"
+      :name="tokenName"
+      :description="tokenDescription"
+      :scopes="tokenScopes"
+    />
     <access-token-statistics />
     <div class="gl-my-5 gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
       <gl-filtered-search

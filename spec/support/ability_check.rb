@@ -12,7 +12,7 @@ module Support
       def before_check(policy, ability, user, subject, opts)
         return super if Checker.ok?(policy, ability)
 
-        ActiveSupport::Deprecation.warn(<<~WARNING)
+        warn(<<~WARNING)
           Ability #{ability.inspect} in #{policy.class} not found.
           user=#{user.inspect}, subject=#{subject}, opts=#{opts.inspect}"
 

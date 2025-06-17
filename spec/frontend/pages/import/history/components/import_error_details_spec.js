@@ -52,7 +52,7 @@ describe('ImportErrorDetails', () => {
       await axios.waitForAll();
 
       expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
-      expect(wrapper.find('pre').text()).toBe('No additional information provided.');
+      expect(wrapper.find('pre').text()).toBe('No additional information provided');
     });
   });
 });

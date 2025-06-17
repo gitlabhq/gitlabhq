@@ -85,7 +85,6 @@ describe('Pipeline New Form', () => {
     provide = {},
     mountFn = shallowMountExtended,
     stubs = {},
-    ciInputsForPipelines = false,
   } = {}) => {
     const handlers = [[pipelineCreateMutation, pipelineCreateMutationHandler]];
     mockApollo = createMockApollo(handlers);
@@ -94,9 +93,6 @@ describe('Pipeline New Form', () => {
       provide: {
         ...defaultProvide,
         ...provide,
-        glFeatures: {
-          ciInputsForPipelines,
-        },
       },
       propsData: {
         ...defaultProps,
@@ -119,58 +115,33 @@ describe('Pipeline New Form', () => {
     mock.restore();
   });
 
-  describe('Feature flag', () => {
-    beforeEach(() => {
+  describe('Inputs form', () => {
+    beforeEach(async () => {
       pipelineCreateMutationHandler.mockResolvedValue(mockPipelineCreateMutationResponse);
+      createComponentWithApollo();
+      await waitForPromises();
     });
-    describe('when the ciInputsForPipelines flag is disabled', () => {
-      beforeEach(async () => {
-        createComponentWithApollo();
-        await waitForPromises();
-      });
 
-      it('does not display the pipeline inputs form component', () => {
-        expect(findPipelineInputsForm().exists()).toBe(false);
-      });
-
-      it('does not include inputs in the mutation variables', async () => {
-        await submitForm();
-
-        expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
-          input: {
-            ref: 'main',
-            projectPath: defaultProvide.projectPath,
-            variables: [],
-          },
-        });
+    it('displays the pipeline inputs form component with emitModifiedOnly set to true', () => {
+      expect(findPipelineInputsForm().exists()).toBe(true);
+      expect(findPipelineInputsForm().props()).toMatchObject({
+        queryRef: `refs/heads/${defaultProps.refParam}`,
+        emitModifiedOnly: true,
+        preselectAllInputs: true,
+        emptySelectionText: 'Select inputs to create a new pipeline.',
       });
     });
 
-    describe('when the ciInputsForPipelines flag is enabled', () => {
-      beforeEach(async () => {
-        createComponentWithApollo({ ciInputsForPipelines: true });
-        await waitForPromises();
-      });
+    it('includes inputs in the mutation variables', async () => {
+      await submitForm();
 
-      it('displays the pipeline inputs form component with emitModifiedOnly set to true', () => {
-        expect(findPipelineInputsForm().exists()).toBe(true);
-        expect(findPipelineInputsForm().props()).toMatchObject({
-          queryRef: `refs/heads/${defaultProps.refParam}`,
-          emitModifiedOnly: true,
-        });
-      });
-
-      it('includes inputs in the mutation variables', async () => {
-        await submitForm();
-
-        expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
-          input: {
-            ref: 'main',
-            projectPath: defaultProvide.projectPath,
-            inputs: [],
-            variables: [],
-          },
-        });
+      expect(pipelineCreateMutationHandler).toHaveBeenCalledWith({
+        input: {
+          ref: 'main',
+          projectPath: defaultProvide.projectPath,
+          inputs: [],
+          variables: [],
+        },
       });
     });
   });
@@ -192,7 +163,7 @@ describe('Pipeline New Form', () => {
 
   describe('Pipeline inputs form', () => {
     beforeEach(async () => {
-      await createComponentWithApollo({ ciInputsForPipelines: true });
+      await createComponentWithApollo();
     });
 
     it('updates inputs when inputs-updated event is emitted', async () => {
@@ -230,6 +201,7 @@ describe('Pipeline New Form', () => {
           input: {
             ref: 'main',
             projectPath: defaultProvide.projectPath,
+            inputs: [],
             variables,
           },
         });
@@ -303,6 +275,7 @@ describe('Pipeline New Form', () => {
         input: {
           ref: 'main',
           projectPath: defaultProvide.projectPath,
+          inputs: [],
           variables: [],
         },
       });

@@ -4,6 +4,6 @@ export const hashState = Vue.observable({
   currentHash: window.location.hash,
 });
 
-export const updateLineNumber = (lineNumber) => {
-  hashState.currentHash = lineNumber;
+export const updateHash = (newHash) => {
+  hashState.currentHash = newHash;
 };

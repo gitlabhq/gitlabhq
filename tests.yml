@@ -43,11 +43,6 @@ mapping:
       - 'spec/tooling/lib/tooling/find_tests_spec.rb'
       - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
 
-  # Trigger GLCI tooling specs when anything changes in the folder
-  - source: 'tooling/lib/tooling/glci/.+'
-    test:
-      - 'spec/tooling/lib/tooling/glci/**/*_spec.rb'
-
   # RuboCop related specs
   - source: 'rubocop/(?<rest>.+)\.rb'
     test: 'spec/rubocop/%{rest}_spec.rb'

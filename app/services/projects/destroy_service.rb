@@ -3,6 +3,7 @@
 module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
+    include ContainerRegistry::Protection::Concerns::TagRule
 
     DestroyError = Class.new(StandardError)
     BATCH_SIZE = 100
@@ -270,6 +271,25 @@ module Projects
       end
 
       delete_commit_statuses
+      destroy_orphaned_ci_job_artifacts!
+    end
+
+    # This method will delete all orphaned CI Job artifacts for the project, which are job artifacts
+    # whose jobs do not exist anymore. The reason these artifacts might still exist is because of
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/508672.
+    # TODO: remove this method after we have a working & valid FK.
+    def destroy_orphaned_ci_job_artifacts!
+      orphaned_job_artifacts = ::Ci::JobArtifact.for_project(project)
+      return if orphaned_job_artifacts.none?
+
+      service = orphaned_job_artifacts.begin_fast_destroy
+      orphaned_job_artifacts.finalize_fast_destroy(service)
+
+      Gitlab::AppLogger.info(
+        class: self.class.name,
+        project_id: project.id,
+        message: 'Orphaned CI job artifacts deleted'
+      )
     end
 
     def delete_commit_statuses
@@ -345,7 +365,7 @@ module Projects
 
     def remove_registry_tags
       return true unless Gitlab.config.registry.enabled
-      return false if protected_by_tag_protection_rules?
+      return false if protected_for_delete?(project:, current_user:)
       return false unless remove_legacy_registry_tags
 
       results = []
@@ -354,19 +374,6 @@ module Projects
       end
 
       results.all?
-    end
-
-    def protected_by_tag_protection_rules?
-      return false if current_user.can_admin_all_resources?
-
-      return false unless project.has_container_registry_protected_tag_rules?(
-        action: 'delete',
-        access_level: project.team.max_member_access(current_user.id)
-      )
-
-      return false unless project.has_container_registry_tags?
-
-      true
     end
 
     ##

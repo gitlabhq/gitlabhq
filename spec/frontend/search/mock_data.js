@@ -523,7 +523,7 @@ export const MOCK_NAVIGATION_ITEMS = [
     title: 'Code2',
     icon: 'code',
     id: 'menu-blobs-2',
-    link: '/search?scope=blobs&search=et',
+    link: '/search?scope=blobs&search=et&regex=true',
     is_active: false,
     pill_count: '0',
     scope: 'blobs',

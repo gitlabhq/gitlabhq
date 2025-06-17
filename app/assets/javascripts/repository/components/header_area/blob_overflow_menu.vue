@@ -1,6 +1,7 @@
 <script>
 import { GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
 import { computed } from 'vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { isLoggedIn } from '~/lib/utils/common_utils';
@@ -31,6 +32,7 @@ export default {
   directives: {
     GlTooltipDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   inject: ['blobInfo', 'currentRef'],
   provide() {
     return {
@@ -65,22 +67,22 @@ export default {
     eeCanModifyFile: {
       type: Boolean,
       required: false,
-      default: undefined,
+      default: false,
     },
     eeCanCreateLock: {
       type: Boolean,
       required: false,
-      default: undefined,
+      default: false,
     },
     eeCanDestroyLock: {
       type: Boolean,
       required: false,
-      default: undefined,
+      default: false,
     },
     eeIsLocked: {
       type: Boolean,
       required: false,
-      default: undefined,
+      default: false,
     },
   },
   apollo: {
@@ -93,7 +95,7 @@ export default {
         };
       },
       update({ project }) {
-        this.userPermissions = project?.userPermissions;
+        this.userPermissions = project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
       },
       error() {
         createAlert({ message: this.$options.i18n.fetchError });
@@ -120,10 +122,10 @@ export default {
       return Boolean(this.viewer.renderError);
     },
     canModifyFile() {
-      return this.eeCanModifyFile !== undefined ? this.eeCanModifyFile : true;
+      return this.glFeatures.fileLocks ? this.eeCanModifyFile : true;
     },
     isLocked() {
-      return this.eeIsLocked !== undefined ? this.eeIsLocked : false;
+      return this.glFeatures.fileLocks ? this.eeIsLocked : false;
     },
   },
   watch: {

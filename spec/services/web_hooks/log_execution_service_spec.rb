@@ -65,6 +65,19 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
         expect { service.execute }.to change { WebHook.find(project_hook.id).recent_failures }.to(1)
       end
 
+      context 'when the hook does not have auto-disabling enabled' do
+        before do
+          allow(project_hook).to receive(:auto_disabling_enabled?).and_return(false)
+        end
+
+        it 'does not try to obtain a lease or update failure state' do
+          lease = stub_exclusive_lease(lease_key, timeout: described_class::LOCK_TTL)
+
+          expect(lease).not_to receive(:try_obtain)
+          expect { service.execute }.not_to change { WebHook.find(project_hook.id).recent_failures }.from(0)
+        end
+      end
+
       context 'when a lease cannot be obtained' do
         where(:response_category, :executable, :needs_updating) do
           :ok     | true  | false

@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Configure GitLab running in a Docker container
 ---
@@ -181,7 +181,7 @@ port `2424`:
    gitlab-ctl reconfigure
    ```
 
-Following the above example, your web browser can reach your GitLab instance
+Following the previous example, your web browser can reach your GitLab instance
 at `<hostIP>:8929` and push over SSH on port `2424`.
 
 You can see a `docker-compose.yml` example that uses different ports in the

@@ -106,7 +106,7 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
     let_it_be(:build) { create(:ci_build) }
 
     subject(:execute) do
-      described_class.find_or_upsert_for!(build.id, build.partition_id)
+      described_class.find_or_upsert_for!(build.id, build.partition_id, build.project.id)
     end
 
     it 'creates a new record' do
@@ -114,6 +114,8 @@ RSpec.describe Ci::BuildTraceMetadata, feature_category: :continuous_integration
 
       expect(metadata).to be_a(described_class)
       expect(metadata.id).to eq(build.id)
+      expect(metadata.project_id).to eq(build.project.id)
+      expect(metadata.partition_id).to eq(build.partition_id)
       expect(metadata.archival_attempts).to eq(0)
     end
 

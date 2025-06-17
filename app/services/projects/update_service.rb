@@ -34,19 +34,18 @@ module Projects
       # If the block added errors, don't try to save the project
       return update_failed! if project.errors.any?
 
-      if project.update(params.except(*non_assignable_project_params))
-        after_update
+      update_project!
+      after_update
 
-        if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
-            project.previous_changes[:archived] == [false, true]
+      if Feature.enabled?(:destroy_fork_network_on_archive, project) &&
+          project.previous_changes[:archived] == [false, true]
 
-          UnlinkForkService.new(project, current_user).execute
-        end
-
-        success
-      else
-        update_failed!
+        UnlinkForkService.new(project, current_user).execute
       end
+
+      success
+    rescue ActiveRecord::ActiveRecordError
+      update_failed!
     rescue ApiError => e
       error(e.message, status: :api_error)
     rescue ValidationError, Gitlab::Pages::UniqueDomainGenerationFailure => e
@@ -60,6 +59,17 @@ module Projects
     end
 
     private
+
+    def update_project!
+      if Feature.disabled?(:replicate_deletion_schedule_operations, project)
+        return project.update!(params.except(*non_assignable_project_params))
+      end
+
+      project.transaction do
+        project.deletion_schedule&.destroy! if params[:remove_deletion_schedule]
+        project.update!(params.except(*non_assignable_project_params))
+      end
+    end
 
     def ensure_ci_cd_settings
       # It's possible that before the fix in https://gitlab.com/gitlab-org/gitlab/-/issues/421050,
@@ -91,13 +101,6 @@ module Projects
           params[:ci_pipeline_variables_minimum_override_role] == 'owner' &&
           !can?(current_user, :owner_access, project)
         raise_api_error(s_("UpdateProject|Changing the ci_pipeline_variables_minimum_override_role to the owner role is not allowed"))
-      end
-
-      # If this is disabled via API we want to ensure we convert to the backwards compatible minimum
-      # override role 'developer'. We want to keep this attribute always "true" until removal.
-      if params[:restrict_user_defined_variables] == false
-        params[:restrict_user_defined_variables] = true
-        params[:ci_pipeline_variables_minimum_override_role] = 'developer'
       end
 
       return if can?(current_user, :change_restrict_user_defined_variables, project)
@@ -133,7 +136,7 @@ module Projects
       return unless renaming_project_with_container_registry_tags?
 
       unless ContainerRegistry::GitlabApiClient.supports_gitlab_api?
-        raise ValidationError, s_('UpdateProject|Cannot rename project because it contains container registry tags!')
+        raise ValidationError, s_('UpdateProject|Cannot rename or delete project because it contains container registry tags. Delete all container registry tags first. https://docs.gitlab.com/user/packages/container_registry/#move-or-rename-container-registry-repositories')
       end
 
       dry_run = ContainerRegistry::GitlabApiClient.rename_base_repository_path(
@@ -255,7 +258,7 @@ module Projects
       new_restrict_user_defined_variables = params[:restrict_user_defined_variables]
       return false if new_restrict_user_defined_variables.nil?
 
-      project.restrict_user_defined_variables != new_restrict_user_defined_variables
+      project.restrict_user_defined_variables? != new_restrict_user_defined_variables
     end
 
     def changing_pipeline_variables_minimum_override_role?
@@ -379,7 +382,7 @@ module Projects
     end
 
     def non_assignable_project_params
-      [:default_branch]
+      [:default_branch, :remove_deletion_schedule]
     end
   end
 end

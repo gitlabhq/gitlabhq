@@ -78,7 +78,14 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['group'],
+  inject: {
+    group: {
+      default: {},
+    },
+    allowBypassPlaceholderConfirmation: {
+      default: false,
+    },
+  },
   data() {
     return {
       selectedTabIndex: 0,
@@ -318,7 +325,7 @@ export default {
 
 <template>
   <div>
-    <gl-alert variant="warning" :dismissible="false" class="mt-3">
+    <gl-alert variant="warning" :dismissible="false" class="gl-mt-3">
       <gl-sprintf
         :message="
           s__(
@@ -330,6 +337,20 @@ export default {
           <gl-link :href="$options.helpUrl" target="_blank">{{ content }}</gl-link>
         </template>
       </gl-sprintf>
+
+      <p v-if="allowBypassPlaceholderConfirmation" class="gl-mb-0 gl-mt-3">
+        <gl-sprintf
+          :message="
+            s__(
+              'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
+            )
+          "
+        >
+          <template #strong="{ content }">
+            <strong>{{ content }}</strong>
+          </template>
+        </gl-sprintf>
+      </p>
     </gl-alert>
     <gl-tabs
       v-model="selectedTabIndex"

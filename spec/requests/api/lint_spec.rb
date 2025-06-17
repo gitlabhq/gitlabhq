@@ -726,6 +726,22 @@ RSpec.describe API::Lint, feature_category: :pipeline_composition do
       end
     end
 
+    context 'when authenticated with a token that has the ai_workflows scope' do
+      let(:oauth_access_token) { create(:oauth_access_token, user: project.owner, scopes: [:ai_workflows]) }
+
+      it 'allows access to POST endpoint' do
+        post api("/projects/#{project.id}/ci/lint", oauth_access_token: oauth_access_token), params: { content: yaml_content }
+
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'does not allow access to GET endpoint' do
+        get api("/projects/#{project.id}/ci/lint", oauth_access_token: oauth_access_token)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when authenticated as project guest' do
       before do
         project.add_guest(api_user)

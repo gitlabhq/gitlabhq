@@ -28,23 +28,37 @@ module Gitlab
       def initialize(project:, current_user:, sha: nil, verify_project_sha: true)
         @project = project
         @current_user = current_user
+
+        #
+        # We are deprecating these parameters because we'll replace the `legacy_validate` with the `validate` method.
+        #
         # If the `sha` is not provided, the default is the project's head commit (or nil). In such case, we
         # don't need to call `YamlProcessor.verify_project_sha!`, which prevents redundant calls to Gitaly.
-        @verify_project_sha = verify_project_sha && sha.present?
-        @sha = sha || project&.repository&.commit&.sha
+        @legacy_verify_project_sha = verify_project_sha && sha.present?
+        @legacy_sha = sha || project&.repository&.commit&.sha
       end
 
-      def validate(content, dry_run: false, ref: project&.default_branch)
+      # Our goal is to remove the `sha` dependency and the custom `YamlProcessor` usage from the CI linting logic.
+      # This legacy method is aimed to be removed with https://gitlab.com/gitlab-org/gitlab/-/issues/543727.
+      def legacy_validate(content, dry_run: false, ref: project&.default_branch)
         if dry_run
           simulate_pipeline_creation(content, ref)
         else
-          static_validation(content)
+          legacy_static_validation(content)
+        end
+      end
+
+      def validate(content, dry_run:, ref:)
+        if dry_run
+          simulate_pipeline_creation(content, ref)
+        else
+          lint_pipeline_creation(content, ref)
         end
       end
 
       private
 
-      attr_accessor :project, :sha, :verify_project_sha, :current_user
+      attr_accessor :project, :current_user, :legacy_sha, :legacy_verify_project_sha
 
       def simulate_pipeline_creation(content, ref)
         pipeline = ::Ci::CreatePipelineService
@@ -61,13 +75,26 @@ module Gitlab
         )
       end
 
-      def static_validation(content)
+      def lint_pipeline_creation(content, ref)
+        service = ::Ci::CreatePipelineService.new(@project, @current_user, ref: ref)
+        pipeline = service.execute(:push, linting: true, content: content).payload
+
+        Result.new(
+          jobs: yaml_processor_result_to_jobs(service.yaml_processor_result),
+          merged_yaml: pipeline.config_metadata.try(:[], :merged_yaml),
+          errors: pipeline.error_messages.map(&:content),
+          warnings: pipeline.warning_messages(limit: ::Gitlab::Ci::Warnings::MAX_LIMIT).map(&:content),
+          includes: pipeline.config_metadata.try(:[], :includes)
+        )
+      end
+
+      def legacy_static_validation(content)
         logger = build_logger
 
         result = yaml_processor_result(content, logger)
 
         Result.new(
-          jobs: static_validation_convert_to_jobs(result),
+          jobs: yaml_processor_result_to_jobs(result),
           merged_yaml: result.config_metadata[:merged_yaml],
           errors: result.errors,
           warnings: result.warnings.take(::Gitlab::Ci::Warnings::MAX_LIMIT), # rubocop: disable CodeReuse/ActiveRecord
@@ -82,8 +109,8 @@ module Gitlab
           Gitlab::Ci::YamlProcessor.new(content, project: project,
             user: current_user,
             ref: find_ref,
-            sha: sha,
-            verify_project_sha: verify_project_sha,
+            sha: legacy_sha,
+            verify_project_sha: legacy_verify_project_sha,
             logger: logger).execute
         end
       end
@@ -106,9 +133,9 @@ module Gitlab
         end
       end
 
-      def static_validation_convert_to_jobs(result)
+      def yaml_processor_result_to_jobs(result)
         jobs = []
-        return jobs unless result.valid?
+        return jobs unless result&.valid?
 
         result.stages.each do |stage_name|
           result.builds.each do |job|
@@ -146,7 +173,7 @@ module Gitlab
       end
 
       def find_ref
-        ref = RefFinder.new(project).find_by_sha(sha)
+        ref = RefFinder.new(project).find_by_sha(legacy_sha)
 
         return unless ref
 

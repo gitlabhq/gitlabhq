@@ -219,4 +219,26 @@ RSpec.describe Ci::SecureFile, factory_default: :keep, feature_category: :mobile
       expect(secure_file.local?).to be false
     end
   end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      ci_secure_file = create(:ci_secure_file)
+
+      if ci_secure_file.file_store == ObjectStorage::Store::REMOTE
+        ci_secure_file.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      ci_secure_file
+    end
+
+    let(:remotely_stored) do
+      ci_secure_file = create(:ci_secure_file)
+
+      if ci_secure_file.file_store == ObjectStorage::Store::LOCAL
+        ci_secure_file.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      ci_secure_file
+    end
+  end
 end

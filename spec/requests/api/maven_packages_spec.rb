@@ -18,10 +18,8 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
   let_it_be(:jar_file) { package.package_files.with_file_name_like('%.jar').first }
   let_it_be(:personal_access_token) { create(:personal_access_token, user: user) }
   let_it_be(:job, reload: true) { create(:ci_build, user: user, status: :running, project: project) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
-  let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
+  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project]) }
+  let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, write_package_registry: true, groups: [group]) }
 
   let(:snowplow_gitlab_standard_context) { { project: project, namespace: project.namespace, user: user, property: 'i_package_maven_user' } }
 
@@ -451,7 +449,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
           another_user = create(:user)
           project.add_developer(another_user)
 
-          # We force the id of the deploy token and the user to be the same
+          # We force the id of the deploy token and the user to be the same,
+          # which requires deleting the joining record as we cannot update
+          # the id while foreign keys reference it.
+          unauthorized_deploy_token.project_deploy_tokens.delete_all(:delete_all)
           unauthorized_deploy_token.update!(id: another_user.id)
 
           download_file(
@@ -963,7 +964,10 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       another_user = create(:user)
       project.add_developer(another_user)
 
-      # We force the id of the deploy token and the user to be the same
+      # We force the id of the deploy token and the user to be the same,
+      # which requires deleting the joining record as we cannot update
+      # the id while foreign keys reference it.
+      unauthorized_deploy_token.project_deploy_tokens.delete_all(:delete_all)
       unauthorized_deploy_token.update!(id: another_user.id)
 
       authorize_upload({}, headers.merge(Gitlab::Auth::AuthFinders::DEPLOY_TOKEN_HEADER => unauthorized_deploy_token.token))
@@ -1191,10 +1195,13 @@ RSpec.describe API::MavenPackages, feature_category: :package_registry do
       it 'rejects uploads by a unauthorized deploy token with same id as a user with access' do
         unauthorized_deploy_token = create(:deploy_token, read_package_registry: true, write_package_registry: true)
 
-        another_user = create(:user)
+        another_user = create(:user, id: unauthorized_deploy_token.id)
         project.add_developer(another_user)
 
-        # We force the id of the deploy token and the user to be the same
+        # We force the id of the deploy token and the user to be the same,
+        # which requires deleting the joining record as we cannot update
+        # the id while foreign keys reference it.
+        unauthorized_deploy_token.project_deploy_tokens.delete_all(:delete_all)
         unauthorized_deploy_token.update!(id: another_user.id)
 
         upload_file(

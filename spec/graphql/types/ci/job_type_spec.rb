@@ -67,14 +67,26 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
   end
 
   describe '#web_path' do
-    subject { resolve_field(:web_path, build, current_user: user, object_type: described_class) }
+    subject { resolve_field(:web_path, job, current_user: user, object_type: described_class) }
 
-    let(:project) { create(:project) }
-    let(:user) { create(:user) }
-    let(:build) { create(:ci_build, project: project, user: user) }
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
 
-    it 'returns the web path of the job' do
-      is_expected.to eq("/#{project.full_path}/-/jobs/#{build.id}")
+    context 'when the job is a regular build' do
+      let(:job) { create(:ci_build, project: project, user: user) }
+
+      it 'returns the project job path' do
+        expected_path = "/#{project.full_path}/-/jobs/#{job.id}"
+        is_expected.to eq(expected_path)
+      end
+    end
+
+    context 'when the job is a bridge' do
+      let(:job) { create(:ci_bridge, project: project, user: user) }
+
+      it 'returns nil' do
+        is_expected.to be_nil
+      end
     end
   end
 

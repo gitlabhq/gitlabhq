@@ -15,7 +15,7 @@ const RENDERED_MARKDOWN =
   '\u003cp data-sourcepos="1:1-1:79" dir="auto"\u003eCheckout \u003ca href="http://gitlab.com"\u003eGitLab\u003c/a\u003e Hello! Welcome "\u0026gt;\u003c/p\u003e';
 // HTML with v-safe-html
 const HTML_SAFE_RENDERED_MARKDOWN =
-  '\u003cp dir="auto" data-sourcepos="1:1-1:79"\u003eCheckout \u003ca href="http://gitlab.com"\u003eGitLab\u003c/a\u003e Hello! Welcome "\u0026gt;\u003c/p\u003e';
+  '\u003cp data-sourcepos="1:1-1:79" dir="auto"\u003eCheckout \u003ca href="http://gitlab.com"\u003eGitLab\u003c/a\u003e Hello! Welcome "\u0026gt;\u003c/p\u003e';
 
 describe('markdown_content.vue', () => {
   let wrapper;

@@ -18,6 +18,7 @@ module RuboCop
 
       MSG = 'Do not use a leading "/" in route redirects'
 
+      # @!method leading_slash_in_redirect?(node)
       def_node_matcher :leading_slash_in_redirect?, <<~PATTERN
         (send nil? :redirect (str #has_leading_slash?))
       PATTERN

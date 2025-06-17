@@ -43,11 +43,11 @@ such as:
 
 - Turn on [pack-objects-cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
   to reduce the work that `git-pack-objects` has to do.
-- Change [Git strategy](_index.md#git-strategy)
+- Change [Git strategy](_index.md#use-git-fetch-in-cicd-operations)
   in CI/CD settings from `clone` to `fetch` or `none`.
-- [Stop fetching tags](_index.md#git-fetch-extra-flags),
+- [Stop fetching tags](_index.md#change-git-fetch-behavior-with-flags),
   unless your tests require them.
-- [Use shallow clones](_index.md#shallow-cloning)
+- [Use shallow clones](_index.md#use-shallow-clones-in-cicd-processes)
   whenever possible.
 
 The other option is to increase CPU capacity on Gitaly servers.

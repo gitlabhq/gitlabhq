@@ -34,7 +34,9 @@ Create GitLab as a IAM OIDC provider in AWS following these [instructions](https
 
 Include the following information:
 
-- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`. This address must be publicly accessible.
+- **Provider URL**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
+  This address must be publicly accessible. If this is not publicly available, see how to
+  [configure a non-public GitLab instance](#configure-a-non-public-gitlab-instance)
 - **Audience**: The address of your GitLab instance, such as `https://gitlab.com` or `http://gitlab.example.com`.
   - The address must include `https://`.
   - Do not include a trailing slash.
@@ -102,6 +104,139 @@ assume role:
 - AWS Partner (APN) Blog: [Setting up OpenID Connect with GitLab CI/CD](https://aws.amazon.com/blogs/apn/setting-up-openid-connect-with-gitlab-ci-cd-to-provide-secure-access-to-environments-in-aws-accounts/).
 - [GitLab at AWS re:Inforce 2023: Secure GitLab CD pipelines to AWS w/ OpenID and JWT](https://www.youtube.com/watch?v=xWQGADDVn8g).
 
+## Configure a non-public GitLab instance
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391928) in GitLab 18.1
+
+{{< /history >}}
+
+{{< alert type="warning" >}}
+
+This workaround is an advanced configuration option with security considerations to understand.
+You must be careful to correctly sync the OpenID configuration and the public keys from your private
+GitLab Self-Managed instance to a publicly available location such as an S3 bucket.
+You must also ensure that the S3 bucket and files inside are properly secured.
+Failing to properly secure the S3 bucket could lead to the takeover of any cloud accounts
+associated with this OpenID Connect identity.
+
+{{< /alert >}}
+
+If your GitLab instance is not publicly accessible, configuring OpenID Connect in AWS
+is not possible by default. You can use a workaround to make some specific configuration publicly
+accessible, enabling OpenID Connect configuration for the instance:
+
+1. Store authentication details for your GitLab instance at a publicly available location,
+   for example in S3 files:
+
+   - Host the OpenID configuration for your instance in an S3 file. The configuration is available at
+     `/.well-known/openid-configuration`, like `http://gitlab.example.com/.well-known/openid-configuration`.
+     Update the `issuer:` and `jwks_uri:` values in the configuration file to point to the publicly available locations.
+   - Host the public keys for your instance URL in an S3 file. The keys are available at available at
+     `/oauth/discovery/keys`, like `http://gitlab.example.com/oauth/discovery/keys`.
+
+   For example:
+
+   - OpenID configuration file: `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com/.well-known/openid-configuration`.
+   - JWKS (JSON Web Key Sets): `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com/oauth/discovery/keys`.
+   - The issuer claim `iss:` in the ID Tokens and the `issuer:` value in the OpenID configuration would be:
+     `https://example-oidc-configuration-s3-bucket.s3.eu-north-1.amazonaws.com`
+
+1. Optional. Use an OpenID configuration validator like the [OpenID Configuration Endpoint Validator](https://www.oauth2.dev/tools/openid-configuration-validator)
+   to validate your publicly available OpenID configuration.
+1. Configure a custom issuer claim for your ID tokens. By default, GitLab ID tokens
+   have the issuer claim `iss:` set as the address of your GitLab instance, for example: `http://gitlab.example.com`.
+
+1. Update the issuer URL:
+
+   {{< tabs >}}
+
+   {{< tab title="Linux package (Omnibus)" >}}
+
+   1. Edit `/etc/gitlab/gitlab.rb`:
+
+      ```ruby
+      gitlab_rails['ci_id_tokens_issuer_url'] = 'public_url_with_openid_configuration_and_keys'
+      ```
+
+   1. Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md#reconfigure-a-linux-package-installation) for the changes to take effect.
+
+   {{< /tab >}}
+
+   {{< tab title="Helm chart (Kubernetes)" >}}
+
+   1. Export the Helm values:
+
+      ```shell
+      helm get values gitlab > gitlab_values.yaml
+      ```
+
+   1. Edit `gitlab_values.yaml`:
+
+      ```yaml
+      global:
+        appConfig:
+          ciIdTokens:
+            issuerUrl: 'public_url_with_openid_configuration_and_keys'
+      ```
+
+   1. Save the file and apply the new values:
+
+      ```shell
+      helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+      ```
+
+   {{< /tab >}}
+
+   {{< tab title="Docker" >}}
+
+   1. Edit `docker-compose.yml`:
+
+      ```yaml
+      version: "3.6"
+      services:
+        gitlab:
+          environment:
+            GITLAB_OMNIBUS_CONFIG: |
+              gitlab_rails['ci_id_tokens_issuer_url'] = 'public_url_with_openid_configuration_and_keys'
+      ```
+
+   1. Save the file and restart GitLab:
+
+      ```shell
+      docker compose up -d
+      ```
+
+   {{< /tab >}}
+
+   {{< tab title="Self-compiled (source)" >}}
+
+   1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+      ```yaml
+       production: &base
+         ci_id_tokens:
+           issuer_url: 'public_url_with_openid_configuration_and_keys'
+      ```
+
+   1. Save the file and [reconfigure GitLab](../../../administration/restart_gitlab.md#self-compiled-installations)
+      for the changes to take effect.
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
+
+1. Run the [`ci:validate_id_token_configuration` Rake task](../../../administration/raketasks/tokens/_index.md#validate-custom-issuer-url-configuration-for-cicd-id-tokens)
+   to validate the CI/CD ID token configuration.
+
 ## Troubleshooting
 
 ### Error: `Not authorized to perform sts:AssumeRoleWithWebIdentity`
@@ -155,5 +290,4 @@ This error might be because:
 As documented in the [AWS Knowledge Center article for this error](https://repost.aws/knowledge-center/iam-sts-invalididentitytoken),
 your GitLab instance needs to be publicly accessible so that the `.well_known` URL and `jwks_uri` can be resolved.
 If this is not possible, for example if your GitLab instance is in an offline environment,
-you can follow [issue #391928](https://gitlab.com/gitlab-org/gitlab/-/issues/391928)
-where a workaround and more permanent solution is being investigated.
+see how to [configure a non-public GitLab instance](#configure-a-non-public-gitlab-instance)

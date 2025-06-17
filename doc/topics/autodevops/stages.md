@@ -161,7 +161,7 @@ The supported buildpacks are:
 - buildpack-nginx
 ```
 
-If your application needs a buildpack that is not in the above list, you
+If your application needs a buildpack that is not in the previous list, you
 might want to use a [custom buildpack](customize.md#custom-buildpacks).
 
 ## Auto Code Quality
@@ -190,7 +190,7 @@ out. The merge request widget also displays any
 
 Static Application Security Testing (SAST) runs static
 analysis on the current code, and checks for potential security issues. The
-Auto SAST stage requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or above.
+Auto SAST stage requires [GitLab Runner](https://docs.gitlab.com/runner/) 11.5 or later.
 
 After creating the report, it's uploaded as an artifact which you can later
 download and check out. The merge request widget also displays any security
@@ -243,7 +243,7 @@ For more information, see
 
 ## Auto Review Apps
 
-This is an optional step, since many projects don't have a Kubernetes cluster
+This is an optional step because many projects don't have a Kubernetes cluster
 available. If the [requirements](requirements.md) are not met, the job is
 silently skipped.
 
@@ -273,7 +273,7 @@ namespace.
 
 {{< alert type="warning" >}}
 
-Your apps should *not* be manipulated outside of Helm (using Kubernetes directly).
+Your apps should not be manipulated outside of Helm (using Kubernetes directly).
 This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed
@@ -411,7 +411,7 @@ namespace.
 
 {{< alert type="warning" >}}
 
-Your apps should *not* be manipulated outside of Helm (using Kubernetes directly).
+Your apps should not be manipulated outside of Helm (using Kubernetes directly).
 This can cause confusion with Helm not detecting the change and subsequent
 deploys with Auto DevOps can undo your changes. Also, if you change something
 and want to undo it by deploying again, Helm may not detect that anything changed

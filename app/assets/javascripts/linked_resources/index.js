@@ -10,7 +10,7 @@ export default function initLinkedResources() {
   const linkedResourcesRootElement = document.querySelector('.js-linked-resources-root');
 
   if (linkedResourcesRootElement) {
-    const { issuableId, canAddResourceLinks, helpPath } = linkedResourcesRootElement.dataset;
+    const { issuableId, canAddResourceLinks } = linkedResourcesRootElement.dataset;
 
     const apolloProvider = new VueApollo({
       defaultClient: createDefaultClient(),
@@ -27,7 +27,6 @@ export default function initLinkedResources() {
       render: (createElement) =>
         createElement('resource-links-block', {
           props: {
-            helpPath,
             issuableId: parseInt(issuableId, 10),
             canAddResourceLinks: parseBoolean(canAddResourceLinks),
           },

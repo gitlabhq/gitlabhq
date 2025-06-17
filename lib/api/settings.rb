@@ -252,6 +252,8 @@ module API
         optional :preset, type: String, desc: "The preset configuration of URL's for the VS Code Extension Marketplace"
         optional :custom_values, type: Hash, desc: "VS Code Extension Marketplace URL's when preset is 'custom'"
       end
+      optional :enable_language_server_restrictions, type: Boolean, desc: 'Enables enforcing language server restrictions'
+      optional :minimum_language_server_version, type: String, desc: 'The minimum language server version to accept requests from'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

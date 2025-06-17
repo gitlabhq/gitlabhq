@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Types::Organizations::OrganizationUserAccessLevelEnum, feature_category: :cell do
+RSpec.describe Types::Organizations::OrganizationUserAccessLevelEnum, feature_category: :organization do
   specify { expect(described_class.graphql_name).to eq('OrganizationUserAccessLevel') }
 
   it 'exposes all the existing access levels' do

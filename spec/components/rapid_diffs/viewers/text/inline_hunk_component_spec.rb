@@ -43,12 +43,6 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
     expect(page).to have_selector("a[href='##{new_line_id}']")
   end
 
-  it "renders legacy line id" do
-    line_id = diff_file.line_code(lines.second)
-    render_component
-    expect(page).to have_selector("[data-legacy-id='#{line_id}']")
-  end
-
   it "renders expand up" do
     match_line = Gitlab::Diff::Line.new("", 'match', 100, 0, 0)
     diff_hunk = Gitlab::Diff::ViewerHunk.new(

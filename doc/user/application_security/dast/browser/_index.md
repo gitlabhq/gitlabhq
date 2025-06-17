@@ -40,7 +40,7 @@ For an overview, see [Dynamic Application Security Testing (DAST)](https://www.y
 
 {{< alert type="warning" >}}
 
-Do not run DAST scans against a production server. Not only can it perform *any* function that a
+Do not run DAST scans against a production server. Not only can it perform any function that a
 user can, such as clicking buttons or submitting forms, but it may also trigger bugs, leading to
 modification or loss of production data. Only run DAST scans against a test server.
 

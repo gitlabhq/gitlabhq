@@ -155,7 +155,7 @@ After setting up the pipeline:
 
 ## Example `.gitlab-ci.yml` configuration
 
-When you follow all the steps mentioned above, your complete `.gitlab-ci.yml` should look similar to this:
+When you follow all the previous steps, the `.gitlab-ci.yml` file should look like this:
 
 ```yaml
 image: docker:20.10

@@ -4,6 +4,7 @@ group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Create and maintain a custom feature flag for your GitLab application.
 title: Feature flags
+description: Progressive delivery, controlled deployment, and risk reduction.
 ---
 
 {{< details >}}
@@ -260,7 +261,7 @@ To get the access credentials that your application needs to communicate with Gi
 1. Select **Configure** to view the following:
    - **API URL**: URL where the client (application) connects to get a list of feature flags.
    - **Instance ID**: Unique token that authorizes the retrieval of the feature flags.
-   - **Application name**: The name of the *environment* the application runs in
+   - **Application name**: The name of the environment the application runs in
      (not the name of the application itself).
 
      For example, if the application runs for a production server, the **Application name**
@@ -348,7 +349,7 @@ unleash = Unleash::Client.new({
 
 unleash_context = Unleash::Context.new
 # Replace "123" with the ID of an authenticated user.
-# Note that the context's user ID must be a string:
+# The context's user ID must be a string:
 # https://unleash.github.io/docs/unleash_context
 unleash_context.user_id = "123"
 

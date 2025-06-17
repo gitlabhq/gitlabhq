@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Pry debugging
 ---
 
@@ -23,7 +23,7 @@ If needed, `binding.irb` can be used instead with a more limited feature set.
 
 {{< /alert >}}
 
-## `byebug` vs `binding.pry` vs `binding.irb`
+## `byebug` vs `binding.irb` vs `binding.pry`
 
 `byebug` has a very similar interface as `gdb`, but `byebug` does not
 use the powerful Pry REPL.
@@ -39,6 +39,12 @@ Check out [the docs](https://github.com/deivid-rodriguez/byebug) for the full li
 
 You can start the Pry REPL with the `pry` command.
 
+## `binding.irb`
+
+As of Ruby 2.7, IRB ships with a simple interactive debugger.
+
+Check out [the docs](https://ruby-doc.org/stdlib-2.7.0/libdoc/irb/rdoc/Binding.html) for more.
+
 ## `pry`
 
 There are **a lot** of features present in `pry`, too much to cover in
@@ -46,12 +52,6 @@ this document, so for the full documentation head over to the [Pry wiki](https:/
 
 Below are a few features definitely worth checking out, also run
 `help` in a pry session to see what else you can do.
-
-## `binding.irb`
-
-As of Ruby 2.7, IRB ships with a simple interactive debugger.
-
-Check out [the docs](https://ruby-doc.org/stdlib-2.7.0/libdoc/irb/rdoc/Binding.html) for more.
 
 ### State navigation
 
@@ -98,7 +98,7 @@ Similar to source browsing, is [Documentation browsing](https://github.com/pry/p
 
 With <kbd>Control</kbd> + <kbd>R</kbd> you can search your [command history](https://github.com/pry/pry/wiki/History).
 
-## Stepping
+### Stepping
 
 To step through the code, you can use the following commands:
 
@@ -110,7 +110,7 @@ To step through the code, you can use the following commands:
 - `finish`: Execute until current stack frame returns.
 - `continue`: Continue program execution and end the Pry session.
 
-## Callstack navigation
+### Callstack navigation
 
 You also can move around in the callstack with these commands:
 
@@ -123,7 +123,7 @@ You also can move around in the callstack with these commands:
 - `frame <n>`: Moves to a specific frame. Called without arguments
   displays the current frame.
 
-## Short commands
+### Short commands
 
 When you use `binding.pry` instead of `byebug`, the short commands
 like `s`, `n`, `f`, and `c` do not work. To reinstall them, add this
@@ -138,7 +138,7 @@ if defined?(PryByebug)
 end
 ```
 
-## Repeat last command
+### Repeat last command
 
 You can repeat the last command by just hitting the <kbd>Enter</kbd>
 key (for example, with `step` or`next`), if you place the following snippet

@@ -49,7 +49,7 @@ module QA
       end
 
       def run
-        if (ENV['CLEANUP_ALL_QA_SANDBOX_GROUPS'] || ENV['CLEANUP_ALL_E2E_SANDBOX_GROUPS']) && !ENV['TOP_LEVEL_GROUP_NAME']
+        if ENV['CLEANUP_ALL_E2E_SANDBOX_GROUPS'] && !ENV['TOP_LEVEL_GROUP_NAME']
           results = SANDBOX_GROUPS.flat_map do |name|
             group_id = fetch_group_id(@api_client, name)
             delete_subgroups(group_id)

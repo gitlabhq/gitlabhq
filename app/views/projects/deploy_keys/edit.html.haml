@@ -1,5 +1,7 @@
+- add_to_breadcrumbs s_('Navigation|Repository settings'), project_settings_repository_path(@project, anchor: 'js-deploy-keys-settings')
 - page_title _('Edit deploy key')
-%h1.page-title.gl-text-size-h-display= _('Edit deploy key')
+
+= render ::Layouts::PageHeadingComponent.new(_('Edit deploy key'))
 
 = gitlab_ui_form_for [@project, @deploy_key], include_id: false do |f|
   = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }

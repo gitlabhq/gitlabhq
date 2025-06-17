@@ -4,7 +4,7 @@ import { ErrorWrapper } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import getRunnerPlatformsQuery from '~/ci/runner/components/registration/runner_instructions/graphql/get_runner_platforms.query.graphql';
 import RunnerInstructionsModal from '~/ci/runner/components/registration/runner_instructions/runner_instructions_modal.vue';
@@ -54,17 +54,12 @@ describe('RunnerInstructionsModal component', () => {
   const findPlatformButtons = () => findPlatformButtonGroup().findAllComponents(GlButton);
   const findRunnerCliInstructions = () => wrapper.findComponent(RunnerCliInstructions);
 
-  const createComponent = ({
-    props,
-    shown = true,
-    mountFn = shallowMountExtended,
-    ...options
-  } = {}) => {
+  const createComponent = ({ props, shown = true, ...options } = {}) => {
     const requestHandlers = [[getRunnerPlatformsQuery, runnerPlatformsHandler]];
 
     fakeApollo = createMockApollo(requestHandlers);
 
-    wrapper = mountFn(RunnerInstructionsModal, {
+    wrapper = shallowMountExtended(RunnerInstructionsModal, {
       propsData: {
         modalId: 'runner-instructions-modal',
         registrationToken: 'MY_TOKEN',
@@ -88,6 +83,10 @@ describe('RunnerInstructionsModal component', () => {
     beforeEach(async () => {
       createComponent();
       await waitForPromises();
+    });
+
+    it('should not focus on show', () => {
+      expect(findModal().props('noFocusOnShow')).toBe(true);
     });
 
     it('should contain a number of platforms buttons', () => {
@@ -122,14 +121,6 @@ describe('RunnerInstructionsModal component', () => {
 
         expect(findPlatformButtonGroup().props('vertical')).toBe(false);
       });
-    });
-
-    it('should focus platform button', async () => {
-      createComponent({ shown: true, mountFn: mountExtended, attachTo: document.body });
-      wrapper.vm.show();
-      await waitForPromises();
-
-      expect(document.activeElement.textContent.trim()).toBe(mockPlatformList[0].humanReadableName);
     });
   });
 

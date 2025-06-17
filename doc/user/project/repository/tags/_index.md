@@ -16,9 +16,9 @@ title: Tags
 In Git, a tag marks an important point in a repository's history.
 Git supports two types of tags:
 
-- **Lightweight tags** point to specific commits, and contain no other information.
+- Lightweight tags point to specific commits, and contain no other information.
   Also known as soft tags. Create or remove them as needed.
-- **Annotated tags** contain metadata, can be signed for verification purposes,
+- Annotated tags contain metadata, can be signed for verification purposes,
   and can't be changed.
 
 The creation or deletion of a tag can be used as a trigger for automation, including:
@@ -55,12 +55,6 @@ To view all existing tags for a project:
 1. Select **Code > Tags**.
 
 ## View tagged commits in the commits list
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18795) in GitLab 15.10.
-
-{{< /history >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Commits**.

@@ -1,11 +1,12 @@
 import { nextTick } from 'vue';
 import { GlDisclosureDropdownItem } from '@gitlab/ui';
 import PermalinkDropdownItem from '~/repository/components/header_area/permalink_dropdown_item.vue';
-import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
+import { keysFor, PROJECT_FILES_COPY_FILE_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
-import { hashState } from '~/blob/state';
+import { hashState, updateHash } from '~/blob/state';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
 jest.mock('~/blob/state');
@@ -22,6 +23,7 @@ describe('PermalinkDropdownItem', () => {
     wrapper = shallowMountExtended(PermalinkDropdownItem, {
       propsData: {
         permalinkPath: relativePermalinkPath,
+        source: 'blob',
         ...props,
       },
       mocks: {
@@ -33,6 +35,7 @@ describe('PermalinkDropdownItem', () => {
   };
 
   const findPermalinkLinkDropdown = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   beforeEach(() => {
     hashState.currentHash = null;
@@ -43,6 +46,24 @@ describe('PermalinkDropdownItem', () => {
     expect(findPermalinkLinkDropdown().exists()).toBe(true);
   });
 
+  describe('hash change handling', () => {
+    it('calls updateHash when hash changes', () => {
+      window.location.hash = 'L42';
+      createComponent();
+      window.dispatchEvent(new Event('hashchange'));
+
+      expect(updateHash).toHaveBeenCalledWith('#L42');
+    });
+
+    it('handles empty hash correctly', () => {
+      window.location.hash = '';
+      createComponent();
+      window.dispatchEvent(new Event('hashchange'));
+
+      expect(updateHash).toHaveBeenCalledWith('');
+    });
+  });
+
   describe('updatedPermalinkPath', () => {
     it('returns absolutePermalinkPath when no line number is set', () => {
       expect(findPermalinkLinkDropdown().attributes('data-clipboard-text')).toBe(
@@ -51,7 +72,7 @@ describe('PermalinkDropdownItem', () => {
     });
 
     it('returns updated path with line number when set', () => {
-      hashState.currentHash = 10;
+      hashState.currentHash = '#L10';
       createComponent();
 
       expect(findPermalinkLinkDropdown().attributes('data-clipboard-text')).toBe(
@@ -100,6 +121,45 @@ describe('PermalinkDropdownItem', () => {
       expect(clickSpy).toHaveBeenCalled();
       expect(mockToastShow).toHaveBeenCalledWith('Permalink copied to clipboard.');
     });
+
+    describe('tracking events', () => {
+      it.each([['blob'], ['repository']])(
+        'emits a tracking event with %s source when the dropdown item is clicked',
+        (source) => {
+          createComponent({ source });
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          findPermalinkLinkDropdown().vm.$emit('action');
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_permalink_button_in_overflow_menu',
+            { label: 'click', property: source },
+            undefined,
+          );
+        },
+      );
+
+      it.each(['blob', 'repository'])(
+        'emits a tracking event with %s source when the shortcut is used',
+        async (source) => {
+          createComponent({ source });
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          const clickSpy = jest.spyOn(findPermalinkLinkDropdown().element, 'click');
+
+          const mousetrapInstance = wrapper.vm.mousetrap;
+          const triggerSpy = jest.spyOn(mousetrapInstance, 'trigger');
+          mousetrapInstance.trigger('y');
+
+          await nextTick();
+
+          expect(triggerSpy).toHaveBeenCalledWith('y');
+          expect(clickSpy).toHaveBeenCalled();
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_permalink_button_in_overflow_menu',
+            { label: 'shortcut', property: source },
+            undefined,
+          );
+        },
+      );
+    });
   });
 
   describe('lifecycle hooks', () => {
@@ -109,12 +169,23 @@ describe('PermalinkDropdownItem', () => {
 
       createComponent();
       expect(bindSpy).toHaveBeenCalledWith(
-        keysFor(PROJECT_FILES_GO_TO_PERMALINK),
+        keysFor(PROJECT_FILES_COPY_FILE_PERMALINK),
         expect.any(Function),
       );
 
       wrapper.destroy();
-      expect(unbindSpy).toHaveBeenCalledWith(keysFor(PROJECT_FILES_GO_TO_PERMALINK));
+      expect(unbindSpy).toHaveBeenCalledWith(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK));
+    });
+
+    it('add and remove event listener for hashChange event', () => {
+      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+
+      createComponent();
+      expect(addEventListenerSpy).toHaveBeenCalledWith('hashchange', expect.any(Function));
+
+      wrapper.destroy();
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('hashchange', expect.any(Function));
     });
   });
 
@@ -122,7 +193,7 @@ describe('PermalinkDropdownItem', () => {
     shouldDisableShortcuts.mockReturnValue(false);
     createComponent();
     expect(wrapper.find('kbd').exists()).toBe(true);
-    expect(wrapper.find('kbd').text()).toBe(keysFor(PROJECT_FILES_GO_TO_PERMALINK)[0]);
+    expect(wrapper.find('kbd').text()).toBe(keysFor(PROJECT_FILES_COPY_FILE_PERMALINK)[0]);
   });
 
   it('does not display the shortcut key when shortcuts are disabled', () => {

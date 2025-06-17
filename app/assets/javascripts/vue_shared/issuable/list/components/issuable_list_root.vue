@@ -227,7 +227,7 @@ export default {
       required: false,
       default: '',
     },
-    addPadding: {
+    detailLoading: {
       type: Boolean,
       required: false,
       default: false,
@@ -324,21 +324,19 @@ export default {
 
 <template>
   <div class="issuable-list-container">
-    <issuable-tabs
-      :add-padding="addPadding"
-      :tabs="tabs"
-      :tab-counts="tabCounts"
-      :current-tab="currentTab"
-      :truncate-counts="truncateCounts"
-      @click="$emit('click-tab', $event)"
-    >
-      <template #nav-actions>
-        <slot name="nav-actions"></slot>
-      </template>
-      <template #title>
-        <slot name="title"></slot>
-      </template>
-    </issuable-tabs>
+    <slot name="list-header">
+      <issuable-tabs
+        :tabs="tabs"
+        :tab-counts="tabCounts"
+        :current-tab="currentTab"
+        :truncate-counts="truncateCounts"
+        @click="$emit('click-tab', $event)"
+      >
+        <template #nav-actions>
+          <slot name="nav-actions"></slot>
+        </template>
+      </issuable-tabs>
+    </slot>
     <filtered-search-bar
       :namespace="namespace"
       :recent-searches-storage-key="recentSearchesStorageKey"
@@ -406,6 +404,7 @@ export default {
           :show-work-item-type-icon="showWorkItemTypeIcon"
           :prevent-redirect="preventRedirect"
           :is-active="isIssuableActive(issuable)"
+          :detail-loading="detailLoading"
           @checked-input="handleIssuableCheckedInput(issuable, $event)"
           @select-issuable="$emit('select-issuable', $event)"
         >
@@ -445,6 +444,9 @@ export default {
           <template #health-status>
             <slot name="health-status" :issuable="issuable"></slot>
           </template>
+          <template #custom-status>
+            <slot name="custom-status" :issuable="issuable"></slot>
+          </template>
         </issuable-item>
       </component>
       <div v-else-if="issuables.length > 0 && isGridView">
@@ -454,7 +456,10 @@ export default {
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 
-    <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center">
+    <div
+      data-testid="list-footer"
+      class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center"
+    >
       <gl-keyset-pagination
         v-if="showPaginationControls && useKeysetPagination"
         :has-next-page="hasNextPage"

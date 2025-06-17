@@ -194,7 +194,7 @@ there is a case that it doesn't work well with the other CI features.
 
 For example, when you run [a child pipeline](../pipelines/downstream_pipelines.md#parent-child-pipelines)
 that requires the same resource group with the parent pipeline,
-a dead lock could happen. Here is an example of a _bad_ setup:
+a dead lock could happen. Here is an example of a bad setup:
 
 ```yaml
 # BAD
@@ -249,7 +249,7 @@ first check that the resource group is working correctly:
    - If the status is `running` or `pending`, the feature is working correctly. Wait until the job finishes and releases the resource.
    - If the status is `created` and the [process mode](#process-modes) is either **Oldest first** or **Newest first**, the feature is working correctly.
      Visit the pipeline page of the job and check which upstream stage or job is blocking the execution.
-   - If none of the above conditions are met, the feature might not be working correctly. [Report the issue to GitLab](#report-an-issue).
+   - If none of the previous conditions are met, the feature might not be working correctly. [Report the issue to GitLab](#report-an-issue).
 
 1. If **View job currently using resource** is not available, the resource is not assigned to a job. Instead, check the resource's upcoming jobs.
 
@@ -278,7 +278,7 @@ As a temporary workaround, you can:
 - Re-run a finished job that has the same resource group as the stuck job.
 
   For example, if you have a `setup_job` and a `deploy_job` with the same resource group,
-  the `setup_job` might finish while the `deploy_job` is stuck at "waiting for resource".
+  the `setup_job` might finish while the `deploy_job` is stuck `waiting for resource`.
   Re-run the `setup_job` to restart the whole process and allow `deploy_job` to finish.
 
 #### Get job details through GraphQL

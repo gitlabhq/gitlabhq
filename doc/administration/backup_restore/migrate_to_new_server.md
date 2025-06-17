@@ -150,7 +150,7 @@ To prepare the new server:
    sudo gitlab-ctl status
    ```
 
-1. Stop Redis on the **new server** before transferring the Redis database backup:
+1. Stop Redis on the new server before transferring the Redis database backup:
 
    ```shell
    sudo gitlab-ctl stop redis

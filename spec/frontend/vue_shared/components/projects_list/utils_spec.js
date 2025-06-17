@@ -13,21 +13,9 @@ import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast');
 
-const MOCK_PROJECT_DELAY_DELETION_DISABLED = {
-  nameWithNamespace: 'No Delay Project',
-  fullPath: 'path/to/project/1',
-  isAdjournedDeletionEnabled: false,
-  markedForDeletionOn: null,
-  permanentDeletionDate: '2024-03-31',
-  group: {
-    id: 'gid://gitlab/Group/1',
-  },
-};
-
 const MOCK_PROJECT_DELAY_DELETION_ENABLED = {
   nameWithNamespace: 'With Delay Project',
   fullPath: 'path/to/project/2',
-  isAdjournedDeletionEnabled: true,
   markedForDeletionOn: null,
   permanentDeletionDate: '2024-03-31',
   group: {
@@ -38,7 +26,6 @@ const MOCK_PROJECT_DELAY_DELETION_ENABLED = {
 const MOCK_PROJECT_PENDING_DELETION = {
   nameWithNamespace: 'Pending Deletion Project',
   fullPath: 'path/to/project/3',
-  isAdjournedDeletionEnabled: true,
   markedForDeletionOn: '2024-03-24',
   permanentDeletionDate: '2024-03-31',
   group: {
@@ -86,18 +73,6 @@ describe('renderDeleteSuccessToast', () => {
     it('renders toast explaining project will be delayed deleted', () => {
       expect(toast).toHaveBeenCalledWith(
         `Project '${MOCK_PROJECT_DELAY_DELETION_ENABLED.nameWithNamespace}' will be deleted on ${MOCK_PROJECT_DELAY_DELETION_ENABLED.permanentDeletionDate}.`,
-      );
-    });
-  });
-
-  describe('when adjourned deletion is not enabled', () => {
-    beforeEach(() => {
-      renderDeleteSuccessToast(MOCK_PROJECT_DELAY_DELETION_DISABLED);
-    });
-
-    it('renders toast explaining project is being deleted', () => {
-      expect(toast).toHaveBeenCalledWith(
-        `Project '${MOCK_PROJECT_DELAY_DELETION_DISABLED.nameWithNamespace}' is being deleted.`,
       );
     });
   });

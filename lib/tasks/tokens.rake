@@ -36,6 +36,6 @@ class TmpUser < ActiveRecord::Base # rubocop:disable Rails/ApplicationRecord
   add_authentication_token_field :feed_token, insecure: true, format_with_prefix: :prefix_for_feed_token
 
   def prefix_for_feed_token
-    User::FEED_TOKEN_PREFIX
+    User.prefix_for_feed_token
   end
 end

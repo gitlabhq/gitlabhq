@@ -17,7 +17,7 @@ RSpec.describe Packages::Nuget::ProcessPackageFileService, feature_category: :pa
     context 'with valid package file' do
       it 'calls the UpdatePackageFromMetadataService' do
         expect_next_instance_of(Packages::Nuget::UpdatePackageFromMetadataService, package_file,
-          instance_of(Zip::File)) do |service|
+          instance_of(Zip::File), nil) do |service|
           expect(service).to receive(:execute)
         end
 

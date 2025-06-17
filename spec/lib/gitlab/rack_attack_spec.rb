@@ -22,7 +22,8 @@ RSpec.describe Gitlab::RackAttack, :aggregate_failures, feature_category: :rate_
         throttle_authenticated_packages_api: Gitlab::Throttle.options(:packages_api, authenticated: true),
         throttle_authenticated_git_lfs: Gitlab::Throttle.throttle_authenticated_git_lfs_options,
         throttle_unauthenticated_files_api: Gitlab::Throttle.options(:files_api, authenticated: false),
-        throttle_authenticated_files_api: Gitlab::Throttle.options(:files_api, authenticated: true)
+        throttle_authenticated_files_api: Gitlab::Throttle.options(:files_api, authenticated: true),
+        throttle_authenticated_git_http: Gitlab::Throttle.throttle_authenticated_git_http_options
       }
     end
 

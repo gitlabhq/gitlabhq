@@ -40,3 +40,9 @@ URL = "unix:/home/git/gitlab/redis/redis.socket"
   key = "/path/to/private/key"
   min_version = "tls1.2"
   max_version = "tls1.3"
+
+[circuit_breaker]
+  timeout = 60
+  interval = 180
+  max_requests = 1
+  consecutive_failures = 5

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Backend GraphQL API guide
 ---
 
@@ -1854,7 +1854,7 @@ The three states a mutation response can be in are:
 
 #### Success
 
-In the happy path, errors *may* be returned, along with the anticipated payload, but
+In the happy path, errors may be returned, along with the anticipated payload, but
 if everything was successful, then `errors` should be an empty array, because
 there are no problems we need to inform the user of.
 
@@ -1899,14 +1899,14 @@ need to be told what is wrong, so they understand the reason for the failure and
 what they can do to achieve their intent. For example, they might only need to retry the
 request.
 
-It is possible to return *recoverable* errors alongside mutation data. For example, if
+It is possible to return recoverable errors alongside mutation data. For example, if
 a user uploads 10 files and 3 of them fail and the rest succeed, the errors for the
 failures can be made available to the user, alongside the information about
 the successes.
 
 #### Failure (irrelevant to the user)
 
-One or more *non-recoverable* errors can be returned at the _top level_. These
+One or more non-recoverable errors can be returned at the _top level_. These
 are things over which the **user** has little to no control, and should mainly
 be system or programming problems, that a **developer** needs to know about.
 In this case there is no `data`:

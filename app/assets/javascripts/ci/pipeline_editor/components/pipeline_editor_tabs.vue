@@ -3,7 +3,6 @@ import { GlAlert, GlLoadingIcon, GlTabs } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import PipelineGraph from '~/ci/pipeline_editor/components/graph/pipeline_graph.vue';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import InputsAnnouncementBanner from '~/ci/common/pipeline_inputs/inputs_announcement_banner.vue';
 import {
   CREATE_TAB,
@@ -72,7 +71,6 @@ export default {
     TextEditor,
     WalkthroughPopover,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     ciConfigData: {
       type: Object,
@@ -133,9 +131,6 @@ export default {
     },
     isMergedYamlAvailable() {
       return this.ciConfigData?.mergedYaml;
-    },
-    isPipelineInputsFeatureAvailable() {
-      return this.glFeatures.ciInputsForPipelines;
     },
     isValid() {
       return this.appStatus === EDITOR_APP_STATUS_VALID;
@@ -198,7 +193,7 @@ export default {
       data-testid="editor-tab"
       @click="setCurrentTab($options.tabConstants.CREATE_TAB)"
     >
-      <inputs-announcement-banner v-if="isPipelineInputsFeatureAvailable" />
+      <inputs-announcement-banner />
       <walkthrough-popover v-if="isNewCiConfigFile" v-on="$listeners" />
       <ci-editor-header
         :show-help-drawer="showHelpDrawer"

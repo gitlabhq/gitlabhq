@@ -51,9 +51,9 @@ export default {
       hoverTimeoutId: null,
       showSVG: true,
       targetRect: null,
+      cleanup: null,
     };
   },
-  cleanupFunction: undefined,
   computed: {
     topSVGPoints() {
       const x = (this.currentMouseX / this.targetRect.width) * 100;
@@ -121,13 +121,11 @@ export default {
         };
       });
 
-    this.$options.cleanupFunction = autoUpdate(target, flyout, updatePosition);
-  },
-  beforeUnmount() {
-    this.$options.cleanupFunction?.();
-    clearTimeout(this.hoverTimeoutId);
+    this.cleanup = autoUpdate(target, flyout, updatePosition);
   },
   beforeDestroy() {
+    this.cleanup();
+    clearTimeout(this.hoverTimeoutId);
     const target = document.querySelector(`#${this.targetId}`);
     target.removeEventListener('mousemove', this.onMouseMove);
   },

@@ -4,7 +4,7 @@ module Gitlab
   module ErrorTracking
     class LogFormatter
       # Note: all the accesses to Sentry's contexts here are to keep the
-      # backward-compatibility to Sentry's built-in integrations. In future,
+      # backward-compatibility to Sentry's built-in integrations. In the future,
       # they can be removed.
       def generate_log(exception, context_payload)
         payload = {}

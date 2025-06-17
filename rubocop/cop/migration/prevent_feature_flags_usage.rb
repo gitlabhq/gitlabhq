@@ -7,13 +7,13 @@ module RuboCop
     module Migration
       # This cop prevents the use of Feature.enabled? and Feature.disabled? in migrations.
       # Using feature flags in migrations is forbidden to avoid breaking the migration in the future.
-      # Instead, use the feature_flag_enabled?(feature_name) migration helper method.
+      # Instead, use the Gitlab::Database::MigrationHelpers::FeatureFlagMigratorHelpers migration helpers.
       # https://docs.gitlab.com/development/migration_style_guide/#using-application-code-in-migrations-discouraged
       class PreventFeatureFlagsUsage < RuboCop::Cop::Base
         include MigrationHelpers
 
         MSG = "Do not use Feature.enabled? or Feature.disabled? in migrations. " \
-          "Use the feature_flag_enabled?(feature_name) migration helper method."
+          "Use the Gitlab::Database::MigrationHelpers::FeatureFlagMigratorHelpers migration helpers."
 
         # @!method feature_enabled?(node)
         def_node_matcher :feature_enabled?, <<~PATTERN

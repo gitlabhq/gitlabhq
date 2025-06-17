@@ -1,6 +1,10 @@
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
 #import "ee_else_ce/work_items/graphql/work_item_metadata_widgets_extras.fragment.graphql"
 
+# @graphql-eslint/eslint-plugin@4.0.0 reports missing IDs in `FragmentDefinition`. For now, we are
+# ignoring the newly uncovered error on this fragment. Please consider addressing the violation
+# if you are modifying this file and it turns out selecting the ID makes sense here.
+# eslint-disable-next-line @graphql-eslint/require-selections
 fragment WorkItemLinkedItemsFragment on WorkItem {
   widgets {
     ... on WorkItemWidgetLinkedItems {

@@ -13,7 +13,7 @@
 
     - if group.description.present?
       .description
-        = markdown_field(group, :description)
+        = markdown_field(group.namespace_details, :description)
 
   .stats.gl-text-subtle.gl-shrink-0
     %span.gl-ml-5.has-tooltip{ title: _('Projects') }

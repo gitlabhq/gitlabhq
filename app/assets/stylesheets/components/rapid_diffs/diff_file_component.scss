@@ -7,37 +7,53 @@
 }
 
 .rd-diff-file {
-  --rd-diff-file-border-radius: #{calc($gl-border-radius-base - 1px)};
-}
-
-.rd-diff-file[data-virtual]:not([data-collapsed]) {
   $header-padding: constants.$diff-file-header-padding-y * 2;
   // top/bottom padding + toggle button size, excluding borders
   $file-header-height: calc($header-padding + $gl-button-small-size);
+  --rd-diff-file-header-height: #{$file-header-height};
+  --rd-diff-file-border-radius: #{$gl-border-radius-base};
+}
+
+.rd-diff-file[data-virtual]:not([data-collapsed]) {
   // header top/bottom borders + body border
   $total-borders: constants.$diff-file-border-width * 3;
   content-visibility: var(--rd-content-visibility-auto, auto);
   contain-intrinsic-size:
     auto 0 auto
-    calc(#{$file-header-height} + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
+    calc(var(--rd-diff-file-header-height) + #{$total-borders} + (#{constants.$code-row-height-target} * var(--total-rows)));
 }
 
-.rd-diff-file-header {
-  @apply gl-text-default;
+// content-visibility: auto; applies paint containment, which means you can not draw outside a diff file
+// we need to disable this when we show dropdowns and other elements which extend past a diff file
+.rd-diff-file[data-virtual]:has([data-options-toggle] button[aria-expanded='true']) {
+  --rd-content-visibility-auto: visible;
+}
+
+.rd-diff-file-header-sticky {
   position: sticky;
   // 1px offset to hide top border
   top: calc(var(--rd-app-sticky-top, 1px) - 1px);
+  z-index: constants.$diff-file-header-z-index;
+  container-type: scroll-state;
+}
+
+.rd-diff-file-header-sticky:has([data-options-toggle] button[aria-expanded='true']) {
+  z-index: constants.$diff-file-header-active-z-index;
+}
+
+.rd-diff-file-header {
+  --rd-diff-file-header-horizontal-padding: #{$gl-spacing-scale-4};
+  @apply gl-text-default;
   display: flex;
   background-color: var(--gl-background-color-subtle);
   border: 1px solid var(--gl-border-color-default);
-  padding: constants.$diff-file-header-padding-y $gl-spacing-scale-4;
+  padding: #{constants.$diff-file-header-padding-y} var(--rd-diff-file-header-horizontal-padding);
   border-radius: var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius) 0 0;
   word-break: break-word;
-  z-index: 3;
-}
 
-.rd-diff-file-header:has([data-options-toggle] button[aria-expanded='true']) {
-  z-index: 10;
+  @container scroll-state(stuck: top) {
+    border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
+  }
 }
 
 .rd-diff-file[data-collapsed] .rd-diff-file-header {
@@ -46,14 +62,17 @@
 
 .rd-diff-file-header-main {
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   // extra spacing to avoid accidental file collapse clicks
   padding: $gl-spacing-scale-3;
   margin: -$gl-spacing-scale-3;
-  gap: $gl-padding-4;
   z-index: 1;
+}
+
+// we shouldn't use flex to align these items because it forces copy button to always wrap to a new line
+.rd-diff-file-header-submodule,
+.rd-diff-file-title,
+.rd-diff-file-deleted {
+  display: inline;
 }
 
 .rd-diff-file-title {
@@ -63,7 +82,30 @@
   margin: 0;
 }
 
+.rd-diff-file-title .commit-sha {
+  font-size: 85%;
+  font-weight: normal;
+}
+
+.rd-diff-file-header-submodule,
+.rd-diff-file-title,
+.rd-file-mode-change,
+.rd-copy-path,
+.rd-diff-file-deleted,
+.rd-submodule-icon.rd-submodule-icon {
+  vertical-align: middle;
+}
+
+.rd-diff-file-title,
+.rd-file-mode-change,
+.rd-copy-path,
+.rd-diff-file-deleted,
+.rd-submodule-icon {
+  margin-right: $gl-padding-4;
+}
+
 .rd-diff-file-moved {
+  margin: 0 $gl-padding-4;
   font-weight: $gl-font-weight-normal;
 }
 
@@ -79,7 +121,7 @@
 .rd-diff-file-toggle-button::before {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: 1px;
 }
 
 .rd-diff-file-info {
@@ -88,9 +130,8 @@
   align-self: flex-start;
   align-items: center;
   // extra spacing to avoid accidental file collapse clicks
-  padding: $gl-spacing-scale-3;
-  margin: -$gl-spacing-scale-3;
-  margin-left: auto;
+  padding:  $gl-spacing-scale-3       var(--rd-diff-file-header-horizontal-padding)         $gl-spacing-scale-3  $gl-spacing-scale-3;
+  margin: (-$gl-spacing-scale-3) calc(var(--rd-diff-file-header-horizontal-padding) * -1) (-$gl-spacing-scale-3) auto;
   gap: $gl-padding;
   z-index: 1;
 }
@@ -113,13 +154,10 @@
 }
 
 .rd-diff-file-body {
+  --rd-content-border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
   border: constants.$diff-file-border-width solid var(--gl-border-color-default);
   border-top: 0;
-  border-radius: 0 0 var(--rd-diff-file-border-radius) var(--rd-diff-file-border-radius);
-
-  > :only-child {
-    border-radius: inherit;
-  }
+  border-radius: var(--rd-content-border-radius);
 }
 
 @supports (content-visibility: hidden) {

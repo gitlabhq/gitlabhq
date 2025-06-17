@@ -222,5 +222,17 @@ RSpec.describe Gitlab::Ci::JwtV2, feature_category: :secrets_management do
         end
       end
     end
+
+    describe 'custom issuer url' do
+      let(:custom_issuer_url) { 'https://example-oidc-configuration-bucket.s3.eu-north-1.amazonaws.com/' }
+
+      before do
+        allow(Gitlab.config.ci_id_tokens).to receive(:issuer_url).and_return(custom_issuer_url)
+      end
+
+      it 'uses the custom issuer url for the iss: claim' do
+        expect(payload[:iss]).to eq(custom_issuer_url)
+      end
+    end
   end
 end

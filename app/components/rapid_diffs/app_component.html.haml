@@ -11,8 +11,8 @@
             streamRequest: fetch('#{Gitlab::UrlSanitizer.sanitize(@stream_url)}', { signal: controller.signal })
           }
 
-.rd-app{ data: { rapid_diffs: true, app_data: app_data.to_json } }
-  .rd-app-header
+%article.rd-app{ aria: { label: root_label }, data: { rapid_diffs: true, app_data: app_data.to_json } }
+  %header.rd-app-header{ aria: { label: header_label } }
     .rd-app-file-browser-toggle
       %div{ data: { file_browser_toggle: true } }
     .rd-app-settings
@@ -21,7 +21,8 @@
     .rd-app-sidebar{ data: { file_browser: true }, style: sidebar_style }
       .rd-app-sidebar-loading{ data: { testid: 'rd-file-browser-loading' } }
         = helpers.gl_loading_icon(size: 'sm')
-    .rd-app-content
+    -# using label produces better results in VoiceOver than labelledby + hidden h2
+    %section.rd-app-content{ aria: { label: content_label } }
       .rd-app-content-header{ data: { hidden_files_warning: true } }
       - if empty_diff? && !@lazy
         = render RapidDiffs::EmptyStateComponent.new

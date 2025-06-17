@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab Mattermost
 ---
@@ -12,7 +12,7 @@ title: GitLab Mattermost
 {{< /details >}}
 
 You can run a [GitLab Mattermost](https://gitlab.com/gitlab-org/gitlab-mattermost)
-service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to install it. **However, Mattermost is a separate application from a separate company.** GitLab Support cannot help you with Mattermost-specific questions beyond the integration with GitLab. If you need help with Mattermost itself, see the [community support resources](#community-support-resources).
+service on your GitLab server. Mattermost is not part of the single application that GitLab is. There is a good integration between [Mattermost and GitLab](https://mattermost.com/solutions/mattermost-gitlab/), and our Linux package allows you to install it. **However, Mattermost is a separate application from a separate company**. GitLab Support cannot help you with Mattermost-specific questions beyond the integration with GitLab. If you need help with Mattermost itself, see the [community support resources](#community-support-resources).
 
 ## Prerequisites
 
@@ -73,8 +73,7 @@ mattermost_nginx['redirect_http_to_https'] = true
 ```
 
 If you haven't named your certificate and key `mattermost.gitlab.example.crt`
-and `mattermost.gitlab.example.key` then you need to also add the full paths
-as shown below.
+and `mattermost.gitlab.example.key`, then you must also add the following full paths:
 
 ```ruby
 mattermost_nginx['ssl_certificate'] = "/etc/gitlab/ssl/mattermost-nginx.crt"
@@ -115,10 +114,17 @@ consume system resources. You can use the following settings and configuration d
 mattermost_external_url 'http://mattermost.example.com'
 
 # Shut down GitLab services on the Mattermost server
+alertmanager['enable'] = false
+gitlab_exporter['enable'] = false
+gitlab_kas['enable'] = false
 gitlab_rails['enable'] = false
-redis['enable'] = false
-postgres_exporter['enable'] = false
 grafana['enable'] = false
+letsencrypt['enable'] = false
+node_exporter['enable'] = false
+postgres_exporter['enable'] = false
+prometheus['enable'] = false
+redis_exporter['enable'] = false
+redis['enable'] = false
 ```
 
 Then follow the appropriate steps in the [Authorize GitLab Mattermost section](#authorize-gitlab-mattermost). Last, to enable
@@ -135,7 +141,8 @@ By default GitLab Mattermost requires all users to sign up with GitLab and disab
 ### Reauthorize GitLab Mattermost
 
 To reauthorize GitLab Mattermost, you first need to revoke the existing
-authorization. This can be done in the **Settings > Applications** area of GitLab. Then follow the steps below to complete authorization.
+authorization. This can be done in the **Settings > Applications** area of GitLab. Then follow the steps
+in the following section to complete authorization.
 
 ### Authorize GitLab Mattermost
 
@@ -149,7 +156,7 @@ http://mattermost.example.com/login/gitlab/complete
 Make sure to select the **Trusted** and **Confidential** settings. Under **Scopes**, select `read_user`. Then, choose **Save application**.
 
 Once the application is created you are provided with an `Application ID` and `Secret`. One other piece of information needed is the URL of GitLab instance.
-Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you received above:
+Return to the server running GitLab Mattermost and edit the `/etc/gitlab/gitlab.rb` configuration file as follows using the values you previously received:
 
 ```ruby
 mattermost['gitlab_enable'] = true
@@ -363,10 +370,12 @@ For a complete list of upgrade notices and special considerations for older vers
 
 ### GitLab Mattermost versions and edition shipped with the Linux package
 
-Below is a list of Mattermost version changes for GitLab 15.0 and later:
+The following table outlines Mattermost version changes for GitLab 15.0 and later:
 
 | GitLab version | Mattermost version | Notes                                                                                    |
 | :------------- | :----------------- | ---------------------------------------------------------------------------------------- |
+| 18.1           | 10.8               |                                                                                          |
+| 18.0           | 10.7               |                                                                                          |
 | 17.11          | 10.6               |                                                                                          |
 | 17.9           | 10.4               |                                                                                          |
 | 17.7           | 10.2               |                                                                                          |

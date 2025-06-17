@@ -116,7 +116,7 @@ are already declared in the `manifests` directory, there is
 no extra work involved.
 
 For more information about configuring Flux with GitLab, see
-[Tutorial: Set up Flux for GitOps](flux_tutorial.md).
+[Tutorial: Set up Flux for GitOps](../getting_started.md).
 
 ## Troubleshooting
 

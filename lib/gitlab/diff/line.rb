@@ -141,7 +141,7 @@ module Gitlab
 
         prefix = side == :old ? "L" : "R"
         position = side == :old ? old_pos : new_pos
-        "line_#{file_hash}_#{prefix}#{position}"
+        "line_#{file_hash[0..8]}_#{prefix}#{position}"
       end
 
       def legacy_id(file_path)

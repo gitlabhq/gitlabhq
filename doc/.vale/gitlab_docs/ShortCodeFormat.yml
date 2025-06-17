@@ -1,0 +1,14 @@
+---
+name: gitlab_docs.ShortCodeFormat
+description: |
+  Makes sure SVGs use the correct shortcodes.
+extends: existence
+message: "SVGs are defined with Hugo shortcodes. View the style guide for details."
+link: https://docs.gitlab.com/development/documentation/styleguide/#gitlab-svg-icons
+vocab: false
+ignorecase: true
+level: error
+nonword: true
+scope: raw
+tokens:
+  - '\*\*\{[^\}]*\}\*\*'

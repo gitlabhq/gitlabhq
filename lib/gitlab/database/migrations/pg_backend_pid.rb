@@ -17,27 +17,8 @@ module Gitlab
           end
         end
 
-        module OldMigratorPgBackendPid
-          extend ::Gitlab::Utils::Override
-
-          override :with_advisory_lock_connection
-          def with_advisory_lock_connection
-            super do |conn|
-              Gitlab::Database::Migrations::PgBackendPid.say(conn)
-
-              yield(conn)
-            ensure
-              Gitlab::Database::Migrations::PgBackendPid.say(conn)
-            end
-          end
-        end
-
         def self.patch!
-          if ::Gitlab.next_rails?
-            ActiveRecord::Migrator.prepend(MigratorPgBackendPid)
-          else
-            ActiveRecord::Migrator.prepend(OldMigratorPgBackendPid)
-          end
+          ActiveRecord::Migrator.prepend(MigratorPgBackendPid)
         end
 
         def self.say(conn)

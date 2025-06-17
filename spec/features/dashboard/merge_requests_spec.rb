@@ -20,7 +20,13 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
     sign_in(current_user)
   end
 
-  it_behaves_like 'page with product usage data collection banner'
+  context 'when the test is flaky',
+    quarantine: {
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/535181',
+      type: :flaky
+    } do
+    it_behaves_like 'page with product usage data collection banner'
+  end
 
   describe 'sidebar' do
     it 'has nav items for assigned MRs and review requests' do

@@ -1,0 +1,18 @@
+---
+key_path: settings.anti_spam.akismet_enabled
+description: >
+  Tracks whether Akismet integration is enabled
+product_group: authorization
+value_type: boolean
+status: active
+milestone: "18.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191215
+time_frame: none
+data_source: system
+instrumentation_class: AkismetEnabledMetric
+data_category: optional
+performance_indicator_type: []
+tiers:
+  - free
+  - premium
+  - ultimate

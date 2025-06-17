@@ -106,6 +106,7 @@ module Spam
           user_id: user.id,
           title: target.spam_title,
           description: target.spam_description,
+          target_id: target.id,
           source_ip: spam_params&.ip_address,
           user_agent: spam_params&.user_agent,
           noteable_type: noteable_type,

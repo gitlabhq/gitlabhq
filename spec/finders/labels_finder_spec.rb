@@ -365,7 +365,8 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
     context 'external authorization' do
       it_behaves_like 'a finder with external authorization service' do
         let!(:subject) { create(:label, project: project) }
-        let(:project_params) { { project_id: project.id } }
+        let(:execute) { described_class.new(user).execute }
+        let(:project_execute) { described_class.new(user, project_id: project.id).execute }
       end
     end
   end

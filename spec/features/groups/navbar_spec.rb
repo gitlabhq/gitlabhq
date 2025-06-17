@@ -14,7 +14,7 @@ RSpec.describe 'Group navbar', :with_license, :js, feature_category: :navigation
 
   before do
     create_package_nav(_('Operate'))
-    insert_after_nav_item(_('Analyze'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
+    insert_after_nav_item(_('Observability'), new_nav_item: settings_for_maintainer_nav_item) if Gitlab.ee?
     insert_infrastructure_registry_nav(_('Kubernetes'))
 
     if group.crm_enabled? && group.parent.nil?

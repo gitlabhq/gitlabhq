@@ -141,6 +141,7 @@ class GlobalPolicy < BasePolicy
   end
 
   rule { admin }.policy do
+    enable :access_admin_area
     enable :read_custom_attribute
     enable :update_custom_attribute
     enable :approve_user
@@ -159,6 +160,8 @@ class GlobalPolicy < BasePolicy
     enable :read_admin_health_check
     enable :read_admin_metrics_dashboard
     enable :read_admin_system_information
+    enable :read_admin_users
+    enable :read_application_statistics
   end
 
   # We can't use `read_statistics` because the user may have different permissions for different projects

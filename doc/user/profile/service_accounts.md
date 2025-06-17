@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Service accounts
+description: Machine user, rate limits, and personal access tokens.
 ---
 
 {{< details >}}
@@ -221,6 +222,7 @@ To rotate a personal access token for a service account:
 1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage access tokens**.
+1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Rotate**.
 1. On the confirmation dialog, select **Rotate**.
 
@@ -239,6 +241,7 @@ To revoke a personal access token for a service account:
 1. Go to the [Service accounts](#view-and-manage-service-accounts) page.
 1. Identify a service account.
 1. Select the vertical ellipsis ({{< icon name="ellipsis_v" >}}) > **Manage access tokens**.
+1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
 1. Select **Revoke**.
 1. On the confirmation dialog, select **Revoke**.
 

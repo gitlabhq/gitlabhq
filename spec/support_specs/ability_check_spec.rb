@@ -42,7 +42,7 @@ RSpec.describe Support::AbilityCheck, feature_category: :system_access do # rubo
 
   def expect_deprecation_warning(policy_class, ability, &block)
     expect(&block)
-      .to output(/DEPRECATION WARNING: Ability :#{ability} in #{policy_class} not found./)
+      .to output(/Ability :#{ability} in #{policy_class} not found./)
       .to_stderr
   end
 

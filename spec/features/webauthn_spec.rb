@@ -130,7 +130,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
         webauthn_device.respond_to_webauthn_authentication
 
-        expect(page).to have_css('.sign-out-link', visible: false)
+        expect(page).to have_css('.sign-out-link', visible: :hidden)
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
         webauthn_device.respond_to_webauthn_authentication
 
-        expect(page).to have_css('.sign-out-link', visible: false)
+        expect(page).to have_css('.sign-out-link', visible: :hidden)
       end
     end
 
@@ -179,7 +179,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
           gitlab_sign_in(current_user)
           webauthn_device.respond_to_webauthn_authentication
 
-          expect(page).to have_css('.sign-out-link', visible: false)
+          expect(page).to have_css('.sign-out-link', visible: :hidden)
         end
       end
     end
@@ -205,7 +205,7 @@ RSpec.describe 'Using WebAuthn Devices for Authentication', :js, feature_categor
 
           device.respond_to_webauthn_authentication
 
-          expect(page).to have_css('.sign-out-link', visible: false)
+          expect(page).to have_css('.sign-out-link', visible: :hidden)
 
           gitlab_sign_out
         end

@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { WIDGET_TYPE_HIERARCHY, WIDGET_TYPE_CUSTOM_FIELDS } from '~/work_items/constants';
+import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import {
   addHierarchyChild,
   removeHierarchyChild,
@@ -18,6 +18,10 @@ import {
   mockWorkItemNotesByIidResponse,
   workItemHierarchyResponse,
   workItemResponseFactory,
+  mockCreateWorkItemDraftData,
+  mockNewWorkItemCache,
+  restoredDraftDataWidgets,
+  restoredDraftDataWidgetsEmpty,
 } from '../mock_data';
 
 describe('work items graphql cache utils', () => {
@@ -224,244 +228,30 @@ describe('work items graphql cache utils', () => {
   });
 
   describe('setNewWorkItemCache', () => {
-    it('updates cache from localstorage to save cache data', async () => {
-      const mockWriteQuery = jest.fn();
+    let originalWindowLocation;
+    let mockWriteQuery;
 
-      apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
+    beforeEach(() => {
+      originalWindowLocation = window.location;
+      delete window.location;
+      window.location = new URL('https://gitlab.example.com');
       window.gon.current_user_id = 1;
 
-      const draftData = {
-        workspace: {
-          __typename: 'Namespace',
-          id: 'gitlab-org-epic-id',
-          workItem: {
-            __typename: 'WorkItem',
-            id: 'gid://gitlab/WorkItem/new-epic',
-            iid: 'new-work-item-iid',
-            archived: false,
-            title: 'ssss',
-            state: 'OPEN',
-            description: null,
-            confidential: false,
-            createdAt: null,
-            closedAt: null,
-            webUrl: 'http://127.0.0.1:3000/groups/gitlab-org/-/work_items/new',
-            reference: '',
-            createNoteEmail: null,
-            namespace: {
-              __typename: 'Namespace',
-              id: 'gitlab-org-epic-id',
-              fullPath: 'gitlab-org',
-              name: 'gitlab-org-epic-id',
-            },
-            author: {
-              __typename: 'UserCore',
-              id: 'gid://gitlab/User/1',
-              avatarUrl:
-                'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-              name: 'Administrator',
-              username: 'root',
-              webUrl: 'http://127.0.0.1:3000/root',
-              webPath: '/root',
-            },
-            workItemType: {
-              __typename: 'WorkItemType',
-              id: 'gid://gitlab/WorkItems::Type/8',
-              name: 'Epic',
-              iconName: 'issue-type-epic',
-            },
-            userPermissions: {
-              __typename: 'WorkItemPermissions',
-              adminParentLink: true,
-              adminWorkItemLink: true,
-              createNote: true,
-              deleteWorkItem: true,
-              markNoteAsInternal: true,
-              moveWorkItem: true,
-              reportSpam: true,
-              setWorkItemMetadata: true,
-              summarizeComments: true,
-              updateWorkItem: true,
-            },
-            widgets: [
-              {
-                __typename: 'WorkItemWidgetDescription',
-                type: 'DESCRIPTION',
-                description: '',
-                descriptionHtml: '',
-                lastEditedAt: null,
-                lastEditedBy: null,
-                taskCompletionStatus: null,
-              },
-              {
-                __typename: 'WorkItemWidgetLabels',
-                type: 'LABELS',
-                allowsScopedLabels: true,
-                labels: {
-                  __typename: 'LabelConnection',
-                  nodes: [
-                    {
-                      __typename: 'Label',
-                      id: 'gid://gitlab/GroupLabel/12',
-                      title: 'Brische',
-                      description: null,
-                      color: '#472821',
-                      textColor: '#FFFFFF',
-                    },
-                  ],
-                },
-              },
-              {
-                __typename: 'WorkItemWidgetWeight',
-                type: 'WEIGHT',
-                weight: null,
-                rolledUpWeight: 0,
-                rolledUpCompletedWeight: 0,
-                widgetDefinition: { editable: false, rollUp: true },
-              },
-              {
-                __typename: 'WorkItemWidgetStartAndDueDate',
-                type: 'START_AND_DUE_DATE',
-                dueDate: null,
-                startDate: null,
-                rollUp: false,
-                isFixed: false,
-              },
-              {
-                __typename: 'WorkItemWidgetHealthStatus',
-                type: 'HEALTH_STATUS',
-                healthStatus: null,
-                rolledUpHealthStatus: [],
-              },
-              {
-                __typename: 'WorkItemWidgetLinkedItems',
-                type: 'LINKED_ITEMS',
-                linkedItems: { nodes: [] },
-              },
-              {
-                __typename: 'WorkItemWidgetColor',
-                type: 'COLOR',
-                color: '#1068bf',
-                textColor: '#FFFFFF',
-              },
-              {
-                __typename: 'WorkItemWidgetHierarchy',
-                type: 'HIERARCHY',
-                hasChildren: false,
-                hasParent: false,
-                rolledUpCountsByType: [],
-                parent: null,
-              },
-              {
-                __typename: 'WorkItemWidgetTimeTracking',
-                type: 'TIME_TRACKING',
-                timeEstimate: 0,
-                timelogs: { __typename: 'WorkItemTimelogConnection', nodes: [] },
-                totalTimeSpent: 0,
-              },
-              {
-                __typename: 'WorkItemWidgetCustomFields',
-                type: WIDGET_TYPE_CUSTOM_FIELDS,
-                customFieldValues: null,
-              },
-            ],
-          },
-        },
-      };
-
-      localStorage.setItem(`autosave/new-gitlab-org-epic-draft`, JSON.stringify(draftData));
-
-      await setNewWorkItemCache(
-        'gitlab-org',
-        [
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'AWARD_EMOJI',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'COLOR',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'CURRENT_USER_TODOS',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'DESCRIPTION',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'HEALTH_STATUS',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionHierarchy',
-            type: 'HIERARCHY',
-            allowedChildTypes: {
-              __typename: 'WorkItemTypeConnection',
-              nodes: [
-                {
-                  __typename: 'WorkItemType',
-                  id: 'gid://gitlab/WorkItems::Type/8',
-                  name: 'Epic',
-                },
-                {
-                  __typename: 'WorkItemType',
-                  id: 'gid://gitlab/WorkItems::Type/1',
-                  name: 'Issue',
-                },
-              ],
-            },
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionLabels',
-            type: 'LABELS',
-            allowsScopedLabels: true,
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'LINKED_ITEMS',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'NOTES',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'NOTIFICATIONS',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'PARTICIPANTS',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'START_AND_DUE_DATE',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'STATUS',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionGeneric',
-            type: 'TIME_TRACKING',
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionWeight',
-            type: 'WEIGHT',
-            editable: false,
-            rollUp: true,
-          },
-          {
-            __typename: 'WorkItemWidgetDefinitionCustomFields',
-            type: WIDGET_TYPE_CUSTOM_FIELDS,
-          },
-        ],
-        'EPIC',
-        'gid://gitlab/WorkItems::Type/8 ',
-        'issue-type-epic',
+      mockWriteQuery = jest.fn();
+      apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
+      localStorage.setItem(
+        `autosave/new-gitlab-org-epic-draft`,
+        JSON.stringify(mockCreateWorkItemDraftData),
       );
+    });
 
+    afterEach(() => {
+      window.location = originalWindowLocation;
+    });
+
+    it('updates cache from localstorage to save cache data', async () => {
+      window.location.search = '';
+      await setNewWorkItemCache(mockNewWorkItemCache);
       await waitForPromises();
 
       expect(mockWriteQuery).toHaveBeenCalledWith(
@@ -469,13 +259,41 @@ describe('work items graphql cache utils', () => {
           data: expect.objectContaining({
             workspace: expect.objectContaining({
               workItem: expect.objectContaining({
-                title: draftData.workspace.workItem.title,
+                title: mockCreateWorkItemDraftData.workspace.workItem.title,
+                widgets: expect.arrayContaining(restoredDraftDataWidgets),
               }),
             }),
           }),
         }),
       );
     });
+
+    it.each`
+      description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
+      ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+      ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
+    `(
+      '$description when URL params include $locationSearchString',
+      async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
+        window.location.search = locationSearchString;
+        await setNewWorkItemCache(mockNewWorkItemCache);
+        await waitForPromises();
+
+        expect(mockWriteQuery).toHaveBeenCalledWith(
+          expect.objectContaining({
+            data: expect.objectContaining({
+              workspace: expect.objectContaining({
+                workItem: expect.objectContaining({
+                  title: expectedTitle,
+                  widgets: expect.arrayContaining(expectedWidgets),
+                }),
+              }),
+            }),
+          }),
+        );
+      },
+    );
   });
 
   describe('updateCacheAfterCreatingNote', () => {

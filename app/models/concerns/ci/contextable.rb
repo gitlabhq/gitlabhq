@@ -57,6 +57,12 @@ module Ci
       end
     end
 
+    def manual_variables
+      strong_memoize(:manual_variables) do
+        respond_to?(:job_variables) ? job_variables : []
+      end
+    end
+
     def simple_variables_without_dependencies
       strong_memoize(:variables_without_dependencies) do
         scoped_variables(environment: nil, dependencies: false)

@@ -326,7 +326,7 @@ module Tooling
           buff << if deprecation
                     deprecation.markdown(context: context)
                   else
-                    "**Deprecated:** #{object[:deprecation_reason]}"
+                    "**Deprecated**: #{object[:deprecation_reason]}"
                   end
 
           buff << original_description if context == :inline && deprecation&.experiment?

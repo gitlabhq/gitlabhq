@@ -59,6 +59,28 @@ describe('SigninTabsMemoizer', () => {
     expect(tab.click).toHaveBeenCalled();
   });
 
+  describe('when username or password field are available', () => {
+    it('focus on the username field', () => {
+      getCookie.mockReturnValue('#ldap');
+      createMemoizer();
+
+      expect(document.activeElement).toBe(
+        document.querySelector('#ldap input[autocomplete=username]'),
+      );
+    });
+  });
+
+  describe('when only password field is available', () => {
+    it('focus on the password field', () => {
+      getCookie.mockReturnValue('#login-pane');
+      createMemoizer();
+
+      expect(document.activeElement).toBe(
+        document.querySelector('#login-pane input[autocomplete=current-password]'),
+      );
+    });
+  });
+
   it('saves last selected tab on click', () => {
     createMemoizer();
 

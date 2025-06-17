@@ -622,9 +622,10 @@ When the **Enforce SSO-only authentication for web activity for this group** opt
     hidden if your SSO session has expired.
     [Issue 414475](https://gitlab.com/gitlab-org/gitlab/-/issues/414475) proposes to change this
     behavior so that issues are visible.
-  - SSO is not enforced when viewing lists of merge requests where you are the
-    assignee or your review is requested. You can see merge requests even if
+  - SSO is not enforced when viewing merge requests where you are the
+    assignee or reviewer. You can see merge requests even if
     your SSO session has expired.
+  - SSO is not enforced when viewing snippets for private projects where you have at least the Guest role.
 
 SSO enforcement for web activity has the following effects when enabled:
 

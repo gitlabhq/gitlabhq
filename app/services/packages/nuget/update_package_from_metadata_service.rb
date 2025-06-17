@@ -13,11 +13,15 @@ module Packages
       INVALID_METADATA_ERROR_SYMBOL_MESSAGE = 'package name, version and/or description not found in metadata'
       MISSING_MATCHING_PACKAGE_ERROR_MESSAGE = 'symbol package is invalid, matching package does not exist'
 
-      InvalidMetadataError = ZipError = DuplicatePackageError = ProtectedPackageError = Class.new(StandardError)
+      DuplicatePackageError = Class.new(StandardError)
+      InvalidMetadataError = Class.new(StandardError)
+      ProtectedPackageError = Class.new(StandardError)
+      ZipError = Class.new(StandardError)
 
-      def initialize(package_file, package_zip_file)
+      def initialize(package_file, package_zip_file, user_or_deploy_token = nil)
         @package_file = package_file
         @package_zip_file = package_zip_file
+        @user_or_deploy_token = user_or_deploy_token
       end
 
       def execute
@@ -40,6 +44,8 @@ module Packages
       end
 
       private
+
+      attr_reader :user_or_deploy_token
 
       def process_package_update
         package_to_destroy = nil
@@ -75,9 +81,12 @@ module Packages
         return false if Feature.disabled?(:packages_protected_packages_nuget, @package_file.project)
 
         service_response =
-          Packages::Protection::CheckRuleExistenceService.new(
+          ::Packages::Protection::CheckRuleExistenceService.for_push(
             project: @package_file.project,
-            current_user: @package_file.package.creator,
+            # TODO Remove `@package_file.package.creator`as soon as
+            # `user_or_deploy_token` is correctly passed the `Packages::Nuget::ExtractionWorker`,
+            # see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188254#note_2513930377.
+            current_user: user_or_deploy_token || @package_file.package.creator,
             params: { package_name: package_name, package_type: :nuget }
           ).execute
 

@@ -65,9 +65,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       let_it_be(:token) { create(:personal_access_token, user: user, scopes: [Gitlab::Auth::READ_API_SCOPE]) }
       let_it_be(:jwt) { build_jwt(token) }
 
-      context 'not under the group' do
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-      end
+      it { is_expected.to have_gitlab_http_status(:not_found) }
 
       context 'with sufficient scopes, but not active' do
         %i[expired revoked].each do |status|
@@ -82,20 +80,6 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
           end
         end
       end
-
-      context 'with insufficient scopes' do
-        it { is_expected.to have_gitlab_http_status(:not_found) }
-
-        # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-        # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-        context 'packages_dependency_proxy_containers_scope_check disabled' do
-          before do
-            stub_feature_flags(packages_dependency_proxy_containers_scope_check: false)
-          end
-
-          it { is_expected.to have_gitlab_http_status(:not_found) }
-        end
-      end
     end
 
     context 'with deploy token from a different group,' do
@@ -105,22 +89,19 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
 
     context 'with revoked deploy token' do
-      let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+      let_it_be(:user) { create(:deploy_token, :revoked, :group, :dependency_proxy_scopes, groups: [group]) }
 
       it { is_expected.to have_gitlab_http_status(:unauthorized) }
     end
 
     context 'with expired deploy token' do
-      let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+      let_it_be(:user) { create(:deploy_token, :expired, :group, :dependency_proxy_scopes, groups: [group]) }
 
       it { is_expected.to have_gitlab_http_status(:unauthorized) }
     end
 
     context 'with deploy token with insufficient scopes' do
-      let_it_be(:user) { create(:deploy_token, :group) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+      let_it_be(:user) { create(:deploy_token, :group, groups: [group]) }
 
       it { is_expected.to have_gitlab_http_status(:not_found) }
     end
@@ -214,8 +195,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
 
     context 'with a deploy token' do
-      let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+      let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [group]) }
 
       it_behaves_like 'sends Workhorse instructions'
     end
@@ -243,7 +223,7 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
     end
   end
 
-  shared_examples 'Allowed Endpoints' do |empty: false|
+  shared_examples 'Allowed endpoints' do
     let(:allowed_endpoints) do
       ['http://127.0.0.1:9000']
     end
@@ -258,24 +238,6 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       _, send_data = workhorse_send_data
 
       expect(send_data['AllowedEndpoints']).to eq(allowed_endpoints)
-    end
-
-    context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
-      before do
-        stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
-      end
-
-      it 'does not include or sets to an empty array AllowedEndpoints in the Workhorse send-dependency instructions' do
-        subject
-
-        _, send_data = workhorse_send_data
-
-        if empty
-          expect(send_data['AllowedEndpoints']).to eq([])
-        else
-          expect(send_data).not_to include('AllowedEndpoints')
-        end
-      end
     end
   end
 
@@ -294,20 +256,6 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         expect(send_data['AllowLocalhost']).to be(false)
       else
         expect(send_data).not_to include('AllowLocalhost')
-      end
-    end
-
-    context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
-      before do
-        stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
-      end
-
-      it 'sets AllowLocalhost to true' do
-        subject
-
-        _, send_data = workhorse_send_data
-
-        expect(send_data['AllowLocalhost']).to be(true)
       end
     end
   end
@@ -416,20 +364,12 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(allowed_endpoints).to eq([])
           end
 
-          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
-            before do
-              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
-            end
-
-            it_behaves_like 'SSRFFilter', disabled: true
-          end
-
           context 'when local requests are not allowed' do
             it_behaves_like 'AllowLocalhost', disabled: true
           end
 
           context 'with allowed endpoints' do
-            it_behaves_like 'Allowed Endpoints', empty: true
+            it_behaves_like 'Allowed endpoints'
           end
         end
 
@@ -460,37 +400,25 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             )
           end
 
-          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
-            before do
-              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
-            end
-
-            it_behaves_like 'SSRFFilter'
-          end
-
           context 'when local requests are not allowed' do
             it_behaves_like 'AllowLocalhost'
           end
 
           context 'with allowed endpoints' do
-            it_behaves_like 'Allowed Endpoints'
+            it_behaves_like 'Allowed endpoints'
           end
         end
       end
 
       context 'a valid deploy token' do
-        let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+        let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [group]) }
 
         it_behaves_like 'a successful manifest pull'
 
         context 'pulling from a subgroup' do
           let_it_be_with_reload(:parent_group) { create(:group) }
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
-
-          before do
-            group_deploy_token.update_column(:group_id, parent_group.id)
-          end
+          let_it_be(:user) { create(:deploy_token, :dependency_proxy_scopes, :group, groups: [parent_group]) }
 
           it_behaves_like 'a successful manifest pull'
         end
@@ -561,20 +489,12 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             expect(allowed_endpoints).to eq([])
           end
 
-          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
-            before do
-              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
-            end
-
-            it_behaves_like 'SSRFFilter', disabled: true
-          end
-
           context 'when local requests are not allowed' do
             it_behaves_like 'AllowLocalhost', disabled: true
           end
 
           context 'with allowed endpoints' do
-            it_behaves_like 'Allowed Endpoints', empty: true
+            it_behaves_like 'Allowed endpoints'
           end
         end
 
@@ -597,37 +517,25 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
             )
           end
 
-          context 'when dependency_proxy_for_containers_ssrf_protection is disabled' do
-            before do
-              stub_feature_flags(dependency_proxy_for_containers_ssrf_protection: false)
-            end
-
-            it_behaves_like 'SSRFFilter'
-          end
-
           context 'when local requests are not allowed' do
             it_behaves_like 'AllowLocalhost'
           end
 
           context 'with allowed endpoints' do
-            it_behaves_like 'Allowed Endpoints'
+            it_behaves_like 'Allowed endpoints'
           end
         end
       end
 
       context 'a valid deploy token' do
-        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes) }
-        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+        let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [group]) }
 
         it_behaves_like 'a successful blob pull'
 
         context 'pulling from a subgroup' do
           let_it_be_with_reload(:parent_group) { create(:group) }
           let_it_be_with_reload(:group) { create(:group, parent: parent_group) }
-
-          before do
-            group_deploy_token.update_column(:group_id, parent_group.id)
-          end
+          let_it_be(:user) { create(:deploy_token, :group, :dependency_proxy_scopes, groups: [parent_group]) }
 
           it_behaves_like 'a successful blob pull'
         end

@@ -15,8 +15,6 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
   let(:tag_name) { 'new-tag' }
 
   before do
-    resize_window(1920, 1080)
-
     project.add_developer(user)
 
     sign_in(user)
@@ -24,10 +22,6 @@ RSpec.describe 'User creates release', :js, feature_category: :continuous_delive
     visit new_page_url
 
     wait_for_requests
-  end
-
-  after do
-    restore_window_size
   end
 
   it 'renders the breadcrumbs', :aggregate_failures do

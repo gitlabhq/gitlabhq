@@ -9,7 +9,6 @@ Gitlab/HardDeleteCalls:
     - 'app/controllers/projects_controller.rb'
     - 'app/services/projects/overwrite_project_service.rb'
     - 'app/services/users/destroy_service.rb'
-    - 'app/workers/projects/inactive_projects_deletion_cron_worker.rb'
     - 'lib/api/groups.rb'
     - 'lib/api/projects.rb'
     - 'lib/gitlab/background_migration/delete_orphaned_groups.rb'

@@ -36,7 +36,7 @@ module Packages
           sum = public_send("#{digest}sum") # rubocop:disable GitlabSecurity/PublicSend
           next if package_file_digest == sum
 
-          errors.add("#{digest}sum".to_sym, "mismatch for #{filename}: #{package_file_digest} != #{sum}")
+          errors.add(:"#{digest}sum", "mismatch for #{filename}: #{package_file_digest} != #{sum}")
         end
       end
     end

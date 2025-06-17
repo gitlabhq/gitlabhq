@@ -1,6 +1,7 @@
 .with-fixtures-needs:
   needs:
     - "rspec-all frontend_fixture"
+    - "rspec-all frontend_fixture clickhouse"
 
 .with-graphql-schema-dump-needs:
   needs:
@@ -14,7 +15,6 @@
     - .default-retry
     - .default-before_script
     - .assets-compile-cache
-    - .failure_category_after_script
     - .with-ci-node-image
   variables:
     SETUP_DB: "false"
@@ -31,7 +31,6 @@
 
 .update-cache-base:
   after_script:
-    - !reference [.failure_category_after_script, after_script]
     - yarn patch-package --reverse  # To avoid caching patched modules
 
 compile-production-assets:
@@ -53,7 +52,6 @@ compile-production-assets:
   after_script:
     - source scripts/utils.sh
     - echo "GLCI_ASSETS_IMAGE_TAG=$(assets_image_tag)" > $GLCI_ASSETS_TAG_ENV_FILE_PATH
-    - !reference [.failure_category_after_script, after_script]
   artifacts:
     name: webpack-report
     expire_in: 31d
@@ -85,10 +83,30 @@ compile-test-assets:
       - "${WEBPACK_COMPILE_LOG_PATH}"
     when: always
 
+build-vite-prod:
+  extends:
+    - .production
+    - .default-retry
+    - .with-ci-node-image
+    - .frontend:rules:compile-production-assets
+  artifacts:
+    expire_in: 1h
+    paths:
+      - public/vite-dev/
+  stage: prepare
+  needs: []
+  script:
+    - source scripts/utils.sh
+    - yarn_install_script
+    - yarn vite-prod
+  allow_failure: true
+
 gdk:compile-test-assets:
   extends:
     - compile-test-assets
     - .build-images:rules:build-gdk-image
+  variables:
+    BABEL_ENV: "istanbul"
 
 update-assets-compile-production-cache:
   extends:
@@ -151,15 +169,14 @@ retrieve-frontend-fixtures:
   extends:
     - .default-retry
     - .default-before_script
-    - .failure_category_after_script
     - .ruby-cache
-    - .use-pg16
     - .repo-from-artifacts
   stage: fixtures
   needs:
     - "setup-test-env"
     - "retrieve-tests-metadata"
     - "retrieve-frontend-fixtures"
+    - "compile-test-assets"
     # it's ok to wait for the repo artifact as we're waiting for setup-test-env (which takes longer than clone-gitlab-repo) anyway
     - !reference [.repo-from-artifacts, needs]
   variables:
@@ -175,7 +192,6 @@ retrieve-frontend-fixtures:
         exit 0
       fi
     - !reference [.base-script, script]
-    - run_with_custom_exit_code rspec_parallelized_job
   artifacts:
     name: frontend-fixtures
     expire_in: 31d
@@ -190,12 +206,23 @@ retrieve-frontend-fixtures:
 # Builds FOSS fixtures in the FOSS project.
 rspec-all frontend_fixture:
   extends:
+    - .use-pg16
     - .frontend-fixtures-base
     - .frontend:rules:frontend_fixture
-  needs:
-    - !reference [.frontend-fixtures-base, needs]
-    - "compile-test-assets"
+  script:
+    - !reference [.frontend-fixtures-base, script]
+    - run_with_custom_exit_code rspec_parallelized_job "--tag ~click_house"
   parallel: 7
+
+rspec-all frontend_fixture clickhouse:
+  extends:
+    - .use-pg16-clickhouse25
+    - .frontend-fixtures-base
+    - .frontend:rules:frontend_fixture
+  script:
+    - !reference [.clickhouse-setup, script]
+    - !reference [.frontend-fixtures-base, script]
+    - run_with_custom_exit_code rspec_parallelized_job "--tag click_house"
 
 # Uploads EE fixtures in the EE project.
 # Uploads FOSS fixtures in the FOSS project.
@@ -263,7 +290,6 @@ upload-graphql-schema-dump:
     - .default-retry
     - .yarn-cache
     - .with-ci-node-image
-    - .failure_category_after_script
   variables:
     # Disable warnings in browserslist which can break on backports
     # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384

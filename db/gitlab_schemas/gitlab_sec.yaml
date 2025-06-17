@@ -1,8 +1,12 @@
 name: gitlab_sec
-description: Schema for all Cell-local Security features.
+description: Schema for all Organizational Security features.
 allow_cross_joins:
   - gitlab_shared
 allow_cross_transactions:
   - gitlab_internal
   - gitlab_shared
 require_sharding_key: true
+sharding_root_tables:
+  - projects
+  - organizations
+  - namespaces

@@ -171,8 +171,8 @@ test:
 
 ## Accessing the services
 
-Let's say that you need a Wordpress instance to test some API integration with
-your application. You can then use for example the
+If you need a Wordpress instance to test API integration with
+your application, you can use the
 [`tutum/wordpress`](https://hub.docker.com/r/tutum/wordpress/) image in your
 `.gitlab-ci.yml` file:
 
@@ -269,13 +269,14 @@ test:
 
 ## Available settings for `services`
 
-| Setting      | Required                             | GitLab version | Description |
-|--------------|--------------------------------------|----------------|-------------|
-| `name`       | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
-| `entrypoint` | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
-| `command`    | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
-| `alias`      | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). Using alias as a container name for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9. For more information, see [Configuring the service containers name with the Kubernetes executor](#using-aliases-as-service-container-names-for-the-kubernetes-executor). |
-| `variables`  | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves. |
+| Setting       | Required                             | GitLab version | Description |
+| ------------- | ------------------------------------ | -------------- | ----------- |
+| `name`        | yes, when used with any other option | 9.4            | Full name of the image to use. If the full image name includes a registry hostname, use the `alias` option to define a shorter service access name. For more information, see [Accessing the services](#accessing-the-services). |
+| `entrypoint`  | no                                   | 9.4            | Command or script to execute as the container's entrypoint. It's translated to the Docker `--entrypoint` option while creating the container. The syntax is similar to [`Dockerfile`'s `ENTRYPOINT`](https://docs.docker.com/reference/dockerfile/#entrypoint) directive, where each shell token is a separate string in the array. |
+| `command`     | no                                   | 9.4            | Command or script that should be used as the container's command. It's translated to arguments passed to Docker after the image's name. The syntax is similar to [`Dockerfile`'s `CMD`](https://docs.docker.com/reference/dockerfile/#cmd) directive, where each shell token is a separate string in the array. |
+| `alias`       | no                                   | 9.4            | Additional aliases to access the service from the job's container. Multiple aliases can be separated by spaces or commas. For more information, see [Accessing the services](#accessing-the-services). Using alias as a container name for the Kubernetes executor was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/421131) in GitLab Runner 17.9. For more information, see [Configuring the service containers name with the Kubernetes executor](#using-aliases-as-service-container-names-for-the-kubernetes-executor). |
+| `variables`   | no                                   | 14.5           | Additional environment variables that are passed exclusively to the service. The syntax is the same as [Job Variables](../variables/_index.md). Service variables cannot reference themselves. |
+| `pull_policy` | no                                   | 15.1          | Specify how the runner pulls Docker images when it executes a job. Valid values are `always`, `if-not-present`, and `never`. Default is `always`. For more information, see [services:pull_policy](../yaml/_index.md#servicespull_policy). |
 
 ## Starting multiple services from the same image
 
@@ -293,8 +294,8 @@ However, both of them would be added to the job's container with the `mysql` ali
 the [default hostname naming](#accessing-the-services). This would end with one
 of the services not being accessible.
 
-After the new extended Docker configuration options, the above example would
-look like:
+After the new extended Docker configuration options, the previous example would
+look like this:
 
 ```yaml
 services:
@@ -455,7 +456,7 @@ In addition to the `build` and `helper` containers, six more containers are crea
 >   Instead, it represents the service's position when no available alias is found.
 >
 > - When an invalid alias is provided (doesn't meet Kubernetes constraint), the job fails with the
->   error below (example with the alias `alpine_edge`). This failure occurs because aliases are
+>   following error (example with the alias `alpine_edge`). This failure occurs because aliases are
 >   also used to create local DNS entries on the job Pod.
 >
 >   ```plaintext
@@ -495,16 +496,16 @@ For this solution to work, you must:
 
 - Use [the networking mode that creates a new network for each job](https://docs.gitlab.com/runner/executors/docker.html#create-a-network-for-each-job).
 - [Not use the Docker executor with Docker socket binding](../docker/using_docker_build.md#use-the-docker-executor-with-docker-socket-binding).
-  If you must, then in the above example, instead of `host`, use the dynamic network name created for this job.
+  If you must, then in the previous example, instead of `host`, use the dynamic network name created for this job.
 
 ## How Docker integration works
 
-Below is a high level overview of the steps performed by Docker during job
+The following is a high level overview of the steps performed by Docker during job
 time.
 
 1. Create any service container: `mysql`, `postgresql`, `mongodb`, `redis`.
 1. Create a cache container to store all volumes as defined in `config.toml` and
-   `Dockerfile` of build image (`ruby:2.6` as in above example).
+   `Dockerfile` of build image (`ruby:2.6` as in the previous examples).
 1. Create a build container and link any service container to build container.
 1. Start the build container, and send a job script to the container.
 1. Run the job script.
@@ -597,7 +598,7 @@ Finally, create a build container by executing the `build_script` file we create
 docker run --name build -i --link=service-redis:redis golang:latest /bin/bash < build_script
 ```
 
-The above command creates a container named `build` that is spawned from the `golang:latest` image and has one service
+The previous command creates a container named `build` that is spawned from the `golang:latest` image and has one service
 linked to it. The `build_script` is piped using `stdin` to the bash interpreter which in turn executes the
 `build_script` in the `build` container.
 

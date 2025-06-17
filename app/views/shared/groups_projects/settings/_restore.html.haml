@@ -1,23 +1,11 @@
-- return unless context.is_a?(Group) || context.is_a?(Project)
-- return unless context.marked_for_deletion?
-
--# FIXME: Replace `context.marked_for_deletion_on` with `context` after https://gitlab.com/gitlab-org/gitlab/-/work_items/527085
-- date = permanent_deletion_date_formatted(context.marked_for_deletion_on)
-
-- if context.is_a?(Group)
-  - context_name = _('group')
-  - restore_path = group_restore_path(context)
-- else
-  - context_name = _('project')
-  - restore_path = namespace_project_restore_path(context.namespace, context)
+- return unless context.self_deletion_scheduled?
 
 = render Pajamas::CardComponent.new(body_options: { class: 'gl-bg-orange-50' }) do |c|
   - c.with_header do
     .gl-flex.gl-grow
-      %h4.gl-text-base.gl-text-warning.gl-leading-24.gl-m-0= _('Restore %{context}') % { context: context_name }
+      %h4.gl-text-base.gl-text-warning.gl-leading-24.gl-m-0= restore_namespace_title(context)
 
   - c.with_body do
-    %p
-      = (_("This %{context} has been scheduled for deletion on %{strongStart}%{date}%{strongEnd}. To cancel the scheduled deletion, you can restore this %{context}, including all its resources.") % { context: context_name, strongStart: "<strong>", strongEnd: "</strong>", date: date }).html_safe
-    = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: restore_path) do
-      = _('Restore %{context}') % { context: context_name }
+    %p= restore_namespace_scheduled_for_deletion_message(context)
+    = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: restore_namespace_path(context)) do
+      = restore_namespace_title(context)

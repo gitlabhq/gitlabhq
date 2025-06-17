@@ -230,7 +230,7 @@ gitlab_kas['env'] = {
 | `gitlab_rails['gitlab_kas_external_k8s_proxy_url']` | The user-facing URL for Kubernetes API proxying. If blank, defaults to a URL based on `gitlab_kas_external_url`.                                                                                 |
 | `gitlab_rails['gitlab_kas_internal_url']` | The internal URL the GitLab backend uses to communicate with KAS.                                                                                                                       |
 
-**Footnotes:**
+**Footnotes**:
 
 1. TLS for outbound connections is enabled when `OWN_PRIVATE_API_URL` or `OWN_PRIVATE_API_SCHEME` starts with `grpcs`.
 1. For example, `wss://kas.gitlab.example.com/`.

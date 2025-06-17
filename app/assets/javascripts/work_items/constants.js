@@ -1,6 +1,8 @@
 import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
+export const BULK_UPDATE_UNASSIGNED = 'unassigned';
+
 export const STATE_OPEN = 'OPEN';
 export const STATE_CLOSED = 'CLOSED';
 
@@ -147,6 +149,7 @@ export const WORK_ITEM_TO_ISSUABLE_MAP = {
   [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
   [WIDGET_TYPE_TIME_TRACKING]: 'timeEstimate',
   [WIDGET_TYPE_COLOR]: 'color',
+  [WIDGET_TYPE_STATUS]: 'status',
 };
 
 export const LINKED_CATEGORIES_MAP = {
@@ -201,6 +204,7 @@ export const EPIC_COLORS = [
 export const DEFAULT_EPIC_COLORS = '#1068bf';
 
 export const MAX_FREQUENT_PROJECTS = 3;
+export const MAX_FREQUENT_ITEMS = 3;
 export const CREATE_NEW_WORK_ITEM_MODAL = 'create_new_work_item_modal';
 export const CREATE_NEW_GROUP_WORK_ITEM_MODAL = 'create_new_group_work_item_modal';
 export const RELATED_ITEM_ID_URL_QUERY_PARAM = 'related_item_id';
@@ -210,22 +214,6 @@ export const WORK_ITEM_REFERENCE_CHAR = '#';
 export const NEW_WORK_ITEM_IID = 'new-work-item-iid';
 export const NEW_WORK_ITEM_GID = 'gid://gitlab/WorkItem/new';
 export const NO_WORK_ITEM_IID = 'no-work-item-iid';
-
-export const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-12-31';
-export const NEW_ISSUE_FEEDBACK_PROMPT_EXPIRY = '2025-04-25';
-export const FEATURE_NAME = 'work_item_epic_feedback';
-
-export const ISSUE_WIT_FEEDBACK_BADGE = {
-  feedbackIssue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/523713',
-  feedbackIssueText: __('Provide feedback on the experience'),
-  featureName: 'work_item_epic_feedback',
-  badgeTitle: __('New look'),
-  badgePopoverTitle: __('New look for issues and epics'),
-  badgeContent: __(
-    'We’ve introduced improvements to issues and epics such as the ability to view full details from within lists and boards, new features, and a refreshed design. Have questions or thoughts on the changes?',
-  ),
-  expiry: '2025-04-25',
-};
 
 export const DETAIL_VIEW_QUERY_PARAM_NAME = 'show';
 export const DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME = 'version';

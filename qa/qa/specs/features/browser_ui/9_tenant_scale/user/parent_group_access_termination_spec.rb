@@ -4,8 +4,7 @@ module QA
   RSpec.describe 'Tenant Scale' do
     describe(
       'User', :requires_admin,
-      product_group: :organizations,
-      feature_flag: { name: :blob_overflow_menu }
+      product_group: :organizations
     ) do
       let(:admin_api_client) { Runtime::API::Client.as_admin }
 
@@ -18,7 +17,6 @@ module QA
       context 'with terminated parent group membership' do
         before do
           group.add_member(user)
-          Runtime::Feature.enable(:blob_overflow_menu)
           Flow::Login.while_signed_in_as_admin do
             group.visit!
 

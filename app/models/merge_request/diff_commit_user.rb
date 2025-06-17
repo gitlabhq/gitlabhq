@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class MergeRequest::DiffCommitUser < ApplicationRecord
+  include SafelyChangeColumnDefault
+
+  columns_changing_default :organization_id
+
   validates :name, length: { maximum: 512 }
   validates :email, length: { maximum: 512 }
   validates :name, presence: true, unless: :email
@@ -20,19 +24,35 @@ class MergeRequest::DiffCommitUser < ApplicationRecord
   end
 
   # Creates a new row, or returns an existing one if a row already exists.
-  def self.find_or_create(name, email)
-    find_or_create_by!(name: name, email: email)
+  def self.find_or_create(name, email, organization_id, with_organization: false)
+    return find_or_create_by!(name: name, email: email) unless with_organization
+
+    # Try to find exact match first
+    result = find_by(name: name, email: email, organization_id: organization_id)
+
+    # If not found, look for one with nil organization_id
+    if !result && organization_id.present?
+      result = find_by(name: name, email: email, organization_id: nil)
+      result.update!(organization_id: organization_id) if result
+    end
+
+    # If still not found, try to create using find_or_create_by!
+    result || find_or_create_by!(name: name, email: email, organization_id: organization_id)
   rescue ActiveRecord::RecordNotUnique
     retry
   end
 
-  # Finds many (name, email) pairs in bulk.
-  def self.bulk_find(pairs)
+  # Finds many (name, email) pairs or (name, email, organization_id) triples in bulk.
+  def self.bulk_find(input, with_organization: false)
     queries = {}
     rows = []
 
-    pairs.each do |(name, email)|
-      queries[[name, email]] = where(name: name, email: email).to_sql
+    input.each do |item|
+      name, email, organization_id = item
+      conditions = { name: name, email: email }
+      conditions[:organization_id] = organization_id if with_organization
+
+      queries[conditions.values] = where(conditions).to_sql
     end
 
     # We may end up having to query many users. To ensure we don't hit any
@@ -44,33 +64,100 @@ class MergeRequest::DiffCommitUser < ApplicationRecord
     rows
   end
 
-  # Finds or creates rows for the given pairs of names and Emails.
+  # Finds or creates rows for the given pairs of names and Emails or
+  # triples of names, emails, and organization IDs.
   #
-  # The `names_and_emails` argument must be an Array/Set of tuples like so:
+  # The input argument must be an Array/Set of pairs or triples like so:
   #
   #     [
-  #       [name, email],
-  #       [name, email],
+  #       [name, email],                   # legacy format when with_organization: false
+  #       [name, email, organization_id],  # new format when with_organization: true
   #       ...
   #     ]
   #
-  # This method expects that the names and Emails have already been trimmed to
+  # This method expects that the names and emails have already been trimmed to
   # at most 512 characters.
   #
-  # The return value is a Hash that maps these tuples to instances of this
-  # model.
-  def self.bulk_find_or_create(pairs)
+  # The return value is a Hash that maps these pairs/triples to instances of this model.
+  def self.bulk_find_or_create(input, with_organization: false)
+    return bulk_find_or_create_legacy(input) unless with_organization
+
+    mapping = {}
+    ids_to_update = []
+
+    # Extract organization_id - it's the same for all triples in this batch
+    organization_id = input.first&.last
+
+    # Find all existing records by (name, email) only
+    existing_records = bulk_find(input, with_organization: false)
+
+    existing_records.each do |row|
+      ids_to_update << row.id if row.organization_id.nil?
+      # Map all found records with the organization_id from input
+      mapping[[row.name, row.email, organization_id]] = row
+    end
+
+    # Bulk update organization_ids for records that had nil
+    if ids_to_update.any?
+      where(id: ids_to_update).update_all(organization_id: organization_id)
+
+      # Update the organization_id on the objects we already have
+      existing_records.each do |row|
+        row.organization_id = organization_id if ids_to_update.include?(row.id)
+      end
+    end
+
+    # Create missing records
+    create_missing_records(input, mapping)
+
+    # Handle concurrent inserts
+    handle_concurrent_inserts(input, mapping)
+
+    mapping
+  end
+
+  def self.create_missing_records(input, mapping)
+    create = []
+
+    # Collect records that need to be created
+    input.each do |(name, email, org_id)|
+      next if mapping[[name, email, org_id]]
+
+      create << { name: name, email: email, organization_id: org_id }
+    end
+
+    return if create.empty?
+
+    # Bulk insert new records
+    insert_all(create, returning: %w[id name email organization_id]).each do |row|
+      mapping[[row['name'], row['email'], row['organization_id']]] =
+        new(id: row['id'], name: row['name'], email: row['email'], organization_id: row['organization_id'])
+    end
+  end
+
+  def self.handle_concurrent_inserts(input, mapping)
+    # Find any records that were created concurrently
+    missing_triples = input.reject { |(name, email, org_id)| mapping.key?([name, email, org_id]) }
+
+    return if missing_triples.empty?
+
+    bulk_find(missing_triples, with_organization: true).each do |row|
+      mapping[[row.name, row.email, row.organization_id]] = row
+    end
+  end
+
+  def self.bulk_find_or_create_legacy(input)
     mapping = {}
     create = []
 
     # Over time, fewer new rows need to be created. We take advantage of that
     # here by first finding all rows that already exist, using a limited number
     # of queries (in most cases only one query will be needed).
-    bulk_find(pairs).each do |row|
+    bulk_find(input).each do |row|
       mapping[[row.name, row.email]] = row
     end
 
-    pairs.each do |(name, email)|
+    input.each do |(name, email)|
       create << { name: name, email: email } unless mapping[[name, email]]
     end
 
@@ -86,10 +173,14 @@ class MergeRequest::DiffCommitUser < ApplicationRecord
     # It's possible for (name, email) pairs to be inserted concurrently,
     # resulting in the above insert not returning anything. Here we get any
     # remaining users that were created concurrently.
-    bulk_find(pairs.reject { |pair| mapping.key?(pair) }).each do |row|
+    bulk_find(input.reject { |pair| mapping.key?(pair) }).each do |row|
       mapping[[row.name, row.email]] = row
     end
 
     mapping
   end
+
+  private_class_method :bulk_find_or_create_legacy,
+    :create_missing_records,
+    :handle_concurrent_inserts
 end

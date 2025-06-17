@@ -240,7 +240,7 @@ module Types
       end
 
       def web_path
-        ::Gitlab::Routing.url_helpers.project_job_path(object.project, object)
+        ::Gitlab::Routing.url_helpers.project_job_path(object.project, object) unless object.is_a?(::Ci::Bridge)
       end
 
       def play_path
@@ -256,10 +256,16 @@ module Types
       end
 
       def manual_variables
-        if object.action? && object.respond_to?(:job_variables)
-          object.job_variables
+        if object.action?
+          BatchLoader::GraphQL.for(object.id).batch do |job_ids, loader|
+            variables_by_job_id = ::Ci::JobVariable.for_jobs(job_ids).group_by(&:job_id)
+
+            job_ids.each do |id|
+              loader.call(id, variables_by_job_id[id] || [])
+            end
+          end
         else
-          []
+          ::Ci::JobVariable.none
         end
       end
 

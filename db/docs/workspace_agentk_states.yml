@@ -1,0 +1,14 @@
+---
+table_name: workspace_agentk_states
+classes:
+- RemoteDevelopment::WorkspaceAgentkState
+feature_categories:
+- workspaces
+description: Stores desired configuration for a workspace when used in conjunction
+  with agentk
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190027
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

@@ -3,6 +3,7 @@ stage: Security Risk Management
 group: Security Insights
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Vulnerability details
+description: Vulnerability details, status, resolution, and linking issues.
 ---
 
 {{< details >}}
@@ -63,6 +64,8 @@ GitLab can help you with a vulnerability by using a large language model to:
 - Summarize the vulnerability.
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 ### Vulnerability Explanation
 
@@ -135,6 +138,8 @@ You should always review the proposed change before merging it. When reviewing, 
 
 - Your application's existing functionality is preserved.
 - The vulnerability is resolved in accordance with your organization's standards.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=VJmsw_C125E&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
 
 Prerequisites:
 
@@ -230,11 +235,11 @@ We are actively working to expand coverage to more types of vulnerabilities.
 
 Vulnerability Resolution sometimes cannot generate a suggested fix. Common causes include:
 
-- **False positive detected:** Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+- **False positive detected**: Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
   - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
-- **Temporary or unexpected error:** The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+- **Temporary or unexpected error**: The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
@@ -287,15 +292,15 @@ Provide feedback on this feature in [issue 476553](https://gitlab.com/gitlab-org
 
 Vulnerability Resolution in a merge request sometimes cannot generate a suggested fix. Common causes include:
 
-- **False positive detected:** Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
+- **False positive detected**: Before proposing a fix, the AI model assesses whether the vulnerability is valid. It may judge that the vulnerability is not a true vulnerability, or isn't worth fixing.
   - This can happen if the vulnerability occurs in test code. Your organization might still choose to fix vulnerabilities even if they happen in test code, but models sometimes assess these to be false positives.
   - If you agree that the vulnerability is a false-positive or is not worth fixing, you should [dismiss the vulnerability](#vulnerability-status-values) and [select a matching reason](#vulnerability-dismissal-reasons).
     - To customize your SAST configuration or report a problem with a GitLab SAST rule, see [SAST rules](../sast/rules.md).
-- **Temporary or unexpected error:** The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
+- **Temporary or unexpected error**: The error message may state that "an unexpected error has occurred", "the upstream AI provider request timed out", "something went wrong", or a similar cause.
   - These errors may be caused by temporary problems with the AI provider or with GitLab Duo.
   - A new request may succeed, so you can try to resolve the vulnerability again.
   - If you continue to see these errors, contact GitLab for assistance.
-- **Resolution target could not be found in the merge request, unable to create suggestion:**
+- **Resolution target could not be found in the merge request, unable to create suggestion**:
   - This error may occur when the target branch has not run a full security scan pipeline. See the [merge request documentation](../detect/security_scan_results.md#merge-request).
 
 ## Vulnerability code flow
@@ -547,7 +552,7 @@ To manually apply the patch that GitLab generated for a vulnerability:
 
 {{< alert type="note" >}}
 
-Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a _free_ account. Sign up for an account by going to
+Security training is not accessible in an environment that is offline, meaning computers that are isolated from the public internet as a security measure. Specifically, the GitLab server needs the ability to query the API endpoints for any training provider you choose to enable. Some third-party training vendors may require you to sign up for a free account. Sign up for an account by going to
 any of [Secure Code Warrior](https://www.securecodewarrior.com/), [Kontra](https://application.security/), or [SecureFlag](https://www.secureflag.com/index.html).
 GitLab does not send any user information to these third-party vendors; we do send the CWE or OWASP identifier and the language name of the file extension.
 
@@ -602,6 +607,6 @@ When managing vulnerabilities found in dependencies in the vulnerability details
 
 If the vulnerability occurs in one or more transitive dependencies, knowing only the direct dependency may not be enough. Transitive dependencies are indirect dependencies that have a direct dependent as an ancestor.
 
-If any transitive dependencies exist, you can view the paths to all dependencies, including the transitive dependencies that contain the vulnerability. 
+If any transitive dependencies exist, you can view the paths to all dependencies, including the transitive dependencies that contain the vulnerability.
 
 - On the vulnerability details page, under **Location**, select **View dependency paths**. If **View dependency paths** doesn't appear, then there are no transitive dependencies.

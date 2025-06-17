@@ -1,0 +1,3 @@
+fragment ContainerProtectionTagRuleFragment on ContainerProtectionTagRule {
+  id
+}

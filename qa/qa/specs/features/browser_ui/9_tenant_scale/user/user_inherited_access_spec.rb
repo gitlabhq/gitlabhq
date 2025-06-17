@@ -4,8 +4,7 @@ module QA
   RSpec.describe 'Tenant Scale' do
     describe(
       'User', :requires_admin,
-      product_group: :organizations,
-      feature_flag: { name: :blob_overflow_menu }
+      product_group: :organizations
     ) do
       let!(:parent_group) do
         create(:group, path: "parent-group-to-test-user-access-#{SecureRandom.hex(8)}")
@@ -25,7 +24,6 @@ module QA
 
         before do
           parent_group.add_member(parent_group_user)
-          Runtime::Feature.enable(:blob_overflow_menu)
         end
 
         it(

@@ -5,6 +5,7 @@ module Ci
     include Ci::Partitionable
     include Ci::NewHasVariable
     include Ci::RawVariable
+    include Ci::ProjectsWithVariablesQuery
 
     before_validation :set_project_id, on: :create
 
@@ -14,12 +15,12 @@ module Ci
 
     partitionable scope: :job
 
-    alias_attribute :secret_value, :value
-
     validates :key, uniqueness: { scope: :job_id }, unless: :dotenv_source?
     validates :project_id, presence: true, on: :create
 
     enum :source, { internal: 0, dotenv: 1 }, suffix: true
+
+    scope :for_jobs, ->(jobs) { where(job: jobs) }
 
     def set_project_id
       self.project_id ||= job&.project_id

@@ -2,7 +2,6 @@
 RSpec/SubjectDeclaration:
   Exclude:
     - 'ee/spec/finders/app_sec/fuzzing/coverage/corpuses_finder_spec.rb'
-    - 'ee/spec/helpers/ee/lock_helper_spec.rb'
     - 'ee/spec/helpers/nav/new_dropdown_helper_spec.rb'
     - 'ee/spec/lib/ee/api/helpers/notes_helpers_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
@@ -36,7 +35,6 @@ RSpec/SubjectDeclaration:
     - 'spec/finders/labels_finder_spec.rb'
     - 'spec/finders/merge_requests_finder_spec.rb'
     - 'spec/finders/snippets_finder_spec.rb'
-    - 'spec/finders/todos_finder_spec.rb'
     - 'spec/helpers/labels_helper_spec.rb'
     - 'spec/helpers/routing/pseudonymization_helper_spec.rb'
     - 'spec/lib/banzai/filter/references/design_reference_filter_spec.rb'
@@ -90,7 +88,6 @@ RSpec/SubjectDeclaration:
     - 'spec/services/merge_requests/reload_diffs_service_spec.rb'
     - 'spec/services/packages/pypi/create_package_service_spec.rb'
     - 'spec/services/projects/batch_open_issues_count_service_spec.rb'
-    - 'spec/services/service_ping/submit_service_ping_service_spec.rb'
     - 'spec/services/wiki_pages/base_service_spec.rb'
     - 'spec/services/work_items/prepare_import_csv_service_spec.rb'
     - 'spec/support/shared_examples/finders/issues_finder_shared_examples.rb'

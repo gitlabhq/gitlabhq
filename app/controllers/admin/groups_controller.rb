@@ -75,7 +75,7 @@ class Admin::GroupsController < Admin::ApplicationController
   private
 
   def groups
-    Group.with_statistics.with_route
+    Group.with_statistics.with_namespace_details.with_route
   end
 
   def group

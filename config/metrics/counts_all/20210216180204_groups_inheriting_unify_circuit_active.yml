@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.groups_inheriting_unify_circuit_active
 description: Count of active groups inheriting integrations for Unifiy Circuit
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

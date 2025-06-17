@@ -24,6 +24,10 @@ RSpec.describe Packages::Maven::Package, type: :model, feature_category: :packag
           '1.2.3-4/../../', '1.2.3-4%2e%2e%', '../../../../../1.2.3', '%2e%2e%2f1.2.3').for(:version)
       end
     end
+
+    describe '#name' do
+      it_behaves_like 'validate package name format', :maven_package
+    end
   end
 
   describe '.only_maven_packages_with_path' do

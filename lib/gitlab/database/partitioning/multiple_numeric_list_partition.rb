@@ -33,10 +33,17 @@ module Gitlab
           execute("SELECT pg_table_size(#{quote(full_partition_name)})").first['pg_table_size']
         end
 
-        def to_sql
+        def to_create_sql
           <<~SQL.squish
             CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{quote_table_name(table)}
+            (LIKE #{conn.quote_table_name(table)} INCLUDING ALL)
+          SQL
+        end
+
+        def to_attach_sql
+          <<~SQL.squish
+            ALTER TABLE #{quote_table_name(table)}
+            ATTACH PARTITION #{fully_qualified_partition}
             FOR VALUES IN (#{quoted_values})
           SQL
         end

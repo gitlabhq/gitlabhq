@@ -18,6 +18,7 @@ module RuboCop
         'need to pass in namespace to the path helpers after implementaton of ' \
         'https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/12566'
 
+      # @!method becomes?(node)
       def_node_matcher :becomes?, <<~PATTERN
         (send {send ivar lvar} :becomes ...)
       PATTERN

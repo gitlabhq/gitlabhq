@@ -296,6 +296,22 @@ describe('Work item add note', () => {
 
         expect(findCommentForm().props('isWorkItemConfidential')).toBe(true);
       });
+
+      it('emits focus event on comment form focus event', async () => {
+        await createComponent({ isEditing: true });
+
+        findCommentForm().vm.$emit('focus');
+
+        expect(wrapper.emitted('focus')).toHaveLength(1);
+      });
+
+      it('emits blur event on comment form blur event', async () => {
+        await createComponent({ isEditing: true });
+
+        findCommentForm().vm.$emit('blur');
+
+        expect(wrapper.emitted('blur')).toHaveLength(1);
+      });
     });
 
     describe('when the work item type is changed to incident', () => {

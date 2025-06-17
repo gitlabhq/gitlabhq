@@ -8,23 +8,10 @@ class MigrateAnonymousSearchesFlagToApplicationSettings < Gitlab::Database::Migr
     self.table_name = 'application_settings'
   end
 
-  def up
-    ApplicationSetting.reset_column_information
+  # Marking this as a noop because the backfill migration incorrectly ignores the
+  # default_enabled configuration value, causing wrong feature flag value to be added in setting.
+  # Revert MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190832
+  def up; end
 
-    application_setting = ApplicationSetting.last
-    return unless application_setting
-
-    search_settings = application_setting.search
-    search_settings[:anonymous_searches_allowed] = feature_flag_enabled?('allow_anonymous_searches')
-    application_setting.update_columns(search: search_settings, updated_at: Time.current)
-  end
-
-  def down
-    application_setting = ApplicationSetting.last
-    return unless application_setting
-
-    search_settings_hash = application_setting.search
-    search_settings_hash.delete('anonymous_searches_allowed')
-    application_setting.update_column(:search, search_settings_hash)
-  end
+  def down; end
 end

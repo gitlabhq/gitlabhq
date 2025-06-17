@@ -44,7 +44,7 @@ the security of NGINX itself:
    nginx['ssl_protocols'] = "TLSv1.2 TLSv1.3"
 
    ##! **Recommended in: https://nginx.org/en/docs/http/ngx_http_ssl_module.html**
-   nginx['ssl_session_cache'] = "builtin:1000  shared:SSL:10m"
+   nginx['ssl_session_cache'] = "builtin:1000 shared:SSL:10m"
 
    ##! **Default according to https://nginx.org/en/docs/http/ngx_http_ssl_module.html**
    nginx['ssl_session_timeout'] = "5m"

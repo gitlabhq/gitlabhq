@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["engineering@gitlab.com"]
 
   spec.summary = "Client library to interact with the Duo Workflow Service"
-  spec.homepage = "https://gitlab.com/gitlab-org/duo-workflow/duo-workflow-service"
+  spec.homepage = "https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 

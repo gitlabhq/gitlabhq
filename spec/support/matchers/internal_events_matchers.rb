@@ -428,9 +428,11 @@ RSpec::Matchers.define :increment_usage_metrics do |*key_paths|
 
   failure_message do
     increment = @chained_methods.flat_map { |*args| args }.join(' ')
+    tip = redis_trait_debugging_tip_if_applicable.to_s
+
     format_for_key_paths do |key_path, initial, final|
       "expected metric #{key_path} to be incremented #{increment}\n  ->  value went from #{initial} to #{final}"
-    end
+    end + tip
   end
 
   failure_message_when_negated do
@@ -498,6 +500,17 @@ RSpec::Matchers.define :increment_usage_metrics do |*key_paths|
 
       yield(key_path, initial, final)
     end.join("\n")
+  end
+
+  def redis_trait_debugging_tip_if_applicable
+    return if @values.none? do |key_path, values|
+      dirty_redis = values.first.nonzero?
+      unique_metric = get_metric_definition(key_path).event_selection_rules.any?(&:unique_identifier_name)
+
+      dirty_redis && unique_metric
+    end
+
+    "\n\nDebugging tip: Add the :clean_gitlab_redis_shared_state trait to reset event counters between examples."
   end
 end
 

@@ -16,7 +16,6 @@ include:
   extends:
     - .default-retry
     - .default-before_script
-    - .failure_category_after_script
     - .ruby-cache
 
 .base-script:
@@ -33,6 +32,12 @@ include:
 .no-redis-cluster:
   variables:
     USE_REDIS_CLUSTER: "false"
+
+.clickhouse-setup:
+  script:
+    - !reference [.base-script, script]
+    - cp config/click_house.yml.example config/click_house.yml
+    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
 
 .single-db:
   variables:
@@ -112,7 +117,6 @@ include:
   after_script:
     # We need this at the very top, because the section_start/section_end logic is defined there.
     - source scripts/utils.sh
-    - !reference [.failure_category_after_script, after_script]
     - log_disk_usage  # https://gitlab.com/gitlab-org/gitlab/-/issues/478880
     - bundle exec gem list gitlab_quality-test_tooling
     - |
@@ -248,9 +252,23 @@ include:
     - .rspec-base
     - .use-pg16-clickhouse23
   script:
-    - cp config/click_house.yml.example config/click_house.yml
-    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
-    - !reference [.base-script, script]
+    - !reference [.clickhouse-setup, script]
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+
+.rspec-base-pg16-clickhouse24:
+  extends:
+    - .rspec-base
+    - .use-pg16-clickhouse24
+  script:
+    - !reference [.clickhouse-setup, script]
+    - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
+
+.rspec-base-pg16-clickhouse25:
+  extends:
+    - .rspec-base
+    - .use-pg16-clickhouse25
+  script:
+    - !reference [.clickhouse-setup, script]
     - rspec_section rspec_parallelized_job "--fail-fast=${RSPEC_FAIL_FAST_THRESHOLD} --tag click_house"
 
 .rspec-base-pg14:
@@ -288,6 +306,11 @@ include:
     - .rspec-base
     - .use-pg16-es8-ee
     - .rails:rules:run-search-tests
+
+.rspec-ee-base-pg16-es9:
+  extends:
+    - .rspec-base
+    - .use-pg16-es9-ee
 
 .rspec-ee-base-pg16-opensearch-latest:
   extends:

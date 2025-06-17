@@ -44,6 +44,7 @@ describe('Image Viewer', () => {
 
       expect(wrapper.find('img').element.src).toBe('/url/hello%231.jpg');
     });
+
     it('outputs path without transformations when outputting a Blob', () => {
       const file = new File([], DUMMY_IMAGE_BLOB_PATH);
       const path = window.URL.createObjectURL(file);
@@ -51,6 +52,14 @@ describe('Image Viewer', () => {
         propsData: { path },
       });
       expect(wrapper.find('img').element.src).toBe(path);
+    });
+
+    it('outputs path without transformations when a prop is set', () => {
+      wrapper = shallowMount(ImageViewer, {
+        propsData: { path: '/url/hello%20.jpg', encodePath: false },
+      });
+
+      expect(wrapper.find('img').element.src).toBe('/url/hello%20.jpg');
     });
   });
 });

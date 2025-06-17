@@ -552,4 +552,22 @@ describe('Work item comment form component', () => {
 
     expect(findWorkItemToggleStateButton().props('parentId')).toBe('example-id');
   });
+
+  it('emits `focus` event on markdown editor focus', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findMarkdownEditor().vm.$emit('focus');
+
+    expect(wrapper.emitted('focus')).toHaveLength(1);
+  });
+
+  it('emits `blur` event on markdown editor blur', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findMarkdownEditor().vm.$emit('blur');
+
+    expect(wrapper.emitted('blur')).toHaveLength(1);
+  });
 });

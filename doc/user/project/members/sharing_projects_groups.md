@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Sharing projects and groups
+description: Invitations, group inheritance, and project visibility.
 ---
 
 {{< details >}}
@@ -39,10 +40,15 @@ The following table provides an overview of the group members that get access to
 
 | Group member source                                                 | Access to shared project |
 |---------------------------------------------------------------------|--------------------------|
-| Direct member of the group that is shared                           | {{< icon name="check-circle" >}} Yes   |
-| Inherited member of the group that is shared                        | {{< icon name="check-circle" >}} Yes   |
-| Direct member of a subgroup, but not of the group that is shared    | {{< icon name="dotted-circle" >}} No   |
-| Inherited member of a subgroup, but not of the group that is shared | {{< icon name="dotted-circle" >}} No   |
+| Direct member of the group that is invited                           | {{< icon name="check-circle" >}} Yes   |
+| Inherited member of the group that is invited                        | {{< icon name="check-circle" >}} Yes   |
+| Shared member of the group that is invited <sup>1</sup>              | {{< icon name="dotted-circle" >}} Yes  |
+| Direct member of a subgroup, but not of the group that is invited    | {{< icon name="dotted-circle" >}} No   |
+| Inherited member of a subgroup, but not of the group that is invited | {{< icon name="dotted-circle" >}} No   |
+
+**Footnotes**:
+
+1. GitLab supports extending project access to shared group members, but this approach is not recommended. [Epic 122](https://gitlab.com/groups/gitlab-org/-/epics/122) proposes changing this behavior and transitioning to a teams model for sharing groups.
 
 The [visibility level](../../public_access.md) of the group you're inviting must be at least as restrictive as that of the project.
 For example, you can invite:
@@ -218,7 +224,7 @@ When this setting is enabled:
 
 {{< alert type="note" >}}
 
-After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group), you cannot disable this setting.
+After you [specify a user cap for the group](../../group/manage.md#specify-a-user-cap-for-a-group) or if you [turn on restricted access](../../group/manage.md#turn-on-restricted-access), you cannot disable this setting.
 
 {{< /alert >}}
 
@@ -228,15 +234,16 @@ When you want another group's members to have access to your group,
 you can invite the [group](../../group/_index.md) to your group.
 The group's direct members get access to the group, which becomes a **shared group**.
 
-Only direct members of the invited group get access to the shared group, not inherited or subgroup members. To grant subgroup members access, invite the subgroup directly.
+Only direct members of the invited group get access to the shared group, not inherited, shared or subgroup members. To grant subgroup members access, invite the subgroup directly.
 
 The following table provides an overview of the group members that get access to a shared group:
 
 | Group member source                                          | Access to shared group |
 |--------------------------------------------------------------|------------------------|
-| Direct member of the group that is invited                   | {{< icon name="check-circle" >}} Yes   |
+| Direct member of the group that is invited                   | {{< icon name="check-circle" >}} Yes    |
 | Inherited member of the group that is invited                | {{< icon name="dotted-circle" >}} No    |
-| Member of a subgroup, but not of the group that is invited    | {{< icon name="dotted-circle" >}} No    |
+| Shared member of the group that is invited                   | {{< icon name="dotted-circle" >}} No    |
+| Member of a subgroup, but not of the group that is invited   | {{< icon name="dotted-circle" >}} No    |
 
 ### Member access and roles
 

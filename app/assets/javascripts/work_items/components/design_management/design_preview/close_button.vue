@@ -18,7 +18,10 @@ export default {
       class="gl-mx-3"
       icon="close"
       category="tertiary"
-      :to="$options.ROUTES.workItem"
+      :to="{
+        name: $options.ROUTES.workItem,
+        query: $route.query,
+      }"
     />
   </div>
 </template>

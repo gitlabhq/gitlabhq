@@ -5,7 +5,6 @@ import {
   GlFormGroup,
   GlForm,
   GlFormInput,
-  GlFormRadio,
   GlFormSelect,
   GlLink,
   GlSprintf,
@@ -18,11 +17,6 @@ import {
 } from '~/packages_and_registries/settings/project/constants';
 import { __, s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
-
-const PROTECTED_RULE_TYPE = 'protected';
-const IMMUTABLE_RULE_TYPE = 'immutable';
 
 export default {
   components: {
@@ -34,15 +28,18 @@ export default {
     GlFormSelect,
     GlLink,
     GlSprintf,
-    GlFormRadio,
   },
-  mixins: [glFeatureFlagsMixin(), glAbilitiesMixin()],
   inject: ['projectPath'],
   props: {
     rule: {
       type: Object,
       required: false,
       default: null,
+    },
+    isProtectedTagRuleType: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -55,7 +52,6 @@ export default {
         minimumAccessLevelForDelete:
           this.rule?.minimumAccessLevelForDelete ?? GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
-      tagRuleType: PROTECTED_RULE_TYPE,
       showValidation: false,
       updateInProgress: false,
     };
@@ -72,21 +68,6 @@ export default {
         projectPath: this.projectPath,
         tagNamePattern: this.protectionRuleFormData.tagNamePattern,
       };
-    },
-    isFeatureFlagEnabled() {
-      return this.glFeatures.containerRegistryImmutableTags;
-    },
-    isProtectedTagRuleType() {
-      return this.tagRuleType === PROTECTED_RULE_TYPE;
-    },
-    canCreateImmutableTagRule() {
-      return (
-        this.isFeatureFlagEnabled &&
-        this.glAbilities.createContainerRegistryProtectionImmutableTagRule
-      );
-    },
-    showProtectionType() {
-      return this.canCreateImmutableTagRule && !this.rule;
     },
     isTagNamePatternValid() {
       if (this.showValidation) {
@@ -190,8 +171,6 @@ export default {
       }
     },
   },
-  PROTECTED_RULE_TYPE,
-  IMMUTABLE_RULE_TYPE,
   minimumAccessLevelOptions: MinimumAccessLevelOptions,
 };
 </script>
@@ -207,35 +186,7 @@ export default {
       <div v-for="error in alertErrorMessages" :key="error">{{ error }}</div>
     </gl-alert>
 
-    <template v-if="showProtectionType">
-      <gl-form-group :label="s__('ContainerRegistry|Protection type')">
-        <gl-form-radio
-          v-model="tagRuleType"
-          name="protection-type"
-          :value="$options.PROTECTED_RULE_TYPE"
-          autofocus
-        >
-          {{ s__('ContainerRegistry|Protected') }}
-          <template #help>
-            {{
-              s__(
-                'ContainerRegistry|Container image tags can be created, overwritten, or deleted by specific user roles.',
-              )
-            }}
-          </template>
-        </gl-form-radio>
-        <gl-form-radio
-          v-model="tagRuleType"
-          name="protection-type"
-          :value="$options.IMMUTABLE_RULE_TYPE"
-        >
-          {{ s__('ContainerRegistry|Immutable') }}
-          <template #help>
-            {{ s__('ContainerRegistry|Container image tags can never be overwritten or deleted.') }}
-          </template>
-        </gl-form-radio>
-      </gl-form-group>
-    </template>
+    <slot name="protection-type" :rule="rule"></slot>
 
     <gl-form-group
       :label="tagNamePatternLabel"
@@ -247,7 +198,7 @@ export default {
         id="input-tag-name-pattern"
         v-model.trim="protectionRuleFormData.tagNamePattern"
         type="text"
-        :autofocus="!showProtectionType"
+        :autofocus="!isProtectedTagRuleType"
         required
         trim
         :state="isTagNamePatternValid"

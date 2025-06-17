@@ -107,7 +107,7 @@ To create a new list:
 1. Select **New list**.
    The new list panel opens.
 
-   ![creating a new list between two lists in an issue board](../../project/img/issue_board_add_list_between_lists_v17_6.png)
+   ![creating a new list between two lists in an issue board](img/issue_board_add_list_between_lists_v17_6.png)
 1. In the **New list** column expand the **Select a label** dropdown list and select the label to use as
    list scope.
 1. Select **Add to board**.

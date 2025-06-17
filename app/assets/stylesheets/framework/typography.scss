@@ -114,6 +114,12 @@
     @include str-highlighted;
   }
 
+  // the z-index of the mark is set to -1, so it's below the table cells
+  // unless they have their own stacking context
+  td:has(mark), th:has(mark) {
+    isolation: isolate;
+  }
+
   // Fixed headings are default for markdown
   h1 {
     @apply gl-heading-1-fixed gl-mt-7 gl-pb-2 gl-border-b;

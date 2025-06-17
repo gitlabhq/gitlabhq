@@ -218,6 +218,31 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
     end
   end
 
+  describe '.sharding_root_tables' do
+    context 'schemas where require_sharding_key is true' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:schema_name, :result) do
+        :gitlab_main_user | %w[organizations users]
+        :gitlab_main_cell | %w[organizations projects namespaces]
+        :gitlab_ci | %w[organizations projects namespaces]
+        :gitlab_sec | %w[organizations projects namespaces]
+      end
+
+      with_them do
+        it { expect(described_class.sharding_root_tables(schema_name)).to match_array(result) }
+      end
+
+      it 'always includes organizations', :aggregate_failures do
+        Gitlab::Database.all_gitlab_schemas.each do |schema_name, schema_info|
+          next unless schema_info.require_sharding_key
+
+          expect(described_class.sharding_root_tables(schema_name)).to include('organizations')
+        end
+      end
+    end
+  end
+
   context 'when testing cross schema access' do
     using RSpec::Parameterized::TableSyntax
 
@@ -267,15 +292,15 @@ RSpec.describe Gitlab::Database::GitlabSchema, feature_category: :database do
       where(:schemas, :tables, :result) do
         %i[] | %w[] | false
         %i[gitlab_main] | %w[evidences] | true
-        %i[gitlab_main_clusterwide gitlab_main] | %w[users evidences] | true
+        %i[gitlab_main_clusterwide gitlab_main] | %w[users clusters] | true
         %i[gitlab_main_clusterwide gitlab_ci] | %w[users ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_internal] | %w[users schema_migrations] | false
         %i[gitlab_main gitlab_ci] | %w[evidences ci_pipelines] | false
         %i[gitlab_main_clusterwide gitlab_shared] | %w[users detached_partitions] | false
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | true
-        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | true
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[plans namespaces] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users achievements] | false
+        %i[gitlab_main_clusterwide gitlab_main_cell] | %w[users agent_group_authorizations] | false
       end
 
       with_them do

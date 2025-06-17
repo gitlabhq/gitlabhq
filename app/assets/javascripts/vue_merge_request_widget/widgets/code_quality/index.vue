@@ -27,7 +27,6 @@ export default {
       pollingFinished: false,
       hasError: false,
       collapsedData: {},
-      poll: null,
     };
   },
   computed: {

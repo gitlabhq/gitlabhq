@@ -115,27 +115,6 @@ RSpec.describe Gitlab::JiraImport::ImportIssueWorker, feature_category: :importe
           expect(issue.work_item_type_id).to eq(issue_type.id)
         end
 
-        context 'when legacy correct_work_item_type_id was part of the attributes (backward compatibility)' do
-          let(:issue_type) { ::WorkItems::Type.default_issue_type }
-          # At the moment, both id and correct_id columns have the same value in the work_item_types table
-          let(:correct_work_item_type_id) { issue_type.id }
-          let(:issue_attrs) do
-            Gitlab::JiraImport::IssueSerializer.new(
-              project,
-              jira_issue,
-              user.id,
-              issue_type,
-              params
-            ).execute.except(:work_item_type_id).merge(correct_work_item_type_id: correct_work_item_type_id)
-          end
-
-          it 'creates an issue with the correct type' do
-            issue = Issue.last
-
-            expect(issue.work_item_type_id).to eq(issue_type.id)
-          end
-        end
-
         context 'when assignee_ids is nil' do
           let(:assignee_ids) { nil }
 

@@ -20,23 +20,14 @@ const MOCK_GROUP = {
   fullPath: 'path/to/group',
 };
 
-const MOCK_GROUP_NO_DELAY_DELETION = {
-  ...MOCK_GROUP,
-  isAdjournedDeletionEnabled: false,
-  markedForDeletionOn: null,
-  permanentDeletionDate: null,
-};
-
 const MOCK_GROUP_WITH_DELAY_DELETION = {
   ...MOCK_GROUP,
-  isAdjournedDeletionEnabled: true,
   markedForDeletionOn: null,
   permanentDeletionDate: '2024-03-31',
 };
 
 const MOCK_GROUP_PENDING_DELETION = {
   ...MOCK_GROUP,
-  isAdjournedDeletionEnabled: true,
   markedForDeletionOn: '2024-03-24',
   permanentDeletionDate: '2024-03-31',
 };
@@ -64,14 +55,6 @@ describe('availableGraphQLGroupActions', () => {
 });
 
 describe('renderDeleteSuccessToast', () => {
-  it('when delayed deletion is disabled, renders the delete immediately message', () => {
-    renderDeleteSuccessToast(MOCK_GROUP_NO_DELAY_DELETION);
-
-    expect(toast).toHaveBeenCalledWith(
-      `Group '${MOCK_GROUP_NO_DELAY_DELETION.fullName}' is being deleted.`,
-    );
-  });
-
   it('when delayed deletion is enabled and group is not pending deletion, calls toast with pending deletion info', () => {
     renderDeleteSuccessToast(MOCK_GROUP_WITH_DELAY_DELETION);
 
@@ -108,12 +91,6 @@ describe('renderRestoreSuccessToast', () => {
 });
 
 describe('deleteParams', () => {
-  it('when delayed deletion is disabled, returns an empty object', () => {
-    const res = deleteParams(MOCK_GROUP_NO_DELAY_DELETION);
-
-    expect(res).toStrictEqual({});
-  });
-
   it('when delayed deletion is enabled and group is not pending deletion, returns an empty object', () => {
     const res = deleteParams(MOCK_GROUP_WITH_DELAY_DELETION);
 

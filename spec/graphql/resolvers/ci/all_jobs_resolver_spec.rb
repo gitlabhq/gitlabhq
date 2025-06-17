@@ -120,6 +120,52 @@ RSpec.describe Resolvers::Ci::AllJobsResolver, feature_category: :continuous_int
 
       context 'when admin mode setting is disabled', :do_not_mock_admin_mode_setting do
         it_behaves_like 'executes as admin'
+
+        context 'when compatible runner id is specified' do
+          let_it_be(:runner) { create(:ci_runner) }
+          let_it_be(:expected_jobs) { create_list(:ci_build, 2, runner: runner) }
+
+          let(:args) do
+            {
+              statuses: Types::Ci::JobStatusEnum.coerce_isolated_input('PENDING'),
+              compatible_runner_id: runner.to_global_id
+            }
+          end
+
+          it 'calls the finder and returns the pending jobs' do
+            expect_next_instance_of(
+              Ci::JobsFinder,
+              current_user: current_user,
+              runner: runner,
+              params: a_hash_including(scope: ['pending'], match_compatible_runner_only: true)
+            ) do |finder|
+              expect(finder).to receive(:execute).and_return(Ci::Build.id_in(expected_jobs))
+            end
+
+            expect(request).to match_array(expected_jobs)
+          end
+
+          context 'when statuses is not pending' do
+            let(:args) do
+              {
+                statuses: Types::Ci::JobStatusEnum.coerce_isolated_input('RUNNING'),
+                compatible_runner_id: runner.to_global_id
+              }
+            end
+
+            it 'does not call the finder and returns error' do
+              allow_next_instance_of(Ci::JobsFinder) do |finder|
+                expect(finder).not_to receive(:execute)
+              end
+
+              expect_graphql_error_to_be_created(
+                Gitlab::Graphql::Errors::ArgumentError, described_class::COMPATIBLE_RUNNER_ERROR_MESSAGE
+              ) do
+                request
+              end
+            end
+          end
+        end
       end
 
       context 'when admin mode setting is enabled' do

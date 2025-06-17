@@ -1,10 +1,12 @@
 <script>
+import { GlIntersperse } from '@gitlab/ui';
 import NullPresenter from './null.vue';
 
 export default {
   name: 'CollectionPresenter',
   components: {
     NullPresenter,
+    GlIntersperse,
   },
   inject: ['presenter'],
   props: {
@@ -17,10 +19,10 @@ export default {
 };
 </script>
 <template>
-  <span>
+  <gl-intersperse separator=" ">
     <span v-for="(field, index) in data.nodes" :key="index" class="gl-inline-block gl-pr-2">
       <component :is="presenter.forField(field)" />
     </span>
     <null-presenter v-if="!data.nodes.length" />
-  </span>
+  </gl-intersperse>
 </template>

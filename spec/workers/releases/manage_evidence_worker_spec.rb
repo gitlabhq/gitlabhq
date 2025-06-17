@@ -9,7 +9,7 @@ RSpec.describe Releases::ManageEvidenceWorker, feature_category: :release_eviden
     specify :sidekiq_inline do
       aggregate_failures do
         expect(::Releases::CreateEvidenceService).not_to receive(:execute)
-        expect { described_class.new.perform }.to change { Releases::Evidence.count }.by(0)
+        expect { described_class.new.perform }.to not_change { Releases::Evidence.count }
       end
     end
   end
@@ -45,7 +45,7 @@ RSpec.describe Releases::ManageEvidenceWorker, feature_category: :release_eviden
           project_id: project.id
         )
 
-        expect { described_class.new.perform }.to change { Releases::Evidence.count }.by(0)
+        expect { described_class.new.perform }.to not_change { Releases::Evidence.count }
       end
     end
 

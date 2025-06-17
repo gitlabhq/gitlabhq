@@ -91,6 +91,10 @@ end
 
 RSpec.shared_examples 'deploy token does not get confused with user' do
   before do
+    # We force the id of the deploy token and the user to be the same,
+    # which requires deleting the joining record as we cannot update
+    # the id while foreign keys reference it.
+    deploy_token.project_deploy_tokens.delete_all(:delete_all)
     deploy_token.update!(id: user_id)
 
     # Project with public builds are available to all

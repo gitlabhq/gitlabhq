@@ -3,8 +3,8 @@
 module DeployTokenMethods
   def create_deploy_token_for(entity, current_user, params)
     entity_name = entity.class.name.downcase
-    params[:deploy_token_type] = DeployToken.deploy_token_types["#{entity_name}_type".to_sym]
-    params["#{entity_name}_id".to_sym] = entity.id
+    params[:deploy_token_type] = DeployToken.deploy_token_types[:"#{entity_name}_type"]
+    params[:"#{entity_name}_id"] = entity.id
 
     entity.deploy_tokens.create(params) do |deploy_token|
       deploy_token.username = params[:username].presence

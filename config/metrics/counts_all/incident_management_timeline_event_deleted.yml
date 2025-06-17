@@ -1,0 +1,22 @@
+---
+key_path: redis_hll_counters.incident_management.incident_management_timeline_event_deleted
+description: Count of unique users deleted timeline events
+product_group: platform_insights
+value_type: number
+status: active
+milestone: "15.5"
+introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97006"
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+performance_indicator_type: []
+options:
+  events:
+    - incident_management_timeline_event_deleted
+tiers:
+  - free
+  - premium
+  - ultimate

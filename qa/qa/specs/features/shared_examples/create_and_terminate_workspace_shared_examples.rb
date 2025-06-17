@@ -28,7 +28,8 @@ module QA
 
       QA::EE::Page::Workspace::List.perform do |list|
         # Check workspace not present on Active tab
-        expect { list.get_workspaces_list }.not_to eventually_include(workspace_name).within(max_duration: 60)
+        expect { list.get_workspaces_list(tab: :active) }.not_to eventually_include(workspace_name)
+                                                                   .within(max_duration: 90)
 
         # Check workspace is present on Terminated tab
         list.click_terminated_tab

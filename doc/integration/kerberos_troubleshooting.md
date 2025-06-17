@@ -96,7 +96,7 @@ GitLab server do not match. Often, Windows clients work in this case while
 Linux clients fail. They use reverse DNS while detecting the Kerberos
 realm. If they get the wrong realm then ordinary Kerberos mechanisms fail,
 so the client falls back to attempting to negotiate `IAKERB`, leading to the
-above error message.
+previous authentication error message.
 
 To fix this, ensure that the forward and reverse DNS for your GitLab server
 match. So for instance, if you access GitLab as `gitlab.example.com`, resolving
@@ -116,7 +116,7 @@ remote: HTTP Basic: Access denied
 fatal: Authentication failed for '<KRB5 path>'
 ```
 
-If you are using Git v2.11 or newer and see the above error when cloning, you can
+If you are using Git v2.11 or later and see the previous error when cloning, you can
 set the `http.emptyAuth` Git option to `true` to fix this:
 
 ```shell

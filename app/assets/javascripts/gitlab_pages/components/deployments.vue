@@ -1,13 +1,22 @@
 <script>
-import { GlToggle, GlLoadingIcon, GlAlert } from '@gitlab/ui';
+import { GlToggle, GlAlert } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import getProjectPagesDeployments from '../queries/get_project_pages_deployments.graphql';
+import LiveBlock from './live_block.vue';
 import PagesDeployment from './deployment.vue';
 import LoadMoreDeployments from './load_more_deployments.vue';
 
 export default {
   name: 'PagesDeployments',
-  components: { LoadMoreDeployments, PagesDeployment, GlToggle, GlLoadingIcon, GlAlert },
+  components: {
+    CrudComponent,
+    LoadMoreDeployments,
+    LiveBlock,
+    PagesDeployment,
+    GlToggle,
+    GlAlert,
+  },
   inject: ['projectFullPath'],
   i18n: {
     title: s__('Pages|Deployments'),
@@ -49,6 +58,9 @@ export default {
     },
     loadedParallelDeploymentsCount() {
       return this.parallelDeployments?.nodes.length || 0;
+    },
+    newestDeployment() {
+      return this.primaryDeployments?.nodes[0] || null;
     },
   },
   apollo: {
@@ -137,57 +149,74 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="gl-flex gl-flex-col gl-gap-5">
     <gl-alert
       v-for="(message, id) in alerts"
       :key="id"
       variant="danger"
-      class="gl-mb-4"
       sticky
       data-testid="alert"
       @dismiss="dismissAlert(id)"
     >
       {{ message }}
     </gl-alert>
-    <div class="gl-mb-4 gl-flex gl-flex-col gl-justify-between md:gl-mb-0 md:gl-flex-row">
-      <h2 class="gl-text-h2">
-        {{ $options.i18n.title }}
-      </h2>
-      <span>
+
+    <gl-alert v-if="hasError" variant="danger" :dismissible="false">
+      {{ $options.i18n.loadErrorMessage }}
+    </gl-alert>
+
+    <live-block :is-loading="!newestDeployment && $apollo.loading" :deployment="newestDeployment" />
+
+    <crud-component
+      :title="$options.i18n.title"
+      :is-loading="!primaryDeployments && $apollo.loading"
+      data-testid="primary-deployment-list"
+    >
+      <template #actions>
         <gl-toggle
           v-model="showInactive"
           :label="$options.i18n.showInactiveLabel"
           label-position="left"
           data-testid="show-inactive-toggle"
         />
-      </span>
-    </div>
-    <div
-      v-if="loadedPrimaryDeploymentsCount > 0"
-      class="gl-flex gl-flex-col gl-gap-4"
-      data-testid="primary-deployment-list"
+      </template>
+
+      <template v-if="!loadedPrimaryDeploymentsCount" #empty>
+        {{ $options.i18n.noDeploymentsMessage }}.
+      </template>
+
+      <ul v-if="loadedPrimaryDeploymentsCount" class="content-list">
+        <pages-deployment
+          v-for="node in primaryDeployments.nodes"
+          :key="node.id"
+          :deployment="node"
+          :query="$apollo.queries.primaryDeployments"
+          data-testid="primary-deployment"
+          @error="onChildError"
+        />
+      </ul>
+
+      <template v-if="primaryDeployments && primaryDeployments.pageInfo.hasNextPage" #pagination>
+        <load-more-deployments
+          :total-deployment-count="primaryDeploymentsNotLoaded"
+          :loading="$apollo.queries.primaryDeployments.loading"
+          data-testid="load-more-primary-deployments"
+          @load-more="fetchMorePrimaryDeployments"
+        />
+      </template>
+    </crud-component>
+
+    <crud-component
+      v-if="loadedParallelDeploymentsCount > 0"
+      :title="$options.i18n.parallelDeploymentsTitle"
+      :is-loading="!parallelDeployments && $apollo.loading"
+      data-testid="parallel-deployment-list"
     >
-      <pages-deployment
-        v-for="node in primaryDeployments.nodes"
-        :key="node.id"
-        :deployment="node"
-        class="gl-mb-5"
-        :query="$apollo.queries.primaryDeployments"
-        data-testid="primary-deployment"
-        @error="onChildError"
-      />
-      <load-more-deployments
-        v-if="primaryDeployments && primaryDeployments.pageInfo.hasNextPage"
-        :total-deployment-count="primaryDeploymentsNotLoaded"
-        :loading="$apollo.queries.primaryDeployments.loading"
-        class="gl-mt-3"
-        data-testid="load-more-primary-deployments"
-        @load-more="fetchMorePrimaryDeployments"
-      />
-    </div>
-    <div v-if="loadedParallelDeploymentsCount > 0" data-testid="parallel-deployment-list">
-      <h3 class="gl-heading-3">{{ $options.i18n.parallelDeploymentsTitle }}</h3>
-      <div class="gl-flex gl-flex-col gl-gap-4">
+      <template v-if="!loadedParallelDeploymentsCount" #empty>
+        {{ $options.i18n.noDeploymentsMessage }}.
+      </template>
+
+      <ul v-if="loadedParallelDeploymentsCount" class="content-list">
         <pages-deployment
           v-for="node in parallelDeployments.nodes"
           :key="node.id"
@@ -196,27 +225,16 @@ export default {
           data-testid="parallel-deployment"
           @error="onChildError"
         />
-      </div>
-      <load-more-deployments
-        v-if="parallelDeployments && parallelDeployments.pageInfo.hasNextPage"
-        :total-deployment-count="parallelDeploymentsNotLoaded"
-        :loading="$apollo.queries.parallelDeployments.loading"
-        class="gl-mt-3"
-        data-testid="load-more-parallel-deployments"
-        @load-more="fetchMoreParallelDeployments"
-      />
-    </div>
-    <div v-if="!primaryDeployments && !parallelDeployments && $apollo.loading">
-      <gl-loading-icon size="md" />
-    </div>
-    <div
-      v-else-if="!loadedPrimaryDeploymentsCount && !loadedParallelDeploymentsCount"
-      class="gl-text-center gl-text-subtle"
-    >
-      {{ $options.i18n.noDeploymentsMessage }}
-    </div>
-    <gl-alert v-if="hasError" variant="danger" :dismissible="false">
-      {{ $options.i18n.loadErrorMessage }}
-    </gl-alert>
+      </ul>
+
+      <template v-if="parallelDeployments && parallelDeployments.pageInfo.hasNextPage" #pagination>
+        <load-more-deployments
+          :total-deployment-count="parallelDeploymentsNotLoaded"
+          :loading="$apollo.queries.parallelDeployments.loading"
+          data-testid="load-more-parallel-deployments"
+          @load-more="fetchMoreParallelDeployments"
+        />
+      </template>
+    </crud-component>
   </div>
 </template>

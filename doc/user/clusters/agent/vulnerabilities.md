@@ -306,7 +306,7 @@ To view vulnerability information in GitLab:
 1. Select the **Agent** tab.
 1. Select an agent to view the cluster vulnerabilities.
 
-![Cluster agent security tab UI](../img/cluster_agent_security_tab_v14_8.png)
+![Cluster agent security tab UI](img/cluster_agent_security_tab_v14_8.png)
 
 This information can also be found under [operational vulnerabilities](../../application_security/vulnerability_report/_index.md#operational-vulnerabilities).
 

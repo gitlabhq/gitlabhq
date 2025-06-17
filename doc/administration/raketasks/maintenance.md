@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Maintenance Rake tasks
 ---
@@ -155,6 +155,18 @@ To run `gitlab:check`, run:
   bundle exec rake gitlab:check RAILS_ENV=production
   ```
 
+- Kubernetes installations:
+
+  ```shell
+  kubectl exec -it <toolbox-pod-name> -- sudo gitlab-rake gitlab:check
+  ```
+
+  {{< alert type="note" >}}
+  Due to the specific architecture of Helm-based GitLab installations, the output may contain
+  false negatives for connectivity verification to `gitlab-shell`, Sidekiq, and `systemd`-related files.
+  These reported failures are expected and do not indicate actual issues, disregard them when reviewing diagnostic results.
+  {{< /alert >}}
+  
 Use `SANITIZE=true` for `gitlab:check` if you want to omit project names from the output.
 
 Example output:
@@ -486,7 +498,7 @@ For Kubernetes deployments, you can create a similar schedule using the CronJob 
 
 - Rebuilding database indexes is a disk-intensive task, so you should perform the
   task during off-peak hours. Running the task during peak hours can lead to
-  _increased_ bloat, and can also cause certain queries to perform slowly.
+  increased bloat, and can also cause certain queries to perform slowly.
 - The task requires free disk space for the index being restored. The created
   indexes are appended with `_ccnew`. If the reindexing task fails, re-running the
   task cleans up the temporary indexes.
@@ -548,10 +560,10 @@ database to help you troubleshoot issues. Where you run this command depends on 
 
 Modify the command as needed:
 
-- **Default path** - To run the command with the default folder path (`tmp/sos.zip`), run `gitlab-rake gitlab:db:sos`.
-- **Custom path** - To change the folder path, run `gitlab-rake gitlab:db:sos["custom/path/to/folder"]`.
+- **Default path** - To run the command with the default file path (`/var/opt/gitlab/gitlab-rails/tmp/sos.zip`), run `gitlab-rake gitlab:db:sos`.
+- **Custom path** - To change the file path, run `gitlab-rake gitlab:db:sos["custom/path/to/file.zip"]`.
 - **Zsh users** - If you have not modified your Zsh configuration, you must add quotation marks
-  around the entire command, like this: `gitlab-rake "gitlab:db:sos[custom/path/to/folder]"`
+  around the entire command, like this: `gitlab-rake "gitlab:db:sos[custom/path/to/file.zip]"`
 
 The Rake task runs for five minutes. It creates a compressed folder in the path you specify.
 The compressed folder contains a large number of files.
@@ -648,7 +660,7 @@ Prerequisites:
    SELECT * FROM pg_stat_statements LIMIT 10;
    ```
 
-## Check the database for deduplicate CI/CD tags
+## Check the database for duplicate CI/CD tags
 
 {{< history >}}
 

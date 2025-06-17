@@ -38,6 +38,7 @@ describe('CI Editor Header', () => {
 
   const findHelpBtn = () => wrapper.findByTestId('drawer-toggle');
   const findCatalogRepoLinkButton = () => wrapper.findByTestId('catalog-repo-link');
+  const findEditorA11yDocsLinkButton = () => wrapper.findByTestId('editor-accessibility-link');
 
   afterEach(() => {
     unmockTracking();
@@ -120,6 +121,16 @@ describe('CI Editor Header', () => {
 
         expect(wrapper.emitted('switch-drawer')).toEqual([[EDITOR_APP_DRAWER_NONE]]);
       });
+    });
+  });
+
+  describe('editor accessibility link button', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('finds the a11y docs button', () => {
+      expect(findEditorA11yDocsLinkButton().exists()).toBe(true);
     });
   });
 });

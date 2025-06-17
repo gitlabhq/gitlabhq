@@ -60,6 +60,7 @@ setup-test-env:
 setup-test-env-fips:
   extends:
     - setup-test-env
+    - .rails:rules:setup-test-env-fips
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/${BUILD_OS}-${OS_VERSION}-ruby-${RUBY_VERSION}-golang-${GO_VERSION}-rust-${RUST_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}-exiftool-${EXIFTOOL_VERSION}
   variables:
     BUILD_OS: "ubi"
@@ -362,14 +363,34 @@ rspec fast_spec_helper:
     # Load fast_spec_helper as well just in case there are no specs available.
     - rspec_section bin/rspec --dry-run spec/fast_spec_helper.rb ${fast_spec_helper_specs}
 
-rspec unit clickhouse:
+rspec unit clickhouse23:
   extends:
     - .rspec-base-pg16-clickhouse23
     - .rails:rules:clickhouse-changes
 
-rspec-ee unit clickhouse:
+rspec-ee unit clickhouse23:
   extends:
     - .rspec-base-pg16-clickhouse23
+    - .rails:rules:ee-only-clickhouse-changes
+
+rspec unit clickhouse24:
+  extends:
+    - .rspec-base-pg16-clickhouse24
+    - .rails:rules:clickhouse-changes
+
+rspec-ee unit clickhouse24:
+  extends:
+    - .rspec-base-pg16-clickhouse24
+    - .rails:rules:ee-only-clickhouse-changes
+
+rspec unit clickhouse25:
+  extends:
+    - .rspec-base-pg16-clickhouse25
+    - .rails:rules:clickhouse-changes
+
+rspec-ee unit clickhouse25:
+  extends:
+    - .rspec-base-pg16-clickhouse25
     - .rails:rules:ee-only-clickhouse-changes
 
 rspec ci-config-validation branch-pipelines:
@@ -393,17 +414,39 @@ rspec ci-config-validation mr-pipelines:
     - !reference [.base-script, script]
     - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/ci_configuration_validation/merge_request_pipeline_spec.rb"
 
-gitlab:clickhouse:rollback:main:
+gitlab:clickhouse-23:rollback:main:
   extends:
     - .rspec-base
-    - .production  # Disable webmock from test environment
+    - .production
     - .use-pg16-clickhouse23
     - .rails:rules:clickhouse-changes
   script:
-    - cp config/click_house.yml.example config/click_house.yml
-    - 'sed -i "s|url:.*$|url: http://clickhouse:8123|g" config/click_house.yml'
+    - !reference [.clickhouse-setup, script]
     - 'sed -i "s|test:$|production:|g" config/click_house.yml'
-    - !reference [.base-script, script]
+    - bundle exec rake gitlab:clickhouse:migrate &&
+      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+
+gitlab:clickhouse-24:rollback:main:
+  extends:
+    - .rspec-base
+    - .production
+    - .use-pg16-clickhouse24
+    - .rails:rules:clickhouse-changes
+  script:
+    - !reference [.clickhouse-setup, script]
+    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
+    - bundle exec rake gitlab:clickhouse:migrate &&
+      bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
+
+gitlab:clickhouse-25:rollback:main:
+  extends:
+    - .rspec-base
+    - .production
+    - .use-pg16-clickhouse25
+    - .rails:rules:clickhouse-changes
+  script:
+    - !reference [.clickhouse-setup, script]
+    - 'sed -i "s|test:$|production:|g" config/click_house.yml'
     - bundle exec rake gitlab:clickhouse:migrate &&
       bundle exec rake gitlab:clickhouse:rollback:main VERSION=0
 
@@ -444,7 +487,11 @@ rspec:artifact-collector unit:
   needs:
     - job: rspec unit pg16  # 44 jobs
       optional: true
-    - job: rspec unit clickhouse  # 1 job
+    - job: rspec unit clickhouse23 # 1 job
+      optional: true
+    - job: rspec unit clickhouse24 # 1 job
+      optional: true
+    - job: rspec unit clickhouse25 # 1 job
       optional: true
 
 rspec:artifact-collector part-a:
@@ -526,7 +573,11 @@ rspec:artifact-collector ee remainder:
       optional: true
     - job: rspec-ee background_migration pg16  # 3 jobs
       optional: true
-    - job: rspec-ee unit clickhouse  # 1 job
+    - job: rspec-ee unit clickhouse23  # 1 job
+      optional: true
+    - job: rspec-ee unit clickhouse24  # 1 job
+      optional: true
+    - job: rspec-ee unit clickhouse25  # 1 job
       optional: true
     - job: rspec-ee integration pg16  # 9 jobs
       optional: true
@@ -625,6 +676,20 @@ rspec:feature-flags:
         scripts/feature_flags/used-feature-flags || (scripts/slack master-broken "☠️ \`${CI_JOB_NAME}\` failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
       else
         scripts/feature_flags/used-feature-flags;
+      fi
+
+# The weekly tests are used to test latest Elasticsearch and OpenSearch versions
+# This job reports failures to #g_global_search_alerts in Slack
+rspec:schedule-weekly-report-failures:
+  extends:
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+  stage: post-test
+  when: on_failure
+  script:
+    - if [ "$CI_COMMIT_BRANCH" == "$CI_DEFAULT_BRANCH" ]; then
+      (scripts/slack g_global_search_alerts "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}" ci_failing "GitLab Bot" && exit 1);
+      else
+      echo "☠️ \`${CI_JOB_NAME}\` weekly testing pipeline failed! ☠️ See ${CI_JOB_URL}"
       fi
 
 rspec:flaky-tests-report:
@@ -1061,7 +1126,7 @@ rspec unit pg17:
 
 rspec integration pg17:
   extends:
-    - .rspec-base-pg16
+    - .rspec-base-pg17
     - .rails:rules:default-branch-schedule-nightly--code-backstage
     - .rspec-integration-parallel
 
@@ -1222,8 +1287,29 @@ rspec-ee system pg17:
 
 ##################################################
 # EE: default branch weekly scheduled jobs #
-# Integration tests with latest OpenSearch versions
+# Integration tests with Elasticsearch 9.X and OpenSearch versions
 # and the actual PG production version (PG16)
+
+rspec-ee unit pg16 es9:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-es9
+    - .rspec-ee-unit-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+rspec-ee integration pg16 es9:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-es9
+    - .rspec-ee-integration-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
+
+rspec-ee system pg16 es9:
+  extends:
+    - .rspec-base-pg16
+    - .rspec-ee-base-pg16-es9
+    - .rspec-ee-system-parallel
+    - .rails:rules:default-branch-schedule-weekly--code-backstage-ee-only
 
 rspec-ee unit pg16 opensearch-latest:
   extends:

@@ -1,0 +1,12 @@
+---
+table_name: packages_composer_packages
+classes: []
+feature_categories:
+- package_registry
+description: Composer packages in the package registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186126
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

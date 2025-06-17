@@ -4,9 +4,9 @@ import { formatGroupForGraphQLResolver } from '~/groups/your_work/graphql/utils'
 
 export const resolvers = (endpoint) => ({
   Query: {
-    async groups(_, { search: filter, sort, parentId, page }) {
+    async groups(_, { active, search: filter, sort, parentId, page }) {
       const { data, headers } = await axios.get(endpoint, {
-        params: { filter, sort, parent_id: parentId, page },
+        params: { active, filter, sort, parent_id: parentId, page },
       });
 
       const normalizedHeaders = normalizeHeaders(headers);

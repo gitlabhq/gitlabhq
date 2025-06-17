@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Compliance features for users
+description: Compliance features.
 ---
 
 {{< details >}}
@@ -17,7 +18,7 @@ GitLab compliance features for users ensure your GitLab groups and projects meet
 ## Compliant workflow automation
 
 It is important for compliance teams to be confident that their controls and
-requirements are set up correctly, but also that they _stay_ set up correctly.
+requirements are set up correctly, but also that they stay set up correctly.
 One way of doing this is manually checking settings periodically, but this is
 error prone and time consuming. A better approach is to use single-source-of-truth
 settings and automation to ensure that whatever a compliance team has configured,
@@ -26,7 +27,7 @@ compliance:
 
 | Feature                                                                                                                                  | Instances                            | Groups                               | Projects                             | Description |
 |:-----------------------------------------------------------------------------------------------------------------------------------------|:-------------------------------------|:-------------------------------------|:-------------------------------------|:------------|
-| [Compliance frameworks](compliance_frameworks.md)                                                                               | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Describe the type of compliance requirements projects must follow. |
+| [Compliance frameworks](compliance_frameworks/_index.md)                                                                      | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Describe the type of compliance requirements projects must follow. |
 | [Compliance pipelines](compliance_pipelines.md)                                                                                 | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | Define a pipeline configuration to run for any projects with a given compliance framework. |
 | [Merge request approval policy approval settings](../application_security/policies/merge_request_approval_policies.md#approval_settings) | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Enforce a merge request approval policy enforcing multiple approvers and override various project settings in all enforced groups or projects across your GitLab instance or group. |
 

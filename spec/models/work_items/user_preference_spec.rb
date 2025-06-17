@@ -59,5 +59,67 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
         MESSAGE
       end
     end
+
+    describe 'validate display_settings' do
+      before do
+        allow(WorkItems::SortingKeys).to receive(:available?).and_return(true)
+      end
+
+      it 'is valid with an empty display settings hash' do
+        preferences = described_class.new(namespace: namespace, display_settings: {})
+
+        expect(preferences).to be_valid
+      end
+
+      it 'is invalid with properties not defined in the schema' do
+        invalid_display_settings = { 'invalidProperty' => 'some_value' }
+        preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
+
+        expect(preferences).not_to be_valid
+        expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+      end
+
+      context 'with hiddenMetadataKeys property' do
+        it 'is valid with an empty hiddenMetadataKeys array' do
+          valid_display_settings = { 'hiddenMetadataKeys' => [] }
+          preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
+
+          expect(preferences).to be_valid
+        end
+
+        it 'is valid with valid metadata keys in hiddenMetadataKeys' do
+          valid_display_settings = {
+            'hiddenMetadataKeys' => %w[assignee blocked blocking dates health labels milestone popularity weight
+              comments iteration]
+          }
+          preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
+
+          expect(preferences).to be_valid
+          expect(preferences.display_settings['hiddenMetadataKeys']).to contain_exactly('assignee', 'blocked',
+            'blocking', 'dates', 'health', 'labels', 'milestone', 'popularity', 'weight', 'comments', 'iteration')
+        end
+
+        it 'is valid with all available metadata keys' do
+          all_metadata_keys = %w[
+            assignee blocked blocking dates health
+            labels milestone popularity weight comments iteration
+          ]
+          valid_display_settings = { 'hiddenMetadataKeys' => all_metadata_keys }
+          preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
+
+          expect(preferences).to be_valid
+        end
+
+        it 'is invalid with invalid metadata keys' do
+          invalid_display_settings = {
+            'hiddenMetadataKeys' => %w[assignee invalid_key]
+          }
+          preferences = described_class.new(namespace: namespace, display_settings: invalid_display_settings)
+
+          expect(preferences).not_to be_valid
+          expect(preferences.errors[:display_settings]).to include('must be a valid json schema')
+        end
+      end
+    end
   end
 end

@@ -78,6 +78,16 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
           expect(definition.instrumentation_class).to eq('TotalSumMetric')
         end
       end
+
+      context 'for uniq sum' do
+        let(:attributes) do
+          { key_path: 'metric1', data_source: 'internal_events', events: [{ name: 'a', unique: 'user.id', operator: 'total' }] }
+        end
+
+        it 'returns UniqueTotalsMetric' do
+          expect(definition.instrumentation_class).to eq('UniqueTotalsMetric')
+        end
+      end
     end
   end
 

@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Read through the GitLab installation methods.
 title: Install GitLab
@@ -11,12 +11,16 @@ cloud providers, and in Kubernetes clusters.
 To get the best experience, you should balance performance, reliability,
 ease of administration (backups, upgrades, and troubleshooting) with the cost of hosting.
 
-<!-- markdownlint-disable MD044 -->
+{{< cards >}}
 
-| | | |
-|--|--|--|
-| [**Installation requirements**](requirements.md)<br>Prerequisites for installation. | [**Installation methods**](install_methods.md)<br>Linux, Helm, Docker, Operator, source, or scripts. | [**Install GitLab on a cloud provider**](cloud_providers.md)<br>AWS, Google Cloud Platform, Azure. |
-| [**Offline GitLab**](../topics/offline/_index.md)<br>Isolated installation. | [**Reference architectures**](../administration/reference_architectures/_index.md)<br>Recommended deployments at scale. | [**Upgrade GitLab**](../update/_index.md)<br>Latest version instructions. |
-| [**Install GitLab Runner**](https://docs.gitlab.com/runner/install/)<br>Software for CI/CD jobs. | [**Configure GitLab Runner**](https://docs.gitlab.com/runner/configuration/)<br>`Config.toml`, certificates, autoscaling, proxy setup. | [**Install GitLab AI gateway**](install_ai_gateway.md)<br>Using Docker image, using Helm chart. |
+- [Installation requirements](requirements.md)
+- [Installation methods](install_methods.md)
+- [Install GitLab on a cloud provider](cloud_providers.md)
+- [Offline GitLab](../topics/offline/_index.md)
+- [Reference architectures](../administration/reference_architectures/_index.md)
+- [Upgrade GitLab](../update/_index.md)
+- [Install GitLab Runner](https://docs.gitlab.com/runner/install/)
+- [Configure GitLab Runner](https://docs.gitlab.com/runner/configuration/)
+- [Install GitLab AI gateway](install_ai_gateway.md)
 
-<!-- markdownlint-enable MD044 -->
+{{< /cards >}}

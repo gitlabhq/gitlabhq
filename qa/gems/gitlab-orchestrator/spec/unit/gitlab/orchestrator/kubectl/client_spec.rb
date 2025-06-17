@@ -153,6 +153,32 @@ RSpec.describe Gitlab::Orchestrator::Kubectl::Client do
     end
   end
 
+  describe "#top_pods" do
+    let(:top_pods_output) do
+      <<~OUTPUT
+        gitlab-toolbox-689b8c65db-rmcvk                    toolbox            1m           99Mi
+        gitlab-webservice-default-6546dd64d9-vkwdr         gitlab-workhorse   3m           19Mi
+        gitlab-webservice-default-6546dd64d9-vkwdr         webservice         12m          1829Mi
+      OUTPUT
+    end
+
+    before do
+      allow(client).to receive(:execute_shell).with(
+        ["kubectl", "top", "pods", "-n", "gitlab", "--no-headers", "--containers"], stdin_data: nil
+      ).and_return(top_pods_output)
+    end
+
+    it "returns resources consumption per pod" do
+      expect(client.top_pods).to eq({
+        "gitlab-toolbox-689b8c65db-rmcvk" => [{ container: "toolbox", cpu: "1m", memory: "99Mi" }],
+        "gitlab-webservice-default-6546dd64d9-vkwdr" => [
+          { container: "gitlab-workhorse", cpu: "3m", memory: "19Mi" },
+          { container: "webservice", cpu: "12m", memory: "1829Mi" }
+        ]
+      })
+    end
+  end
+
   it "executes custom command in pod" do
     allow(client).to receive(:execute_shell)
       .with(%w[kubectl get pods -n gitlab --output jsonpath={.items[*].metadata.name}], stdin_data: nil)

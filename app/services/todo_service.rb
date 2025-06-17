@@ -212,7 +212,7 @@ class TodoService
   end
 
   def todo_exist?(issuable, current_user)
-    TodosFinder.new(current_user).any_for_target?(issuable, :pending)
+    current_user.todos.any_for_target?(issuable, :pending)
   end
 
   # Resolves all todos related to target for the current_user

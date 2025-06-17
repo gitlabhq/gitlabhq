@@ -162,7 +162,7 @@ run the following query on the instance's PostgreSQL terminal:
 SELECT encrypted_ci_jwt_signing_key FROM application_settings;
 ```
 
-If the returned value is empty, use the Rails snippet below to generate a new key
+If the returned value is empty, use the following Rails snippet to generate a new key
 and replace it internally:
 
 ```ruby

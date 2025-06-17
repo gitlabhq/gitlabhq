@@ -116,19 +116,23 @@ module Gitlab
           raise_if_concurrent_ruby!
 
           service_discovery&.log_refresh_thread_interruption
-
-          connection = nil
           transaction_open = nil
 
           # Retry only once when in a transaction (see https://gitlab.com/gitlab-org/gitlab/-/issues/220242)
-          attempts = pool.connection.transaction_open? ? 1 : 3
+          connection =
+            if Gem::Version.new(Rails.version) >= Gem::Version.new('7.2')
+              pool.lease_connection
+            else
+              pool.connection
+            end
+
+          attempts = connection.transaction_open? ? 1 : 3
 
           # In the event of a failover the primary may be briefly unavailable.
           # Instead of immediately grinding to a halt we'll retry the operation
           # a few times.
           # It is not possible preserve transaction state during a retry, so we do not retry in that case.
           retry_with_backoff(attempts: attempts) do |attempt|
-            connection = pool.connection
             transaction_open = connection.transaction_open?
 
             if attempt && attempt > 1

@@ -19,6 +19,15 @@ module Issues
 
       return issues if user_can_see_all_confidential_issues?
 
+      # Since the CTE is used in access_to_parent_exists only if @related_groups is not null, we can skip the CTE if
+      # it's null
+      unless @related_groups.nil?
+        issues = issues.with_accessible_sub_namespace_ids_cte(Group.groups_user_can(@related_groups,
+          current_user,
+          :read_confidential_issues,
+          same_root: true).select('id'))
+      end
+
       issues.public_only.or(
         issues.confidential_only.merge(
           issues.authored(current_user)
@@ -51,11 +60,7 @@ module Issues
       return access_to_project_level_issue_exists if @related_groups.nil?
 
       access_to_project_level_issue_exists.project_level.or(
-        issues.group_level.in_namespaces(
-          Group.id_in(
-            Group.groups_user_can(@related_groups, current_user, :read_confidential_issues, same_root: true)
-          )
-        )
+        issues.group_level.in_namespaces(Group.in_accessible_sub_namespaces)
       )
     end
   end

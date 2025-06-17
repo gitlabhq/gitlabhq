@@ -64,6 +64,7 @@ describe('Feature flags', () => {
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findTableTitle = () => wrapper.findByText('Feature flags');
   const findFeatureFlagsCountBadge = () => wrapper.findComponent(GlBadge);
+  const findFeatureFlagsCountBadgeWrapper = () => wrapper.findByTestId('ff-count-badge-wrapper');
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -96,8 +97,14 @@ describe('Feature flags', () => {
       });
 
       it('renders a count badge tooltip', () => {
-        expect(findFeatureFlagsCountBadge().attributes('title')).toBe(
+        expect(findFeatureFlagsCountBadgeWrapper().attributes('title')).toBe(
           'Current plan allows for 200 feature flags.',
+        );
+      });
+
+      it('renders a count badge aria-label', () => {
+        expect(findFeatureFlagsCountBadgeWrapper().attributes('aria-label')).toBe(
+          '1/200. Current plan allows for 200 feature flags.',
         );
       });
     });
@@ -115,8 +122,8 @@ describe('Feature flags', () => {
         expect(findFeatureFlagsCountBadge().text()).toBe('1');
       });
 
-      it("doesn't render a count badge tooltip", () => {
-        expect(findFeatureFlagsCountBadge().attributes('title')).toBe('');
+      it('does not render the wrapper element with tooltip or aria-label', () => {
+        expect(findFeatureFlagsCountBadgeWrapper().exists()).toBe(false);
       });
     });
   });

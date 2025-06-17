@@ -52,7 +52,7 @@ export default {
   <gl-button
     v-gl-tooltip.html="toggleFileBrowserTooltip"
     variant="default"
-    class="js-toggle-tree-list btn-icon gl-mr-3"
+    class="btn-icon gl-mr-3 max-lg:gl-hidden"
     data-testid="file-tree-button"
     :aria-label="toggleFileBrowserTitle"
     :aria-keyshortcuts="toggleFileBrowserShortcutKey"

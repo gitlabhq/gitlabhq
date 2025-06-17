@@ -40,7 +40,7 @@ Restoring SQL data skips views owned by PostgreSQL extensions.
 
 ### The destination GitLab instance must have the exact same version
 
-You can only restore a backup to **exactly the same version and type (CE or EE)**
+You can only restore a backup to exactly the same version and type (CE or EE)
 of GitLab on which it was created. For example, CE 15.1.4.
 
 If your backup is a different version than the current installation, you must
@@ -49,7 +49,7 @@ before restoring the backup.
 
 ### GitLab secrets must be restored
 
-To restore a backup, **you must also restore the GitLab secrets**.
+To restore a backup, you must also restore the GitLab secrets.
 If you are migrating to a new GitLab instance, you must copy the GitLab secrets file from the old server.
 These include the database encryption key, [CI/CD variables](../../ci/variables/_index.md), and
 variables used for [two-factor authentication](../../user/profile/account/two_factor_authentication.md).
@@ -65,10 +65,9 @@ Restore:
 
 ### Certain GitLab configuration must match the original backed up environment
 
-You likely also want to restore your previous `/etc/gitlab/gitlab.rb` (for Linux package installations)
+You likely want to separately restore your previous `/etc/gitlab/gitlab.rb` (for Linux package installations)
 or `/home/git/gitlab/config/gitlab.yml` (for self-compiled installations) and
-any TLS keys, certificates (`/etc/gitlab/ssl`, `/etc/gitlab/trusted-certs`), or
-[SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+[any TLS or SSH keys and certificates](backup_gitlab.md#data-not-included-in-a-backup).
 
 Certain configuration is coupled to data in PostgreSQL. For example:
 
@@ -87,7 +86,7 @@ Read more about [configuring NFS mounts](../nfs.md).
 
 This procedure assumes that:
 
-- You have installed the **exact same version and type (CE/EE)** of GitLab
+- You have installed the exact same version and type (CE/EE) of GitLab
   with which the backup was created.
 - You have run `sudo gitlab-ctl reconfigure` at least once.
 - GitLab is running. If not, start it using `sudo gitlab-ctl start`.
@@ -407,9 +406,10 @@ To exclude specific tasks:
 
 {{< alert type="warning" >}}
 
-GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
-repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
-17.2 or later**.
+GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
+that can cause data loss. The problem affects repositories that have been forked and use GitLab
+[object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss,
+only restore backups by using GitLab 17.2 or later.
 
 {{< /alert >}}
 
@@ -442,16 +442,17 @@ For example:
 
 {{< alert type="warning" >}}
 
-GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
-repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
-17.2 or later**.
+GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412)
+that can cause data loss. The problem affects repositories that have been forked and use GitLab
+[object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, only restore backups by using GitLab
+17.2 or later.
 
 {{< /alert >}}
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you
 specify a group path, all repositories in all projects in the group and
-descendent groups are included or skipped, depending on which option you used.
+descendant groups are included or skipped, depending on which option you used.
 Both the groups and projects must exist in the specified backup or on the target instance.
 
 {{< alert type="note" >}}
@@ -462,8 +463,8 @@ with `SKIP=db`, by itself it cannot be used to restore specific repositories to 
 
 {{< /alert >}}
 
-For example, to restore all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
-and skip the **Project D** in **Group A** (`group-a/project-d`):
+For example, to restore all repositories for all projects in Group A (`group-a`), the repository for
+Project C in Group B (`group-b/project-c`), and skip the Project D in Group A (`group-a/project-d`):
 
 - Linux package installations:
 

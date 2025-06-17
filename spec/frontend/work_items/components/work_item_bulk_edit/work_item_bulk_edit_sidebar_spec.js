@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import WorkItemBulkEditState from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_state.vue';
@@ -50,6 +51,7 @@ describe('WorkItemBulkEditSidebar component', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findStateComponent = () => wrapper.findComponent(WorkItemBulkEditState);
+  const findAssigneeComponent = () => wrapper.findComponent(WorkItemBulkEditAssignee);
   const findAddLabelsComponent = () => wrapper.findAllComponents(WorkItemBulkEditLabels).at(0);
   const findRemoveLabelsComponent = () => wrapper.findAllComponents(WorkItemBulkEditLabels).at(1);
 
@@ -114,14 +116,24 @@ describe('WorkItemBulkEditSidebar component', () => {
       it('makes POST request to bulk edit', async () => {
         const issuable_ids = '11,22'; // eslint-disable-line camelcase
         const add_label_ids = [1, 2, 3]; // eslint-disable-line camelcase
+        const assignee_ids = [5]; // eslint-disable-line camelcase
         const remove_label_ids = [4, 5, 6]; // eslint-disable-line camelcase
         const state_event = 'reopen'; // eslint-disable-line camelcase
         axiosMock.onPost().replyOnce(HTTP_STATUS_OK);
         createComponent({ props: { isEpicsList: false } });
 
         findStateComponent().vm.$emit('input', state_event);
-        findAddLabelsComponent().vm.$emit('select', add_label_ids);
-        findRemoveLabelsComponent().vm.$emit('select', remove_label_ids);
+        findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
+        findAddLabelsComponent().vm.$emit('select', [
+          'gid://gitlab/Label/1',
+          'gid://gitlab/Label/2',
+          'gid://gitlab/Label/3',
+        ]);
+        findRemoveLabelsComponent().vm.$emit('select', [
+          'gid://gitlab/Label/4',
+          'gid://gitlab/Label/5',
+          'gid://gitlab/Label/6',
+        ]);
         findForm().vm.$emit('submit', { preventDefault: () => {} });
         await waitForPromises();
 
@@ -130,15 +142,13 @@ describe('WorkItemBulkEditSidebar component', () => {
           JSON.stringify({
             update: {
               add_label_ids,
+              assignee_ids,
               issuable_ids,
               remove_label_ids,
               state_event,
             },
           }),
         );
-        expect(findStateComponent().props('value')).toBeUndefined();
-        expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
-        expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
       });
 
       it('renders error when there is a response error', async () => {
@@ -185,6 +195,23 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findStateComponent().props('value')).toBe('reopen');
+    });
+  });
+
+  describe('"Assignee" component', () => {
+    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
+      createComponent({ props: { isEpicsList } });
+
+      expect(findAssigneeComponent().exists()).toBe(!isEpicsList);
+    });
+
+    it('updates assignee when "Assignee" component emits "input" event', async () => {
+      createComponent();
+
+      findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
+      await nextTick();
+
+      expect(findAssigneeComponent().props('value')).toBe('gid://gitlab/User/5');
     });
   });
 

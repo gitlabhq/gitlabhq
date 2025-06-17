@@ -35,7 +35,10 @@ export default {
 </script>
 
 <template>
-  <runner-create-wizard v-if="glFeatures.runnerCreateWizardAdmin" />
+  <runner-create-wizard
+    v-if="glFeatures.runnerCreateWizardAdmin"
+    :runner-type="$options.INSTANCE_TYPE"
+  />
   <div v-else>
     <page-heading :heading="s__('Runners|Create instance runner')">
       <template #description>

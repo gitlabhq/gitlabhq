@@ -90,6 +90,7 @@ module ApplicationSettingImplementation
         ed25519_key_restriction: default_min_key_size(:ed25519),
         ed25519_sk_key_restriction: default_min_key_size(:ed25519_sk),
         require_admin_two_factor_authentication: false,
+        require_email_verification_on_account_locked: false,
         eks_access_key_id: nil,
         eks_account_id: nil,
         eks_integration_enabled: false,
@@ -161,7 +162,7 @@ module ApplicationSettingImplementation
         password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
         performance_bar_allowed_group_id: nil,
         personal_access_token_prefix: 'glpat-',
-        instance_token_prefix: 'gl',
+        instance_token_prefix: '',
         plantuml_enabled: false,
         plantuml_url: nil,
         diagramsnet_enabled: true,
@@ -213,6 +214,11 @@ module ApplicationSettingImplementation
         throttle_authenticated_api_enabled: false,
         throttle_authenticated_api_period_in_seconds: 3600,
         throttle_authenticated_api_requests_per_period: 7200,
+        throttle_authenticated_git_http_enabled: false,
+        throttle_authenticated_git_http_requests_per_period:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT,
+        throttle_authenticated_git_http_period_in_seconds:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD,
         throttle_authenticated_git_lfs_enabled: false,
         throttle_authenticated_git_lfs_period_in_seconds: 60,
         throttle_authenticated_git_lfs_requests_per_period: 1000,

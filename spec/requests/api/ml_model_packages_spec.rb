@@ -13,8 +13,10 @@ RSpec.describe ::API::MlModelPackages, feature_category: :mlops do
   let_it_be(:project, reload: true) { create(:project) }
   let_it_be(:personal_access_token) { create(:personal_access_token) }
   let_it_be(:job) { create(:ci_build, :running, user: personal_access_token.user, project: project) }
-  let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-  let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token, project: project) }
+  let_it_be(:deploy_token) do
+    create(:deploy_token, read_package_registry: true, write_package_registry: true, projects: [project])
+  end
+
   let_it_be(:another_project, reload: true) { create(:project) }
   let_it_be(:model) { create(:ml_models, user: project.owner, project: project) }
   let_it_be(:model_version) { create(:ml_model_versions, :with_package, model: model, version: '0.1.0') }

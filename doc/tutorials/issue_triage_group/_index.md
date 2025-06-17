@@ -178,7 +178,7 @@ You'll use it to quickly create issues and add labels to them by dragging cards 
 To set up your issue board:
 
 1. Decide on the scope of the board.
-   For example, create a group issue board](../../user/project/issue_board.md#group-issue-boards that you'll use to assign
+   For example, [create a group issue board](../../user/project/issue_board.md#group-issue-boards) that you'll use to assign
    severity to issues.
 1. On the left sidebar, select **Search or go to** and find your **triage-tutorial** group.
 1. Select **Plan > Issue boards**.

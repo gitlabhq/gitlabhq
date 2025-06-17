@@ -99,8 +99,7 @@ RSpec.describe Ci::PlayBuildService, '#execute', feature_category: :continuous_i
 
       context 'when user defined variables are restricted' do
         before do
-          project.update!(restrict_user_defined_variables: true,
-            ci_pipeline_variables_minimum_override_role: :maintainer)
+          project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
         end
 
         context 'when user is maintainer' do

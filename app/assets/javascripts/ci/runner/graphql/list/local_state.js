@@ -49,7 +49,7 @@ export const createLocalState = () => {
   const localMutations = {
     setRunnerChecked({ runner, isChecked }) {
       const { id, userPermissions } = runner;
-      if (userPermissions?.deleteRunner) {
+      if (userPermissions?.deleteRunner || userPermissions?.updateRunner) {
         checkedRunnerIdsVar({
           ...checkedRunnerIdsVar(),
           [id]: isChecked,
@@ -58,7 +58,9 @@ export const createLocalState = () => {
     },
     setRunnersChecked({ runners, isChecked }) {
       const newVal = runners
-        .filter(({ userPermissions }) => userPermissions?.deleteRunner)
+        .filter(
+          ({ userPermissions }) => userPermissions?.deleteRunner || userPermissions?.updateRunner,
+        )
         .reduce((acc, { id }) => ({ ...acc, [id]: isChecked }), checkedRunnerIdsVar());
       checkedRunnerIdsVar(newVal);
     },

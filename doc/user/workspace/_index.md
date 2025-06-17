@@ -15,8 +15,7 @@ title: Workspaces
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
+- Feature flag `remote_development_feature_flag` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
 {{< /history >}}
@@ -31,6 +30,15 @@ which you can customize to meet the specific needs of each project.
 A Workspace can exist for a maximum of approximately one calendar year, `8760` hours. After this, it is automatically terminated.
 
 For a click-through demo, see [GitLab workspaces](https://tech-marketing.gitlab.io/static-demos/workspaces/ws_html.html).
+
+{{< alert type="note" >}}
+
+A Workspace runs on any `linux/amd64` Kubernetes cluster. If you need to run sudo commands, or
+build and run containers in your workspace, there might be platform-specific requirements.
+
+For more information, see [Platform compatibility](configuration.md#platform-compatibility).
+
+{{< /alert >}}
 
 ## Workspaces and projects
 
@@ -48,14 +56,13 @@ A running workspace remains accessible to the user even if user permissions are 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125331) in GitLab 16.2.
-- Managing workspaces from the **Code** menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178492) in GitLab 17.11.
 
 {{< /history >}}
 
 To manage workspaces from a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Code**.
+1. In the upper right, select **Edit**.
 1. From the dropdown list, under **Your workspaces**, you can:
    - Restart, stop, or terminate an existing workspace.
    - Create a new workspace.

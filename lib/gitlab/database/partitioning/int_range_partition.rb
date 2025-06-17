@@ -32,14 +32,21 @@ module Gitlab
           @partition_name || "#{table}_#{from}"
         end
 
-        def to_sql
+        def to_create_sql
+          <<~SQL
+            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
+            (LIKE #{conn.quote_table_name(table)} INCLUDING ALL)
+          SQL
+        end
+
+        def to_attach_sql
           from_sql = conn.quote(from)
           to_sql = conn.quote(to)
 
           <<~SQL
-            CREATE TABLE IF NOT EXISTS #{fully_qualified_partition}
-            PARTITION OF #{conn.quote_table_name(table)}
-            FOR VALUES FROM (#{from_sql}) TO (#{to_sql})
+           ALTER TABLE #{conn.quote_table_name(table)}
+           ATTACH PARTITION #{fully_qualified_partition}
+           FOR VALUES FROM (#{from_sql}) TO (#{to_sql})
           SQL
         end
 

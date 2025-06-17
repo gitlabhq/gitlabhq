@@ -281,6 +281,28 @@ RSpec.describe ApplicationHelper do
     end
   end
 
+  describe '#github_url?' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { build_stubbed(:user) }
+
+    subject { helper.github_url(user) }
+
+    before do
+      user.github = github_name
+    end
+
+    where(:github_name, :github_url) do
+      nil      | ''
+      ''       | ''
+      'dosire' | 'https://github.com/dosire'
+    end
+
+    with_them do
+      it { is_expected.to eq(github_url) }
+    end
+  end
+
   unless Gitlab.jh?
     describe '#promo_host' do
       subject { helper.promo_host }
@@ -672,6 +694,26 @@ RSpec.describe ApplicationHelper do
         it 'returns mastodon url when user handle is set' do
           user.mastodon = '@robin@example.com'
           expect(mastodon).to eq(external_redirect_path(url: 'https://example.com/@robin'))
+        end
+      end
+    end
+
+    describe '#orcid_url' do
+      let(:user) { build(:user) }
+
+      subject(:orcid) { orcid_url(user) }
+
+      context 'without ORCID ID' do
+        it 'returns an empty string' do
+          expect(orcid).to eq('')
+        end
+      end
+
+      context 'with ORCID ID' do
+        it 'returns orcid url' do
+          user.orcid = '1234-1234-1234-1234'
+
+          expect(orcid).to eq(external_redirect_path(url: 'https://orcid.org/1234-1234-1234-1234'))
         end
       end
     end

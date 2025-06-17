@@ -128,6 +128,9 @@ module InternalEventsCli
         When the built-in properties are insufficient, properties of any name can be provided.
         This option becomes available after both property and label are defined, or after value is defined.
 
+        WARNING: Make sure the additional properties don’t contain any sensitive information, like customer data or PII.
+        For more information, see the Data Classification Standard at https://about.gitlab.com/handbook/security/data-classification-standard/
+
       TEXT
 
       ADDITIONAL_PROPERTIES_ADD_MORE_HELP = <<~TEXT.freeze

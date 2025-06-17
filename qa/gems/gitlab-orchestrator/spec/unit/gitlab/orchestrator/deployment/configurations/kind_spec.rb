@@ -10,9 +10,12 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
       admin_token: "token",
       host_http_port: 80,
       host_ssh_port: 22,
-      host_registry_port: 5000
+      host_registry_port: 5000,
+      resource_preset: resource_preset
     )
   end
+
+  let(:resource_preset) { "default" }
 
   let(:kubeclient) do
     instance_double(Gitlab::Orchestrator::Kubectl::Client, create_resource: "", execute: "", patch: "")
@@ -146,7 +149,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Configurations::Kind do
           }
         }
       }
-    })
+    }.deep_merge(Gitlab::Orchestrator::Deployment::ResourcePresets.resource_values(resource_preset)))
   end
 
   it "returns correct gitlab url" do

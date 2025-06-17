@@ -1,27 +1,20 @@
 - ref = local_assigns.fetch(:ref) { current_ref }
 - project = local_assigns.fetch(:project) { @project }
 - pipeline = local_assigns.fetch(:pipeline, nil)
+- repository_file_tree_browser_enabled = Feature.enabled?(:repository_file_tree_browser, @project)
+- @force_fluid_layout = repository_file_tree_browser_enabled
 - add_page_startup_api_call logs_file_project_ref_path(@project, ref, @path, format: "json", offset: 0, ref_type: @ref_type)
 - if readme_path = @project.repository.readme_path
   - add_page_startup_api_call project_blob_path(@project, tree_join(@ref, readme_path), viewer: "rich", format: "json")
 - add_page_specific_style 'page_bundles/commit_description'
 - add_page_specific_style 'page_bundles/projects'
 
-#tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
-  - if Feature.enabled?(:blob_repository_vue_header_app, project)
-    #js-repository-blob-header-app{ data: vue_tree_header_app_data(project, repository, ref, pipeline) }
-
-  - else
-    .nav-block.gl-flex.gl-flex-col.sm:gl-flex-row.gl-items-stretch
-      = render 'projects/tree/tree_header', tree: @tree
-
-  - if project.forked?
-    #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
-
-  .info-well.project-last-commit.gl-flex-col.gl-mt-5
-    #js-last-commit.gl-flex.gl-items-center.gl-justify-center.gl-m-auto.gl-min-h-9{ class: 'lg:gl-min-h-[4.5rem]', data: {ref_type: @ref_type.to_s, history_link: project_commits_path(@project, @ref)} }
-      = gl_loading_icon(size: 'md')
-    - if project.licensed_feature_available?(:code_owners)
-      #js-code-owners.gl-hidden.sm:gl-flex{ data: { branch: @ref, can_view_branch_rules: can_view_branch_rules?, branch_rules_path: branch_rules_path } }
-
-  #js-tree-list{ data: vue_file_list_data(project, ref) }
+- if repository_file_tree_browser_enabled
+  .gl-flex.navigation-root
+    #js-file-browser
+    .gl-w-full.gl-min-w-0
+      #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
+        = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type
+- else
+  #tree-holder.tree-holder.clearfix.js-per-page.gl-mt-5{ data: { blame_per_page: Gitlab::Git::BlamePagination::PAGINATION_PER_PAGE } }
+    = render 'projects/tree_content', project: project, ref: ref, pipeline: pipeline, tree: @tree, ref_type: @ref_type

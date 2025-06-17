@@ -103,8 +103,111 @@ RSpec.describe Packages::CleanupPackageFileWorker, type: :worker, feature_catego
       it 'deletes the package file but keeps the package' do
         expect(worker).to receive(:log_extra_metadata_on_done).twice
 
-        expect { subject }.to change { Packages::PackageFile.count }.by(-1)
-          .and change { Packages::Package.count }.by(0)
+        expect { subject }
+          .to change { Packages::PackageFile.count }.by(-1)
+          .and not_change { Packages::Package.count }
+      end
+    end
+
+    context 'with a Conan package file' do
+      let_it_be(:package) { create(:conan_package, without_package_files: true) }
+      let_it_be(:package_file) { create(:conan_package_file, :conan_package_info, :pending_destruction, package: package) }
+      let_it_be(:package_file_2) { create(:conan_package_file, package: package) }
+      let_it_be(:recipe_revision) { package.conan_recipe_revisions.first }
+      let_it_be(:package_reference) { package.conan_package_references.first }
+      let_it_be(:package_revision) { package.conan_package_revisions.first }
+
+      context 'when deleting recipe revision' do
+        context 'when the recipe revision is orphan but there are other recipe revisions' do
+          let_it_be(:recipe_revision2) { create(:conan_recipe_revision, package: package) }
+          let_it_be(:other_metadata) do
+            create(:conan_file_metadatum, recipe_revision: recipe_revision2, package_file: package_file_2)
+          end
+
+          it 'deletes the recipe revision and its dependent objects' do
+            expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+              .and change { Packages::Conan::RecipeRevision.count }.by(-1)
+              .and change { Packages::Conan::PackageReference.count }.by(-1)
+              .and change { Packages::Conan::PackageRevision.count }.by(-1)
+              .and not_change { Packages::Conan::Package.count }
+          end
+        end
+
+        context 'when the recipe revision is not orphan' do
+          let_it_be(:other_metadata) do
+            create(:conan_file_metadatum, recipe_revision: recipe_revision, package_file: package_file_2)
+          end
+
+          it 'does not delete the recipe revision' do
+            expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+              .and not_change { Packages::Conan::RecipeRevision.count }
+          end
+        end
+      end
+
+      context 'when deleting package reference' do
+        context 'when the package reference is orphan but there are other package references' do
+          let_it_be(:package_reference2) { create(:conan_package_reference, package: package, recipe_revision: recipe_revision) }
+          let_it_be(:package_revision2) { create(:conan_package_revision, package: package, package_reference: package_reference2) }
+          let_it_be(:other_metadata) do
+            create(:conan_file_metadatum, recipe_revision: recipe_revision, package_reference: package_reference2,
+              package_revision: package_revision2, package_file: package_file_2, conan_file_type: 'package_file')
+          end
+
+          it 'deletes the package reference and its dependent package revision' do
+            expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+              .and change { Packages::Conan::PackageReference.count }.by(-1)
+              .and change { Packages::Conan::PackageRevision.count }.by(-1)
+              .and not_change { Packages::Conan::RecipeRevision.count }
+              .and not_change { Packages::Conan::Package.count }
+          end
+        end
+
+        context 'when the package reference is still referenced by other package files' do
+          let_it_be(:other_metadata) do
+            create(:conan_file_metadatum,
+              conan_file_type: 'package_file',
+              recipe_revision: recipe_revision,
+              package_reference: package_reference,
+              package_revision: create(:conan_package_revision, package: package, package_reference: package_reference),
+              package_file: package_file_2)
+          end
+
+          it 'does not delete the package reference' do
+            expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+              .and not_change { Packages::Conan::PackageReference.count }
+          end
+        end
+      end
+
+      context 'when deleting package revision' do
+        context 'when the package revision is orphan but there are other package revisions' do
+          let_it_be(:package_revision2) { create(:conan_package_revision, package: package) }
+          let_it_be(:other_metadata) do
+            create(:conan_file_metadatum, recipe_revision: recipe_revision, package_reference: package_reference,
+              package_revision: package_revision2, conan_file_type: 'package_file', package_file: package_file_2)
+          end
+
+          it 'deletes the package revision' do
+            expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+              .and change { Packages::Conan::PackageRevision.count }.by(-1)
+              .and not_change { Packages::Conan::RecipeRevision.count }
+              .and not_change { Packages::Conan::PackageReference.count }
+              .and not_change { Packages::Conan::Package.count }
+          end
+        end
+
+        context 'when the package revision is still referenced by other package files' do
+          let_it_be(:other_metadata) do
+            create(:conan_file_metadatum, conan_file_type: 'package_file', recipe_revision: recipe_revision,
+              package_reference: package_reference, package_revision: package_revision, package_file: package_file_2)
+          end
+
+          it 'does not delete the package revision' do
+            expect { subject }.to change { Packages::PackageFile.count }.by(-1)
+              .and not_change { Packages::Conan::PackageRevision.count }
+          end
+        end
       end
     end
   end

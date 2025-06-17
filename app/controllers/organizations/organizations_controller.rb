@@ -8,7 +8,7 @@ module Organizations
     DEFAULT_RESOURCE_LIMIT = 1000
     DEFAULT_ACTIVITY_EVENT_LIMIT = 20
 
-    feature_category :cell
+    feature_category :organization
 
     before_action :event_filter, only: [:activity]
     before_action :authorize_read_organization!, only: [:activity, :show, :groups_and_projects]

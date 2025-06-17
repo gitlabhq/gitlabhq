@@ -1,12 +1,12 @@
 import { GlIcon } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 
 let wrapper;
 
 function createComponent(propsData) {
-  wrapper = shallowMount(WorkItemTypeIcon, {
+  wrapper = shallowMountExtended(WorkItemTypeIcon, {
     propsData,
     directives: {
       GlTooltip: createMockDirective('gl-tooltip'),
@@ -16,6 +16,7 @@ function createComponent(propsData) {
 
 describe('Work Item type component', () => {
   const findIcon = () => wrapper.findComponent(GlIcon);
+  const findButton = () => wrapper.findByTestId('work-item-type-icon');
 
   describe.each`
     workItemType           | iconName                     | text             | showTooltipOnHover | iconVariant
@@ -52,7 +53,7 @@ describe('Work Item type component', () => {
       });
 
       it('shows tooltip on hover when props passed', () => {
-        const tooltip = getBinding(findIcon().element, 'gl-tooltip');
+        const tooltip = getBinding(findButton().element, 'gl-tooltip');
 
         expect(tooltip.value).toBe(showTooltipOnHover);
       });

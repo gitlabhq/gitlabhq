@@ -17,6 +17,7 @@ module Gitlab
         klass.connection = connection
         klass
       end
+      module_function :define_batchable_model
 
       def each_batch(table_name, connection:, scope: ->(table) { table.all }, of: BATCH_SIZE, **opts)
         if transaction_open?

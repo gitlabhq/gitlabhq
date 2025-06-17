@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Sidekiq logging
 ---
 
@@ -45,7 +45,7 @@ Cron workers themselves run instance wide, so they aren't scoped to
 users, namespaces, projects, or other resources that should be added to
 the context.
 
-However, they often run services or schedule other jobs that _do_ require context.
+However, they often run services or schedule other jobs that do require context.
 
 That is why there needs to be an indication of context somewhere in
 the worker. This can be done by using one of the following methods
@@ -58,7 +58,7 @@ somewhere within the worker:
        deletion_cutoff = Gitlab::CurrentSettings
                            .deletion_adjourned_period.days.ago.to_date
        projects = Project.with_route.with_namespace
-                    .aimed_for_deletion(deletion_cutoff)
+                    .marked_for_deletion_before(deletion_cutoff)
 
        projects.find_each(batch_size: 100).with_index do |project, index|
          delay = index * INTERVAL

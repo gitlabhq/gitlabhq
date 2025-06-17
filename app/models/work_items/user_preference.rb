@@ -12,6 +12,7 @@ module WorkItems
       optional: true
 
     validate :validate_sort_value
+    validates :display_settings, json_schema: { filename: 'work_item_user_preference_display_settings' }
 
     def self.create_or_update(namespace:, work_item_type_id:, user:, **attributes)
       record = find_or_initialize_by(namespace: namespace, work_item_type_id: work_item_type_id, user: user)

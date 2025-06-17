@@ -29,7 +29,7 @@ For example, on Nanoc, a title is added as an `h1`, like this:
 ---
 stage: Systems
 group: Cloud Connector
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 ---
 
 # Cloud Connector: Configuration
@@ -43,17 +43,17 @@ For Hugo, move the title into the page's front matter:
 ---
 stage: Systems
 group: Cloud Connector
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: 'Cloud Connector: Configuration'
 ---
 
 A GitLab Rails instance accesses...
 ```
 
-**Why:** Hugo can generate automated listings of pages. For these to work, Hugo needs the page title to be handled more like data than regular content.
+**Why**: Hugo can generate automated listings of pages. For these to work, Hugo needs the page title to be handled more like data than regular content.
 We are not using these initially, but may do so in the future.
 
-**Testing:** Error-level Vale rule ([`FrontMatter.yml`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/doc/.vale/gitlab_docs/FrontMatter.yml?ref_type=heads)).
+**Testing**: Error-level Vale rule ([`FrontMatter.yml`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/blob/master/doc/.vale/gitlab_docs/FrontMatter.yml?ref_type=heads)).
 
 ### Shortcodes
 
@@ -79,10 +79,10 @@ Don't delete your docs!
 
 See the [Shortcodes reference](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/doc/shortcodes.md) for syntax and examples.
 
-**Why:** Shortcodes are the standard Hugo method for creating custom templated
+**Why**: Shortcodes are the standard Hugo method for creating custom templated
 bits of content.
 
-**Testing:** Shortcodes are validated on docs pipelines (see [implementation issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/161)).
+**Testing**: Shortcodes are validated on docs pipelines (see [implementation issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/161)).
 
 #### Shortcodes in `/help`
 
@@ -93,7 +93,7 @@ Shortcodes, like our existing custom Markdown elements, will not render in `/hel
 Shortcodes have more verbose syntax, so we've modified `/help` to hide these
 tags and show simplified plain text fallbacks for elements like tabs and alert boxes.
 
-**Why:** `/help` only renders plain Markdown. It is not a static site generator with
+**Why**: `/help` only renders plain Markdown. It is not a static site generator with
 functionality to transform content or render templated frontend code.
 
 ### Kramdown
@@ -110,9 +110,9 @@ A few example Kramdown tags that exist on the site right now:
 
 With Hugo, these will no longer have any effect. They will render as plain text.
 
-**Why:** Hugo uses the Goldmark Markdown rendering engine, not Kramdown.
+**Why**: Hugo uses the Goldmark Markdown rendering engine, not Kramdown.
 
-**Testing:** We are running an audit job on the CI pipeline for Kramdown tags ([example](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/jobs/8885163533)).
+**Testing**: We are running an audit job on the CI pipeline for Kramdown tags ([example](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/jobs/8885163533)).
 These tags will be manually removed as part of launch.
 
 ### Menu entries in `navigation.yaml`
@@ -148,7 +148,7 @@ names at each level of the hierarchy.
               url: 'tutorials/left_sidebar/'
     ```
 
-    **Why:** Using the same property names at each level of the hierarchy significantly
+    **Why**: Using the same property names at each level of the hierarchy significantly
     simplifies everything we do programmatically with the menu. It also simplifies
     menu edits for contributors.
 
@@ -167,7 +167,7 @@ include a `.html` extension. End each URL with a trailing `/`.
       url: 'tutorials/gitlab_navigation/'
     ```
 
-**Testing:** We run various checks on `navigation.yaml` in [this script](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/main/scripts/check-navigation.sh?ref_type=heads),
+**Testing**: We run various checks on `navigation.yaml` in [this script](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/main/scripts/check-navigation.sh?ref_type=heads),
 which runs as a pipeline job when the YAML file is updated.
 
 ## File naming
@@ -196,10 +196,10 @@ doc/
     └── _index.md         # Renamed
 ```
 
-**Why:** Hugo requires this specific naming convention for section index pages (pages that serve as the main page for a directory).
+**Why**: Hugo requires this specific naming convention for section index pages (pages that serve as the main page for a directory).
 See Hugo's documentation on [Page bundles](https://gohugo.io/content-management/page-bundles/) for more information.
 
-**Testing:** We will test for this on the pipeline and prevent merges that include an `index.md` file (see [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/161) for details).
+**Testing**: We will test for this on the pipeline and prevent merges that include an `index.md` file (see [this issue](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/issues/161) for details).
 
 ### Clashing file names
 
@@ -225,11 +225,11 @@ inaccessible.
 # Resulting URL for both: /administration/dedicated/configure_instance/
 ```
 
-**Why:** Hugo's options for URL paths are `prettyURLs` and `uglyURLs`. Both of these produce
+**Why**: Hugo's options for URL paths are `prettyURLs` and `uglyURLs`. Both of these produce
 somewhat different paths than the Nanoc website does. We've opted for `prettyURLs` because it's
 Hugo's default, and Hugo's pattern for `uglyURLs` is different from most other static site generators.
 
-**Testing:** After launch, Hugo will throw an error on docs pipelines if it detects a new path clash.
+**Testing**: After launch, Hugo will throw an error on docs pipelines if it detects a new path clash.
 
 ## Processes
 
@@ -238,7 +238,7 @@ Hugo's default, and Hugo's pattern for `uglyURLs` is different from most other s
 Cutting a release no longer requires updating `latest.Dockerfile`. This file no longer exists in
 the project, and the release template has been updated accordingly.
 
-**Why:** We've refactored versioning to use the [Parallel Deployments](../../user/project/pages/_index.md#parallel-deployments) feature.
+**Why**: We've refactored versioning to use the [Parallel Deployments](../../user/project/pages/_index.md#parallel-deployments) feature.
 You can review the new release process [here](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/.gitlab/issue_templates/release.md).
 
 ### Monthly technical writing tasks
@@ -253,11 +253,11 @@ This does not impact the release post [structural check](https://handbook.gitlab
 
 {{< /alert >}}
 
-**Why:** Some Ruby scripts need to be rewritten in Go, and the maintenance tasks are
+**Why**: Some Ruby scripts need to be rewritten in Go, and the maintenance tasks are
 low-priority enough that we can launch without them. There may be more opportunity
 post-launch to share more of these scripts with the Handbook project.
 
-**Testing:** Because we will pause on removing old redirects temporarily,
+**Testing**: Because we will pause on removing old redirects temporarily,
 we've added a [test script](https://gitlab.com/gitlab-org/technical-writing/docs-gitlab-com/-/blob/main/scripts/redirect-threshold-check.sh?ref_type=heads) to warn if we get near the Pages redirect limit.
 
 ## User-facing changes

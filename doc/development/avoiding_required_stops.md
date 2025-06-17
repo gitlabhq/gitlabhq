@@ -1,7 +1,7 @@
 ---
-stage: Systems
-group: Distribution
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+stage: GitLab Delivery
+group: Self Managed
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Avoiding required stops
 ---
 
@@ -28,7 +28,7 @@ Engineers, Customer Success Managers, and Development Engineers as users upgrade
 across greater than 1-3 minor releases.
 
 Wherever possible, a required stop should be avoided. If it can't be avoided,
-the required stop should be aligned to a _scheduled_ required stop.
+the required stop should be aligned to a scheduled required stop.
 
 Scheduled required stops are often implemented for the previous `major`.`minor`
 release just prior to a `major` version release in order to accommodate multiple
@@ -38,14 +38,16 @@ release just prior to a `major` version release in order to accommodate multiple
 Additionally, as of GitLab 16, we have introduced
 [_scheduled_ `major`.`minor` required stops](../update/upgrade_paths.md):
 
->>>
+{{< alert type="note" >}}
+
 During GitLab 16.x, we are scheduling two or three required upgrade stops.
 
 We will give at least two milestones of notice when we schedule a required
 upgrade stop. The first planned required upgrade stop is scheduled for GitLab
 16.3. If nothing is introduced requiring an upgrade stop, GitLab 16.3 will be
 treated as a regular upgrade.
->>>
+
+{{< /alert >}}
 
 ## Retroactively adding required stops
 

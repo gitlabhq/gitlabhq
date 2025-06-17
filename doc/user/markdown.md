@@ -3,6 +3,7 @@ stage: Plan
 group: Knowledge
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab Flavored Markdown (GLFM)
+description: Formatting, inline HTML, GitLab-specific references, diagrams, and flowcharts.
 ---
 
 {{< details >}}
@@ -226,7 +227,7 @@ GitLab Flavored Markdown adheres to the Markdown specification for handling
 [paragraphs and line breaks](https://spec.commonmark.org/current/).
 
 A paragraph is one or more consecutive lines of text, separated by one or
-more blank lines (two newlines at the end of the first paragraph), as [explained above](#line-breaks).
+more blank lines (two newlines at the end of the first paragraph), as explained in  [line breaks](#line-breaks).
 
 Need more control over line breaks or soft returns? Add a single line break
 by ending a line with a backslash, or two or more spaces. Two newlines in a row create a new
@@ -400,8 +401,8 @@ Examples:
 ```
 
 <!--
-The "2." and "4." in the example above are changed to "1." below, to match the style
-standards on docs.gitlab.com.
+The "2." and "4." in the previous example are changed to "1." in the following example,
+to match the style standards on docs.gitlab.com.
 See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 -->
 
@@ -436,8 +437,8 @@ They can even:
 ```
 
 <!--
-The "*" and "+" in the example above are changed to "-" below, to match the style
-standards on docs.gitlab.com.
+The "*" and "+" in the previous example are changed to "-" in the following example,
+to match the style standards on docs.gitlab.com.
 See https://docs.gitlab.com/ee/development/documentation/styleguide/#lists
 -->
 
@@ -757,9 +758,6 @@ version to reference other projects from the same namespace.
 
 GitLab Flavored Markdown recognizes the following:
 
-<!-- When epics as work items are generally available and feature flag `work_item_epics` is removed,
-update the Epic entry to use only the `#` symbol. -->
-
 | References                                                                           | Input                                                 | Cross-project reference                        | Shortcut inside the same namespace |
 |--------------------------------------------------------------------------------------|-------------------------------------------------------|------------------------------------------------|------------------------------------|
 | Specific user                                                                        | `@user_name`                                          |                                                |                                    |
@@ -769,7 +767,7 @@ update the Epic entry to use only the `#` symbol. -->
 | Issue                                                                                | ``#123``                                              | `namespace/project#123`                        | `project#123`                      |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
 | Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| [Epic](group/epics/_index.md)                                                        | `&123` or ``#123`` (when [the new look for epics](group/epics/epic_work_items.md) is enabled) | `group1/subgroup&123` or `group1/subgroup#123` | |
+| [Epic](group/epics/_index.md)                                                        | `#123`  | `group1/subgroup&123` or `group1/subgroup#123` | |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
@@ -792,7 +790,7 @@ update the Epic entry to use only the `#` symbol. -->
 | [Wiki page](project/wiki/_index.md) (if the page slug is the same as the title)       | `[[Home]]`                                            |                                                |                                    |
 | [Wiki page](project/wiki/_index.md) (if the page slug is different from the title)    | `[[How to use GitLab\|how-to-use-gitlab]]`            |                                                |                                    |
 
-**Footnotes:**
+**Footnotes**:
 
 1. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384885) in GitLab 16.9.
    Iteration cadence references are always rendered following the format `[cadence:<ID>]`.
@@ -818,14 +816,12 @@ For example:
 {{< history >}}
 
 - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+- Supported for epics in GitLab 17.7, when `work_item_epics` flag got enabled by default.
+- Generally available for epics in GitLab 18.1.
 
 {{< /history >}}
 
-<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
-refactor the link below and add a history note -->
-
-To include the title in the rendered link of an epic ([using the new look](group/epics/epic_work_items.md)),
-issue, task, objective, key result, merge request, or epic:
+To include the title in the rendered link of an issue, task, objective, key result, merge request, or epic:
 
 - Add a plus (`+`) at the end of the reference.
 
@@ -839,14 +835,12 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 
 - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
 - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+- Supported for epics in GitLab 17.7, when `work_item_epics` flag got enabled by default.
+- Generally available for epics in GitLab 18.1.
 
 {{< /history >}}
 
-<!-- When epics as work items are generally available and `work_item_epics` flag is removed,
-refactor the link below and add a history note -->
-
-To include an extended summary in the rendered link of an epic ([using the new look](group/epics/epic_work_items.md)),
-issue, task, objective, key result, or merge request:
+To include an extended summary in the rendered link of an epic, issue, task, objective, key result, or merge request:
 
 - Add a `+s` at the end of the reference.
 
@@ -859,10 +853,7 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+s` are a
 
 To update the rendered references if the assignee, milestone, or health status changed:
 
-- Edit the comment or description and save it.
-
-Issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807) tracks improving how these
-references refresh.
+- Refresh the page.
 
 ### Comment preview on hover
 
@@ -963,7 +954,7 @@ When rendered, the example looks similar to:
 
 To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using either:
 
-- **An HTML table with Markdown in the cells.** Tables formatted this way result in fully functioning
+- **An HTML table with Markdown in the cells**. Tables formatted this way result in fully functioning
   task lists.
 
   ```html
@@ -989,7 +980,7 @@ To add [task lists](#task-lists) with checkboxes, use HTML formatting. Using eit
   </table>
   ```
 
-- **A Markdown table with HTML list tags.** These tasks don't save their state when selected.
+- **A Markdown table with HTML list tags**. These tasks don't save their state when selected.
   Tables formatted this way do not render properly on `docs.gitlab.com`.
 
   ```markdown
@@ -1381,7 +1372,7 @@ For example:
   ~~~
   ```
 
-The three examples above render as:
+The three previous examples render as:
 
 - > ```python
   > def function():
@@ -2057,7 +2048,7 @@ For example:
 
   ```markdown
   [^1]: This text is inside a footnote.
-  [footnote-42]: This text is another footnote.
+  [^footnote-42]: This text is another footnote.
   ```
 
 When rendered, footnotes look similar to:

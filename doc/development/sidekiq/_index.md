@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Sidekiq development guidelines
 ---
 
@@ -173,6 +173,13 @@ class LimitedWorker
 end
 ```
 
+{{< alert type="warning" >}}
+
+Use only boolean feature flags (fully on/off) when rolling out the concurrency limit.
+Percentage-based rollouts with `Feature.current_request` can cause inconsistent behavior.
+
+{{< /alert >}}
+
 Alternatively, you can set a fixed limit directly:
 
 ```ruby
@@ -200,19 +207,7 @@ This approach also allows having separate limits for .com and GitLab Self-Manage
 
 ### How to pick the limit
 
-To determine an appropriate limit, you can use this PromQL query as a guide in [Mimir](https://dashboards.gitlab.net/explore):
-
-```promql
-(
-  sum by (worker) (rate(sidekiq_enqueued_jobs_total{environment="gprd", worker="Search::Elastic::CommitIndexerWorker"}[1m]))
-)
-*
-(
-  sum by (worker) (rate(sidekiq_jobs_completion_seconds_sum{environment="gprd", worker="Search::Elastic::CommitIndexerWorker"}[1m]))
-  /
-  sum by (worker) (rate(sidekiq_jobs_completion_count{environment="gprd", worker="Search::Elastic::CommitIndexerWorker"}[1m]))
-)
-```
+To determine an appropriate limit, you can use the `sidekiq: Worker Concurrency Detail` dashboard as a guide in [Grafana](https://dashboards.gitlab.net/goto/z244H0YNR?orgId=1).
 
 {{< alert type="note" >}}
 

@@ -1,5 +1,6 @@
 import { GlToast } from '@gitlab/ui';
 import Vue from 'vue';
+import { membersProvideData } from 'ee_else_ce/invite_members/utils';
 import InviteMembersModal from '~/invite_members/components/invite_members_modal.vue';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 
@@ -23,13 +24,7 @@ export default (function initInviteMembersModal() {
       inviteMembersModal = new Vue({
         el,
         name: 'InviteMembersModalRoot',
-        provide: {
-          name: el.dataset.name,
-          overageMembersModalAvailable: parseBoolean(el.dataset.overageMembersModalAvailable),
-          hasGitlabSubscription: parseBoolean(el.dataset.hasGitlabSubscription),
-          addSeatsHref: el.dataset.addSeatsHref,
-          hasBsoEnabled: parseBoolean(el.dataset.hasBsoFeatureEnabled),
-        },
+        provide: membersProvideData(el),
         render: (createElement) =>
           createElement(InviteMembersModal, {
             props: {
@@ -38,8 +33,6 @@ export default (function initInviteMembersModal() {
               accessLevels: JSON.parse(el.dataset.accessLevels),
               defaultAccessLevel: parseInt(el.dataset.defaultAccessLevel, 10),
               defaultMemberRoleId: parseInt(el.dataset.defaultMemberRoleId, 10) || null,
-              usersFilter: el.dataset.usersFilter,
-              filterId: parseInt(el.dataset.filterId, 10),
               usersLimitDataset: convertObjectPropsToCamelCase(
                 JSON.parse(el.dataset.usersLimitDataset || '{}'),
               ),

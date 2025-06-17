@@ -12,7 +12,7 @@ RSpec.describe FlushCounterIncrementsWorker, :counter_attribute, feature_categor
     let(:attribute) { model.class.counter_attributes.first }
     let(:worker) { described_class.new }
 
-    subject { worker.perform(model.class.name, model.id, attribute) }
+    subject(:service) { worker.perform(model.class.name, model.id, attribute) }
 
     it 'commits increments to database' do
       expect(model.class).to receive(:find_by_id).and_return(model)
@@ -20,26 +20,26 @@ RSpec.describe FlushCounterIncrementsWorker, :counter_attribute, feature_categor
         expect(service).to receive(:commit_increment!)
       end
 
-      subject
+      service
     end
 
     context 'when model class does not exist' do
-      subject { worker.perform('NonExistentModel', 1, attribute) }
+      subject(:service) { worker.perform('NonExistentModel', 1, attribute) }
 
       it 'does nothing' do
         expect(Gitlab::Counters::BufferedCounter).not_to receive(:new)
 
-        subject
+        service
       end
     end
 
     context 'when record does not exist' do
-      subject { worker.perform(model.class.name, non_existing_record_id, attribute) }
+      subject(:service) { worker.perform(model.class.name, non_existing_record_id, attribute) }
 
       it 'does nothing' do
         expect(Gitlab::Counters::BufferedCounter).not_to receive(:new)
 
-        subject
+        service
       end
     end
   end

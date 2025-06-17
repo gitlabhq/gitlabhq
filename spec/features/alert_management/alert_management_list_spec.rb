@@ -9,6 +9,7 @@ RSpec.describe 'Alert Management index', :js, feature_category: :incident_manage
   context 'when a developer displays the alert list' do
     before do
       sign_in(developer)
+      stub_feature_flags(hide_incident_management_features: false)
 
       visit project_alert_management_index_path(project)
       wait_for_requests

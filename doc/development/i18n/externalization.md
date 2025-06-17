@@ -1,7 +1,7 @@
 ---
 stage: Foundations
 group: Import and Integrate
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Internationalization for GitLab
 ---
 
@@ -349,7 +349,7 @@ use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript. Make sure to
     ...
     computed: {
       userWelcome() {
-        sprintf(__('Hello %{username}'), { username: this.user.name });
+        return sprintf(__('Hello %{username}'), { username: this.user.name });
       }
     }
     ...

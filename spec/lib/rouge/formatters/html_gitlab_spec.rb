@@ -37,6 +37,16 @@ RSpec.describe Rouge::Formatters::HTMLGitlab, feature_category: :source_code_man
       end
     end
 
+    context 'when fix_attributes is true' do
+      let(:options) { { fix_attributes: true } }
+
+      it 'returns highlighted code without attributes' do
+        code = %q(<span class="line"><span class="k">def</span> <span class="nf">hello</span></span>)
+
+        is_expected.to eq(code)
+      end
+    end
+
     context 'when line number is provided' do
       let(:options) { { tag: lang, line_number: 10 } }
 

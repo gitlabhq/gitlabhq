@@ -57,7 +57,7 @@ class Projects::PagesDomainsController < Projects::ApplicationController
     service = ::Pages::Domains::UpdateService.new(@project, current_user, update_params)
 
     if service.execute(@domain)
-      redirect_to project_pages_path(@project),
+      redirect_to project_pages_path(@project, anchor: 'domains-settings'),
         status: :found,
         notice: 'Domain was updated'
     else
@@ -70,7 +70,9 @@ class Projects::PagesDomainsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to project_pages_path(@project), status: :found, notice: 'Domain was removed'
+        redirect_to project_pages_path(@project, anchor: 'domains-settings'),
+          status: :found,
+          notice: 'Domain was removed'
       end
       format.js
     end

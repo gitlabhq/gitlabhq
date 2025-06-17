@@ -15,6 +15,7 @@ class Notify < ApplicationMailer
   include Emails::PagesDomains
   include Emails::Projects
   include Emails::Profile
+  include Emails::PipelineSchedules
   include Emails::Pipelines
   include Emails::Members
   include Emails::AutoDevops

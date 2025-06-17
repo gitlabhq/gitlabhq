@@ -2,116 +2,178 @@
 stage: Data Access
 group: Gitaly
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Managing monorepos
+title: Improving monorepo performance
 ---
 
-Monorepos have become a regular part of development team workflows. While they have many advantages, monorepos can present performance challenges
-when using them in GitLab. Therefore, you should know:
+A monorepo is a repository that contains sub-projects. A single application often
+contains interdependent projects. For example, a backend, a web frontend, an iOS application, and an Android
+application. Monorepos are common, but they can present performance risks. Some common problems:
+
+- Large binary files.
+- Many files with long histories.
+- Many simultaneous clones and pushes.
+- Vertical scaling limits.
+- Network bandwidth limits.
+- Disk bandwidth limits.
+
+GitLab is itself based in Git. Its Git storage service, [Gitaly](https://gitlab.com/gitlab-org/gitaly),
+experiences the performance constraints associated with monorepos. What we've learned can help
+you manage your own monorepo better.
 
 - What repository characteristics can impact performance.
 - Some tools and steps to optimize monorepos.
 
-## Impact on performance
+## Optimize Gitaly for monorepos
 
-Because GitLab is a Git-based system, it is subject to similar performance
-constraints as Git when it comes to large repositories that are gigabytes in
-size.
+Git compresses objects into [packfiles](https://git-scm.com/book/en/v2/Git-Internals-Packfiles)
+to use less space. When you clone, fetch, or push, Git uses packfiles. They reduce disk space
+and network bandwidth, but packfile creation requires much CPU and memory.
 
-Monorepos can be large for [many reasons](https://about.gitlab.com/blog/2022/09/06/speed-up-your-monorepo-workflow-in-git/#characteristics-of-monorepos).
+Massive monorepos have more commits, files, branches, and tags than smaller repositories. When the objects
+become larger, and take longer to transfer, packfile creation becomes more expensive
+and slower. In Git, the [`git-pack-objects`](https://git-scm.com/docs/git-pack-objects) process is
+the most resource intensive operation, because it:
 
-Large repositories pose a performance risk when used in GitLab, especially if a large monorepo receives many clones or pushes a day, which is common for them.
+1. Analyzes the commit history and files.
+1. Determines which files to send back to the client.
+1. Creates packfiles.
 
-### Git performance issues with large repositories
+Traffic from `git clone` and `git fetch` starts a `git-pack-objects` process on the server.
+Automated continuous integration systems, like GitLab CI/CD, can cause much of this traffic.
+High amounts of automated CI/CD traffic send many clone and fetch requests, and can strain your
+Gitaly server.
 
-Git uses [packfiles](https://git-scm.com/book/en/v2/Git-Internals-Packfiles)
-to store its objects so that they take up as little space as
-possible. Packfiles are also used to transfer objects when cloning,
-fetching, or pushing between a Git client and a Git server. Using packfiles is
-usually good because it reduces the amount of disk space and network
-bandwidth required.
+Use these strategies to decrease load on your Gitaly server.
 
-However, creating packfiles requires a lot of CPU and memory to compress object
-content. So when repositories are large, every Git operation
-that requires creating packfiles becomes expensive and slow as more
-and bigger objects need to be processed and transferred.
+### Enable the Gitaly `pack-objects` cache
 
-### Consequences for GitLab
+Enable the [Gitaly `pack-objects` cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+which reduces server load for clones and fetches.
 
-[Gitaly](https://gitlab.com/gitlab-org/gitaly) is our Git storage service built
-on top of [Git](https://git-scm.com/). This means that any limitations of
-Git are experienced in Gitaly, and in turn by end users of GitLab.
+When a Git client sends a clone or fetch request, the data produced by `git-pack-objects` can be
+cached for reuse. If your monorepo is cloned frequently, enabling
+[Gitaly `pack-objects` cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
+reduces server load. When enabled, Gitaly maintains an in-memory cache instead of regenerating
+response data for each clone or fetch call.
 
-Monorepos can also impact notably on hardware, in some cases hitting limitations such as vertical scaling and network or disk bandwidth limits.
+For more information, see
+[Pack-objects cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache).
 
-## Optimize GitLab settings
+### Configure Git bundle URIs
 
-You should use as many of the following strategies as possible to minimize
-fetches on the Gitaly server.
+Create and store [Git bundles](https://git-scm.com/docs/bundle-uri) on third-party storage with low
+latency, like a CDN. Git downloads packages from your bundle first, then fetches any remaining objects
+and references from your Git remote. This approach bootstraps your object database faster and reduces
+load on Gitaly.
 
-### Rationale
+- It speeds up clones and fetches for users with a poor network connection to your GitLab server.
+- It reduces the load on servers that run CI/CD jobs by pre-loading bundles.
 
-The most resource intensive operation in Git is the
-[`git-pack-objects`](https://git-scm.com/docs/git-pack-objects)
-process, which is responsible for creating packfiles after figuring out
-all of the commit history and files to send back to the client.
+To learn more, see [Bundle URIs](../../../../administration/gitaly/bundle_uris.md).
 
-The larger the repository, the more commits, files, branches, and tags that a
-repository has and the more expensive this operation is. Both memory and CPU
-are heavily utilized during this operation.
+### Configure Gitaly negotiation timeouts
 
-Most `git clone` or `git fetch` traffic (which results in starting a `git-pack-objects` process on the server) often come from automated
-continuous integration systems such as GitLab CI/CD or other CI/CD systems.
-If there is a high amount of such traffic, hitting a Gitaly server with many
-clones for a large repository is likely to put the server under significant
-strain.
+When attempting to fetch or archive repositories, `fatal: the remote end hung up unexpectedly` errors
+can happen if you have:
 
-### Gitaly pack-objects cache
+- Large repositories.
+- Many repositories in parallel.
+- The same large repository in parallel.
 
-Turn on the [Gitaly pack-objects cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
-which reduces the work that the server has to do for clones and fetches.
+To mitigate this issue, increase the
+[default negotiation timeout values](../../../../administration/settings/gitaly_timeouts.md#configure-the-negotiation-timeouts).
 
-#### Rationale
+### Size your hardware correctly
 
-The [pack-objects cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache)
-caches the data that the `git-pack-objects` process produces. This response
-is sent back to the Git client initiating the clone or fetch. If several
-fetches are requesting the same set of refs, Git on the Gitaly server doesn't have
-to re-generate the response data with each clone or fetch call, but instead serves
-that data from an in-memory cache that Gitaly maintains.
+Monorepos are usually for larger organizations with many users. To support your monorepo,
+your GitLab environment should match one of the
+[reference architectures](../../../../administration/reference_architectures/_index.md)
+provided by the GitLab Test Platform and Support teams. These architectures are the recommended
+way to deploy GitLab at scale while maintaining performance.
 
-This can help immensely in the presence of a high rate of clones for a single
+### Reduce the number of Git references
+
+In Git, [references](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
+are branch and tag names that point to specific commits. Git stores references as loose files in the
+`.git/refs` folder of your repository. To see all references in your repository,
+run `git for-each-ref`.
+
+When the number of references in your repository grows, the seek time needed to
+find a specific reference also grows. Each time Git parses a reference, the increased seek time
+leads to increased latency.
+
+To fix this problem, Git uses [pack-refs](https://git-scm.com/docs/git-pack-refs) to create a single
+`.git/packed-refs` file containing all references for that repository. This method reduces the storage
+space needed for refs. It also decreases seek time, because seeking in a single file is faster than seeking
+through all files in a directory.
+
+Git handles newly created or updated references with loose files. They are not cleaned up and added to the
+`.git/packed-refs` file until you run `git pack-refs`. Gitaly runs `git pack-refs` during
+[housekeeping](../../../../administration/housekeeping.md#heuristical-housekeeping). While this helps
+many repositories, write-heavy repositories still have these performance problems:
+
+- Creating or updating references creates new loose files.
+- Deleting references requires editing the existing `packed-refs` file to remove the existing reference.
+
+Git iterates through all references when you fetch or clone a repository. The server reviews ("walks")
+the internal graph structure of each reference, finds any missing objects, and sends them to the client.
+The iteration and walking processes are CPU-intensive, and increase latency. This latency can cause
+a domino effect in repositories with a lot of activity. Each operation is slower, and each operation
+stalls later operations.
+
+To mitigate the effects of a large number of references in a monorepo:
+
+- Create an automated process for cleaning up old branches.
+- If certain references don't need to be visible to the client, hide them using the
+  [`transfer.hideRefs`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-transferhideRefs)
+  configuration setting. Gitaly ignores any on-server Git configuration, so you must change the Gitaly
+  configuration itself in `/etc/gitlab/gitlab.rb`:
+
+  ```ruby
+  gitaly['configuration'] = {
+    # ...
+    git: {
+      # ...
+      config: [
+        # ...
+        { key: "transfer.hideRefs", value: "refs/namespace_to_hide" },
+      ],
+    },
+  }
+  ```
+
+In Git 2.42.0 and later, different Git operations can skip over hidden references
+when doing an object graph walk.
+
+## Optimize CI/CD for monorepos
+
+To keep GitLab scalable with your monorepo, optimize how your CI/CD jobs interact with your
 repository.
-
-For more information, see [Pack-objects cache](../../../../administration/gitaly/configure_gitaly.md#pack-objects-cache).
 
 ### Reduce concurrent clones in CI/CD
 
-CI/CD loads tend to be concurrent because pipelines are [scheduled during set times](../../../../ci/pipelines/pipeline_efficiency.md#reduce-how-often-jobs-run).
-As a result, the Git requests against the repositories can spike notably during
-these times and lead to reduced performance for both CI/CD and users alike.
+Reduce CI/CD pipeline concurrency by
+[staggering your scheduled pipelines](../../../../ci/pipelines/schedules.md#view-and-optimize-pipeline-schedules)
+to run at different times. Even a few minutes apart can help.
 
-Reduce CI/CD pipeline concurrency by [staggering them](../../../../ci/pipelines/schedules.md#view-and-optimize-pipeline-schedules)
-to run at different times.
-For example, a set running at one time and another set running several minutes
-later.
+CI/CD loads are often concurrent, because pipelines are
+[scheduled at specific times](../../../../ci/pipelines/pipeline_efficiency.md#reduce-how-often-jobs-run).
+Git requests to your repository can spike during these times, and affect performance for CI/CD processes
+and users.
 
-### Shallow cloning
+### Use shallow clones in CI/CD processes
 
-In your CI/CD systems, set the
+For `git clone` and `git fetch` calls in your CI/CD systems, set the
 [`--depth`](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---depthltdepthgt)
-option in the `git clone` or `git fetch` call.
+option with a small number, like 10. A depth of 10 instructs Git to request only the last 10 changes
+for a given branch. If your repository has a long backlog, or many large files, this change can
+make Git fetches much faster. It reduces the amount of data transferred.
 
-GitLab and GitLab Runner perform a [shallow clone](../../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone)
+GitLab and GitLab Runner perform a
+[shallow clone](../../../../ci/pipelines/settings.md#limit-the-number-of-changes-fetched-during-clone)
 by default.
 
-If possible, set the clone depth with a small number like 10. Shallow clones make Git request only
-the latest set of changes for a given branch, up to desired number of commits.
-
-This significantly speeds up fetching of changes from Git repositories,
-especially if the repository has a very long backlog consisting of a number
-of big files because we effectively reduce amount of data transfer.
-
-The following GitLab CI/CD pipeline configuration example sets the `GIT_DEPTH`.
+This GitLab CI/CD pipeline configuration example sets the `GIT_DEPTH`:
 
 ```yaml
 variables:
@@ -122,143 +184,105 @@ test:
     - ls -al
 ```
 
-#### Avoid shallow clones for development
+### Use `git fetch` in CI/CD operations
 
-Avoid shallow clones for development because they greatly increase the time it takes to push changes. Shallow clones
-work well with CI/CD jobs because the repository contents aren't changed after being checked out.
+If it's possible to keep a working copy of the repository available, use `git fetch` instead of
+`git clone` on CI/CD systems. `git fetch` requires less work from the server:
 
-Instead, for local development use
-[partial clones](https://www.git-scm.com/docs/git-clone#Documentation/git-clone.txt---filterltfilter-specgt) to:
+- `git clone` requests the entire repository from scratch. `git-pack-objects` must process and send
+  all branches and tags.
+- `git fetch` requests only the Git references missing from the repository. `git-pack-objects`
+  processes only a subset of the total Git references. This strategy also reduces the total data transferred.
 
-1. Filter out blobs:
+By default, GitLab uses the
+[`fetch` Git strategy](../../../../ci/runners/configure_runners.md#git-strategy) recommended for large repositories.
 
-   ```shell
-   git clone --filter=blob:none
-   ```
+### Set a `git clone` path
 
-1. Filter out trees:
+If your monorepo is used with a fork-based workflow, consider setting
+[`GIT_CLONE_PATH`](../../../../ci/runners/configure_runners.md#custom-build-directories) to control
+where you clone your repository.
 
-   ```shell
-   git clone --filter=tree:0
-   ```
-
-For more information, see [Reduce clone size](../../../../topics/git/clone.md#reduce-clone-size).
-
-### Git strategy
-
-Use `git fetch` instead of `git clone` on CI/CD systems if it's possible to keep
-a working copy of the repository.
-
-By default, GitLab is configured to use the [`fetch` Git strategy](../../../../ci/runners/configure_runners.md#git-strategy),
-which is recommended for large repositories.
-
-#### Rationale
-
-`git clone` gets the entire repository from scratch, whereas `git fetch` only
-asks the server for references that do not already exist in the repository.
-Naturally, `git fetch` causes the server to do less work. `git-pack-objects`
-doesn't have to go through all branches and tags and roll everything up into a
-response that gets sent over. Instead, it only has to worry about a subset of
-references to pack up. This strategy also reduces the amount of data to transfer.
-
-### Git clone path
-
-[`GIT_CLONE_PATH`](../../../../ci/runners/configure_runners.md#custom-build-directories) allows you to
-control where you clone your repositories. This can have implications if you
-heavily use big repositories with a fork-based workflow.
-
-A fork, from the perspective of GitLab Runner, is stored as a separate repository
-with a separate worktree. That means that GitLab Runner cannot optimize the usage
-of worktrees and you might have to instruct GitLab Runner to use that.
-
-In such cases, ideally you want to make the GitLab Runner executor be used only
-for the given project and not shared across different projects to make this
-process more efficient.
+Git stores forks as separate repositories with separate worktrees. GitLab Runner cannot optimize
+the use of worktrees. Configure and use the GitLab Runner executor only for the given project.
+To make the process more efficient, don't share it across different projects.
 
 The [`GIT_CLONE_PATH`](../../../../ci/runners/configure_runners.md#custom-build-directories) must be
 in the directory set in `$CI_BUILDS_DIR`. You can't pick any path from disk.
 
-### Git clean flags
+### Disable `git clean` on CI/CD jobs
 
-[`GIT_CLEAN_FLAGS`](../../../../ci/runners/configure_runners.md#git-clean-flags) allows you to control
-whether or not you require the `git clean` command to be executed for each CI/CD
-job. By default, GitLab ensures that:
+The `git clean` command removes untracked files from the working tree. In large repositories, it uses
+a lot of disk I/O. If you reuse existing machines, and can reuse an existing worktree, consider
+disabling it on CI/CD jobs. For example, `GIT_CLEAN_FLAGS: -ffdx -e .build/` can avoid deleting directories
+from the worktree between runs. This can speed up incremental builds.
+
+To disable `git clean` on CI/CD jobs, set
+[`GIT_CLEAN_FLAGS`](../../../../ci/runners/configure_runners.md#git-clean-flags) to `none` for them.
+
+By default, GitLab ensures that:
 
 - You have your worktree on the given SHA.
 - Your repository is clean.
 
-[`GIT_CLEAN_FLAGS`](../../../../ci/runners/configure_runners.md#git-clean-flags) is disabled when set
-to `none`. On very big repositories, this might be desired because `git clean`
-is disk I/O intensive. Controlling that with `GIT_CLEAN_FLAGS: -ffdx -e .build/`
-(for example) allows you to control and disable removal of some
-directories in the worktree between subsequent runs, which can speed-up
-the incremental builds. This has the biggest effect if you re-use existing
-machines and have an existing worktree that you can re-use for builds.
+For exact parameters accepted by `GIT_CLEAN_FLAGS`, see the Git documentation for
+[`git clean`](https://git-scm.com/docs/git-clean). The available parameters depend on your Git version.
 
-For exact parameters accepted by
-[`GIT_CLEAN_FLAGS`](../../../../ci/runners/configure_runners.md#git-clean-flags), see the documentation
-for [`git clean`](https://git-scm.com/docs/git-clean). The available parameters
-are dependent on the Git version.
+### Change `git fetch` behavior with flags
 
-### Git fetch extra flags
+Change the behavior of `git fetch` to exclude any data your CI/CD jobs do not need. If your project contains
+many tags, and your CI/CD jobs do not need them, use `GIT_FETCH_EXTRA_FLAGS` to set
+[`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---no-tags). This setting
+can make your fetches faster and more compact.
 
-[`GIT_FETCH_EXTRA_FLAGS`](../../../../ci/runners/configure_runners.md#git-fetch-extra-flags) allows you
-to modify `git fetch` behavior by passing extra flags.
+Even if your repository does not contain many tags, `--no-tags` can improve performance in some cases.
+For more information, see [issue 746](https://gitlab.com/gitlab-com/gl-infra/observability/team/-/issues/746)
+and the [`GIT_FETCH_EXTRA_FLAGS` Git documentation](../../../../ci/runners/configure_runners.md#git-fetch-extra-flags).
 
-For example, if your project contains a large number of tags that your CI/CD jobs don't rely on,
-you could add [`--no-tags`](https://git-scm.com/docs/git-fetch#Documentation/git-fetch.txt---no-tags)
-to the extra flags to make your fetches faster and more compact.
+## Optimize Git for monorepos
 
-Also in the case where your repository does _not_ contain a lot of
-tags, `--no-tags` can [make a big difference in some cases](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/746).
-If your CI/CD builds do not depend on Git tags, setting `--no-tags` is worth trying.
+To keep GitLab scalable with your monorepo, optimize the repository itself.
 
-For more information, see the [`GIT_FETCH_EXTRA_FLAGS` documentation](../../../../ci/runners/configure_runners.md#git-fetch-extra-flags).
+### Avoid shallow clones for development
 
-### Configure Gitaly negotiation timeouts
+Avoid shallow clones for development. Shallow clones greatly increase the time needed to push changes.
+Shallow clones work well with CI/CD jobs, because repository contents aren't changed after checkout.
 
-You might experience a `fatal: the remote end hung up unexpectedly` error when attempting to fetch or archive:
+For local development, use
+[partial clones](https://www.git-scm.com/docs/git-clone#Documentation/git-clone.txt---filterltfilter-specgt) instead, to:
 
-- Large repositories.
-- Many repositories in parallel.
-- The same large repository in parallel.
+- Filter out blobs, with `git clone --filter=blob:none`
+- Filter out trees, with `git clone --filter=tree:0`
 
-You can attempt to mitigate this issue by increasing the default negotiation timeout values. For more information, see
-[Configure the negotiation timeouts](../../../../administration/settings/gitaly_timeouts.md#configure-the-negotiation-timeouts).
+For more information, see [Reduce clone size](../../../../topics/git/clone.md#reduce-clone-size).
 
-## Optimize your repository
+### Profile your repository to find problems
 
-Another avenue to keeping GitLab scalable with your monorepo is to optimize the
-repository itself.
+Large repositories generally experience performance issues in Git. The
+[`git-sizer`](https://github.com/github/git-sizer) project profiles your repository, and helps you understand
+potential problems. It can help you develop mitigation strategies to prevent performance problems.
+Analyzing your repository requires a full Git mirror or bare clone, to ensure all Git references
+are present.
 
-### Profiling repositories
-
-Large repositories generally experience performance issues in Git. Knowing why
-your repository is large can help you develop mitigation strategies to avoid
-performance problems.
-
-You can use [`git-sizer`](https://github.com/github/git-sizer) to get a snapshot
-of repository characteristics and discover problem aspects of your monorepo.
-
-To get a _full_ clone of your repository, you need a full Git mirror or bare clone to
-ensure all Git references are present. To profile your repository:
+To profile your repository with `git-sizer`:
 
 1. [Install `git-sizer`](https://github.com/github/git-sizer?tab=readme-ov-file#getting-started).
-1. Get a full clone of your repository:
+1. Run this command to clone your repository in the bare Git format compatible with `git-sizer`:
 
    ```shell
    git clone --mirror <git_repo_url>
    ```
 
-   After cloning, the repository will be in the bare Git format that is compatible with `git-sizer`.
-1. Run `git-sizer` with all statistics in the directory of your Git repository:
+1. In the directory of your Git repository, run `git-sizer` with all statistics:
 
    ```shell
    git-sizer -v
    ```
 
-After processing, the output of `git-sizer` should look like the following with a level of concern
-on each aspect of the repository:
+After processing, the output of `git-sizer` should look like this example. Each row includes a
+**Level of concern** for that aspect of the repository. Higher levels of concern are shown with more
+asterisks. Items with extremely high levels of concern are shown with exclamation marks. In this example,
+a few items have a high level of concern:
 
 ```shell
 Processing blobs: 1652370
@@ -308,118 +332,23 @@ Processing references: 539
 | * Number of submodules       |     0     |                                |
 ```
 
-In this example, a few items are raised with a high level of concern. See the
-following sections for information on solving:
+### Use Git LFS for large binary files
 
-- A large number of references.
-- Large blobs.
+Store binary files (like packages, audio, video, or graphics) as Git Large File Storage (Git LFS) objects.
 
-### Large number of references
+When users commit files into Git, Git uses the blob
+[object type](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects) to store and manage their content.
+Git does not handle large binary data efficiently, so large blobs are problematic for Git. If `git-sizer`
+reports blobs of over 10 MB, you usually have large binary files in your repository. Large binary files
+cause problems for both server and client:
 
-[References in Git](https://git-scm.com/book/en/v2/Git-Internals-Git-References)
-are branch and tag names that point to a particular commit. You can use the `git for-each-ref`
-command to list all references present in a repository. A large
-number of references in a repository can have detrimental impact on the command's
-performance. To understand why, we need to understand how Git stores references
-and uses them.
+- For the server: unlike text-based source code, binary data is often already compressed.
+  Git can't compress binary data further, which leads to large packfiles. Large packfiles
+  require more CPU, memory, and bandwidth to create and send.
+- For the client: Git stores blob content in both packfiles (usually in `.git/objects/pack/`) and
+  regular files (in [worktrees](https://git-scm.com/docs/git-worktree)), binary files require far more
+  space than text-based source code.
 
-In general, Git stores all references as loose files in the `.git/refs` folder of
-the repository. As the number of references grows, the seek time to find a
-particular reference in the folder also increases. Therefore, every time Git has
-to parse a reference, there is an increased latency due to the added seek time
-of the file system.
-
-To resolve this issue, Git uses [pack-refs](https://git-scm.com/docs/git-pack-refs). In short, instead of storing each
-reference in a single file, Git creates a single `.git/packed-refs` file that
-contains all the references for that repository. This file reduces storage space
-while also increasing performance because seeking within a single file is faster
-than seeking a file within a directory. However, creating and updating new references
-is still done through loose files and are not added to the `packed-refs` file. To
-recreate the `packed-refs` file, run `git pack-refs`.
-
-Gitaly runs `git pack-refs` during [housekeeping](../../../../administration/housekeeping.md#heuristical-housekeeping)
-to move loose references into `packed-refs` files. While this is very beneficial
-for most repositories, write-heavy repositories still have the problem that:
-
-- Creating or updating references creates new loose files.
-- Deleting references involves modifying the existing `packed-refs` file
-  altogether to remove the existing reference.
-
-These problems still cause the same performance issues.
-
-In addition, fetches and clones from repositories includes the transfer
-of missing objects from the server to the client. When there are numerous
-references, Git iterates over all references and walks the internal graph
-structure for each reference to find the missing objects to transfer to
-the client. Iteration and walking are CPU-intensive operations that increase
-the latency of these commands.
-
-In repositories with a lot of activity, this often causes a domino effect because
-every operation is slower and each operation stalls subsequent operations.
-
-#### Mitigation strategies
-
-To mitigate the effects of a large number of references in a monorepo:
-
-- Create an automated process for cleaning up old branches.
-- If certain references don't need to be visible to the client, hide them using the
-  [`transfer.hideRefs`](https://git-scm.com/docs/git-config#Documentation/git-config.txt-transferhideRefs)
-  configuration setting. Because Gitaly ignores any on-server Git configuration, you must change the Gitaly configuration
-  itself in `/etc/gitlab/gitlab.rb`:
-
-  ```ruby
-  gitaly['configuration'] = {
-    # ...
-    git: {
-      # ...
-      config: [
-        # ...
-        { key: "transfer.hideRefs", value: "refs/namespace_to_hide" },
-      ],
-    },
-  }
-  ```
-
-In Git 2.42.0 and later, different Git operations can skip over hidden references
-when doing an object graph walk.
-
-### Large blobs
-
-Blobs are the [Git objects](https://git-scm.com/book/en/v2/Git-Internals-Git-Objects)
-that are used to store and manage the content of the files that users
-have committed into Git repositories.
-
-#### Issues with large blobs
-
-Large blobs can be problematic for Git because Git does not handle
-large binary data efficiently. Blobs over 10 MB in the `git-sizer` output
-probably means that there is large binary data in your repository.
-
-While source code can usually be efficiently compressed, binary data
-is often already compressed. This means that Git is unlikely to be
-successful when it tries to compress large blobs when creating packfiles.
-This results in larger packfiles and higher CPU, memory, and bandwidth
-usage on both Git clients and servers.
-
-On the client side, because Git stores blob content in both packfiles
-(usually under `.git/objects/pack/`) and regular files (in
-[worktrees](https://git-scm.com/docs/git-worktree)), much more disk
-space is usually required than for source code.
-
-#### Use LFS for large blobs
-
-Store binary or blob files (for example, packages, audio, video, or graphics)
-as Large File Storage (LFS) objects. With LFS, the objects are stored externally, such as in Object
-Storage, which reduces the number and size of objects in the repository. Storing
-objects in external Object Storage can improve performance.
-
-For more information, refer to the [Git LFS documentation](../../../../topics/git/lfs/_index.md).
-
-### Reference architectures
-
-Large repositories tend to be found in larger organizations with many users. The
-GitLab Test Platform and Support teams provide several [reference architectures](../../../../administration/reference_architectures/_index.md) that
-are the recommended way to deploy GitLab at scale.
-
-In these types of setups, the GitLab environment used should match a reference
-architecture to improve performance.
+Git LFS stores objects externally, such as in object storage. Your Git repository contains a pointer
+to the object's location, rather than the binary file itself. This can improve repository performance.
+For more information, see the [Git LFS documentation](../../../../topics/git/lfs/_index.md).

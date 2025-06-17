@@ -9,10 +9,10 @@ import {
   GlLink,
   GlPopover,
 } from '@gitlab/ui';
+import ImmutableBadge from 'ee_component/packages_and_registries/container_registry/explorer/components/details_page/immutable_badge.vue';
 import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
 import { n__ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import DetailsRow from '~/vue_shared/components/registry/details_row.vue';
 import ListItem from '~/vue_shared/components/registry/list_item.vue';
@@ -51,11 +51,11 @@ export default {
     DetailsRow,
     SignatureDetailsModal,
     GlPopover,
+    ImmutableBadge,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagsMixin()],
   props: {
     tag: {
       type: Object,
@@ -168,9 +168,6 @@ export default {
         this.tag.protection?.minimumAccessLevelForPush != null
       );
     },
-    isImmutable() {
-      return this.glFeatures.containerRegistryImmutableTags && this.tag.protection?.immutable;
-    },
     tagRowId() {
       return `${this.tag.name}_badge`;
     },
@@ -232,21 +229,7 @@ export default {
           </gl-popover>
         </template>
 
-        <template v-if="isImmutable">
-          <gl-badge
-            :id="tagRowId"
-            boundary="viewport"
-            class="gl-ml-4"
-            data-testid="immutable-badge"
-          >
-            {{ s__('ContainerRegistry|immutable') }}
-          </gl-badge>
-          <gl-popover :target="tagRowId" data-testid="immutable-popover">
-            {{
-              s__('ContainerRegistry|This container image tag cannot be overwritten or deleted.')
-            }}
-          </gl-popover>
-        </template>
+        <immutable-badge :tag="tag" :tag-row-id="tagRowId" />
 
         <clipboard-button
           v-if="tag.location"

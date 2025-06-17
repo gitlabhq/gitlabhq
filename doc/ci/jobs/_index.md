@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD Jobs
+description: Configuration, rules, caching, artifacts, and logs.
 ---
 
 {{< details >}}
@@ -193,20 +194,9 @@ When you access a pipeline, you can see the related jobs for that pipeline.
 
 The order of jobs in a pipeline depends on the type of pipeline graph.
 
-- For [full pipeline graphs](../pipelines/_index.md#pipeline-details), jobs are sorted by name.
-- For [pipeline mini graphs](../pipelines/_index.md#pipeline-mini-graphs), jobs are sorted by status, and then by name.
-  The job status order is:
-
-  1. failed
-  1. warning
-  1. pending
-  1. running
-  1. manual
-  1. scheduled
-  1. canceled
-  1. success
-  1. skipped
-  1. created
+- For [full pipeline graphs](../pipelines/_index.md#pipeline-details), jobs are sorted alphabetically by name.
+- For [pipeline mini graphs](../pipelines/_index.md#pipeline-mini-graphs), jobs are sorted by status severity
+  with failed jobs appearing first, and then alphabetically by name.
 
 Selecting an individual job shows you its [job log](job_logs.md), and allows you to:
 
@@ -242,7 +232,24 @@ To view the full list of jobs that ran in a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#view-jobs-in-a-pipeline), [job name](#job-names) and [job source](#available-job-sources).
+You can filter the list by [job name](#job-names), [job status](#available-job-statuses), and [job source](#available-job-sources).
+
+### Available job statuses
+
+CI/CD jobs can have the following statuses:
+
+- `canceled`: Job was manually canceled or automatically aborted.
+- `canceling`: Job is being canceled but `after_script` is running.
+- `created`: Job has been created but not yet processed.
+- `failed`: Job execution failed.
+- `manual`: Job requires manual action to start.
+- `pending`: Job is in the queue waiting for a runner.
+- `preparing`: Runner is preparing the execution environment.
+- `running`: Job is executing on a runner.
+- `scheduled`: Job has been scheduled but execution hasn't started.
+- `skipped`: Job was skipped due to conditions or dependencies.
+- `success`: Job completed successfully.
+- `waiting_for_resource`: Job is waiting for resources to become available.
 
 ### View the source of a job
 
@@ -253,7 +260,8 @@ You can filter the list by [job status](#view-jobs-in-a-pipeline), [job name](#j
 
 {{< /history >}}
 
-GitLab CI/CD jobs now include a source attribute that indicates the action that initially triggered a CI/CD job. Use this attribute to track how a job was initiated or filter job runs based on the specific sources.
+GitLab CI/CD jobs now include a source attribute that indicates the action that initially triggered a CI/CD job.
+Use this attribute to track how a job was initiated or filter job runs based on the specific sources.
 
 #### Available job sources
 
@@ -304,7 +312,7 @@ separate each job name with a number and one of the following:
 
 You can use these symbols interchangeably.
 
-In the example below, these three jobs are in a group named `build ruby`:
+In the following example, these three jobs are in a group named `build ruby`:
 
 ```yaml
 build ruby 1/3:

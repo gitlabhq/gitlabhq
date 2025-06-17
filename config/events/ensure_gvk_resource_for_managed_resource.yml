@@ -1,0 +1,23 @@
+---
+description: Managed GVK resources ensured
+internal_events: true
+action: ensure_gvk_resource_for_managed_resource
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Group-Version-Kind (GVK) resource identifier
+  property:
+    description: environment tier
+  value:
+    description: environment id
+product_group: environments
+product_categories:
+- environment_management
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191731
+tiers:
+- premium
+- ultimate

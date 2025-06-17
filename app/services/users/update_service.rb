@@ -104,6 +104,7 @@ module Users
     def require_password_check?
       return false unless @user.persisted?
       return false if @user.password_automatically_set?
+      return false unless @user.allow_password_authentication_for_web?
 
       changes = @user.changed
       ATTRS_REQUIRING_PASSWORD_CHECK.any? { |param| changes.include?(param) }

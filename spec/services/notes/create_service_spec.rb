@@ -440,7 +440,8 @@ RSpec.describe Notes::CreateService, feature_category: :team_planning do
               QuickAction.new(
                 action_text: '/due 2016-08-28',
                 expectation: ->(noteable, can_use_quick_action) {
-                  expect(noteable.due_date == Date.new(2016, 8, 28)).to eq(can_use_quick_action)
+                  expect(noteable.due_date == Date.new(2016, 8, 28) &&
+                         noteable.dates_source.due_date_is_fixed).to eq(can_use_quick_action)
                 }
               ),
               QuickAction.new(

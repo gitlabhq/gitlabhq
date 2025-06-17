@@ -166,7 +166,7 @@ Parameters:
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `issue_iid`    | integer           | yes      | The IID of an issue. |
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
-| `confidential` | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0 and renamed to `internal`. The confidential flag of a note. Default is false. |
+| `confidential` | boolean           | no       | **Deprecated**: Scheduled to be removed in GitLab 16.0 and renamed to `internal`. The confidential flag of a note. Default is false. |
 | `internal`     | boolean           | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is false. |
 | `created_at`   | string            | no       | Date time string, ISO 8601 formatted. It must be after 1970-01-01. Example: `2016-03-11T03:45:40Z` (requires administrator or project/group owner rights) |
 
@@ -191,7 +191,7 @@ Parameters:
 | `issue_iid`    | integer           | yes      | The IID of an issue. |
 | `note_id`      | integer           | yes      | The ID of a note. |
 | `body`         | string            | no       | The content of a note. Limited to 1,000,000 characters. |
-| `confidential` | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
+| `confidential` | boolean           | no       | **Deprecated**: Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -473,7 +473,7 @@ Parameters:
 | `merge_request_iid` | integer           | yes      | The IID of a project merge request |
 | `note_id`           | integer           | no       | The ID of a note |
 | `body`              | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
-| `confidential`      | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
+| `confidential`      | boolean           | no       | **Deprecated**: Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \
@@ -613,7 +613,7 @@ Parameters:
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
 | `epic_id`      | integer           | yes      | The ID of an epic |
 | `id`           | integer or string | yes      | The ID or [URL-encoded path of the group](rest/_index.md#namespaced-paths) |
-| `confidential` | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0 and is renamed to `internal`. The confidential flag of a note. Default is `false`. |
+| `confidential` | boolean           | no       | **Deprecated**: Scheduled to be removed in GitLab 16.0 and is renamed to `internal`. The confidential flag of a note. Default is `false`. |
 | `internal`     | boolean           | no       | The internal flag of a note. Overrides `confidential` when both parameters are submitted. Default is `false`. |
 
 ```shell
@@ -637,7 +637,7 @@ Parameters:
 | `epic_id`      | integer           | yes      | The ID of an epic |
 | `note_id`      | integer           | yes      | The ID of a note |
 | `body`         | string            | yes      | The content of a note. Limited to 1,000,000 characters. |
-| `confidential` | boolean           | no       | **Deprecated:** Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
+| `confidential` | boolean           | no       | **Deprecated**: Scheduled to be removed in GitLab 16.0. The confidential flag of a note. Default is false. |
 
 ```shell
 curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" \

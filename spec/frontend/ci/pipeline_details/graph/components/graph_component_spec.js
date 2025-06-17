@@ -222,15 +222,12 @@ describe('graph component', () => {
 
     it(`has correct jobClasses on findJobItem`, () => {
       const jobClasses = [
+        'gl-w-full',
         'gl-p-3',
         'gl-border-0',
         '!gl-rounded-base',
-        'hover:gl-bg-strong',
-        'dark:hover:gl-bg-gray-200',
-        'focus:gl-bg-strong',
-        'dark:focus:gl-bg-gray-200',
-        'hover:gl-text-strong',
-        'focus:gl-text-strong',
+        // for design tokens
+        'pipeline-job-action',
       ];
 
       expect(findJobItem().props('cssClassJobName')).toEqual(expect.arrayContaining(jobClasses));

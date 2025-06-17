@@ -42,7 +42,7 @@ module RequireEmailVerification
   private
 
   def override_devise_lockable?
-    Feature.enabled?(:require_email_verification, self) &&
+    ::Gitlab::CurrentSettings.require_email_verification_on_account_locked &&
       !two_factor_enabled? &&
       identities.none? &&
       Feature.disabled?(:skip_require_email_verification, self, type: :ops)

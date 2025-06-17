@@ -54,7 +54,7 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
   end
 
   describe 'POST /:namespace/:project/-/settings/access_tokens' do
-    let(:access_token_params) { { name: 'Nerd bot', description: 'Nerd bot description', scopes: ["api"], expires_at: Date.today + 1.month } }
+    let(:access_token_params) { { name: 'Nerd bot', description: 'Nerd bot description', scopes: ["api"], expires_at: 1.month.from_now } }
 
     subject do
       post project_settings_access_tokens_path(resource), params: { resource_access_token: access_token_params }
@@ -85,7 +85,7 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
     end
 
     context 'with custom access level' do
-      let(:access_token_params) { { name: 'Nerd bot', scopes: ["api"], expires_at: Date.today + 1.month, access_level: 20 } }
+      let(:access_token_params) { { name: 'Nerd bot', scopes: ["api"], expires_at: 1.month.from_now, access_level: 20 } }
 
       subject { post project_settings_access_tokens_path(resource), params: { resource_access_token: access_token_params } }
 
@@ -108,12 +108,8 @@ RSpec.describe Projects::Settings::AccessTokensController, feature_category: :sy
   describe '#index' do
     let_it_be(:resource_access_tokens) { create_list(:personal_access_token, 3, user: access_token_user) }
 
-    let(:virtual_registry_maven_enabled) { true }
-    let(:dependency_proxy_enabled) { true }
-
     before do
-      stub_feature_flags(virtual_registry_maven: virtual_registry_maven_enabled)
-      stub_config(dependency_proxy: { enabled: dependency_proxy_enabled })
+      stub_config(dependency_proxy: { enabled: true })
 
       get project_settings_access_tokens_path(resource)
     end

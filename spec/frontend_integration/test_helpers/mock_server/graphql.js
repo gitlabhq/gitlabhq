@@ -20,4 +20,10 @@ const graphqlResolvers = {
 const buildGraphqlSchema = memoize(() => buildSchema(getGraphqlSchema().loc.source.body));
 
 export const graphqlQuery = (query, variables, schema) =>
-  graphql(buildGraphqlSchema(), query, graphqlResolvers, schema, variables);
+  graphql({
+    schema: buildGraphqlSchema(),
+    source: query,
+    rootValue: graphqlResolvers,
+    contextValue: schema,
+    variableValues: variables,
+  });

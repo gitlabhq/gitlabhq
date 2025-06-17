@@ -3,7 +3,15 @@ stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Connecting a Kubernetes cluster with GitLab
+description: Kubernetes integration, GitOps, CI/CD, agent deployment, and cluster management.
 ---
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -94,7 +102,7 @@ You can choose from two primary workflows. The GitOps workflow is recommended.
 
 ### GitOps workflow
 
-GitLab recommends using [Flux for GitOps](gitops.md). To get started, see [Tutorial: Set up Flux for GitOps](gitops/flux_tutorial.md).
+GitLab recommends using [Flux for GitOps](gitops.md). To get started, see [Tutorial: Set up Flux for GitOps](getting_started.md).
 
 ### GitLab CI/CD workflow
 

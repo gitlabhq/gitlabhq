@@ -101,6 +101,10 @@ module Gitlab
           author = row.delete('commit_author')
           committer = row.delete('committer')
 
+          # We temporarily add 'project' to the attributes for DiffCommitUser processing,
+          # but MergeRequestDiffCommit doesn't have a project_id column, so we remove it
+          row.delete('project')
+
           row['commit_author'] = author ||
             find_or_create_diff_commit_user(aname, amail)
 
@@ -112,7 +116,12 @@ module Gitlab
 
         def find_or_create_diff_commit_user(name, email)
           find_with_cache([MergeRequest::DiffCommitUser, name, email]) do
-            MergeRequest::DiffCommitUser.find_or_create(name, email)
+            MergeRequest::DiffCommitUser.find_or_create(
+              name,
+              email,
+              project.organization_id,
+              with_organization: Feature.enabled?(:add_organization_to_diff_commit_users, project)
+            )
           end
         end
 

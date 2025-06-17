@@ -2,6 +2,7 @@
 stage: Tenant Scale
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+ignore_in_report: true
 title: Disaster Recovery (Geo) promotion runbooks
 ---
 
@@ -86,7 +87,7 @@ On the **secondary** site:
    objects aren't replicated (shown in gray), consider giving the site more
    time to complete.
 
-   ![Replication status](../../replication/img/geo_dashboard_v14_0.png)
+   ![Replication status](img/geo_dashboard_v14_0.png)
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. After a planned failover, anything that

@@ -2,6 +2,7 @@ import { isEqual } from 'lodash';
 import { STATUS_CLOSED, STATUS_REOPENED } from '~/issues/constants';
 import { isInMRPage } from '~/lib/utils/common_utils';
 import * as constants from '../constants';
+import createState from './state';
 import * as types from './mutation_types';
 import * as utils from './utils';
 
@@ -449,5 +450,8 @@ export default {
   },
   [types.SET_MERGE_REQUEST_FILTERS](state, value) {
     state.mergeRequestFilters = value;
+  },
+  reset(state) {
+    Object.assign(state, createState());
   },
 };

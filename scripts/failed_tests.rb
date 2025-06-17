@@ -12,8 +12,58 @@ class FailedTests
     output_directory: 'tmp/previous_failed_tests/',
     format: :oneline,
     rspec_pg_regex: /rspec .+ pg16( .+)?/,
-    rspec_ee_pg_regex: /rspec-ee .+ pg16( .+)?/
+    rspec_ee_pg_regex: /rspec-ee .+ pg16( .+)?/,
+    rspec_regex: /rspec/,
+    single_output: false
   }.freeze
+
+  def self.parse_cli_options(args = ARGV)
+    options = FailedTests::DEFAULT_OPTIONS.dup
+
+    parser = OptionParser.new do |opts|
+      opts.on("-p", "--previous-tests-report-path PREVIOUS_TESTS_REPORT_PATH", String,
+        "Path of the file listing previous test failures (defaults to " \
+        "`#{FailedTests::DEFAULT_OPTIONS[:previous_tests_report_path]}`)") do |value|
+        options[:previous_tests_report_path] = value
+      end
+
+      opts.on("-o", "--output-directory OUTPUT_DIRECTORY", String,
+        "Output directory for failed test files (defaults to " \
+        "`#{FailedTests::DEFAULT_OPTIONS[:output_directory]}`)") do |value|
+        options[:output_directory] = value
+      end
+
+      opts.on("-f", "--format [oneline|json]", String,
+        "Format of the output files: oneline (with test filenames) or JSON (defaults to " \
+        "`#{FailedTests::DEFAULT_OPTIONS[:format]}`)") do |value|
+        options[:format] = value
+      end
+
+      opts.on("--rspec-pg-regex RSPEC_PG_REGEX", Regexp,
+        "Regex to use when finding matching RSpec jobs (defaults to " \
+        "`#{FailedTests::DEFAULT_OPTIONS[:rspec_pg_regex]}`)") do |value|
+        options[:rspec_pg_regex] = value
+      end
+
+      opts.on("--rspec-ee-pg-regex RSPEC_EE_PG_REGEX", Regexp,
+        "Regex to use when finding matching RSpec EE jobs (defaults to " \
+        "`#{FailedTests::DEFAULT_OPTIONS[:rspec_ee_pg_regex]}`)") do |value|
+        options[:rspec_ee_pg_regex] = value
+      end
+
+      opts.on("--single-output", "Output all rspec failed tests to a single file instead of categorizing by suite") do
+        options[:single_output] = true
+      end
+
+      opts.on("-h", "--help", "Prints this help") do
+        puts opts
+        exit
+      end
+    end
+
+    parser.parse!(args)
+    options
+  end
 
   def initialize(options)
     @filename = options.delete(:previous_tests_report_path)
@@ -21,27 +71,58 @@ class FailedTests
     @format = options.delete(:format).to_sym
     @rspec_pg_regex = options.delete(:rspec_pg_regex)
     @rspec_ee_pg_regex = options.delete(:rspec_ee_pg_regex)
+    @single_output = options.delete(:single_output)
+  end
+
+  def output_all_failed_rspec_tests
+    create_output_dir
+
+    all_failed_tests = []
+
+    rspec_failed_suites = failed_suites.select do |suite|
+      suite['name'].match?(FailedTests::DEFAULT_OPTIONS[:rspec_regex])
+    end
+
+    rspec_failed_suites.each do |suite|
+      failed_cases(suite).each do |test_case|
+        all_failed_tests << test_case
+      end
+    end
+
+    puts "[FailedTests] Detected #{all_failed_tests.size} total RSpec failed tests across all suites..."
+
+    write_failed_tests_to_file("rspec_all_failed_tests", all_failed_tests)
+    puts "[FailedTests] All RSpec failed tests written to #{File.join(output_directory,
+      "rspec_all_failed_tests.#{output_file_format}")}"
   end
 
   def output_failed_tests
+    return output_all_failed_rspec_tests if single_output
+
     create_output_dir
 
     failed_cases_for_suite_collection.each do |suite_name, suite_tests|
       puts "[FailedTests] Detected #{suite_tests.size} failed tests in suite #{suite_name}..."
-      suite_tests =
-        case format
-        when :oneline
-          suite_tests.map { |test| test['file'] }.join(' ') # rubocop:disable Rails/Pluck
-        when :json
-          JSON.pretty_generate(suite_tests.to_a)
-        end
 
-      output_file = File.join(output_directory, "#{suite_name}_failed_tests.#{output_file_format}")
-
-      File.open(output_file, 'w') do |file|
-        file.write(suite_tests)
-      end
+      write_failed_tests_to_file("#{suite_name}_failed_tests", suite_tests)
     end
+  end
+
+  def write_failed_tests_to_file(filename_prefix, failed_tests)
+    formatted_tests =
+      case format
+      when :oneline
+        # Deduplicate file paths for oneline format since we only output filenames
+        unique_files = failed_tests.map { |test| test['file'] }.uniq # rubocop:disable Rails/Pluck
+        unique_files.join(' ')
+      when :json
+        # Preserve all test case objects for JSON format to maintain full context
+        JSON.pretty_generate(failed_tests.to_a)
+      end
+
+    output_file = File.join(output_directory, "#{filename_prefix}.#{output_file_format}")
+
+    File.write(output_file, formatted_tests)
   end
 
   def failed_cases_for_suite_collection
@@ -62,7 +143,7 @@ class FailedTests
 
   private
 
-  attr_reader :filename, :output_directory, :format, :rspec_pg_regex, :rspec_ee_pg_regex
+  attr_reader :filename, :output_directory, :format, :rspec_pg_regex, :rspec_ee_pg_regex, :single_output
 
   def file_contents
     @file_contents ||= begin
@@ -119,44 +200,6 @@ class FailedTests
 end
 
 if $PROGRAM_NAME == __FILE__
-  options = FailedTests::DEFAULT_OPTIONS.dup
-
-  OptionParser.new do |opts|
-    opts.on("-p", "--previous-tests-report-path PREVIOUS_TESTS_REPORT_PATH", String,
-      "Path of the file listing previous test failures (defaults to " \
-      "`#{FailedTests::DEFAULT_OPTIONS[:previous_tests_report_path]}`)") do |value|
-      options[:previous_tests_report_path] = value
-    end
-
-    opts.on("-o", "--output-directory OUTPUT_DIRECTORY", String,
-      "Output directory for failed test files (defaults to " \
-      "`#{FailedTests::DEFAULT_OPTIONS[:output_directory]}`)") do |value|
-      options[:output_directory] = value
-    end
-
-    opts.on("-f", "--format [oneline|json]", String,
-      "Format of the output files: oneline (with test filenames) or JSON (defaults to " \
-      "`#{FailedTests::DEFAULT_OPTIONS[:format]}`)") do |value|
-      options[:format] = value
-    end
-
-    opts.on("--rspec-pg-regex RSPEC_PG_REGEX", Regexp,
-      "Regex to use when finding matching RSpec jobs (defaults to " \
-      "`#{FailedTests::DEFAULT_OPTIONS[:rspec_pg_regex]}`)") do |value|
-      options[:rspec_pg_regex] = value
-    end
-
-    opts.on("--rspec-ee-pg-regex RSPEC_EE_PG_REGEX", Regexp,
-      "Regex to use when finding matching RSpec EE jobs (defaults to " \
-      "`#{FailedTests::DEFAULT_OPTIONS[:rspec_ee_pg_regex]}`)") do |value|
-      options[:rspec_ee_pg_regex] = value
-    end
-
-    opts.on("-h", "--help", "Prints this help") do
-      puts opts
-      exit
-    end
-  end.parse!
-
+  options = FailedTests.parse_cli_options
   FailedTests.new(options).output_failed_tests
 end

@@ -326,8 +326,7 @@ to the contents of the `script`:
 ### Merge details
 
 You can use `extends` to merge hashes but not arrays.
-The algorithm used for merge is "closest scope wins". When there are
-duplicate keys, GitLab performs a reverse deep merge based on the keys.
+When there are duplicate keys, GitLab performs a reverse deep merge based on the keys.
 Keys from the last member always override anything defined on other
 levels. For example:
 

@@ -320,7 +320,7 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
 
         it { is_expected.to be(true) }
 
-        it_behaves_like 'not capturing job token policies'
+        it_behaves_like 'capturing job token policies'
       end
 
       context 'when accessed project has ci_inbound_job_token_scope_enabled and instance-level scope set to false' do

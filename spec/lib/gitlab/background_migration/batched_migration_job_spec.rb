@@ -16,8 +16,9 @@ RSpec.describe Gitlab::BackgroundMigration::BatchedMigrationJob, feature_categor
       expect(generic_instance.send(:batch_column)).to eq('id')
       expect(generic_instance.instance_variable_get(:@job_arguments)).to eq(%w[x y])
       expect(generic_instance.send(:connection)).to eq(connection)
+      expect(generic_instance.send(:pause_ms)).to eq(described_class::MINIMUM_PAUSE_MS)
 
-      %i[start_id end_id sub_batch_size pause_ms].each do |attr|
+      %i[start_id end_id sub_batch_size].each do |attr|
         expect(generic_instance.send(attr)).to eq(0)
       end
     end

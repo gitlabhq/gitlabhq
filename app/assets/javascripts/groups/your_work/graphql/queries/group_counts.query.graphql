@@ -1,0 +1,14 @@
+# Since GraphQL doesn't support string comparison in @skip(if:)
+# we use the naming convention of skip${tabValue} in camelCase
+query getGroupCounts(
+  $search: String = ""
+  $skipMember: Boolean = false
+  $skipInactive: Boolean = false
+) {
+  member: groups(allAvailable: false, active: true, search: $search) @skip(if: $skipMember) {
+    count
+  }
+  inactive: groups(allAvailable: false, active: false, search: $search) @skip(if: $skipInactive) {
+    count
+  }
+}

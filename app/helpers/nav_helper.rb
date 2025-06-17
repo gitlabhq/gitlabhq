@@ -85,7 +85,7 @@ module NavHelper
   end
 
   def work_item_epic_page?
-    current_controller?('epics') && @group.work_item_epics_enabled?
+    current_controller?('epics')
   end
 
   def new_issue_look?

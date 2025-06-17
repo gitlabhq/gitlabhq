@@ -4,7 +4,7 @@
 #
 # Users can subscribe to these models.
 #
-# Used by Issue, MergeRequest, Label
+# Used by Issue, MergeRequest, Label, WikiPage::Meta
 #
 
 module Subscribable
@@ -17,20 +17,21 @@ module Subscribable
     scope :explicitly_unsubscribed, ->(user) { joins(:subscriptions).where(subscriptions: { user_id: user.id, subscribed: false }) }
   end
 
-  def subscribed?(user, project = nil)
+  def subscribed?(user, project = nil, cache_enforced: true)
     return false unless user
 
-    if (subscription = lazy_subscription(user, project)&.itself)
+    if (subscription = lazy_subscription(user, project, cache_enforced: cache_enforced)&.itself)
       subscription.subscribed
     else
       subscribed_without_subscriptions?(user, project)
     end
   end
 
-  def lazy_subscription(user, project = nil)
+  def lazy_subscription(user, project = nil, cache_enforced: true)
     return unless user
 
-    BatchLoader.for(id: id, subscribable_type: subscribable_type, project_id: project&.id).batch do |items, loader|
+    BatchLoader.for(id: id, subscribable_type: subscribable_type, project_id: project&.id)
+               .batch(cache: cache_enforced) do |items, loader|
       values = items.each_with_object({ ids: Set.new, subscribable_types: Set.new, project_ids: Set.new }) do |item, result|
         result[:ids] << item[:id]
         result[:subscribable_types] << item[:subscribable_type]

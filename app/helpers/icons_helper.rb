@@ -170,7 +170,7 @@ module IconsHelper
         'volume-up'
       when '.mp4', '.m4p', '.m4v',
            '.mpg', '.mp2', '.mpeg', '.mpe', '.mpv',
-           '.mpg', '.mpeg', '.m2v', '.m2ts',
+           '.m2v', '.m2ts',
            '.avi', '.mkv', '.flv', '.ogv', '.mov',
            '.3gp', '.3g2'
         'live-preview'

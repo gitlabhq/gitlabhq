@@ -14,8 +14,6 @@ import containerProtectionTagRuleEmptyRulesQueryPayload from 'test_fixtures/grap
 import containerProtectionTagRuleMaxRulesQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.max_rules.json';
 import containerProtectionTagRuleNullProjectQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.null_project.json';
 import containerProtectionTagRuleQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.json';
-import containerProtectionImmutableTagRuleQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.immutable_rules.json';
-import containerProtectionImmutableTagRuleMaintainerQueryPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/queries/get_container_protection_tag_rules.query.graphql.immutable_rules_maintainer.json';
 import deleteContainerProtectionTagRuleMutationPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql.json';
 import deleteContainerProtectionTagRuleMutationErrorPayload from 'test_fixtures/graphql/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_tag_rule.mutation.graphql.errors.json';
 
@@ -56,9 +54,6 @@ describe('ContainerProtectionTagRules', () => {
 
   const defaultProvidedValues = {
     projectPath: 'path',
-    glFeatures: {
-      containerRegistryImmutableTags: true,
-    },
   };
 
   const { nodes: tagRules } =
@@ -104,7 +99,7 @@ describe('ContainerProtectionTagRules', () => {
       expect(findCrudComponent().props('title')).toBe('Protected container image tags');
       expect(findCrudComponent().props('toggleText')).toBeNull();
       expect(findCrudComponent().props('description')).toBe(
-        'Set up rules to protect container image tags from unauthorized changes or make them permanently immutable. Protection rules are checked first, followed by immutable rules. You can add up to 5 protection rules per project.',
+        'When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project.',
       );
     });
 
@@ -212,14 +207,9 @@ describe('ContainerProtectionTagRules', () => {
         await waitForPromises();
       });
 
-      it('contains container protection tag rules and `protected` badge', () => {
+      it('contains container protection tag rules', () => {
         tagRules.forEach((protectionRule, i) => {
-          expect(findTableRowCell(i, 0).findByTestId('tag-name-pattern').text()).toBe(
-            protectionRule.tagNamePattern,
-          );
-          expect(findTableRowCell(i, 0).findByTestId('tag-rule-type-badge').text()).toBe(
-            'protected',
-          );
+          expect(findTableRowCell(i, 0).text()).toBe(protectionRule.tagNamePattern);
           expect(findTableRowCell(i, 1).text()).toBe(
             MinimumAccessLevelText[protectionRule.minimumAccessLevelForPush],
           );
@@ -253,107 +243,6 @@ describe('ContainerProtectionTagRules', () => {
                 'Are you sure you want to delete the protected container tags rule v.+?',
               );
             });
-          });
-        });
-      });
-    });
-
-    describe('table rows for immutable rules', () => {
-      beforeEach(async () => {
-        createComponent({
-          mountFn: mountExtended,
-          containerProtectionTagRuleQueryResolver: jest
-            .fn()
-            .mockResolvedValue(containerProtectionImmutableTagRuleQueryPayload),
-        });
-
-        await waitForPromises();
-      });
-
-      it('contains immutable container protection tag rules and `immutable` badge', () => {
-        tagRules.forEach((protectionRule, i) => {
-          expect(findTableRowCell(i, 0).findByTestId('tag-name-pattern').text()).toBe(
-            protectionRule.tagNamePattern,
-          );
-          expect(findTableRowCell(i, 0).findByTestId('tag-rule-type-badge').text()).toBe(
-            'immutable',
-          );
-          expect(findTableRowCell(i, 1).text()).toBe('');
-          expect(findTableRowCell(i, 2).text()).toBe('');
-        });
-      });
-
-      describe('column "rowActions"', () => {
-        it('does not show Edit button', () => {
-          expect(findTableRowButtonEdit(0).exists()).toBe(false);
-        });
-
-        describe('Delete button', () => {
-          it('exists in table', () => {
-            expect(findTableRowButtonDelete(0).exists()).toBe(true);
-          });
-
-          describe('when button is clicked', () => {
-            beforeEach(async () => {
-              await findTableRowButtonDelete(0).trigger('click');
-            });
-
-            it('renders the "delete container protection rule" confirmation modal', () => {
-              const modalId = getBinding(findTableRowButtonDelete(0).element, 'gl-modal');
-
-              expect(findModal().props('modal-id')).toBe(modalId);
-              expect(findModal().props('title')).toBe('Delete protection rule');
-              expect(findModal().text()).toBe(
-                'Are you sure you want to delete the protected container tags rule v.+?',
-              );
-            });
-          });
-
-          describe('when user does not have permission', () => {
-            beforeEach(async () => {
-              createComponent({
-                mountFn: mountExtended,
-                containerProtectionTagRuleQueryResolver: jest
-                  .fn()
-                  .mockResolvedValue(containerProtectionImmutableTagRuleMaintainerQueryPayload),
-              });
-
-              await waitForPromises();
-            });
-
-            it('does not exist in table', () => {
-              expect(findTableRowButtonDelete(0).exists()).toBe(false);
-            });
-          });
-        });
-      });
-    });
-
-    describe('when feature flag `containerRegistryImmutableTags` is disabled', () => {
-      describe('table rows', () => {
-        beforeEach(async () => {
-          createComponent({
-            mountFn: mountExtended,
-            provide: {
-              ...defaultProvidedValues,
-              glFeatures: {
-                containerRegistryImmutableTags: false,
-              },
-            },
-          });
-
-          await waitForPromises();
-        });
-
-        it('contains container protection tag rules', () => {
-          tagRules.forEach((protectionRule, i) => {
-            expect(findTableRowCell(i, 0).text()).toBe(protectionRule.tagNamePattern);
-            expect(findTableRowCell(i, 1).text()).toBe(
-              MinimumAccessLevelText[protectionRule.minimumAccessLevelForPush],
-            );
-            expect(findTableRowCell(i, 2).text()).toBe(
-              MinimumAccessLevelText[protectionRule.minimumAccessLevelForDelete],
-            );
           });
         });
       });
@@ -635,27 +524,6 @@ describe('ContainerProtectionTagRules', () => {
         variant: 'danger',
       });
       expect(findAlert().text()).toBe('error');
-    });
-  });
-
-  describe('when feature flag `containerRegistryImmutableTags` is disabled', () => {
-    describe('layout', () => {
-      beforeEach(() => {
-        createComponent({
-          provide: {
-            ...defaultProvidedValues,
-            glFeatures: {
-              containerRegistryImmutableTags: false,
-            },
-          },
-        });
-      });
-
-      it('renders card component with different description', () => {
-        expect(findCrudComponent().props('description')).toBe(
-          'When a container image tag is protected, only certain user roles can create, update, and delete the protected tag, which helps to prevent unauthorized changes. You can add up to 5 protection rules per project.',
-        );
-      });
     });
   });
 });

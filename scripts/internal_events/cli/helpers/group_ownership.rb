@@ -101,7 +101,7 @@ module InternalEventsCli
 
       # Output looks like:
       #   {
-      #     "import_and_integrate" => { stage: "manage", section: "dev", group: "import_and_integrate" },
+      #     "import" => { stage: "manage", section: "dev", group: "import" },
       #     ...
       #   }
       def available_groups

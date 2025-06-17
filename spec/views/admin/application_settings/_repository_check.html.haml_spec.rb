@@ -44,7 +44,7 @@ RSpec.describe 'admin/application_settings/_repository_check.html.haml', feature
     end
   end
 
-  describe 'inactive project deletion' do
+  describe 'dormant project deletion' do
     let_it_be(:application_setting) do
       build(
         :application_setting,
@@ -58,17 +58,17 @@ RSpec.describe 'admin/application_settings/_repository_check.html.haml', feature
     it 'has the setting subsection' do
       render
 
-      expect(rendered).to have_content('Inactive project deletion')
+      expect(rendered).to have_content('Dormant project deletion')
     end
 
     it 'renders the correct setting subsection content' do
       render
 
-      expect(rendered).to have_selector('.js-inactive-project-deletion-form')
-      expect(rendered).to have_selector('[data-delete-inactive-projects="true"]')
-      expect(rendered).to have_selector('[data-inactive-projects-delete-after-months="2"]')
-      expect(rendered).to have_selector('[data-inactive-projects-min-size-mb="250"]')
-      expect(rendered).to have_selector('[data-inactive-projects-send-warning-email-after-months="1"]')
+      expect(rendered).to have_selector('.js-dormant-project-deletion-form')
+      expect(rendered).to have_selector('[data-delete-dormant-projects="true"]')
+      expect(rendered).to have_selector('[data-dormant-projects-delete-after-months="2"]')
+      expect(rendered).to have_selector('[data-dormant-projects-min-size-mb="250"]')
+      expect(rendered).to have_selector('[data-dormant-projects-send-warning-email-after-months="1"]')
     end
   end
 end

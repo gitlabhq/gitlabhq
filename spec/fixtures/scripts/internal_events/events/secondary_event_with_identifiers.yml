@@ -1,6 +1,7 @@
 ---
 description: Engineer closes Internal Event CLI
 internal_events: true
+status: active
 action: internal_events_cli_closed
 identifiers:
 - project

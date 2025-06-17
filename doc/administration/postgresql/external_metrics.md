@@ -17,14 +17,14 @@ You should enable the following logging settings:
 - `log_autovacuum_min_duration=0`: log all autovacuum executions. Autovacuum is a key component for overall PostgreSQL engine performance. Essential for troubleshooting and tuning if dead tuples are not being removed from tables.
 - `log_min_duration_statement=1000`: log slow queries (slower than 1 second).
 
-The full description of the above parameter settings can be found in
+The full description of these parameter settings can be found in
 [PostgreSQL error reporting and logging documentation](https://www.postgresql.org/docs/16/runtime-config-logging.html#RUNTIME-CONFIG-LOGGING-WHAT).
 
 ## Amazon RDS
 
 The Amazon Relational Database Service (RDS) provides a large number of [monitoring metrics](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Monitoring.html) and [logging interfaces](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Monitor_Logs_Events.html). Here are a few you should configure:
 
-- Change all above [recommended PostgreSQL Logging settings](#recommended-postgresql-logging-settings) through [RDS Parameter Groups](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithDBInstanceParamGroups.html).
+- Change all [recommended PostgreSQL Logging settings](#recommended-postgresql-logging-settings) through [RDS Parameter Groups](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithDBInstanceParamGroups.html).
   - As the recommended logging parameters are [dynamic in RDS](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.PostgreSQL.CommonDBATasks.Parameters.html) you don't require a reboot after changing these settings.
   - The PostgreSQL logs can be observed through the [RDS console](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/logs-events-streams-console.html).
 - Enable [RDS performance insight](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PerfInsights.html) allows you to visualise your database load with many important performance metrics of a PostgreSQL database engine.

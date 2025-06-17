@@ -1,0 +1,22 @@
+---
+data_category: optional
+key_path: redis_hll_counters.source_code.i_source_code_code_intelligence
+description: Count of unique users who use code intelligence
+product_group: source_code
+value_type: number
+status: active
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+  - i_source_code_code_intelligence
+tiers:
+- free
+- premium
+- ultimate
+performance_indicator_type: []
+milestone: "<13.9"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54332

@@ -56,7 +56,7 @@ module Featurable
     def access_level_attribute(feature)
       feature = ensure_feature!(feature)
 
-      "#{feature}_access_level".to_sym
+      :"#{feature}_access_level"
     end
 
     def quoted_access_level_column(feature)

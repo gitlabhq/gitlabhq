@@ -143,7 +143,7 @@ export default {
     },
     hideWhenEmptySelector: {
       type: String,
-      required: true,
+      required: false,
       default: null,
     },
     isExpandedFn: {
@@ -161,6 +161,10 @@ export default {
   },
   watch: {
     hasMatches(newHasMatches) {
+      if (this.hideWhenEmptySelector === null) {
+        return;
+      }
+
       document.querySelectorAll(this.hideWhenEmptySelector).forEach((section) => {
         section.classList.toggle(HIDE_CLASS, !newHasMatches);
       });

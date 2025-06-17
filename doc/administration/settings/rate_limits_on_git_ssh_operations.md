@@ -13,14 +13,8 @@ title: Rate limits on Git SSH operations
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Available by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367998) in GitLab 15.8. [Feature flag](../feature_flags.md) `rate_limit_gitlab_shell` removed.
-
-{{< /history >}}
-
-GitLab applies rate limits to Git operations that use SSH by user account and project. When the rate limit is exceeded, GitLab rejects
-further connection requests from that user for the project.
+GitLab applies rate limits to Git operations that use SSH by user account and project. When a user
+exceeds the rate limit, GitLab rejects further connection requests from that user for the project.
 
 The rate limit applies at the Git command ([plumbing](https://git-scm.com/book/en/v2/Git-Internals-Plumbing-and-Porcelain)) level.
 Each command has a rate limit of 600 per minute. For example:
@@ -28,7 +22,7 @@ Each command has a rate limit of 600 per minute. For example:
 - `git push` has a rate limit of 600 per minute.
 - `git pull` has its own rate limit of 600 per minute.
 
-Because the same commands are shared by `git-upload-pack`, `git pull`, and `git clone`, they share a rate limit.
+The `git-upload-pack`, `git pull`, and `git clone` commands share a rate limit because they share commands.
 
 ## Configure GitLab Shell operation limit
 

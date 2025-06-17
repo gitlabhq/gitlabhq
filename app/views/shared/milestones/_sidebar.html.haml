@@ -78,7 +78,7 @@
             = sprite_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
-          - if Feature.enabled?(:work_items_alpha, current_user)
+          - if Feature.enabled?(:work_item_epic_milestones, current_user)
             = s_('MilestoneSidebar|Work items')
             = gl_badge_tag milestone.sorted_issues(current_user).length, variant: :muted
           - else
@@ -91,14 +91,14 @@
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               = s_('MilestoneSidebar|Open:')
-              - if Feature.enabled?(:work_items_alpha, current_user)
+              - if Feature.enabled?(:work_item_epic_milestones, current_user)
                 = milestone.sorted_issues(current_user).opened.length
               - else
                 = milestone.issues_visible_to_user(current_user).opened.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
               = s_('MilestoneSidebar|Closed:')
-              - if Feature.enabled?(:work_items_alpha, current_user)
+              - if Feature.enabled?(:work_item_epic_milestones, current_user)
                 = milestone.sorted_issues(current_user).closed.length
               - else
                 = milestone.issues_visible_to_user(current_user).closed.count

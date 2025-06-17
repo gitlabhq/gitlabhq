@@ -3,6 +3,7 @@
 module API
   module CustomAttributesEndpoints
     extend ActiveSupport::Concern
+    ALLOWED_FINDERS = %w[find_user find_project find_group].freeze
 
     included do
       attributable_class = name.demodulize.singularize
@@ -14,13 +15,24 @@ module API
         params :custom_attributes_key do
           requires :key, type: String, desc: 'The key of the custom attribute'
         end
+
+        def find_resource(attributable_finder, id)
+          unless ALLOWED_FINDERS.include?(attributable_finder) && respond_to?(attributable_finder)
+            render_api_error!("Invalid finder method: #{attributable_finder}", :bad_request)
+          end
+
+          resource = public_send(attributable_finder, id) # rubocop:disable GitlabSecurity/PublicSend -- allowed finders are validated
+
+          not_found! unless resource
+          resource
+        end
       end
 
       desc "Get all custom attributes on a #{attributable_name}" do
         success Entities::CustomAttribute
       end
       get ':id/custom_attributes' do
-        resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
+        resource = find_resource(attributable_finder, params[:id])
         authorize! :read_custom_attribute
 
         present resource.custom_attributes, with: Entities::CustomAttribute
@@ -34,7 +46,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/custom_attributes/:key' do
-        resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
+        resource = find_resource(attributable_finder, params[:id])
         authorize! :read_custom_attribute
 
         custom_attribute = resource.custom_attributes.find_by!(key: params[:key])
@@ -50,7 +62,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       put ':id/custom_attributes/:key' do
-        resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
+        resource = find_resource(attributable_finder, params[:id])
         authorize! :update_custom_attribute
 
         custom_attribute = resource.custom_attributes
@@ -72,7 +84,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/custom_attributes/:key' do
-        resource = public_send(attributable_finder, params[:id]) # rubocop:disable GitlabSecurity/PublicSend
+        resource = find_resource(attributable_finder, params[:id])
         authorize! :update_custom_attribute
 
         resource.custom_attributes.find_by!(key: params[:key]).destroy

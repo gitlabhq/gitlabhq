@@ -50,7 +50,7 @@ In any case, you require:
 - A working GitLab **secondary** site.
 - A Route53 Hosted Zone managing your domain.
 
-If you haven't yet set up a Geo _primary_ site and _secondary_ site, see the
+If you haven't yet set up a Geo primary site and secondary site, see the
 [Geo setup instructions](../setup/_index.md).
 
 ## Create a traffic policy
@@ -118,7 +118,7 @@ You can customize the:
 
 ## Example Git request handling behavior
 
-After following the configuration steps above, handling for Git requests is now location aware.
+After following the configuration steps documented previously, handling for Git requests is now location aware.
 For requests:
 
 - Outside Europe, all requests are directed to the **primary** site.

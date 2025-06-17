@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Use personal access tokens to authenticate with the GitLab API or Git over HTTPS. Includes creation, rotation, revocation, scopes, and expiration settings.
 title: Personal access tokens
 ---
 
@@ -85,14 +86,13 @@ You can create as many personal access tokens as you like.
 Save the personal access token somewhere safe. After you leave the page,
 you no longer have access to the token.
 
-### Prefill personal access token name and scopes
+### Prefill personal access token details
 
-You can link directly to the personal access token page and have the form prefilled with a name and
-list of scopes. To do this, you can append a `name` parameter and a list of comma-separated scopes
-to the URL. For example:
+You can prefill the details of the personal access token by appending the name, description, and
+list of scopes to the URL. For example:
 
 ```plaintext
-https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&scopes=api,read_user,read_registry
+https://gitlab.example.com/-/user_settings/personal_access_tokens?name=Example+Access+token&description=My+description&scopes=api,read_user
 ```
 
 {{< alert type="warning" >}}
@@ -107,6 +107,7 @@ for guidance on managing personal access tokens (for example, setting a short ex
 {{< history >}}
 
 - Ability to use the UI to rotate a personal access token [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241523) in GitLab 17.7.
+- [Updated UI](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194582) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -115,7 +116,8 @@ At any time, you can use the UI to revoke or, in GitLab 17.7 and later, rotate a
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Access tokens**.
-1. In the **Active personal access tokens** area, for the relevant token, select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
+1. Next to an active token, select the vertical ellipsis ({{< icon name="ellipsis_v" >}}).
+1. Select **Revoke** ({{< icon name="remove" >}}) or **Rotate** ({{< icon name="retry" >}}).
 1. On the confirmation dialog, select **Revoke** or **Rotate**.
 
    {{< alert type="warning" >}}

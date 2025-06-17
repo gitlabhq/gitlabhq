@@ -89,6 +89,8 @@ if (WEBPACK_REPORT) {
   NO_HASHED_CHUNKS = true;
 }
 
+console.debug(`BABEL_ENV inside Webpack is: ${process.env.BABEL_ENV}`);
+
 const devtool = IS_PRODUCTION ? 'source-map' : 'cheap-module-eval-source-map';
 
 const incrementalCompiler = createIncrementalWebpackCompiler(

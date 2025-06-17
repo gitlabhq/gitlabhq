@@ -30,6 +30,22 @@ RSpec.describe PersonalProjectsFinder, feature_category: :groups_and_projects do
     it { is_expected.to eq([public_project]) }
   end
 
+  describe 'with user passed as a string' do
+    let(:finder) { described_class.new(source_user.username) }
+
+    subject { finder.execute }
+
+    it { is_expected.to eq([public_project]) }
+  end
+
+  describe 'with user is nil' do
+    let(:finder) { described_class.new(nil) }
+
+    subject { finder.execute }
+
+    it { is_expected.to be_empty }
+  end
+
   describe 'with a current user' do
     context 'normal user' do
       subject { finder.execute(current_user) }

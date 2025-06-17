@@ -55,6 +55,11 @@ export default {
       type: Number,
       required: true,
     },
+    draggedType: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -131,6 +136,9 @@ export default {
           :filter-params="filters"
           :show-new-form="showNewForm"
           :column-index="columnIndex"
+          :dragged-type="draggedType"
+          @dragStop="$emit('dragStop')"
+          @dragStart="$emit('dragStart', $event)"
           @toggleNewForm="toggleNewForm"
           @setFilters="$emit('setFilters', $event)"
           @cannot-find-active-item="$emit('cannot-find-active-item')"

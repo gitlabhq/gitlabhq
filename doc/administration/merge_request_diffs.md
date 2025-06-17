@@ -17,9 +17,9 @@ Merge request diffs are size-limited copies of diffs associated with merge
 requests. When viewing a merge request, diffs are sourced from these copies
 wherever possible as a performance optimization.
 
-By default, merge request diffs are stored in the database, in a table named
-`merge_request_diff_files`. Larger installations may find this table grows too
-large, in which case, switching to external storage is recommended.
+By default, GitLab stores merge request diffs in the database, in a table named
+`merge_request_diff_files`. Larger installations might find this table grows too
+large, in which case, you should switch to external storage.
 
 Merge request diffs can be stored:
 
@@ -136,7 +136,7 @@ You should use the
 
 ## Alternative in-database storage
 
-Enabling external diffs may reduce the performance of merge requests, as they
+Enabling external diffs may reduce the performance of merge requests because they
 must be retrieved in a separate operation to other data. A compromise may be
 reached by only storing outdated diffs externally, while keeping current diffs
 in the database.
@@ -228,3 +228,18 @@ These environment variables modify the behavior of the Rake task:
 - `BATCH` and `UPDATE_DELAY` enable the speed of the migration to be traded off
   against concurrent access to the table.
 - `ANSI` should be set to `false` if your terminal does not support ANSI escape codes.
+
+To check the distribution of external diffs between object and local storage, use the following SQL query:
+
+```shell
+gitlabhq_production=# SELECT count(*) AS total,
+  SUM(CASE
+    WHEN external_diff_store = '1' THEN 1
+    ELSE 0
+  END) AS filesystem,
+  SUM(CASE
+    WHEN external_diff_store = '2' THEN 1
+    ELSE 0
+  END) AS objectstg
+FROM merge_request_diffs;
+```

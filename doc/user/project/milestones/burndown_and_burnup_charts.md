@@ -33,7 +33,7 @@ Differences between burndown and burnup charts are:
 - Burnup charts reflect the difference between an issue being moved to another milestone
   (**Total** issues line goes down) and an issue being closed (**Total** issues line remains unchanged).
 - Burndown charts measure "total issues minus closed issues" for each day while burnup charts measure
-  the total issues (open *and* closed) separately from the issues resolved for each day.
+  the total issues (open and closed) separately from the issues resolved for each day.
 
 ### Switch between number of issues and issue weight
 
@@ -43,7 +43,7 @@ When sorting by weight, make sure all your issues have a weight assigned, becaus
 
 ### When to use burndown and burnup charts
 
-Burndown and burnup charts provide valuable insights when tracking milestone progress. 
+Burndown and burnup charts provide valuable insights when tracking milestone progress.
 Their use depends on [how you structure your milestones](_index.md) in your workflow.
 
 These charts help teams:

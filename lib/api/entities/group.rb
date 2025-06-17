@@ -47,9 +47,8 @@ module API
         end
       end
 
-      expose :marked_for_deletion_on, if: ->(group, _) {
-        group.adjourned_deletion?
-      }
+      # It is always enabled since 18.0
+      expose :marked_for_deletion_on
 
       expose :root_storage_statistics, using: Entities::Namespace::RootStorageStatistics,
         if: ->(group, opts) {

@@ -367,6 +367,8 @@ class ApplicationSettingsAnalysis
     ^(
       encrypted_\w+_iv # ignore encryption-related extra columns
       |
+      tmp_\w+ # ignore migrate_to_encrypts-related columns
+      |
       \w+_html # ignore Markdown-caching extra columns
     )$
   }x
@@ -375,7 +377,7 @@ class ApplicationSettingsAnalysis
   DOC_API_SETTINGS_FILE_PATH = File.expand_path('../../doc/api/settings.md', __dir__)
   DOC_API_SETTINGS_TABLE_REGEX = Regexp.new(
     "## Available settings(?:.*?)(?:--\|\n)+?(?<rows>.+)" \
-      "### Inactive project settings", Regexp::MULTILINE
+      "### Dormant project settings", Regexp::MULTILINE
   )
 
   DOC_PAGE_HEADERS = [

@@ -7,7 +7,7 @@ title: Hardening - CI/CD Recommendations
 
 General hardening guidelines and philosophies are outlined in the [main hardening documentation](hardening.md).
 
-The hardening recommendations and concepts for CI/CD are discussed below.
+The hardening recommendations and concepts for CI/CD are discussed in the following section.
 
 ## Basic Recommendations
 

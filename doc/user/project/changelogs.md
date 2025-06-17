@@ -38,7 +38,7 @@ When adding new sections, GitLab parses these titles to determine where to place
 the new information in the file. GitLab sorts sections according to their versions,
 not their dates.
 
-Each section contains changes sorted by category (like **Features**), and the format
+Each section contains changes sorted by category (like "Features"), and the format
 of these sections can be changed. The section names derive from the values of the
 Git trailer used to include or exclude commits.
 
@@ -118,7 +118,7 @@ To generate the changelog:
      - `--from [string]`: The start of the range of commits (as a SHA) to use for
        generating the changelog. This commit itself isn't included in the changelog.
      - `--to [string]`: The end of the range of commits (as a SHA) to use for
-       generating the changelog. This commit _is_ included in the list. Defaults to the `HEAD`
+       generating the changelog. This commit is included in the list. Defaults to the `HEAD`
        of the default project branch.
    - `--date [string]`: The date and time of the release, in ISO 8601 (`2016-03-11T03:45:40Z`)
      format. Defaults to the current time.
@@ -355,7 +355,7 @@ This regular expression is based on the official
 support for tag names that start with the letter `v`.
 
 If your project uses a different format for tags, you can specify a different
-regular expression. The regular expression used _must_ produce the following
+regular expression. The regular expression used must produce the following
 capture groups. If any of these capture groups are missing, the tag is ignored:
 
 - `major`
@@ -404,7 +404,7 @@ graph LR
     B --> C[Commit C<br>Reverts commit B]
 ```
 
-However, if the revert commit (commit C) _also_ contains a changelog trailer,
+However, if the revert commit (commit C) also contains a changelog trailer,
 both commits A and C are included in the changelog:
 
 ```mermaid

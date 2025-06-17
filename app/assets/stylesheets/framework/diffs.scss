@@ -7,7 +7,8 @@ $diff-file-header: 41px;
 .diff-file {
   margin-bottom: $gl-padding;
 
-  table.code tr:last-of-type td:last-of-type {
+  .code.md-suggestion-diff {
+    border-bottom-left-radius: $gl-border-radius-base-inner;
     border-bottom-right-radius: $gl-border-radius-base-inner;
   }
 
@@ -19,9 +20,9 @@ $diff-file-header: 41px;
       cursor: auto;
     }
 
-    &:has(.dropdown-menu.show) {
-      z-index: $zindex-dropdown-menu;
-    }
+    &:has(.gl-new-dropdown-toggle[aria-expanded="true"]) {
+   z-index: $zindex-dropdown-menu;
+  }
 
     @media (max-width: map-get($grid-breakpoints, sm)-1) {
       .file-header-content {
@@ -339,12 +340,10 @@ $diff-file-header: 41px;
   .diff-file-container {
     .frame.deleted {
       border: 1px solid var(--gl-status-danger-icon-color);
-      background-color: inherit;
     }
 
     .frame.added {
       border: 1px solid var(--gl-status-success-icon-color);
-      background-color: inherit;
     }
 
     .swipe.view,
@@ -411,7 +410,7 @@ table.code {
   margin: 0;
   padding: 0;
   table-layout: fixed;
-  border-radius: 0 0 $gl-border-radius-base $gl-border-radius-base;
+  border-radius: 0 0 $gl-border-radius-large $gl-border-radius-large;
 
   .diff-td.highlight-top {
     box-shadow: 0 -1px var(--highlight-border-color, $blue-300);
@@ -800,7 +799,7 @@ table.code {
   margin: 0 $gl-padding $gl-padding;
 
   .notes {
-    @apply gl-rounded-base;
+    @apply gl-rounded-lg;
   }
 }
 

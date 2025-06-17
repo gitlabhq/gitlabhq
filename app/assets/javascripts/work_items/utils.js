@@ -35,8 +35,6 @@ import {
   WIDGET_TYPE_TIME_TRACKING,
   WIDGET_TYPE_VULNERABILITIES,
   WIDGET_TYPE_WEIGHT,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ROUTE_WORK_ITEM,
 } from './constants';
 
@@ -122,20 +120,19 @@ export const findHierarchyWidgetAncestors = (workItem) =>
   findHierarchyWidget(workItem)?.ancestors?.nodes || [];
 
 export const formatLabelForListbox = (label) => ({
-  text: label.title || label.text,
-  value: label.id || label.value,
+  text: label.title,
+  value: label.id,
   color: label.color,
+});
+
+export const formatUserForListbox = (user) => ({
+  ...user,
+  text: user.name,
+  value: user.id,
 });
 
 export const convertTypeEnumToName = (workItemTypeEnum) =>
   Object.keys(NAME_TO_ENUM_MAP).find((name) => NAME_TO_ENUM_MAP[name] === workItemTypeEnum);
-
-export const getEnumFromIssueTypeParameter = (param) => {
-  if (!param) {
-    return undefined;
-  }
-  return param === 'incident' ? WORK_ITEM_TYPE_ENUM_INCIDENT : WORK_ITEM_TYPE_ENUM_ISSUE;
-};
 
 /**
  * TODO: Remove this method with https://gitlab.com/gitlab-org/gitlab/-/issues/479637
@@ -278,7 +275,8 @@ export const autocompleteDataSources = ({ fullPath, iid, workItemTypeId, isGroup
 export const markdownPreviewPath = ({ fullPath, iid, isGroup = false }) => {
   const domain = gon.relative_url_root || '';
   const basePath = isGroup ? `groups/${fullPath}` : fullPath;
-  return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem&target_id=${iid}`;
+  const targetId = iid === NEW_WORK_ITEM_IID ? '' : `&target_id=${iid}`;
+  return `${domain}/${basePath}/-/preview_markdown?target_type=WorkItem${targetId}`;
 };
 
 // the path for creating a new work item of that type, e.g. /groups/gitlab-org/-/epics/new
@@ -401,8 +399,23 @@ export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISS
   );
 };
 
-export const getNewWorkItemAutoSaveKey = (fullPath, workItemType) => {
+export const getNewWorkItemAutoSaveKey = ({ fullPath, workItemType }) => {
   if (!workItemType || !fullPath) return '';
+
+  const allowedKeysInQueryParamString = ['vulnerability_id', 'discussion_to_resolve'];
+  const queryParams = new URLSearchParams(window.location.search);
+  // Remove extra params from queryParams
+  const allKeys = Array.from(queryParams.keys());
+  for (const key of allKeys) {
+    if (!allowedKeysInQueryParamString.includes(key)) {
+      queryParams.delete(key);
+    }
+  }
+  const queryParamString = queryParams.toString();
+
+  if (queryParamString) {
+    return `new-${fullPath}-${workItemType.toLowerCase()}-${queryParamString}-draft`;
+  }
   return `new-${fullPath}-${workItemType.toLowerCase()}-draft`;
 };
 

@@ -70,7 +70,7 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       it 'enables restrict_user_defined_variables' do
         setting.pipeline_variables_minimum_override_role = role if role
 
-        expect(project.restrict_user_defined_variables).to be_truthy
+        expect(project.restrict_user_defined_variables?).to be_truthy
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       it 'disables restrict_user_defined_variables' do
         setting.pipeline_variables_minimum_override_role = role if role
 
-        expect(project.restrict_user_defined_variables).to be_falsey
+        expect(project.restrict_user_defined_variables?).to be_falsey
       end
     end
 
@@ -108,7 +108,6 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
 
       before do
         setting.pipeline_variables_minimum_override_role = :maintainer
-        setting.restrict_user_defined_variables = true
       end
 
       it 'returns the set role' do
@@ -173,18 +172,17 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       end
 
       it 'disables restrict_user_defined_variables' do
-        expect(setting.restrict_user_defined_variables).to be false
+        expect(setting.restrict_user_defined_variables?).to be false
       end
     end
 
     context 'when setting nil value' do
       before do
-        setting.restrict_user_defined_variables = false
         setting.pipeline_variables_minimum_override_role = nil
       end
 
       it 'does not change the current settings' do
-        expect(setting.restrict_user_defined_variables).to be false
+        expect(setting.restrict_user_defined_variables?).to be true
       end
     end
   end

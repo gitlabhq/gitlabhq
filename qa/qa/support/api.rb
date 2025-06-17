@@ -195,6 +195,10 @@ module QA
       def success?(response_code)
         [HTTP_STATUS_NO_CONTENT, HTTP_STATUS_ACCEPTED, HTTP_STATUS_OK, HTTP_STATUS_CREATED].include?(response_code)
       end
+
+      def fatal_response?(response_code)
+        [HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_SERVER_ERROR, HTTP_STATUS_BAD_REQUEST].include?(response_code)
+      end
     end
   end
 end

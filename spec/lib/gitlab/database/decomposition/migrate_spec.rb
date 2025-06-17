@@ -104,7 +104,7 @@ RSpec.describe Gitlab::Database::Decomposition::Migrate, :delete, query_analyzer
         process
 
         ci_milestones = ci_connection.execute("SELECT COUNT(*) FROM milestones").getvalue(0, 0)
-        ci_pipelines = ci_connection.execute("SELECT COUNT(*) FROM ci_pipelines").getvalue(0, 0)
+        ci_pipelines = ci_connection.execute("SELECT COUNT(*) FROM p_ci_pipelines").getvalue(0, 0)
 
         expect(ci_milestones).to be(Milestone.count)
         expect(ci_pipelines).to be(Ci::Pipeline.count)

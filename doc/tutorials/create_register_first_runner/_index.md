@@ -117,7 +117,7 @@ define more [advanced runner configurations](https://docs.gitlab.com/runner/conf
 Here's what your `config.toml` should look like after you register and start the runner:
 
 ```toml
-  [[runners]]
+[[runners]]
   name = "my-project-runner1"
   url = "http://127.0.0.1:3000"
   id = 38
@@ -138,7 +138,7 @@ Next, trigger a pipeline in your project so you can view your runner execute a j
    your runner successfully executing the job:
 
    ```shell
-      Running with gitlab-runner 16.2.0 (782e15da)
+      Running with gitlab-runner 18.0.0 (d7f2cea7)
       on my-project-runner TOKEN, system ID: SYSTEM ID
       Preparing the "shell" executor
       00:00

@@ -13,13 +13,6 @@ title: Sign commits with SSH keys
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343879) in GitLab 15.7 [with a flag](../../../../administration/feature_flags.md) named `ssh_commit_signatures`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/384202) in GitLab 15.8. Feature flag `ssh_commit_signatures` removed.
-
-{{< /history >}}
-
 When you sign commits with SSH keys, GitLab uses the SSH public keys associated
 with your GitLab account to cryptographically verify the commit signature.
 If successful, GitLab displays a **Verified** label on the commit.
@@ -40,8 +33,8 @@ configure Git to begin using the key.
 
 Prerequisites:
 
-- Git 2.34.0 or newer.
-- OpenSSH 8.1 or newer.
+- Git 2.34.0 or later.
+- OpenSSH 8.1 or later.
 
   {{< alert type="note" >}}
 
@@ -49,10 +42,11 @@ Prerequisites:
 
   {{< /alert >}}
 
-- A SSH key with the usage type of either **Authentication & Signing** or **Signing**.
-  The SSH key must be one of these types:
-  - [ED25519](../../../ssh.md#ed25519-ssh-keys) (recommended)
-  - [RSA](../../../ssh.md#rsa-ssh-keys)
+- An SSH key with the **Usage type** `Authentication & Signing` or `Signing`.
+  The following SSH key types are supported:
+  - ED25519
+  - RSA
+  - ECDSA
 
 To configure Git to use your key:
 

@@ -23,15 +23,15 @@ To open the **Appearance** settings:
 
 ## Customize your homepage button
 
-Customize the appearance of your **Homepage** button.
+Customize the appearance of your homepage button.
 
-The **Homepage** button is located on the upper-left corner of the left sidebar.
-Replace the default **GitLab logo** {{< icon name="tanuki" >}} with any image.
+The homepage button is located on the upper-left corner of the left sidebar.
+Replace the default GitLab logo {{< icon name="tanuki" >}} with any image.
 
 - The file should be less than 1 MB.
 - The image should be 24 pixels high. Images more than 24 px high will be resized.
 
-To customize your **Homepage** icon image:
+To customize your homepage icon image:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Appearance**.
@@ -42,7 +42,7 @@ Pipeline status emails also show your custom logo. However, some email applicati
 
 ## Customize the favicon
 
-Customize the appearance of the favicon. A favicon is the icon for a website that shows in your browser tabs. The **GitLab logo** {{< icon name="tanuki" >}} is the default browser and CI/CD status favicon. Replace the default icon with any image that is `32 x 32` pixels and in `.png` or `.ico` format.
+Customize the appearance of the favicon. A favicon is the icon for a website that shows in your browser tabs. The GitLab logo {{< icon name="tanuki" >}} is the default browser and CI/CD status favicon. Replace the default icon with any image that is `32 x 32` pixels and in `.png` or `.ico` format.
 
 To change the favicon:
 
@@ -208,7 +208,7 @@ GitLab supports [Libravatar](https://www.libravatar.org) is for avatar images, b
 
 {{< /details >}}
 
-To [change the default color theme](../user/profile/preferences.md#change-the-color-theme) for all new users:
+To [change the default navigation theme](../user/profile/preferences.md#change-the-navigation-theme) for all new users:
 
 1. Add `gitlab_rails['gitlab_default_theme']` to your GitLab configuration file at `/etc/gitlab/gitlab.rb`:
 

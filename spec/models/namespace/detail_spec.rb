@@ -10,33 +10,7 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:namespace) }
-  end
-
-  context 'when namespace description changes' do
-    let(:namespace) { create(:namespace, description: "old") }
-
-    it 'changes namespace details description' do
-      expect { namespace.update!(description: "new") }
-        .to change { namespace.namespace_details.description }.from("old").to("new")
-    end
-  end
-
-  context 'when project description changes' do
-    let(:project) { create(:project, description: "old") }
-
-    it 'changes project namespace details description' do
-      expect { project.update!(description: "new") }
-        .to change { project.project_namespace.namespace_details.description }.from("old").to("new")
-    end
-  end
-
-  context 'when group description changes' do
-    let(:group) { create(:group, description: "old") }
-
-    it 'changes group namespace details description' do
-      expect { group.update!(description: "new") }
-        .to change { group.namespace_details.description }.from("old").to("new")
-    end
+    it { is_expected.to validate_length_of(:description).is_at_most(500) }
   end
 
   context 'with loose foreign key on namespace_details.creator_id' do
@@ -49,6 +23,15 @@ RSpec.describe Namespace::Detail, type: :model, feature_category: :groups_and_pr
         namespace.namespace_details
       end
     end
+  end
+
+  describe '#description_html' do
+    let_it_be(:namespace_details) { create(:namespace, description: '### Foo **Bar**').namespace_details }
+    let(:expected_description) { ' Foo <strong>Bar</strong> ' }
+
+    subject { namespace_details.description_html }
+
+    it { is_expected.to eq_no_sourcepos(expected_description) }
   end
 
   describe '#add_creator' do

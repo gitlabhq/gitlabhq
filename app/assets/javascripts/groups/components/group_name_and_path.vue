@@ -34,7 +34,7 @@ export default {
   i18n: {
     inputs: {
       name: {
-        placeholder: __('My awesome group'),
+        placeholder: __('My group'),
         description: s__(
           'Groups|Must start with letter, digit, emoji, or underscore. Can also contain periods, dashes, spaces, and parentheses.',
         ),

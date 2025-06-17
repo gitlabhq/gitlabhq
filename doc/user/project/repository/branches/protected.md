@@ -78,7 +78,6 @@ The protected branch displays in the list of protected branches.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106532) in GitLab 15.9 [with a flag](../../../../administration/feature_flags.md) named `group_protected_branches`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/500250) in GitLab 17.6. Feature flag `group_protected_branches` removed.
 
 {{< /history >}}
@@ -113,7 +112,7 @@ in the **Admin** area.
 ## Use wildcard rules
 
 When using wildcards, multiple rules can apply to a single branch.
-If more than one rule applies to a branch, the _most permissive_ rule controls
+If more than one rule applies to a branch, the most permissive rule controls
 how the branch behaves. For merge controls to work properly, set
 **Allowed to push and merge** to a broader set of users than **Allowed to merge**.
 
@@ -226,13 +225,13 @@ graph TD
 
 In this example:
 
-- **Parent group X** (`group-x`) owns **Project A**.
-- **Parent group X** also contains a subgroup, **Subgroup Y**. (`group-x/subgroup-y`)
-- **Project A** is shared with **Subgroup Y**.
+- Parent group X (`group-x`) owns Project A.
+- Parent group X also contains a subgroup, Subgroup Y. (`group-x/subgroup-y`)
+- Project A is shared with Subgroup Y.
 
 The eligible groups for protected branch permissions are:
 
-- **Project A**: Both **Group X** and **Subgroup Y**, because **Project A** is shared with **Subgroup Y**.
+- Project A: Both Group X and Subgroup Y, because Project A is shared with Subgroup Y.
 
 #### Share projects with groups
 
@@ -252,7 +251,7 @@ graph LR
     F -.-> |Add Subgroup Y<br/> to protected branch settings| J[Settings will not<br/>take effect] -.-> B
 ```
 
-To grant access to **Subgroup Y** members for **Project A**, you must share the project with
+To grant access to Subgroup Y members for Project A, you must share the project with
 the subgroup. Adding the subgroup directly to the protected branch settings is not effective
 and isn't applicable to subgroup members.
 
@@ -330,7 +329,7 @@ Members who can push to this branch can now also force push.
 {{< /details >}}
 
 For a protected branch, you can require at least one approval by a [Code Owner](../../codeowners/_index.md).
-If a branch is protected by multiple rules, code owner approval is required if _any_ of
+If a branch is protected by multiple rules, code owner approval is required if any of
 the applicable rules have **Required approval from code owners** enabled.
 
 To protect a new branch and enable Code Owner's approval:

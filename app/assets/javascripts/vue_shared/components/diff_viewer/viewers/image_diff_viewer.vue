@@ -32,6 +32,11 @@ export default {
       required: false,
       default: 0,
     },
+    encodePath: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -126,6 +131,7 @@ export default {
               deleted: diffMode === $options.diffModes.deleted,
             },
           ]"
+          :encode-path="encodePath"
         >
           <template v-if="isNew || isRenamed" #image-overlay="{ renderedWidth, renderedHeight }">
             <slot

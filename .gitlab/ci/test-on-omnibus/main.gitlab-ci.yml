@@ -99,6 +99,7 @@ praefect:
 # ========== gitaly transactions enabled ===========
 # https://docs.gitlab.com/ee/architecture/blueprints/gitaly_transaction_management/
 gitaly-transactions:
+  when: manual
   extends:
     - .parallel
     - .omnibus-e2e
@@ -295,8 +296,7 @@ metrics:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Integration::Metrics/
 
-# TODO: Enable job when https://gitlab.com/gitlab-org/gitlab/-/issues/541380 is completed
-.elasticsearch:
+elasticsearch:
   extends: .omnibus-e2e
   variables:
     QA_SCENARIO: "Test::Integration::Elasticsearch"

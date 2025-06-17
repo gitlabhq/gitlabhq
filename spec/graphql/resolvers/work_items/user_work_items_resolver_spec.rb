@@ -88,7 +88,6 @@ RSpec.describe Resolvers::WorkItems::UserWorkItemsResolver, feature_category: :t
 
   context "with group access" do
     before do
-      stub_feature_flags(namespace_level_work_items: true, work_item_epics: true)
       stub_licensed_features(epics: true)
     end
 

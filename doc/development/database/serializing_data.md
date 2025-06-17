@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Serializing Data
 ---
 
@@ -68,7 +68,7 @@ can take hours or even days to complete.
 
 When storing data as JSON or YAML you're essentially using your database as if
 it were a document store (for example, MongoDB), except you're not using any of the
-powerful features provided by a typical RDBMS _nor_ are you using any of the
+powerful features provided by a typical RDBMS nor are you using any of the
 features provided by a typical document store (for example, the ability to index fields
 of documents with variable fields). In other words, it's a waste.
 

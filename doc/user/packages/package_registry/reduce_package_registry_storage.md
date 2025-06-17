@@ -35,7 +35,7 @@ must delete the package and republish it.
 
 Prerequisites:
 
-- You must have at least the Developer role.
+- You must have at least the Maintainer role.
 
 To delete a package:
 

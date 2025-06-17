@@ -15,6 +15,32 @@ RSpec.describe Ci::BuildRunnerPresenter do
     }
   end
 
+  describe '#set_queue_metrics' do
+    let(:build) { create(:ci_build) }
+    let(:size) { 10 }
+    let(:depth) { 2 }
+
+    subject(:executed) do
+      presenter.set_queue_metrics(size: size, depth: depth)
+      presenter
+    end
+
+    it 'tracks information about queue size and depth' do
+      expect(executed.queue_size).to eq(10)
+      expect(executed.queue_depth).to eq(2)
+    end
+
+    context 'when queue size or depth is negative' do
+      let(:size) { -1 }
+      let(:depth) { -1 }
+
+      it 'sets queue size and depth to 0' do
+        expect(executed.queue_size).to eq(0)
+        expect(executed.queue_depth).to eq(0)
+      end
+    end
+  end
+
   describe '#artifacts' do
     context "when option contains archive-type artifacts" do
       let(:build) { create(:ci_build, options: { artifacts: archive }) }

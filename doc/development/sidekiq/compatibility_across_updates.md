@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Sidekiq Compatibility across Updates
 ---
 
@@ -34,8 +34,12 @@ scheduling of the new Sidekiq worker) with a feature flag.
 ## Changing the arguments for a worker
 
 Jobs need to be backward and forward compatible between consecutive versions
-of the application. Adding or removing an argument may cause problems
-during deployment before all Rails and Sidekiq nodes have the updated code.
+of the application. Adding or removing an argument may cause problems.
+
+During any deployment, there's a period of time where some application nodes have been updated while others haven't.
+If an updated node queues a job with new arguments, but an older Sidekiq node processes it, the job will fail due to an argument mismatch.
+
+For GitLab.com, this can occur if there are multiple deployments in the same milestone. Most self-managed deployments update all nodes sequentially in a single deployment cycle each release, so we need to spread the changes across multiple releases.
 
 ### Deprecate and remove an argument
 
@@ -74,10 +78,10 @@ following example deprecates and then removes `arg2` from the `perform_async` me
 
 There are two options for safely adding new arguments to Sidekiq workers:
 
-1. Set up a [multi-step deployment](#multi-step-deployment) in which the new argument is first added to the worker.
-1. Use a [parameter hash](#parameter-hash) for additional arguments. This is perhaps the most flexible option.
+- Set up a [multi-step release](#multi-step-release) in which the new argument is first added to the worker. Consider using a [parameter hash](#parameter-hash) for future flexibility.
+- If a worker already uses a [parameter hash](#parameter-hash) for additional arguments, pass the new argument in the hash. Workers that don't use a parameter hash yet need to go through the multi-step release to add it first.
 
-#### Multi-step deployment
+#### Multi-step release
 
 This approach requires multiple releases.
 

@@ -54,7 +54,7 @@ export default {
         class="gl-ml-auto"
         usage="simple"
         :selected-reviewers="reviewers"
-        :visible-reviewers="reviewers"
+        :eligible-reviewers="reviewers"
       />
     </template>
   </div>

@@ -13,7 +13,6 @@ Style/EmptyElse:
     - 'ee/app/helpers/ee/kerberos_helper.rb'
     - 'ee/app/services/gitlab_subscriptions/check_future_renewal_service.rb'
     - 'ee/app/services/projects/update_mirror_service.rb'
-    - 'ee/lib/elastic/latest/note_instance_proxy.rb'
     - 'ee/lib/gitlab/analytics/cycle_analytics/summary/change_failure_rate.rb'
     - 'lib/gitlab/auth/o_auth/provider.rb'
     - 'lib/gitlab/ci/variables/collection.rb'

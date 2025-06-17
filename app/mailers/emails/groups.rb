@@ -2,7 +2,7 @@
 
 module Emails
   module Groups
-    include NamespacesHelper
+    include Namespaces::DeletableHelper
 
     def group_was_exported_email(current_user, group)
       group_email(current_user, group, _('Group was exported'))
@@ -22,7 +22,7 @@ module Emails
       @group = ::Group.find(group_id)
       @user = ::User.find(recipient_id)
       @deletion_due_in_days = ::Gitlab::CurrentSettings.deletion_adjourned_period.days
-      @deletion_date = permanent_deletion_date_formatted(@group.marked_for_deletion_on, format: '%B %-d, %Y')
+      @deletion_date = permanent_deletion_date_formatted(@group, format: '%B %-d, %Y')
 
       email_with_layout(
         to: @user.email,

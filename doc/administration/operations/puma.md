@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Configure the bundled Puma instance of the GitLab package
 ---
@@ -48,7 +48,7 @@ When workers are restarted, capacity to run GitLab is reduced for a short
 period of time. Set `per_worker_max_memory_mb` to a higher value if workers are replaced too often.
 
 Worker count is calculated based on CPU cores. A small GitLab deployment
-with 4-8 workers may experience performance issues if workers are being restarted
+with 4-8 workers might experience performance issues if workers are being restarted
 too often (once or more per minute).
 
 A higher value of `1200` or more could be beneficial if the server has free memory.
@@ -284,7 +284,7 @@ consumption. Most Rails application requests usually include a proportion of I/O
 During I/O wait time, MRI Ruby releases the GVL to other threads.
 Multi-threaded Puma can therefore still serve more requests than a single process.
 
-When switching to Puma, any Unicorn server configuration will _not_ carry over
+When switching to Puma, any Unicorn server configuration will not carry over
 automatically, due to differences between the two application servers.
 
 To switch from Unicorn to Puma:
@@ -333,9 +333,9 @@ To switch from Unicorn to Puma:
 
 This error occurs when the Web server times out (default: 60 s) after not
 hearing back from the Puma worker. If the CPU spins to 100% while this is in
-progress, there may be something taking longer than it should.
+progress, there might be something taking longer than it should.
 
-To fix this issue, we first need to figure out what is happening. The
+To fix this issue, we first must figure out what is happening. The
 following tips are only recommended if you do not mind users being affected by
 downtime. Otherwise, skip to the next section.
 
@@ -348,7 +348,7 @@ downtime. Otherwise, skip to the next section.
    ```
 
 1. This forces the process to generate a Ruby backtrace. Check
-   `/var/log/gitlab/puma/puma_stderr.log` for the backtrace. For example, you may see:
+   `/var/log/gitlab/puma/puma_stderr.log` for the backtrace. For example, you might see:
 
    ```plaintext
    from /opt/gitlab/embedded/service/gitlab-rails/lib/gitlab/metrics/sampler.rb:33:in `block in start'
@@ -393,7 +393,7 @@ Refer to [Puma Worker timeout](puma.md#change-the-worker-timeout).
 
 #### Troubleshooting without affecting other users
 
-The previous section attached to a running Puma process, which may have
+The previous section attached to a running Puma process, which might have
 undesirable effects on users trying to access GitLab during this time. If you
 are concerned about affecting others during a production system, you can run a
 separate Rails process to debug the issue:
@@ -421,7 +421,7 @@ separate Rails process to debug the issue:
 
 This often occurs when GitLab Shell attempts to request authorization via the
 internal API (for example, `http://localhost:8080/api/v4/internal/allowed`), and
-something in the check fails. There are many reasons why this may happen:
+something in the check fails. This issue might occur for the following reasons:
 
 1. Timeout connecting to a database (for example, PostgreSQL or Redis)
 1. Error in Git hooks or push rules
@@ -429,7 +429,7 @@ something in the check fails. There are many reasons why this may happen:
 
 To diagnose this problem, try to reproduce the problem and then see if there
 is a Puma worker that is spinning via `top`. Try to use the `gdb`
-techniques above. In addition, using `strace` may help isolate issues:
+techniques documented previously. In addition, using `strace` might help isolate issues:
 
 ```shell
 strace -ttTfyyy -s 1024 -p <PID of puma worker> -o /tmp/puma.txt
@@ -443,7 +443,7 @@ on all the Puma workers to see where the
 ps auwx | grep puma | awk '{ print " -p " $2}' | xargs  strace -ttTfyyy -s 1024 -o /tmp/puma.txt
 ```
 
-The output in `/tmp/puma.txt` may help diagnose the root cause.
+The output in `/tmp/puma.txt` might help diagnose the root cause.
 
 ## Related topics
 

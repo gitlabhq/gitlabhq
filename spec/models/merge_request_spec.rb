@@ -234,6 +234,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it { expect(merge_requests).to match_array([merge_request1, merge_request3, merge_request4]) }
     end
 
+    describe '.with_valid_or_no_reviewers' do
+      subject(:merge_requests) { described_class.with_valid_or_no_reviewers([MergeRequestReviewer.states[:requested_changes]], user1) }
+
+      it { expect(merge_requests).to match_array([merge_request1, merge_request3, merge_request4]) }
+    end
+
     describe '.by_blob_path' do
       let(:path) { 'bar/branch-test.txt' }
 
@@ -1934,6 +1940,64 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#diff_stats memoization' do
+    let_it_be(:project) { create(:project, :repository) }
+    let(:old_sha) { 'abc123' }
+    let(:new_sha) { 'def456' }
+
+    let(:mr) do
+      create(:merge_request, source_project: project, target_project: project)
+    end
+
+    let(:old_stats) { double(real_size: 42) }
+    let(:new_stats) { double(real_size: 99) }
+
+    before do
+      # stub the diff_refs so base_sha and head_sha both return old_sha initially
+      allow(mr).to receive_message_chain(:diff_refs, :base_sha).and_return(old_sha)
+      allow(mr).to receive_message_chain(:diff_refs, :head_sha).and_return(old_sha)
+
+      allow(project.repository)
+        .to receive(:diff_stats)
+        .with(old_sha, old_sha)
+        .and_return(old_stats)
+
+      allow(project.repository)
+        .to receive(:diff_stats)
+        .with(new_sha, new_sha)
+        .and_return(new_stats)
+    end
+
+    it 'caches the first call, then clears cache and fetches new stats when branch changes' do
+      # first call hits the repo
+      expect(mr.diff_stats.real_size).to eq(42)
+      # second call uses the cache
+      expect(mr.diff_stats.real_size).to eq(42)
+
+      # verify repo.diff_stats was called exactly once with the old SHA
+      expect(project.repository)
+        .to have_received(:diff_stats)
+        .once
+        .with(old_sha, old_sha)
+
+      # now simulate a branch update (which should clear the memo)
+      mr.update!(source_branch: 'new-branch')
+      allow(mr).to receive_message_chain(:diff_refs, :base_sha).and_return(new_sha)
+      allow(mr).to receive_message_chain(:diff_refs, :head_sha).and_return(new_sha)
+
+      # first call after branch change hits the repo again
+      expect(mr.diff_stats.real_size).to eq(99)
+      # second call uses the fresh cache
+      expect(mr.diff_stats.real_size).to eq(99)
+
+      # verify repo.diff_stats was called once with the new SHA
+      expect(project.repository)
+        .to have_received(:diff_stats)
+        .once
+        .with(new_sha, new_sha)
+    end
+  end
+
   describe '#modified_paths' do
     let(:paths) { double(:paths) }
 
@@ -3137,7 +3201,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         merge_request = create(:merge_request, :with_terraform_reports)
         merge_request.diff_head_pipeline.update!(status: :running)
 
-        expect(merge_request.has_terraform_reports?).to be_truthy
+        expect(merge_request.has_terraform_reports?).to be_falsey
       end
     end
 
@@ -3146,6 +3210,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let_it_be(:child_pipeline) { create(:ci_pipeline, :with_terraform_reports, child_of: merge_request_with_pipeline.head_pipeline) }
 
       it 'returns true even if head pipeline does not have reports' do
+        merge_request_with_pipeline.head_pipeline.update!(status: :success)
+
         expect(merge_request_with_pipeline.has_terraform_reports?).to be_truthy
       end
 

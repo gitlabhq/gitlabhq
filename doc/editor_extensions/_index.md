@@ -58,6 +58,12 @@ Use [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md) to interact with an AI 
 - Ask about GitLab: Get answers about how GitLab works, concepts, and step-by-step instructions.
 - Code-related queries: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.
 
+## Editor Extensions team runbook
+
+Use the [Editor Extensions team runbook](https://gitlab.com/gitlab-com/runbooks/-/tree/master/docs/editor-extensions)
+to learn more about debugging all supported editor extensions. For internal users, this runbook contains instructions
+for requesting internal help.
+
 ## Feedback and contributions
 
 We value your input on both the traditional and AI-native features. If you have suggestions, encounter issues,

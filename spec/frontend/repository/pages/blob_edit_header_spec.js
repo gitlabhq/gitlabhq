@@ -7,6 +7,7 @@ import { HTTP_STATUS_OK, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/utils/ht
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitChangesModal from '~/repository/components/commit_changes_modal.vue';
 import BlobEditHeader from '~/repository/pages/blob_edit_header.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { stubComponent } from 'helpers/stub_component';
 
 jest.mock('~/alert');
@@ -46,6 +47,7 @@ describe('BlobEditHeader', () => {
         lastCommitSha: '782426692977b2cedb4452ee6501a404410f9b00',
       },
       stubs: {
+        PageHeading,
         CommitChangesModal: stubComponent(CommitChangesModal, {
           methods: {
             show: jest.fn(),

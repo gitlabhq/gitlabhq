@@ -120,29 +120,6 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
     end
   end
 
-  describe '#user_merge_requests_counts' do
-    let(:user) do
-      double(
-        assigned_open_merge_requests_count: 1,
-        review_requested_open_merge_requests_count: 2
-      )
-    end
-
-    subject { helper.user_merge_requests_counts }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-    end
-
-    it "returns assigned, review requested and total merge request counts" do
-      expect(subject).to eq(
-        assigned: user.assigned_open_merge_requests_count,
-        review_requested: user.review_requested_open_merge_requests_count,
-        total: user.assigned_open_merge_requests_count + user.review_requested_open_merge_requests_count
-      )
-    end
-  end
-
   describe '#reviewers_label' do
     let(:merge_request) { build_stubbed(:merge_request) }
     let(:reviewer1) { build_stubbed(:user, name: 'Jane Doe') }
@@ -466,6 +443,25 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
       end
 
       it { is_expected.to eq(expected) }
+    end
+  end
+
+  describe '#merge_request_dashboard_role_based_data' do
+    subject(:data) { merge_request_dashboard_role_based_data }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(current_user)
+    end
+
+    it do
+      expect(data.dig(:tabs, 0, :lists, 0, 2, :variables)).to include(
+        or: {
+          reviewerWildcard: "NONE",
+          onlyReviewerUsername: "GitLabDuo",
+          reviewStates: %w[REVIEWED REQUESTED_CHANGES]
+        },
+        perPage: 10
+      )
     end
   end
 end

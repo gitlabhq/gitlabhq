@@ -31,42 +31,11 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
         sign_in(user)
       end
 
+      it_behaves_like 'pushed feature flag', :packages_protected_packages_helm
       it_behaves_like 'pushed feature flag', :packages_protected_packages_nuget
       it_behaves_like 'pushed feature flag', :packages_protected_packages_delete
+      it_behaves_like 'pushed feature flag', :packages_protected_packages_generic
       it_behaves_like 'pushed feature flag', :container_registry_protected_containers_delete
-      it_behaves_like 'pushed feature flag', :container_registry_immutable_tags
-    end
-
-    context 'when createContainerRegistryProtectionImmutableTagRule ability is allowed' do
-      before do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?)
-          .with(user, :create_container_registry_protection_immutable_tag_rule, project)
-          .and_return(true)
-        sign_in(user)
-      end
-
-      it 'sets the frontend ability to true' do
-        subject
-
-        expect(response.body).to have_pushed_frontend_ability(createContainerRegistryProtectionImmutableTagRule: true)
-      end
-    end
-
-    context 'when createContainerRegistryProtectionImmutableTagRule ability is not allowed' do
-      before do
-        allow(Ability).to receive(:allowed?).and_call_original
-        allow(Ability).to receive(:allowed?)
-          .with(user, :create_container_registry_protection_immutable_tag_rule, project)
-          .and_return(false)
-        sign_in(user)
-      end
-
-      it 'sets the frontend ability to false' do
-        subject
-
-        expect(response.body).to have_pushed_frontend_ability(createContainerRegistryProtectionImmutableTagRule: false)
-      end
     end
   end
 

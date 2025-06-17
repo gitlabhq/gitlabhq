@@ -45,11 +45,11 @@ describe('WorkItemDrawer', () => {
 
   const createComponent = ({
     open = false,
+    isBoard = false,
     activeItem = { id: '1', iid: '1', webUrl: 'test', fullPath: 'gitlab-org/gitlab' },
     issuableType = TYPE_ISSUE,
     clickOutsideExcludeSelector = undefined,
     isGroup = true,
-    workItemsViewPreference = false,
     mountFn = shallowMountExtended,
     stubs = { WorkItemDetail },
   } = {}) => {
@@ -62,6 +62,7 @@ describe('WorkItemDrawer', () => {
         open,
         issuableType,
         clickOutsideExcludeSelector,
+        isBoard,
       },
       listeners: {
         customEvent: mockListener,
@@ -73,9 +74,6 @@ describe('WorkItemDrawer', () => {
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: true,
         isGroup,
-        glFeatures: {
-          workItemsViewPreference,
-        },
       },
       mocks: {
         $router: {
@@ -244,20 +242,20 @@ describe('WorkItemDrawer', () => {
       const fullPath = '/gitlab-org';
       createComponent({ activeItem: { fullPath } });
 
-      expect(findWorkItem().props('modalWorkItemFullPath')).toBe(fullPath);
+      expect(findWorkItem().props('workItemFullPath')).toBe(fullPath);
     });
 
     describe('when active issuable has no fullPath property', () => {
       it('uses injected fullPath if active issuable has no reference path or full path', () => {
         createComponent({ activeItem: {} });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+        expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
 
       it('passes correctly calculated path if active issuable is an issue', () => {
         createComponent({ activeItem: { referencePath: 'gitlab-org/gitlab#35' } });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+        expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
 
       it('passes correctly calculated fullPath if active issuable is an epic', () => {
@@ -266,7 +264,7 @@ describe('WorkItemDrawer', () => {
           issuableType: TYPE_EPIC,
         });
 
-        expect(findWorkItem().props('modalWorkItemFullPath')).toBe('gitlab-org/gitlab');
+        expect(findWorkItem().props('workItemFullPath')).toBe('gitlab-org/gitlab');
       });
     });
   });
@@ -306,7 +304,7 @@ describe('WorkItemDrawer', () => {
       expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
     });
 
-    it('does not call `router.push` when link is a group level work item and we are at the project level', () => {
+    it('calls `router.push` when link is a group level work item and we are at the project level', () => {
       createComponent({
         isGroup: false,
         activeItem: {
@@ -317,14 +315,12 @@ describe('WorkItemDrawer', () => {
       });
       findLinkButton().vm.$emit('click', new MouseEvent('click'));
 
-      expect(visitUrl).toHaveBeenCalledWith('/groups/gitlab-org/gitlab/-/work_items/1');
-      expect(mockRouterPush).not.toHaveBeenCalled();
+      expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
     });
 
-    it('calls `router.push` when issue as work item view is enabled and work item is in same project', () => {
+    it('calls `router.push` when work item is in same project', () => {
       createComponent({
         isGroup: false,
-        workItemsViewPreference: true,
         activeItem: {
           iid: '1',
           webUrl: '/gitlab-org/gitlab/-/work_items/1',
@@ -338,10 +334,9 @@ describe('WorkItemDrawer', () => {
       expect(mockRouterPush).toHaveBeenCalledWith({ name: 'workItem', params: { iid: '1' } });
     });
 
-    it('does not call `router.push` when issue as work item view is enabled and work item is in different project', () => {
+    it('does not call `router.push` when work item is in different project', () => {
       createComponent({
         isGroup: false,
-        workItemsViewPreference: true,
         activeItem: {
           iid: '1',
           webUrl: '/gitlab-org/gitlab-other/-/work_items/1',
@@ -421,6 +416,52 @@ describe('WorkItemDrawer', () => {
       await nextTick();
 
       expect(document.activeElement).toBe(document.getElementById('listItem-gitlab-org/gitlab/1'));
+      expect(wrapper.emitted('close')).toHaveLength(1);
+    });
+  });
+
+  describe('when drawer is opened from a board', () => {
+    let originalWindow;
+
+    beforeEach(() => {
+      originalWindow = global.window;
+      delete global.window;
+
+      global.window = {
+        ...originalWindow,
+        pendingApolloRequests: 2,
+      };
+    });
+
+    afterEach(() => {
+      global.window = originalWindow;
+    });
+
+    it('does not close drawer immediately when `pendingApolloRequests` exist when clicking to close drawer', () => {
+      createComponent({ isBoard: true, open: true });
+
+      findGlDrawer().vm.$emit('close');
+
+      // `close` wasn't called right away, it has a delay
+      expect(wrapper.emitted('close')).toBeUndefined();
+    });
+
+    it('does not close drawer immediately when `pendingApolloRequests` exist when clicking outside', () => {
+      createComponent({ isBoard: true, open: true });
+
+      document.dispatchEvent(new MouseEvent('click'));
+
+      // `close` wasn't called right away, it has a delay
+      expect(wrapper.emitted('close')).toBeUndefined();
+    });
+
+    it('closes drawer when `bypassPendingRequests` is true regardless of pending mutations', () => {
+      createComponent({ isBoard: true, open: true });
+
+      findGlDrawer().vm.$emit('close', false, true);
+
+      // `close` was force called after the timeout by setting `bypassPendingRequests` to true
+      expect(wrapper.emitted('close')).toHaveLength(1);
     });
   });
 });

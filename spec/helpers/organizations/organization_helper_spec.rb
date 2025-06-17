@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
+RSpec.describe Organizations::OrganizationHelper, feature_category: :organization do
   include Devise::Test::ControllerHelpers
 
   let_it_be(:user) { build_stubbed(:user, organization_groups_projects_sort: 'name_asc') }
@@ -161,7 +161,7 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_project_path' => '/projects/new',
           'association_counts' => stubbed_results,
           'organization_groups_projects_sort' => 'name_asc',
-          'organization_groups_projects_display' => 'projects'
+          'organization_groups_projects_display' => 'groups'
         }
       )
     end
@@ -203,9 +203,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'new_group_path' => '/-/organizations/default/groups/new',
           'new_project_path' => '/projects/new',
           'organization_groups_projects_sort' => 'name_asc',
-          'organization_groups_projects_display' => 'projects',
+          'organization_groups_projects_display' => 'groups',
           'user_preference_sort' => 'name_asc',
-          'user_preference_display' => 'projects'
+          'user_preference_display' => 'groups'
         }
       )
     end

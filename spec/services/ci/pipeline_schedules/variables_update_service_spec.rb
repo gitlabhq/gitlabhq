@@ -41,7 +41,7 @@ RSpec.describe Ci::PipelineSchedules::VariablesUpdateService, feature_category: 
       subject(:service) { described_class.new(pipeline_schedule_variable, developer, {}) }
 
       before do
-        project.update!(restrict_user_defined_variables: true)
+        project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
       end
 
       it 'returns ServiceResponse.error' do

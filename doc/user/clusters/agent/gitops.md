@@ -22,7 +22,7 @@ title: Using GitOps with a Kubernetes cluster
 {{< /history >}}
 
 GitLab integrates [Flux](https://fluxcd.io/flux/) for GitOps.
-To get started with Flux, see the [Flux for GitOps tutorial](gitops/flux_tutorial.md).
+To get started with Flux, see the [Flux for GitOps tutorial](getting_started.md).
 
 With GitOps, you can manage containerized clusters and applications from a Git repository that:
 

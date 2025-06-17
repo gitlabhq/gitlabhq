@@ -147,6 +147,7 @@ module Gitlab
             saver.execute
 
             log_invalid_subrelations(saver.invalid_subrelations, relation_key)
+            log_failed_subrelations(saver.failed_subrelations, relation_key)
           else
             if relation_object.invalid?
               Gitlab::Import::Errors.merge_nested_errors(relation_object)
@@ -354,6 +355,35 @@ module Gitlab
               relation_key: relation_key,
               exception_class: 'ActiveRecord::RecordInvalid',
               exception_message: record.errors.full_messages.to_sentence,
+              correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
+              importable_column_name => @importable.id
+            )
+          end
+        end
+
+        def log_failed_subrelations(failed_subrelations, relation_key)
+          failed_subrelations.each do |failure|
+            record = failure[:record]
+            exception = failure[:exception]
+
+            exception_class = exception.class.to_s
+            exception_message = exception.message
+            subrelation_class = record.class.to_s
+
+            @shared.logger.info(
+              message: '[Project/Group Import] Failed subrelation',
+              importable_column_name => @importable.id,
+              relation_key: relation_key,
+              exception_class: exception_class,
+              exception_message: exception_message,
+              subrelation: subrelation_class
+            )
+
+            ::ImportFailure.create(
+              source: 'RelationTreeRestorer#save_relation_object',
+              relation_key: relation_key,
+              exception_class: exception_class,
+              exception_message: exception_message,
               correlation_id_value: Labkit::Correlation::CorrelationId.current_or_new_id,
               importable_column_name => @importable.id
             )

@@ -136,7 +136,6 @@ export default {
     :items="items"
     :toggle-text="toggleText"
     :header-text="s__('WorkItem|Select template')"
-    size="small"
     :selected="selectedTemplateValue"
     :loading="loading"
     data-testid="template-dropdown"

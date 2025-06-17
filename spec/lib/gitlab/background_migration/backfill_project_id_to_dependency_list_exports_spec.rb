@@ -28,9 +28,11 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToDependencyListExp
   subject(:perform_migration) { described_class.new(**args).perform }
 
   before do
-    # This test shares the db connection to establish it's fixtures, resulting in
-    # incorrect connection usage, so we're skipping it.
-    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    # With the introduction of:
+    # CONSTRAINT check_67a9c23e79 CHECK ((num_nonnulls(group_id, organization_id, project_id) > 0))
+    # the table now has a sharding key. As this bbm was finalised in
+    # migration 20241106181154, making the spec pass isn't worht the effort.
+
     skip_if_multiple_databases_are_setup(:sec)
   end
 

@@ -9,7 +9,7 @@ module QA
         def self.included(base)
           super
 
-          base.view 'app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue' do
+          base.view 'app/assets/javascripts/wikis/components/wiki_form.vue' do
             element 'wiki-title-textbox'
             element 'wiki-path-textbox'
             element 'wiki-message-textbox'
@@ -24,7 +24,7 @@ module QA
             element 'editing-mode-switcher'
           end
 
-          base.view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
+          base.view 'app/assets/javascripts/wikis/components/delete_wiki_modal.vue' do
             element 'delete-button'
           end
         end

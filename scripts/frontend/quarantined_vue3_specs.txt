@@ -34,7 +34,6 @@ ee/spec/frontend/members/components/modals/ldap_override_confirmation_modal_spec
 ee/spec/frontend/members/components/table/drawer/role_updater_spec.js
 ee/spec/frontend/members/components/table/max_role_spec.js
 ee/spec/frontend/members/components/table/members_table_spec.js
-ee/spec/frontend/metrics/details/filter_bar/groupby_filter_spec.js
 ee/spec/frontend/metrics/details/metrics_details_spec.js
 ee/spec/frontend/metrics/details/related_traces_spec.js
 ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
@@ -79,7 +78,6 @@ spec/frontend/ci/runner/components/runner_filtered_search_bar_spec.js
 spec/frontend/ci_settings_pipeline_triggers/components/edit_trigger_modal_spec.js
 spec/frontend/clusters/agents/components/activity_history_item_spec.js
 spec/frontend/clusters/agents/components/revoke_token_button_spec.js
-spec/frontend/clusters/agents/components/show_spec.js
 spec/frontend/clusters/components/new_cluster_spec.js
 spec/frontend/clusters/components/remove_cluster_confirmation_spec.js
 spec/frontend/clusters_list/components/delete_agent_button_spec.js
@@ -118,7 +116,6 @@ spec/frontend/members/components/app_spec.js
 spec/frontend/members/components/modals/leave_modal_spec.js
 spec/frontend/members/components/table/max_role_spec.js
 spec/frontend/members/components/table/members_table_spec.js
-spec/frontend/ml/model_registry/apps/show_ml_model_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js
 spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
@@ -129,9 +126,8 @@ spec/frontend/packages_and_registries/package_registry/components/details/pypi_i
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/cleanup_image_tags_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js
-spec/frontend/pages/projects/forks/new/components/project_namespace_spec.js
 spec/frontend/pages/projects/pipeline_schedules/shared/components/interval_pattern_input_spec.js
-spec/frontend/pages/shared/wikis/components/delete_wiki_modal_spec.js
+spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
@@ -142,8 +138,6 @@ spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.j
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
 spec/frontend/repository/components/table/index_spec.js
-spec/frontend/repository/components/table/row_spec.js
-spec/frontend/search/sidebar/components/checkbox_filter_spec.js
 spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
 spec/frontend/sidebar/components/assignees/sidebar_assignees_widget_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
@@ -152,7 +146,6 @@ spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labe
 spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
 spec/frontend/snippets/components/snippet_description_edit_spec.js
-spec/frontend/super_sidebar/components/organization_switcher_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
 spec/frontend/tooltips/index_spec.js

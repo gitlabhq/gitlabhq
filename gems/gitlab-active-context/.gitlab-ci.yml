@@ -1,4 +1,17 @@
 include:
-  - local: gems/gem.gitlab-ci.yml
+  - local: gems/gem-pg.gitlab-ci.yml
     inputs:
       gem_name: "gitlab-active-context"
+
+.custom_db_setup:
+  before_script:
+    - apt update && apt install -y postgresql-client
+    - export PGPASSWORD=$POSTGRES_PASSWORD
+    - psql -h postgres -U $POSTGRES_USER -c 'create database gitlabhq_test;'
+    - psql -h postgres -U $POSTGRES_USER -c 'create database gitlabhq_ci_test;'
+    - !reference [default, before_script]
+
+rspec:
+  extends:
+    - .custom_db_setup
+    - .ruby_and_postgres_matrix

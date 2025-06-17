@@ -83,7 +83,9 @@ module ActiveContext
       def references
         reference_klasses = Array.wrap(self.class.reference_klasses)
         routing = self.class.routing(object)
-        collection_id = self.class.collection_record.id
+        collection_id = self.class.collection_record&.id
+
+        raise StandardError, "#{self.class} expected to have a collection record" unless collection_id
 
         reference_klasses.map do |reference_klass|
           reference_klass.serialize(collection_id: collection_id, routing: routing, data: object)

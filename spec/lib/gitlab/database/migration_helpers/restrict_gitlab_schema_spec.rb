@@ -123,12 +123,12 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
             }
           }
         },
-        "does add index to ci_builds in gitlab_main and gitlab_ci" => {
+        "does add index to p_ci_builds in gitlab_main and gitlab_ci" => {
           migration: ->(klass) do
             def change
               # Due to running in transaction we cannot use `add_concurrent_index`
-              index_name = 'index_ci_builds_on_tag_and_type_eq_ci_build'
-              add_index :ci_builds, :tag, where: "type = 'Ci::Build'", name: index_name
+              index_name = 'index_p_ci_builds_on_tag_and_type_eq_ci_build'
+              add_index :p_ci_builds, :tag, where: "type = 'Ci::Build'", name: index_name
             end
           end,
           query_matcher: /CREATE INDEX/,
@@ -499,13 +499,13 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
             # - this is a case for finalizing background migrations
             def up
               Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas.with_suppressed do
-                ::ApplicationRecord.connection.execute("SELECT 1 FROM ci_builds")
+                ::ApplicationRecord.connection.execute("SELECT 1 FROM p_ci_builds")
               end
             end
 
             def down; end
           end,
-          query_matcher: /FROM ci_builds/,
+          query_matcher: /FROM p_ci_builds/,
           setup: ->(_) { skip_if_shared_database(:ci) },
           expected: {
             no_gitlab_schema: {

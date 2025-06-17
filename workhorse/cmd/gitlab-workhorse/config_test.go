@@ -191,6 +191,7 @@ func TestConfigDefaults(t *testing.T) {
 		APICILongPollingDuration: 50 * time.Nanosecond, // TODO this is meant to be 50*time.Second but it has been wrong for ages
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
 		MetadataConfig:           config.DefaultMetadataConfig,
+		CircuitBreakerConfig:     config.DefaultCircuitBreakerConfig,
 	}
 
 	require.Equal(t, expectedCfg, cfg)
@@ -225,6 +226,7 @@ func TestCableConfigDefault(t *testing.T) {
 		APICILongPollingDuration: 50 * time.Nanosecond,
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
 		MetadataConfig:           config.DefaultMetadataConfig,
+		CircuitBreakerConfig:     config.DefaultCircuitBreakerConfig,
 	}
 	require.Equal(t, expectedCfg, cfg)
 }
@@ -291,6 +293,7 @@ func TestConfigFlagParsing(t *testing.T) {
 		ImageResizerConfig:       config.DefaultImageResizerConfig,
 		MetadataConfig:           config.DefaultMetadataConfig,
 		MetricsListener:          &config.ListenerConfig{Network: "tcp", Addr: "prometheus listen addr"},
+		CircuitBreakerConfig:     config.DefaultCircuitBreakerConfig,
 	}
 	require.Equal(t, expectedCfg, cfg)
 }

@@ -1,16 +1,17 @@
+#import "ee_else_ce/packages_and_registries/settings/project/graphql/fragments/container_protection_tag_rule.fragment.graphql"
+
 query getProjectContainerProtectionTagRules($projectPath: ID!, $first: Int) {
   project(fullPath: $projectPath) {
     id
     containerProtectionTagRules(first: $first) {
       nodes {
-        id
         tagNamePattern
-        immutable
         minimumAccessLevelForPush
         minimumAccessLevelForDelete
         userPermissions {
           destroyContainerRegistryProtectionTagRule
         }
+        ...ContainerProtectionTagRuleFragment
       }
     }
   }

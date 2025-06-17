@@ -5,21 +5,15 @@ module Gitlab
     extend self
 
     def enabled?
+      Gitlab.config.bullet.enabled
+    end
+
+    def extra_logging_enabled?
       Gitlab::Utils.to_boolean(ENV['ENABLE_BULLET'], default: false)
     end
-    alias_method :extra_logging_enabled?, :enabled?
 
     def configure_bullet?
-      defined?(::Bullet) && (enabled? || Gitlab.config.bullet.enabled)
-    end
-
-    def skip_bullet
-      return yield unless configure_bullet?
-
-      ::Bullet.enable = false
-      yield
-    ensure
-      ::Bullet.enable = true if configure_bullet?
+      Object.const_defined?(:Bullet) && enabled?
     end
   end
 end

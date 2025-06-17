@@ -58,7 +58,7 @@ function mountSubmitReviewButton(pinia) {
     el,
     pinia,
     render(h) {
-      return h(SubmitReviewButton, { attrs: { class: 'gl-ml-3' } });
+      return h(SubmitReviewButton);
     },
   });
 }

@@ -4,6 +4,8 @@
 - add_page_specific_style 'page_bundles/projects'
 - page_title _("Commits"), @ref
 
+%h1.gl-sr-only= page_title
+
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_path(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
@@ -18,6 +20,8 @@
           = commits_breadcrumbs
       #js-author-dropdown{ data: { 'commits_path': project_commits_path(@project), 'project_id': @project.id } }
       .tree-controls
+        .control
+          = link_button_to _('Browse files'), path_to_browse_file_or_directory(@project, @ref, @path)
         - if @merge_request.present?
           .control.gl-hidden.md:gl-block
             = link_button_to _("View open merge request"), project_merge_request_path(@project, @merge_request)

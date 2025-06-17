@@ -137,8 +137,7 @@ module Auth
 
     def self.patterns_metadata(project, user, actions)
       {
-        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions),
-        tag_immutable_patterns: tag_immutable_patterns(project, actions)
+        tag_deny_access_patterns: tag_deny_access_patterns(project, user, actions)
       }
     end
 
@@ -175,14 +174,6 @@ module Auth
       end
 
       patterns
-    end
-
-    def self.tag_immutable_patterns(project, actions)
-      return if project.nil?
-      return unless Feature.enabled?(:container_registry_immutable_tags, project)
-      return unless (actions & %w[push delete *]).any?
-
-      project.container_registry_protection_tag_rules.immutable.pluck_tag_name_patterns.presence
     end
 
     def authorized_token(*accesses)

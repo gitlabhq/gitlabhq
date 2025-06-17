@@ -202,7 +202,11 @@ describe('ValueStreamMetrics', () => {
       `('metric tiles', ({ identifier, index, value, label }) => {
         it(`renders a metric tile component for "${label}"`, () => {
           const metric = findMetrics().at(index);
-          expect(metric.props('metric')).toMatchObject({ identifier, value, label });
+          expect(metric.props()).toMatchObject({
+            metric: expect.objectContaining({ identifier, value, label }),
+            isProjectNamespace: false,
+            namespacePath: requestPath,
+          });
           expect(metric.isVisible()).toBe(true);
         });
       });
@@ -463,10 +467,14 @@ describe('ValueStreamMetrics', () => {
       const metric = findCommitsMetricTile();
 
       expect(metric.exists()).toBe(true);
-      expect(metric.props('metric')).toMatchObject({
-        identifier: 'commits',
-        value: '10',
-        label: 'Commits',
+      expect(metric.props()).toMatchObject({
+        metric: expect.objectContaining({
+          identifier: 'commits',
+          value: '10',
+          label: 'Commits',
+        }),
+        isProjectNamespace: true,
+        namespacePath: requestPath,
       });
     });
   });

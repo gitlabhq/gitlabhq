@@ -17,6 +17,9 @@ class Projects::IssuesController < Projects::ApplicationController
   prepend_before_action :store_uri, only: [:new, :show, :designs]
 
   before_action :disable_query_limiting, only: [:create_merge_request, :move, :bulk_update]
+  before_action :disable_show_query_limit!, only: :show
+  before_action :disable_create_query_limit!, only: :create
+
   before_action :check_issues_available!
   before_action :issue, unless: ->(c) { ISSUES_EXCEPT_ACTIONS.include?(c.action_name.to_sym) }
   before_action :require_incident_for_incident_routes, only: :show
@@ -69,7 +72,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action only: :show do
     push_frontend_feature_flag(:epic_widget_edit_confirmation, project)
-    push_frontend_feature_flag(:work_items_view_preference, current_user)
   end
 
   after_action :log_issue_show, only: :show
@@ -86,8 +88,7 @@ class Projects::IssuesController < Projects::ApplicationController
     :can_create_branch, :create_merge_request
   ]
   urgency :low, [
-    :index, :calendar, :show, :new, :create, :edit, :update,
-    :destroy, :move, :reorder, :designs, :toggle_subscription,
+    :index, :calendar, :show, :new, :update, :move, :reorder, :designs, :toggle_subscription,
     :discussions, :bulk_update, :realtime_changes,
     :toggle_award_emoji, :mark_as_spam, :related_branches,
     :can_create_branch, :create_merge_request
@@ -406,13 +407,22 @@ class Projects::IssuesController < Projects::ApplicationController
 
   private
 
+  def disable_show_query_limit!
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/544875', new_threshold: 120)
+  end
+
+  def disable_create_query_limit!
+    # TODO: Investigate threshold after epic-work item sync
+    # issue: https://gitlab.com/gitlab-org/gitlab/-/issues/438295
+    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/546668', new_threshold: 150)
+  end
+
   def show_work_item?
     # Service Desk issues and incidents should not use the work item view
     !issue.from_service_desk? &&
       !issue.work_item_type&.incident? &&
       (Feature.enabled?(:work_item_view_for_issues, project&.group) ||
-      (Feature.enabled?(:work_items_view_preference, current_user) &&
-      current_user&.user_preference&.use_work_items_view))
+      current_user&.user_preference&.use_work_items_view)
   end
 
   def work_item_redirect_except_actions
@@ -425,7 +435,7 @@ class Projects::IssuesController < Projects::ApplicationController
       errors: result.errors,
       http_status: result.http_status
     )
-    error_method_name = "render_#{result.http_status}".to_sym
+    error_method_name = :"render_#{result.http_status}"
 
     if respond_to?(error_method_name, true)
       send(error_method_name) # rubocop:disable GitlabSecurity/PublicSend

@@ -25,7 +25,7 @@ The batched background migrations framework has ChatOps support. Using ChatOps, 
 
 ## When to use batched background migrations
 
-Use a batched background migration when you migrate _data_ in tables containing
+Use a batched background migration when you migrate data in tables containing
 so many rows that the process would exceed
 [the time limits in our guidelines](../migration_style_guide.md#how-long-a-migration-should-take)
 if performed using a regular Rails migration.
@@ -309,7 +309,7 @@ We recommend that batched background migrations are finalized after all of the
 following conditions are met:
 
 - The batched background migration is completed on GitLab.com
-- The batched background migration was added in or before the last [required stop](required_stops.md). For example if 17.8 is a required stop and the migration was added in 17.7, the finalizing migration can be added in 17.9.
+- The batched background migration was added in or before the last [required stop](required_stops.md). For example if 17.8 is a required stop and the migration was added in 17.7, the [finalizing migration can be added in 17.9](required_stops.md#long-running-migrations-being-finalized).
 
 The `ensure_batched_background_migration_is_finished` call must exactly match
 the migration that was used to enqueue it. Pay careful attention to:
@@ -324,9 +324,7 @@ the migration that was used to enqueue it. Pay careful attention to:
 When finalizing a batched background migration you also need to update the
 `finalized_by` in the corresponding `db/docs/batched_background_migrations`
 file. The value should be the timestamp/version of the migration you added to
-finalize it. The [schema version of the RSpec tests](../testing_guide/testing_migrations_guide.md#testing-a-non-activerecordmigration-class)
-associated with the migration should also be set to this version to avoid having the tests fail due
-to future schema changes.
+finalize it.
 
 See the below [Examples](#examples) for specific details on what the actual
 migration code should be.
@@ -900,7 +898,7 @@ the previously enqueued BBM to handle any duplicate records.
 
 The following process has been configured to make dependencies more evident while writing a migration.
 
-- Version of the migration that queued the BBM is stored in _batched_background_migrations_ table and in BBM dictionary file.
+- Version of the migration that queued the BBM is stored in `batched_background_migrations` table and in BBM dictionary file.
 - `DEPENDENT_BATCHED_BACKGROUND_MIGRATIONS` constant is added (commented by default) in each migration file.
   To establish the dependency, add `queued_migration_version` of the dependent BBMs. If not, remove
   the commented line.
@@ -1216,7 +1214,7 @@ for more details.
    This can be achieve in different ways, depending on the scenario.
 
    - Generate an `UPDATE` query, and use `FROM` to join the tables
-   that provide the necessary values 
+   that provide the necessary values
    ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184051)).
    - Generate an `UPDATE` query, and use `FROM(VALUES( ...))` to
    pass values calculated beforehand
@@ -1247,6 +1245,106 @@ for more details.
      end
    end
    ```
+
+### Use of scope_to
+
+When writing a batched background migration class, you have the option to define a `scope_to` block. This block adds an additional qualifier to the query that determines the minimum and maximum range for each batch.
+
+By default, the batching range is determined using the primary key index, which is highly efficient. However, using `scope_to` means the query must consider only rows matching the given condition, potentially impacting performance.
+
+Consider the following simple query:
+
+```sql
+SELECT id FROM users WHERE id BETWEEN 1 AND 3000;
+```
+
+This query is fast because the `id` column is indexed. PostgreSQL can use an index-only scan to return results efficiently. The query plan might look like this:
+
+```plain
+QUERY PLAN
+---------------------------------------------------------------------------------------------------------------------------------
+Index Only Scan using users_pkey on users  (cost=0.44..307.24 rows=2751 width=4) (actual time=0.016..177.028 rows=2654 loops=1)
+  Index Cond: ((id >= 1) AND (id <= 3000))
+  Heap Fetches: 219
+Planning Time: 0.183 ms
+Execution Time: 177.158 ms
+```
+
+Now, let's apply a scope:
+
+```ruby
+scope_to ->(relation) { relation.where(theme_id: 4) }
+```
+
+This results in the following query:
+
+```sql
+SELECT id FROM users WHERE id BETWEEN 1 AND 3000 AND theme_id = 4;
+```
+
+The associated query plan is less efficient:
+
+```plain
+QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------
+Index Scan using users_pkey on users  (cost=0.44..3773.66 rows=10 width=4) (actual time=8.047..2290.528 rows=28 loops=1)
+  Index Cond: ((id >= 1) AND (id <= 3000))
+  Filter: (theme_id = 4)
+  Rows Removed by Filter: 2626
+Planning Time: 1.292 ms
+Execution Time: 2290.582 ms
+```
+
+In this case, PostgreSQL uses an index scan on `id` but applies the `theme_id` filter after row access. This causes many rows to be discarded after retrieval, resulting in degraded performance, over 12x slower in this case.
+
+#### When to override
+
+Use `scope_to` **only when the scoped column is indexed**, and ideally, the batching query avoids filtering out rows.
+
+A strong indicator of good performance is the absence of the `Rows Removed by Filter` line in the query plan.
+
+Let’s improve performance by indexing the `theme_id` column:
+
+```sql
+CREATE INDEX idx_users_theme_id ON users (theme_id);
+```
+
+Re-running the same query produces this plan:
+
+```plain
+QUERY PLAN
+--------------------------------------------------------------------------------------------------------------------------------
+Bitmap Heap Scan on users  (cost=691.28..706.53 rows=10 width=4) (actual time=13.532..13.578 rows=28 loops=1)
+  Recheck Cond: ((id >= 1) AND (id <= 3000) AND (theme_id = 4))
+  Heap Blocks: exact=28
+  Buffers: shared hit=41 read=62
+  I/O Timings: shared read=0.721
+  ->  BitmapAnd  (cost=691.28..691.28 rows=10 width=0) (actual time=13.509..13.511 rows=0 loops=1)
+        Buffers: shared hit=13 read=62
+        I/O Timings: shared read=0.721
+        ->  Bitmap Index Scan on users_pkey  (cost=0.00..45.95 rows=2751 width=0) (actual time=0.390..0.390 rows=2654 loops=1)
+              Index Cond: ((id >= 1) AND (id <= 3000))
+              Buffers: shared hit=10
+        ->  Bitmap Index Scan on idx_users_theme_id  (cost=0.00..645.08 rows=73352 width=0) (actual time=12.933..12.933 rows=69872 loops=1)
+              Index Cond: (theme_id = 4)
+              Buffers: shared hit=3 read=62
+              I/O Timings: shared read=0.721
+Planning:
+  Buffers: shared hit=35 read=1 dirtied=2
+  I/O Timings: shared read=0.045
+Planning Time: 0.514 ms
+Execution Time: 13.634 ms
+```
+
+#### Summary
+
+Use `scope_to` **only** when:
+
+- The scoped column is backed by an index.
+- Query plans avoid significant row filtering (`Rows Removed by Filter` is low or absent).
+- Batching remains efficient under real data loads.
+
+Otherwise, scoping can drastically reduce performance.
 
 ## Examples
 
@@ -1385,14 +1483,13 @@ background migration.
 
    ```ruby
    class FinalizeBackfillRouteNamespaceId < Gitlab::Database::Migration[2.1]
-     MIGRATION = 'BackfillRouteNamespaceId'
      disable_ddl_transaction!
 
      restrict_gitlab_migration gitlab_schema: :gitlab_main
 
      def up
        ensure_batched_background_migration_is_finished(
-         job_class_name: MIGRATION,
+         job_class_name: 'BackfillRouteNamespaceId',
          table_name: :routes,
          column_name: :id,
          job_arguments: [],

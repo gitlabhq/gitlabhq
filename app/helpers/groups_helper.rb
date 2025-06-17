@@ -78,70 +78,6 @@ module GroupsHelper
     end
   end
 
-  def group_confirm_modal_data(group:, remove_form_id: nil, permanently_remove: false, button_text: nil, has_security_policy_project: false)
-    {
-      remove_form_id: remove_form_id,
-      button_text: button_text.nil? ? _('Delete group') : button_text,
-      button_testid: 'remove-group-button',
-      disabled: (group.linked_to_subscription? || has_security_policy_project).to_s,
-      confirm_danger_message: remove_group_message(group, permanently_remove),
-      phrase: group.full_path,
-      html_confirmation_message: 'true'
-    }
-  end
-
-  def remove_group_message(group, permanently_remove)
-    return permanently_delete_group_message(group) if permanently_remove
-    return permanently_delete_group_message(group) unless group.adjourned_deletion?
-    return permanently_delete_group_message(group) if group.marked_for_deletion?
-
-    date = permanent_deletion_date_formatted(Date.current)
-
-    message = _("The contents of this group, its subgroups and projects will be permanently deleted after " \
-      "%{deletion_adjourned_period} days on %{date}. After this point, your data cannot be recovered.")
-    ERB::Util.html_escape(message) % {
-      date: tag.strong(date), deletion_adjourned_period: group.deletion_adjourned_period
-    }
-  end
-
-  def permanently_delete_group_message(group)
-    content = ''.html_safe
-    content << content_tag(:span, format(_("You are about to delete the group %{group_name}."), group_name: group.name))
-    additional_content = additional_removed_items(group)
-    content << additional_content if additional_content.present?
-    content << remove_group_warning
-  end
-
-  def additional_removed_items(group)
-    relations = {
-      _('subgroup') => group.children,
-      _('active project') => group.all_projects.non_archived,
-      _('archived project') => group.all_projects.archived
-    }
-
-    counts = relations.filter_map do |singular, relation|
-      count = limited_counter_with_delimiter(relation, limit: 100, include_zero: false)
-      content_tag(:li, pluralize(count, singular)) if count
-    end.join.html_safe
-
-    if counts.present?
-      content_tag(:span, _(" This action will also delete:")) +
-        content_tag(:ul, counts)
-    else
-      ''.html_safe
-    end
-  end
-
-  def remove_group_warning
-    message = _('After you delete a group, you %{strongOpen}cannot%{strongClose} restore it or its components.')
-    content_tag(:p, class: 'gl-mb-0') do
-      ERB::Util.html_escape(message) % {
-        strongOpen: '<strong>'.html_safe,
-        strongClose: '</strong>'.html_safe
-      }
-    end
-  end
-
   def share_with_group_lock_help_text(group)
     return default_help unless group.parent&.share_with_group_lock?
 
@@ -195,9 +131,10 @@ module GroupsHelper
   def group_overview_tabs_app_data(group)
     {
       group_id: group.id,
-      subgroups_and_projects_endpoint: group_children_path(group, format: :json),
+      subgroups_and_projects_endpoint:
+        group_children_path(group, format: :json, archived: false, not_aimed_for_deletion: true),
       shared_projects_endpoint: group_shared_projects_path(group, format: :json),
-      inactive_projects_endpoint: group_children_path(group, format: :json, archived: 'only'),
+      inactive_projects_endpoint: group_children_path(group, format: :json, active: false),
       current_group_visibility: group.visibility,
       initial_sort: project_list_sort_by,
       show_schema_markup: 'true',

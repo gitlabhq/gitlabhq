@@ -68,11 +68,11 @@ module Mutations
       end
 
       def source_id_param_name
-        "#{source_name}_id".to_sym
+        :"#{source_name}_id"
       end
 
       def source_members_key
-        "#{source_name}_members".to_sym
+        :"#{source_name}_members"
       end
 
       def source_name

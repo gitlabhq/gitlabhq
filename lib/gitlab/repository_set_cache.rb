@@ -47,6 +47,8 @@ module Gitlab
 
       return smembers if exists
 
+      log_cache_operation(key) if Feature.enabled?(:repository_set_cache_logging, repository.project)
+
       write(key, yield)
     end
 
@@ -66,6 +68,14 @@ module Gitlab
     end
 
     private
+
+    def log_cache_operation(key)
+      Gitlab::AppLogger.info(
+        message: 'RepositorySetCache cache miss',
+        cache_key: key,
+        class: self.class.name
+      )
+    end
 
     def cache
       Gitlab::Redis::RepositoryCache

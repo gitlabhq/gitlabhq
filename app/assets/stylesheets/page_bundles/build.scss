@@ -15,7 +15,7 @@
 
   .top-bar {
     @include job-log-top-bar;
-    @include translucent-glass-background;
+    @include translucent-glass-background(var(--gl-background-color-section));
 
     &.has-archived-block {
       top: calc(#{$calc-application-header-height} + 28px);
@@ -108,8 +108,7 @@
     overflow: auto;
 
     .icon-arrow-right {
-      left: 8px;
-      top: 12px;
+      @apply gl-top-3 gl-left-3;
     }
 
     .build-job {
@@ -119,6 +118,10 @@
 
       &:hover {
         @apply gl-bg-strong;
+      }
+
+      a:focus {
+        @apply gl-relative gl-z-2;
       }
     }
   }
@@ -246,7 +249,7 @@
   margin-left: $highlight-x-margin;
   margin-right: $highlight-x-margin;
 
-  background-color: var(--gl-color-alpha-light-4);
+  @apply gl-bg-alpha-light-8 dark:gl-bg-alpha-light-4;
 
   .arrow {
     left: $highlight-extra-x-padding;
@@ -269,6 +272,13 @@
   @media (max-width: map-get($grid-breakpoints, lg)) {
     padding-left: 1rem;
   }
+}
+
+.rca-bar-component.rca-bar-component-fullscreen {
+  left: 0;
+  width: 100%;
+  padding-left: .5rem;
+  transition: left 0.3s ease, width 0.3s ease, padding 0.3s ease;
 }
 
 .loader-animation {

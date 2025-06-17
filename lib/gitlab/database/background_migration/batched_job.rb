@@ -12,6 +12,7 @@ module Gitlab
 
         self.table_name = :batched_background_migration_jobs
 
+        MINIMUM_PAUSE_MS = 100
         MAX_ATTEMPTS = 3
         MAX_SIDEKIQ_SHUTDOWN_FAILURES = 15
         MIN_BATCH_SIZE = 1
@@ -24,6 +25,8 @@ module Gitlab
 
         belongs_to :batched_migration, foreign_key: :batched_background_migration_id
         has_many :batched_job_transition_logs, foreign_key: :batched_background_migration_job_id
+
+        validates :pause_ms, numericality: { greater_than_or_equal_to: MINIMUM_PAUSE_MS }
 
         scope :active, -> { with_statuses(:pending, :running) }
         scope :stuck, -> { active.where('updated_at <= ?', STUCK_JOBS_TIMEOUT.ago) }

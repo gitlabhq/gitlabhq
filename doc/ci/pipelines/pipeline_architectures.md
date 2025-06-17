@@ -125,7 +125,7 @@ you can use the [`needs` keyword](../yaml/needs.md) to define dependencies
 between your jobs. When GitLab knows the dependencies between your jobs,
 jobs can run as fast as possible, even starting earlier than other jobs in the same stage.
 
-In the example below, if `build_a` and `test_a` are much faster than `build_b` and
+In the following example, if `build_a` and `test_a` are much faster than `build_b` and
 `test_b`, GitLab starts `deploy_a` even if `build_b` is still running.
 
 ```mermaid
@@ -207,8 +207,8 @@ Additionally, sometimes the behavior of a pipeline needs to be more dynamic. The
 to choose to start sub-pipelines (or not) is a powerful ability, especially if the
 YAML is dynamically generated.
 
-In the [basic pipeline](#basic-pipelines) and [`needs` pipeline](#pipelines-with-the-needs-keyword)
-examples above, there are two packages that could be built independently.
+In the previous [basic pipeline](#basic-pipelines) and [`needs` pipeline](#pipelines-with-the-needs-keyword)
+examples, there are two packages that could be built independently.
 These cases are ideal for using [parent-child pipelines](downstream_pipelines.md#parent-child-pipelines).
 It separates out the configuration into multiple files, keeping things simpler.
 You can combine parent-child pipelines with:

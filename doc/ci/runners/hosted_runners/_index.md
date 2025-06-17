@@ -65,7 +65,7 @@ Hosted runners for GitLab.com are configured as such:
 
 The following graphic shows the architecture diagram of hosted runners for GitLab.com
 
-![Hosted runners for GitLab.com architecture](../img/gitlab-hosted_runners_architecture_v17_0.png)
+![Hosted runners for GitLab.com architecture](img/gitlab-hosted_runners_architecture_v17_0.png)
 
 For more information on how runners are authenticating and executing the job payload, see [Runner Execution Flow](https://docs.gitlab.com/runner#runner-execution-flow).
 
@@ -74,7 +74,7 @@ For more information on how runners are authenticating and executing the job pay
 In addition to isolating runners on the network, each ephemeral runner VM only serves a single job and is deleted straight after the job execution.
 In the following example, three jobs are executed in a project's pipeline. Each of these jobs runs in a dedicated ephemeral VM.
 
-![Job isolation](../img/build_isolation_v17_9.png)
+![Job isolation](img/build_isolation_v17_9.png)
 
 The build job ran on `runner-ns46nmmj-project-43717858`, test job on `f131a6a2runner-new2m-od-project-43717858` and deploy job on `runner-tmand5m-project-43717858`.
 
@@ -85,7 +85,7 @@ For more information about the security of hosted runners for GitLab.com, see:
 
 - [Google Cloud Infrastructure Security Design Overview whitepaper](https://cloud.google.com/docs/security/infrastructure/design/resources/google_infrastructure_whitepaper_fa.pdf)
 - [GitLab Trust Center](https://about.gitlab.com/security/)
-- [GitLab Security Compliance Controls](https://handbook.gitlab.com/handbook/security/security-assurance/security-compliance/sec-controls/)
+- GitLab Security Compliance Controls
 
 ### Caching on hosted runners for GitLab.com
 
@@ -101,7 +101,7 @@ For more information about how caching works, see [Architecture diagram of hoste
 Jobs that run on hosted runners for GitLab.com consume [compute minutes](../../pipelines/compute_minutes.md) allocated to your namespace.
 The number of minutes you can use on these runners depends on the included compute minutes in your [subscription plan](https://about.gitlab.com/pricing/) or [additionally purchased compute minutes](../../../subscriptions/gitlab_com/compute_minutes.md).
 
-For more information about the cost factor applied to the machine type based on size, see [cost factor](../../pipelines/compute_minutes.md#cost-factors-for-gitlab-hosted-runners).
+For more information about the cost factor applied to the machine type based on size, see [cost factor](../../pipelines/compute_minutes.md#cost-factors-of-hosted-runners-for-gitlabcom).
 
 ### SLO & Release cycle for hosted runners for GitLab.com
 

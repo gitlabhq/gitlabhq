@@ -57,6 +57,7 @@ the following sections and tables provide an alternative.
 | `policy_scope` | `object` of [`policy_scope`](_index.md#scope) | false | Scopes the policy based on projects, groups, or compliance framework labels you specify. |
 | `suffix` | `string` | false | Can either be `on_conflict` (default), or `never`. Defines the behavior for handling job naming conflicts. `on_conflict` applies a unique suffix to the job names for jobs that would break the uniqueness. `never` causes the pipeline to fail if the job names across the project and all applicable policies are not unique. |
 | `skip_ci` | `object` of [`skip_ci`](pipeline_execution_policies.md#skip_ci-type) | false | Defines whether users can apply the `skip-ci` directive. By default, the use of `skip-ci` is ignored and as a result, pipelines with pipeline execution policies cannot be skipped. |
+| `variables_override` | `object` of [`variables_override`](pipeline_execution_policies.md#variables_override-type) | false | Controls whether users can override the behavior of policy variables. By default, the policy variables are enforced with the highest precedence and users cannot override them. |
 
 Note the following:
 
@@ -206,6 +207,96 @@ from bypassing the pipeline execution policies.
 | `allowed` | `boolean`   | `true`, `false` | Flag to allow (`true`) or prevent (`false`) the use of the `skip-ci` directive for pipelines with enforced pipeline execution policies. |
 | `allowlist`             | `object` | `users` | Specify users who are always allowed to use `skip-ci` directive, regardless of the `allowed` flag. Use `users:` followed by an array of objects with `id` keys representing user IDs. |
 
+### `variables_override` type
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16430) in GitLab 18.1.
+
+{{< /history >}}
+
+| Field                   | Type     | Possible values          | Description |
+|-------------------------|----------|--------------------------|-------------|
+| `allowed` | `boolean`   | `true`, `false` | When `true`, other configurations can override policy variables. When `false`, other configurations cannot override policy variables. |
+| `exceptions` | `array` | `array` of `string` | Variables that are exceptions to the global rule. When `allowed: false`, the `exceptions` are an allowlist. When `allowed: true`, the `exceptions` are a denylist. |
+
+This option controls how user-defined variables are handled in pipelines with policies enforced. This feature allows you to:
+
+- Deny user-defined variables by default (recommended), which provides stronger security, but requires that you add all of the variables that should be customizable to the `exceptions` allowlist.
+- Allow user-defined variables by default, which provides more flexibility but lower security, as you must add variables that can affect policy enforcement to the `exceptions` denylist.
+- Define exceptions to the `allowed` global rule.
+
+User-defined variables can affect the behavior of any policy jobs in the pipeline and can come from various sources:
+
+- [Pipeline variables](../../../ci/variables/_index.md#use-pipeline-variables).
+- [Project variables](../../../ci/variables/_index.md#for-a-project).
+- [Group variables](../../../ci/variables/_index.md#for-a-group).
+- [Instance variables](../../../ci/variables/_index.md#for-an-instance).
+
+When the `variables_override` option is not specified, the "highest precedence" behavior is maintained. For more information about this behavior, see [precedence of variables in pipeline execution policies](#precedence-of-variables-in-pipeline-execution-policies).
+
+When the pipeline execution policy controls variable precedence, the job logs include the configured `variables_override` options and the policy name.
+To view these logs, `gitlab-runner` must be updated to version 18.1 or later.
+
+#### Example `variables_override` configuration
+
+Add the `variables_override` option to your pipeline execution policy configuration:
+
+```yaml
+pipeline_execution_policy:
+  - name: Security Scans
+    description: 'Enforce security scanning'
+    enabled: true
+    pipeline_config_strategy: inject_policy
+    content:
+      include:
+        - project: gitlab-org/security-policies
+          file: security-scans.yml
+    variables_override:
+      allowed: false
+      exceptions:
+        - CS_IMAGE
+        - SAST_EXCLUDED_ANALYZERS
+```
+
+##### Enforcing security scans while allowing container customization (allowlist approach)
+
+To enforce security scans but allow project teams to specify their own container image:
+
+```yaml
+variables_override:
+  allowed: false
+  exceptions:
+    - CS_IMAGE
+```
+
+This configuration blocks all user-defined variables except `CS_IMAGE`, ensuring that security scans cannot be disabled, while allowing teams to customize the container image.
+
+##### Prevent specific security variable overrides (denylist approach)
+
+To allow most variables, but prevent disabling security scans:
+
+```yaml
+variables_override:
+  allowed: true
+  exceptions:
+    - SECRET_DETECTION_DISABLED
+    - SAST_DISABLED
+    - DEPENDENCY_SCANNING_DISABLED
+    - DAST_DISABLED
+    - CONTAINER_SCANNING_DISABLED
+```
+
+This configuration allows all user-defined variables except those that could disable security scans.
+
+{{< alert type="warning" >}}
+
+While this configuration can provide flexibility, it is discouraged due to the security implications.
+Any variable that is not explicitly listed in the `exceptions` can be injected by the users. As a result,
+the policy configuration is not as well protected as when using the `allowlist` approach.
+
+{{< /alert >}}
+
 ### Policy scope schema
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
@@ -289,7 +380,7 @@ The project becomes a security policy project, and the setting becomes available
 {{< alert type="note" >}}
 
 To create downstream pipelines using `$CI_JOB_TOKEN`, you need to make sure that projects and groups are authorized to request the security policy project.
-In the security policy project, go to **Settings > CI/CD > Job token permissions** and add the authorized groups and projects to the allowlist. Alternatively, you can authorize all groups and projects.
+In the security policy project, go to **Settings > CI/CD > Job token permissions** and add the authorized groups and projects to the allowlist.
 If you don't see the **CI/CD** settings, go to **Settings > General > Visibility, project features, permissions** and enable **CI/CD**.
 
 {{< /alert >}}
@@ -297,7 +388,7 @@ If you don't see the **CI/CD** settings, go to **Settings > General > Visibility
 #### Configuration
 
 1. In the policy project, select **Settings** > **General** > **Visibility, project features, permissions**.
-1. Enable the setting **Pipeline execution policies: Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies.**
+1. Enable the setting **Pipeline execution policies: Grant access to the CI/CD configurations for projects linked to this security policy project as the source for security policies**.
 1. In the policy project, create a file for the policy CI/CD configuration.
 
    ```yaml
@@ -654,7 +745,7 @@ in a Git repository.
 {{< /alert >}}
 
 Pipeline execution jobs are executed in isolation. Variables defined in another policy or in the project's `.gitlab-ci.yml` file are not available in the pipeline execution policy
-and cannot be overwritten from the outside.
+and cannot be overwritten from the outside, unless permitted by the [variables_override type](#variables_override-type) type.
 
 Variables can be shared with pipeline execution policies using group or project settings, which follow the standard [CI/CD variable precedence](../../../ci/variables/_index.md#cicd-variable-precedence) rules. However, the precedence rules are more complex when using a pipeline execution policy as they can vary depending on the pipeline execution policy strategy:
 
@@ -674,7 +765,7 @@ When you use pipeline execution policies, especially with the `override_project_
 - Variables defined in a policy pipeline (for the entire instance or for a job) take precedence over variables defined in the project or group settings.
 - This behavior applies to all jobs, including those included from the project's CI/CD configuration file (`.gitlab-ci.yml`).
 
-### Example
+#### Example
 
 If a variable in a project's CI/CD configuration and a job variable defined in an included `.gitlab-ci.yml` file have the same name, the job variable takes precedence when using `override_project_ci`.
 
@@ -727,7 +818,7 @@ These examples demonstrate what you can achieve with pipeline execution policies
 ### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---
@@ -885,4 +976,22 @@ pipeline_execution_policy:
       allowlist:
         users:
           - id: 75
+```
+
+### Configure the `exists` condition
+
+Use the `exists` rule to configure the pipeline execution policy to include the CI/CD configuration file from the project when a certain file exists.
+
+In the following example, the pipeline execution policy includes the CI/CD configuration from the project if a `Dockerfile` exists. You must set the `exists` rule to use `'$CI_PROJECT_PATH'` as the `project`, otherwise GitLab evaluates where the files exists in the project that holds the security policy CI/CD configuration.
+
+```yaml
+include:
+  - project: $CI_PROJECT_PATH
+    ref: $CI_COMMIT_SHA
+    file: $CI_CONFIG_PATH
+    rules:
+      - exists:
+          paths:
+            - 'Dockerfile'
+          project: '$CI_PROJECT_PATH'
 ```

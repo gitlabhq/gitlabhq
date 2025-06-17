@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::CreateService, feature_category: :cell do
+RSpec.describe Organizations::CreateService, feature_category: :organization do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
 

@@ -53,7 +53,9 @@ module API
       end
 
       def authorize_ai_access!
-        forbidden!('Insufficient permissions for Duo Workflow') unless can?(current_user, :duo_workflow, user_project)
+        return if can?(current_user, :duo_workflow, user_project) || can?(current_user, :access_duo_agentic_chat, user_project)
+
+        forbidden!('Insufficient permissions for Duo Workflow')
       end
 
       def commit_response(attrs)

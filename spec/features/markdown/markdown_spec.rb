@@ -267,10 +267,6 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
         expect(doc).to parse_emoji
       end
 
-      aggregate_failures 'TableOfContentsLegacyFilter' do
-        expect(doc).to create_header_links
-      end
-
       aggregate_failures 'TableOfContentsTagFilter' do
         expect(doc).to create_toc
       end
@@ -377,7 +373,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
 
     it_behaves_like 'all pipelines'
 
-    it 'includes custom filters' do
+    it 'includes custom filters', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/538412' do
       aggregate_failures 'UploadLinkFilter' do
         expect(doc).to parse_upload_links
       end
@@ -388,10 +384,6 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :markdo
 
       aggregate_failures 'EmojiFilter' do
         expect(doc).to parse_emoji
-      end
-
-      aggregate_failures 'TableOfContentsLegacyFilter' do
-        expect(doc).to create_header_links
       end
 
       aggregate_failures 'TableOfContentsTagFilter' do

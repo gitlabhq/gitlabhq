@@ -732,4 +732,60 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       end
     end
   end
+
+  describe 'MergeRequest::DiffCommitUser' do
+    let(:relation_sym) { :'MergeRequest::DiffCommitUser' }
+    let(:relation_hash) do
+      {
+        'name' => 'Test Author',
+        'email' => 'test@example.com'
+      }
+    end
+
+    it 'creates a DiffCommitUser object' do
+      expect(created_object).to be_a(MergeRequest::DiffCommitUser)
+      expect(created_object.name).to eq('Test Author')
+      expect(created_object.email).to eq('test@example.com')
+    end
+
+    it 'passes project to ObjectBuilder' do
+      expect(Gitlab::ImportExport::Project::ObjectBuilder).to receive(:build).with(
+        MergeRequest::DiffCommitUser,
+        hash_including('project' => project)
+      ).and_call_original
+
+      created_object
+    end
+  end
+
+  describe 'MergeRequestDiffCommit' do
+    let(:relation_sym) { :merge_request_diff_commits }
+    let(:relation_hash) do
+      {
+        'sha' => '123abc',
+        'relative_order' => 1,
+        'message' => 'Test commit',
+        'authored_date' => '2023-01-01',
+        'committed_date' => '2023-01-01',
+        'author_name' => 'Test Author',
+        'author_email' => 'author@example.com',
+        'committer_name' => 'Test Committer',
+        'committer_email' => 'committer@example.com'
+      }
+    end
+
+    it 'creates a MergeRequestDiffCommit object' do
+      expect(created_object).to be_a(MergeRequestDiffCommit)
+      expect(created_object.sha).to eq('123abc')
+    end
+
+    it 'passes project to ObjectBuilder' do
+      expect(Gitlab::ImportExport::Project::ObjectBuilder).to receive(:build).with(
+        MergeRequestDiffCommit,
+        hash_including('project' => project)
+      ).and_call_original
+
+      created_object
+    end
+  end
 end

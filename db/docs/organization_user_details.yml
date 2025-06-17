@@ -1,0 +1,13 @@
+---
+table_name: organization_user_details
+classes:
+- Organizations::OrganizationUserDetail
+feature_categories:
+- cell
+description: |
+  Store organization-specific usernames and other user details. This allows users in organizations to be referenced by their organization-assigned handles (usernames) as opposed to their global, platform-wide usernames.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191575
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

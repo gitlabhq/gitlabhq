@@ -77,6 +77,18 @@ module ProfilesHelper
       user_path: user_path(current_user),
       timezones: timezone_data_with_unique_identifiers.to_json,
       user_timezone: user.timezone,
+      id: user.id,
+      name: user.name,
+      pronouns: user.pronouns,
+      location: user.location,
+      pronunciation: user.pronunciation,
+      website_url: user.website_url,
+      job_title: user.job_title,
+      organization: user.organization,
+      bio: user.bio,
+      include_private_contributions: user.include_private_contributions?.to_s,
+      achievements_enabled: user.achievements_enabled.to_s,
+      private_profile: user.private_profile?.to_s,
       **user_status_properties(user)
     }
   end

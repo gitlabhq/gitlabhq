@@ -1,7 +1,11 @@
 # frozen_string_literal: true
 
 module CrystalballEnv
-  EXCLUDED_PREFIXES = %w[vendor/ruby].freeze
+  EXCLUDED_PREFIXES = [
+    %r{vendor/ruby},
+    %r{(ee/)?db/migrate/\d{14}_init_schema\.rb},
+    %r{(ee/)?db/fixtures/development}
+  ].freeze
 
   extend self
 
@@ -10,47 +14,37 @@ module CrystalballEnv
 
     require 'crystalball'
 
-    enable_described_strategy # We use this for writing and reading
-
-    # TODO: Please work on https://gitlab.com/gitlab-org/gitlab/-/issues/498479 before enabling CoverageStrategy again
-    # enable_coverage_strategy # We use this only for writing for now
+    # Primary strategy currently used for predictive testing
+    enable_described_strategy
+    # Coverage based strategy. See: https://gitlab.com/groups/gitlab-org/quality/analytics/-/epics/13
+    enable_coverage_strategy if ENV['CRYSTALBALL_COVERAGE_STRATEGY'] == 'true'
   end
 
   def enable_described_strategy
-    require_relative '../tooling/lib/tooling/crystalball/described_class_execution_detector'
-
     Crystalball::MapGenerator.start! do |config|
       config.map_storage_path = "crystalball/described/#{map_storage_name}.yml"
 
-      # https://toptal.github.io/crystalball/map_generators/#describedclassstrategy
-      described_class_execution_detector = Tooling::Crystalball::DescribedClassExecutionDetector.new(
-        root_path: File.expand_path('../', __dir__),
-        exclude_prefixes: EXCLUDED_PREFIXES
-      )
-      config.register Crystalball::MapGenerator::DescribedClassStrategy.new(
-        execution_detector: described_class_execution_detector
-      )
+      execution_detector = Crystalball::MapGenerator::ObjectSourcesDetector.new(**excluded_prefixes)
+      config.register Crystalball::MapGenerator::DescribedClassStrategy.new(execution_detector: execution_detector)
     end
   end
 
   def enable_coverage_strategy
-    # Modified version of https://toptal.github.io/crystalball/map_generators/#coveragestrategy
-    require_relative '../tooling/lib/tooling/crystalball/coverage_lines_execution_detector'
-    require_relative '../tooling/lib/tooling/crystalball/coverage_lines_strategy'
-
     Crystalball::MapGenerator.start! do |config|
       config.map_storage_path = "crystalball/coverage/#{map_storage_name}.yml"
+      config.hook_type = :context
 
-      execution_detector = Tooling::Crystalball::CoverageLinesExecutionDetector
-        .new(exclude_prefixes: EXCLUDED_PREFIXES)
+      execution_detector = Crystalball::MapGenerator::CoverageStrategy::ExecutionDetector.new(**excluded_prefixes)
+      config.register Crystalball::MapGenerator::CoverageStrategy.new(execution_detector: execution_detector)
 
-      config.register Tooling::Crystalball::CoverageLinesStrategy
-        .new(execution_detector)
-
-      # https://toptal.github.io/crystalball/map_generators/#actionviewstrategy
+      # https://gitlab.com/gitlab-org/ruby/gems/crystalball/-/blob/main/docs/map_generators.md?ref_type=heads#actionviewstrategy
       # require 'crystalball/rails/map_generator/action_view_strategy'
       # config.register Crystalball::Rails::MapGenerator::ActionViewStrategy.new
     end
+  end
+
+  def excluded_prefixes
+    { exclude_prefixes: EXCLUDED_PREFIXES }
   end
 
   def map_storage_name

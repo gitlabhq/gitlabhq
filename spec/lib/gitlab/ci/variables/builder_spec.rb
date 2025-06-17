@@ -34,7 +34,7 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       { key: 'GITLAB_CI',
         value: 'true' },
       { key: 'CI_SERVER_FQDN',
-        value: Gitlab.config.gitlab_ci.server_fqdn },
+        value: Gitlab.config.gitlab.server_fqdn },
       { key: 'CI_SERVER_URL',
         value: Gitlab.config.gitlab.url },
       { key: 'CI_SERVER_HOST',
@@ -215,7 +215,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         allow(builder).to receive(:secret_project_variables) { [var('L', 12), var('M', 12)] }
         allow(pipeline).to receive(:variables) { [var('M', 13), var('N', 13)] }
         allow(pipeline).to receive(:pipeline_schedule) { double(job_variables: [var('N', 14), var('O', 14)]) }
-        allow(builder).to receive(:release_variables) { [var('P', 15), var('Q', 15)] }
+        allow(job).to receive(:manual_variables) { [var('O', 15), var('P', 15)] }
+        allow(builder).to receive(:release_variables) { [var('P', 16), var('Q', 16)] }
       end
 
       it 'returns variables in order depending on resource hierarchy' do
@@ -233,7 +234,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
            var('L', 12), var('M', 12),
            var('M', 13), var('N', 13),
            var('N', 14), var('O', 14),
-           var('P', 15), var('Q', 15)])
+           var('O', 15), var('P', 15),
+           var('P', 16), var('Q', 16)])
       end
 
       it 'overrides duplicate keys depending on resource hierarchy' do
@@ -245,8 +247,8 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
           'I' => '9', 'J' => '10',
           'K' => '11', 'L' => '12',
           'M' => '13', 'N' => '14',
-          'O' => '14', 'P' => '15',
-          'Q' => '15')
+          'O' => '15', 'P' => '16',
+          'Q' => '16')
       end
     end
 

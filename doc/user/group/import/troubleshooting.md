@@ -131,7 +131,7 @@ You can receive other `404` errors when importing a group, for example:
 "exception_class": "BulkImports::NetworkError",
 ```
 
-This error indicates a problem transferring from the _source_ instance. To solve this, check that you have met the
+This error indicates a problem transferring from the source instance. To solve this, check that you have met the
 [prerequisites](direct_transfer_migrations.md#prerequisites) on the source instance.
 
 ## Mismatched group or project path names
@@ -168,3 +168,37 @@ To resolve this issue:
 For more information about the relations and batches that failed to export,
 use the export status API endpoints for [projects](../../../api/project_relations_export.md#export-status)
 and [groups](../../../api/group_relations_export.md#export-status) on the source instance.
+
+## Error: `duplicate key value violates unique constraint`
+
+When importing records, you might get the following error:
+
+```plaintext
+PG::UniqueViolation: ERROR:  duplicate key value violates unique constraint
+```
+
+This error might occur when a Sidekiq worker processing the import
+restarts due to high memory or CPU usage during import.
+
+To reduce Sidekiq memory or CPU issues during import:
+
+- Optimize [Sidekiq configuration](../../project/import/_index.md#sidekiq-configuration) for imports.
+- Limit the number of concurrent jobs in the `bulk_import_concurrent_pipeline_batch_limit` [application setting](../../../api/settings.md).
+
+## Error: `BulkImports::FileDownloadService::ServiceError Invalid content type`
+
+When using direct transfer between GitLab instances, you might encounter the following error:
+
+```plaintext
+BulkImports::FileDownloadService::ServiceError Invalid content type
+```
+
+This error is related to how network traffic is routed between instances.
+If a content type other than `application/gzip` is returned,
+your network requests might be bypassing GitLab Workhorse.
+
+To resolve this issue:
+
+- Check that your Ingress is configured to route traffic through
+  GitLab Workhorse on port `8181` rather than directly to Puma.
+- Consider enabling [proxy downloads](../../../administration/object_storage.md#proxy-download) for object storage.

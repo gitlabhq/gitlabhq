@@ -15,18 +15,27 @@ title: GitLab agent configuration
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
+- Feature flag `remote_development_feature_flag` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
 {{< /history >}}
 
-When you [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure), you must configure a GitLab agent to support workspaces. This guide assumes that a GitLab agent is already installed in the Kubernetes cluster.
+When you [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure),
+you must configure a GitLab agent to support workspaces. This guide assumes that a GitLab
+agent is already installed in the Kubernetes cluster.
 
 Prerequisites:
 
 - You must complete the setup steps in [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md).
-- The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set. For more information, see [workspace settings](settings.md).
+- The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set.
+
+  {{< alert type="note" >}}
+
+  If you disable the `remote_development` module on an agent that has active workspaces,
+  those workspaces become unusable. For more information, see
+  [workspace settings](settings.md#enabled).
+
+  {{< /alert >}}
 - The agent must be allowed in a group for the purpose of creating workspaces. During workspace creation, users can select allowed agents that are associated with any parent group of the workspace project.
 - The workspace creator must have the Developer role to the project of the agent.
 

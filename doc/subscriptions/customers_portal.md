@@ -94,12 +94,22 @@ To change the subscription contact:
 
 ### Add a billing account manager
 
-Billing account managers can view and manage subscriptions and billing account information in the Customers Portal.
+Billing account managers can view and edit subscriptions, payment methods, and account settings, as well as pay and download invoices.
 
 To add another billing account manager for your account:
 
 1. Ensure an account exists in the [Customers Portal](https://customers.gitlab.com/customers/sign_in) for the user you want to add.
-1. [Create a ticket with the Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293). Include any relevant material in your request.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Billing account managers** section.
+1. Select **Invite billing account manager**.
+1. Enter the email address of the user you want to add.
+1. Select **Invite**.
+
+The invited user receives an email with an invitation to the Customers Portal.
+The invitation is valid for seven days.
+If the user does not accept the invitation before it expires, you can send them a new invitation.
+You can have maximum 15 pending invitations at a time.
 
 ### Change your billing contact
 
@@ -167,6 +177,10 @@ method as the default:
 1. On the left sidebar, select **Billing account settings**.
 1. **Edit** the selected payment method and check the **Make default payment method** checkbox.
 1. Select **Save Changes**.
+
+### Delete a default payment method
+
+You cannot delete your default payment method directly through the Customers Portal. To delete a default payment method, [contact our Billing team](https://customers.gitlab.com/contact_us) for assistance.
 
 ## Pay for an invoice
 

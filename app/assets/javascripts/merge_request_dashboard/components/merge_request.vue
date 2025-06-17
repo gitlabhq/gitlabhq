@@ -3,6 +3,7 @@ import { GlLink, GlSprintf, GlIcon, GlTooltipDirective, GlLabel } from '@gitlab/
 import ApprovalCount from 'ee_else_ce/merge_requests/components/approval_count.vue';
 import { __, n__, sprintf } from '~/locale';
 import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
@@ -44,10 +45,6 @@ export default {
     listId: {
       type: String,
       required: true,
-    },
-    isLast: {
-      type: Boolean,
-      required: false,
     },
     newMergeRequestIds: {
       type: Array,
@@ -91,6 +88,9 @@ export default {
     isNewlyAdded() {
       return this.newMergeRequestIds.includes(this.mergeRequest.id);
     },
+    authorId() {
+      return getIdFromGraphQLId(this.mergeRequest.author.id);
+    },
   },
   methods: {
     isScopedLabel,
@@ -99,24 +99,27 @@ export default {
 </script>
 
 <template>
-  <tr :class="{ 'gl-border-b': !isLast, 'gl-bg-green-50': isNewlyAdded }">
-    <td class="gl-py-4 gl-pl-5 gl-pr-3 gl-align-top">
+  <div :class="{ 'gl-bg-green-50': isNewlyAdded }" role="row">
+    <div role="cell">
       <status-badge :merge-request="mergeRequest" :list-id="listId" />
-    </td>
-    <td class="gl-px-3 gl-py-4 gl-align-top">
+    </div>
+    <div role="cell" class="gl-flex gl-flex-col gl-items-start gl-gap-2">
       <gl-link
         :href="mergeRequest.webUrl"
         class="gl-font-bold gl-text-default hover:gl-text-default"
       >
         {{ mergeRequest.title }}
       </gl-link>
-      <div class="gl-mb-2 gl-mt-2 gl-text-sm gl-text-subtle">
+      <div class="gl-text-sm gl-text-subtle">
         <gl-sprintf :message="__('%{reference} %{author} %{stats} %{milestone}')">
           <template #reference>{{ mergeRequest.reference }}</template>
           <template #author>
             <gl-link
               :href="mergeRequest.author.webUrl"
-              class="gl-mx-2 gl-inline-flex gl-align-bottom gl-text-subtle"
+              :data-name="mergeRequest.author.name"
+              :data-user-id="authorId"
+              :data-username="mergeRequest.author.username"
+              class="js-user-link gl-mx-2 gl-inline-flex gl-align-bottom gl-text-subtle"
             >
               <user-avatar-image
                 :img-src="mergeRequest.author.avatarUrl"
@@ -158,7 +161,7 @@ export default {
       </div>
       <div
         v-if="isShowingLabels && mergeRequest.labels.nodes.length"
-        class="gl-mt-3"
+        class="gl-mt-3 gl-flex gl-flex-wrap gl-gap-2"
         data-testid="labels-container"
       >
         <gl-label
@@ -169,18 +172,17 @@ export default {
           :description="label.description"
           size="sm"
           :scoped="isScopedLabel(label)"
-          class="gl-mr-2"
         />
       </div>
-    </td>
-    <td class="gl-px-3 gl-py-4 gl-align-top">
+    </div>
+    <div role="cell">
       <assigned-users :users="mergeRequest.assignees.nodes" type="ASSIGNEES" />
-    </td>
-    <td class="gl-px-3 gl-py-4 gl-align-top">
+    </div>
+    <div role="cell">
       <assigned-users :users="mergeRequest.reviewers.nodes" type="REVIEWERS" />
-    </td>
-    <td class="gl-py-4 gl-pl-3 gl-pr-5 gl-align-top">
-      <div class="gl-flex gl-justify-end gl-gap-3">
+    </div>
+    <div class="gl-flex gl-flex-col gl-items-end gl-gap-2" role="cell">
+      <div class="gl-flex gl-gap-3">
         <gl-icon
           v-if="isMergeRequestBroken"
           v-gl-tooltip
@@ -202,13 +204,13 @@ export default {
           show-tooltip
         />
       </div>
-      <div class="gl-mt-1 gl-text-right gl-text-sm gl-text-subtle">
+      <div class="gl-text-sm gl-text-subtle">
         <gl-sprintf :message="__('Updated %{updatedAt}')">
           <template #updatedAt>
             <time-ago-tooltip :time="mergeRequest.updatedAt" />
           </template>
         </gl-sprintf>
       </div>
-    </td>
-  </tr>
+    </div>
+  </div>
 </template>

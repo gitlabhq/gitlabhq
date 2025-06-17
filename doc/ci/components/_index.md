@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD components
+description: Reusable, versioned CI/CD components for pipelines.
 ---
 
 {{< details >}}
@@ -92,10 +93,12 @@ The repository must contain:
 
 - A `README.md` Markdown file documenting the details of all the components in the repository.
 - A top level `templates/` directory that contains all the component configurations.
-  You can define components in this directory:
-  - In single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
-  - In subdirectories containing `template.yml` files as entry points, for components
-    that bundle together multiple related files. For example, `templates/secret-detection/template.yml`.
+  In this directory:
+  - For simple components, use single files ending in `.yml` for each component, like `templates/secret-detection.yml`.
+  - For complex components, create subdirectories with a `template.yml` for each component,
+    like `templates/secret-detection/template.yml`. Only the `template.yml` file is used by other projects
+    using the component. Other files in these directories are not released with the component,
+    but can be used for things like tests or building container images.
 
 {{< alert type="note" >}}
 
@@ -726,22 +729,23 @@ To publish the component project in the catalog again, you need to [publish a ne
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433443) in GitLab 16.11
+- [Introduced for GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/433443) in GitLab 16.11
+- [Introduced for GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/460125) in GitLab 18.1
 
 {{< /history >}}
 
 Some CI/CD components are badged with an icon to show that the component was created
-and is maintained by users verified by GitLab:
+and is maintained by users verified by GitLab or the instance administrator:
 
-- GitLab-maintained ({{< icon name="tanuki-verified" >}}): Components that are created and maintained by GitLab.
-- GitLab Partner ({{< icon name="partner-verified" >}}): Components that are independently created
+- GitLab-maintained ({{< icon name="tanuki-verified" >}}): GitLab.com components that are created and maintained by GitLab.
+- GitLab Partner ({{< icon name="partner-verified" >}}): GitLab.com components that are independently created
   and maintained by a GitLab-verified partner.
 
   GitLab partners can contact a member of the GitLab Partner Alliance to have their
-  namespace flagged as GitLab-verified. Then any CI/CD components located in the
+  namespace on GitLab.com flagged as GitLab-verified. Then any CI/CD components located in the
   namespace are badged as GitLab Partner components. The Partner Alliance member
-  creates an internal request issue on behalf of the verified partner (GitLab team members only):
-  `https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request`.
+  creates an [internal request issue (GitLab team members only)](https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request)
+  on behalf of the verified partner.
 
   {{< alert type="warning" >}}
 
@@ -752,6 +756,44 @@ and is maintained by users verified by GitLab:
   and any liability related thereto shall be between the publisher of the content and the end user.
 
   {{< /alert >}}
+
+- Verified creator ({{< icon name="check-sm" >}}): Components created and maintained by
+  a user verified by an administrator.
+
+#### Set a component as maintained by a verified creator
+
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced for GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/460125) in GitLab 18.1
+
+{{< /history >}}
+
+A GitLab administrator can set a CI/CD component as created and maintained by a verified creator:
+
+1. Open GraphiQL in the instance with your administrator account, for example at: `https://gitlab.example.com/-/graphql-explorer`.
+1. Run this query, replacing `root-level-group` with the root namespace of the component to verify:
+
+   ```graphql
+   mutation {
+     verifiedNamespaceCreate(input: { namespacePath: "root-level-group",
+       verificationLevel: VERIFIED_CREATOR_SELF_MANAGED
+       }) {
+       errors
+     }
+   }
+   ```
+
+After the query completes, all components in projects in the root namespace are verified.
+The **Verified creator** badge displays next to the component names in the CI/CD catalog.
+
+To remove the badge from a component, repeat the query with `UNVERIFIED` for `verificationLevel`.
 
 ## Convert a CI/CD template to a component
 

@@ -16,6 +16,7 @@ RSpec.describe "User views incident", feature_category: :incident_management do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(hide_incident_management_features: false)
 
     sign_in(user)
 

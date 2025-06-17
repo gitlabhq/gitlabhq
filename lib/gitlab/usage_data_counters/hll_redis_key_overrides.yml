@@ -163,6 +163,7 @@ user_viewed_dashboard_list-user: user_viewed_dashboard_list
 user_viewed_instrumentation_directions-user: user_viewed_instrumentation_directions
 user_viewed_data_explorer-user: user_viewed_data_explorer
 user_visited_dashboard-user: user_visited_dashboard
+users_creating_work_items-user: users_creating_work_items
 'view_merge_request_widget-filter:[label:accessibility]-user': i_code_review_merge_request_widget_accessibility_view
 'view_merge_request_widget-filter:[label:code_quality]-user': i_code_review_merge_request_widget_code_quality_view
 'view_merge_request_widget-filter:[label:license_compliance]-user': i_code_review_merge_request_widget_license_compliance_view

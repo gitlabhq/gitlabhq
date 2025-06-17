@@ -52,7 +52,7 @@ Projects in nested subgroups are not included in the template list.
 A [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/480779) exists:
 [Inherited members](../project/members/_index.md#membership-types) can't select project templates,
 unless the `project_templates_without_min_access` feature flag is enabled.
-This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425452)
+This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480779)
 on GitLab.com, and so users must be granted direct membership of the template project.
 
 ## Example structure
@@ -110,8 +110,8 @@ to a user in the template are reassigned to you. It's important to understand
 this reassignment when you configure security features like protected branches
 and tags. For example, if the template contains a protected branch:
 
-- In the template, the branch allows the _template owner_ to merge into the default branch.
-- In the project created from the template, the branch allows _you_ to merge into
+- In the template, the branch allows the template owner to merge into the default branch.
+- In the project created from the template, the branch allows you to merge into
   the default branch.
 
 ## Troubleshooting

@@ -28,9 +28,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillProjectIdToSecurityScans, fe
   subject(:perform_migration) { described_class.new(**args).perform }
 
   before do
-    # This test shares the db connection to establish it's fixtures, resulting in
-    # incorrect connection usage, so we're skipping it.
-    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    # With the introduction of CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL))
+    # it's no longer possible for project_id to be null, meaning this spec is now inapplicable
+    # and waiting for the cleanup of this BG migration.
+
     skip_if_multiple_databases_are_setup(:sec)
   end
 

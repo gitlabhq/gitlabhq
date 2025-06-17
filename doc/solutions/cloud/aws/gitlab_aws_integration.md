@@ -51,7 +51,7 @@ AWS CodeStar connections are not available in all AWS regions - the exclusion li
 AWS Services that are supported directly by a CodeStar Connection in an AWS account:
 
 - **AWS Service Catalog** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
-- **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **AWS Proton** directly inherits CodeStar Connections, there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 - **AWS CodeBuild** - [for GitLab.com, self-managed and dedicated - click documentation tabs here](https://docs.aws.amazon.com/codebuild/latest/userguide/create-project-console.html#create-project-console-source). ([03/26/2024](https://aws.amazon.com/about-aws/whats-new/2024/03/aws-codebuild-gitlab-gitlab-self-managed/)) `[AWS Built]`
 
 Documentation and References:
@@ -65,7 +65,7 @@ Documentation and References:
 
 AWS Services that are supported by an AWS CodePipeline integration:
 
-- **Amazon SageMaker MLOps Projects** are created via CodePipeline ([as noted here](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects-walkthrough-3rdgit.html#sagemaker-proejcts-walkthrough-connect-3rdgit)), there is not any specific documentation about GitLab since it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **Amazon SageMaker MLOps Projects** are created via CodePipeline ([as noted here](https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-projects-walkthrough-3rdgit.html#sagemaker-proejcts-walkthrough-connect-3rdgit)), there is not any specific documentation about GitLab because it just uses any GitLab CodeStar Connection that has been created in the account. ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 
 Documentation and References:
 
@@ -98,7 +98,7 @@ See [CD and Operations Integrations](#cd-and-operations-integrations) below for 
 
 ### CD and Operations Integrations
 
-- **AWS CodeDeploy Integration** - through CodePipeline support discussed above in SCM integrations. This capability allows GitLab to interface with [this list of advanced deployment subsystems in AWS](https://docs.aws.amazon.com/codepipeline/latest/userguide/integrations-action-type.html#integrations-deploy). ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
+- **AWS CodeDeploy Integration** - through CodePipeline support discussed previously in the SCM integrations. This capability allows GitLab to interface with [this list of advanced deployment subsystems in AWS](https://docs.aws.amazon.com/codepipeline/latest/userguide/integrations-action-type.html#integrations-deploy). ([12/28/2023](https://aws.amazon.com/about-aws/whats-new/2023/12/codepipeline-gitlab-self-managed/)) `[AWS Built]`
 - **AWS SAM Pipelines** - [pipelines support for GitLab](https://aws.amazon.com/about-aws/whats-new/2021/07/simplify-ci-cd-configuration-serverless-applications-your-favorite-ci-cd-system-public-preview/). (7/31/2021)
 - [Integrate EKS clusters for application deployment](../../../user/infrastructure/clusters/connect/new_eks_cluster.md). `[GitLab Built]`
 - [GitLab pushing a build Artifact to a CodePipeline monitored S3 location](https://docs.aws.amazon.com/codepipeline/latest/userguide/pipelines-about-starting.html#change-detection-methods) `[AWS Built]`

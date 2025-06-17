@@ -21,7 +21,9 @@ describe('ShaMismatch', () => {
   });
 
   it('should render warning message', () => {
-    expect(wrapper.text()).toContain('Merge blocked: new changes were just added.');
+    expect(wrapper.text()).toContain(
+      'Merge blocked: to see new changes and rerun this merge check, refresh this page.',
+    );
   });
 
   it('action button should have correct label', () => {

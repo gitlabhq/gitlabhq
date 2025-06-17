@@ -123,8 +123,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
 
   describe '#has_access_to_group?' do
     let_it_be(:group) { create(:group) }
-    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group) }
-    let_it_be(:group_deploy_token) { create(:group_deploy_token, group: group, deploy_token: deploy_token) }
+    let_it_be_with_reload(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
 
     let(:test_group) { group }
 
@@ -320,11 +319,7 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
       context 'and when the token is of group type' do
         let_it_be(:group) { create(:group) }
 
-        let(:deploy_token) { create(:deploy_token, :group) }
-
-        before do
-          deploy_token.groups << group
-        end
+        let(:deploy_token) { create(:deploy_token, :group, groups: [group]) }
 
         context 'and the passed-in project does not belong to any group' do
           it { is_expected.to be_falsy }
@@ -488,5 +483,46 @@ RSpec.describe DeployToken, feature_category: :continuous_delivery do
     subject(:plaintext) { create(:deploy_token, token_encrypted: nil).token }
 
     it { is_expected.to match(/gldt-[A-Za-z0-9_-]{20}/) }
+  end
+
+  describe '.with_encrypted_tokens' do
+    let(:deploy_token_1) { create(:deploy_token) }
+    let(:deploy_token_2) { create(:deploy_token) }
+    let(:deploy_token_3) { create(:deploy_token) }
+
+    it 'returns deploy tokens matching the given token values' do
+      encrypted_token_values = [deploy_token_1.token_encrypted, deploy_token_3.token_encrypted]
+
+      result = described_class.with_encrypted_tokens(encrypted_token_values)
+
+      expect(result).to contain_exactly(deploy_token_1, deploy_token_3)
+      expect(result).not_to include(deploy_token_2)
+    end
+
+    it 'returns an empty relation when no tokens match' do
+      result = described_class.with_encrypted_tokens(['non-existent-token'])
+
+      expect(result).to be_empty
+    end
+
+    it 'returns an empty relation when given an empty array' do
+      result = described_class.with_encrypted_tokens([])
+
+      expect(result).to be_empty
+    end
+  end
+
+  describe '.encode' do
+    let(:token_string) { 'test_token_123' }
+
+    it 'encodes the provided token' do
+      expect(Authn::TokenField::EncryptionHelper).to receive(:encrypt_token)
+        .with(token_string)
+        .and_return('fake_encrypted_token')
+
+      encoded_token = described_class.encode(token_string)
+
+      expect(encoded_token).to eq('fake_encrypted_token')
+    end
   end
 end

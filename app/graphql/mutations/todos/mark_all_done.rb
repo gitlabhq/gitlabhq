@@ -68,7 +68,7 @@ module Mutations
           finder_params[:target_id] = target.id
         end
 
-        todos = TodosFinder.new(current_user, finder_params).execute
+        todos = TodosFinder.new(users: current_user, **finder_params).execute
 
         TodoService.new.resolve_todos(todos, current_user, resolved_by_action: :api_all_done)
       end

@@ -26,7 +26,7 @@ creates a release, resulting in the pipeline failing.
 
 {{< /alert >}}
 
-Key points in the following _extract_ of an example `.gitlab-ci.yml` file:
+Key points in the following extract of an example `.gitlab-ci.yml` file:
 
 - The `rules` stanza defines when the job is added to the pipeline.
 - The Git tag is used in the release's name and description.
@@ -49,7 +49,7 @@ release_job:
 In this CI/CD example, the release is triggered when you merge a commit to the default branch. You
 can use this method if your release workflow does not create a tag manually.
 
-Key points in the following _extract_ of an example `.gitlab-ci.yml` file:
+Key points in the following extract of an example `.gitlab-ci.yml` file:
 
 - The Git tag, description, and reference are created automatically in the pipeline.
 - If you manually create a tag, the `release_job` job does not run.
@@ -84,7 +84,7 @@ In this CI/CD example the release preparation is split into separate jobs for gr
 
 - The `prepare_job` job generates the release metadata. Any image can be used to run the job,
   including a custom image. The generated metadata is stored in the variable file `variables.env`.
-  This metadata is [passed to the downstream job](../../../ci/variables/_index.md#pass-an-environment-variable-to-another-job).
+  This metadata is [passed to the downstream job](../../../ci/variables/job_scripts.md#pass-an-environment-variable-to-another-job).
 - The `release_job` uses the content from the variables file to create a release, using the
   metadata passed to it in the variables file. This job must use the
   `registry.gitlab.com/gitlab-org/release-cli:latest` image because it contains the release CLI.

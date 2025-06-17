@@ -7,6 +7,7 @@ module RuboCop
       MSG = 'Use reset instead of reload. ' \
         'For more details check the https://gitlab.com/gitlab-org/gitlab-foss/issues/60218.'
 
+      # @!method reload?(node)
       def_node_matcher :reload?, <<~PATTERN
         (send _ :reload ...)
       PATTERN

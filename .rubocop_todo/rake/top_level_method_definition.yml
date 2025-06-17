@@ -19,6 +19,7 @@ Rake/TopLevelMethodDefinition:
     - 'lib/tasks/gitlab/background_migrations.rake'
     - 'lib/tasks/gitlab/cleanup.rake'
     - 'lib/tasks/gitlab/click_house/migration.rake'
+    - 'lib/tasks/gitlab/click_house/schema.rake'
     - 'lib/tasks/gitlab/container_registry.rake'
     - 'lib/tasks/gitlab/dast_variables.rake'
     - 'lib/tasks/gitlab/db.rake'

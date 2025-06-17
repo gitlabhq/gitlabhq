@@ -82,6 +82,7 @@ export default {
     },
     clickFile() {
       // Manual Action if a tree is selected/opened
+      if (this.isTree) this.$emit('clickTree', this.file.path);
       if (this.isTree && this.hasUrlAtCurrentRoute()) {
         this.toggleTreeOpen(this.file.path);
       }
@@ -116,7 +117,7 @@ export default {
     hasUrlAtCurrentRoute() {
       if (!this.$router || !this.$router.currentRoute) return true;
 
-      return this.$router.currentRoute.path === escapeFileUrl(this.fileRouterUrl);
+      return escapeFileUrl(this.$router.currentRoute.path) === escapeFileUrl(this.fileRouterUrl);
     },
   },
 };
@@ -124,49 +125,51 @@ export default {
 
 <template>
   <file-header v-if="file.isHeader" :path="file.path" />
-  <div
+  <button
     v-else
     :class="fileClass"
     :title="textForTitle"
     :data-level="level"
     class="file-row"
-    role="button"
+    :aria-expanded="file.type === 'tree' ? file.opened.toString() : undefined"
     @click="clickFile"
-    @mouseleave="$emit('mouseleave', $event)"
   >
-    <div class="file-row-name-container">
-      <span
-        ref="textOutput"
-        class="file-row-name"
-        :title="file.name"
-        :data-qa-file-name="file.name"
-        data-testid="file-row-name-container"
-        :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"
-      >
-        <gl-icon
-          v-if="file.linked"
-          v-gl-tooltip="
-            __('This file was linked in the page URL and will appear as the first one in the list')
-          "
-          name="link"
-          :size="16"
-        />
-        <file-icon
-          class="file-row-icon"
-          :class="{ 'gl-text-subtle': file.type === 'tree' }"
-          :file-name="file.name"
-          :loading="file.loading"
-          :folder="isTree"
-          :opened="file.opened"
-          :size="16"
-          :submodule="file.submodule"
-        />
-        <gl-truncate v-if="truncateMiddle" :text="file.name" position="middle" class="gl-pr-7" />
-        <template v-else>{{ file.name }}</template>
-      </span>
-      <slot></slot>
-    </div>
-  </div>
+    <span
+      ref="textOutput"
+      class="file-row-name"
+      :title="file.name"
+      :data-qa-file-name="file.name"
+      data-testid="file-row-name-container"
+      :class="[fileClasses, { 'str-truncated': !truncateMiddle, 'gl-min-w-0': truncateMiddle }]"
+    >
+      <gl-icon
+        v-if="file.linked"
+        v-gl-tooltip="
+          __('This file was linked in the page URL and will appear as the first one in the list')
+        "
+        name="link"
+        :size="16"
+      />
+      <file-icon
+        class="gl-mr-2"
+        :class="{ 'gl-text-subtle': file.type === 'tree' }"
+        :file-name="file.name"
+        :loading="file.loading"
+        :folder="isTree"
+        :opened="file.opened"
+        :size="16"
+        :submodule="file.submodule"
+      />
+      <gl-truncate
+        v-if="truncateMiddle"
+        :text="file.name"
+        position="middle"
+        class="gl-items-center gl-pr-7"
+      />
+      <template v-else>{{ file.name }}</template>
+    </span>
+    <slot></slot>
+  </button>
 </template>
 
 <style>
@@ -180,6 +183,7 @@ export default {
   border-radius: 3px;
   text-align: left;
   cursor: pointer;
+  color: unset;
 }
 
 .file-row-name-container {
@@ -190,18 +194,13 @@ export default {
 }
 
 .file-row-name {
-  display: inline-block;
+  display: flex;
+  align-items: center;
   flex: 1;
   max-width: inherit;
-  height: 19px;
-  line-height: 16px;
+  line-height: 1rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   margin-left: calc(var(--level) * var(--file-row-level-padding, 16px));
-}
-
-.file-row-name .file-row-icon {
-  margin-right: 2px;
-  vertical-align: middle;
 }
 </style>

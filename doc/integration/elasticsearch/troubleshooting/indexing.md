@@ -34,7 +34,7 @@ You can check for errors during project indexing.
 Errors might occur on:
 
 - The GitLab instance: if you cannot fix them yourself, contact GitLab Support for guidance.
-- The Elasticsearch instance: [if the error is not listed](../../advanced_search/elasticsearch_troubleshooting.md), contact your Elasticsearch administrator.
+- The Elasticsearch instance: [if the error is not listed](../../elasticsearch/troubleshooting/_index.md), contact your Elasticsearch administrator.
 
 If indexing does not return errors, check the status of indexed projects with the following Rake tasks:
 
@@ -62,6 +62,12 @@ have to [reindex](../../advanced_search/elasticsearch.md#zero-downtime-reindexin
 
 ## No search results after indexing all repositories
 
+{{< alert type="note" >}}
+
+Don't use these instructions for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
+
+{{< /alert >}}
+
 Make sure you [indexed all the database data](../../advanced_search/elasticsearch.md#enable-advanced-search).
 
 If there aren't any results (hits) in the UI search, check if you are seeing the same results via the rails console (`sudo gitlab-rails console`):
@@ -84,12 +90,6 @@ If the results:
 
 - Sync up, check that you are using [supported syntax](../../../user/search/advanced_search.md#syntax). Advanced search does not support [exact substring matching](https://gitlab.com/gitlab-org/gitlab/-/issues/325234).
 - Do not match up, this indicates a problem with the documents generated from the project. It is best to [reindex that project](../../advanced_search/elasticsearch.md#indexing-a-range-of-projects-or-a-specific-project).
-
-{{< alert type="note" >}}
-
-The above instructions are not to be used for scenarios that only index a [subset of namespaces](../../advanced_search/elasticsearch.md#limit-the-amount-of-namespace-and-project-data-to-index).
-
-{{< /alert >}}
 
 See [Elasticsearch Index Scopes](../../advanced_search/elasticsearch.md#advanced-search-index-scopes) for more information on searching for specific types of data.
 
@@ -182,7 +182,7 @@ does not show correct search results until the indexing is complete. You might
 want to clear the **Search with Elasticsearch enabled** checkbox
 while the indexing is running.
 
-If you are sure you've read the above caveats and want to proceed, then you
+If you are sure you've read the previous caveats and want to proceed, then you
 should run the following Rake task to recreate the entire index from scratch.
 
 {{< tabs >}}

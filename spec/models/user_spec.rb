@@ -53,6 +53,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:view_diffs_file_by_file).to(:user_preference) }
     it { is_expected.to delegate_method(:view_diffs_file_by_file=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:dark_color_scheme_id).to(:user_preference) }
+    it { is_expected.to delegate_method(:dark_color_scheme_id=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:tab_width).to(:user_preference) }
     it { is_expected.to delegate_method(:tab_width=).to(:user_preference).with_arguments(:args) }
 
@@ -150,6 +153,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:skype).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:skype=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:orcid).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:orcid=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:website_url).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:website_url=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -183,6 +189,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:member_namespaces) }
+    it { is_expected.to have_many(:namespace_deletion_schedules).class_name('::Namespaces::DeletionSchedule').inverse_of(:deleting_user) }
     it { is_expected.to have_many(:project_members) }
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
@@ -232,7 +239,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
     it { is_expected.to have_many(:early_access_program_tracking_events).class_name('EarlyAccessProgram::TrackingEvent') }
-    it { is_expected.to have_many(:project_deletion_schedules).class_name('::Projects::DeletionSchedule').inverse_of(:deleting_user) }
 
     describe '#triggers' do
       let(:user) { create(:user) }
@@ -2520,7 +2526,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'with instance prefix configured' do
-      let(:instance_prefix) { 'instance-prefix-' }
+      let(:instance_prefix) { 'instanceprefix' }
 
       before do
         stub_application_setting(instance_token_prefix: instance_prefix)
@@ -2529,7 +2535,7 @@ RSpec.describe User, feature_category: :user_profile do
       it 'returns feed token with instance prefix' do
         user = create(:user)
 
-        expect(user.feed_token).to start_with("#{instance_prefix}ft-")
+        expect(user.feed_token).to start_with("#{instance_prefix}glft-")
       end
     end
 
@@ -6480,7 +6486,7 @@ RSpec.describe User, feature_category: :user_profile do
     it 'invalidates cache for Merge Request counter' do
       cache_mock = double
 
-      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false])
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'assigned_open_merge_requests_count', false, true])
       expect(cache_mock).to receive(:delete).with(['users', user.id, 'review_requested_open_merge_requests_count', false])
 
       allow(Rails).to receive(:cache).and_return(cache_mock)
@@ -6577,6 +6583,7 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when merge_request_dashboard feature flag is enabled' do
       before do
         stub_feature_flags(merge_request_dashboard: true)
+        stub_feature_flags(merge_request_dashboard_author_or_assignee: false)
       end
 
       it 'returns number of open merge requests from non-archived projects where there are no reviewers' do
@@ -6589,7 +6596,38 @@ RSpec.describe User, feature_category: :user_profile do
         create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
         create(:merge_request, source_project: archived_project, author: user, assignees: [user])
 
-        expect(user.assigned_open_merge_requests_count(force: true)).to eq 1
+        mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+
+        mr.merge_request_reviewers.update_all(state: :reviewed)
+        mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
+        expect(user.assigned_open_merge_requests_count(force: true)).to eq 3
+      end
+
+      context 'when merge_request_dashboard_author_or_assignee is enabed' do
+        before do
+          stub_feature_flags(merge_request_dashboard_author_or_assignee: true)
+        end
+
+        it 'returns number of open merge requests assigned or author by the user, that have no review or a review' do
+          user    = create(:user)
+          project = create(:project, :public)
+          archived_project = create(:project, :public, :archived)
+
+          create(:merge_request, source_project: project, author: user, reviewers: [user])
+          create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user])
+          create(:merge_request, :closed, source_project: project, author: user, assignees: [user])
+          create(:merge_request, source_project: archived_project, author: user, assignees: [user])
+
+          mr = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+          mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, assignees: [user], reviewers: [user])
+
+          mr.merge_request_reviewers.update_all(state: :reviewed)
+          mr2.merge_request_reviewers.update_all(state: :requested_changes)
+
+          expect(user.assigned_open_merge_requests_count(force: true)).to eq 3
+        end
       end
     end
   end
@@ -6618,14 +6656,14 @@ RSpec.describe User, feature_category: :user_profile do
         archived_project = create(:project, :public, :archived)
 
         mr = create(:merge_request, source_project: project, author: user, reviewers: [user])
-        mr2 = create(:merge_request, source_project: project, source_branch: 'feature_conflict', author: user, assignees: [user], reviewers: create_list(:user, 2))
+        mr2 = create(:merge_request, :unique_branches, source_project: project, author: user, reviewers: [user])
         create(:merge_request, :closed, source_project: project, author: user, reviewers: [user])
         create(:merge_request, source_project: archived_project, author: user, reviewers: [user])
 
         mr.merge_request_reviewers.update_all(state: :unreviewed)
         mr2.merge_request_reviewers.update_all(state: :requested_changes)
 
-        expect(user.review_requested_open_merge_requests_count(force: true)).to eq 2
+        expect(user.review_requested_open_merge_requests_count(force: true)).to eq 1
       end
     end
   end
@@ -8626,6 +8664,14 @@ RSpec.describe User, feature_category: :user_profile do
 
       it_behaves_like 'does not require password to be present'
     end
+
+    context 'when user is a placeholder user' do
+      before do
+        user.user_type = 'placeholder'
+      end
+
+      it_behaves_like 'does not require password to be present'
+    end
   end
 
   describe 'can_trigger_notifications?' do
@@ -9450,7 +9496,7 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe 'support pin methods' do
+  describe 'support pin methods', :freeze_time do
     let_it_be(:user_with_pin) { create(:user) }
     let_it_be(:user_no_pin) { create(:user) }
     let(:pin_data) { { pin: '123456', expires_at: 7.days.from_now } }
@@ -9481,10 +9527,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     describe '#support_pin_expires_at' do
-      it 'returns the expiration time when it exists' do
+      it 'returns the expiration time when it exists', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/546655' do
         allow(retrieve_service).to receive(:execute).and_return(pin_data)
 
-        expect(user_with_pin.support_pin_expires_at).to be_within(2.seconds).of(pin_data[:expires_at])
+        expect(user_with_pin.support_pin_expires_at).to eq(pin_data[:expires_at])
       end
 
       it 'returns nil when no expiration time exists' do

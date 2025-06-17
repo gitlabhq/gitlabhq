@@ -5,7 +5,7 @@ query getBlobSearchCountQuery(
   $chunkCount: Int
   $regex: Boolean
   $includeArchived: Boolean
-  $includeForked: Boolean
+  $excludeForks: Boolean
 ) {
   blobSearch(
     search: $search
@@ -14,7 +14,7 @@ query getBlobSearchCountQuery(
     chunkCount: $chunkCount
     regex: $regex
     includeArchived: $includeArchived
-    includeForked: $includeForked
+    excludeForks: $excludeForks
   ) {
     matchCount
   }

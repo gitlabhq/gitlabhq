@@ -13,6 +13,7 @@ import {
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { visitUrl, setUrlParams, updateHistory, removeParams } from '~/lib/utils/url_utility';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { makeDrawerItemFullPath, makeDrawerUrlParam, canRouterNav } from '../utils';
 
 export default {
@@ -71,6 +72,7 @@ export default {
   data() {
     return {
       copyTooltipText: this.$options.i18n.copyTooltipText,
+      isWaitingForMutation: false,
     };
   },
   computed: {
@@ -87,8 +89,7 @@ export default {
     issueAsWorkItem() {
       return (
         !this.isGroup &&
-        (this.glFeatures.workItemViewForIssues ||
-          (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view))
+        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view)
       );
     },
     getDrawerHeight() {
@@ -180,7 +181,24 @@ export default {
         url: setUrlParams({ [DETAIL_VIEW_QUERY_PARAM_NAME]: params }),
       });
     },
-    handleClose(isClickedOutside) {
+    handleClose(isClickedOutside, bypassPendingRequests = false) {
+      const { queryManager } = this.$apollo.provider.clients.defaultClient;
+      // We only need this check when the user is on a board and the mutation is pending.
+      this.isWaitingForMutation =
+        this.isBoard &&
+        window.pendingApolloRequests - queryManager.inFlightLinkObservables.size > 0;
+
+      /* Do not close when a modal is open, or when the user is focused in an editor/input.
+       */
+      if (
+        (this.isWaitingForMutation && !bypassPendingRequests) ||
+        document.body.classList.contains('modal-open') ||
+        document.activeElement?.closest('.js-editor') != null ||
+        document.activeElement.classList.contains('gl-form-input')
+      ) {
+        return;
+      }
+
       updateHistory({
         url: removeParams([DETAIL_VIEW_QUERY_PARAM_NAME, DETAIL_VIEW_DESIGN_VERSION_PARAM_NAME]),
       });
@@ -195,7 +213,7 @@ export default {
 
       this.$emit('close');
     },
-    handleClickOutside(event) {
+    async handleClickOutside(event) {
       for (const selector of this.$options.defaultExcludedSelectors) {
         const excludedElements = document.querySelectorAll(selector);
         for (const parent of excludedElements) {
@@ -214,10 +232,26 @@ export default {
           }
         }
       }
+      // If on board, wait for all tasks to be resolved before closing the drawer.
+      if (this.isBoard) {
+        await this.$nextTick();
+      }
+
       this.handleClose(true);
     },
     focusOnHeaderLink() {
       this.$refs?.workItemUrl?.$el?.focus();
+    },
+    handleWorkItemUpdated(e) {
+      this.$emit('work-item-updated', e);
+
+      // Force to close the drawer after 100ms even if requests are still pending
+      // to not let UI hanging.
+      if (this.isWaitingForMutation) {
+        setTimeout(() => {
+          this.handleClose(false, true);
+        }, 100);
+      }
     },
   },
   i18n: {
@@ -243,7 +277,11 @@ export default {
     '.modal-content',
     '#create-merge-request-modal',
     '#b-toaster-bottom-left',
+    '.js-tanuki-bot-chat-toggle',
+    '#super-sidebar-search',
+    '#chat-component',
   ],
+  DRAWER_Z_INDEX,
 };
 </script>
 
@@ -251,7 +289,7 @@ export default {
   <gl-drawer
     v-gl-outside="handleClickOutside"
     :open="open"
-    :z-index="200"
+    :z-index="$options.DRAWER_Z_INDEX"
     data-testid="work-item-drawer"
     :header-height="getDrawerHeight"
     header-sticky
@@ -265,7 +303,7 @@ export default {
           ref="workItemUrl"
           data-testid="work-item-drawer-ref-link"
           :href="activeItem.webUrl"
-          class="gl-text-sm gl-font-bold gl-text-default"
+          class="gl-mr-2 gl-text-sm gl-font-bold gl-text-default"
           @click="redirectToWorkItem"
         >
           {{ headerReference }}
@@ -298,13 +336,14 @@ export default {
       <work-item-detail
         :key="activeItem.iid"
         :work-item-iid="activeItem.iid"
-        :modal-work-item-full-path="activeItemFullPath"
+        :work-item-full-path="activeItemFullPath"
         :modal-is-group="modalIsGroup"
         :new-comment-template-paths="newCommentTemplatePaths"
         :is-board="isBoard"
         is-drawer
         class="work-item-drawer !gl-pt-0 xl:!gl-px-6"
         @deleteWorkItem="deleteWorkItem"
+        @work-item-updated="handleWorkItemUpdated"
         @workItemTypeChanged="$emit('workItemTypeChanged', $event)"
         v-on="$listeners"
       />

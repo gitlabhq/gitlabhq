@@ -40,7 +40,7 @@ RSpec.describe Packages::Rpm::RepositoryMetadata::BuildRepomdXmlService, feature
       allow(Time).to receive(:now).and_return(creation_timestamp)
     end
 
-    it 'generate valid xml' do
+    it 'generate valid xml', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547357' do
       # Have one root attribute
       result = Nokogiri::XML::Document.parse(subject)
       expect(result.children.count).to eq(1)

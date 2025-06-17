@@ -336,8 +336,8 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
    This allows you to use the `verify-full` SSL mode when replicating the database
    and get the extra benefit of verifying the full hostname in the CN.
 
-   You can use this certificate (that you have also set in `postgresql['ssl_cert_file']`) instead
-   of the certificate from the point above going forward. This allows you to use `verify-full`
+   Going forward, you can use this certificate (that you have also set in `postgresql['ssl_cert_file']`) instead
+   of the self-signed certificate automatically generated previously. This allows you to use `verify-full`
    without replication errors if the CN matches.
 
    On your primary database, open `/etc/gitlab/gitlab.rb` and search for `postgresql['ssl_ca_file']` (the CA certificate). Copy its value to your clipboard that you'll later paste into `server.crt`.
@@ -426,7 +426,7 @@ There is an [issue where support is being discussed](https://gitlab.com/gitlab-o
 
    {{< /alert >}}
 
-   When prompted, enter the _plaintext_ password you set in the first step for the
+   When prompted, enter the plaintext password you set in the first step for the
    `gitlab_replicator` user. If all worked correctly, you should see
    the list of the **primary** site's databases.
 
@@ -527,7 +527,7 @@ data before running `pg_basebackup`.
 
    {{< /alert >}}
 
-   When prompted, enter the _plaintext_ password you set up for the `gitlab_replicator`
+   When prompted, enter the plaintext password you set up for the `gitlab_replicator`
    user in the first step.
 
    ```shell
@@ -569,7 +569,7 @@ data before running `pg_basebackup`.
      VPN). It is **not** safe over the public Internet!
    - You can read more details about each `sslmode` in the
      [PostgreSQL documentation](https://www.postgresql.org/docs/16/libpq-ssl.html#LIBPQ-SSL-PROTECTION).
-     The instructions above are carefully written to ensure protection against
+     The instructions listed previously are carefully written to ensure protection against
      both passive eavesdroppers and active "man-in-the-middle" attackers.
    - If you're repurposing an old site into a Geo **secondary** site, you must
      add `--force` to the command line.
@@ -683,7 +683,7 @@ With Patroni, this support is now possible. To migrate the existing PostgreSQL t
 1. [Configure a Standby Cluster](#step-4-configure-a-standby-cluster-on-the-secondary-site)
    on that single node machine.
 
-You end up with a _Standby Cluster_ with a single node. That allows you to add additional Patroni nodes by following the same instructions above.
+You end up with a **Standby Cluster** with a single node. That allows you to add additional Patroni nodes by following the same instructions listed previously.
 
 ### Patroni support
 
@@ -722,7 +722,7 @@ database to the Patroni cluster on the secondary node.
 {{< tab title="Primary with Patroni cluster" >}}
 
 To set up database replication with Patroni on a secondary site, you must
-configure a _permanent replication slot_ on the primary site's Patroni cluster,
+configure a permanent replication slot on the primary site's Patroni cluster,
 and ensure password authentication is used.
 
 On each node running a Patroni instance on the primary site **starting on the Patroni
@@ -1099,7 +1099,8 @@ the secondary site.
 
 With Patroni, it's now possible to support HA setups. However, some restrictions in Patroni
 prevent the management of two different clusters on the same machine. You should set up a new
-Patroni cluster for the tracking database by following the same instructions above.
+Patroni cluster for the tracking database by following the same instructions describing how to
+[configure a Patroni cluster for a Geo secondary site](#configuring-patroni-cluster-for-a-geo-secondary-site).
 
 The secondary nodes backfill the new tracking database, and no data
 synchronization is required.

@@ -16,7 +16,9 @@ module Backup
         # Ignore the DROP errors; recent database dumps will use --if-exists with pg_dump
         /does not exist$/,
         # User may not have permissions to drop extensions or schemas
-        /must be owner of/
+        /must be owner of/,
+        # PG16 introduced generally ignorable error `must be able to SET ROLE "gitlab-psql"`
+        /must be able to SET ROLE "gitlab-psql"/i
       ].freeze
       IGNORED_ERRORS_REGEXP = Regexp.union(IGNORED_ERRORS).freeze
 

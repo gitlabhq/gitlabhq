@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Design and user interface changes
 ---
 
@@ -69,7 +69,7 @@ Check visual design properties using your browser's elements inspector ([Chrome]
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration/)
   guidelines.
-- Optional: Consider dark mode. For more information, see [Change the appearance](../../user/profile/preferences.md#change-the-appearance).
+- Optional: Consider dark mode. For more information, see [Change the mode](../../user/profile/preferences.md#change-the-mode).
 
 ### Dark Mode
 

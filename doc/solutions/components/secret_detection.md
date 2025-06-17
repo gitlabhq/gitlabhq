@@ -93,10 +93,12 @@ This guide covers the steps to configure the policy to run secret detection for 
 
 ### Configure Secret Detection Policy
 
-To run secret detection automatically in the pipeline as the enforced global policy, set up the policy at the highest level, in this case the top group level. Follow the steps outlined below to create the new secret detection policy.
+To run secret detection automatically in the pipeline as the enforced global policy,
+set up the policy at the highest level (in this case, for the top-level group).
+To create the new secret detection policy:
 
 1. Create the policy: In the same group `Secret Detection`, navigate to that group's **Secure > Policies** page.
-1. Click on **New policy**.
+1. Select **New policy**.
 1. Select **Scan execution policy**.
 1. Configure the policy: Give the policy name `Secret Detection Policy` and enter a description and select `Secret Detection` scan
 1. Set the **Policy scope** by selecting either "All projects in this group" (and optionally set exceptions) or "Specific projects" (and select the projects from the dropdown).
@@ -104,7 +106,7 @@ To run secret detection automatically in the pipeline as the enforced global pol
 1. Under the **Conditions** section, you can optionally change "Triggers:" to "Schedules:" if you want to run the scan on a schedule instead of at every commit.
 1. Setup access to the custom ruleset: add CI variables with the value of the bot user, group variable and the URL of the custom ruleset project.
 
-   Since the custom ruleset is hosted in a different project and considered as the remote ruleset, the `SECRET_DETECTION_RULESET_GIT_REFERENCE` must be used.
+   The custom ruleset is hosted in a different project and considered as the remote ruleset, so the `SECRET_DETECTION_RULESET_GIT_REFERENCE` must be used.
 
    ```yaml
    variables:
@@ -154,11 +156,11 @@ Once the policy is running. all the projects associated with the global policy w
 Secrets will be detected and surfaced. If there is a merge request, the net new secrets will be displayed in the MR widget. If it is the default branch merged, they will be shown in the security vulnerability report as following:
 ![Security Dashboard](img/secret_detection_pwd_vuln_v17_9.png)
 
-An example password in clear is shown below:
+The following is an example password in clear text:
 ![Security Dashboard](img/secret_detection_pwd_v17_9.png)
 
 ## Troubleshooting
 
 ### Policy not applying
 
-Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/_index.md#link-to-a-security-policy-project) for more.
+Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/security_policy_projects.md#link-to-a-security-policy-project) for more.

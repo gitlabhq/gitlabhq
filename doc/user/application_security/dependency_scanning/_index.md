@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Composition Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Dependency Scanning
+description: Vulnerabilities, remediation, configuration, analyzers, and reports.
 ---
 
 <style>
@@ -613,7 +614,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-2"></a>
     <p>
-      Different versions of Java require different versions of Gradle. The versions of Gradle listed in the above table are pre-installed
+      Different versions of Java require different versions of Gradle. The versions of Gradle listed in the previous table are pre-installed
       in the analyzer image. The version of Gradle used by the analyzer depends on whether your project uses a <code>gradlew</code>
       (Gradle wrapper) file or not:
     </p>
@@ -655,7 +656,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
 ### How analyzers are triggered
 
 GitLab relies on [`rules:exists`](../../../ci/yaml/_index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
-`Supported files` in the repository as shown in the [table above](#supported-languages-and-package-managers).
+[supported files](#supported-languages-and-package-managers) in the repository.
 A maximum of two directory levels from the repository's root is searched. For example, the
 `gemnasium-dependency_scanning` job is enabled if a repository contains either `Gemfile`,
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is
@@ -826,7 +827,7 @@ See <https://gitlab.com/explore/catalog/components/dependency-scanning>
 
 ### Running jobs in merge request pipelines
 
-See [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines)
+See [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines)
 
 ### Customizing analyzer behavior
 
@@ -856,7 +857,7 @@ gemnasium-dependency_scanning:
     DS_REMEDIATE: "false"
 ```
 
-To override the `dependencies: []` attribute, add an override job as above, targeting this attribute:
+To override the `dependencies: []` attribute, add an override job as described previously, targeting this attribute:
 
 ```yaml
 include:
@@ -878,7 +879,7 @@ The following variables allow configuration of global dependency scanning settin
 | ----------------------------|------------ |
 | `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
 | `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
-| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied _before_ the scan is executed. Default: `"spec, test, tests, tmp"`. |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied before the scan is executed. Default: `"spec, test, tests, tmp"`. |
 | `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
 | `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
@@ -909,7 +910,7 @@ The following variables configure the behavior of specific dependency scanning a
 | `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Controls Gradle dependency resolution strictness. Accepts `"none"` to allow partial results, or `"failed"` to fail the scan when any dependencies fail to resolve. |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
 | `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
-| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning:** Read [the following security consideration](#python-projects) when using this environment variable. |
+| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning**: Read [the following security consideration](#python-projects) when using this environment variable. |
 | `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. This is a filename and not a path. When this environment variable is set only the specified file is scanned. |
 | `PIPENV_PYPI_MIRROR`                 | `gemnasium-python` |                              | If set, overrides the PyPi index used by Pipenv with a [mirror](https://github.com/pypa/pipenv/blob/v2022.1.8/pipenv/environments.py#L263). |
 | `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. |
@@ -1293,7 +1294,7 @@ If you need to install Python packages before the analyzer runs, you should use 
 If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
 
 When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
-from the template `.gitlab-ci.yml` above) is needed. However, you must update your `setup.py` to
+from the previous `.gitlab-ci.yml` template) is needed. However, you must update your `setup.py` to
 ensure that it can reach your private repository. Here is an example configuration:
 
 1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each

@@ -804,6 +804,21 @@ RSpec.describe API::Releases, :aggregate_failures, feature_category: :release_or
           expect(uri.path).to eq("/api/v4/projects/#{project.id}/releases/#{release_b.tag}/downloads/bin/example.exe")
         end
       end
+
+      context 'when a relative URL is configured' do
+        before do
+          stub_config_setting(relative_url_root: '/gitlab-relative-url')
+        end
+
+        it 'includes the relative URL in the redirect' do
+          get api("/projects/#{project.id}/releases/permalink/latest", maintainer)
+
+          uri = URI(response.header["Location"])
+
+          expect(response).to have_gitlab_http_status(:redirect)
+          expect(uri.path).to eq("/gitlab-relative-url/api/v4/projects/#{project.id}/releases/#{release_b.tag}")
+        end
+      end
     end
   end
 

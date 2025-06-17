@@ -227,17 +227,33 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
           end
         end
 
-        context 'when email reset has already been offered' do
-          before do
-            user.update!(email_reset_offered_at: 1.hour.ago, email: 'new@email')
+        context 'when email reset functionality is disabled' do
+          shared_examples 'does not perform email reset actions' do
+            before do
+              user.update!(email: 'new@email')
+            end
+
+            it 'does not confirm the email or change email_reset_offered_at' do
+              expect { submit_token }
+                .to not_change { user.reload.email }
+                .and not_change { user.reload.email_reset_offered_at }
+            end
           end
 
-          it 'does not change the email_reset_offered_at field' do
-            expect { submit_token }.not_to change { user.reload.email_reset_offered_at }
+          context 'when email reset has already been offered' do
+            before do
+              user.update!(email_reset_offered_at: 1.hour.ago)
+            end
+
+            it_behaves_like 'does not perform email reset actions'
           end
 
-          it 'does not confirm the email' do
-            expect { submit_token }.not_to change { user.reload.email }
+          context 'when the `offer_email_reset` feature flag is disabled' do
+            before do
+              stub_feature_flags(offer_email_reset: false)
+            end
+
+            it_behaves_like 'does not perform email reset actions'
           end
         end
       end
@@ -265,7 +281,7 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
 
       context 'when the feature flag is toggled on' do
         before do
-          stub_feature_flags(require_email_verification: user)
+          stub_application_setting(require_email_verification_on_account_locked: true)
           stub_feature_flags(skip_require_email_verification: false)
         end
 
@@ -443,6 +459,24 @@ RSpec.describe 'VerifiesWithEmail', :clean_gitlab_redis_sessions, :clean_gitlab_
         do_request
 
         expect(json_response).to eq('status' => 'success')
+      end
+
+      context 'when the `offer_email_reset` feature flag is disabled' do
+        before do
+          stub_feature_flags(offer_email_reset: false)
+        end
+
+        it 'returns an error response' do
+          do_request
+
+          expect(json_response).to eq('status' => 'error', 'message' => 'Feature not available')
+        end
+
+        it 'does not call the UpdateEmailService' do
+          expect(Users::EmailVerification::UpdateEmailService).not_to receive(:new)
+
+          do_request
+        end
       end
     end
 

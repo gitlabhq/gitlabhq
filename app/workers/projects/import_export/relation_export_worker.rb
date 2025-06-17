@@ -13,6 +13,7 @@ module Projects
       sidekiq_options dead: false, status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION, retry: 6
       urgency :low
       worker_resource_boundary :memory
+      tags :import_shared_storage
 
       sidekiq_retries_exhausted do |job, exception|
         relation_export = Projects::ImportExport::RelationExport.find(job['args'].first)

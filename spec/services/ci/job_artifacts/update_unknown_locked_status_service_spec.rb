@@ -87,39 +87,19 @@ RSpec.describe Ci::JobArtifacts::UpdateUnknownLockedStatusService, :clean_gitlab
       end
 
       context 'due to @loop_limit' do
-        context 'when feature flag ci_job_artifacts_backlog_large_loop_limit is enabled' do
-          before do
-            stub_const("#{described_class}::LARGE_LOOP_LIMIT", 1)
-          end
-
-          it 'affects the most recently expired artifact first' do
-            subject
-
-            expect(unknown_locked_artifact.reload.locked).to eq('artifacts_locked')
-            expect(unknown_unlocked_artifact.reload.locked).to eq('unknown')
-          end
-
-          it 'reports the number of destroyed artifacts' do
-            is_expected.to eq({ removed: 0, locked: 1 })
-          end
+        before do
+          stub_const("#{described_class}::LOOP_LIMIT", 1)
         end
 
-        context 'when feature flag ci_job_artifacts_backlog_large_loop_limit is disabled' do
-          before do
-            stub_feature_flags(ci_job_artifacts_backlog_large_loop_limit: false)
-            stub_const("#{described_class}::LOOP_LIMIT", 1)
-          end
+        it 'affects the most recently expired artifact first' do
+          subject
 
-          it 'affects the most recently expired artifact first' do
-            subject
+          expect(unknown_locked_artifact.reload.locked).to eq('artifacts_locked')
+          expect(unknown_unlocked_artifact.reload.locked).to eq('unknown')
+        end
 
-            expect(unknown_locked_artifact.reload.locked).to eq('artifacts_locked')
-            expect(unknown_unlocked_artifact.reload.locked).to eq('unknown')
-          end
-
-          it 'reports the number of destroyed artifacts' do
-            is_expected.to eq({ removed: 0, locked: 1 })
-          end
+        it 'reports the number of destroyed artifacts' do
+          is_expected.to eq({ removed: 0, locked: 1 })
         end
       end
     end

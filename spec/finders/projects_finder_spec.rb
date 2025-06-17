@@ -198,13 +198,19 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         let_it_be(:aimed_for_deletion_project) { create(:project, :public, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
         let_it_be(:pending_deletion_project) { create(:project, :public, marked_for_deletion_at: 1.month.ago, pending_delete: true) }
 
-        it { is_expected.to contain_exactly(aimed_for_deletion_project) }
+        let_it_be(:group_aimed_for_deletion) { create(:group_with_deletion_schedule) }
+        let_it_be(:group_aimed_for_deletion_project) { create(:project, :public, group: group_aimed_for_deletion) }
+
+        it { is_expected.to contain_exactly(aimed_for_deletion_project, group_aimed_for_deletion_project) }
       end
 
       describe 'filter by not aimed for deletion' do
         let_it_be(:params) { { not_aimed_for_deletion: true } }
         let_it_be(:aimed_for_deletion_project) { create(:project, :public, marked_for_deletion_at: 2.days.ago, pending_delete: false) }
         let_it_be(:pending_deletion_project) { create(:project, :public, marked_for_deletion_at: 1.month.ago, pending_delete: true) }
+
+        let_it_be(:group_aimed_for_deletion) { create(:group_with_deletion_schedule) }
+        let_it_be(:group_aimed_for_deletion_project) { create(:project, :public, group: group_aimed_for_deletion) }
 
         it { is_expected.to contain_exactly(public_project, internal_project) }
       end
@@ -370,11 +376,16 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         let_it_be(:archived_project) { create(:project, :archived, :public) }
         let_it_be(:for_deletion_project) { create(:project, :public, marked_for_deletion_at: Date.current) }
 
+        let_it_be(:archived_group_project) { create(:project, :public, group: create(:group, :archived)) }
+        let_it_be(:for_deletion_group_project) do
+          create(:project, :public, group: create(:group_with_deletion_schedule))
+        end
+
         where :test_params, :expected_projects do
-          {}                | [ref(:active_projects), ref(:archived_project), ref(:for_deletion_project)]
-          { active: nil  }  | [ref(:active_projects), ref(:archived_project), ref(:for_deletion_project)]
+          {}                | [ref(:active_projects), ref(:archived_project), ref(:for_deletion_project), ref(:archived_group_project), ref(:for_deletion_group_project)]
+          { active: nil  }  | [ref(:active_projects), ref(:archived_project), ref(:for_deletion_project), ref(:archived_group_project), ref(:for_deletion_group_project)]
           { active: true }  | [ref(:active_projects)]
-          { active: false } | [ref(:archived_project), ref(:for_deletion_project)]
+          { active: false } | [ref(:archived_project), ref(:for_deletion_project), ref(:archived_group_project), ref(:for_deletion_group_project)]
         end
 
         with_them do
@@ -385,7 +396,8 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
       end
 
       describe 'filter by archived' do
-        let!(:archived_project) { create(:project, :public, :archived, name: 'E', path: 'E') }
+        let_it_be(:archived_project) { create(:project, :public, :archived, name: 'E', path: 'E') }
+        let_it_be(:archived_group_project) { create(:project, :public, group: create(:group, :archived)) }
 
         context 'non_archived=true' do
           let(:params) { { non_archived: true } }
@@ -396,19 +408,25 @@ RSpec.describe ProjectsFinder, feature_category: :groups_and_projects do
         context 'non_archived=false' do
           let(:params) { { non_archived: false } }
 
-          it { is_expected.to match_array([public_project, internal_project, archived_project]) }
+          it { is_expected.to match_array([public_project, internal_project, archived_project, archived_group_project]) }
         end
 
         describe 'filter by archived only' do
           let(:params) { { archived: 'only' } }
 
-          it { is_expected.to eq([archived_project]) }
+          it { is_expected.to eq([archived_project, archived_group_project]) }
         end
 
         describe 'filter by archived for backward compatibility' do
           let(:params) { { archived: false } }
 
           it { is_expected.to match_array([public_project, internal_project]) }
+        end
+
+        describe 'filter by archived is present and is nil' do
+          let(:params) { { archived: nil } }
+
+          it { is_expected.to match_array([public_project, internal_project, archived_project, archived_group_project]) }
         end
       end
 

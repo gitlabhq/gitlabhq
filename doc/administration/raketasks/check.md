@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Integrity check Rake task
 ---
@@ -426,8 +426,8 @@ To reset broken tokens:
 
 ## Troubleshooting
 
-The following are solutions to problems you might discover using the Rake tasks documented
-above.
+The following are solutions to problems you might discover using the Rake tasks
+documented previously.
 
 ### Dangling objects
 

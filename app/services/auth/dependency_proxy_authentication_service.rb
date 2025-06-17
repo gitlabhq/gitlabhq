@@ -7,6 +7,7 @@ module Auth
     DEFAULT_EXPIRE_TIME = 1.minute
     REQUIRED_CI_ABILITIES = %i[build_read_container_image build_create_container_image].freeze
     REQUIRED_USER_ABILITIES = %i[read_container_image create_container_image].freeze
+    REQUIRED_USER_VR_ABILITIES = %i[read_dependency_proxy write_dependency_proxy].freeze
 
     MISSING_ABILITIES_MESSAGE = 'Dependency proxy missing authentication abilities'
 
@@ -42,28 +43,11 @@ module Auth
     attr_reader :authentication_abilities
 
     def valid_user_actor?
-      feature_user = deploy_token&.user || current_user
-      # TODO: Cleanup code related to packages_dependency_proxy_containers_scope_check
-      # https://gitlab.com/gitlab-org/gitlab/-/issues/520321
-      if Feature.enabled?(:packages_dependency_proxy_containers_scope_check, feature_user)
-        dependency_proxy_containers_scope_check
-      else
-        has_required_abilities?
-      end
-    end
-
-    def dependency_proxy_containers_scope_check
-      if deploy_token
-        deploy_token.valid_for_dependency_proxy?
-      elsif current_user&.project_bot?
-        group_access_token&.active? && has_required_abilities?
-      else
-        current_user
-      end
+      has_required_abilities? && (!deploy_token || deploy_token.valid_for_dependency_proxy?)
     end
 
     def has_required_abilities?
-      [REQUIRED_CI_ABILITIES, REQUIRED_USER_ABILITIES].any? do |required_abilities|
+      [REQUIRED_CI_ABILITIES, REQUIRED_USER_ABILITIES, REQUIRED_USER_VR_ABILITIES].any? do |required_abilities|
         (required_abilities & authentication_abilities).size == required_abilities.size
       end
     end

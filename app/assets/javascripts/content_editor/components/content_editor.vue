@@ -229,9 +229,11 @@ export default {
     },
     onFocus() {
       this.focused = true;
+      this.$emit('focus');
     },
     onBlur() {
       this.focused = false;
+      this.$emit('blur');
     },
     notifyLoading() {
       this.isLoading = true;

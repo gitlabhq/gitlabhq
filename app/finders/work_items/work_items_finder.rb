@@ -4,6 +4,12 @@
 # with widgets support. Because WorkItems are internally Issues, WorkItemsFinder
 # can be almost identical to IssuesFinder, except it should return instances of
 # WorkItems instead of Issues
+# Arguments:
+#   klass - actual WorkItems class
+#   current_user - currently logged in user, if any
+#   params:
+#     work_item_parent_ids: integer[] (list of work item ids)
+#
 module WorkItems
   class WorkItemsFinder < IssuesFinder
     include Gitlab::Utils::StrongMemoize
@@ -22,11 +28,10 @@ module WorkItems
     def filter_items(items)
       items = super(items)
 
-      # We require namespace_level_work_items to be true here, since we need the namespace_ids CTE provided by the
-      # by_parent method for performance reasons see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181904
-      items = by_timeframe(items) if include_namespace_level_work_items?
+      items = by_widgets(items)
+      items = by_timeframe(items, with_namespace_cte: with_namespace_cte)
 
-      by_widgets(items)
+      by_work_item_parent_ids(items)
     end
 
     def by_widgets(items)
@@ -47,95 +52,32 @@ module WorkItems
       nil
     end
 
-    override :use_full_text_search?
-    def use_full_text_search?
-      return false if include_namespace_level_work_items?
+    def by_work_item_parent_ids(items)
+      work_item_parent_ids = params[:work_item_parent_ids]
 
-      super
+      return items unless work_item_parent_ids.present?
+
+      items.with_work_item_parent_ids(work_item_parent_ids)
     end
 
-    override :by_confidential
-    def by_confidential(items)
-      return super unless include_namespace_level_work_items?
+    def accessible_projects
+      return if exclude_projects?
+      return if params.group && !include_descendants? # group-level work items are not supported in CE
 
-      Issues::ConfidentialityFilter.new(
-        current_user: current_user,
-        params: original_params,
-        parent: root_ancestor_group,
-        assignee_filter: assignee_filter,
-        related_groups: related_groups
-      ).filter(items)
-    end
-
-    override :by_parent
-    def by_parent(items)
-      return super unless include_namespace_level_work_items?
-
-      relations = [group_namespaces, project_namespaces].compact
-
-      return items.none if relations.empty?
-
-      namespaces = if relations.one?
-                     relations.first
-                   else
-                     Namespace.from_union(relations, remove_duplicates: false)
-                   end
-
-      items.in_namespaces_with_cte(namespaces)
-    end
-
-    def group_namespaces
-      return if params[:project_id] || params[:projects]
-
-      related_groups_with_access.select(:id)
-    end
-
-    def related_groups_with_access
-      # If the user is not signed in, we just return public groups
-      return related_groups.public_to_user unless current_user
-
-      # If the user is an admin or a member of the root group, they will have read access to all
-      # work items in the subgroups so we can skip the expensive permissions check
-      if Ability.allowed?(current_user, :read_all_resources) || root_ancestor_group.member?(current_user)
-        return related_groups
-      end
-
-      Group.id_in(
-        Group.groups_user_can(related_groups, current_user, :read_work_item, same_root: true)
-      )
-    end
-
-    def related_groups
-      if include_ancestors? && include_descendants?
-        params.group.self_and_hierarchy
-      elsif include_ancestors?
-        params.group.self_and_ancestors
-      elsif include_descendants?
-        params.group.self_and_descendants
-      else
-        Group.id_in(params.group.id)
-      end
-    end
-    strong_memoize_attr :related_groups
-
-    def root_ancestor_group
-      include_ancestors? ? params.group.root_ancestor : params.group
-    end
-
-    def project_namespaces
-      return if !include_descendants? || exclude_projects?
-
-      projects = Project.in_namespace(params.group.self_and_descendant_ids)
-      projects = projects.id_in(params[:projects]) if params[:projects]
-
-      projects
+      projects = Project
         .public_or_visible_to_user(current_user, ProjectFeature.required_minimum_access_level(klass.base_class))
         .with_feature_available_for_user(klass.base_class, current_user)
-        .select(:project_namespace_id)
-    end
 
-    def include_namespace_level_work_items?
-      params.group? && params.group.namespace_work_items_enabled?
+      projects = projects.in_namespace(params.group.self_and_descendant_ids) if params.group && include_descendants?
+      projects = projects.id_in(params[:projects]) if params[:projects]
+      projects = projects.id_in(params[:project_id]) if params[:project_id]
+
+      projects
+    end
+    strong_memoize_attr :accessible_projects
+
+    def with_namespace_cte
+      false
     end
 
     def include_descendants?

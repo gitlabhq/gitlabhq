@@ -19,18 +19,40 @@
 = gitlab_ui_form_for @user, url: profile_preferences_path, remote: true, method: :put, html: { id: "profile-preferences-form" } do |f|
   = render_if_exists 'profiles/preferences/code_suggestions_settings_self_assignment'
 
-  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Appearance'),
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Mode'),
     id: 'appearance',
     options: { class: 'js-preferences-form' }) do |c|
     - c.with_description do
-      = s_('Preferences|Choose the appearance of the application.')
+      = s_('Preferences|Choose a color mode.')
     - c.with_body do
       - Gitlab::ColorModes.each do |mode|
         = f.gitlab_ui_radio_component :color_mode_id, mode.id,
           mode.name,
           radio_options: { checked: user_color_mode_id == mode.id }
 
-  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Navigation theme'),
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlights'),
+    id: 'syntax-highlighting-theme',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
+      = s_('Preferences|Choose a highlight color scheme for viewing and editing code.')
+    - c.with_body do
+      .syntax-theme.row
+        - Gitlab::ColorSchemes.each do |scheme|
+          %label.col-6.col-sm-3.col-md-2.col-lg-auto.gl-mb-5
+            .preview= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview"
+            = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
+              scheme.name,
+              radio_options: { checked: user_color_schema_id == scheme.id }
+
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Diffs'),
+    id: 'diffs-colors',
+    options: { class: 'js-preferences-form' }) do |c|
+    - c.with_description do
+      = s_('Preferences|Choose a color scheme for removed and added lines in diffs.')
+    - c.with_body do
+      #js-profile-preferences-diffs-colors-app{ data: user_diffs_colors }
+
+  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Navigation'),
     id: 'navigation-theme',
     options: { class: 'js-preferences-form application-theme' }) do |c|
     - c.with_description do
@@ -43,32 +65,6 @@
             = f.gitlab_ui_radio_component :theme_id, theme.id,
               theme.name,
               radio_options: { checked: user_theme_id == theme.id }
-
-  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Syntax highlighting theme'),
-    id: 'syntax-highlighting-theme',
-    options: { class: 'js-preferences-form' }) do |c|
-    - c.with_description do
-      = s_('Preferences|Choose the syntax highlighting theme used when viewing or editing code in GitLab.')
-      = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
-    - c.with_body do
-      .syntax-theme.row
-        - Gitlab::ColorSchemes.each do |scheme|
-          %label.col-6.col-sm-4.col-md-3.col-lg-auto.gl-mb-5
-            .preview= image_tag "#{scheme.css_class}-scheme-preview.png", alt: "#{scheme.css_class} scheme preview"
-            = f.gitlab_ui_radio_component :color_scheme_id, scheme.id,
-              scheme.name,
-              radio_options: { checked: user_color_schema_id == scheme.id }
-
-  = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Diff colors'),
-    id: 'diffs-colors',
-    options: { class: 'js-preferences-form' }) do |c|
-    - c.with_description do
-      = s_('Preferences|Customize the colors of removed and added lines in diffs.')
-      = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'change-the-syntax-highlighting-theme'), target: '_blank', rel: 'noopener noreferrer'
-    - c.with_body do
-      #js-profile-preferences-diffs-colors-app{ data: user_diffs_colors }
 
   = render ::Layouts::SettingsSectionComponent.new(s_('Preferences|Behavior'),
     id: 'behavior',

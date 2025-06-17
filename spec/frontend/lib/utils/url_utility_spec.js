@@ -2,7 +2,11 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { setGlobalAlerts } from '~/lib/utils/global_alerts';
-import { setLocationHash } from '~/lib/utils/url_utility';
+import {
+  appendLineRangeHashToUrl,
+  getLineRangeFromHash,
+  setLocationHash,
+} from '~/lib/utils/url_utility';
 import { validURLs, invalidURLs } from './mock_data';
 
 jest.mock('~/lib/utils/global_alerts', () => ({
@@ -473,6 +477,61 @@ describe('URL utility', () => {
       const url = urlUtils.setUrlFragment('/home/feature#overview', '#install');
 
       expect(url).toBe('/home/feature#install');
+    });
+  });
+
+  describe('getLineRangeFromHash', () => {
+    beforeEach(() => {
+      window.location.hash = '';
+    });
+
+    it('returns null when no line number hash is present', () => {
+      expect(getLineRangeFromHash()).toBe(null);
+    });
+
+    it('returns line number when hash is present in URL', () => {
+      window.location.hash = '#L42';
+      expect(getLineRangeFromHash()).toStrictEqual({ beginning: 42, end: 42 });
+    });
+
+    it('returns line number range when hash is present in URL', () => {
+      window.location.hash = '#L10-42';
+      expect(getLineRangeFromHash()).toStrictEqual({ beginning: 10, end: 42 });
+    });
+
+    it('returns null when hash is not a line number', () => {
+      window.location.hash = '#L42InvalidHash123';
+      expect(getLineRangeFromHash()).toBe(null);
+    });
+  });
+
+  describe('appendLineRangeHashToUrl', () => {
+    beforeEach(() => {
+      window.location.hash = '';
+    });
+
+    it('appends line number hash when present in URL', () => {
+      window.location.hash = '#L42';
+      expect(appendLineRangeHashToUrl('https://example.com/ide')).toBe(
+        'https://example.com/ide#L42',
+      );
+    });
+
+    it('appends line number range hash when present in URL', () => {
+      window.location.hash = '#L10-42';
+      expect(appendLineRangeHashToUrl('https://example.com/ide')).toBe(
+        'https://example.com/ide#L10-42',
+      );
+    });
+
+    it('returns original URL when no line number hash is present', () => {
+      window.location.hash = '#something-else';
+      expect(appendLineRangeHashToUrl('https://example.com/ide')).toBe('https://example.com/ide');
+    });
+
+    it('returns original URL when hash is not a line number', () => {
+      window.location.hash = '#L42InvalidHash123';
+      expect(appendLineRangeHashToUrl('https://example.com/ide')).toBe('https://example.com/ide');
     });
   });
 

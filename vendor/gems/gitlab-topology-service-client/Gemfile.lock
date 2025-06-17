@@ -44,7 +44,7 @@ GEM
     google-protobuf (3.25.7)
     googleapis-common-protos-types (1.20.0)
       google-protobuf (>= 3.18, < 5.a)
-    grpc (1.71.0)
+    grpc (1.72.0)
       google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     i18n (1.14.7)
@@ -63,7 +63,7 @@ GEM
       rouge
       unparser
     racc (1.8.1)
-    rack (3.1.13)
+    rack (3.1.14)
     rainbow (3.1.1)
     regexp_parser (2.10.0)
     rouge (4.5.2)
@@ -76,7 +76,7 @@ GEM
     rspec-expectations (3.13.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.3)
+    rspec-mocks (3.13.4)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
     rspec-parameterized (1.0.2)

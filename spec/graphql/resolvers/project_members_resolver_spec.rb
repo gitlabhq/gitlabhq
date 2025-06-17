@@ -9,7 +9,7 @@ RSpec.describe 'Resolvers::ProjectMembersResolver' do
 
   it_behaves_like 'querying members with a group' do
     let_it_be(:project) { create(:project, group: group_1) }
-    let_it_be(:resource_member) { create(:project_member, user: user_1, project: project) }
+    let_it_be(:resource_member) { create(:project_member, :owner, user: user_1, project: project) }
     let_it_be(:resource) { project }
   end
 end

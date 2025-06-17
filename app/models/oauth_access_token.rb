@@ -3,13 +3,13 @@
 class OauthAccessToken < Doorkeeper::AccessToken
   include Gitlab::Utils::StrongMemoize
 
-  belongs_to :resource_owner, class_name: 'User'
   belongs_to :application, class_name: 'Doorkeeper::Application'
   belongs_to :organization, class_name: 'Organizations::Organization'
 
   validates :expires_in, presence: true
 
-  alias_attribute :user, :resource_owner
+  alias_method :user, :resource_owner
+  alias_method :user=, :resource_owner=
 
   scope :latest_per_application, -> { select('distinct on(application_id) *').order(application_id: :desc, created_at: :desc) }
   scope :preload_application, -> { preload(:application) }

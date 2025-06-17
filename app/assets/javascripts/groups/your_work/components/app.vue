@@ -6,6 +6,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import groupCountsQuery from '../graphql/queries/group_counts.query.graphql';
 import {
   GROUP_DASHBOARD_TABS,
   SORT_OPTIONS,
@@ -27,6 +28,7 @@ export default {
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
   PAGINATION_TYPE_OFFSET,
+  tabCountsQuery: groupCountsQuery,
   name: 'YourWorkGroupsApp',
   components: { TabsWithList },
   props: {
@@ -44,10 +46,14 @@ export default {
     :filtered-search-term-key="$options.FILTERED_SEARCH_TERM_KEY"
     :filtered-search-namespace="$options.FILTERED_SEARCH_NAMESPACE"
     :filtered-search-recent-searches-storage-key="$options.RECENT_SEARCHES_STORAGE_KEY_GROUPS"
+    :filtered-search-input-placeholder="__('Search')"
     :sort-options="$options.SORT_OPTIONS"
     :default-sort-option="$options.SORT_OPTION_UPDATED"
     :timestamp-type-map="$options.timestampTypeMap"
     :initial-sort="initialSort"
+    :tab-counts-query="$options.tabCountsQuery"
+    :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
+    :should-update-active-tab-count-from-tab-query="false"
     :pagination-type="$options.PAGINATION_TYPE_OFFSET"
   />
 </template>

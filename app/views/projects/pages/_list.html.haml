@@ -5,31 +5,31 @@
   = render ::Layouts::CrudComponent.new(s_('GitLabPages|Domains'),
     icon: 'earth',
     count: @domains.size,
-    count_options: { class: 'js-admin-labels-count' },
-    options: { class: 'gl-mt-5' }) do |c|
+    count_options: { class: 'js-admin-labels-count' }) do |c|
     - c.with_actions do
       - if can_add_new_domain
         = render Pajamas::ButtonComponent.new(size: :small, href: new_project_pages_domain_path(@project)) do
-          = s_('GitLabPages|New domain')
+          = s_('GitLabPages|Add domain')
 
     - c.with_body do
       - if @domains.any?
         %ul.content-list
           - @domains.each do |domain|
             %li
-              .gl-flex.gl-justify-between.gl-items-baseline
-                .gl-flex.gl-gap-3
-                  - if verification_enabled
-                    - tooltip, status = domain.unverified? ? [s_('GitLabPages|Unverified'), 'failed'] : [s_('GitLabPages|Verified'), 'success']
-                    .domain-status.ci-status-icon.has-tooltip{ class: "ci-status-icon-#{status}", title: tooltip }
-                      = sprite_icon("status_#{status}")
+              .gl-flex.gl-justify-between.gl-items-start
+                .gl-flex.gl-flex-col.gl-gap-2.gl-mt-2
                   .domain-name
                     = external_link(domain.url, domain.url)
-                    - if domain.certificate && domain.pages_domain.subject
-                      %div
-                        = gl_badge_tag(s_('GitLabPages|Certificate: %{subject}') % { subject: domain.pages_domain.subject })
-                        - if domain.expired?
-                          = gl_badge_tag s_('GitLabPages|Expired'), variant: :danger
+                  - if verification_enabled
+                    .gl-flex.gl-gap-2.gl-items.center.gl-text-sm
+                      - if domain.unverified?
+                        %span.gl-text-danger
+                          = sprite_icon("status-alert", size: 12)
+                          = s_('GitLabPages|DNS check unsuccessful')
+                      - elsif domain.certificate && domain.pages_domain.subject
+                        %span.gl-text-subtle
+                          = sprite_icon("status-success", size: 12)
+                          = s_('GitLabPages|DNS check successful')
                 .gl-flex.gl-gap-2
                   = render Pajamas::ButtonComponent.new(href: project_pages_domain_path(@project, domain),
                     icon: 'pencil',
@@ -41,14 +41,13 @@
                     button_options: { title: s_("GitLabPages|Remove domain"), "aria-label": s_("GitLabPages|Remove domain"), data: { method: :delete, confirm: s_('GitLabPages|Are you sure?'), 'confirm-btn-variant': 'danger', toggle: 'tooltip', container: 'body' } })
               - if domain.needs_verification?
                 .gl-mt-3
-                  - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe
-                  - details_link_end = '</a>'.html_safe
                   = render Pajamas::AlertComponent.new(dismissible: false,
                     variant: :warning) do |c|
                     - c.with_body do
-                      = s_('GitLabPages|%{domain} is not verified. To learn how to verify ownership, visit your %{link_start}domain details%{link_end}.').html_safe % { domain: domain.domain,
-                        link_start: details_link_start,
-                        link_end: details_link_end }
+                      = s_('GitLabPages|Domain ownership verification required. Add a TXT record to verify ownership at your domain provider.')
+                    - c.with_actions do
+                      = render Pajamas::ButtonComponent.new(href: project_pages_domain_path(@project, domain)) do
+                        = s_("GitLabPages|Edit domain")
               - if domain.show_auto_ssl_failed_warning?
                 .gl-mt-3
                   - details_link_start = "<a href='#{project_pages_domain_path(@project, domain)}'>".html_safe

@@ -16,7 +16,8 @@ RSpec.describe Sidebars::Groups::SuperSidebarMenus::DeployMenu, feature_category
     expect(items.map(&:class).uniq).to eq([Sidebars::NilMenuItem])
     expect(items.map(&:item_id)).to eq([
       :packages_registry,
-      :container_registry
+      :container_registry,
+      :virtual_registry
     ])
   end
 end

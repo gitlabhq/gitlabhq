@@ -153,7 +153,7 @@ is a daemon to create an application container based on the [ECS task definition
 1. Go to **ECS > Clusters > ecs-demo > Services** on the [AWS console](https://aws.amazon.com/)
 1. Select **Deploy**. This opens a service creation form.
 1. Select `EC2` in **Launch Type**.
-1. Set `ecs_demo` to **Task definition**. This corresponds to [the task definition you created above](#create-an-ecs-task-definition).
+1. Set `ecs_demo` to **Task definition**. This corresponds to [the task definition you created previously](#create-an-ecs-task-definition).
 1. Set `ecs_demo` to **Service name**.
 1. Set `1` to **Desired tasks**.
 
@@ -188,7 +188,7 @@ Now that you have an application running on ECS, you can set up continuous deplo
 
 ### Create a new IAM user as a deployer
 
-For GitLab to access the ECS cluster, service, and task definition that you created above, You must
+For GitLab to access the ECS cluster, service, and task definition that you previously created, you must
 create a deployer user on AWS:
 
 1. Go to **IAM > Users** on [AWS console](https://aws.amazon.com/).

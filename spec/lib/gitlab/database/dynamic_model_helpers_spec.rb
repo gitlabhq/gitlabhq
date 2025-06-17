@@ -7,8 +7,8 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers, feature_category: :databas
   let(:table_name) { Project.table_name }
   let(:connection) { Project.connection }
 
-  describe '#define_batchable_model' do
-    subject(:model) { including_class.new.define_batchable_model(table_name, connection: connection) }
+  describe '.define_batchable_model' do
+    subject(:model) { described_class.define_batchable_model(table_name, connection: connection) }
 
     it 'is an ActiveRecord model' do
       expect(model.ancestors).to include(ActiveRecord::Base)
@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers, feature_category: :databas
 
     context 'for primary key' do
       subject(:model) do
-        including_class.new.define_batchable_model(table_name, connection: connection, primary_key: primary_key)
+        described_class.define_batchable_model(table_name, connection: connection, primary_key: primary_key)
       end
 
       context 'when table primary key is a single column' do
@@ -171,7 +171,7 @@ RSpec.describe Gitlab::Database::DynamicModelHelpers, feature_category: :databas
         let(:namespace_settings2) { create(:namespace_settings) }
         let(:table_name) { NamespaceSetting.table_name }
         let(:connection) { NamespaceSetting.connection }
-        let(:primary_key) { subject.define_batchable_model(table_name, connection: connection).primary_key }
+        let(:primary_key) { described_class.define_batchable_model(table_name, connection: connection).primary_key }
 
         it 'iterates table in batch ranges using the correct primary key' do
           expect(primary_key).to eq("namespace_id") # Sanity check the primary key is not id

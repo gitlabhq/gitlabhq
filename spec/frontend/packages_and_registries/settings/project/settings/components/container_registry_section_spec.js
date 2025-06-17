@@ -5,7 +5,7 @@ import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import ContainerRegistrySection from '~/packages_and_registries/settings/project/components/container_registry_section.vue';
 import ContainerExpirationPolicy from '~/packages_and_registries/settings/project/components/container_expiration_policy.vue';
 import ContainerProtectionRepositoryRules from '~/packages_and_registries/settings/project/components/container_protection_repository_rules.vue';
-import ContainerProtectionTagRules from '~/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
+import ContainerProtectionTagRules from 'ee_else_ce/packages_and_registries/settings/project/components/container_protection_tag_rules.vue';
 
 describe('Container registry project settings section', () => {
   let wrapper;
@@ -41,7 +41,7 @@ describe('Container registry project settings section', () => {
 
     it('renders with title', () => {
       expect(findSettingsBlock().props('title')).toBe('Container registry');
-      expect(findSettingsBlock().props('defaultExpanded')).toBe(false);
+      expect(findSettingsBlock().props('expanded')).toBe(false);
     });
 
     it('renders with description', () => {
@@ -69,8 +69,8 @@ describe('Container registry project settings section', () => {
       mountComponent({ props: { expanded: true } });
     });
 
-    it('sets settings block `defaultExpanded` prop to true', () => {
-      expect(findSettingsBlock().props('defaultExpanded')).toBe(true);
+    it('sets settings block `expanded` prop to true', () => {
+      expect(findSettingsBlock().props('expanded')).toBe(true);
     });
   });
 

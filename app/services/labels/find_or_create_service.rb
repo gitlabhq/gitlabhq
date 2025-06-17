@@ -22,7 +22,7 @@ module Labels
     def available_labels
       @available_labels ||= LabelsFinder.new(
         current_user,
-        "#{parent_type}_id".to_sym => parent.id,
+        "#{parent_type}_id": parent.id,
         include_ancestor_groups: include_ancestor_groups?,
         only_group_labels: parent_is_group?
       ).execute(skip_authorization: skip_authorization)

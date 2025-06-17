@@ -1448,7 +1448,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
       options = record.send(:evaluated_attr_encrypted_options_for, :properties)
         .merge(iv: hash['encrypted_properties_iv'])
-      decrypted = described_class.attr_decrypt(
+      decrypted = described_class.attr_encrypted_decrypt(
         :properties,
         hash['encrypted_properties'],
         options

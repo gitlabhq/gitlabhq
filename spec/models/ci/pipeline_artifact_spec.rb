@@ -100,6 +100,28 @@ RSpec.describe Ci::PipelineArtifact, type: :model, feature_category: :job_artifa
     end
   end
 
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      ci_pipeline_artifact = create(:ci_pipeline_artifact)
+
+      if ci_pipeline_artifact.file_store == ObjectStorage::Store::REMOTE
+        ci_pipeline_artifact.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      ci_pipeline_artifact
+    end
+
+    let(:remotely_stored) do
+      ci_pipeline_artifact = create(:ci_pipeline_artifact)
+
+      if ci_pipeline_artifact.file_store == ObjectStorage::Store::LOCAL
+        ci_pipeline_artifact.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      ci_pipeline_artifact
+    end
+  end
+
   describe '.report_exists?' do
     subject(:pipeline_artifact) { described_class.report_exists?(file_type) }
 

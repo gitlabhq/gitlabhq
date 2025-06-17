@@ -2,7 +2,7 @@
 data_category: operational
 key_path: usage_activity_by_stage.manage.project_imports.total
 description: Number of projects imported
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "14.0"

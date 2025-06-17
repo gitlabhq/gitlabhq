@@ -216,18 +216,22 @@ module API
           end
 
           def create_package_file_with_type(file_type, current_package)
-            unless params[:file].empty_size?
-              # conan sends two upload requests, the first has no file, so we skip record creation if file.size == 0
-              ::Packages::Conan::CreatePackageFileService.new(
-                current_package,
-                params[:file],
-                params.merge(conan_file_type: file_type, build: current_authenticated_job)
-              ).execute
-            end
+            ::Packages::Conan::CreatePackageFileService.new(
+              current_package,
+              params[:file],
+              params.merge(conan_file_type: file_type, build: current_authenticated_job)
+            ).execute
           end
 
           def upload_package_file(file_type)
             authorize_upload!(project)
+
+            # conan CLI uses X-Checksum-Deploy header with empty data to check if file already exists, we do not support this feature
+            # See conan source code: https://github.com/conan-io/conan/blob/048565de10232675955056fd41c9f3c4e5305eba/conan/internal/rest/file_uploader.py#L38
+            if headers['X-Checksum-Deploy'] == 'true'
+              return not_found!('Non checksum storage')
+            end
+
             bad_request!('File is too large') if project.actual_limits.exceeded?(:conan_max_file_size, params['file.size'].to_i)
 
             current_package = find_or_create_package
@@ -245,6 +249,8 @@ module API
 
             forbidden!
           end
+
+          private
 
           # We override this method from auth_finders because we need to
           # extract the token from the Conan JWT which is specific to the Conan API

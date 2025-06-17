@@ -1,6 +1,5 @@
 <script>
 import { GlAlert, GlIcon, GlLink, GlLoadingIcon, GlSprintf, GlTooltipDirective } from '@gitlab/ui';
-import { BUTTON_TOOLTIP_RETRY, BUTTON_TOOLTIP_CANCEL } from '~/ci/constants';
 import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
 import { setUrlFragment, visitUrl } from '~/lib/utils/url_utility';
 import { __, n__, sprintf, formatNumber } from '~/locale';
@@ -23,13 +22,18 @@ import HeaderActions from './components/header_actions.vue';
 import HeaderBadges from './components/header_badges.vue';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
 
+const finishedStatuses = ['FAILED', 'SUCCESS', 'CANCELED'];
+const pipelineCancel = 'pipelineCancel';
+const pipelineRetry = 'pipelineRetry';
+const errorTexts = {
+  [LOAD_FAILURE]: __('We are currently unable to fetch data for the pipeline header.'),
+  [POST_FAILURE]: __('An error occurred while making the request.'),
+  [DELETE_FAILURE]: __('An error occurred while deleting the pipeline.'),
+  [DEFAULT]: __('An unknown error occurred.'),
+};
+
 export default {
   name: 'PipelineHeader',
-  BUTTON_TOOLTIP_RETRY,
-  BUTTON_TOOLTIP_CANCEL,
-  pipelineCancel: 'pipelineCancel',
-  pipelineRetry: 'pipelineRetry',
-  finishedStatuses: ['FAILED', 'SUCCESS', 'CANCELED'],
   components: {
     CiIcon,
     ClipboardButton,
@@ -50,12 +54,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
     SafeHtml,
-  },
-  errorTexts: {
-    [LOAD_FAILURE]: __('We are currently unable to fetch data for the pipeline header.'),
-    [POST_FAILURE]: __('An error occurred while making the request.'),
-    [DELETE_FAILURE]: __('An error occurred while deleting the pipeline.'),
-    [DEFAULT]: __('An unknown error occurred.'),
   },
   inject: {
     graphqlResourceEtag: {
@@ -149,12 +147,6 @@ export default {
     hasError() {
       return this.failureType;
     },
-    hasPipelineData() {
-      return Boolean(this.pipeline);
-    },
-    isLoadingInitialQuery() {
-      return this.$apollo.queries.pipeline.loading && !this.hasPipelineData;
-    },
     detailedStatus() {
       return this.pipeline?.detailedStatus || {};
     },
@@ -162,31 +154,28 @@ export default {
       return this.pipeline?.status;
     },
     isFinished() {
-      return this.$options.finishedStatuses.includes(this.status);
-    },
-    shouldRenderContent() {
-      return !this.isLoadingInitialQuery && this.hasPipelineData;
+      return finishedStatuses.includes(this.status);
     },
     failure() {
       switch (this.failureType) {
         case LOAD_FAILURE:
           return {
-            text: this.$options.errorTexts[LOAD_FAILURE],
+            text: errorTexts[LOAD_FAILURE],
             variant: 'danger',
           };
         case POST_FAILURE:
           return {
-            text: this.$options.errorTexts[POST_FAILURE],
+            text: errorTexts[POST_FAILURE],
             variant: 'danger',
           };
         case DELETE_FAILURE:
           return {
-            text: this.$options.errorTexts[DELETE_FAILURE],
+            text: errorTexts[DELETE_FAILURE],
             variant: 'danger',
           };
         default:
           return {
-            text: this.$options.errorTexts[DEFAULT],
+            text: errorTexts[DEFAULT],
             variant: 'danger',
           };
       }
@@ -298,11 +287,11 @@ export default {
     },
     cancelPipeline(id) {
       this.isCanceling = true;
-      this.postPipelineAction(this.$options.pipelineCancel, cancelPipelineMutation, id);
+      this.postPipelineAction(pipelineCancel, cancelPipelineMutation, id);
     },
     retryPipeline(id) {
       this.isRetrying = true;
-      this.postPipelineAction(this.$options.pipelineRetry, retryPipelineMutation, id);
+      this.postPipelineAction(pipelineRetry, retryPipelineMutation, id);
     },
     async deletePipeline(id) {
       this.isDeleting = true;
@@ -347,7 +336,6 @@ export default {
       :title="failure.text"
       :variant="failure.variant"
       :dismissible="false"
-      data-testid="error-alert"
     >
       <div v-for="(failureMessage, index) in failureMessages" :key="`failure-message-${index}`">
         {{ failureMessage }}
@@ -386,9 +374,8 @@ export default {
                 class="commit-sha-container"
                 data-testid="commit-link"
                 target="_blank"
+                >{{ content }}</gl-link
               >
-                {{ content }}
-              </gl-link>
             </template>
           </gl-sprintf>
           <clipboard-button

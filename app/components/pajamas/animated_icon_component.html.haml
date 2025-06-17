@@ -1,0 +1,69 @@
+%svg.gl-animated-icon{ **@icon_options, class: icon_class, role: "presentation", width: "16", height: "16", viewBox: "0 0 16 16", fill: "none", xmlns: "http://www.w3.org/2000/svg" }
+
+  - if @icon == :chevron_down_up
+    %path.gl-animated-chevron-down-up-arrow-left-line{ d: "M0 0L0 4.6", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+    %path.gl-animated-chevron-down-up-arrow-right-line{ d: "M0 0L0 4.6", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+
+  - if @icon == :chevron_lg_down_up
+    %path.gl-animated-chevron-lg-down-up-arrow-left-line{ d: "M0 0L0 7.5", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+    %path.gl-animated-chevron-lg-down-up-arrow-right-line{ d: "M0 0L0 7.5", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+
+  - if @icon == :chevron_lg_right_down
+    %path.gl-animated-chevron-lg-right-down-arrow{ d: "M5.75 13.2537L11.0018 8.00183L5.75 2.75", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+
+  - if @icon == :chevron_right_down
+    %path.gl-animated-chevron-right-down-arrow{ d: "M6.75 4.75L10 8L6.75 11.25", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+
+  - if @icon == :smile
+    %g.gl-animated-smile-eyes
+      %circle{ cy: "7", cx: "6", r: "0.5" }
+      %circle{ cy: "7", cx: "10", r: "0.5" }
+    %path.gl-animated-smile-big-smile{ d: "M8 12C9.65685 12 11 10.6569 11 9H5C5 10.6569 6.34315 12 8 12Z", fill: "currentColor" }
+    %path.gl-animated-smile-slight-smile{ d: "M6.3 10C6.46667 10.3333 7 11 8 11C9 11 9.53333 10.3333 9.7 10", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %circle{ cx: "8", cy: "8", r: "7.25", stroke: "currentColor", "stroke-width": "1.5" }
+
+  - if @icon == :duo_chat
+    %path{ d: "M3.75297 12.25V11.5H3.44253L3.2229 11.7194L3.75297 12.25ZM0.75 15.25H0C0 15.5533 0.182651 15.8267 0.462816 15.9428C0.742981 16.059 1.06551 15.9949 1.28007 15.7806L0.75 15.25ZM7.74 1C7.32579 1 6.99 1.33579 6.99 1.75C6.99 2.16421 7.32579 2.5 7.74 2.5V1ZM1.5 6.75C1.5 6.33579 1.16421 6 0.75 6C0.335786 6 0 6.33579 0 6.75H1.5ZM14.5 4V10H16V4H14.5ZM13 11.5H3.75297V13H13V11.5ZM3.2229 11.7194L0.219933 14.7194L1.28007 15.7806L4.28304 12.7806L3.2229 11.7194ZM7.74 2.5H13V1H7.74V2.5ZM1.5 15.25V6.75H0V15.25H1.5ZM14.5 10C14.5 10.8284 13.8284 11.5 13 11.5V13C14.6569 13 16 11.6569 16 10H14.5ZM16 4C16 2.34315 14.6569 1 13 1V2.5C13.8284 2.5 14.5 3.17157 14.5 4H16Z", fill: "currentColor", "stroke-width": "0" }
+    %path.gl-animated-duo-chat-small-sparkle{ "fill-rule": "evenodd", "clip-rule": "evenodd", d: "M8.56489 5.39914C8.37631 4.86695 7.62369 4.86695 7.43511 5.39914L6.99787 6.63314C6.93751 6.80349 6.80349 6.93751 6.63314 6.99787L5.39914 7.43511C4.86695 7.62369 4.86695 8.37631 5.39914 8.56489L6.63314 9.00213C6.80349 9.06249 6.93751 9.19651 6.99787 9.36686L7.43511 10.6009C7.62369 11.133 8.37631 11.133 8.56489 10.6009L9.00213 9.36686C9.06249 9.19651 9.19651 9.06249 9.36686 9.00213L10.6009 8.56489C11.133 8.37631 11.133 7.62369 10.6009 7.43511L9.36686 6.99787C9.19651 6.93751 9.06249 6.80349 9.00213 6.63314L8.56489 5.39914Z", fill: "currentColor", "stroke-width": "0" }
+    %path.gl-animated-duo-chat-big-sparkle{ d: "M8.56489 5.39914C8.37631 4.86695 7.62369 4.86695 7.43511 5.39914L6.99787 6.63314C6.93751 6.80349 6.80349 6.93751 6.63314 6.99787L5.39914 7.43511C4.86695 7.62369 4.86695 8.37631 5.39914 8.56489L6.63314 9.00213C6.80349 9.06249 6.93751 9.19651 6.99787 9.36686L7.43511 10.6009C7.62369 11.133 8.37631 11.133 8.56489 10.6009L9.00213 9.36686C9.06249 9.19651 9.19651 9.06249 9.36686 9.00213L10.6009 8.56489C11.133 8.37631 11.133 7.62369 10.6009 7.43511L9.36686 6.99787C9.19651 6.93751 9.06249 6.80349 9.00213 6.63314L8.56489 5.39914Z", fill: "currentColor", "stroke-width": "0" }
+
+  - if @icon == :loader
+    %circle.gl-animated-loader-shape.gl-animated-loader-shape-1{ cx: "8", cy: "8", r: "2", fill: "currentColor", "stroke-width": "0" }
+    %circle.gl-animated-loader-shape.gl-animated-loader-shape-2{ cx: "14", cy: "8", r: "2", fill: "currentColor", "stroke-width": "0" }
+    %circle.gl-animated-loader-shape.gl-animated-loader-shape-3{ cx: "2", cy: "8", r: "2", fill: "currentColor", "stroke-width": "0" }
+
+  - if @icon == :notifications
+    %path.gl-animated-notifications-bottom-part{ d: "M3.72 11.25L2.35519 12.837C2.21579 12.9991 2.33095 13.25 2.54473 13.25H13.4428C13.6586 13.25 13.773 12.995 13.6296 12.8338L12.22 11.25V7C12.22 6.06556 11.9184 5.20155 11.4073 4.5", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-notifications-top-part{ d: "M3.72 11.75V7C3.72 4.65279 5.62279 2.75 7.97 2.75C9.38277 2.75 10.6345 3.43933 11.4073 4.5", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-notifications-line{ d: "M1.75 14.25L14.2461 1.75391", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path{ d: "M6 13H10V13C10 14.1046 9.10457 15 8 15V15C6.89543 15 6 14.1046 6 13V13Z", fill: "currentColor" }
+    %path{ d: "M7 2C7 1.44772 7.44772 1 8 1V1C8.55228 1 9 1.44772 9 2V2C9 2.55228 8.55228 3 8 3V3C7.44772 3 7 2.55228 7 2V2Z", fill: "currentColor" }
+
+  - if @icon == :sidebar
+    %rect{ x: "1.75", y: "1.75", width: "12.5", height: "12.5", rx: "1.25", stroke: "currentColor", "stroke-width": "1.5" }
+    %path.gl-animated-sidebar-line{ d: "M5.25 2V14", stroke: "currentColor", "stroke-width": "1.5" }
+
+  - if @icon == :sort
+    %path.gl-animated-sort-arrow-left{ d: "M3 1.06065L0.75 3.31065", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-arrow-right{ d: "M5.25 3.31065L3 1.06065", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-long-line-on{ d: "M8.75 2.75L15.25 2.75", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-medium-line-on{ d: "M8.75 6L13.25 6", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-short-line-on{ d: "M8.75 9.25L10.25 9.25", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-long-line-off{ d: "M8.75 13.25L15.25 13.25", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-medium-line-off{ d: "M8.75 10L13.25 10", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-short-line-off{ d: "M8.75 6.75L10.25 6.75", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-sort-line{ d: "M3 13.2506L3 4.0006", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+
+  - if @icon == :star
+    %path.gl-animated-star-shape{ d: "M6.56177 5.79259L8 2.33467L9.43822 5.79259C9.58223 6.13883 9.90785 6.37539 10.2816 6.40536L14.0147 6.70464L11.1705 9.14103C10.8857 9.38498 10.7613 9.76775 10.8484 10.1325L11.7173 13.7754L8.52125 11.8232C8.20124 11.6278 7.79876 11.6278 7.47875 11.8232L4.28269 13.7754L5.15165 10.1325C5.23865 9.76776 5.11428 9.38498 4.82949 9.14103L1.98526 6.70464L5.71837 6.40536C6.09216 6.37539 6.41777 6.13882 6.56177 5.79259Z", fill: "transparent", stroke: "currentColor", "stroke-width": "1.5" }
+
+  - if @icon == :todo
+    %path.gl-animated-todo-box{ d: "M14.25 6.75L14.25 13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 3C1.75 2.30964 2.30964 1.75 3 1.75L13.25 1.75", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-todo-plus-line{ d: "M10.75 3L15.25 3", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-todo-plus-line{ d: "M13 5.25L13 0.75", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-todo-check{ d: "M6.75 7.76299L9.15312 10.2469L15.25 4.15", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round", "stroke-linejoin": "round" }
+
+  - if @icon == :upload
+    %path.gl-animated-upload-base{ d: "M14.25 9.75V13C14.25 13.6904 13.6904 14.25 13 14.25L3 14.25C2.30964 14.25 1.75 13.6904 1.75 13L1.75 9.75", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-upload-line{ d: "M8 11.25V2.5", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }
+    %path.gl-animated-upload-arrow{ d: "M11.25 5.31066L8 2.06066L4.75 5.31066", stroke: "currentColor", "stroke-width": "1.5", "stroke-linecap": "round" }

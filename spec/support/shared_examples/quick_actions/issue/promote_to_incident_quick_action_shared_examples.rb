@@ -6,10 +6,12 @@ RSpec.shared_examples 'promote_to_incident quick action' do
   describe '/promote_to_incident' do
     context 'when issue can be promoted' do
       it 'promotes issue to incident' do
-        add_note('/promote_to_incident')
+        fill_in('Add a reply', with: '/promote_to_incident')
+        click_button 'Comment'
 
         expect(issue.reload.issue_type).to eq('incident')
-        expect(page).to have_content('Issue has been promoted to incident')
+        # Page does full refresh, so check the work item type
+        expect(page).to have_css('[data-testid="work-item-type-icon"]', text: 'Incident')
       end
     end
 
@@ -29,13 +31,14 @@ RSpec.shared_examples 'promote_to_incident quick action' do
       before do
         sign_in(guest)
         visit project_issue_path(project, issue)
-        wait_for_all_requests
       end
 
       it 'does not promote the issue' do
-        add_note('/promote_to_incident')
+        fill_in('Add a reply', with: '/promote_to_incident')
+        click_button 'Comment'
 
-        expect(page).to have_content('Could not apply promote_to_incident command')
+        # Page does full refresh, so check the work item type
+        expect(page).to have_css('[data-testid="work-item-type-icon"]', text: 'Issue')
       end
     end
 
@@ -46,23 +49,17 @@ RSpec.shared_examples 'promote_to_incident quick action' do
         fill_in('Description', with: '/promote_to_incident')
         click_button('Create issue')
 
-        wait_for_all_requests
-
         expect(page).to have_content("Incident created just now by #{user.name}")
       end
 
       context 'when incident is selected for issue type' do
         it 'promotes issue to incident' do
           visit new_project_issue_path(project)
-          wait_for_requests
 
+          select 'Incident', from: 'Type'
           fill_in('Title', with: 'Title')
-          find('.js-issuable-type-filter-dropdown-wrap').click
-          select_listbox_item(_('Incident'))
           fill_in('Description', with: '/promote_to_incident')
-          click_button('Create issue')
-
-          wait_for_all_requests
+          click_button('Create incident')
 
           expect(page).to have_content("Incident created just now by #{user.name}")
         end

@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: Data access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Processing specific job classes
 ---
@@ -121,7 +121,7 @@ the Sidekiq style guide in the GitLab development documentation. We support quer
 based on a subset of worker attributes:
 
 - `feature_category` - the
-  [GitLab feature category](https://handbook.gitlab.com/handbook/product/categories/#categories-a-z) the
+  GitLab feature category the
   queue belongs to. For example, the `merge` queue belongs to the
   `source_code_management` category.
 - `has_external_dependencies` - whether or not the queue connects to external
@@ -176,7 +176,7 @@ precedence:
 The operator precedence for this syntax is fixed: it's not possible to make `AND`
 have higher precedence than `OR`.
 
-As with the standard queue group syntax above, a single `*` as the
+As with the standard queue group syntax documented previously, a single `*` as the
 entire queue group selects all queues.
 
 ### List of available job classes

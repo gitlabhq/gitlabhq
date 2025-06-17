@@ -1,0 +1,15 @@
+---
+table_name: p_catalog_resource_component_usages
+classes:
+- Ci::Catalog::Resources::Components::Usage
+feature_categories:
+- pipeline_composition
+description: Tracks when a project includes a CI component in a pipeline.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145881
+milestone: '16.10'
+removed_in_milestone: '18.1'
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192871
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects
+table_size: small

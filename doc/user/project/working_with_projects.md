@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Manage projects
+description: Settings, configuration, project activity, and project deletion.
 ---
 
 {{< details >}}
@@ -244,13 +245,17 @@ To star a project:
 {{< history >}}
 
 - Default behavior [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) to delayed project deletion for Premium and Ultimate tiers on [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in 16.0.
+- Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 - Default behavior changed to delayed project deletion for [GitLab Free](https://gitlab.com/groups/gitlab-org/-/epics/17208) and [personal projects](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in 18.0.
+- Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
 
 {{< /history >}}
 
-You can mark a project to be deleted.
-After you delete a project for the first time, it enters a pending deletion state.
-If you delete a project a second time, it is removed permanently.
+You can schedule a project for deletion.
+By default, when you delete a project for the first time, it enters a pending deletion state.
+Delete a project again to remove it immediately.
+
+On GitLab.com, after a project is deleted, its data is retained for seven days.
 
 Prerequisites:
 
@@ -264,71 +269,14 @@ To delete a project:
 1. Expand **Advanced**.
 1. In the **Delete project** section, select **Delete project**.
 1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
-
-This action marks the project for deletion and places it in a pending deletion state.
+1. Optional. To delete the project immediately, repeat these steps.
 
 You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
 
-### Delayed project deletion
-
-{{< history >}}
-
-- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89466) in GitLab 15.1.
-- [Disabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95495) in GitLab 15.3.
-- Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must have the Owner role for the project.
-
-Projects enter a pending deletion state when deleted for the first time.
-
-On GitLab Self-Managed instances, group administrators can define a deletion delay period of between 1 and 90 days.
-On SaaS, there is a non-adjustable default retention period of seven days.
-
-You can [view projects that are pending deletion](#view-projects-pending-deletion),
-and use the Rails console to
-[find projects that are pending deletion](troubleshooting.md#find-projects-that-are-pending-deletion).
-
-If the user who scheduled the project deletion loses access to the project (for example, by leaving the project, having their role downgraded, or being banned from the project) before the deletion occurs,
-the deletion job will instead restore and unarchive the project, so the project will no longer be scheduled for deletion.
-
-   {{< alert type="warning" >}}
-
-   If the user who scheduled the project deletion regains Owner role or administrator access before the job runs, then the job removes the project permanently.
-
-   {{< /alert >}}
-
-### Delete a project immediately
-
-{{< history >}}
-
-- Option to delete projects immediately from the **Admin** area and as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-
-{{< /history >}}
-
-If you don't want to wait for delayed deletion, you can delete a project immediately. To do this, perform the steps for [deleting a projects](#delete-a-project) again.
-
-In the first cycle of deleting a project, the project is moved to the delayed deletion queue and automatically deleted after the retention period has passed.
-If during this delayed deletion time you run a second deletion cycle, the project is deleted immediately.
-
-Prerequisites:
-
-- You must have the Owner role for the project.
-- The project must be [pending deletion](#delete-a-project).
-
-To immediately delete a project pending deletion:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete project**.
-1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
+If the user who scheduled the project deletion loses access to the project before the deletion occurs
+(for example, by leaving the project, having their role downgraded, or being banned from the project),
+the deletion job restores the project. However, if the user regains access before the deletion job runs,
+the job removes the project permanently.
 
 ### View projects pending deletion
 
@@ -354,7 +302,7 @@ Each project in the list shows:
 - The time the project is scheduled for final deletion.
 - A **Restore** action to stop the project being eventually deleted.
 
-## Restore a project
+### Restore a project
 
 {{< history >}}
 
@@ -366,7 +314,6 @@ Each project in the list shows:
 Prerequisites:
 
 - You must have the Owner role for the project.
-- The project must be [pending deletion](#delete-a-project).
 
 To restore a project pending deletion:
 
@@ -576,7 +523,7 @@ To leave a project:
 
 {{< /details >}}
 
-You can add compliance frameworks to projects in a group that has a [compliance framework](../compliance/compliance_frameworks.md).
+You can add compliance frameworks to projects in a group that has a [compliance framework](../compliance/compliance_frameworks/_index.md).
 
 ## Manage project access through LDAP groups
 

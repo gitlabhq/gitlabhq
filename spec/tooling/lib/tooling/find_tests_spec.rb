@@ -2,7 +2,7 @@
 
 require 'tempfile'
 require_relative '../../../../tooling/lib/tooling/find_tests'
-require 'gitlab/rspec/all'
+require 'fast_spec_helper'
 
 RSpec.describe Tooling::FindTests, feature_category: :tooling do
   include StubENV

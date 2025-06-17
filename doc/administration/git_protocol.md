@@ -23,7 +23,7 @@ and the [protocol documentation](https://github.com/git/git/blob/master/Document
 
 ## Prerequisites
 
-From the client side, `git` `v2.18.0` or newer must be installed.
+From the client side, `git` `v2.18.0` or later must be installed.
 
 From the server side, if we want to configure SSH we need to set the `sshd`
 server to accept the `GIT_PROTOCOL` environment.

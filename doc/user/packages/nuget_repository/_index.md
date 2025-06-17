@@ -197,6 +197,12 @@ To add the package registry as a source with a .NET configuration file:
 
 {{< /tabs >}}
 
+{{< alert type="note" >}}
+
+The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL. 
+
+{{< /alert >}}
+
 ### With the group endpoint
 
 {{< tabs >}}
@@ -316,6 +322,12 @@ To add the package registry as a source with a .NET configuration file:
 {{< /tab >}}
 
 {{< /tabs >}}
+
+{{< alert type="note" >}}
+
+The previous example commands add a source named `gitlab`. Subsequent example commands refer to the source name (`gitlab`), not the source URL. 
+
+{{< /alert >}}
 
 ## Publish a package
 

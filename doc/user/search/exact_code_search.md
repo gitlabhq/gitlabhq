@@ -52,11 +52,15 @@ to use [advanced search](advanced_search.md) instead.
 Scopes describe the type of data you're searching.
 The following scopes are available for exact code search:
 
-| Search level | Code | Notes                                                                                                                                                                    |
-|--------------|:----:|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Global       |      | An administrator can [disable global search scopes](_index.md#disable-global-search-scopes). On GitLab Self-Managed, an administrator can enable global search with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag. |
-| Group        |  ✓   |                                                                                                                                                                          |
-| Project      |  ✓   |                                                                                                                                                                          |
+| Scope | Global <sup>1</sup>                | Group                                       | Project |
+|-------|:----------------------------------:|:-------------------------------------------:|:-------:|
+| Code  | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+
+**Footnotes**:
+
+1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
+   On GitLab Self-Managed, an administrator can enable global search
+   with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag.
 
 ## Zoekt search API
 
@@ -113,8 +117,8 @@ When this feature is enabled for instances with more than 20,000 projects, your 
 
 GitLab has two search modes:
 
-- **Exact match mode:** returns results that exactly match the query.
-- **Regular expression mode:** supports regular and boolean expressions.
+- **Exact match mode**: returns results that exactly match the query.
+- **Regular expression mode**: supports regular and boolean expressions.
 
 The exact match mode is used by default.
 To switch to the regular expression mode, to the right of the search box,

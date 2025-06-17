@@ -334,5 +334,134 @@ RSpec.describe Ci::JobsFinder, '#execute', feature_category: :continuous_integra
         expect(subject).to be_empty
       end
     end
+
+    describe 'when match_compatible_runner_only is true' do
+      let_it_be(:owner) { create(:user) }
+      let_it_be(:maintainer) { create(:user) }
+      let_it_be(:developer) { create(:user) }
+      let_it_be(:groups) { create_list(:group, 2, owners: owner, maintainers: maintainer, developers: developer) }
+      let_it_be(:projects) { groups.map { |group| create(:project, group: group) } }
+
+      let_it_be(:runner_matching_tags) { %w[tag1 tag2 tag3] }
+
+      let_it_be(:job) do
+        create(:ci_build, :pending, name: 'pending_job', project: projects.first,
+          tag_list: runner_matching_tags.sample(2))
+      end
+
+      let_it_be(:pending_job) { create(:ci_pending_build, project: projects.first, build: job) }
+
+      let_it_be(:different_project_job) do
+        create(:ci_build, :pending, project: projects.second, tag_list: runner_matching_tags)
+      end
+
+      let_it_be(:different_project_pending_job) do
+        create(:ci_pending_build, project: projects.second, build: different_project_job)
+      end
+
+      let_it_be(:instance_runner) { create(:ci_runner, tag_list: runner_matching_tags, run_untagged: false) }
+      let_it_be(:group_runner) { create(:ci_runner, :group, groups: [groups.first], tag_list: runner_matching_tags) }
+      let_it_be(:project_runner) do
+        create(:ci_runner, :project, projects: [projects.first], tag_list: runner_matching_tags)
+      end
+
+      let(:params) do
+        { match_compatible_runner_only: true }
+      end
+
+      before_all do
+        # Add job with non-matching tags to check for this does not return unrelated jobs
+        create(:ci_pending_build, project: projects.first,
+          build: create(:ci_build, :pending, project: projects.first, tag_list: %w[tag1 tag4]))
+      end
+
+      context 'with instance runner' do
+        let(:runner) { instance_runner }
+
+        context 'when user has access to runner' do
+          context 'when current user is an admin', :enable_admin_mode do
+            let(:user) { admin }
+
+            it 'returns the pending jobs' do
+              expect(execute).to contain_exactly(job, different_project_job)
+            end
+          end
+        end
+
+        context 'without user' do
+          let(:user) { nil }
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'with group runner' do
+        let(:runner) { group_runner }
+
+        context 'when user has access to runner' do
+          context 'when current user is an admin', :enable_admin_mode do
+            let(:user) { admin }
+
+            it 'returns the pending job' do
+              expect(execute).to contain_exactly(job)
+            end
+          end
+
+          context 'when current user is an owner of group' do
+            let(:user) { owner }
+
+            it 'returns the pending job' do
+              expect(execute).to contain_exactly(job)
+            end
+          end
+
+          context 'when current user is a maintainer of group' do
+            let(:user) { maintainer }
+
+            it { is_expected.to be_empty }
+          end
+        end
+
+        context 'without user' do
+          let(:user) { nil }
+
+          it { is_expected.to be_empty }
+        end
+      end
+
+      context 'with project runner' do
+        let(:runner) { project_runner }
+
+        context 'when user has access to runner' do
+          context 'when current user is an admin', :enable_admin_mode do
+            let(:user) { admin }
+
+            it 'returns the pending job' do
+              expect(execute).to contain_exactly(job)
+            end
+          end
+
+          context 'when current user is an maintainer of group' do
+            let(:user) { maintainer }
+
+            it 'returns the pending job' do
+              expect(execute).to contain_exactly(job)
+            end
+          end
+
+          context 'when current user is a developer of group' do
+            let(:user) { developer }
+
+            it { is_expected.to be_empty }
+          end
+        end
+
+        context 'without user' do
+          let(:user) { nil }
+
+          it { is_expected.to be_empty }
+        end
+      end
+    end
   end
 end

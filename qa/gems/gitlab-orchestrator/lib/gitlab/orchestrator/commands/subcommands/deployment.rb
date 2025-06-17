@@ -53,6 +53,14 @@ module Gitlab
                 desc: "Max number of retries for failed deployment",
                 default: 0,
                 type: :numeric
+              option :resource_preset,
+                desc: "Kubernetes resource definition preset",
+                default: Gitlab::Orchestrator::Deployment::ResourcePresets::DEFAULT,
+                type: :string,
+                enum: [
+                  Gitlab::Orchestrator::Deployment::ResourcePresets::DEFAULT,
+                  Gitlab::Orchestrator::Deployment::ResourcePresets::HIGH
+                ]
 
               super
             end
@@ -113,7 +121,8 @@ module Gitlab
               :admin_token,
               :host_http_port,
               :host_ssh_port,
-              :host_registry_port
+              :host_registry_port,
+              :resource_preset
             )
 
             installation(name, Orchestrator::Deployment::Configurations::Kind.new(**configuration_args)).create
@@ -144,6 +153,7 @@ module Gitlab
                 ["--set", "#{component}=#{version}"]
               end
             cmd = ["orchestrator", "create", "deployment", configuration, *ci_components]
+            cmd.push("--resource-preset", options[:resource_preset])
             cmd.push(*options[:set].flat_map { |opt| ["--set", opt] }) if options[:set]
             cmd.push(*options[:env].flat_map { |opt| ["--env", opt] }) if options[:env]
             cmd.push("--chart-sha", options[:chart_sha]) if options[:chart_sha]

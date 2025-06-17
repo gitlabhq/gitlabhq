@@ -12,7 +12,15 @@ module RuboCop
         # the Enterprise Edition code.
         # We ignore GraphQL top-level namespaces because it's the way organize GraphQL code.
         # These are ignored after the EE module because GraphQL code can be namespaced under EE too.
-        IGNORED_TOP_LEVEL_NAMESPACES = %w[EE Mutations Types::PermissionTypes Types PermissionTypes Resolvers].freeze
+        IGNORED_TOP_LEVEL_NAMESPACES = %w[
+          EE
+          Mutations
+          Types::PermissionTypes
+          Types
+          PermissionTypes
+          Resolvers
+          Subscriptions
+        ].freeze
 
         class << self
           def external_dependency_checksum

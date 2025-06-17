@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.plan.projects_jira_active
 description: Distinct count of creator_id from projects with an active Jira integration.
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

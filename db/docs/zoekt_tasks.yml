@@ -7,7 +7,5 @@ feature_categories:
 description: Represents a zoekt task for a project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143063
 milestone: '16.10'
-gitlab_schema: gitlab_main_cell
-sharding_key:
-  project_identifier: projects
+gitlab_schema: gitlab_main_cell_local
 table_size: small

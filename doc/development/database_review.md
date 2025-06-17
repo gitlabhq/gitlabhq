@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Database Review Guidelines
 ---
 
@@ -139,7 +139,7 @@ of error that would result in corruption or loss of production data.
 
 Include in the MR description:
 
-- If the migration itself is not reversible, details of how data changes could be reverted in the event of an incident. For example, in the case of a migration that deletes records (an operation that most of the times is not automatically reversible), how _could_ the deleted records be recovered.
+- If the migration itself is not reversible, details of how data changes could be reverted in the event of an incident. For example, in the case of a migration that deletes records (an operation that most of the times is not automatically reversible), how could the deleted records be recovered.
 - If the migration deletes data, apply the label `~data-deletion`.
 - Concise descriptions of possible user experience impact of an error; for example, "Issues would unexpectedly go missing from Epics".
 - Relevant data from the [query plans](#query-plans) that indicate the query works as expected; such as the approximate number of records that are modified or deleted.
@@ -211,7 +211,7 @@ Include in the MR description:
     - [postgres.ai](https://postgres.ai/) allows updates to data (`exec UPDATE issues SET ...`) and creation of new tables and columns (`exec ALTER TABLE issues ADD COLUMN ...`).
   - More information on how to find the number of actual returned records in [Understanding EXPLAIN plans](database/understanding_explain_plans.md)
 - For query changes, it is best to provide both the SQL queries along with the
-  plan _before_ and _after_ the change. This helps spot differences quickly.
+  plan before and after the change. This helps spot differences quickly.
 - Include data that shows the performance improvement, preferably in
   the form of a benchmark.
 - When evaluating a query plan, we need the final query to be

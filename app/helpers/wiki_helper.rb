@@ -17,10 +17,6 @@ module WikiHelper
     add_to_breadcrumbs(_('Wiki'), wiki_path(page.wiki))
   end
 
-  def link_to_wiki_page(page, **options)
-    link_to page.human_title, wiki_page_path(page.wiki, page), **options
-  end
-
   def wiki_sidebar_toggle_button
     render Pajamas::ButtonComponent.new(
       icon: 'chevron-double-lg-left',

@@ -1,15 +1,15 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, sprintf } from '~/locale';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   directives: {
     SafeHtml,
   },
   computed: {
-    ...mapGetters(['getNotesDataByProp']),
+    ...mapState(useNotes, ['getNotesDataByProp']),
     registerLink() {
       return this.getNotesDataByProp('registerPath');
     },

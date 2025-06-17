@@ -10,6 +10,7 @@ module Packages
       ArgumentError,
       ActiveRecord::RecordInvalid,
       ::Packages::Helm::ExtractFileMetadataService::ExtractionError,
+      ::Packages::Helm::ProcessFileService::ProtectedPackageError,
       ::Packages::Nuget::ExtractMetadataFileService::ExtractionError,
       ::Packages::Nuget::UpdatePackageFromMetadataService::InvalidMetadataError,
       ::Packages::Nuget::UpdatePackageFromMetadataService::ZipError,

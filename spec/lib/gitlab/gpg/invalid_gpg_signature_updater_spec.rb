@@ -67,23 +67,6 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
         )
       end
 
-      it 'assigns the gpg key even with revalidate_gpg_fingerprints feature flag disabled' do
-        stub_feature_flags(revalidate_gpg_fingerprints: false)
-
-        # InvalidGpgSignatureUpdater is called by the after_create hook
-        gpg_key = create :gpg_key,
-          key: GpgHelpers::User1.public_key,
-          user: user
-
-        expect(valid_gpg_signature.reload).to have_attributes(
-          project: project,
-          commit_sha: commit_sha,
-          gpg_key: gpg_key,
-          gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
-          verification_status: 'verified'
-        )
-      end
-
       it 'does not assign the gpg key when an unrelated gpg key is added' do
         # InvalidGpgSignatureUpdater is called by the after_create hook
         create :gpg_key,
@@ -124,23 +107,6 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater, :sidekiq_inline do
           gpg_key: gpg_key,
           gpg_key_primary_keyid: GpgHelpers::User1.primary_keyid,
           verification_status: 'verified'
-        )
-      end
-
-      it 'does not update the signature when revalidate_gpg_fingerprints feature flag is disabled' do
-        stub_feature_flags(revalidate_gpg_fingerprints: false)
-
-        # InvalidGpgSignatureUpdater is called by the after_create hook
-        create :gpg_key,
-          key: GpgHelpers::User1.public_key,
-          user: user
-
-        expect(invalid_gpg_signature.reload).to have_attributes(
-          project: project,
-          commit_sha: commit_sha,
-          gpg_key: nil,
-          gpg_key_primary_keyid: GpgHelpers::User1.fingerprint,
-          verification_status: 'unknown_key'
         )
       end
 

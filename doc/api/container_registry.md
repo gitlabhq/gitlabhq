@@ -46,12 +46,12 @@ for more details about the permissions that this setting grants to users.
 
 ```shell
 curl --request PUT "https://gitlab.example.com/api/v4/projects/5/" \
-     --header 'PRIVATE-TOKEN: <your_access_token>' \
-     --header 'Accept: application/json' \
-     --header 'Content-Type: application/json' \
-     --data-raw '{
-         "container_registry_access_level": "private"
-     }'
+  --header 'PRIVATE-TOKEN: <your_access_token>' \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+      "container_registry_access_level": "private"
+  }'
 ```
 
 Example response:
@@ -87,7 +87,8 @@ GET /projects/:id/registry/repositories
 | `tags_count` | boolean        | no       | If the parameter is included as true, each repository includes `"tags_count"` in the response . |
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories"
 ```
 
 Example response:
@@ -137,7 +138,7 @@ GET /groups/:id/registry/repositories
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/groups/2/registry/repositories"
+  --url "https://gitlab.example.com/api/v4/groups/2/registry/repositories"
 ```
 
 Example response:
@@ -182,7 +183,7 @@ GET /registry/repositories/:id
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true&size=true"
+  --url "https://gitlab.example.com/api/v4/registry/repositories/2?tags=true&tags_count=true&size=true"
 ```
 
 Example response:
@@ -225,8 +226,9 @@ DELETE /projects/:id/registry/repositories/:repository_id
 | `repository_id` | integer        | yes      | The ID of registry repository. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2"
 ```
 
 ## List registry repository tags
@@ -258,7 +260,7 @@ GET /projects/:id/registry/repositories/:repository_id/tags
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
 ```
 
 Example response:
@@ -294,7 +296,7 @@ GET /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
 Example response:
@@ -330,8 +332,9 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags/:tag_name
 | `tag_name`      | string         | yes      | The name of tag. |
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags/v10.0.0"
 ```
 
 This operation does not delete blobs. To reclaim disk space, [run garbage collection](../administration/packages/container_registry.md#container-registry-garbage-collection).
@@ -351,7 +354,7 @@ DELETE /projects/:id/registry/repositories/:repository_id/tags
 |---------------------|----------------|----------|-------------|
 | `id`                | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `repository_id`     | integer        | yes      | The ID of registry repository. |
-| `name_regex`        | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. **Note:** `name_regex` is deprecated in favor of `name_regex_delete`. This field is validated. |
+| `name_regex`        | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. **Note**: `name_regex` is deprecated in favor of `name_regex_delete`. This field is validated. |
 | `name_regex_delete` | string         | yes      | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to delete. To delete all tags specify `.*`. This field is validated. |
 | `name_regex_keep`   | string         | no       | The [re2](https://github.com/google/re2/wiki/Syntax) regex of the name to keep. This value overrides any matches from `name_regex_delete`. This field is validated. Note: setting to `.*` results in a no-op. |
 | `keep_n`            | integer        | no       | The amount of latest tags of given name to keep. |
@@ -392,29 +395,42 @@ Examples:
   and remove ones that are older than 2 days:
 
   ```shell
-  curl --request DELETE --data 'name_regex_delete=[0-9a-z]{40}' --data 'keep_n=5' --data 'older_than=2d' \
-       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  curl --request DELETE \
+    --data 'name_regex_delete=[0-9a-z]{40}' \
+    --data 'keep_n=5' \
+    --data 'older_than=2d' \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
 - Remove all tags, but keep always the latest 5:
 
   ```shell
-  curl --request DELETE --data 'name_regex_delete=.*' --data 'keep_n=5' \
-       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  curl --request DELETE \
+    --data 'name_regex_delete=.*' \
+    --data 'keep_n=5' \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
 - Remove all tags, but keep always tags beginning with `stable`:
 
   ```shell
-  curl --request DELETE --data 'name_regex_delete=.*' --data 'name_regex_keep=stable.*' \
-       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  curl --request DELETE \
+    --data 'name_regex_delete=.*' \
+    --data 'name_regex_keep=stable.*' \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
 - Remove all tags that are older than 1 month:
 
   ```shell
-  curl --request DELETE --data 'name_regex_delete=.*' --data 'older_than=1month' \
-       --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+  curl --request DELETE \
+    --data 'name_regex_delete=.*' \
+    --data 'older_than=1month' \
+    --header "PRIVATE-TOKEN: <your_access_token>" \
+    --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
   ```
 
 ### Use cURL with a regular expression that contains `+`
@@ -424,13 +440,15 @@ When using cURL, the `+` character in regular expressions must be
 to be processed correctly by the GitLab Rails backend. For example:
 
 ```shell
-curl --request DELETE --data-urlencode 'name_regex_delete=dev-.+' \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
+curl --request DELETE \
+  --data-urlencode 'name_regex_delete=dev-.+' \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/registry/repositories/2/tags"
 ```
 
 ## Instance-wide endpoints
 
-Beside the group- and project-specific GitLab APIs explained above,
+Beside the group- and project-specific GitLab APIs explained previously,
 the container registry has its own endpoints.
 To query those, follow the Registry's built-in mechanism to obtain and use an
 [authentication token](https://distribution.github.io/distribution/spec/auth/token/).
@@ -452,8 +470,9 @@ You must specify the correct [scopes and actions](https://distribution.github.io
 ```shell
 $ SCOPE="repository:${CI_REGISTRY_IMAGE}:delete" #or push,pull
 
-$ curl  --request GET --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
-        "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
+$ curl --request GET \
+    --user "${CI_REGISTRY_USER}:${CI_REGISTRY_PASSWORD}" \
+    --url "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
 {"token":" ... "}
 ```
 
@@ -473,9 +492,10 @@ You can use the token retrieved with the predefined `CI_REGISTRY_USER` and `CI_R
 The `tag_delete` [Container-Registry-Feature](https://gitlab.com/gitlab-org/container-registry/-/blob/master/docs/spec/docker/v2/api.md#delete-tag) must be enabled.
 
 ```shell
-$ curl  --request DELETE --header "Authorization: Bearer <token_from_above>" \
-        --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
-        "https://gitlab.example.com:5050/v2/${CI_REGISTRY_IMAGE}/manifests/${CI_COMMIT_SHORT_SHA}"
+$ curl --request DELETE \
+    --header "Authorization: Bearer <token_from_above>" \
+    --header "Accept: application/vnd.docker.distribution.manifest.v2+json" \
+    --url "https://gitlab.example.com:5050/v2/${CI_REGISTRY_IMAGE}/manifests/${CI_COMMIT_SHORT_SHA}"
 ```
 
 ### Listing all container repositories
@@ -489,9 +509,11 @@ To list all container repositories on your GitLab instance, administrator creden
 ```shell
 $ SCOPE="registry:catalog:*"
 
-$ curl  --request GET --user "<admin-username>:<admin-password>" \
-        "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
+$ curl --request GET \
+    --user "<admin-username>:<admin-password>" \
+    --url "https://gitlab.example.com/jwt/auth?service=container_registry&scope=${SCOPE}"
 {"token":" ... "}
 
-$ curl --header "Authorization: Bearer <token_from_above>" https://gitlab.example.com:5050/v2/_catalog
+$ curl --header "Authorization: Bearer <token_from_above>" \
+    --url "https://gitlab.example.com:5050/v2/_catalog"
 ```

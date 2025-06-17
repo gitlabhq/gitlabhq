@@ -1,29 +1,22 @@
 /** @typedef {import('./app/index.js').RapidDiffsFacade} */
 import { camelizeKeys } from '~/lib/utils/object_utils';
 import { DIFF_FILE_MOUNTED } from './dom_events';
-// required for easier mocking in tests
-import IntersectionObserver from './intersection_observer';
 import * as events from './events';
 
 const eventNames = Object.values(events);
-
-const sharedObserver = new IntersectionObserver((entries) => {
-  entries.forEach((entry) => {
-    if (entry.isIntersecting) {
-      entry.target.onVisible();
-    } else {
-      entry.target.onInvisible();
-    }
-  });
-});
-
 const dataCacheKey = Symbol('data');
 
 export class DiffFile extends HTMLElement {
   /** @param {RapidDiffsFacade} app */
   app;
+  /** @type {Element} */
   diffElement;
-  // intermediate state storage for adapters
+  /** @type {Function} Dispatch event to adapters
+   * @param {string} event - Event name
+   * @param {...any} args - Payload
+   */
+  trigger;
+  /** @type {Object} Storage for intermediate state used by adapters */
   sink = {};
 
   static findByFileHash(hash) {
@@ -42,22 +35,24 @@ export class DiffFile extends HTMLElement {
     const [diffElement] = this.children;
     this.diffElement = diffElement;
     this.observeVisibility();
-    this.onClickHandler = this.onClick.bind(this);
-    this.diffElement.addEventListener('click', this.onClickHandler);
-    this.trigger = this.#trigger.bind(this);
+    // eslint-disable-next-line no-underscore-dangle
+    this.trigger = this._trigger.bind(this);
     this.trigger(events.MOUNTED);
     this.dispatchEvent(new CustomEvent(DIFF_FILE_MOUNTED, { bubbles: true }));
   }
 
   disconnectedCallback() {
-    sharedObserver.unobserve(this);
-    this.diffElement.removeEventListener('click', this.onClickHandler);
-    this.app = null;
-    this.sink = null;
-    this.diffElement = null;
+    // app might be missing if the file was destroyed before mounting
+    // for example: changing view settings in the middle of the streaming
+    if (this.app) this.unobserveVisibility();
+    this.app = undefined;
+    this.diffElement = undefined;
+    this.sink = undefined;
+    this.trigger = undefined;
   }
 
-  #trigger(event, ...args) {
+  // don't use private methods because...Safari
+  _trigger(event, ...args) {
     if (!eventNames.includes(event))
       throw new Error(
         `Missing event declaration: ${event}. Did you forget to declare this in ~/rapid_diffs/events.js?`,
@@ -68,17 +63,24 @@ export class DiffFile extends HTMLElement {
   observeVisibility() {
     if (!this.adapters.some((adapter) => adapter[events.VISIBLE] || adapter[events.INVISIBLE]))
       return;
-    sharedObserver.observe(this);
+    this.app.observe(this);
   }
 
-  onVisible() {
-    this.trigger(events.VISIBLE);
+  unobserveVisibility() {
+    this.app.unobserve(this);
   }
 
-  onInvisible() {
-    this.trigger(events.INVISIBLE);
+  // Delegated to Rapid Diffs App
+  onVisible(entry) {
+    this.trigger(events.VISIBLE, entry);
   }
 
+  // Delegated to Rapid Diffs App
+  onInvisible(entry) {
+    this.trigger(events.INVISIBLE, entry);
+  }
+
+  // Delegated to Rapid Diffs App
   onClick(event) {
     const clickActionElement = event.target.closest('[data-click]');
     if (clickActionElement) {
@@ -102,6 +104,16 @@ export class DiffFile extends HTMLElement {
     // TODO: add outline for active file
   }
 
+  focusFirstButton(options) {
+    this.diffElement.querySelector('button').focus(options);
+  }
+
+  selfReplace(node) {
+    // 'mount' is automagically called by the <diff-file-mounted> component inside the diff file
+    this.replaceWith(node);
+    node.focusFirstButton({ focusVisible: false });
+  }
+
   get data() {
     if (!this[dataCacheKey]) this[dataCacheKey] = camelizeKeys(JSON.parse(this.dataset.fileData));
     return this[dataCacheKey];
@@ -113,7 +125,8 @@ export class DiffFile extends HTMLElement {
       diffElement: this.diffElement,
       sink: this.sink,
       data: this.data,
-      trigger: this.trigger,
+      trigger: this.trigger.bind(this),
+      replaceWith: this.selfReplace.bind(this),
     };
   }
 

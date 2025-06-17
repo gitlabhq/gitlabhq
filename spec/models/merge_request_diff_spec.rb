@@ -58,6 +58,15 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
     it { expect(subject.reload.patch_id_sha).to eq('f14ae956369247901117b8b7d237c9dc605898c5') }
 
     it 'creates commits with empty messages' do
+      allow(MergeRequestDiffCommit).to receive(:create_bulk).and_call_original
+
+      expect(MergeRequestDiffCommit).to have_received(:create_bulk).with(
+        an_instance_of(Integer),
+        anything, # commits array
+        subject.project,
+        skip_commit_data: true
+      )
+
       expect(subject.commits).to all(have_attributes(message: ''))
     end
 
@@ -1686,6 +1695,28 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       it 'returns false' do
         expect(merge_request_diff.has_encoded_file_paths?).to eq(false)
       end
+    end
+  end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      merge_request_diff = create(:merge_request_diff)
+
+      if merge_request_diff.external_diff_store == ObjectStorage::Store::REMOTE
+        merge_request_diff.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      merge_request_diff
+    end
+
+    let(:remotely_stored) do
+      merge_request_diff = create(:merge_request_diff)
+
+      if merge_request_diff.external_diff_store == ObjectStorage::Store::LOCAL
+        merge_request_diff.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      merge_request_diff
     end
   end
 end

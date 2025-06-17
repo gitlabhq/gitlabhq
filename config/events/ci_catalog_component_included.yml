@@ -5,6 +5,8 @@ action: ci_catalog_component_included
 additional_properties:
   label:
     description: Id of the component being included
+  value:
+    description: Type of the component being included
 identifiers:
 - project
 - namespace
@@ -16,4 +18,3 @@ tiers:
 - free
 - premium
 - ultimate
-

@@ -110,6 +110,17 @@ RSpec.describe Mutations::Integrations::Exclusions::Create, feature_category: :i
         end
       end
 
+      context 'when project ids can be deduplicated' do
+        let(:project_ids) { [project.to_global_id.to_s] * 2 }
+
+        it 'deduplicates projects and creates an inactive integrations for the projects' do
+          expect(Integrations::Exclusions::CreateService).to receive(:new)
+            .with(a_hash_including(projects: [project])).and_call_original
+          expect { resolve_mutation }.to change { Integration.count }.from(0).to(1)
+          resolve_mutation
+        end
+      end
+
       context 'when there are too many group ids in the request' do
         let(:group_ids) { (1..101).map { |id| "gid://gitlab/Group/#{id}" } }
 
@@ -117,6 +128,18 @@ RSpec.describe Mutations::Integrations::Exclusions::Create, feature_category: :i
           expect(Integrations::Exclusions::CreateService).not_to receive(:new)
           resolve_mutation
           expect(graphql_errors).to include(a_hash_including('message' => "groupIds is too long (maximum is 100)"))
+        end
+      end
+
+      context 'when group ids can be deduplicated' do
+        let(:project_ids) { [] }
+        let(:group_ids) { [project2.group.to_global_id.to_s] * 2 }
+
+        it 'deduplicates groups and creates inactive integrations for the groups' do
+          expect(Integrations::Exclusions::CreateService).to receive(:new)
+            .with(a_hash_including(groups: [project2.group])).and_call_original
+          expect { resolve_mutation }.to change { Integration.count }.from(0).to(1)
+          resolve_mutation
         end
       end
     end

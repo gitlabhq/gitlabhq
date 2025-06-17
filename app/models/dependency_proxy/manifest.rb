@@ -2,14 +2,16 @@
 
 class DependencyProxy::Manifest < ApplicationRecord
   include FileStoreMounter
+  include ObjectStorable
   include TtlExpirable
   include Packages::Destructible
   include EachBatch
   include UpdateNamespaceStatistics
 
   belongs_to :group
-  alias_attribute :namespace, :group
+  alias_method :namespace, :group
 
+  STORE_COLUMN = :file_store
   MAX_FILE_SIZE = 10.megabytes.freeze
   DIGEST_HEADER = 'Docker-Content-Digest'
   ACCEPTED_TYPES = [
@@ -25,7 +27,6 @@ class DependencyProxy::Manifest < ApplicationRecord
   validates :digest, presence: true
 
   scope :order_id_desc, -> { reorder(id: :desc) }
-  scope :with_files_stored_locally, -> { where(file_store: ::DependencyProxy::FileUploader::Store::LOCAL) }
 
   mount_file_store_uploader DependencyProxy::FileUploader
   update_namespace_statistics namespace_statistics_name: :dependency_proxy_size

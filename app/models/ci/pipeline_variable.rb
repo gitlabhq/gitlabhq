@@ -5,6 +5,7 @@ module Ci
     include Ci::Partitionable
     include Ci::HasVariable
     include Ci::RawVariable
+    include Ci::ProjectsWithVariablesQuery
 
     before_validation :ensure_project_id
 
@@ -19,8 +20,6 @@ module Ci
 
     query_constraints :id, :partition_id
     partitionable scope: :pipeline, partitioned: true
-
-    alias_attribute :secret_value, :value
 
     validates :key, :pipeline, presence: true
     validates :project_id, presence: true

@@ -8,6 +8,7 @@ module Security
         @variables = variables(params)
         @default_sast_values = default_sast_values(params)
         @default_values_overwritten = false
+        @stage = @variables['stage'].presence ? @variables['stage'] : Security::CiConfiguration::DEFAULT_TEST_STAGE
       end
 
       private
@@ -52,28 +53,14 @@ module Security
       end
 
       def update_existing_content!
-        @existing_gitlab_ci_content['stages'] = set_stages
+        @auto_devops_enabled ? add_stages!(auto_devops_stages) : add_stages!([Security::CiConfiguration::DEFAULT_TEST_STAGE])
+        add_stages!([@stage])
         @existing_gitlab_ci_content['variables'] = set_variables(global_variables, @existing_gitlab_ci_content)
         @existing_gitlab_ci_content['sast'] = set_sast_block
         @existing_gitlab_ci_content['include'] = generate_includes
 
         @existing_gitlab_ci_content.select! { |k, v| v.present? }
         @existing_gitlab_ci_content['sast'].select! { |k, v| v.present? }
-      end
-
-      def set_stages
-        existing_stages = @existing_gitlab_ci_content['stages'] || []
-        base_stages = @auto_devops_enabled ? auto_devops_stages : ['test']
-        (existing_stages + base_stages + [sast_stage]).uniq
-      end
-
-      def auto_devops_stages
-        auto_devops_template = YAML.safe_load(Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content)
-        auto_devops_template['stages']
-      end
-
-      def sast_stage
-        @variables['stage'].presence ? @variables['stage'] : 'test'
       end
 
       def set_variables(variables, hash_to_update = {})
@@ -94,7 +81,7 @@ module Security
       def set_sast_block
         sast_content = @existing_gitlab_ci_content['sast'] || {}
         sast_content['variables'] = set_variables(sast_variables)
-        sast_content['stage'] = sast_stage
+        sast_content['stage'] = @stage
         sast_content.select { |k, v| v.present? }
       end
 

@@ -158,6 +158,24 @@ RSpec.describe Gitlab::Database::AsyncIndexes::MigrationHelpers, feature_categor
         )
       end
     end
+
+    context 'when the table is a child partition' do
+      before do
+        connection.drop_table(table_name, if_exists: true)
+        connection.create_table(table_name, options: 'PARTITION BY HASH (id)')
+        connection.execute(<<~SQL)
+          CREATE TABLE #{table_name}_1 PARTITION OF #{table_name}
+            FOR VALUES WITH (MODULUS 1, REMAINDER 0);
+        SQL
+      end
+
+      it 'raises an error' do
+        expect { migration.prepare_async_index("#{table_name}_1", 'id') }.to(
+          raise_error(ArgumentError, "prepare_async_index can not be used on a child partition table. " \
+            "Please use prepare_partitioned_async_index on the partitioned table.")
+        )
+      end
+    end
   end
 
   describe '#prepare_async_index_from_sql' do

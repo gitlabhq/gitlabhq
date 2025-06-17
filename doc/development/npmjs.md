@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: npm package publishing guidelines
 ---
 
@@ -31,7 +31,7 @@ fostering trust and consistency in the GitLab ecosystem.
    - Strongly consider using an external secret store like OpenBao or Vault
    - At a minimum, store tokens [securely](../ci/pipelines/pipeline_security.md#cicd-variables) in environment variables
      in GitLab CI/CD pipelines, ensuring that masking and protection is enabled.
-   - Do not store tokens on your local machine in unsecured locations. Please store tokens in 1Password and
+   - Do not store tokens on your local machine in unsecured locations. Instead, store tokens in 1Password and
      refrain from storing these secrets in unencrypted files like shell profiles, `.npmrc`, and `.env`.
 1. Add `gitlab-bot` as author of the package. This ensures the organization retains ownership if a team member's email becomes invalid during offboarding.
 

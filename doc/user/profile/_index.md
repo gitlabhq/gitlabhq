@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: User account
+description: Profile settings, preferences, authentication, and notifications.
 ---
 
 {{< details >}}
@@ -40,7 +41,7 @@ You might need the user ID if you want to interact with it using the [GitLab API
 To find the user ID:
 
 1. Go to the users' profile page.
-1. On the profile page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
+1. On the profile page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy user ID**.
 
 ## Access your user settings
@@ -253,6 +254,7 @@ To add links to other accounts:
    - Mastodon handle. In GitLab 17.4 and later, you can use your [GitLab profile](#access-your-user-profile) to verify your Mastodon account.
    - Skype username.
    - X (formerly Twitter) @username.
+   - [ORCID](https://orcid.org/).
 
    Your user ID or username must be 500 characters or less.
 1. Select **Update profile settings**.
@@ -476,7 +478,7 @@ To disconnect a sign-in service used for signing in to GitLab:
 
 ## Session duration
 
-### Stay signed in for two weeks
+### Stay signed in for one week
 
 By default, you are signed out of GitLab after seven days (10080 minutes) of inactivity or until you close your browser
 window, whichever comes first.

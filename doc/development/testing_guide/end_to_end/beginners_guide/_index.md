@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Beginner's guide to writing end-to-end tests
 ---
 
@@ -45,7 +45,7 @@ In this tutorial we're writing a login end-to-end test, even though it has been 
 
 The GitLab QA end-to-end tests are organized by the different [stages in the DevOps lifecycle](https://gitlab.com/gitlab-org/gitlab-foss/tree/master/qa/qa/specs/features/browser_ui). Determine where the test should be placed by [stage](https://handbook.gitlab.com/handbook/product/categories/#devops-stages), determine which feature the test belongs to, and then place it in a subdirectory under the stage.
 
-![DevOps lifecycle by stages](../img/gl-devops-lifecycle-by-stage_v12_10.png)
+![DevOps lifecycle by stages](img/gl-devops-lifecycle-by-stage_v12_10.png)
 
 If the test is Enterprise Edition only, the test is created in the `features/ee` directory, but follow the same DevOps lifecycle format.
 

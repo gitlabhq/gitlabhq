@@ -4,6 +4,7 @@ group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use your web browser to write code in a secure environment.
 title: Remote development
+description: Web IDE and workspaces.
 ---
 
 {{< details >}}

@@ -7,7 +7,7 @@ workflow:
 include:
   - local: .gitlab/ci/version.yml
   - local: .gitlab/ci/global.gitlab-ci.yml
-  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@9.14.0"
+  - component: "gitlab.com/gitlab-org/quality/pipeline-common/allure-report@11.4.0"
     inputs:
       job_name: "e2e-test-report"
       job_stage: "report"
@@ -17,7 +17,7 @@ include:
       gitlab_auth_token_variable_name: "PROJECT_TOKEN_FOR_CI_SCRIPTS_API_USAGE"
       allure_job_name: "${QA_RUN_TYPE}"
   - project: gitlab-org/quality/pipeline-common
-    ref: 9.14.0
+    ref: 11.4.0
     file:
       - /ci/notify-slack.gitlab-ci.yml
       - /ci/qa-report.gitlab-ci.yml
@@ -44,12 +44,6 @@ stages:
   # Because this pipeline template can be included directly in other projects,
   # image path and registry needs to be defined explicitly
   image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
-
-# Taken from .gitlab/ci/global.gitlab-ci.yml, but adapted the paths
-.failure_category_after_script:
-  after_script:
-    - source $CI_PROJECT_DIR/scripts/utils.sh
-    - execute_failure_analyzer
 
 .qa-install:
   extends:
@@ -136,6 +130,18 @@ stages:
     - bundle exec rake "ci:export_code_paths_mapping[$QA_CODE_PATHS_MAPPING_FILE_PATTERN]"
   rules:
     - if: '$COVERBAND_ENABLED == "true"'
+
+.export-frontend-code-paths-mapping:
+  extends:
+    - .qa-install
+  stage: report
+  when: always
+  variables:
+    QA_FRONTEND_PATHS_MAPPING_FILE_PATTERN: $CI_PROJECT_DIR/qa/tmp/js-coverage-by-example-*.json
+  script:
+    - bundle exec rake "ci:export_frontend_code_paths_mapping[$QA_FRONTEND_PATHS_MAPPING_FILE_PATTERN]"
+  rules:
+    - if: '$BABEL_ENV == "istanbul"'
 
 .notify-slack:
   extends:

@@ -1,12 +1,12 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Shell command development guidelines
 ---
 
 This document contains guidelines for working with processes and files in the GitLab codebase.
-These guidelines are meant to make your code more reliable _and_ secure.
+These guidelines are meant to make your code more reliable and secure.
 
 ## References
 
@@ -96,7 +96,7 @@ $ cat -- -l
 hello
 ```
 
-In the GitLab codebase, we avoid the option/argument ambiguity by _always_ using `--` for commands that support it.
+In the GitLab codebase, we avoid the option/argument ambiguity by always using `--` for commands that support it.
 
 ```ruby
 # Wrong

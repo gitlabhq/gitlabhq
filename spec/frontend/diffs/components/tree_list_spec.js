@@ -170,14 +170,14 @@ describe('Diffs tree list component', () => {
     return treeEntries;
   };
 
-  describe('default', () => {
-    beforeEach(() => {
-      createComponent();
-    });
+  it('renders empty text', () => {
+    createComponent();
+    expect(wrapper.text()).toContain('No files found');
+  });
 
-    it('renders empty text', () => {
-      expect(wrapper.text()).toContain('No files found');
-    });
+  it('renders title', () => {
+    createComponent();
+    expect(wrapper.find('h2').text()).toContain('Files');
   });
 
   it('renders file count', () => {

@@ -156,6 +156,27 @@
       ],
       "pattern": "^<?[0-9]+\\.[0-9]+$"
     },
+    "status": {
+      "type": [
+        "string"
+      ],
+      "enum": [
+        "active",
+        "removed"
+      ]
+    },
+    "milestone_removed": {
+      "type": [
+        "string"
+      ],
+      "pattern": "^<?[0-9]+\\.[0-9]+$"
+    },
+    "removed_by_url": {
+      "type": [
+        "string"
+      ],
+      "format": "uri"
+    },
     "classification": {
       "type": [
         "string",
@@ -176,11 +197,35 @@
         ]
       }
     },
-    "extra_tracking_classes": {
-      "type": "array",
+    "extra_trackers": {
+      "type": [
+        "array",
+        "null"
+      ],
       "items": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "tracking_class": {
+            "type": "string"
+          },
+          "protected_properties": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "$ref": "schema/status.json"
+    }
+  ]
 }

@@ -28,7 +28,9 @@ class SyncIndexForPipelinesIdBigintPart5 < Gitlab::Database::Migration[2.2]
   def up
     INDEXES.each do |definition|
       name, columns, options = definition.values_at(:name, :columns, :options)
+      # rubocop:disable Migration/PreventIndexCreation -- Legacy migration
       add_concurrent_partitioned_index(TABLE_NAME, columns, name: name, **(options || {}))
+      # rubocop:enable Migration/PreventIndexCreation
     end
   end
 

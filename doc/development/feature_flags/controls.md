@@ -34,7 +34,7 @@ When the changes are deployed to the environments it is time to start
 rolling out the feature to our users. The exact procedure of rolling out a
 change is unspecified, as this can vary from change to change. However, in
 general we recommend rolling out changes incrementally, instead of enabling them
-for everybody right away. We also recommend you to _not_ enable a feature
+for everybody right away. We also recommend you to not enable a feature
 _before_ the code is being deployed.
 This allows you to separate rolling out a feature from a deploy, making it
 easier to measure the impact of both separately.
@@ -101,7 +101,7 @@ This depends on the feature and what sort of impact it might have.
 Guidelines:
 
 - Notify `#support_gitlab-com` beforehand. So in case if the feature has any side effects on user experience, they can mitigate and disable the feature flag to reduce some impact.
-- If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#change-request-workflows).
+- If the feature meets the requirements for creating a [Change Management](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process) issue, create a Change Management issue per [criticality guidelines](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#change-request-workflows).
 - For simple, low-risk, easily reverted features, proceed and [enable the feature in `#production`](#process).
 - For support requests to toggle feature flags for specific groups or projects, follow the process outlined in the [support workflows](https://handbook.gitlab.com/handbook/support/workflows/saas_feature_flags/).
 
@@ -120,17 +120,15 @@ in these cases:
 
 ##### A. Feature flag for an operation that runs a few times per day
 
-Let's say you are releasing a new functionality that runs a few times per day, for example, in a daily or
-hourly cron job. And this new functionality is controlled by the newly introduced feature flag.
+If, for example, you're releasing a new feature that runs a few times per day in a cron job, and the feature is controlled by the newly introduced feature flag.
 For example, [rewriting the database query for a cron job](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/128759/diffs).
 In this case, releasing the feature flag for a percentage below 25% might give you slow feedback
-regarding whether to proceed with the rollout or not. Also, if the cron job fails, it will [retry](../sidekiq/_index.md#retries).
+regarding whether to proceed with the rollout or not. Also, if the cron job fails, it [retries](../sidekiq/_index.md#retries).
 So the consequences of something going wrong won't be that big. In this case, releasing with a percentage of 25% or 50%
 will be an acceptable choice.
 
-But you have to make sure to log the result of the feature flag check to the log of your worker. See instructions
-[here](../logging.md#logging-context-metadata-through-rails-or-grape-requests)
-about best practices for logging.
+But you have to make sure to log the result of the feature flag check to the log of your worker. For more instructions about best practices for logging, see
+[Logging context metadata (through Rails or Grape requests)](../logging.md#logging-context-metadata-through-rails-or-grape-requests).
 
 ##### B. Feature flag for an operation that runs hundreds or thousands times per day
 
@@ -139,7 +137,7 @@ it might not be run often. In this case, choose a percentage high enough to coll
 to know whether to proceed or not. You can consider starting with `5%` or `10%` in this case, while monitoring
 the logs for any errors, or returned `500`s statuses to the users.
 
-But as you continue with the rollout and increasing the percentage, you will need to consider looking at the
+But as you continue with the rollout and increase the percentage, you need to consider looking at the
 performance impact of the feature. You can consider monitoring
 the [Latency: Apdex and error ratios](https://dashboards.gitlab.net/d/general-triage/general-platform-triage?orgId=1)
 dashboard on Grafana.
@@ -197,7 +195,7 @@ incidents or in-progress change issues, for example:
   2021-06-29 Canary deployment failing QA tests
 ```
 
-Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://handbook.gitlab.com/handbook/engineering/infrastructure/change-management/#feature-flags-and-the-change-management-process).
+Before enabling a feature flag, verify that you are not violating any [Production Change Lock periods](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#production-change-lock-pcl) and are in compliance with the [Feature flags and the Change Management Process](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/change-management/#feature-flags-and-the-change-management-process).
 
 The following `/chatops` commands must be performed in the Slack
 `#production` channel.
@@ -344,7 +342,7 @@ Previously, to enable a feature 25% of the time, we would run the following in S
 /chatops run feature set new_navigation_bar 25 --random
 ```
 
-This command enables the `new_navigation_bar` feature for GitLab.com. However, this command does *not* enable the feature for 25% of the total users.
+This command enables the `new_navigation_bar` feature for GitLab.com. However, this command does not enable the feature for 25% of the total users.
 Instead, when the feature is checked with `enabled?`, it returns `true` 25% of the time.
 
 Percentage of time feature flags are now deprecated in favor of [percentage of actors](#percentage-based-actor-selection)
@@ -427,7 +425,7 @@ After turning on the feature flag, you need to [monitor the relevant graphs](htt
 
 In this illustration, you can see that the Apdex score started to decline after the feature flag was enabled at `09:46`. The feature flag was then deactivated at `10:31`, and the service returned to the original value:
 
-![A line graph showing the decline and recovery of the Apdex score](../img/feature-flag-metrics_v15_8.png)
+![A line graph showing the decline and recovery of the Apdex score](img/feature-flag-metrics_v15_8.png)
 
 Certain features necessitate extensive monitoring over multiple days, particularly those that are high-risk and critical to business operations. In contrast, other features may only require a 24-hour monitoring period before continuing with the rollout.
 

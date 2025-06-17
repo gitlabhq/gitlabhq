@@ -2,31 +2,8 @@
 
 module Gitlab
   module SidekiqLimits
-    HIGH_DB_DURATION_WORKERS = %w[
-      PipelineProcessWorker
-      Ci::BuildFinishedWorker
-      PostReceive
-      UpdateMergeRequestsWorker
-      NewMergeRequestWorker
-      WebHooks::LogExecutionWorker
-      ProcessCommitWorker
-      NewNoteWorker
-      MergeRequestMergeabilityCheckWorker
-      RunPipelineScheduleWorker
-    ].freeze
-
-    CI_HIGH_DB_DURATION_WORKERS = %w[
-      PipelineProcessWorker
-      Ci::BuildFinishedWorker
-      Ci::ArchiveTraceWorker
-      Ci::BuildTraceChunkFlushWorker
-      Ci::InitialPipelineProcessWorker
-      Ci::CreateDownstreamPipelineWorker
-      RunPipelineScheduleWorker
-      PostReceive
-      Ci::UnlockPipelinesInQueueWorker
-      Ci::Refs::UnlockPreviousPipelinesWorker
-    ].freeze
+    HIGH_URGENCY_DB_DURATION_THRESHOLD_SECONDS = 100_000
+    DEFAULT_DB_DURATION_THRESHOLD_SECONDS = 20_000
 
     DEFAULT_SIDEKIQ_LIMITS = {
       main_db_duration_limit_per_worker: {
@@ -39,13 +16,13 @@ module Gitlab
         ],
         rules: [
           {
-            selector: Gitlab::SidekiqConfig::WorkerMatcher.new("worker_name=#{HIGH_DB_DURATION_WORKERS.join(',')}"),
-            threshold: 3000,
+            selector: Gitlab::SidekiqConfig::WorkerMatcher.new("urgency=high"),
+            threshold: HIGH_URGENCY_DB_DURATION_THRESHOLD_SECONDS,
             interval: 60
           },
           {
             selector: Gitlab::SidekiqConfig::WorkerMatcher.new("*"),
-            threshold: 1000,
+            threshold: DEFAULT_DB_DURATION_THRESHOLD_SECONDS,
             interval: 60
           }
         ]
@@ -60,13 +37,34 @@ module Gitlab
         ],
         rules: [
           {
-            selector: Gitlab::SidekiqConfig::WorkerMatcher.new("worker_name=#{CI_HIGH_DB_DURATION_WORKERS.join(',')}"),
-            threshold: 3000,
+            selector: Gitlab::SidekiqConfig::WorkerMatcher.new("urgency=high"),
+            threshold: HIGH_URGENCY_DB_DURATION_THRESHOLD_SECONDS,
             interval: 60
           },
           {
             selector: Gitlab::SidekiqConfig::WorkerMatcher.new("*"),
-            threshold: 1000,
+            threshold: DEFAULT_DB_DURATION_THRESHOLD_SECONDS,
+            interval: 60
+          }
+        ]
+      },
+      sec_db_duration_limit_per_worker: {
+        resource_key: 'db_sec_duration_s',
+        metadata: {
+          db_config_name: 'sec'
+        },
+        scopes: [
+          'worker_name'
+        ],
+        rules: [
+          {
+            selector: Gitlab::SidekiqConfig::WorkerMatcher.new("urgency=high"),
+            threshold: HIGH_URGENCY_DB_DURATION_THRESHOLD_SECONDS,
+            interval: 60
+          },
+          {
+            selector: Gitlab::SidekiqConfig::WorkerMatcher.new("*"),
+            threshold: DEFAULT_DB_DURATION_THRESHOLD_SECONDS,
             interval: 60
           }
         ]

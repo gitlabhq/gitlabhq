@@ -114,10 +114,6 @@ RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :
       let(:event) { described_class.new(issue: issue) }
 
       it 'sets the namespace id from the issue namespace id' do
-        # zero until we remove the default when table is backfilled
-        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514593
-        expect(event.namespace_id).to be_zero
-
         event.valid?
 
         expect(event.namespace_id).to eq(issue.namespace.id)
@@ -129,10 +125,6 @@ RSpec.describe ResourceMilestoneEvent, feature_category: :team_planning, type: :
       let(:event) { described_class.new(merge_request: merge_request) }
 
       it 'sets the namespace id from the merge request project namespace id' do
-        # zero until we remove the default when table is backfilled
-        # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/514593
-        expect(event.namespace_id).to be_zero
-
         event.valid?
 
         expect(event.namespace_id).to eq(merge_request.source_project.project_namespace_id)

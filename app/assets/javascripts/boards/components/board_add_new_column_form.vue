@@ -9,7 +9,7 @@ export default {
     newList: __('New list'),
     scope: __('Scope'),
     scopeDescription: __('Issues must match this scope to appear in this list.'),
-    requiredFieldFeedback: __('This field is required.'),
+    valueRequiredFieldFeedback: __('Value field is required.'),
   },
   components: {
     GlButton,
@@ -62,10 +62,12 @@ export default {
         <slot name="select-list-type"></slot>
 
         <gl-form-group
+          data-testid="boardValueDropdown"
           class="lg-mb-3 gl-max-w-full gl-px-5"
           :label="searchLabel"
+          label-for="board-value-dropdown"
           :state="selectedIdValid"
-          :invalid-feedback="$options.i18n.requiredFieldFeedback"
+          :invalid-feedback="$options.i18n.valueRequiredFieldFeedback"
         >
           <slot name="dropdown"></slot>
         </gl-form-group>

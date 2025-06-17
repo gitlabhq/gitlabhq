@@ -18,7 +18,8 @@ module Sidebars
         def configure_menu_items
           [
             :packages_registry,
-            :container_registry
+            :container_registry,
+            :virtual_registry
           ].each { |id| add_item(::Sidebars::NilMenuItem.new(item_id: id)) }
         end
       end

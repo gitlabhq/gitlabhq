@@ -27,16 +27,40 @@ For larger GitLab instances, alternative backup strategies include:
 
 ## Data included in a backup
 
+GitLab provides a command-line interface to back up your entire instance.
 By default, the backup creates an archive in a single compressed tar file.
 This file includes:
 
 - Database data and configuration
-- Git repositories, container registry images, and uploaded content
-- Package registry data and CI/CD artifacts
 - Account and group settings
-- Project and group wikis
-- Project-level secure files
-- External merge request diffs
+- CI/CD artifacts and job logs
+- Git repositories and LFS objects
+- External merge request diffs ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154914) in GitLab 17.1)
+- Package registry data and container registry images
+- Project and [group](../../user/project/wiki/group.md) wikis.
+- Project-level attachments and uploads
+- Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
+- GitLab Pages content
+- Terraform states
+- Snippets
+
+## Data not included in a backup
+
+- [Mattermost data](../../integration/mattermost/_index.md#back-up-gitlab-mattermost)
+- Redis (and thus Sidekiq jobs)
+- [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
+
+- [Global server hooks](../server_hooks.md#create-global-server-hooks-for-all-repositories)
+- [File hooks](../file_hooks.md)
+- GitLab configuration files (`/etc/gitlab`)
+- TLS- and SSH-related keys and certificates
+- Other system files
+
+{{< alert type="warning" >}}
+
+You are highly advised to read about [storing configuration files](#storing-configuration-files) to back up those separately.
+
+{{< /alert >}}
 
 ## Simple backup procedure
 
@@ -49,6 +73,8 @@ As a rough guideline, if you are using a [1k reference architecture](../referenc
 ## Scaling backups
 
 As the volume of GitLab data grows, the [backup command](#backup-command) takes longer to execute. [Backup options](#backup-options) such as [back up Git repositories concurrently](#back-up-git-repositories-concurrently) and [incremental repository backups](#incremental-repository-backups) can help to reduce execution time. At some point, the backup command becomes impractical by itself. For example, it can take 24 hours or more.
+
+Starting with GitLab 18.0, repository backup performance has been significantly improved for repositories with large numbers of references (branches, tags). This improvement can reduce backup times from hours to minutes for affected repositories. No configuration changes are required to benefit from this enhancement. For technical details, see our [blog post about decreasing GitLab repository backup times](https://about.gitlab.com/blog/2025/06/05/how-we-decreased-gitlab-repo-backup-times-from-48-hours-to-41-minutes/).
 
 In some cases, architecture changes may be warranted to allow backups to scale. If you are using a GitLab reference architecture, see [Back up and restore large reference architectures](backup_large_reference_architectures.md).
 
@@ -136,7 +162,7 @@ The backup command does not back up registry data when they are stored in Object
 
 {{< alert type="warning" >}}
 
-The backup Rake task GitLab provides does _not_ store your configuration files. The primary reason for this is that your database contains items including encrypted information for two-factor authentication and the CI/CD _secure variables_. Storing encrypted information in the same location as its key defeats the purpose of using encryption in the first place. For example, the secrets file contains your database encryption key. If you lose it, then the GitLab application will not be able to decrypt any encrypted values in the database.
+The backup Rake task GitLab provides does not store your configuration files. The primary reason for this is that your database contains items including encrypted information for two-factor authentication and the CI/CD secure variables. Storing encrypted information in the same location as its key defeats the purpose of using encryption in the first place. For example, the secrets file contains your database encryption key. If you lose it, then the GitLab application will not be able to decrypt any encrypted values in the database.
 
 {{< /alert >}}
 
@@ -145,7 +171,7 @@ The backup Rake task GitLab provides does _not_ store your configuration files. 
 The secrets file may change after upgrades.
 {{< /alert >}}
 
-You should back up the configuration directory. At the very **minimum**, you must back up:
+You should back up the configuration directory. At the very minimum, you must back up:
 
 {{< tabs >}}
 
@@ -191,45 +217,10 @@ In the unlikely event that the secrets file is lost, see
 
 ### Other data
 
-GitLab uses Redis both as a cache store and to hold persistent data for our background jobs system, Sidekiq. The provided [backup command](#backup-command) does _not_ back up Redis data. This means that in order to take a consistent backup with the [backup command](#backup-command), there must be no pending or running background jobs. It is possible to [manually back up Redis](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data).
+GitLab uses Redis both as a cache store and to hold persistent data for our background jobs system, Sidekiq. The provided [backup command](#backup-command) does not back up Redis data. This means that in order to take a consistent backup with the [backup command](#backup-command), there must be no pending or running background jobs. It is possible to [manually back up Redis](https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/#backing-up-redis-data).
 
 Elasticsearch is an optional database for advanced search. It can improve search
-in both source-code level, and user generated content in issues, merge requests, and discussions. The [backup command](#backup-command) does _not_ back up Elasticsearch data. Elasticsearch data can be regenerated from PostgreSQL data after a restore. It is possible to [manually back up Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html).
-
-## Command-line interface
-
-GitLab provides a command-line interface to back up your entire instance,
-including:
-
-- Database
-- Attachments
-- Git repositories data
-- CI/CD job output logs
-- CI/CD job artifacts
-- LFS objects
-- Terraform states
-- Container registry images
-- GitLab Pages content
-- Packages
-- Snippets
-- [Group wikis](../../user/project/wiki/group.md)
-- Project-level Secure Files ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121142) in GitLab 16.1)
-- External merge request diffs ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154914) in GitLab 17.1)
-
-Backups do not include:
-
-- [Mattermost data](../../integration/mattermost/_index.md#back-up-gitlab-mattermost)
-- Redis (and thus Sidekiq jobs)
-- [Object storage](#object-storage) on Linux package (Omnibus) / Docker / Self-compiled installations
-- [Global server hooks](../server_hooks.md#create-global-server-hooks-for-all-repositories)
-- [File hooks](../file_hooks.md)
-
-{{< alert type="warning" >}}
-
-GitLab does not back up any configuration files (`/etc/gitlab`), TLS keys and certificates, or system
-files. You are highly advised to read about [storing configuration files](#storing-configuration-files).
-
-{{< /alert >}}
+in both source-code level, and user generated content in issues, merge requests, and discussions. The [backup command](#backup-command) does not back up Elasticsearch data. Elasticsearch data can be regenerated from PostgreSQL data after a restore. It is possible to [manually back up Elasticsearch](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html).
 
 ### Requirements
 
@@ -270,7 +261,7 @@ you make sure that all backups are complete before starting a new one.
 
 {{< alert type="note" >}}
 
-You can only restore a backup to **exactly the same version and type (CE/EE)**
+You can only restore a backup to exactly the same version and type (CE/EE)
 of GitLab on which it was created.
 
 {{< /alert >}}
@@ -815,10 +806,11 @@ You can back up specific repositories using the `REPOSITORIES_PATHS` option.
 Similarly, you can use `SKIP_REPOSITORIES_PATHS` to skip certain repositories.
 Both options accept a comma-separated list of project or group paths. If you
 specify a group path, all repositories in all projects in the group and
-descendent groups are included or skipped, depending on which option you used.
+descendant groups are included or skipped, depending on which option you used.
 
-For example, to back up all repositories for all projects in **Group A** (`group-a`), the repository for **Project C** in **Group B** (`group-b/project-c`),
-and skip the **Project D** in **Group A** (`group-a/project-d`):
+For example, to back up all repositories for all projects in Group A (`group-a`), the repository for
+Project C in Group B (`group-b/project-c`),
+and skip the Project D in Group A (`group-a/project-d`):
 
 {{< tabs >}}
 
@@ -1589,10 +1581,11 @@ For manually backing up the Git repository data on disk, there are multiple poss
 
 #### Prevent writes and copy the Git repository data
 
-Git repositories must be copied in a consistent way. They should not be copied during concurrent write
-operations, as this can lead to inconsistencies or corruption issues. For more details,
-[issue #270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422 "Provide documentation on preferred method of migrating Gitaly servers")
-has a longer discussion explaining the potential problems.
+Git repositories must be copied in a consistent way. If repositories
+are copied during concurrent write operations,
+inconsistencies or corruption issues can occur. For more details,
+[issue 270422](https://gitlab.com/gitlab-org/gitlab/-/issues/270422)
+has a longer discussion that explains the potential problems.
 
 To prevent writes to the Git repository data, there are two possible approaches:
 
@@ -1631,5 +1624,5 @@ There are a few possible downsides to this:
   the last project that gets backed up.
 - Fork networks should be entirely read-only while the projects inside get backed up to prevent potential changes to the pool repository.
 
-There is an **experimental** script that attempts to automate this process in
+There is an experimental script that attempts to automate this process in
 [the Geo team Runbooks project](https://gitlab.com/gitlab-org/geo-team/runbooks/-/tree/main/experimental-online-backup-through-rsync).

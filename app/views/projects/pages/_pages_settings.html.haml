@@ -1,34 +1,41 @@
-= gitlab_ui_form_for @project, url: project_pages_path(@project), html: { class: 'gl-inline-block', title: pages_https_only_title } do |f|
-  = render_if_exists 'shared/pages/max_pages_size_input', form: f
+= render ::Layouts::CrudComponent.new(_('Settings'), body_options: { class: '!gl-my-5' }) do |c|
+  - c.with_body do
+    = gitlab_ui_form_for @project, url: project_pages_path(@project, anchor: 'domains-settings'), html: { class: 'gl-inline-block', title: pages_https_only_title } do |f|
+      - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+        .form-group
+          = f.gitlab_ui_checkbox_component :pages_https_only,
+            s_('GitLabPages|Force HTTPS (requires valid certificates)'),
+            checkbox_options: { disabled: pages_https_only_disabled? },
+            label_options: { class: 'label-bold' }
+          - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'force-https-for-gitlab-pages-websites')}' target='_blank' rel='noopener noreferrer'>".html_safe
+          - link_end = '</a>'.html_safe
+          %p.gl-text-subtle.gl-pl-6
+            = s_("GitLabPages|When enabled, all access to domains will use HTTPS with %{redirect_code} redirects. Requires valid certificates for all domains. %{docs_link_start}How does HTTPS redirection work?%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end, redirect_code: tag.code('301') }
 
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-    .form-group
-      = f.gitlab_ui_checkbox_component :pages_https_only,
-        s_('GitLabPages|Force HTTPS (requires valid certificates)'),
-        checkbox_options: { disabled: pages_https_only_disabled? },
-        label_options: { class: 'label-bold' }
-      - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'force-https-for-gitlab-pages-websites')}' target='_blank' rel='noopener noreferrer'>".html_safe
-      - link_end = '</a>'.html_safe
-      %p.gl-pl-6
-        = s_("GitLabPages|When enabled, all attempts to visit your website through HTTP are automatically redirected to HTTPS using a response with status code 301. Requires a valid certificate for all domains. %{docs_link_start}Learn more.%{link_end}").html_safe % { docs_link_start: docs_link_start, link_end: link_end }
-
-  .form-group
-    = f.fields_for :project_setting do |settings|
-      = settings.gitlab_ui_checkbox_component :pages_unique_domain_enabled,
-        s_('GitLabPages|Use unique domain'),
-        label_options: { class: 'label-bold' }
-      %p.gl-pl-6
-        = s_("GitLabPages|When enabled, a unique domain is generated to access pages.").html_safe
-
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-    - if @project.pages_domains.present?
       .form-group
         = f.fields_for :project_setting do |settings|
-          = f.label :pages_primary_domain, class: 'label-bold' do
-            = s_('GitLabPages|Primary domain')
-          = settings.select :pages_primary_domain, project_pages_domain_choices, {}, class: 'form-control'
-          .form-text.gl-text-subtle
-            = s_('GitLabPages|If selected, requests to your Pages site from any other domain (including the GitLab-provided domain) are redirected here. Use this to ensure all visitors and search engines see a single, consistent domain.')
+          = settings.gitlab_ui_checkbox_component :pages_unique_domain_enabled,
+            s_('GitLabPages|Use unique domain'),
+            label_options: { class: 'label-bold' }
+          - docs_link_start = "<a href='#{help_page_path('user/project/pages/custom_domains_ssl_tls_certification/_index.md', anchor: 'set-up-a-custom-domain')}' target='_blank' rel='noopener noreferrer'>".html_safe
+          - link_end = '</a>'.html_safe
+          %p.gl-text-subtle.gl-pl-6
+            = s_("GitLabPages|When enabled, adds a unique identifier to your domain (for example: %{domain}). When disabled, uses your namespace (username/group name) as the domain (for example: %{unique_domain}). %{docs_link_start}How do Pages URLs work?%{link_end}").html_safe % { docs_link_start: docs_link_start,
+              link_end: link_end,
+              domain: tag.code('my-website-123456.gitlab.io'),
+              unique_domain: tag.code('testuser.gitlab.io/my-website') }
 
-  .gl-mt-3
-    = f.submit s_('GitLabPages|Save changes'), pajamas_button: true
+      - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+        - if @project.pages_domains.present?
+          .form-group
+            = f.fields_for :project_setting do |settings|
+              = f.label :pages_primary_domain, class: 'label-bold' do
+                = s_('GitLabPages|Primary domain')
+              = settings.select :pages_primary_domain, project_pages_domain_choices, {}, class: 'form-control'
+              .form-text.gl-text-subtle
+                = s_('GitLabPages|If selected, requests to your Pages site from any other domain (including the GitLab-provided domain) are redirected here. Use this to ensure all visitors and search engines see a single, consistent domain.')
+
+      = render_if_exists 'shared/pages/max_pages_size_input', form: f
+
+      .gl-mt-3
+        = f.submit s_('GitLabPages|Save changes'), pajamas_button: true

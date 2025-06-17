@@ -62,6 +62,11 @@ describe('TabView', () => {
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
     },
+    filtersAsQueryVariables: {
+      programmingLanguageName: 'CoffeeScript',
+      minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
+    },
+    search: 'foo',
     filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
     timestampType: TIMESTAMP_TYPE_CREATED_AT,
     programmingLanguages,
@@ -104,14 +109,14 @@ describe('TabView', () => {
 
   describe.each`
     tab                | handler                                                                                     | expectedVariables                                                                          | expectedProjects
-    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}        | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects.nodes}
-    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${personalProjectsGraphQlResponse.data.projects.nodes}
-    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${membershipProjectsGraphQlResponse.data.projects.nodes}
-    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}        | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects.nodes}
-    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY', sort: defaultPropsData.sort }}    | ${inactiveProjectsGraphQlResponse.data.projects.nodes}
+    ${CONTRIBUTED_TAB} | ${[CONTRIBUTED_TAB.query, jest.fn().mockResolvedValue(contributedProjectsGraphQlResponse)]} | ${{ contributed: true, starred: false, sort: defaultPropsData.sort.toUpperCase() }}        | ${contributedProjectsGraphQlResponse.data.currentUser.contributedProjects}
+    ${PERSONAL_TAB}    | ${[PERSONAL_TAB.query, jest.fn().mockResolvedValue(personalProjectsGraphQlResponse)]}       | ${{ personal: true, membership: false, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${personalProjectsGraphQlResponse.data.projects}
+    ${MEMBER_TAB}      | ${[MEMBER_TAB.query, jest.fn().mockResolvedValue(membershipProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'EXCLUDE', sort: defaultPropsData.sort }} | ${membershipProjectsGraphQlResponse.data.projects}
+    ${STARRED_TAB}     | ${[STARRED_TAB.query, jest.fn().mockResolvedValue(starredProjectsGraphQlResponse)]}         | ${{ contributed: false, starred: true, sort: defaultPropsData.sort.toUpperCase() }}        | ${starredProjectsGraphQlResponse.data.currentUser.starredProjects}
+    ${INACTIVE_TAB}    | ${[INACTIVE_TAB.query, jest.fn().mockResolvedValue(inactiveProjectsGraphQlResponse)]}       | ${{ personal: false, membership: true, archived: 'ONLY', sort: defaultPropsData.sort }}    | ${inactiveProjectsGraphQlResponse.data.projects}
   `(
     'onMount when route name is $tab.value',
-    ({ tab, handler, expectedVariables, expectedProjects }) => {
+    ({ tab, handler, expectedVariables, expectedProjects: { nodes, count } }) => {
       describe('when GraphQL request is loading', () => {
         beforeEach(() => {
           createComponent({ handlers: [handler], propsData: { tab } });
@@ -136,9 +141,8 @@ describe('TabView', () => {
             first: DEFAULT_PER_PAGE,
             before: null,
             after: null,
-            search: defaultPropsData.filters[defaultPropsData.filteredSearchTermKey],
-            programmingLanguageName: 'CoffeeScript',
-            minAccessLevel: ACCESS_LEVEL_OWNER_STRING,
+            search: defaultPropsData.search,
+            ...defaultPropsData.filtersAsQueryVariables,
             ...expectedVariables,
           });
         });
@@ -147,8 +151,12 @@ describe('TabView', () => {
           expect(wrapper.emitted('query-complete')).toEqual([[]]);
         });
 
+        it('emits update-count event', () => {
+          expect(wrapper.emitted('update-count')).toEqual([[tab, count]]);
+        });
+
         it('passes items to `ProjectsList` component', () => {
-          expect(findProjectsList().props('items')).toEqual(formatProjects(expectedProjects));
+          expect(findProjectsList().props('items')).toEqual(formatProjects(nodes));
         });
 
         it('passes `timestampType` prop to `ProjectsList` component', () => {
@@ -186,8 +194,7 @@ describe('TabView', () => {
 
         it('displays error alert', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message:
-              'An error occurred loading the projects. Please refresh the page to try again.',
+            message: "Your projects couldn't be loaded. Refresh the page to try again.",
             error,
             captureError: true,
           });
@@ -195,6 +202,26 @@ describe('TabView', () => {
       });
     },
   );
+
+  describe('when queryErrorMessage is not defined', () => {
+    const error = new Error();
+
+    beforeEach(async () => {
+      createComponent({
+        handlers: [[CONTRIBUTED_TAB.query, jest.fn().mockRejectedValue(error)]],
+        propsData: { tab: { ...CONTRIBUTED_TAB, queryErrorMessage: undefined } },
+      });
+      await waitForPromises();
+    });
+
+    it('displays error alert with fallback message', () => {
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'An error occurred. Refresh the page to try again.',
+        error,
+        captureError: true,
+      });
+    });
+  });
 
   describe('when tab.listComponent is NestedGroupsProjectsList', () => {
     beforeEach(() => {
@@ -214,7 +241,14 @@ describe('TabView', () => {
 
     describe('when search is empty', () => {
       beforeEach(async () => {
-        createComponent({ propsData: { tab: MEMBER_TAB_GROUPS, filters: {} } });
+        createComponent({
+          propsData: {
+            tab: MEMBER_TAB_GROUPS,
+            filters: {},
+            filtersAsQueryVariables: {},
+            search: '',
+          },
+        });
         await waitForPromises();
       });
 
@@ -286,8 +320,7 @@ describe('TabView', () => {
 
         it('displays error alert', () => {
           expect(createAlert).toHaveBeenCalledWith({
-            message:
-              'An error occurred loading the projects. Please refresh the page to try again.',
+            message: "Your groups couldn't be loaded. Refresh the page to try again.",
             error: new Error('Network Error'),
             captureError: true,
           });
@@ -325,6 +358,7 @@ describe('TabView', () => {
             projects: {
               nodes: personalProjectsGraphQlResponse.data.projects.nodes,
               pageInfo: pageInfoMultiplePages,
+              count: personalProjectsGraphQlResponse.data.projects.count,
             },
           },
         }),

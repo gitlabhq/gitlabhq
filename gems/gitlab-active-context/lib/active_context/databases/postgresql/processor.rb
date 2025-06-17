@@ -106,7 +106,7 @@ module ActiveContext
 
           column = node.value[:target] || preset_values[:field]
           vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values[:model])
-          limit = node.value[:limit]
+          limit = node.value[:k]
           vector_str = "[#{vector.join(',')}]"
 
           relation

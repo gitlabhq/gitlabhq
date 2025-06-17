@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrating to Dependency Scanning using SBOM
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - The legacy [Dependency Scanning feature based on the Gemnasium analyzer](_index.md) was [deprecated](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) in GitLab 17.9 and planned for removal in 19.0.
@@ -67,7 +74,7 @@ The Dependency Scanning using SBOM approach separates these tasks into two disti
 - First, when you run the new Dependency Scanning analyzer in the CI/CD pipeline, it focuses solely on creating a comprehensive inventory of your project's dependencies. This inventory is captured in a CycloneDX SBOM (Software Bill of Materials) report.
 - Second, the detected components are sent to the GitLab platform to perform a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. You're already benefiting from this scanner with the [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/_index.md) feature.
 
-This separation of concerns brings several advantages for future enhancements, but it also means some changes are necessary since the security analysis happens outside the CI/CD pipeline.
+This separation of concerns brings several advantages for future enhancements, but it also means some changes are necessary because the security analysis happens outside the CI/CD pipeline.
 This impacts the availability of some functionalities that depend on the security analysis to run in the CI/CD pipeline. Review [the deprecation announcement](../../../update/deprecations.md#dependency-scanning-upgrades-to-the-gitlab-sbom-vulnerability-scanner) for a complete description.
 
 ### CI/CD configuration
@@ -103,14 +110,14 @@ See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/17150) for more det
 
   When you migrate to Dependency Scanning using SBOM, you'll notice a fundamental change in how security scan results are handled. The new approach moves the security analysis out of the CI/CD pipeline and into the GitLab platform, which changes how you access and work with the results.
   With the legacy Dependency Scanning feature, CI/CD jobs using the Gemnasium analyzer generate a [Dependency Scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportsdependency_scanning) containing the scan results, and upload it to the platform. You can access these results by all possible ways offered to job artifacts. This means you can process or modify the results within your CI/CD pipeline before they reach the GitLab platform.
-  The Dependency Scanning using SBOM approach works differently. Since the security analysis now happens within the GitLab platform using the built-in GitLab SBOM Vulnerability Scanner, you won't find the scan results in your job artifacts anymore. Instead, GitLab analyzes the [CycloneDX SBOM report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) that your CI/CD pipeline generates, creating security findings directly in the GitLab platform.
+  The Dependency Scanning using SBOM approach works differently. The security analysis now happens within the GitLab platform using the built-in GitLab SBOM Vulnerability Scanner, so you won't find the scan results in your job artifacts anymore. Instead, GitLab analyzes the [CycloneDX SBOM report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) that your CI/CD pipeline generates, creating security findings directly in the GitLab platform.
   To help you transition smoothly, GitLab maintains some backward compatibility. While using the Gemnasium analyzer, you'll still get a standard artifact (using `artifacts:paths`) that contains the scan results. This means if you have succeeding CI/CD jobs that need these results, they can still access them. However, keep in mind that as the GitLab SBOM Vulnerability Scanner evolves and improves, these artifact-based results won't reflect the latest enhancements.
   When you're ready to fully migrate to the new Dependency Scanning analyzer, you'll need to adjust how you programmatically access scan results. Instead of reading job artifacts, you'll use GitLab GraphQL API, specifically the ([`Pipeline.securityReportFindings` resource](../../../api/graphql/reference/_index.md#pipelinesecurityreportfindings)).
 </details>
 
 ## Identify affected projects
 
-Understanding which of your projects need attention for this migration is an important first step. The most significant impact will be on your Java and Python projects, since the way these handle dependencies is changing fundamentally.
+Understanding which of your projects need attention for this migration is an important first step. The most significant impact will be on your Java and Python projects, because the way they handle dependencies is changing fundamentally.
 To help you identify affected projects, GitLab provides the [Dependency Scanning Build Support Detection Helper](https://gitlab.com/security-products/tooling/build-support-detection-helper) tool. This tool examines your GitLab group or GitLab Self-Managed instance and identifies projects that currently use the Dependency Scanning feature with either the `gemnasium-maven-dependency_scanning` or `gemnasium-python-dependency_scanning` CI/CD jobs.
 When you run this tool, it creates a comprehensive report of projects that will need your attention during the migration. Having this information early helps you plan your migration strategy effectively, especially if you manage multiple projects across your organization.
 
@@ -160,9 +167,9 @@ Share any feedback on the new Dependency Scanning analyzer in this [feedback iss
 
 ### Bundler
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Bundler projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `Gemfile.lock` file (`gems.locked` alternate filename is also supported). The combination of supported versions of Bundler and the `Gemfile.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Bundler projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `Gemfile.lock` file (`gems.locked` alternate filename is also supported). The combination of supported versions of Bundler and the `Gemfile.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `Gemfile.lock` file (`gems.locked` alternate filename is also supported) and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `Gemfile.lock` file (`gems.locked` alternate filename is also supported) and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a Bundler project
 
@@ -176,9 +183,9 @@ There are no additional steps needed to migrate a Bundler project to use the Dep
 
 ### CocoaPods
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer does not support CocoaPods projects when using the CI/CD templates or the Scan Execution Policies. Support for CocoaPods is only available on the experimental Cocoapods CI/CD component.
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer does not support CocoaPods projects when using the CI/CD templates or the Scan Execution Policies. Support for CocoaPods is only available on the experimental Cocoapods CI/CD component.
 
-**New behavior:** The new Dependency Scanning analyzer extracts the project dependencies by parsing the `Podfile.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer extracts the project dependencies by parsing the `Podfile.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a CocoaPods project
 
@@ -192,9 +199,9 @@ There are no additional steps to migrate a CocoaPods project to use the Dependen
 
 ### Composer
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Composer projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `composer.lock` file. The combination of supported versions of Composer and the `composer.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Composer projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `composer.lock` file. The combination of supported versions of Composer and the `composer.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `composer.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `composer.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a Composer project
 
@@ -208,9 +215,9 @@ There are no additional steps to migrate a Composer project to use the Dependenc
 
 ### Conan
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Conan projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `conan.lock` file. The combination of supported versions of Conan and the `conan.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Conan projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `conan.lock` file. The combination of supported versions of Conan and the `conan.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `conan.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `conan.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a Conan project
 
@@ -224,9 +231,9 @@ There are no additional steps to migrate a Conan project to use the Dependency S
 
 ### Go
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Go projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by using the `go.mod` and `go.sum` file. This analyzer attempts to execute the `go list` command to increase the accuracy of the detected dependencies, which requires a functional Go environment. In case of failure, it falls back to parsing the `go.sum` file. The combination of supported versions of Go, the `go.mod`, and the `go.sum` files are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Go projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by using the `go.mod` and `go.sum` file. This analyzer attempts to execute the `go list` command to increase the accuracy of the detected dependencies, which requires a functional Go environment. In case of failure, it falls back to parsing the `go.sum` file. The combination of supported versions of Go, the `go.mod`, and the `go.sum` files are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer does not attempt to execute the `go list` command in the project to extract the dependencies and it no longer falls back to parsing the `go.sum` file. Instead, the project must provide at least a `go.mod` file and ideally a `go.graph` file generated with the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go Toolchains. The `go.graph` file is required to increase the accuracy of the detected components and to generate the dependency graph to enable features like the [dependency path](../dependency_list/_index.md#dependency-paths). These files are processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Go.
+**New behavior**: The new Dependency Scanning analyzer does not attempt to execute the `go list` command in the project to extract the dependencies and it no longer falls back to parsing the `go.sum` file. Instead, the project must provide at least a `go.mod` file and ideally a `go.graph` file generated with the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go Toolchains. The `go.graph` file is required to increase the accuracy of the detected components and to generate the dependency graph to enable features like the [dependency path](../dependency_list/_index.md#dependency-paths). These files are processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Go.
 
 #### Migrate a Go project
 
@@ -244,9 +251,9 @@ See the [enablement instructions for Go](dependency_scanning_sbom/_index.md#go) 
 
 ### Gradle
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Gradle projects using the `gemnasium-maven-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `build.gradle` and `build.gradle.kts` files. The combinations of supported versions for Java, Kotlin, and Gradle are complex, as detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Gradle projects using the `gemnasium-maven-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `build.gradle` and `build.gradle.kts` files. The combinations of supported versions for Java, Kotlin, and Gradle are complex, as detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior:** The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `dependencies.lock` file generated with the [Gradle Dependency Lock Plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Java, Kotlin, and Gradle.
+**New behavior**: The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `dependencies.lock` file generated with the [Gradle Dependency Lock Plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Java, Kotlin, and Gradle.
 
 #### Migrate a Gradle project
 
@@ -266,9 +273,9 @@ See the [enablement instructions for Gradle](dependency_scanning_sbom/_index.md#
 
 ### Maven
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Maven projects using the `gemnasium-maven-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `pom.xml` file. The combinations of supported versions for Java, Kotlin, and Maven are complex, as detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Maven projects using the `gemnasium-maven-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `pom.xml` file. The combinations of supported versions for Java, Kotlin, and Maven are complex, as detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior:** The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `maven.graph.json` file generated with the [maven dependency plugin](https://maven.apache.org/plugins/maven-dependency-plugin/index.html). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Java, Kotlin, and Maven.
+**New behavior**: The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `maven.graph.json` file generated with the [maven dependency plugin](https://maven.apache.org/plugins/maven-dependency-plugin/index.html). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Java, Kotlin, and Maven.
 
 #### Migrate a Maven project
 
@@ -286,10 +293,10 @@ See the [enablement instructions for Maven](dependency_scanning_sbom/_index.md#m
 
 ### npm
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports npm projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `package-lock.json` or `npm-shrinkwrap.json.lock` files. The combination of supported versions of npm and the `package-lock.json` or `npm-shrinkwrap.json.lock` files are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports npm projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `package-lock.json` or `npm-shrinkwrap.json.lock` files. The combination of supported versions of npm and the `package-lock.json` or `npm-shrinkwrap.json.lock` files are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 This analyzer may scan JavaScript files vendored in a npm project using the `Retire.JS` scanner.
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `package-lock.json` or `npm-shrinkwrap.json.lock` files and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `package-lock.json` or `npm-shrinkwrap.json.lock` files and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 This analyzer does not scan vendored JavaScript files. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
 
 #### Migrate an npm project
@@ -304,9 +311,9 @@ There are no additional steps to migrate an npm project to use the Dependency Sc
 
 ### NuGet
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports NuGet projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `packages.lock.json` file. The combination of supported versions of NuGet and the `packages.lock.json` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports NuGet projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `packages.lock.json` file. The combination of supported versions of NuGet and the `packages.lock.json` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `packages.lock.json` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `packages.lock.json` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a NuGet project
 
@@ -320,9 +327,9 @@ There are no additional steps to migrate a NuGet project to use the Dependency S
 
 ### pip
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports pip projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `requirements.txt` file (`requirements.pip` and `requires.txt` alternate filenames are also supported). The `PIP_REQUIREMENTS_FILE` environment variable can also be used to specify a custom filename. The combinations of supported versions for Python and pip are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports pip projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `requirements.txt` file (`requirements.pip` and `requires.txt` alternate filenames are also supported). The `PIP_REQUIREMENTS_FILE` environment variable can also be used to specify a custom filename. The combinations of supported versions for Python and pip are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior:** The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `requirements.txt` lockfile generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Python and pip. The `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` environment variable can also be used to specify custom filnames for pip-compile lockfiles.
+**New behavior**: The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `requirements.txt` lockfile generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Python and pip. The `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN` environment variable can also be used to specify custom filnames for pip-compile lockfiles.
 
 Alternatively, the project can provide a `pipdeptree.json` file generated with the [pipdeptree command line utility](https://pypi.org/project/pipdeptree/).
 
@@ -348,9 +355,9 @@ See the [enablement instructions for pip](dependency_scanning_sbom/_index.md#pip
 
 ### Pipenv
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Pipenv projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `Pipfile` file or from a `Pipfile.lock` file if present. The combinations of supported versions for Python and Pipenv are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Pipenv projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `Pipfile` file or from a `Pipfile.lock` file if present. The combinations of supported versions for Python and Pipenv are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior:** The new Dependency Scanning analyzer does not build the Pipenv project to extract the dependencies. Instead, the project must provide at least a `Pipfile.lock` file and ideally a `pipenv.graph.json` file generated by the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph). The `pipenv.graph.json` file is required to generate the dependency graph and enable features like the [dependency path](../dependency_list/_index.md#dependency-paths). These files are processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Python and Pipenv.
+**New behavior**: The new Dependency Scanning analyzer does not build the Pipenv project to extract the dependencies. Instead, the project must provide at least a `Pipfile.lock` file and ideally a `pipenv.graph.json` file generated by the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph). The `pipenv.graph.json` file is required to generate the dependency graph and enable features like the [dependency path](../dependency_list/_index.md#dependency-paths). These files are processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Python and Pipenv.
 
 #### Migrate a Pipenv project
 
@@ -374,9 +381,9 @@ See the [enablement instructions for Pipenv](dependency_scanning_sbom/_index.md#
 
 ### Poetry
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Poetry projects using the `gemnasium-python-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `poetry.lock` file. The combination of supported versions of Poetry and the `poetry.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Poetry projects using the `gemnasium-python-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `poetry.lock` file. The combination of supported versions of Poetry and the `poetry.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `poetry.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `poetry.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a Poetry project
 
@@ -390,10 +397,10 @@ There are no additional steps to migrate a Poetry project to use the Dependency 
 
 ### pnpm
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports pnpm projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `pnpm-lock.yaml` file. The combination of supported versions of pnpm and the `pnpm-lock.yaml` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports pnpm projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `pnpm-lock.yaml` file. The combination of supported versions of pnpm and the `pnpm-lock.yaml` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 This analyzer may scan JavaScript files vendored in a npm project using the `Retire.JS` scanner.
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `pnpm-lock.yaml` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `pnpm-lock.yaml` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 This analyzer does not scan vendored JavaScript files. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
 
 #### Migrate a pnpm project
@@ -408,9 +415,9 @@ There is no additional steps to migrate a pnpm project to use the Dependency Sca
 
 ### sbt
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports sbt projects using the `gemnasium-maven-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `build.sbt` file. The combinations of supported versions for Java, Scala, and sbt are complex, as detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports sbt projects using the `gemnasium-maven-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `build.sbt` file. The combinations of supported versions for Java, Scala, and sbt are complex, as detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior:** The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `dependencies-compile.dot` file generated with the [sbt-dependency-graph plugin](https://github.com/sbt/sbt-dependency-graph) ([included in sbt >= 1.4.0](https://www.scala-sbt.org/1.x/docs/sbt-1.4-Release-Notes.html#sbt-dependency-graph+is+in-sourced)). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Java, Scala, and sbt.
+**New behavior**: The new Dependency Scanning analyzer does not build the project to extract the dependencies. Instead, the project must provide a `dependencies-compile.dot` file generated with the [sbt-dependency-graph plugin](https://github.com/sbt/sbt-dependency-graph) ([included in sbt >= 1.4.0](https://www.scala-sbt.org/1.x/docs/sbt-1.4-Release-Notes.html#sbt-dependency-graph+is+in-sourced)). This file is processed by the `dependency-scanning` CI/CD job to generate a CycloneDX SBOM report artifact. This approach does not require GitLab to support specific versions of Java, Scala, and sbt.
 
 #### Migrate an sbt project
 
@@ -428,9 +435,9 @@ See the [enablement instructions for sbt](dependency_scanning_sbom/_index.md#sbt
 
 ### setuptools
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports setuptools projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `setup.py` file. The combinations of supported versions for Python and setuptools are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports setuptools projects using the `gemnasium-python-dependency_scanning` CI/CD job to extract the project dependencies by building the application from the `setup.py` file. The combinations of supported versions for Python and setuptools are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-running-a-package-manager-to-generate-a-parsable-file).
 
-**New behavior:** The new Dependency Scanning analyzer does not support building a setuptool project to extract the dependencies. We recommend to configure the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/) to generate a compatible `requirements.txt` lockfile. Alternatively you can provide your own CycloneDX SBOM document.
+**New behavior**: The new Dependency Scanning analyzer does not support building a setuptool project to extract the dependencies. We recommend to configure the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/) to generate a compatible `requirements.txt` lockfile. Alternatively you can provide your own CycloneDX SBOM document.
 
 #### Migrate a setuptools project
 
@@ -450,9 +457,9 @@ See the [enablement instructions for pip](dependency_scanning_sbom/_index.md#pip
 
 ### Swift
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer does not support Swift projects when using the CI/CD templates or the Scan Execution Policies. Support for Swift is only available on the experimental Swift CI/CD component.
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer does not support Swift projects when using the CI/CD templates or the Scan Execution Policies. Support for Swift is only available on the experimental Swift CI/CD component.
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `Package.resolved` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `Package.resolved` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a Swift project
 
@@ -466,9 +473,9 @@ There are no additional steps to migrate a Swift project to use the Dependency S
 
 ### uv
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports uv projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `uv.lock` file. The combination of supported versions of uv and the `uv.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports uv projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `uv.lock` file. The combination of supported versions of uv and the `uv.lock` file are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `uv.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `uv.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 
 #### Migrate a uv project
 
@@ -482,11 +489,11 @@ There are no additional steps to migrate a uv project to use the Dependency Scan
 
 ### Yarn
 
-**Previous behavior:** Dependency Scanning based on the Gemnasium analyzer supports Yarn projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `yarn.lock` file. The combination of supported versions of Yarn and the `yarn.lock` files are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
+**Previous behavior**: Dependency Scanning based on the Gemnasium analyzer supports Yarn projects using the `gemnasium-dependency_scanning` CI/CD job and its ability to extract the project dependencies by parsing the `yarn.lock` file. The combination of supported versions of Yarn and the `yarn.lock` files are detailed in the [Dependency Scanning (Gemnasium-based) documentation](_index.md#obtaining-dependency-information-by-parsing-lockfiles).
 This analyzer may provide remediation data to [resolve a vulnerability via merge request](../vulnerabilities/_index.md#resolve-a-vulnerability) for Yarn dependencies.
 This analyzer may scan JavaScript files vendored in a Yarn project using the `Retire.JS` scanner.
 
-**New behavior:** The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `yarn.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
+**New behavior**: The new Dependency Scanning analyzer also extracts the project dependencies by parsing the `yarn.lock` file and generates a CycloneDX SBOM report artifact with the `dependency-scanning` CI/CD job.
 This analyzer does not provide remediations data for Yarn dependencies. Support for a replacement feature is proposed in [epic 759](https://gitlab.com/groups/gitlab-org/-/epics/759).
 This analyzer does not scan vendored JavaScript files. Support for a replacement feature is proposed in [epic 7186](https://gitlab.com/groups/gitlab-org/-/epics/7186).
 

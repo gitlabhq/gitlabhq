@@ -58,7 +58,7 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
         table_name: table_name,
         batch_size: 10,
         sub_batch_size: 5,
-        pause_ms: 0,
+        pause_ms: 100,
         min_cursor: [0, 0],
         max_cursor: [100, 9]
       )
@@ -66,7 +66,7 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
 
     let(:runner) { Gitlab::Database::BackgroundMigration::BatchedMigrationRunner.new(connection: connection) }
 
-    it 'migrates correctly' do
+    it 'migrates correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/505354' do
       runner.run_entire_migration(migration)
       expect(model.where(backfilled: 1).count).to eq(model.count)
 
@@ -87,7 +87,7 @@ RSpec.describe 'Cursor based batched background migrations', feature_category: :
           table_name: table_name,
           batch_size: 10,
           sub_batch_size: 1,
-          pause_ms: 0,
+          pause_ms: 100,
           min_cursor: [98, 9],
           max_cursor: [100, 1]
         )

@@ -280,7 +280,7 @@ RSpec.describe API::NpmProjectPackages, feature_category: :package_registry do
           let(:package_name) { "@#{group.path}/my_inv@@lid_package_name" }
           let(:params) { upload_params(package_name: package_name) }
 
-          it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name is invalid, Name #{Gitlab::Regex.npm_package_name_regex_message}"
+          it_behaves_like 'handling invalid record with 400 error', "Validation failed: Name #{Gitlab::Regex.npm_package_name_regex_message}"
           it_behaves_like 'not a package tracking event'
         end
 

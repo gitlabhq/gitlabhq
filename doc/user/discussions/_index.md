@@ -4,6 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use comments to discuss work, mention users, and suggest changes.
 title: Comments and threads
+description: Mentions, locked discussions, internal notes, and thread resolution.
 ---
 
 {{< details >}}
@@ -15,10 +16,6 @@ title: Comments and threads
 
 {{< history >}}
 
-- Paginated merge request discussions [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340172) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `paginated_mr_discussions`. Disabled by default.
-- Paginated merge request discussions [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.2.
-- Paginated merge request discussions [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/364497) in GitLab 15.3.
-- Paginated merge request discussions [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/370075) in GitLab 15.8. Feature flag `paginated_mr_discussions` removed.
 - Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
 - Comments and threads on Wiki pages [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/502847) in GitLab 17.9. Feature flag `wiki_comments` removed.
 
@@ -212,15 +209,11 @@ Who can be notified:
 
 {{< history >}}
 
-- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87403) from "confidential comments" to "internal notes" in GitLab 15.0.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87383) in GitLab 15.0.
-- [Feature flag `confidential_notes`](https://gitlab.com/gitlab-org/gitlab/-/issues/362712) removed in GitLab 15.2.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363045) permissions in GitLab 15.6 to at least the Reporter role. In GitLab 15.5 and earlier, issue or epic authors and assignees could also read and create internal notes.
 - Internal comments [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142003) for merge requests in GitLab 16.9.
 
 {{< /history >}}
 
-Use internal notes to protect information added to a _public_ issue, epic, or merge request.
+Use internal notes to protect information added to a public issue, epic, or merge request.
 Internal notes differ from public comments:
 
 - Only project members with least the Reporter role can view the internal note.
@@ -261,13 +254,15 @@ GitLab saves your preference, and applies it to every issue, merge request, or e
 
 Reverse the default order and interact with the activity feed sorted by most recent items
 at the top. GitLab saves your preference in local storage and applies it to every issue,
-merge request, or epic you view.
+merge request, or epic you view. Issues and epics share the same sorting preference, while merge requests maintain their own separate preference.
 
 To change the activity sort order:
 
-1. Open the **Overview** tab in a merge request, issue, or epic.
-1. On the right side of the page, from the **Sort or filter** dropdown list, select the sort order
-   **Newest first** or **Oldest first** (default).
+1. Open an issue, or open the **Overview** tab in a merge request or epic.
+1. Scroll down to the **Activity** heading.
+1. On the right side of the page, change the sort order:
+   - **Issues and epics**: From the **Sort or filter** dropdown list, select **Newest first** or **Oldest first** (default).
+   - **Merge requests**: Use the sort direction arrow button to toggle between **Sort direction: Ascending** (oldest first, default) or **Sort direction: Descending (newest first)**.
 
 ## View description change history
 
@@ -384,6 +379,9 @@ such as:
 {{< /history >}}
 
 Generate a summary of discussions on an issue.
+
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
+<!-- Video published on 2024-03-28 -->
 
 Prerequisites:
 

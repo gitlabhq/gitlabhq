@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe CrossDatabaseModification do
+RSpec.describe CrossDatabaseModification, feature_category: 'database' do
   describe '.transaction' do
     it 'adds the current gitlab schema to gitlab_transactions_stack', :aggregate_failures do
       ApplicationRecord.transaction do

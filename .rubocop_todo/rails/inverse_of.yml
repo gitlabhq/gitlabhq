@@ -4,7 +4,6 @@ Rails/InverseOf:
     - 'app/models/ci/runner.rb'
     - 'app/models/ci/runner_namespace.rb'
     - 'app/models/ci/sources/pipeline.rb'
-    - 'app/models/ci/trigger_request.rb'
     - 'app/models/ci/unit_test_failure.rb'
     - 'app/models/clusters/cluster.rb'
     - 'app/models/clusters/concerns/application_core.rb'

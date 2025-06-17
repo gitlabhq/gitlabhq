@@ -33,7 +33,7 @@ export default {
       label: __('Type'),
     },
     {
-      key: 'default',
+      key: 'value',
       label: __('Value'),
       tdClass: 'md:gl-max-w-26',
     },
@@ -45,9 +45,14 @@ export default {
     },
   },
   emits: ['update'],
+  computed: {
+    filteredItems() {
+      return this.inputs.filter((input) => input.isSelected);
+    },
+  },
   methods: {
     handleValueUpdated({ item, value }) {
-      const updatedInput = { ...item, default: value };
+      const updatedInput = { ...item, value };
       this.$emit('update', updatedInput);
     },
     hasDescription(description) {
@@ -65,7 +70,7 @@ export default {
   <div class="gl-overflow-y-auto md:gl-max-h-[50rem]">
     <gl-table-lite
       class="gl-mb-0"
-      :items="inputs"
+      :items="filteredItems"
       :fields="$options.fields"
       :tbody-tr-attr="{ 'data-testid': 'input-row' }"
       stacked="sm"
@@ -90,8 +95,12 @@ export default {
           />
         </span>
       </template>
-      <template #cell(default)="{ item }">
-        <dynamic-value-renderer :item="item" @update="handleValueUpdated" />
+      <template #cell(value)="{ item }">
+        <dynamic-value-renderer
+          :key="`${item.name}-${item.isSelected}`"
+          :item="item"
+          @update="handleValueUpdated"
+        />
       </template>
     </gl-table-lite>
   </div>

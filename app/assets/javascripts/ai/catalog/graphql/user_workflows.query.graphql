@@ -1,0 +1,12 @@
+query userWorkflows {
+  currentUser @client {
+    id
+    workflows {
+      nodes {
+        id
+        type
+        name
+      }
+    }
+  }
+}

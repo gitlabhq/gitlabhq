@@ -3,6 +3,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { CATEGORY_OPTIONS } from '~/abuse_reports/components/constants';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 
 jest.mock('~/lib/utils/common_utils', () => ({
   contentTop: jest.fn(),
@@ -51,7 +52,7 @@ describe('AbuseCategorySelector', () => {
     it('is open when prop showDrawer = true', () => {
       expect(findDrawer().exists()).toBe(true);
       expect(findDrawer().props('open')).toBe(true);
-      expect(findDrawer().props('zIndex')).toBe(300);
+      expect(findDrawer().props('zIndex')).toBe(DRAWER_Z_INDEX);
     });
 
     it('renders title', () => {

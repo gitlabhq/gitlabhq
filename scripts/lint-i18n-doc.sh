@@ -25,7 +25,7 @@ fi
 printf "${COLOR_GREEN}INFO: Running Markdownlint on i18n files...${COLOR_RESET}\n"
 # PHASE 1: Check but don't fail on markdown errors
 # TODO: PHASE 2, fail the build with proper error codes https://gitlab.com/gitlab-com/localization/docs-site-localization/-/issues/127#note_2450926413
-yarn markdownlint ${MD_DOC_PATH} || {
+markdownlint-cli2 ${MD_DOC_PATH} || {
   printf "${COLOR_YELLOW}WARNING: Markdownlint found issues in i18n files, but continuing...${COLOR_RESET}\n"
   # Error code not incremented in Phase 1
 }

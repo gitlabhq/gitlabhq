@@ -2,6 +2,8 @@
 - add_page_specific_style 'page_bundles/labels'
 - page_description = s_('AdminLabels|Labels created here will be automatically added to new projects.')
 
+%h1.gl-sr-only= page_title
+
 %div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_labels_pageload' } }
 
 - if @labels.present?

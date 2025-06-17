@@ -12,6 +12,8 @@ title: Protected tags API
 
 {{< /details >}}
 
+Use this API to manage [protected tags](../user/project/protected_tags.md) for your repositories.
+
 ## Valid access levels
 
 These access levels are recognized:
@@ -119,6 +121,7 @@ POST /projects/:id/protected_tags
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
   --url "https://gitlab.example.com/api/v4/projects/5/protected_tags" \
   --data '{
    "allowed_to_create" : [

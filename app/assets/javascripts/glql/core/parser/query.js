@@ -22,9 +22,9 @@ export const parseQuery = async (query, config) => {
   parser.fields = uniq([...REQUIRED_QUERY_FIELDS, ...config.fields.map(({ name }) => name)]);
 
   const target = glqlWorkItemsFeatureFlagEnabled() ? 'work_items_graphql' : 'graphql';
-  const { output } = parser.compile(target, query, config);
+  const { output, variables } = parser.compile(target, query, config);
 
   if (output.toLowerCase().startsWith('error')) throw new Error(output.replace(/^error: /i, ''));
 
-  return output;
+  return { query: output, variables };
 };

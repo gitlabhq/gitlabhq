@@ -185,7 +185,11 @@ Internally, our database load balancer classifies the queries based on their mai
 
 After the above queries are executed, GitLab
 [sticks to the primary](../../administration/postgresql/database_load_balancing.md#primary-sticking).
-To make the inside queries prefer using the replicas,
+
+When writing custom read-only SQL queries, use `select_all` instead of `execute` so that the query can use read-only replicas when possible.
+Using `select_all` also prevents the query cache from being cleared.
+
+To make transactions and other ambiguous queries prefer using the replicas,
 [merge request 59086](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/59086) introduced
 `fallback_to_replicas_for_ambiguous_queries`. This MR is also an example of how we redirected a
 costly, time-consuming query to the replicas.

@@ -44,12 +44,25 @@ module Tooling
         end
 
         def render_description(description)
-          # replace help_page_path-generated documentation link
-          # with relative path to documentation file
-          description.sub(
-            Gitlab::Security::DastVariables.ci_variables_documentation_link,
-            '../../../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui'
-          )
+          # replace help_page_path-generated documentation links
+          # with relative paths to documentation files
+          description
+            .sub(
+              Gitlab::Security::DastVariables.ci_variables_documentation_link,
+              '../../../../../ci/variables/_index.md#define-a-cicd-variable-in-the-ui'
+            )
+            .sub(
+              Gitlab::Security::DastVariables.vulnerability_checks_documentation_link,
+              '../checks/_index.md'
+            )
+            .sub(
+              Gitlab::Security::DastVariables.secure_log_level_documentation_link,
+              '../troubleshooting.md#secure_log_level'
+            )
+            .sub(
+              Gitlab::Security::DastVariables.authentication_actions_documentation_link,
+              'authentication.md#taking-additional-actions-after-submitting-the-login-form'
+            )
         end
 
         def render_row(*values)

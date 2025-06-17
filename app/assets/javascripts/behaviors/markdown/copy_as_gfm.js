@@ -143,7 +143,8 @@ export class CopyAsGFM {
       codeElement = document.createElement('pre');
       codeElement.className = 'code highlight';
 
-      const lang = lineElements[0].getAttribute('lang');
+      const [firstLine] = lineElements;
+      const lang = firstLine.getAttribute('lang') || firstLine.dataset.lang;
       if (lang) {
         codeElement.setAttribute('lang', lang);
       }

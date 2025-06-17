@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 description: Development guidelines for GitLab Flavored Markdown (GLFM).
 title: GitLab Flavored Markdown (GLFM) development guidelines
 ---
@@ -60,4 +60,4 @@ The [CommonMark forum](https://talk.commonmark.org) is a good place to research 
 - [How to render GitLab-flavored Markdown on the frontend?](../fe_guide/frontend_faq.md#10-how-to-render-gitlab-flavored-markdown)
 - [Diagrams.net integration](../fe_guide/diagrams_net_integration.md)
 
-Please contact the [Plan:Knowledge team](https://handbook.gitlab.com/handbook/engineering/development/dev/plan/knowledge/) if you have any questions.
+Contact the [Plan:Knowledge team](https://handbook.gitlab.com/handbook/engineering/development/dev/plan/knowledge/) if you have any questions.

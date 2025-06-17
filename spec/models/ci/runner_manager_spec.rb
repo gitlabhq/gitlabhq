@@ -201,6 +201,27 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     include_examples 'runner with status scope'
   end
 
+  describe '.ip_address_exists?' do
+    let(:existing_ip_address) { '127.0.0.1' }
+    let(:ip_address_to_find) { existing_ip_address }
+
+    subject { described_class.ip_address_exists?(ip_address_to_find) }
+
+    before do
+      create(:ci_runner_machine, ip_address: existing_ip_address)
+    end
+
+    context 'when the ip address exists' do
+      it { is_expected.to be(true) }
+    end
+
+    context 'when the ip address does not exist' do
+      let(:ip_address_to_find) { '10.0.0.1' }
+
+      it { is_expected.to be(false) }
+    end
+  end
+
   describe '.available_statuses' do
     subject { described_class.available_statuses }
 
@@ -720,6 +741,46 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
       let(:runner_manager) { build_stubbed(:ci_runner_machine, :cancel_gracefully_feature) }
 
       it { is_expected.to be true }
+    end
+  end
+
+  describe '#ensure_organization_id' do
+    context 'with group runner' do
+      let(:runner) { build(:ci_runner, :group, groups: [group]) }
+      let(:runner_machine) { build(:ci_runner_machine, runner: runner) }
+
+      context 'when organization_id is not present' do
+        before do
+          runner_machine.save!
+
+          # Simulate a pre-existing record with a NULL organization_id value
+          runner_machine.update_columns(organization_id: nil)
+        end
+
+        it 'populates organization_id from runner on save', :aggregate_failures do
+          expect { runner_machine.save! }
+            .to change { runner_machine.organization_id }.from(nil).to(runner.organization_id)
+        end
+      end
+    end
+
+    context 'with project runner' do
+      let(:runner) { build(:ci_runner, :project, projects: [project]) }
+      let(:runner_machine) { build(:ci_runner_machine, runner: runner) }
+
+      context 'when organization_id is not present' do
+        before do
+          runner_machine.save!
+
+          # Simulate a pre-existing record with a NULL organization_id value
+          runner_machine.update_columns(organization_id: nil)
+        end
+
+        it 'populates organization_id from runner on save', :aggregate_failures do
+          expect { runner_machine.save! }
+            .to change { runner_machine.organization_id }.from(nil).to(runner.organization_id)
+        end
+      end
     end
   end
 end

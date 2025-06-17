@@ -64,7 +64,7 @@ RSpec.describe Authn::Tokens::DeployToken, feature_category: :system_access do
     end
 
     context 'with custom instance prefix' do
-      let_it_be(:instance_prefix) { 'instance-prefix-' }
+      let_it_be(:instance_prefix) { 'instanceprefix' }
       let(:valid_revocable) { create(:deploy_token) }
       let(:plaintext) { valid_revocable.token }
 

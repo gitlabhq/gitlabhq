@@ -19,6 +19,7 @@ module Gitlab
         BATCH_MIN_VALUE = 1 # Default minimum value for batched migrations
         BATCH_MIN_DELAY = 2.minutes.freeze # Minimum delay between batched migrations
         MIGRATION_NOT_FOUND_MESSAGE = "Could not find batched background migration for the given configuration: %<configuration>s"
+        MINIMUM_PAUSE_MS = 100
 
         ENFORCE_EARLY_FINALIZATION_FROM_VERSION = '20240905124117'
         EARLY_FINALIZATION_ERROR = <<-MESSAGE.squeeze(' ').strip
@@ -75,7 +76,7 @@ module Gitlab
           batch_max_value: nil,
           batch_class_name: BATCH_CLASS_NAME,
           batch_size: BATCH_SIZE,
-          pause_ms: 100,
+          pause_ms: MINIMUM_PAUSE_MS,
           max_batch_size: nil,
           sub_batch_size: SUB_BATCH_SIZE,
           gitlab_schema: nil

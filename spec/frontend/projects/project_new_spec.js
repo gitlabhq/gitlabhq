@@ -114,7 +114,7 @@ describe('New Project', () => {
       triggerEvent($projectName, 'change');
 
       expect($projectNameError.innerText).toBe(
-        'Name must start with a letter, digit, emoji, or underscore.',
+        'Project name must start with a letter, digit, emoji, or underscore.',
       );
       expect($projectNameError.classList.contains('gl-hidden')).toBe(false);
       expect($projectNameDescription.classList.contains('gl-hidden')).toBe(true);
@@ -124,8 +124,8 @@ describe('New Project', () => {
   });
 
   describe('project name rule', () => {
-    describe("Name must start with a letter, digit, emoji, or '_'", () => {
-      const errormsg = 'Name must start with a letter, digit, emoji, or underscore.';
+    describe("Project name must start with a letter, digit, emoji, or '_'", () => {
+      const errormsg = 'Project name must start with a letter, digit, emoji, or underscore.';
       it("'.foo' should error", () => {
         const text = '.foo';
         expect(checkRules(text)).toBe(errormsg);
@@ -138,7 +138,7 @@ describe('New Project', () => {
 
     describe("Name can contain only letters, digits, emoji, '_', '.', '+', dashes, or spaces", () => {
       const errormsg =
-        'Name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.';
+        'Project name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.';
       it("'foo(#^.^#)foo' should error", () => {
         const text = 'foo(#^.^#)foo';
         expect(checkRules(text)).toBe(errormsg);

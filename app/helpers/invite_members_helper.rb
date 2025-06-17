@@ -4,7 +4,7 @@ module InviteMembersHelper
   include Gitlab::Utils::StrongMemoize
 
   def can_invite_members_for_project?(project)
-    # do not use the can_admin_project_member? helper here due to structure of the view and how membership_locked?
+    # Do not use the invite_member policy here due to structure of the view and how membership_locked?
     # is leveraged for inviting groups
     can?(current_user, :invite_project_members, project)
   end
@@ -52,11 +52,6 @@ module InviteMembersHelper
     else
       {}
     end
-  end
-
-  # Overridden in EE
-  def users_filter_data(group)
-    {}
   end
 end
 

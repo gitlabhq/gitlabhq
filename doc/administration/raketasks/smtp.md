@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: SMTP Rake tasks
 ---
@@ -34,7 +34,7 @@ Show the contents of the current SMTP secrets.
   bundle exec rake gitlab:smtp:secret:show RAILS_ENV=production
   ```
 
-**Example output:**
+**Example output**:
 
 ```plaintext
 password: '123'

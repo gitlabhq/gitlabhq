@@ -13,8 +13,7 @@ title: Using PostgreSQL
 {{< /details >}}
 
 As many applications depend on PostgreSQL as their database, you
-eventually need it in order for your tests to run. Below you are guided how to
-do this with the Docker and Shell executors of GitLab Runner.
+have to use it to run your tests.
 
 ## Use PostgreSQL with the Docker executor
 
@@ -96,7 +95,7 @@ sudo -u postgres psql -d template1
 ```
 
 Then create a user (in our case `runner`) which is used by your
-application. Change `$password` in the command below to a real strong password.
+application. Change `$password` in the following command to a strong password.
 
 {{< alert type="note" >}}
 

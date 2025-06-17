@@ -2,7 +2,7 @@
   = form_errors(@application_setting)
 
   %fieldset
-    %h5
+    %h3.gl-heading-5
       = _('Unauthenticated Git HTTP request rate limit')
     .form-group
       = f.gitlab_ui_checkbox_component :throttle_unauthenticated_git_http_enabled,
@@ -14,5 +14,19 @@
     .form-group
       = f.label :throttle_unauthenticated_git_http_period_in_seconds, _('Unauthenticated Git HTTP rate limit period in seconds'), class: 'gl-font-bold'
       = f.number_field :throttle_unauthenticated_git_http_period_in_seconds, class: 'form-control gl-form-input'
+  - if Feature.enabled?(:git_authenticated_http_limit, :instance)
+    %fieldset
+      %h3.gl-heading-5
+        = _('Authenticated Git HTTP request rate limit')
+      .form-group
+        = f.gitlab_ui_checkbox_component :throttle_authenticated_git_http_enabled,
+          _('Enable authenticated Git HTTP request rate limit'),
+          help_text: _('Helps reduce authenticated Git HTTP request volume for git paths.')
+      .form-group
+        = f.label :throttle_authenticated_git_http_requests_per_period, _('Maximum authenticated Git HTTP requests per period per user'), class: 'gl-font-weight-bold'
+        = f.number_field :throttle_authenticated_git_http_requests_per_period, class: 'form-control gl-form-input'
+      .form-group
+        = f.label :throttle_authenticated_git_http_period_in_seconds, _('Authenticated Git HTTP rate limit period in seconds'), class: 'gl-font-weight-bold'
+        = f.number_field :throttle_authenticated_git_http_period_in_seconds, class: 'form-control gl-form-input'
 
   = f.submit _('Save changes'), pajamas_button: true

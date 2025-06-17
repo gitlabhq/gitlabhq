@@ -173,8 +173,7 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('.js-crud-collapsible-button[title="Collapse"]')
       expect(page).to have_css('.js-crud-collapsible-button[data-collapse-title="Expand"]')
       expect(page).to have_css('.js-crud-collapsible-button[data-expand-title="Collapse"]')
-      expect(page).to have_css('.js-crud-collapsible-collapse')
-      expect(page).to have_css('.js-crud-collapsible-expand.gl-hidden')
+      expect(page).to have_css('.js-crud-collapsible-icon.gl-animated-icon-on')
     end
   end
 end

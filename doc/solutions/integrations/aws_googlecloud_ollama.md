@@ -88,7 +88,7 @@ Why Use Internal IPs?
 
 ### GitLab
 
-The rest of this guide assumes you already have a instance of GitLab up and running that meets the requirements below:
+The rest of this guide assumes you already have an instance of GitLab up and running that meets the following requirements:
 
 #### Licensing
 
@@ -147,12 +147,12 @@ Ollama is a streamlined, open-source framework for running Large Language Models
 
 Key Highlights:
 
-1. **Simplified Deployment:** A user-friendly command-line interface ensures quick setup and hassle-free installation.
-1. **Wide Model Support:** Compatible with popular open-source models like Llama 2, Mistral, and Code Llama.
-1. **Optimized Performance:** Operates seamlessly across both GPU and CPU environments for resource efficiency.
-1. **Integration-Ready:** Features an OpenAI-compatible API for easy integration with existing tools and workflows.
-1. **No Containers Needed:** Runs directly on host systems, eliminating the need for Docker or containerized environments.
-1. **Versatile Hosting Options:** Deployable on local machines, on-premises servers, or cloud GPU instances.
+1. **Simplified Deployment**: A user-friendly command-line interface ensures quick setup and hassle-free installation.
+1. **Wide Model Support**: Compatible with popular open-source models like Llama 2, Mistral, and Code Llama.
+1. **Optimized Performance**: Operates seamlessly across both GPU and CPU environments for resource efficiency.
+1. **Integration-Ready**: Features an OpenAI-compatible API for easy integration with existing tools and workflows.
+1. **No Containers Needed**: Runs directly on host systems, eliminating the need for Docker or containerized environments.
+1. **Versatile Hosting Options**: Deployable on local machines, on-premises servers, or cloud GPU instances.
 
 Designed for simplicity and performance, Ollama empowers users to harness the power of LLMs without the complexity of traditional AI infrastructure. Further details on setup and supported models will be covered later in the documentation.
 
@@ -162,7 +162,8 @@ Designed for simplicity and performance, Ollama empowers users to harness the po
 
 ### AI Gateway
 
-While the official installation guide is available [here](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January 2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
+While the official installation guide is available in [Install the GitLab AI gateway](../../install/install_ai_gateway.md), here's a streamlined approach for setting up the AI Gateway. As of January 
+2025, the image `gitlab/model-gateway:self-hosted-v17.6.0-ee` has been verified to work with GitLab 17.7.
 
 1. Ensure that ...
 
@@ -180,7 +181,7 @@ While the official installation guide is available [here](../../install/install_
      gitlab/model-gateway:self-hosted-v17.6.0-ee
    ```
 
-Below is a table explaining key environment variables and their roles in setting up your instance:
+The following table explains key environment variables and their roles in setting up your instance:
 
 | **Variable**                 | **Description** |
 |------------------------------|-----------------|
@@ -307,7 +308,7 @@ Enabling Duo for just the root user is sufficient for initial setup and testing.
 
 1. Enable AI Features
 
-   - Navigate to the "AI-powered features" tab
+   - Navigate to the "AI-native features" tab
    - Assign the configured model to the following features:
      - Code Suggestions > Code Generation
      - Code Suggestions > Code Completion

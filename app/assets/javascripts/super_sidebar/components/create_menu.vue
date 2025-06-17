@@ -5,8 +5,9 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
+import { visitUrl } from '~/lib/utils/url_utility';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   TOP_NAV_INVITE_MEMBERS_COMPONENT,
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
@@ -15,6 +16,8 @@ import {
   WORK_ITEM_TYPE_NAME_EPIC,
   CREATE_NEW_WORK_ITEM_MODAL,
   CREATE_NEW_GROUP_WORK_ITEM_MODAL,
+  NAME_TO_TEXT_LOWERCASE_MAP,
+  sprintfWorkItem,
 } from '~/work_items/constants';
 import { DROPDOWN_Y_OFFSET, IMPERSONATING_OFFSET } from '../constants';
 
@@ -75,6 +78,28 @@ export default {
         this.showCreateGroupWorkItemModal = true;
       }
     },
+    handleWorkItemCreated(workItem) {
+      // Triggering the toast at this component, because we want to lazy load the modal
+      // with `v-if` and by doing that the modal is destroyed before the toast
+      // from the modal component can be triggered
+
+      // Hide the modal first to prevent the component from being destroyed
+      // before we can capture the event data
+      this.showCreateGroupWorkItemModal = false;
+      this.showCreateWorkItemModal = false;
+
+      const workItemType = NAME_TO_TEXT_LOWERCASE_MAP[workItem?.workItemType?.name];
+      const message = sprintfWorkItem(s__('WorkItem|%{workItemType} created'), workItemType);
+
+      // Display the toast
+      this.$toast.show(message, {
+        autoHideDelay: 10000,
+        action: {
+          text: __('View details'),
+          onClick: () => visitUrl(workItem?.webUrl),
+        },
+      });
+    },
   },
   toggleId: 'create-menu-toggle',
   TRIGGER_ELEMENT_DISCLOSURE_DROPDOWN,
@@ -129,11 +154,13 @@ export default {
     <create-work-item-modal
       v-if="showCreateGroupWorkItemModal"
       visible
+      :full-path="fullPath"
       hide-button
       is-group
       data-testid="new-group-work-item-modal"
       :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_EPIC"
       @hideModal="showCreateGroupWorkItemModal = false"
+      @workItemCreated="handleWorkItemCreated"
     />
     <create-work-item-modal
       v-if="showCreateWorkItemModal"
@@ -142,6 +169,7 @@ export default {
       data-testid="new-work-item-modal"
       :full-path="fullPath"
       @hideModal="showCreateWorkItemModal = false"
+      @workItemCreated="handleWorkItemCreated"
     />
   </gl-disclosure-dropdown>
 </template>

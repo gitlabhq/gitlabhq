@@ -57,8 +57,9 @@ module Keeps
       def table_has_data?(table_name)
         table_name_quoted = pg_client.quote_ident(table_name)
         query = "SELECT EXISTS (SELECT 1 FROM #{table_name_quoted} LIMIT 1)"
+        result = pg_client.exec_params(query)
 
-        pg_client.exec_params(query)
+        Gitlab::Utils.to_boolean(result.first.fetch('exists'))
       rescue PG::UndefinedTable
         false
       end

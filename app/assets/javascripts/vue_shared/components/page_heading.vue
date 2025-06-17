@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-my-5 gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-y-3">
+  <header class="gl-my-5 gl-flex gl-flex-wrap gl-items-center gl-justify-between gl-gap-y-3">
     <div
       class="gl-flex gl-w-full gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-3 md:gl-flex-nowrap"
     >
@@ -40,5 +40,5 @@ export default {
     >
       <slot name="description"></slot>
     </div>
-  </div>
+  </header>
 </template>

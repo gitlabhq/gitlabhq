@@ -8,11 +8,14 @@ class MergeRequestDiff < ApplicationRecord
   include Gitlab::Utils::StrongMemoize
   include BulkInsertableAssociations
   include ShaAttribute
+  include ObjectStorable
 
   ignore_columns %i[
     id_convert_to_bigint
     merge_request_id_convert_to_bigint
   ], remove_with: '18.3', remove_after: '2025-07-17'
+
+  STORE_COLUMN = :external_diff_store
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
@@ -895,7 +898,7 @@ class MergeRequestDiff < ApplicationRecord
   end
 
   def save_commits
-    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
+    MergeRequestDiffCommit.create_bulk(self.id, compare.commits.reverse, project, skip_commit_data: Feature.enabled?(:optimized_commit_storage, project))
     self.class.uncached { merge_request_diff_commits.reset }
   end
 

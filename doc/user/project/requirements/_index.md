@@ -3,6 +3,7 @@ stage: Plan
 group: Product Planning
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Requirements management
+description: Acceptance criteria, requirements test reports, and CSV import.
 ---
 
 {{< details >}}
@@ -18,7 +19,7 @@ stakeholders, system, software, or anything else you find important to capture.
 A requirement is an artifact in GitLab which describes the specific behavior of your product.
 Requirements are long-lived and don't disappear unless manually cleared.
 
-If an industry standard *requires* that your application has a certain feature or behavior, you can
+If an industry standard requires that your application has a certain feature or behavior, you can
 [create a requirement](#create-a-requirement) to reflect this.
 When a feature is no longer necessary, you can [archive the related requirement](#archive-a-requirement).
 
@@ -233,7 +234,7 @@ requirements_confirmation:
 
 Because requirements and [test cases](../../../ci/test_cases/_index.md) are being
 [migrated to work items](https://gitlab.com/groups/gitlab-org/-/epics/5171), if you have enabled work items
-in a project, you must replace `requirements` in above configs with `requirements_v2`:
+in a project, you must replace `requirements` in the previous config with `requirements_v2`:
 
 ```yaml
       requirements_v2: tmp/requirements.json
@@ -278,17 +279,17 @@ to you after the import is complete.
 
 When importing requirements from a CSV file, it must be formatted in a certain way:
 
-- **Header row:** CSV files must include the following headers:
+- **Header row**: CSV files must include the following headers:
   `title` and `description`. The headers are case-insensitive.
-- **Columns:** data from columns other than `title` and `description` is not imported.
-- **Separators:** the column separator is automatically detected from the header row.
+- **Columns**: data from columns other than `title` and `description` is not imported.
+- **Separators**: the column separator is automatically detected from the header row.
   Supported separator characters are: commas (`,`), semicolons (`;`), and tabs (`\t`).
   The row separator can be either `CRLF` or `LF`.
-- **Double-quote character:** the double-quote (`"`) character is used to quote fields,
+- **Double-quote character**: the double-quote (`"`) character is used to quote fields,
   enabling the use of the column separator in a field (see the third line in the
   sample CSV data below). To insert a double-quote (`"`) in a quoted
   field, use two double-quote characters in succession (`""`).
-- **Data rows:** below the header row, succeeding rows must follow the same column
+- **Data rows**: below the header row, succeeding rows must follow the same column
   order. The title text is required, while the description is optional and can be left empty.
 
 Sample CSV data:

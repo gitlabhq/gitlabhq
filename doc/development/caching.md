@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Caching guidelines
 ---
 
@@ -55,7 +55,7 @@ The goal for every web page should be to return in under 100 ms:
 - Some engineers are opposed to caching except as a last resort, considering it to
   be a hack, and that the real solution is to improve the underlying code to be faster.
 - This is could be fed by fear of cache expiry, which is understandable.
-- But caching is _still faster_.
+- But caching is still faster.
 - You must use both techniques to achieve true performance:
   - There's no point caching if the initial cold write is so slow it times out, for example.
   - But there are few cases where caching isn't a performance boost.
@@ -145,7 +145,7 @@ Is the cache being added "worthy"? This can be hard to measure, but you can cons
 
 - HTTP caching:
   - Use ETags and expiry times to instruct browsers to serve their own cached versions.
-  - This _does_ still hit Rails, but skips the view layer.
+  - This does still hit Rails, but skips the view layer.
 - HTTP caching in a reverse proxy cache:
   - Same as above, but with a `public` setting.
   - Instead of the browser, this instructs a reverse proxy (such as NGINX, HAProxy, Varnish) to serve a cached version.

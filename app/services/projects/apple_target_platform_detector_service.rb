@@ -50,9 +50,9 @@ module Projects
     # (Gitlab::Search::FoundBlob) that contain the setting definition string
     # "SDKROOT = <sdk_name>"
     def config_files_containing_sdk_setting(sdk)
-      BUILD_CONFIG_FILENAMES.map do |filename|
+      BUILD_CONFIG_FILENAMES.flat_map do |filename|
         file_finder.find("SDKROOT = #{sdk} filename:#{filename}")
-      end.flatten
+      end
     end
   end
 end

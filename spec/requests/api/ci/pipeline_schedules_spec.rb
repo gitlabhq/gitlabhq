@@ -416,26 +416,6 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(schedule.inputs.find_by(name: 'ARRAY_INPUT').value).to match_array(%w[one two three])
           expect(schedule.inputs.find_by(name: 'COMPLEX_ARRAY').value).to match_array([{ 'foo' => '1', 'bar' => '2' }])
         end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_inputs_for_pipelines: false)
-          end
-
-          it 'creates pipeline_schedule without inputs' do
-            expect do
-              post api("/projects/#{project.id}/pipeline_schedules", developer),
-                params: input_params
-            end.to change { project.pipeline_schedules.count }.by(1)
-               .and not_change { Ci::PipelineScheduleInput.count }
-
-            expect(response).to have_gitlab_http_status(:created)
-            expect(response).to match_response_schema('pipeline_schedule')
-
-            schedule = Ci::PipelineSchedule.last
-            expect(schedule.inputs).to be_empty
-          end
-        end
       end
 
       context 'when ref has validation error' do
@@ -534,21 +514,6 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(response).to have_gitlab_http_status(:ok)
           expect(pipeline_schedule.inputs.find_by(name: 'EXISTING_INPUT').value).to eq('updated_value')
           expect(pipeline_schedule.inputs.find_by(name: 'NEW_INPUT').value).to eq('brand_new')
-        end
-
-        context 'when feature flag is disabled' do
-          before do
-            stub_feature_flags(ci_inputs_for_pipelines: false)
-          end
-
-          it 'ignores input parameters' do
-            expect do
-              put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
-                params: { inputs: [{ name: 'NEW_INPUT', value: 'new_value' }] }
-            end.not_to change { pipeline_schedule.inputs.count }
-
-            expect(response).to have_gitlab_http_status(:ok)
-          end
         end
       end
 
@@ -834,7 +799,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
         context 'when project does not restrict use of user defined variables' do
           before do
-            project.update!(restrict_user_defined_variables: false)
+            project.update!(ci_pipeline_variables_minimum_override_role: :developer)
           end
 
           context 'as developer' do
@@ -966,7 +931,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when project does not restrict use of user defined variables' do
         before do
-          project.update!(restrict_user_defined_variables: false)
+          project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
         context 'as developer' do
@@ -1079,7 +1044,7 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
       context 'when project does not restrict use of user defined variables' do
         before do
-          project.update!(restrict_user_defined_variables: false)
+          project.update!(ci_pipeline_variables_minimum_override_role: :developer)
         end
 
         context 'as developer' do

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Contribute code with Gitpod
 ---
 
@@ -10,6 +10,13 @@ Now for the fun part. Let's edit some code.
 In this example, I found some UI text I'd like to change.
 In the upper-right corner in GitLab, I selected my avatar and then **Preferences**.
 I want to change `Syntax highlighting theme` to `Code syntax highlighting theme`:
+
+{{< alert type="warning" >}}
+
+This tutorial is designed to be a general introduction to contributing to the GitLab project
+and is not an example of a change that should be submitted for review.
+
+{{< /alert >}}
 
 1. Create a new branch for your changes:
 

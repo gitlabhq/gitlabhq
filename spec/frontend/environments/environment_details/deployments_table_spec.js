@@ -44,7 +44,7 @@ describe('~/environments/environment_details/index.vue', () => {
       ${'job'}                | ${DeploymentJob}                            | ${{ job: deployment.job }}
       ${'created date'}       | ${'[data-testid="deployment-created-at"]'}  | ${{ time: deployment.created }}
       ${'finished date'}      | ${'[data-testid="deployment-finished-at"]'} | ${{ time: deployment.finished }}
-      ${'deployment actions'} | ${DeploymentActions}                        | ${{ actions: deployment.actions, rollback: deployment.rollback, approvalEnvironment: deployment.deploymentApproval, deploymentWebPath: deployment.webPath }}
+      ${'deployment actions'} | ${DeploymentActions}                        | ${{ actions: deployment.actions, rollback: deployment.rollback, approvalEnvironment: deployment.deploymentApproval, deploymentWebPath: deployment.webPath, status: deployment.status }}
     `('should show the correct component for $cell', ({ component, props }) => {
       expect(row.findComponent(component).props()).toMatchObject(props);
     });

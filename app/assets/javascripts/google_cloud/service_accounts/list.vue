@@ -23,7 +23,7 @@ export default {
     },
   },
   tableFields: [
-    { key: 'ref', label: __('Environment'), sortable: true },
+    { key: 'ref', label: __('Environment'), sortable: true, isRowHeader: true },
     { key: 'gcp_project', label: __('Google Cloud Project'), sortable: true },
     { key: 'service_account_exists', label: __('Service Account'), sortable: true },
     { key: 'service_account_key_exists', label: __('Service Account Key'), sortable: true },

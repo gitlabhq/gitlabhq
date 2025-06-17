@@ -14,7 +14,20 @@ title: Diff limits administration
 
 {{< /details >}}
 
-You can set a maximum size for display of diff files (patches) in GitLab Self-Managed and GitLab Dedicated.
+Showing the full contents of large files can cause merge requests to load more slowly.
+To prevent this, set maximum values for the diff size, number of files changed, and number of
+lines changed.
+
+When a diff reaches 10% of any of these values, GitLab shows the files in a collapsed view with a link
+to expand the diff. Diffs that exceed any of these values are shown as **Too large**, and you cannot
+expand them in the UI:
+
+| Value | Definition | Default value | Maximum value |
+| ----- | ---------- | :-----------: | :-----------: |
+| **Maximum diff patch size** | The total size, in bytes, of the entire diff. | 200 KB | 500 KB |
+| **Maximum diff files** | The total number of files changed in a diff. | 1000 | 3000 |
+| **Maximum diff lines** | The total number of lines changed in a diff. | 50,000 | 100,000 |
+
 [Diff limits cannot be configured](../user/gitlab_com/_index.md#diff-display-limits) on GitLab.com.
 
 For details about diff files, [view changes between files](../user/project/merge_requests/changes.md).
@@ -29,20 +42,7 @@ consumption of your instance. Keep this in mind when adjusting the maximum.
 
 {{< /alert >}}
 
-To speed the loading of merge request views and branch comparison views
-on your instance, configure these maximum values for diffs:
-
-| Value | Definition | Default value | Maximum value |
-| ----- | ---------- | :-----------: | :-----------: |
-| **Maximum diff patch size** | The total size, in bytes, of the entire diff. | 200 KB | 500 KB |
-| **Maximum diff files** | The total number of files changed in a diff. | 1000 | 3000 |
-| **Maximum diff lines** | The total number of lines changed in a diff. | 50,000 | 100,000 |
-
-When a diff reaches 10% of any of these values, the files are shown in a
-collapsed view, with a link to expand the diff. Diffs that exceed any of the
-set values are presented as **Too large** and cannot be expanded in the UI.
-
-To configure these values:
+To set maximum values for diff display in merge requests:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

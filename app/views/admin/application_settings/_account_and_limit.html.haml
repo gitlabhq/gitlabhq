@@ -29,7 +29,7 @@
         = f.gitlab_ui_radio_component :session_expire_from_init, true, s_('Settings|Expire from time of session creation')
     .form-group
       = f.label :remember_me_enabled, _('Remember me'), class: 'label-light'
-      - remember_me_help_link = help_page_path('user/profile/_index.md', anchor: 'stay-signed-in-for-two-weeks')
+      - remember_me_help_link = help_page_path('user/profile/_index.md', anchor: 'stay-signed-in-for-one-week')
       - remember_me_help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: remember_me_help_link }
       = f.gitlab_ui_checkbox_component :remember_me_enabled, _('Allow users to extend their session'), help_text: _("Users can select 'Remember me' on sign-in to keep their session active beyond the session duration. %{link_start}Learn more%{link_end}.").html_safe % { link_start: remember_me_help_link_start, link_end: '</a>'.html_safe }
 
@@ -41,10 +41,6 @@
       = f.gitlab_ui_checkbox_component :disable_feed_token, s_('AdminSettings|Disable feed token')
 
     = render_if_exists 'admin/application_settings/disable_personal_access_tokens', form: f
-    %h5= s_('AccessTokens|Access token expiration')
-    .form-group
-      = render 'admin/application_settings/require_access_token_expiry', form: f
-      = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
     .form-group
       = f.label :personal_access_token_prefix, s_('AccessTokens|Access token prefix')
       = f.text_field :personal_access_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
@@ -52,6 +48,10 @@
       .form-group
         = f.label :instance_token_prefix, s_('AccessTokens|Instance token prefix')
         = f.text_field :instance_token_prefix, placeholder: _('Maximum 20 characters'), class: 'form-control gl-form-input'
+    %h5= s_('AccessTokens|Access token expiration')
+    .form-group
+      = render 'admin/application_settings/require_access_token_expiry', form: f
+      = render_if_exists 'admin/application_settings/service_accounts_pats_expiration_enforced', form: f
     = render_if_exists 'admin/application_settings/personal_access_token_expiration_policy', form: f
 
     = render_if_exists 'admin/application_settings/ssh_key_expiration_policy', form: f
@@ -64,14 +64,14 @@
       = f.gitlab_ui_checkbox_component :ropc_without_client_credentials, _('Allow users to use resource owner password credentials flow without oauth client credentials')
 
     .form-group
-      = f.label :user_default_external, _('New users set to external'), class: 'label-bold'
-      = f.gitlab_ui_checkbox_component :user_default_external, _('Newly-registered users are external by default')
+      = f.label :user_default_external, _('External users'), class: 'label-bold'
+      = f.gitlab_ui_checkbox_component :user_default_external, _('Make new users external by default')
       .gl-mt-3
-        = _('Internal users')
-      = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control gl-form-input gl-mt-2'
+        = _('Email exclusion pattern')
+      = f.text_field :user_default_internal_regex, class: 'form-control gl-form-input gl-mt-2'
       .form-text.gl-text-subtle
-        = _('Specify an email address regex pattern to identify default internal users.')
-        #{link_to _('Learn more'), help_page_path('administration/external_users.md', anchor: 'set-a-new-user-to-external'), target: '_blank', rel: 'noopener noreferrer'}.
+        = _('Specify a regular expression for emails. New users with matching emails are not made external users.')
+        #{link_to _('Learn more'), help_page_path('administration/external_users.md', anchor: 'make-new-users-external-by-default'), target: '_blank', rel: 'noopener noreferrer'}.
     - unless Gitlab.com?
       .form-group
         = f.label :deactivate_dormant_users, _('Dormant users'), class: 'label-bold'

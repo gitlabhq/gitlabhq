@@ -48,6 +48,30 @@ RSpec.describe 'User browses a job', :js, feature_category: :continuous_integrat
     end
   end
 
+  context 'with parallel job' do
+    let!(:build_1) do
+      create(:ci_build, :success, :report_results, name: 'rspec 1/2', pipeline: pipeline,
+        options: { parallel: { number: 1, total: 2 } })
+    end
+
+    let!(:build_2) do
+      create(:ci_build, :success, :report_results, name: 'rspec 2/2', pipeline: pipeline,
+        options: { parallel: { number: 2, total: 2 } })
+    end
+
+    let!(:artifact_1_trace) do
+      create(:ci_job_artifact, :trace, job: build_1)
+    end
+
+    it 'renders the correct test report link', :js do
+      visit(project_job_path(project, build_1))
+      wait_for_requests
+
+      href = find_by_testid('job-sidebar-value-link')[:href]
+      expect(href[-5..]).to eq('rspec')
+    end
+  end
+
   context 'with a failed job and live trace' do
     let!(:build) { create(:ci_build, :failed, :trace_live, pipeline: pipeline) }
 

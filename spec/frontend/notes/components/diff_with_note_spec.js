@@ -61,7 +61,7 @@ describe('diff_with_note', () => {
     });
 
     it('removes trailing "+" char', () => {
-      const richText = wrapper.vm.$el
+      const richText = wrapper.element
         .querySelectorAll('.line_holder')[4]
         .querySelector('.line_content').textContent[0];
 
@@ -69,7 +69,8 @@ describe('diff_with_note', () => {
     });
 
     it('removes trailing "-" char', () => {
-      const richText = wrapper.vm.$el.querySelector('#LC13').parentNode.textContent[0];
+      const richText = wrapper.element.querySelector('.line .deletion').closest('.line').parentNode
+        .textContent[0];
 
       expect(richText).not.toEqual('-');
     });

@@ -9,14 +9,23 @@
 # For users who haven't customized the setting, we simply delegate to
 # `DashboardController#show`, which is the default.
 class RootController < Dashboard::ProjectsController
+  include HomepageData
+
   skip_before_action :authenticate_user!, only: [:index]
 
   before_action :redirect_unlogged_user, if: -> { current_user.nil? }
   before_action :redirect_logged_user, if: -> { current_user.present? }
 
+  before_action only: [:index] do
+    push_frontend_feature_flag(:personal_homepage, current_user)
+  end
+
   CACHE_CONTROL_HEADER = 'no-store'
 
-  def index # rubocop:disable Lint/UselessMethodDefinition -- we need to explicitly define this action for the `skip_before_action`
+  def index
+    @homepage_app_data = @current_user.nil? ? {} : homepage_app_data(@current_user)
+    render('root/index') && return if Feature.enabled?(:personal_homepage, current_user)
+
     super
   end
 
@@ -36,6 +45,8 @@ class RootController < Dashboard::ProjectsController
 
   def redirect_logged_user
     case current_user.dashboard
+    when 'projects'
+      redirect_to(dashboard_projects_path) if Feature.enabled?(:personal_homepage, current_user)
     when 'stars'
       flash.keep
       redirect_to(starred_dashboard_projects_path)

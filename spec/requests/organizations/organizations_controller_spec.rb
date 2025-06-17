@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationsController, feature_category: :cell do
+RSpec.describe Organizations::OrganizationsController, feature_category: :organization do
   let_it_be(:organization) { create(:organization, :private) }
 
   shared_examples 'when the user is signed in' do

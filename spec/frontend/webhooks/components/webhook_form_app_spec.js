@@ -17,6 +17,7 @@ describe('WebhookFormApp', () => {
 
   const findNameInput = () => wrapper.findByTestId('webhook-name');
   const findDescriptionInput = () => wrapper.findByTestId('webhook-description');
+  const findSecretTokenInput = () => wrapper.findByTestId('webhook-secret-token');
   const findFormUrlApp = () => wrapper.findComponent(FormUrlApp);
   const findFormCustomHeaders = () => wrapper.findComponent(FormCustomHeaders);
 
@@ -60,6 +61,25 @@ describe('WebhookFormApp', () => {
       await nextTick();
 
       expect(findDescriptionInput().props('value')).toBe(initialDescription);
+    });
+  });
+
+  describe('secret token input', () => {
+    it('renders secret token input', () => {
+      expect(findSecretTokenInput().attributes('name')).toBe('hook[token]');
+      expect(findSecretTokenInput().props('value')).toBe('');
+    });
+
+    it('uses initialSecretToken as initial value', () => {
+      const initialSecretToken = '************';
+
+      createComponent({
+        props: {
+          initialSecretToken,
+        },
+      });
+
+      expect(findSecretTokenInput().props('value')).toBe(initialSecretToken);
     });
   });
 

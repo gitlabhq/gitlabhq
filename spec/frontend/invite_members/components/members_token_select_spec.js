@@ -2,9 +2,9 @@ import { GlTokenSelector } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import * as UserApi from '~/api/user_api';
 import MembersTokenSelect from '~/invite_members/components/members_token_select.vue';
 import { VALID_TOKEN_BACKGROUND, INVALID_TOKEN_BACKGROUND } from '~/invite_members/constants';
+import * as MembersUtils from '~/invite_members/utils/member_utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
 const label = 'testgroup';
@@ -16,6 +16,7 @@ const handleEnterSpy = jest.fn();
 
 /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
 let wrapper;
+const searchUrl = 'https://example.com/gitlab/groups/mygroup/-/group_members/invite_search.json';
 
 const createComponent = ({ props = {} } = {}) => {
   wrapper = mountExtended(MembersTokenSelect, {
@@ -25,6 +26,7 @@ const createComponent = ({ props = {} } = {}) => {
       placeholder,
       ...props,
     },
+    provide: { searchUrl },
   });
 };
 
@@ -89,15 +91,16 @@ describe('MembersTokenSelect', () => {
   });
 
   describe('users', () => {
+    let tokenSelector;
+
     beforeEach(() => {
-      jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
+      jest.spyOn(MembersUtils, 'searchUsers').mockResolvedValue({ data: allUsers });
       createComponent();
+      tokenSelector = findTokenSelector();
     });
 
     describe('when input is manually focused', () => {
       it('calls the API and sets dropdown items as request result', async () => {
-        const tokenSelector = findTokenSelector();
-
         tokenSelector.vm.$emit('focus');
 
         await waitForPromises();
@@ -108,12 +111,6 @@ describe('MembersTokenSelect', () => {
     });
 
     describe('when text input is typed in', () => {
-      let tokenSelector;
-
-      beforeEach(() => {
-        tokenSelector = findTokenSelector();
-      });
-
       it('calls the API with search parameter', async () => {
         const searchParam = 'One';
 
@@ -121,10 +118,7 @@ describe('MembersTokenSelect', () => {
 
         await waitForPromises();
 
-        expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
-          active: true,
-          without_project_bots: true,
-        });
+        expect(MembersUtils.searchUsers).toHaveBeenCalledWith(searchUrl, searchParam);
         expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
 
@@ -133,10 +127,7 @@ describe('MembersTokenSelect', () => {
 
         await waitForPromises();
 
-        expect(UserApi.getUsers).toHaveBeenCalledWith('foo@bar.com', {
-          active: true,
-          without_project_bots: true,
-        });
+        expect(MembersUtils.searchUsers).toHaveBeenCalledWith(searchUrl, 'foo@bar.com');
         expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
       });
 
@@ -160,7 +151,7 @@ describe('MembersTokenSelect', () => {
       describe('when API search fails', () => {
         beforeEach(() => {
           jest.spyOn(Sentry, 'captureException');
-          jest.spyOn(UserApi, 'getUsers').mockRejectedValue('error');
+          jest.spyOn(MembersUtils, 'searchUsers').mockRejectedValue('error');
         });
 
         it('reports to sentry', async () => {
@@ -218,29 +209,6 @@ describe('MembersTokenSelect', () => {
       await nextTick();
 
       expect(tokenSelector.props('hideDropdownWithNoItems')).toBe(false);
-    });
-  });
-
-  describe('when component is mounted for a group using a SAML provider', () => {
-    const searchParam = 'name';
-    const samlProviderId = 123;
-
-    beforeEach(() => {
-      jest.spyOn(UserApi, 'getUsers').mockResolvedValue({ data: allUsers });
-
-      createComponent({
-        props: { filterId: samlProviderId, usersFilter: 'saml_provider_id' },
-      });
-
-      findTokenSelector().vm.$emit('text-input', searchParam);
-    });
-
-    it('calls the API with the saml provider ID param', () => {
-      expect(UserApi.getUsers).toHaveBeenCalledWith(searchParam, {
-        active: true,
-        without_project_bots: true,
-        saml_provider_id: samlProviderId,
-      });
     });
   });
 });

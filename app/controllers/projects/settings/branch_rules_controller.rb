@@ -14,3 +14,5 @@ module Projects
     end
   end
 end
+
+Projects::Settings::BranchRulesController.prepend_mod

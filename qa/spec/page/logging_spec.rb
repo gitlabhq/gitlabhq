@@ -14,6 +14,8 @@ RSpec.describe QA::Support::Page::Logging do
     allow(page).to receive(:find).and_return(page)
     allow(page).to receive(:current_url).and_return('http://current-url')
     allow(page).to receive(:has_css?).with(any_args).and_return(true)
+    allow(subject).to receive(:wait_for_requests).and_return(true)
+
     allow(QA::Support::PageErrorChecker).to receive(:check_page_for_error_code).and_return(0)
   end
 

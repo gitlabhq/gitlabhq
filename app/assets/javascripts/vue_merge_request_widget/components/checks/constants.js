@@ -6,6 +6,7 @@ export const COMPONENTS = {
   draft_status: () => import('./draft.vue'),
   merge_time: () => import('./merge_time.vue'),
   need_rebase: () => import('./rebase.vue'),
+  title_regex: () => import('./title_regex.vue'),
   default: () => import('./message.vue'),
   requested_changes: () =>
     import('ee_component/vue_merge_request_widget/components/checks/requested_changes.vue'),
@@ -39,7 +40,7 @@ export const FAILURE_REASONS = {
   locked_lfs_files: __('All LFS files must be unlocked.'),
   security_policy_violations: __('All policy rules must be satisfied.'),
   merge_time: __('Cannot merge until this date and time.'),
-  title_regex: __('The title must match the required regex.'),
+  title_regex: __('Merge request title must match expected format.'),
 };
 
 export const ICON_NAMES = Object.freeze({

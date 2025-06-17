@@ -171,7 +171,7 @@ When you configure related JSON objects and use the template, the pipeline:
 1. **Deploys to EC2**: The content is deployed on an [AWS EC2](https://aws.amazon.com/ec2/) instance,
    as shown in this diagram:
 
-![Shows the CF-Provision-and-Deploy-EC2 pipeline, including the steps of provisioning infrastructure, pushing artifacts to S3, and deploying to EC2.](../img/cf_ec2_diagram_v13_5.png)
+![Shows the CF-Provision-and-Deploy-EC2 pipeline, including the steps of provisioning infrastructure, pushing artifacts to S3, and deploying to EC2.](img/cf_ec2_diagram_v13_5.png)
 
 ### Configure the template and JSON
 
@@ -209,7 +209,7 @@ To deploy to EC2, complete the following steps.
 
    - If you do not want these JSON objects saved in your repository, add each object
      as a separate [file type CI/CD variable](../variables/_index.md#use-file-type-cicd-variables)
-     in the project settings. Use the same variable names as above.
+     in the project settings. Use the same previous variable names.
 
 1. In your `.gitlab-ci.yml` file, create a CI/CD variable for the name of the stack. For example:
 

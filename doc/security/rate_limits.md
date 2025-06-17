@@ -261,7 +261,7 @@ To remove a blocked IP:
    grep "Rack_Attack" /var/log/gitlab/gitlab-rails/auth.log
    ```
 
-1. Since the denylist is stored in Redis, you must open up `redis-cli`:
+1. The denylist is stored in Redis, so you must open up `redis-cli`:
 
    ```shell
    /opt/gitlab/embedded/bin/redis-cli -s /var/opt/gitlab/redis/redis.socket

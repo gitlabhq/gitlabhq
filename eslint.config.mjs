@@ -4,7 +4,8 @@ import { existsSync } from 'node:fs';
 import localRules from 'eslint-plugin-local-rules';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
-import * as graphqlEslint from '@graphql-eslint/eslint-plugin';
+// eslint-disable-next-line import/no-unresolved
+import graphqlPlugin from '@graphql-eslint/eslint-plugin';
 import * as todoLists from './.eslint_todo/index.mjs';
 
 const { dirname } = import.meta;
@@ -108,7 +109,7 @@ export default [
     ],
   },
   ...compat.extends(...extendConfigs),
-  ...compat.plugins('no-jquery', '@graphql-eslint'),
+  ...compat.plugins('no-jquery'),
   {
     rules: {
       'no-unused-vars': [
@@ -589,11 +590,9 @@ export default [
     files: ['**/*.graphql'],
 
     languageOptions: {
-      ecmaVersion: 5,
-      sourceType: 'script',
 
       parserOptions: {
-        parser: { ...graphqlEslint, meta: { name: '@graphql-eslint' } },
+        parser: graphqlPlugin.parser,
         graphQLConfig: {
           documents: '{,ee/,jh/}app/**/*.graphql',
           schema: './tmp/tests/graphql/gitlab_schema_apollo.graphql',
@@ -601,12 +600,16 @@ export default [
       },
     },
 
+    plugins: {
+      '@graphql-eslint': graphqlPlugin,
+    },
+
     rules: {
       'filenames/match-regex': 'off',
       'spaced-comment': 'off',
       '@graphql-eslint/no-anonymous-operations': 'error',
       '@graphql-eslint/unique-operation-name': 'error',
-      '@graphql-eslint/require-id-when-available': 'error',
+      '@graphql-eslint/require-selections': 'error',
       '@graphql-eslint/no-unused-variables': 'error',
       '@graphql-eslint/no-unused-fragments': 'error',
       '@graphql-eslint/no-duplicate-fields': 'error',
@@ -622,7 +625,7 @@ export default [
     ],
 
     rules: {
-      '@graphql-eslint/require-id-when-available': 'off',
+      '@graphql-eslint/require-selections': 'off',
     },
   },
   {

@@ -114,11 +114,11 @@ $solarized-light-il: #2aa198;
 
   --code-background: #{$solarized-light-pre-bg};
 
-  --code-line-nubmer-background-color: #{$solarized-light-line-bg};
-  --code-line-nubmer-color: #{$solarized-light-line-color};
+  --code-line-number-background-color: #{$solarized-light-line-bg};
+  --code-line-number-color: #{$solarized-light-line-color};
 
   --code-old-diff-line-number-background-color: #{$solarized-light-old-bg};
-  --code-old-diff-line-nubmer-color: #{$solarized-light-line-color-old};
+  --code-old-diff-line-number-color: #{$solarized-light-line-color-old};
   --code-old-diff-sign-color: #{$solarized-light-line-color-old};
   --code-old-diff-background-color: #{$solarized-light-old-bg};
   --code-old-diff-border-color: #{$solarized-light-border};
@@ -126,15 +126,21 @@ $solarized-light-il: #2aa198;
   --code-old-inline-diff-background-color: #{$solarized-light-old-idiff};
 
   --code-new-diff-line-number-background-color: #{$solarized-light-new-bg};
-  --code-new-diff-line-nubmer-color: #{$solarized-light-line-color-new};
+  --code-new-diff-line-number-color: #{$solarized-light-line-color-new};
   --code-new-diff-sign-color: #{$solarized-light-line-color-new};
   --code-new-diff-background-color: #{$solarized-light-new-bg};
   --code-new-diff-border-color: #{$solarized-light-border};
   --code-new-diff-color: #{$solarized-light-line-color-new};
   --code-new-inline-diff-background-color: #{$solarized-light-new-idiff};
 
+  --code-meta-diff-background-color: #{$solarized-light-matchline-bg};
+  --code-meta-diff-color: #{$gl-color-alpha-dark-24};
+
   --code-diff-hunk-header-background-color: #{$solarized-light-matchline-bg};
   --code-diff-hunk-header-color: #{$gl-color-alpha-dark-24};
+
+  --code-highlighted-line-background-color: #{$solarized-light-hll-bg};
+  --code-highlighted-line-border-color: #{darken($solarized-light-hll-bg, 15%)};
 
   // Highlight.js theme overrides (https://gitlab.com/gitlab-org/gitlab/-/issues/365167)
   // We should be able to remove the overrides once the upstream issue is fixed (https://github.com/sourcegraph/sourcegraph/issues/23251)

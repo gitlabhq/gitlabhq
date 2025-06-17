@@ -21,6 +21,7 @@ module RuboCop
 
         RESTRICT_ON_SEND = [:feature_category].freeze
 
+        # @!method feature_category?(node)
         def_node_search :feature_category?, <<~PATTERN
           (:send nil? :feature_category ...)
         PATTERN

@@ -37,24 +37,24 @@ you to use.
 1. Select **Add consumer**.
 1. Provide the required details:
 
-   - **Name:** This can be anything. Consider something like `<Organization>'s GitLab`
+   - **Name**: This can be anything. Consider something like `<Organization>'s GitLab`
      or `<Your Name>'s GitLab` or something else descriptive.
-   - **Application description:** Optional. Fill this in if you wish.
-   - **Callback URL:** (Required in GitLab versions 8.15 and greater)
+   - **Application description**: Optional. Fill this in if you wish.
+   - **Callback URL**: (Required in GitLab versions 8.15 and greater)
      The URL to your GitLab installation, such as
-     `https://gitlab.example.com/users/auth`.
-     Leaving this field empty
-     results in an `Invalid redirect_uri` message.
+     `https://gitlab.example.com/users/auth`. Leaving this
+     field empty results in an `Invalid redirect_uri` message.
 
      {{< alert type="warning" >}}
 
      To help prevent an [OAuth 2 covert redirect](https://oauth.net/advisories/2014-1-covert-redirect/)
-     vulnerability in which users' GitLab accounts could be compromised, append `/users/auth`
-     to the end of the Bitbucket authorization callback URL.
+     attack, append `/users/auth` to the end of your Bitbucket authorization callback URL. You must
+     include this authorization endpoint to authenticate with Bitbucket and import data from Bitbucket
+     repositories.
 
      {{< /alert >}}
 
-   - **URL:** The URL to your GitLab installation, such as `https://gitlab.example.com`.
+   - **URL**: The URL to your GitLab installation, such as `https://gitlab.example.com`.
 
 1. Grant at least the following permissions:
 
@@ -91,8 +91,7 @@ you to use.
        # label: "Provider name", # optional label for login button, defaults to "Bitbucket"
        app_id: "<bitbucket_app_key>",
        app_secret: "<bitbucket_app_secret>",
-       url: "https://bitbucket.org/",
-       args: { redirect_uri: "https://gitlab.example.com/users/auth/" },
+       url: "https://bitbucket.org/"
      }
    ]
    ```
@@ -107,8 +106,7 @@ you to use.
            # label: 'Provider name', # optional label for login button, defaults to "Bitbucket"
            app_id: '<bitbucket_app_key>',
            app_secret: '<bitbucket_app_secret>',
-           url: 'https://bitbucket.org/',
-           args: { redirect_uri: "https://gitlab.example.com/users/auth/" },
+           url: 'https://bitbucket.org/'
          }
    ```
 
@@ -133,7 +131,7 @@ For multi-node architectures, the Bitbucket provider configuration must also be 
 
 ## Bitbucket project import
 
-After the above configuration is set up, you can use Bitbucket to sign in to
+After the previous configuration is set up, you can use Bitbucket to sign in to
 GitLab and [start importing your projects](../user/project/import/bitbucket.md).
 
 If you want to import projects from Bitbucket, but don't want to enable signing in,

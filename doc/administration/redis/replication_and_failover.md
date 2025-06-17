@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: Data access
+group: Durability
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Redis replication and failover with the Linux package
 ---
@@ -100,7 +100,7 @@ the Linux package in `5` **independent** machines, both with
 ### Redis setup overview
 
 You must have at least `3` Redis servers: `1` primary, `2` Replicas, and they
-need to each be on independent machines (see explanation above).
+need to each be on independent machines.
 
 You can have additional Redis nodes, that helps to survive a situation
 where more nodes goes down. Whenever there is only `2` nodes online, a failover
@@ -161,7 +161,7 @@ Here are some examples:
 - With `7` sentinels, a maximum of `3` nodes can go down.
 
 The **Leader** election can sometimes fail the voting round when **consensus**
-is not achieved (see the odd number of nodes requirement above). In that case,
+is not achieved. In that case,
 a new attempt is made after the amount of time defined in
 `sentinel['failover_timeout']` (in milliseconds).
 
@@ -384,7 +384,7 @@ multiple machines with the Sentinel daemon.
 
 1. SSH into the server that hosts Redis Sentinel.
 1. **You can omit this step if the Sentinels is hosted in the same node as
-   the other Redis instances.**
+   the other Redis instances**.
 
    [Download and install](https://about.gitlab.com/install/) the
    Linux Enterprise Edition package using **steps 1 and 2** from the

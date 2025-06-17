@@ -529,17 +529,17 @@ python-shop-app/
 1. Open the `shop.py` file. To use Code Suggestions, enter this comment
    at the top of the file:
 
-  ```plaintext
-  # Create Flask routes for a bookstore inventory system
-  # Include routes for:
-  # - Getting all books (GET /books)
-  # - Getting a single book by ID (GET /books/<id>)
-  # - Adding a new book (POST /books)
-  # - Updating a book (PUT /books/<id>)
-  # - Deleting a book (DELETE /books/<id>)
-  # Use the Article class from models.article and database from database.py
-  # Include proper error handling and HTTP status codes
-  ```
+   ```plaintext
+   # Create Flask routes for a bookstore inventory system
+   # Include routes for:
+   # - Getting all books (GET /books)
+   # - Getting a single book by ID (GET /books/<id>)
+   # - Adding a new book (POST /books)
+   # - Updating a book (PUT /books/<id>)
+   # - Deleting a book (DELETE /books/<id>)
+   # Use the Article class from models.article and database from database.py
+   # Include proper error handling and HTTP status codes
+   ```
 
 1. Review the generated code. It should include:
 
@@ -558,25 +558,25 @@ python-shop-app/
 1. If the generated code doesn't fully meet your needs, or you want to understand
    how to improve it, you can ask Chat from within the `shop.py` file:
 
-  ```plaintext
-  Can you suggest improvements for my Flask routes in this shop.py file?
-  I want to ensure that:
-  1. The routes follow RESTful API design principles
-  2. Responses include appropriate HTTP status codes
-  3. Input validation is handled properly
-  4. The code follows Flask best practices
-  ```
+   ```plaintext
+   Can you suggest improvements for my Flask routes in this shop.py file?
+   I want to ensure that:
+   1. The routes follow RESTful API design principles
+   2. Responses include appropriate HTTP status codes
+   3. Input validation is handled properly
+   4. The code follows Flask best practices
+   ```
 
 1. You also need to create the Flask application instance in the `__init__.py`
    file inside the `app` directory. Open this file and use Code Suggestions to
    generate the appropriate code:
 
-  ```plaintext
-  # Create a Flask application factory
-  # Configure the app with settings from environment variables
-  # Register the shop blueprint
-  # Return the configured app
-  ```
+   ```plaintext
+   # Create a Flask application factory
+   # Configure the app with settings from environment variables
+   # Register the shop blueprint
+   # Return the configured app
+   ```
 
 1. Save both files.
 
@@ -1394,8 +1394,11 @@ GitLab Duo Chat and Code Suggestions to build working online shop application.
 If it is not working, then you need to find out why. Chat and Code Suggestions
 can help you create tests to ensure your application works as expected and
 identify any issues that need to be fixed.
-[Issue 1284](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/issues/1284)
-exists to create this tutorial.
+
+<!-- markdownlint-disable -->
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For more information, see [Using Duo /fix](https://youtu.be/agTqx__j6Ko?si=vpLfVvmFVcBivB1g).
+<!-- Video published on 2025-02-13 -->
 
 ## Related topics
 

@@ -57,14 +57,13 @@ describe('GroupListItemDeleteModal', () => {
 
   describe('delete modal overrides', () => {
     describe.each`
-      isAdjournedDeletionEnabled | markedForDeletionOn | modalTitle                     | modalBody
-      ${false}                   | ${false}            | ${DELETE_MODAL_TITLE_OVERRIDE} | ${DELETE_MODAL_BODY_OVERRIDE}
-      ${true}                    | ${false}            | ${DEFAULT_DELETE_MODAL_TITLE}  | ${''}
-      ${false}                   | ${'2024-03-24'}     | ${DELETE_MODAL_TITLE_OVERRIDE} | ${DELETE_MODAL_BODY_OVERRIDE}
-      ${true}                    | ${'2024-03-24'}     | ${DELETE_MODAL_TITLE_OVERRIDE} | ${DELETE_MODAL_BODY_OVERRIDE}
+      markedForDeletionOn | modalTitle                     | modalBody
+      ${false}            | ${DEFAULT_DELETE_MODAL_TITLE}  | ${''}
+      ${'2024-03-24'}     | ${DELETE_MODAL_TITLE_OVERRIDE} | ${DELETE_MODAL_BODY_OVERRIDE}
+      ${'2024-03-24'}     | ${DELETE_MODAL_TITLE_OVERRIDE} | ${DELETE_MODAL_BODY_OVERRIDE}
     `(
-      'when group isAdjournedDeletionEnabled is $isAdjournedDeletionEnabled and markedForDeletionOn is $markedForDeletionOn',
-      ({ isAdjournedDeletionEnabled, markedForDeletionOn, modalTitle, modalBody }) => {
+      'when group markedForDeletionOn is $markedForDeletionOn',
+      ({ markedForDeletionOn, modalTitle, modalBody }) => {
         beforeEach(() => {
           createComponent({
             props: {
@@ -73,7 +72,6 @@ describe('GroupListItemDeleteModal', () => {
                 ...group,
                 parent: { id: 1 },
                 permanentDeletionDate: MOCK_PERM_DELETION_DATE,
-                isAdjournedDeletionEnabled,
                 markedForDeletionOn,
               },
             },

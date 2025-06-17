@@ -109,7 +109,7 @@ describe('UserMenu component', () => {
   describe('User status item', () => {
     let item;
 
-    const setItem = async ({
+    const setItem = ({
       can_update: canUpdate = false,
       busy = false,
       customized = false,
@@ -119,13 +119,6 @@ describe('UserMenu component', () => {
         { status: { ...userMenuMockStatus, can_update: canUpdate, busy, customized } },
         stubs,
       );
-      // Mock mounting the modal if we can update
-      if (canUpdate) {
-        expect(wrapper.vm.setStatusModalReady).toEqual(false);
-        findSetStatusModal().vm.$emit('mounted');
-        await nextTick();
-        expect(wrapper.vm.setStatusModalReady).toEqual(true);
-      }
       item = wrapper.findByTestId('status-item');
     };
 
@@ -199,10 +192,13 @@ describe('UserMenu component', () => {
         ${true}  | ${false}
         ${false} | ${true}
       `('and the status is busy or customized', ({ busy, customized }) => {
-        it('should pass the current status to the modal', () => {
+        it('should pass the current status to the modal', async () => {
           createWrapper({
             status: { ...userMenuMockStatus, can_update: true, busy, customized },
           });
+
+          wrapper.findByTestId('status-item').vm.$emit('action');
+          await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
           expect(findSetStatusModal().props()).toMatchObject({
@@ -214,10 +210,13 @@ describe('UserMenu component', () => {
           });
         });
 
-        it('casts falsey values to empty strings', () => {
+        it('casts falsey values to empty strings', async () => {
           createWrapper({
             status: { can_update: true, busy, customized },
           });
+
+          wrapper.findByTestId('status-item').vm.$emit('action');
+          await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
           expect(findSetStatusModal().props()).toMatchObject({
@@ -231,10 +230,13 @@ describe('UserMenu component', () => {
       });
 
       describe('and the status is neither busy nor customized', () => {
-        it('should pass an empty status to the modal', () => {
+        it('should pass an empty status to the modal', async () => {
           createWrapper({
             status: { ...userMenuMockStatus, can_update: true, busy: false, customized: false },
           });
+
+          wrapper.findByTestId('status-item').vm.$emit('action');
+          await nextTick();
 
           expect(findSetStatusModal().exists()).toBe(true);
           expect(findSetStatusModal().props()).toMatchObject({

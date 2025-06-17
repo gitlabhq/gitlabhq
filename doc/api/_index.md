@@ -11,7 +11,13 @@ and build custom applications on top of GitLab.
 Whether you want to automate processes or build integrations, these extensibility
 features give you control over your development processes.
 
-| | | |
-|--|--|--|
-| [**Integrate with GitLab**](../integration/_index.md)<br>Projects, issues, authentication, security providers. | [**Webhooks**](../user/project/integrations/webhooks.md)<br>Custom HTTP callbacks, used to send events. | [**REST API**](rest/_index.md)<br>Programmatic interaction with GitLab. |
-| [**GraphQL API**](graphql/_index.md)<br>Programmatic interaction with GitLab. | [**OAuth 2.0 identity provider API**](oauth2.md)<br>Third-party authorization to GitLab. | [**Editor and IDE extensions**](../editor_extensions/_index.md)<br>Visual Studio Code, JetBrains, Neovim, GitLab CLI. |
+{{< cards >}}
+
+- [Integrate with GitLab](../integration/_index.md)
+- [Webhooks](../user/project/integrations/webhooks.md)
+- [REST API](rest/_index.md)
+- [GraphQL API](graphql/_index.md)
+- [OAuth 2.0 identity provider API](oauth2.md)
+- [Editor and IDE extensions](../editor_extensions/_index.md)
+
+{{< /cards >}}

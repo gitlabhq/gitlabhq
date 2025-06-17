@@ -79,6 +79,10 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
       let(:project_owner) { package.project.owner }
       let(:instance_admin) { create(:admin) }
 
+      let(:project_deploy_token) { create(:deploy_token, :project, projects: [package.project], write_package_registry: true) }
+
+      subject { described_class.new.perform(package_file_id, params) }
+
       before do
         package_protection_rule.update!(
           package_name_pattern: package_name_pattern,
@@ -101,19 +105,32 @@ RSpec.describe Packages::Nuget::ExtractionWorker, type: :worker, feature_categor
         end
       end
 
-      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :shared_examples_name) do
-        ref(:package_name)               | :maintainer | ref(:project_developer)  | 'protected package'
-        ref(:package_name)               | :maintainer | ref(:project_maintainer) | 'updates package and package file'
-        ref(:package_name)               | :maintainer | nil                      | 'protected package'
-        ref(:package_name)               | :owner      | ref(:project_maintainer) | 'protected package'
-        ref(:package_name)               | :owner      | ref(:project_owner)      | 'updates package and package file'
-        ref(:package_name)               | :admin      | ref(:project_owner)      | 'protected package'
-        ref(:package_name)               | :admin      | ref(:instance_admin)     | 'updates package and package file'
-        ref(:package_name)               | :admin      | nil                      | 'protected package'
+      where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :params, :shared_examples_name) do
+        ref(:package_name)               | :maintainer | ref(:project_developer)  | { user_id: ref(:project_developer) }            | 'protected package'
+        ref(:package_name)               | :maintainer | ref(:project_developer)  | {}                                              | 'protected package'
+        ref(:package_name)               | :maintainer | ref(:project_maintainer) | { user_id: ref(:project_maintainer) }           | 'updates package and package file'
+        ref(:package_name)               | :maintainer | ref(:project_maintainer) | {}                                              | 'updates package and package file'
+        ref(:package_name)               | :maintainer | nil                      | {}                                              | 'protected package'
+        ref(:package_name)               | :maintainer | nil                      | { deploy_token_id: ref(:project_deploy_token) } | 'protected package'
 
-        lazy { "Other.#{package_name}" } | :maintainer | ref(:project_owner)      | 'updates package and package file'
-        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | 'updates package and package file'
-        lazy { "Other.#{package_name}" } | :admin      | nil                      | 'updates package and package file'
+        ref(:package_name)               | :owner      | ref(:project_maintainer) | { user_id: ref(:project_maintainer) }           | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_maintainer) | {}                                              | 'protected package'
+        ref(:package_name)               | :owner      | ref(:project_owner)      | { user_id: ref(:project_owner) }                | 'updates package and package file'
+        ref(:package_name)               | :owner      | nil                      | {}                                              | 'protected package'
+        ref(:package_name)               | :owner      | nil                      | { deploy_token_id: ref(:project_deploy_token) } | 'protected package'
+
+        ref(:package_name)               | :admin      | ref(:project_maintainer) | { user_id: ref(:project_maintainer) }           | 'protected package'
+        ref(:package_name)               | :admin      | ref(:project_maintainer) | {}                                              | 'protected package'
+        ref(:package_name)               | :admin      | ref(:project_owner)      | { user_id: ref(:project_owner) }                | 'protected package'
+        ref(:package_name)               | :admin      | ref(:instance_admin)     | { user_id: ref(:instance_admin) }               | 'updates package and package file'
+        ref(:package_name)               | :admin      | ref(:instance_admin)     | {}                                              | 'updates package and package file'
+        ref(:package_name)               | :admin      | nil                      | {}                                              | 'protected package'
+        ref(:package_name)               | :admin      | nil                      | { deploy_token_id: ref(:project_deploy_token) } | 'protected package'
+
+        lazy { "Other.#{package_name}" } | :admin      | ref(:project_owner)      | { user_id: ref(:project_owner) }                | 'updates package and package file'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | {}                                              | 'updates package and package file'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | {}                                              | 'updates package and package file'
+        lazy { "Other.#{package_name}" } | :admin      | nil                      | nil                                             | 'updates package and package file'
       end
 
       with_them do

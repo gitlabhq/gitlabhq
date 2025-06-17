@@ -6,7 +6,7 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
   let_it_be(:user) { create(:user) }
 
   let(:export_job) { create(:project_export_job) }
-  let(:after_export_strategy) { Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy.new }
+  let(:after_export_strategy) { Import::AfterExportStrategies::DownloadNotificationStrategy.new }
   let(:project) { export_job.project }
 
   before do

@@ -107,6 +107,11 @@ export default {
           )
         : '';
     },
+    countBadgeAriaLabel() {
+      return this.isFeatureFlagsLimitSet
+        ? `${this.countBadgeContents}. ${this.countBadgeTooltipMessage}`
+        : '';
+    },
     limitExceededAlertMessage() {
       return s__(
         "FeatureFlags|You've reached your %{docLinkStart}feature flag limit%{docLinkEnd} (%{featureFlagsLimit}). To add more, delete at least one feature flag, or %{pricingLinkStart}upgrade to a higher tier%{pricingLinkEnd}.",
@@ -181,13 +186,21 @@ export default {
           <span>
             {{ s__('FeatureFlags|Feature flags') }}
           </span>
-          <gl-badge
-            v-if="count"
-            v-gl-tooltip="{ disabled: !isFeatureFlagsLimitSet }"
+          <button
+            v-if="count && isFeatureFlagsLimitSet"
+            v-gl-tooltip
+            class="gl-ml-3 gl-border-0 gl-bg-transparent gl-p-0 gl-align-middle gl-leading-0"
             :title="countBadgeTooltipMessage"
-            class="gl-ml-3 gl-align-middle"
-            >{{ countBadgeContents }}</gl-badge
+            :aria-label="countBadgeAriaLabel"
+            data-testid="ff-count-badge-wrapper"
           >
+            <gl-badge data-testid="ff-count-badge">
+              {{ countBadgeContents }}
+            </gl-badge>
+          </button>
+          <gl-badge v-else-if="count" class="gl-ml-3 gl-align-middle" data-testid="ff-count-badge">
+            {{ count }}
+          </gl-badge>
         </template>
         <template #actions>
           <gl-button

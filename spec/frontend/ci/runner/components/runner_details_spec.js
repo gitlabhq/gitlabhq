@@ -10,7 +10,7 @@ import RunnerDetail from '~/ci/runner/components/runner_detail.vue';
 import RunnerGroups from '~/ci/runner/components/runner_groups.vue';
 import RunnerTags from '~/ci/runner/components/runner_tags.vue';
 import RunnerTag from '~/ci/runner/components/runner_tag.vue';
-import RunnerManagersDetail from '~/ci/runner/components/runner_managers_detail.vue';
+import RunnerManagers from '~/ci/runner/components/runner_managers.vue';
 
 import { runnerData, runnerWithGroupData } from '../mock_data';
 
@@ -25,7 +25,7 @@ describe('RunnerDetails', () => {
   useFakeDate(mockNow);
 
   const findDetailGroups = () => wrapper.findComponent(RunnerGroups);
-  const findRunnerManagersDetail = () => wrapper.findComponent(RunnerManagersDetail);
+  const findRunnerManagers = () => wrapper.findComponent(RunnerManagers);
 
   const findDdContent = (label) => findDd(label, wrapper).text().replace(/\s+/g, ' ');
 
@@ -121,7 +121,7 @@ describe('RunnerDetails', () => {
           },
         });
 
-        expect(findRunnerManagersDetail().props('runner')).toEqual(mockRunner);
+        expect(findRunnerManagers().props('runner')).toEqual(mockRunner);
       });
     });
 

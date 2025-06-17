@@ -502,6 +502,28 @@ class MergeRequest < ApplicationRecord
     )
   end
 
+  scope :with_valid_or_no_reviewers, ->(states, user) do
+    reviewers = Arel::Table.new("#{to_ability_name}_reviewers")
+
+    valid_states_expr = reviewers_subquery
+      .where(reviewers[:user_id].not_eq(user.id))
+      .where(reviewers[:state].in(states))
+      .exists
+
+    no_reviewers_expr = reviewers_subquery.exists.not
+
+    only_user_expr = reviewers_subquery
+      .where(reviewers[:user_id].not_eq(user.id))
+      .exists
+      .not
+
+    where(
+      valid_states_expr
+        .or(no_reviewers_expr)
+        .or(only_user_expr.and(valid_states_expr.not))
+    )
+  end
+
   scope :review_requested_to, ->(user, states = nil) do
     scope = reviewers_subquery.where(Arel::Table.new("#{to_ability_name}_reviewers")[:user_id].eq(user.id))
     scope = scope.where(Arel::Table.new("#{to_ability_name}_reviewers")[:state].in(states)) if states
@@ -596,7 +618,8 @@ class MergeRequest < ApplicationRecord
       .pick(MergeRequest::Metrics.time_to_merge_expression)
   end
 
-  alias_attribute :project, :target_project
+  alias_method :project, :target_project
+  alias_method :project=, :target_project=
   alias_attribute :project_id, :target_project_id
 
   # Currently, `merge_when_pipeline_succeeds` column is used as a flag
@@ -962,7 +985,7 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  def latest_diffs
+  def latest_diffs(diff_options = {})
     diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
 
     diff.diffs(diff_options)
@@ -1325,6 +1348,7 @@ class MergeRequest < ApplicationRecord
 
     clear_memoization(:source_branch_head)
     clear_memoization(:target_branch_head)
+    clear_memoization(:diff_stats)
   end
 
   def reload_diff_if_branch_changed
@@ -2004,7 +2028,7 @@ class MergeRequest < ApplicationRecord
 
   def has_terraform_reports?
     if Feature.enabled?(:show_child_reports_in_mr_page, project)
-      diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:terraform))&.any?
+      !!diff_head_pipeline&.complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:terraform))
     else
       diff_head_pipeline&.has_reports?(Ci::JobArtifact.of_report_type(:terraform))
     end
@@ -2298,16 +2322,31 @@ class MergeRequest < ApplicationRecord
   end
 
   def comparison_base_pipeline(service_class)
-    (use_merge_base_pipeline_for_comparison?(service_class) && merge_base_pipeline) || base_pipeline
-  end
+    target_shas = [
+      (diff_head_pipeline&.target_sha if use_merge_base_pipeline_for_comparison?(service_class)),
+      diff_base_sha
+    ]
 
-  def base_pipeline
-    @base_pipeline ||= base_pipelines.last
+    target_shas
+      .compact
+      .lazy
+      .filter_map { |sha| target_branch_pipelines_for(sha: sha).last }
+      .first
   end
 
   def merge_base_pipeline
-    @merge_base_pipeline ||= merge_base_pipelines.last
+    target_sha = diff_head_pipeline&.target_sha
+
+    return unless target_sha
+
+    target_branch_pipelines_for(sha: target_sha).last
   end
+  strong_memoize_attr :merge_base_pipeline
+
+  def base_pipeline
+    target_branch_pipelines_for(sha: diff_base_sha).last
+  end
+  strong_memoize_attr :base_pipeline
 
   def discussions_rendered_on_frontend?
     true
@@ -2563,16 +2602,6 @@ class MergeRequest < ApplicationRecord
   end
 
   private
-
-  def merge_base_pipelines
-    return ::Ci::Pipeline.none unless diff_head_pipeline&.target_sha
-
-    target_branch_pipelines_for(sha: diff_head_pipeline.target_sha)
-  end
-
-  def base_pipelines
-    target_branch_pipelines_for(sha: diff_base_sha)
-  end
 
   def target_branch_pipelines_for(sha:)
     project.ci_pipelines

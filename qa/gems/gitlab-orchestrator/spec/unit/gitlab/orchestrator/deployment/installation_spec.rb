@@ -41,16 +41,6 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
       )
     end
 
-    let(:resources_values) do
-      presets = if ci
-                  Gitlab::Orchestrator::Deployment::ResourcePresets::HIGH
-                else
-                  Gitlab::Orchestrator::Deployment::ResourcePresets::DEFAULT
-                end
-
-      Gitlab::Orchestrator::Deployment::ResourcePresets.resource_values(presets)
-    end
-
     let(:expected_values_yml) do
       {
         global: {
@@ -65,7 +55,7 @@ RSpec.describe Gitlab::Orchestrator::Deployment::Installation, :aggregate_failur
           license: { secret: "gitlab-license" }
         },
         **config_values
-      }.deep_merge(resources_values).deep_stringify_keys.to_yaml
+      }.deep_stringify_keys.to_yaml
     end
 
     before do

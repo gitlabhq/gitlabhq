@@ -41,8 +41,8 @@ module API
         end
       end
 
-      expose :marked_for_deletion_at, if: ->(project, _) { project.adjourned_deletion? }
-      expose :marked_for_deletion_at, as: :marked_for_deletion_on, if: ->(project, _) { project.adjourned_deletion? }
+      expose :marked_for_deletion_at
+      expose :marked_for_deletion_at, as: :marked_for_deletion_on
 
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
@@ -127,7 +127,7 @@ module API
           project.build_allow_git_fetch ? 'fetch' : 'clone'
         end
         expose :keep_latest_artifacts_available?, as: :keep_latest_artifact, documentation: { type: 'boolean' }
-        expose :restrict_user_defined_variables, documentation: { type: 'boolean' }
+        expose(:restrict_user_defined_variables, documentation: { type: 'boolean' }) { |p, _| p.restrict_user_defined_variables? }
         expose :ci_pipeline_variables_minimum_override_role, documentation: { type: 'string' }
         expose :runner_token_expiration_interval, documentation: { type: 'integer', example: 3600 }
         expose :group_runners_enabled, documentation: { type: 'boolean' }

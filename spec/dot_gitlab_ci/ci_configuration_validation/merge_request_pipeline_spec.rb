@@ -147,4 +147,14 @@ RSpec.describe 'CI configuration validation - branch pipelines', feature_categor
       it_behaves_like 'merge train pipeline'
     end
   end
+
+  context 'when MR changes vite.config.js and pipeline is tier 3' do
+    let(:mr_labels) { ['pipeline::tier-3'] }
+    let(:source_branch) { 'vite-change' }
+    let(:changed_files) { ['vite.config.js'] }
+
+    where(expected_job_name: %w[compile-production-assets build-vite-prod])
+
+    with_them { it_behaves_like 'merge request pipeline' }
+  end
 end

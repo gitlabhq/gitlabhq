@@ -4,18 +4,21 @@ module Ci
   module JobTokenScope
     class UpdatePoliciesService < ::BaseService
       include EditScopeValidations
+      include ScopeEventTracking
 
       def execute(target, default_permissions, policies)
-        return unless project.job_token_policies_enabled?
+        return error_updating(nil) unless project.job_token_policies_enabled?
 
         validate_target_exists!(target)
         validate_permissions!(target)
 
-        link = find_link_using_source_and_target(target)
+        link = link_for(target)
 
         return error_link_not_found unless link
 
         if link.update(default_permissions: default_permissions, job_token_policies: policies)
+          track_event(link, 'updated') if link.saved_change_to_default_permissions?
+
           ServiceResponse.success(payload: link)
         else
           error_updating(link)
@@ -28,6 +31,14 @@ module Ci
       end
 
       private
+
+      def link_for(target)
+        link = find_link_using_source_and_target(target)
+        return link if link
+        return unless target == project
+
+        build_scope_for_self_target
+      end
 
       def error_target_not_found
         ServiceResponse.error(message: 'The target does not exist', reason: :not_found)
@@ -67,6 +78,15 @@ module Ci
         else
           ::Ci::JobToken::ProjectScopeLink.with_access_direction(:inbound).for_source_and_target(project, target)
         end
+      end
+
+      def build_scope_for_self_target
+        ::Ci::JobToken::ProjectScopeLink.new(
+          source_project: project,
+          target_project: project,
+          direction: :inbound,
+          added_by: current_user
+        )
       end
     end
   end

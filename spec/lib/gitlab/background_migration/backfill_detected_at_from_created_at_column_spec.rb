@@ -123,9 +123,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillDetectedAtFromCreatedAtColum
   end
 
   before(:all) do
-    # This test shares the db connection to establish it's fixtures, resulting in
-    # incorrect connection usage, so we're skipping it.
-    # Consult https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180764 for more info.
+    # This spec was disabled before the confidence column was dropped from
+    # vulnerabilities. https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182637/diffs
+    # As a result, the BG migration can't work and the spec can't pass either, so no
+    # point fixing it. We'll wait for it to be cleaned up with the migration.
     skip_if_multiple_databases_are_setup(:sec)
   end
 

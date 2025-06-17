@@ -39,8 +39,10 @@ RSpec.describe "User sorts things", :js do
     visit(project_merge_requests_path(project))
 
     pajamas_sort_by sort_option, from: s_('SortOptions|Created date')
+    wait_for_requests
 
     visit(merge_requests_dashboard_path(assignee_username: user.username))
+    wait_for_requests
 
     expect(find(".issues-filters")).to have_content(sort_option)
   end

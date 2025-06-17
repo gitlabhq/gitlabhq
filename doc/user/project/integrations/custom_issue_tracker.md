@@ -39,7 +39,7 @@ To enable a custom issue tracker in a project:
      `https://customissuetracker.com/project-name/123`).
    - **New issue URL**:
      <!-- The line below was originally added in January 2018: https://gitlab.com/gitlab-org/gitlab/-/commit/778b231f3a5dd42ebe195d4719a26bf675093350 -->
-     **This URL is not used and an [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/327503) to remove it.**
+     **This URL is not used and an [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/327503) to remove it**.
      Enter any URL.
 
 1. Optional. Select **Test settings**.

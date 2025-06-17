@@ -49,13 +49,9 @@ module Mutations
           schedule = authorized_find!(id: id)
 
           params = pipeline_schedule_attrs.merge(
-            inputs_attributes: [],
+            inputs_attributes: inputs.map(&:to_h),
             variables_attributes: variables_attributes_for(variables)
           )
-
-          if Feature.enabled?(:ci_inputs_for_pipelines, schedule.project)
-            params = params.merge(inputs_attributes: inputs.map(&:to_h))
-          end
 
           service_response = ::Ci::PipelineSchedules::UpdateService
             .new(schedule, current_user, params)

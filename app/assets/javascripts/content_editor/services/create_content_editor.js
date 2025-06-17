@@ -35,6 +35,7 @@ export const createContentEditor = ({
   const eventHub = eventHubFactory();
   const assetResolver = new AssetResolver({ renderMarkdown });
   const serializer = new MarkdownSerializer({ serializerConfig });
+
   const autocompleteHelper = new AutocompleteHelper({
     dataSourceUrls: autocompleteDataSources,
     sidebarMediator,

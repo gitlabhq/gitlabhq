@@ -1,0 +1,8 @@
+---
+name: observability_sass_features
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190904
+rollout_issue_url:
+milestone: '18.1'
+type: experiment
+group: group::platform insights
+default_enabled: false

@@ -367,7 +367,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         it 'starts' do
-          allow_any_instance_of(Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy).to receive(:send_file)
+          allow_any_instance_of(Import::AfterExportStrategies::WebUploadStrategy).to receive(:send_file)
 
           request do
             let(:params) { { 'upload[url]' => 'http://gitlab.com' } }
@@ -389,7 +389,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         it 'starts' do
-          expect_any_instance_of(Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy).not_to receive(:send_file)
+          expect_any_instance_of(Import::AfterExportStrategies::WebUploadStrategy).not_to receive(:send_file)
 
           request
 

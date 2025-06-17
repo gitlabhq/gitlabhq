@@ -60,7 +60,7 @@ module WorkItems
           return error(error_message, :unprocessable_entity)
         end
 
-        if target_namespace.pending_delete?
+        if target_namespace.deletion_in_progress_or_scheduled_in_hierarchy_chain?
           error_message = s_('CloneWorkItem|Unable to clone. Target namespace is pending deletion.')
 
           return error(error_message, :unprocessable_entity)

@@ -272,6 +272,21 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
             let(:create_merge_request) { 1 }
           end
         end
+
+        context 'and the merge request already exists' do
+          let(:create_merge_request) { true }
+          let(:merge_request) { create(:merge_request, source_project: project) }
+
+          it 'redirects to the merge_request details page without flash notice' do
+            allow(controller).to receive(:merge_request_exists?) do
+              controller.instance_variable_set(:@merge_request, merge_request)
+              merge_request
+            end
+
+            expect(create_dir).to redirect_to(project_merge_request_path(project, merge_request))
+            expect(flash[:notice]).to be_nil
+          end
+        end
       end
     end
 
@@ -300,6 +315,19 @@ RSpec.describe Projects::TreeController, feature_category: :source_code_manageme
           it 'raises a missing parameter exception' do
             expect { create_dir }.to raise_error(ActionController::ParameterMissing)
           end
+        end
+      end
+
+      context 'when is not authorized to edit the tree' do
+        before do
+          allow(controller).to receive(:can_collaborate_with_project?).and_return(false)
+        end
+
+        it 'renders a not_found error and template' do
+          create_dir
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to render_template('errors/not_found')
         end
       end
     end

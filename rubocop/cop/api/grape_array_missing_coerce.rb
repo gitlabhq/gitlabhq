@@ -21,6 +21,7 @@ module RuboCop
         MSG = 'This Grape parameter defines an Array but is missing a coerce_with definition. ' \
           'For more details, see https://github.com/ruby-grape/grape/blob/master/UPGRADING.md#ensure-that-array-types-have-explicit-coercions'
 
+        # @!method grape_api_instance?(node)
         def_node_matcher :grape_api_instance?, <<~PATTERN
           (class
             (const _ _)
@@ -31,22 +32,26 @@ module RuboCop
           )
         PATTERN
 
+        # @!method grape_api_param_block?(node)
         def_node_matcher :grape_api_param_block?, <<~PATTERN
           (send _ {:requires :optional}
             (sym _)
             $_)
         PATTERN
 
+        # @!method grape_type_def?(node)
         def_node_matcher :grape_type_def?, <<~PATTERN
            (sym :type)
         PATTERN
 
+        # @!method grape_array_type?(node)
         def_node_matcher :grape_array_type?, <<~PATTERN
            (send
              (const nil? :Array) :[]
              (const nil? _))
         PATTERN
 
+        # @!method grape_coerce_with?(node)
         def_node_matcher :grape_coerce_with?, <<~PATTERN
           (sym :coerce_with)
         PATTERN

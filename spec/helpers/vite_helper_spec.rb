@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ViteHelper, feature_category: :tooling do
-  describe '#vite_page_entrypoint_path' do
+  describe '#vite_page_entrypoint_paths' do
     using RSpec::Parameterized::TableSyntax
 
     where(:path, :action, :result) do
@@ -90,38 +90,6 @@ RSpec.describe ViteHelper, feature_category: :tooling do
 
       it 'uses vite_asset_path' do
         expect(helper.universal_path_to_stylesheet(path)).to be(out_path)
-      end
-    end
-  end
-
-  describe '#vite_origin' do
-    before do
-      allow(ViteRuby).to receive_message_chain(:config, :origin).and_return('origin')
-    end
-
-    it { expect(helper.vite_origin).to eq('origin') }
-  end
-
-  describe '#vite_hmr_ws_origin' do
-    before do
-      allow(ViteRuby).to receive_message_chain(:config, :host_with_port).and_return('host')
-      allow(ViteRuby).to receive_message_chain(:config, :https).and_return(https)
-    end
-
-    context 'with https' do
-      let(:https) { true }
-
-      it 'returns wss origin' do
-        expect(helper.vite_hmr_ws_origin).to eq('wss://host')
-      end
-    end
-
-    context 'without https' do
-      let(:https) { false }
-
-      it 'returns ws origin' do
-        allow(ViteRuby).to receive_message_chain(:config, :https).and_return(false)
-        expect(helper.vite_hmr_ws_origin).to eq('ws://host')
       end
     end
   end

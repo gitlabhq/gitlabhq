@@ -312,7 +312,7 @@ describe('Settings Panel', () => {
       });
 
       expect(findRepositoryFeatureProjectRow().props('helpText')).toBe(
-        'View and edit files in this project. When set to **Everyone With Access** non-project members have only read access.',
+        'View and edit files in this project. When set to %{em_start}Everyone With Access%{em_end} non-project members have only read access.',
       );
     });
 
@@ -911,7 +911,7 @@ describe('Settings Panel', () => {
       expect(findDuoSettings().exists()).toBe(true);
       expect(findDuoSettings().props()).toEqual({
         helpPath: '/help/user/ai_features',
-        helpText: 'Use AI-powered features in this project.',
+        helpText: 'Use AI-native features in this project.',
         label: 'GitLab Duo',
         labelFor: null,
         locked: false,

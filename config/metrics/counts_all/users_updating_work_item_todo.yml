@@ -1,0 +1,21 @@
+---
+key_path: redis_hll_counters.work_items.users_updating_work_item_todo
+description: Unique users marking a work item as todo.
+product_group: project_management
+value_type: number
+status: active
+milestone: "16.8"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140058
+time_frame:
+- 28d
+- 7d
+data_source: redis_hll
+data_category: optional
+instrumentation_class: RedisHLLMetric
+options:
+  events:
+    - users_updating_work_item_todo
+tiers:
+- free
+- premium
+- ultimate

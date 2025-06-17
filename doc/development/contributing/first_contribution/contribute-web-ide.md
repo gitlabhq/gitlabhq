@@ -1,11 +1,18 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Contribute code with the Web IDE
 ---
 
 The [GitLab Web IDE](../../../user/project/web_ide/_index.md) is a built-in advanced editor with commit staging.
+
+{{< alert type="warning" >}}
+
+This tutorial is designed to be a general introduction to contributing to the GitLab project
+and is not an example of a change that should be submitted for review.
+
+{{< /alert >}}
 
 The example in this section shows how to modify a line of code as part of a community contribution
 to GitLab code using the Web IDE.

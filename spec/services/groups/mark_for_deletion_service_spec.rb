@@ -32,30 +32,12 @@ RSpec.describe Groups::MarkForDeletionService, feature_category: :groups_and_pro
           result
         end
 
-        context 'when adjourned deletion is enabled' do
-          before do
-            allow(group).to receive(:adjourned_deletion?).and_return(true)
+        it 'sends a notification email' do
+          expect_next_instance_of(NotificationService) do |service|
+            expect(service).to receive(:group_scheduled_for_deletion).with(group)
           end
 
-          it 'sends a notification email' do
-            expect_next_instance_of(NotificationService) do |service|
-              expect(service).to receive(:group_scheduled_for_deletion).with(group)
-            end
-
-            result
-          end
-        end
-
-        context 'when adjourned deletion is disabled' do
-          before do
-            allow(group).to receive(:adjourned_deletion?).and_return(false)
-          end
-
-          it 'does not send a notification email' do
-            expect(NotificationService).not_to receive(:new)
-
-            result
-          end
+          result
         end
 
         context 'when marking for deletion fails' do

@@ -5,9 +5,7 @@ require 'spec_helper'
 RSpec.describe Database::DuplicateIndexes, feature_category: :database do
   index_class = ActiveRecord::ConnectionAdapters::IndexDefinition
   let(:default_index_options) do
-    options = { using: :btree, orders: {}, unique: false, opclasses: {}, where: nil }
-    options[:include] = [] if ::Gitlab.next_rails?
-    options
+    { using: :btree, orders: {}, unique: false, opclasses: {}, where: nil, include: [] }
   end
 
   let(:table_name) { 'foobar' }

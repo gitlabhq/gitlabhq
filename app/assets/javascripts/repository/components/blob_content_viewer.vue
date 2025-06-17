@@ -29,8 +29,6 @@ import {
   EMPTY_FILE,
   EVENT_FILE_SIZE_LIMIT_EXCEEDED,
 } from '../constants';
-import BlobButtonGroup from './blob_button_group.vue';
-import ForkSuggestion from './fork_suggestion.vue';
 import { loadViewer } from './blob_viewers';
 
 const trackingMixin = InternalEvents.mixin();
@@ -38,11 +36,9 @@ const trackingMixin = InternalEvents.mixin();
 export default {
   components: {
     BlobHeader,
-    BlobButtonGroup,
     BlobContent,
     GlLoadingIcon,
     GlButton,
-    ForkSuggestion,
     CodeIntelligence,
     AiGenie: () => import('ee_component/ai/components/ai_genie.vue'),
   },
@@ -72,8 +68,8 @@ export default {
         this.displayError();
       },
       update({ project }) {
-        this.pathLocks = project.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
-        this.userPermissions = project.userPermissions;
+        this.pathLocks = project?.pathLocks || DEFAULT_BLOB_INFO.pathLocks;
+        this.userPermissions = project?.userPermissions || DEFAULT_BLOB_INFO.userPermissions;
       },
     },
     project: {
@@ -408,30 +404,6 @@ export default {
         @edit="editBlob"
         @error="displayError"
         @blame="handleToggleBlame"
-      >
-        <template #actions>
-          <blob-button-group
-            v-if="isLoggedIn && !blobInfo.archived && !glFeatures.blobOverflowMenu"
-            :path="path"
-            :name="blobInfo.name"
-            :replace-path="blobInfo.replacePath"
-            :delete-path="blobInfo.webPath"
-            :can-push-code="userPermissions.pushCode"
-            :can-push-to-branch="blobInfo.canCurrentUserPushToBranch"
-            :empty-repo="isEmptyRepository"
-            :project-path="projectPath"
-            :is-locked="Boolean(pathLockedByUser)"
-            :can-lock="canLock"
-            :show-fork-suggestion="showSingleFileEditorForkSuggestion"
-            :is-using-lfs="isUsingLfs"
-            @fork="setForkTarget('view')"
-          />
-        </template>
-      </blob-header>
-      <fork-suggestion
-        v-if="forkTarget && showForkSuggestion"
-        :fork-path="forkPath"
-        @cancel="setForkTarget(null)"
       />
       <blob-content
         v-if="!blobViewer"

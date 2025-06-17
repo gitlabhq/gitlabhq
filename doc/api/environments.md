@@ -19,6 +19,8 @@ title: Environments API
 
 {{< /history >}}
 
+Use this API to interact with [GitLab environments](../ci/environments/_index.md).
+
 ## List environments
 
 Get all environments for a given project.

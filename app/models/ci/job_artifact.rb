@@ -10,9 +10,11 @@ module Ci
     include Artifactable
     include Lockable
     include FileStoreMounter
+    include ObjectStorable
     include EachBatch
     include Gitlab::Utils::StrongMemoize
 
+    STORE_COLUMN = :file_store
     PLAN_LIMIT_PREFIX = 'ci_max_artifact_size_'
 
     InvalidArtifactError = Class.new(StandardError)

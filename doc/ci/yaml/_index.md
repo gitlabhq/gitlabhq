@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: CI/CD YAML syntax reference
+description: Pipeline configuration keywords, syntax, examples, and inputs.
 ---
 
 {{< details >}}
@@ -660,7 +661,7 @@ job3:
 
 In this example, if `job2` fails, `job1` is canceled if it is still running and `job3` does not start.
 
-**Related topics:**
+**Related topics**:
 
 - [Auto-cancel the parent pipeline from a downstream pipeline](../pipelines/downstream_pipelines.md#auto-cancel-the-parent-pipeline-from-a-downstream-pipeline)
 
@@ -1319,6 +1320,13 @@ test_job_2:
 
 ### `artifacts`
 
+{{< history >}}
+
+- [Updated](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5543) in GitLab Runner 18.1. During the caching process,
+  `symlinks` are no longer followed, which happened in some edge cases with previous GitLab Runner versions.
+
+{{< /history >}}
+
 Use `artifacts` to specify which files to save as [job artifacts](../jobs/job_artifacts.md).
 Job artifacts are a list of files and directories that are
 attached to the job when it [succeeds, fails, or always](#artifactswhen).
@@ -1695,7 +1703,7 @@ failure.
 - `on_success` (default): Upload artifacts only when the job succeeds.
 - `on_failure`: Upload artifacts only when the job fails.
 - `always`: Always upload artifacts (except when jobs time out). For example, when
-  [uploading artifacts](../testing/unit_test_reports.md#view-junit-screenshots-on-gitlab)
+  [uploading artifacts](../testing/unit_test_reports.md#add-screenshots-to-test-reports)
   required to troubleshoot failing tests.
 
 **Example of `artifacts:when`**:
@@ -1758,6 +1766,8 @@ job:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/330047) in GitLab 15.0, caches are not shared between protected and unprotected branches.
+- [Updated](https://gitlab.com/gitlab-org/gitlab-runner/-/merge_requests/5543) in GitLab Runner 18.1. During the caching process,
+  `symlinks` are no longer followed, which happened in some edge cases with previous GitLab Runner versions.
 
 {{< /history >}}
 
@@ -2174,8 +2184,8 @@ In this example:
 
 1. GitLab checks the job log for a match with the regular expression. A line
    like `Code coverage: 67.89% of lines covered` would match.
-1. GitLab then checks the matched fragment to find a match to `\d+(?:\.\d+)?`.
-   The sample matching line above gives a code coverage of `67.89`.
+1. GitLab then checks the matched fragment to find a match to the regular expression: `\d+(?:\.\d+)?`.
+   The sample regex can match a code coverage of `67.89`.
 
 **Additional details**:
 
@@ -2236,8 +2246,8 @@ to select a specific site profile and scanner profile.
 
 **Related topics**:
 
-- [Site profile](../../user/application_security/dast/on-demand_scan.md#site-profile).
-- [Scanner profile](../../user/application_security/dast/on-demand_scan.md#scanner-profile).
+- [Site profile](../../user/application_security/dast/profiles.md#site-profile).
+- [Scanner profile](../../user/application_security/dast/profiles.md#scanner-profile).
 
 ### `dependencies`
 
@@ -2641,7 +2651,7 @@ rubocop:
 - You can use multiple parents for `extends`.
 - The `extends` keyword supports up to eleven levels of inheritance, but you should
   avoid using more than three levels.
-- In the example above, `.tests` is a [hidden job](../jobs/_index.md#hide-a-job),
+- In the previous example, `.tests` is a [hidden job](../jobs/_index.md#hide-a-job),
   but you can extend configuration from regular jobs as well.
 
 **Related topics**:
@@ -3610,7 +3620,7 @@ linux:rspec:
   script: echo "Running rspec on linux..."
 ```
 
-The above example generates the following jobs:
+The previous example generates the following jobs:
 
 ```plaintext
 linux:build: [aws, monitoring]
@@ -3629,7 +3639,7 @@ The `linux:rspec` job runs as soon as the `linux:build: [aws, app1]` job finishe
 
 - The order of the matrix variables in `needs:parallel:matrix` must match the order
   of the matrix variables in the needed job. For example, reversing the order of
-  the variables in the `linux:rspec` job in the earlier example above would be invalid:
+  the variables in the `linux:rspec` job in the previous example would be invalid:
 
   ```yaml
   linux:rspec:
@@ -3652,6 +3662,7 @@ You must:
 
 - Define `pages: true` to publish a directory named `public`
 - Alternatively, define [`pages.publish`](#pagespublish) if want to use a different content directory.
+- Have a non-empty `index.html` file in the root of the content directory.
 
 **Keyword type**: Job keyword or Job name (deprecated). You can use it only as part of a job.
 
@@ -4202,7 +4213,7 @@ job:
 
 - The `description` is evaluated by the shell that runs `release-cli`.
   You can use CI/CD variables to define the description, but some shells
-  [use different syntax](../variables/_index.md#use-cicd-variables-in-job-scripts)
+  [use different syntax](../variables/job_scripts.md)
   to reference variables. Similarly, some shells might require special characters
   to be escaped. For example, backticks (`` ` ``) might need to be escaped with a backslash (` \ `).
 
@@ -4347,7 +4358,7 @@ Use `retry:when` with `retry:max` to retry jobs for only specific failure cases.
 - A single failure type, or an array of one or more failure types:
 
 <!--
-  If you change any of the values below, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
+  If you change any of the following values, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
   array in `spec/lib/gitlab/ci/config/entry/retry_spec.rb`.
   The test there makes sure that all documented
   values are valid as a configuration option and therefore should always
@@ -4447,7 +4458,7 @@ using variables.
 
 Use `rules` to include or exclude jobs in pipelines.
 
-Rules are evaluated when the pipeline is created, and evaluated *in order*. When a match is found,
+Rules are evaluated when the pipeline is created, and evaluated in order. When a match is found,
 no more rules are checked and the job is either included or excluded from the pipeline
 depending on the configuration. If no rules match, the job is not added to the pipeline.
 
@@ -4523,7 +4534,7 @@ job:
   defined for the job, which defaults to `on_success` if not defined.
 - You can [mix `when` at the job-level with `when` in rules](https://gitlab.com/gitlab-org/gitlab/-/issues/219437).
   `when` configuration in `rules` takes precedence over `when` at the job-level.
-- Unlike variables in [`script`](../variables/_index.md#use-cicd-variables-in-job-scripts)
+- Unlike variables in [`script`](../variables/job_scripts.md)
   sections, variables in rules expressions are always formatted as `$VARIABLE`.
   - You can use `rules:if` with `include` to [conditionally include other configuration files](includes.md#use-rules-with-include).
 - CI/CD variables on the right side of `=~` and `!~` expressions are [evaluated as regular expressions](../jobs/job_rules.md#store-a-regular-expression-in-a-variable).
@@ -4632,7 +4643,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Supported values**:
 
-- Same as `rules:changes` above.
+- Same as `rules:changes`.
 
 **Example of `rules:changes:paths`**:
 
@@ -5498,11 +5509,10 @@ arm-sql-job:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
-- Requires GitLab Runner 15.1 or later.
 
 {{< /history >}}
 
-The pull policy that the runner uses to fetch the Docker image.
+The pull policy that the runner uses to fetch the Docker image. Requires GitLab Runner 15.1 or later.
 
 **Keyword type**: Job keyword. You can use it only as part of a job or in the [`default` section](#default).
 
@@ -5572,7 +5582,7 @@ job2:
 
 job3:
   script:
-    - echo "This job also runs in the test stage".
+    - echo "This job also runs in the test stage."
 
 job4:
   stage: deploy
@@ -5623,7 +5633,7 @@ job2:
     - echo "This job runs in the test stage."
 ```
 
-**Additional details:**
+**Additional details**:
 
 - If a pipeline has jobs with [`needs: []`](#needs) and jobs in the `.pre` stage, they will
   all start as soon as the pipeline is created. Jobs with `needs: []` start immediately,
@@ -5664,7 +5674,7 @@ job2:
     - echo "This job runs in the test stage."
 ```
 
-**Additional details:**
+**Additional details**:
 
 - A [pipeline execution policy](../../user/application_security/policies/pipeline_execution_policies.md) can define a `.pipeline-policy-post` stage which runs after `.post`.
 
@@ -5694,7 +5704,7 @@ job:
     - postgres
 ```
 
-In this example, only runners with *both* the `ruby` and `postgres` tags can run the job.
+In this example, only runners with both the `ruby` and `postgres` tags can run the job.
 
 **Additional details**:
 

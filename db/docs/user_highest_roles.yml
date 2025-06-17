@@ -9,5 +9,7 @@ description: Stores highest role per User they have in a Group or a Project. If 
   will be set to nil.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26987
 milestone: '12.9'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

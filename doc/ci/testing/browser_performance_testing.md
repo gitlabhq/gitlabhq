@@ -22,8 +22,6 @@ You can automate this feature in your applications by using [Auto DevOps](../../
 
 {{< /alert >}}
 
-## Overview
-
 GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source
 tool, for measuring the rendering performance of web sites. The
 [Sitespeed plugin](https://gitlab.com/gitlab-org/gl-performance) that GitLab built outputs
@@ -91,7 +89,7 @@ using Docker-in-Docker.
        URL: https://example.com
    ```
 
-The above example:
+The previous example:
 
 - Creates a `browser_performance` job in your CI/CD pipeline and runs sitespeed.io against the webpage you
   defined in `URL` to gather key metrics.
@@ -129,7 +127,7 @@ browser_performance:
 ### Configuring degradation threshold
 
 You can configure the sensitivity of degradation alerts to avoid getting alerts for minor drops in metrics.
-This is done by setting the `DEGRADATION_THRESHOLD` CI/CD variable. In the example below, the alert only shows up
+This is done by setting the `DEGRADATION_THRESHOLD` CI/CD variable. In the following example, the alert only shows up
 if the `Total Score` metric degrades by 5 points or more:
 
 ```yaml
@@ -146,7 +144,7 @@ The `Total Score` metric is based on sitespeed.io's [coach performance score](ht
 
 ### Performance testing on review apps
 
-The above CI YAML configuration is great for testing against static environments, and it can
+The previous CI YAML configuration is great for testing against static environments, and it can
 be extended for dynamic environments, but a few extra steps are required:
 
 1. The `browser_performance` job should run after the dynamic environment has started.

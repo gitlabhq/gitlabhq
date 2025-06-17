@@ -108,4 +108,12 @@ describe('Changed file icon', () => {
 
     expect(findIconName()).toEqual(iconName);
   });
+
+  it('can be rendered as span', () => {
+    factory({
+      asButton: false,
+    });
+
+    expect(wrapper.element.tagName).toBe('SPAN');
+  });
 });

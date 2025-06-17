@@ -177,23 +177,23 @@ The version of a model version in GitLab must follow [Semantic Version specifica
 Using semantic versioning facilitates model deployment, by communicating which
 if a new version can be deployed without changes to the application:
 
-- **Major (integer):** A change in the major component signifies a breaking change in the model, and that the application
+- **Major (integer)**: A change in the major component signifies a breaking change in the model, and that the application
   that consumes the model must be updated to properly use this new version.
   A new algorithm or the addition of a mandatory feature column are examples of breaking
   changes that would require a bump at the major component.
 
-- **Minor (integer):** A change in the minor component signifies a non-breaking change, and that the
+- **Minor (integer)**: A change in the minor component signifies a non-breaking change, and that the
   consumer can safely use the new version without breaking, although the consumer might
   need to be updated to use its new functionality. For example, adding a non-mandatory
   feature column with a default value to the model is a minor bump, because when a value for
   the added column is not passed, inference still works.
 
-- **Patch (integer):** A change in the patch component means that a new version is out that does not
+- **Patch (integer)**: A change in the patch component means that a new version is out that does not
   require any action by the application. For example, a daily retrain of the
   model does not change the feature set or how the application consumes the
   model version. Auto updating to a new patch is a safe update.
 
-- **Prerelease (text):** Represents a version that is not yet ready for production use.
+- **Prerelease (text)**: Represents a version that is not yet ready for production use.
   Used to identify alpha, beta, or release candidate versions of the model.
 
 ### Model version examples

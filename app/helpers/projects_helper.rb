@@ -115,11 +115,12 @@ module ProjectsHelper
     push_to_schema_breadcrumb(simple_sanitize(project.name), project_path(project), project.try(:avatar_url))
   end
 
-  def remove_project_message(project)
-    _(
-      "You are going to delete %{project_full_name}. Deleted projects " \
-        "CANNOT be restored! Are you ABSOLUTELY sure?"
-    ) % { project_full_name: project.full_name }
+  def remove_project_message
+    format(
+      _("Deleting a project places it into a read-only state until %{date}, " \
+        "at which point the project will be permanently deleted. Are you ABSOLUTELY sure?"),
+      date: permanent_deletion_date_formatted(Date.current)
+    )
   end
 
   def link_to_namespace_change_doc
@@ -291,13 +292,13 @@ module ProjectsHelper
   def show_auto_devops_implicitly_enabled_banner?(project, user)
     return false unless user_can_see_auto_devops_implicitly_enabled_banner?(project, user)
 
-    cookies["hide_auto_devops_implicitly_enabled_banner_#{project.id}".to_sym].blank?
+    cookies[:"hide_auto_devops_implicitly_enabled_banner_#{project.id}"].blank?
   end
 
   def show_mobile_devops_project_promo?(project)
     return false unless (project.project_setting.target_platforms & ::ProjectSetting::ALLOWED_TARGET_PLATFORMS).any?
 
-    cookies["hide_mobile_devops_promo_#{project.id}".to_sym].blank?
+    cookies[:"hide_mobile_devops_promo_#{project.id}"].blank?
   end
 
   def no_password_message
@@ -342,16 +343,6 @@ module ProjectsHelper
     else
       projects.except(:offset).any?
     end
-  end
-
-  def show_projects?(projects, params)
-    !!(
-      params[:personal] ||
-      params[:name] ||
-      params[:language] ||
-      params[:archived] == 'only' ||
-      any_projects?(projects)
-    )
   end
 
   def push_to_create_project_command(user = current_user)
@@ -411,10 +402,6 @@ module ProjectsHelper
       "ExternalAuthorizationService|When no classification label is set the "\
         "default label `%{default_label}` will be used."
     ) % { default_label: default_label }
-  end
-
-  def can_admin_project_member?(project)
-    Ability.allowed?(current_user, :admin_project_member, project) && !membership_locked?
   end
 
   def project_can_be_shared?
@@ -644,14 +631,6 @@ module ProjectsHelper
     localized_access_names[access] || Gitlab::Access.human_access(access)
   end
 
-  def project_delete_delayed_button_data(project, button_text = nil)
-    project_delete_button_shared_data(project, button_text).merge({
-      restore_help_path: help_page_path('user/project/working_with_projects.md', anchor: 'restore-a-project'),
-      delayed_deletion_date: permanent_deletion_date_formatted(Date.current),
-      form_path: project_path(project)
-    })
-  end
-
   def badge_count(number)
     format_cached_count(1000, number)
   end
@@ -748,46 +727,6 @@ module ProjectsHelper
     dashboard_projects_landing_paths.include?(request.path) && !current_user.authorized_projects.exists?
   end
 
-  def scheduled_for_deletion?(project)
-    project.marked_for_deletion_at.present?
-  end
-
-  def delete_delayed_message(project)
-    date = permanent_deletion_date_formatted(Date.current)
-
-    if project.delayed_deletion_ready?
-      message = _("This action will place this project, including all its resources, in a pending deletion state " \
-        "for %{deletion_adjourned_period} days, and delete it permanently on %{date}.")
-      ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date),
-        deletion_adjourned_period: project.deletion_adjourned_period)
-    else
-      delete_permanently_message
-    end
-  end
-
-  def delete_immediately_message(project)
-    return delete_permanently_message unless project.adjourned_deletion?
-    return delete_delayed_message(project) unless project.marked_for_deletion_on
-
-    date = permanent_deletion_date_formatted(project.marked_for_deletion_on)
-
-    message = _('This project is scheduled for deletion on %{date}. ' \
-      'This action will permanently delete this project, ' \
-      'including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone.')
-
-    ERB::Util.html_escape(message) % delete_message_data(project).merge(date: tag.strong(date))
-  end
-
-  def delete_permanently_message
-    _('This action will permanently delete this project, including all its resources.')
-  end
-
-  def project_delete_immediately_button_data(project, button_text = nil)
-    project_delete_button_shared_data(project, button_text).merge({
-      form_path: project_path(project, permanently_delete: true)
-    })
-  end
-
   def project_pages_domain_choices
     pages_url = build_pages_url(@project)
     blank_option = [[s_('GitLabPages|Don’t enforce a primary domain'), '']]
@@ -801,34 +740,6 @@ module ProjectsHelper
   end
 
   private
-
-  def delete_message_data(project)
-    {
-      project_path_with_namespace: project.path_with_namespace,
-      project: project.path,
-      strongOpen: '<strong>'.html_safe,
-      strongClose: '</strong>'.html_safe,
-      codeOpen: '<code>'.html_safe,
-      codeClose: '</code>'.html_safe
-    }
-  end
-
-  def project_delete_button_shared_data(project, button_text = nil)
-    merge_requests_count = Projects::AllMergeRequestsCountService.new(project).count
-    issues_count = Projects::AllIssuesCountService.new(project).count
-    forks_count = Projects::ForksCountService.new(project).count
-
-    {
-      confirm_phrase: delete_confirm_phrase(project),
-      name_with_namespace: project.name_with_namespace,
-      is_fork: project.forked? ? 'true' : 'false',
-      issues_count: number_with_delimiter(issues_count),
-      merge_requests_count: number_with_delimiter(merge_requests_count),
-      forks_count: number_with_delimiter(forks_count),
-      stars_count: number_with_delimiter(project.star_count),
-      button_text: button_text.presence || _('Delete project')
-    }
-  end
 
   def can_admin_project_clusters?(project)
     project.clusters.any? && can?(current_user, :admin_cluster, project)

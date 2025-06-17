@@ -10,7 +10,7 @@
   .form-group.gl-form-group.project-name.col-sm-12
     = f.label :name, class: 'label-bold' do
       %span= _("Project name")
-    = f.text_field :name, placeholder: "My awesome project", class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true, describedby: 'js-project-name-description' }
+    = f.text_field :name, placeholder: s_('ProjectsNew|My project'), class: "form-control gl-form-input input-lg", data: { testid: 'project-name', track_label: "#{track_label}", track_action: "activate_form_input", track_property: "project_name", track_value: "" }, required: true, aria: { required: true, describedby: 'js-project-name-description' }
     %small#js-project-name-description.form-text.gl-text-subtle
       = s_("ProjectsNew|Must start with a lowercase or uppercase letter, digit, emoji, or underscore. Can also contain dots, pluses, dashes, or spaces.")
     #js-project-name-error.gl-field-error.gl-mt-2.gl-hidden
@@ -92,6 +92,15 @@
         = s_('ProjectsNew|Analyze your source code for known security vulnerabilities.')
         = link_to _('Learn more.'), help_page_path('user/application_security/sast/_index.md'), target: '_blank', rel: 'noopener noreferrer', data: { track_action: 'followed' }
 
+  .form-group
+    = render Pajamas::CheckboxTagComponent.new(name: 'project[initialize_with_secret_detection]',
+      checkbox_options: { data: { testid: 'initialize-with-secret-detection-checkbox' } }) do |c|
+      - c.with_label do
+        = s_('ProjectsNew|Enable Secret Detection')
+      - c.with_help_text do
+        = s_('ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access.')
+        = link_to _('Learn more.'), help_page_path('user/application_security/secret_detection/_index.md'), target: '_blank', rel: 'noopener noreferrer'
+
   - if display_sha256_repository
     #js-experimental-setting-accordion.form-group.gl-mb-6
       = render Pajamas::AccordionItemComponent.new(title: s_("ProjectsNew|Experimental settings"), state: :closed) do
@@ -103,8 +112,10 @@
             = s_("ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm.")
 
 
+
+-# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
+= render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label
+
 .gl-flex.gl-gap-3
-  -# this partial is from JiHu, see details in https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/675
-  = render_if_exists 'shared/other_project_options', f: f, visibility_level: visibility_level, track_label: track_label
   = f.submit _('Create project'), class: "js-create-project-button", data: { testid: 'project-create-button', track_label: "#{track_label}", track_action: "click_button", track_property: "create_project", track_value: "" }, pajamas_button: true
   = link_button_to _('Cancel'), @parent_group || dashboard_groups_path, data: { track_label: "#{track_label}", track_action: "click_button", track_property: "cancel", track_value: "" }

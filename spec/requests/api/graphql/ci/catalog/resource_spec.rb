@@ -50,7 +50,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           webPath: "/#{project.full_path}",
           verificationLevel: "UNVERIFIED",
           starCount: project.star_count,
-          last30DayUsageCount: resource.last_30_day_usage_count
+          last30DayUsageCount: resource.last_30_day_usage_count,
+          archived: project.archived
         )
       )
     end
@@ -107,7 +108,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
 
     let_it_be(:components) do
       create_list(
-        :ci_catalog_resource_component, 2, version: version, spec: { inputs: inputs }
+        :ci_catalog_resource_component, 2, version: version, last_30_day_usage_count: 9, spec: { inputs: inputs }
       )
     end
 
@@ -124,6 +125,7 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
                     id
                     name
                     includePath
+                    last30DayUsageCount
                     inputs {
                       default
                       description
@@ -180,7 +182,8 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
         a_graphql_entity_for(
           components.last,
           name: components.last.name,
-          include_path: components.last.include_path
+          include_path: components.last.include_path,
+          last_30_day_usage_count: components.last.last_30_day_usage_count
         )
       )
     end

@@ -76,6 +76,7 @@ export default {
       autocomplete="off"
       :value="namespaceId"
     />
+    <input v-if="isCiCdOnly" id="ci_cd_only" type="hidden" name="ci_cd_only" value="true" />
     <multi-step-form-template
       :title="s__('ProjectsNew|Authenticate with GitHub')"
       :current-step="3"

@@ -16,7 +16,7 @@ import RunnerDetail from './runner_detail.vue';
 import RunnerGroups from './runner_groups.vue';
 import RunnerProjects from './runner_projects.vue';
 import RunnerTags from './runner_tags.vue';
-import RunnerManagersDetail from './runner_managers_detail.vue';
+import RunnerManagers from './runner_managers.vue';
 
 export default {
   components: {
@@ -29,7 +29,7 @@ export default {
     RunnerGroups,
     RunnerProjects,
     RunnerTags,
-    RunnerManagersDetail,
+    RunnerManagers,
     TimeAgo,
   },
   props: {
@@ -143,7 +143,7 @@ export default {
     </div>
 
     <div class="gl-mt-3 gl-flex gl-flex-col gl-gap-5">
-      <runner-managers-detail :runner="runner" />
+      <runner-managers :runner="runner" />
       <runner-groups v-if="isGroupRunner" :runner="runner" />
       <runner-projects v-if="isProjectRunner" :runner="runner" />
     </div>

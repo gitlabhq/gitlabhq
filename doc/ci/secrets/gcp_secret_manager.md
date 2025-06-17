@@ -126,7 +126,7 @@ then you can access the secret with:
 
 ```yaml
 job_using_gcp_sm:
-  # ... configured as above ...
+  # ... as previously configured ...
   secrets:
     DATABASE_PASSWORD:
       gcp_secret_manager:

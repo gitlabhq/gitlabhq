@@ -1,0 +1,20 @@
+---
+description: Work items created
+internal_events: true
+action: users_creating_work_items
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Work item base type (e.g., `issue`, `epic`, `task`)
+product_group: project_management
+product_categories:
+- team_planning
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192276
+tiers:
+- free
+- premium
+- ultimate

@@ -44,7 +44,7 @@
               %strong= @group.id
           = render_if_exists 'admin/namespace_plan_info', namespace: @group
           %li{ class: list_item_classes }
-            = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group, namespace: @group
+            = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
           %li{ class: list_item_classes }
             %span.gl-text-subtle= _('Group Git LFS status:')
             .gl-col-span-2
@@ -100,8 +100,7 @@
       - c.with_description do
         - direct_members_link = link_to('', help_page_path('user/project/members/_index.md', anchor: 'membership-types'))
         - direct_members_message = s_('The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?')
-        - if @group.root?
-          = safe_format(direct_members_message, tag_pair(direct_members_link, :link_start, :link_end))
+        = safe_format(direct_members_message, tag_pair(direct_members_link, :link_start, :link_end))
       - c.with_actions do
         = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
       - c.with_body do

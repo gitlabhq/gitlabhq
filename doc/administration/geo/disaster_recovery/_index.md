@@ -324,7 +324,7 @@ changing Git remotes and API URLs.
 
 ### Step 5. (Optional) Add **secondary** Geo site to a promoted **primary** site
 
-Promoting a **secondary** site to **primary** site using the process above does not enable
+Promoting a **secondary** site to **primary** site using the previous process does not enable
 Geo on the new **primary** site.
 
 To bring a new **secondary** site online, follow the [Geo setup instructions](../setup/_index.md).

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Accessibility best practices
 ---
 
@@ -14,7 +14,7 @@ Use semantic HTML, which has accessibility semantics baked in, and ideally test 
 
 In [WebAIM's accessibility analysis of the top million home pages](https://webaim.org/projects/million/#aria),
 they found that "ARIA correlated to higher detectable errors".
-It is likely that *misuse* of ARIA is a big cause of increased errors,
+It is likely that misuse of ARIA is a big cause of increased errors,
 so when in doubt don't use `aria-*`, `role`, and `tabindex` and stick with semantic HTML.
 
 ## Enable keyboard navigation on macOS

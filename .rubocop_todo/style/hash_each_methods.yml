@@ -88,7 +88,6 @@ Style/HashEachMethods:
     - 'lib/gitlab/utils/batch_loader.rb'
     - 'lib/tasks/gitlab/db.rake'
     - 'lib/tasks/gitlab/setup.rake'
-    - 'qa/qa/specs/features/ee/browser_ui/10_govern/change_vulnerability_status_spec.rb'
     - 'qa/spec/specs/runner_spec.rb'
     - 'scripts/generate_rspec_pipeline.rb'
     - 'spec/config/settings_spec.rb'

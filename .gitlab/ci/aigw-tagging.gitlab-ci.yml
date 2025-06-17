@@ -1,5 +1,7 @@
 trigger-ai-gateway-tagging:
   stage: ai-gateway
+  # We need the tagging process to be executed even if other jobs in the gitlab pipeline fails
+  needs: []
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}curlimages/curl:latest
   script:
     - |

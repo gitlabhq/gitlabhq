@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import GroupRunnerShowApp from '~/ci/runner/group_runner_show/group_runner_show_app.vue';
-import RunnerDetailsTabs from '~/ci/runner/components/runner_details_tabs.vue';
+import RunnerShow from '~/ci/runner/components/runner_show.vue';
 
 const mockRunnerId = '1';
 const mockRunnersPath = '/runners';
@@ -9,7 +9,7 @@ const mockEditPath = '/runners/1/edit';
 describe('GroupRunnerShowApp', () => {
   let wrapper;
 
-  const findRunnerDetailsTabs = () => wrapper.findComponent(RunnerDetailsTabs);
+  const findRunnerShow = () => wrapper.findComponent(RunnerShow);
 
   beforeEach(() => {
     wrapper = shallowMount(GroupRunnerShowApp, {
@@ -22,7 +22,7 @@ describe('GroupRunnerShowApp', () => {
   });
 
   it('passes the correct props', () => {
-    expect(findRunnerDetailsTabs().props()).toEqual({
+    expect(findRunnerShow().props()).toEqual({
       runnerId: mockRunnerId,
       runnersPath: mockRunnersPath,
       editPath: mockEditPath,

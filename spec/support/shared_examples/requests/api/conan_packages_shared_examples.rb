@@ -312,16 +312,16 @@ RSpec.shared_examples 'handling validation error for package' do
   end
 end
 
-RSpec.shared_examples 'handling empty values for username and channel' do
+RSpec.shared_examples 'handling empty values for username and channel' do |success_status: :ok|
   using RSpec::Parameterized::TableSyntax
 
   let(:recipe_path) { "#{package.name}/#{package.version}/#{package_username}/#{channel}" }
 
   where(:username, :channel, :status) do
-    'username' | 'channel' | :ok
+    'username' | 'channel' | success_status
     'username' | '_'       | :bad_request
     '_'        | 'channel' | :bad_request_or_not_found
-    '_'        | '_'       | :ok_or_not_found
+    '_'        | '_'       | :success_status_or_not_found
   end
 
   with_them do
@@ -341,15 +341,15 @@ RSpec.shared_examples 'handling empty values for username and channel' do
       project_level = example.full_description.include?('api/v4/projects')
 
       expected_status = case status
-                        when :ok_or_not_found
-                          project_level ? :ok : :not_found
+                        when :success_status_or_not_found
+                          project_level ? success_status : :not_found
                         when :bad_request_or_not_found
                           project_level ? :bad_request : :not_found
                         else
                           status
                         end
 
-      if expected_status == :ok
+      if expected_status == success_status
         package.conan_metadatum.update!(package_username: package_username, package_channel: channel)
       end
 
@@ -919,7 +919,23 @@ RSpec.shared_examples 'workhorse recipe file upload endpoint' do |revision: fals
   it_behaves_like 'handling validation error for package'
   it_behaves_like 'protected package main example'
 
-  it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) } if revision
+  if revision
+    it { expect { request }.to change { Packages::Conan::RecipeRevision.count }.by(1) }
+
+    context 'when the file already exists' do
+      let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+      let(:recipe_path_name) { package.name }
+
+      it 'does not upload the file again' do
+        expect { request }.not_to change { Packages::PackageFile.count }
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({
+          'message' => '400 Bad request - Validation failed: ' \
+            'File name already exists for the given recipe revision, package reference, and package revision'
+        })
+      end
+    end
+  end
 end
 
 RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: false|
@@ -951,6 +967,22 @@ RSpec.shared_examples 'workhorse package file upload endpoint' do |revision: fal
       expect { request }
         .to change { Packages::Conan::RecipeRevision.count }.by(1)
         .and change { Packages::Conan::PackageRevision.count }.by(1)
+    end
+
+    context 'when the file already exists' do
+      let(:recipe_revision) { package.conan_recipe_revisions.first.revision }
+      let(:package_revision) { package.conan_package_revisions.first.revision }
+      let(:conan_package_reference) { package.conan_package_references.first.reference }
+      let(:recipe_path_name) { package.name }
+
+      it 'does not upload the file again' do
+        expect { request }.not_to change { Packages::PackageFile.count }
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({
+          'message' => '400 Bad request - Validation failed: ' \
+            'File name already exists for the given recipe revision, package reference, and package revision'
+        })
+      end
     end
   end
 
@@ -1032,6 +1064,37 @@ RSpec.shared_examples 'uploads a package file' do
         expect(package_file.conan_file_metadatum.package_revision_value).to eq(
           package_file.conan_file_metadatum.package_file? ? package_revision : nil
         )
+      end
+
+      context 'with X-Checksum-Deploy header' do
+        context 'when X-Checksum-Deploy header is "true"' do
+          before do
+            headers_with_token['X-Checksum-Deploy'] = 'true'
+          end
+
+          it 'returns not found without creating package or package file' do
+            expect { subject }
+              .to not_change { project.packages.count }
+              .and not_change { Packages::PackageFile.count }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+            expect(json_response['message']).to eq('404 Non checksum storage Not Found')
+          end
+        end
+
+        context 'when X-Checksum-Deploy header has other value' do
+          before do
+            headers_with_token['X-Checksum-Deploy'] = 'false'
+          end
+
+          it 'creates package and stores package file' do
+            expect { subject }
+              .to change { project.packages.count }.by(1)
+              .and change { Packages::PackageFile.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:ok)
+          end
+        end
       end
 
       context 'with existing package' do
@@ -1234,7 +1297,7 @@ RSpec.shared_examples 'packages feature check' do
   it_behaves_like 'returning response status', :not_found
 end
 
-RSpec.shared_examples 'GET package references metadata endpoint' do
+RSpec.shared_examples 'GET package references metadata endpoint' do |with_recipe_revision: false|
   subject(:request) { get api(url), headers: headers }
 
   let_it_be(:reference1) { package.conan_package_references.first }
@@ -1294,6 +1357,32 @@ RSpec.shared_examples 'GET package references metadata endpoint' do
         subject
 
         expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+  end
+
+  if with_recipe_revision
+    context 'when recipe revision does not exist' do
+      let(:recipe_revision) { OpenSSL::Digest.hexdigest('MD5', 'nonexistent-revision') }
+
+      it_behaves_like 'returning response status with message', status: :not_found,
+        message: '404 Revision Not Found'
+    end
+
+    context 'with different recipe revisions' do
+      let_it_be(:recipe_revision2) { create(:conan_recipe_revision, package: package) }
+      let_it_be(:reference2) do
+        create(:conan_package_reference, package: package, info: { 'settings' => { 'os' => 'Linux' } },
+          recipe_revision: recipe_revision2)
+      end
+
+      it 'returns only the package references for the requested recipe revision' do
+        request
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to include(
+          reference1.reference => reference1.info
+        )
       end
     end
   end

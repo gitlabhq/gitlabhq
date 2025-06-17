@@ -44,13 +44,12 @@ module Gitlab
       end
 
       def instrumentation_class
-        if internal_events?
-          return "TotalSumMetric" if event_selection_rules.first&.sum?
+        return @attributes[:instrumentation_class] if @attributes[:instrumentation_class]
+        return unless internal_events?
+        return "TotalSumMetric" if event_selection_rules.first&.sum?
+        return "UniqueTotalsMetric" if event_selection_rules.first&.unique_total?
 
-          events.each_value.first.nil? ? "TotalCountMetric" : "UniqueCountMetric"
-        else
-          @attributes[:instrumentation_class]
-        end
+        events.each_value.first.nil? ? "TotalCountMetric" : "UniqueCountMetric"
       end
 
       # This method can be removed when the refactoring is complete. It is only here to

@@ -1,4 +1,4 @@
-import { GlAvatarsInline } from '@gitlab/ui';
+import { GlAvatarsInline, GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
@@ -21,6 +21,7 @@ describe('toggle replies widget for notes', () => {
   // const findCollapseToggleButton = () =>
   //   wrapper.findComponentByRole('button', { text: ToggleRepliesWidget.i18n.collapseReplies });
   const findToggleButton = () => wrapper.findByTestId('replies-toggle');
+  const findToggleIcon = () => wrapper.findComponent(GlAnimatedChevronRightDownIcon);
   const findRepliesButton = () => wrapper.findByRole('button', { text: '5 replies' });
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
   const findAvatars = () => wrapper.findComponent(GlAvatarsInline);
@@ -35,7 +36,7 @@ describe('toggle replies widget for notes', () => {
     });
 
     it('renders collapsed state elements', () => {
-      expect(findToggleButton().props('icon')).toBe('chevron-right');
+      expect(findToggleIcon().props('isOn')).toBe(false);
       expect(findToggleButton().attributes('aria-label')).toBe('Expand replies');
       expect(findAvatars().props('avatars')).toHaveLength(3);
       expect(findRepliesButton().exists()).toBe(true);
@@ -63,7 +64,7 @@ describe('toggle replies widget for notes', () => {
     });
 
     it('renders expanded state elements', () => {
-      expect(findToggleButton().props('icon')).toBe('chevron-down');
+      expect(findToggleIcon().props('isOn')).toBe(true);
       expect(findToggleButton().attributes('aria-label')).toBe('Collapse replies');
     });
 

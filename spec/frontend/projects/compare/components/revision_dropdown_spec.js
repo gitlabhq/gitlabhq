@@ -48,7 +48,7 @@ describe('RevisionDropdown component', () => {
   });
 
   const findGlListbox = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findGlListboxSearchInput = () => wrapper.findByTestId('listbox-search-input').find('input');
+  const findGlListboxSearchInput = () => wrapper.findByTestId('listbox-search-input');
 
   beforeEach(() => {
     axiosMock.onGet(defaultProps.refsProjectPath).replyOnce(HTTP_STATUS_OK, {

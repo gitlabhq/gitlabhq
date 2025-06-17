@@ -48,6 +48,7 @@ describe('YourWorkProjectsApp', () => {
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
       filteredSearchRecentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
+      filteredSearchInputPlaceholder: 'Filter or search (3 character minimum)',
       sortOptions: SORT_OPTIONS,
       defaultSortOption: SORT_OPTION_UPDATED,
       timestampTypeMap: {
@@ -75,6 +76,7 @@ describe('YourWorkProjectsApp', () => {
       },
       tabCountsQuery: projectCountsQuery,
       tabCountsQueryErrorMessage: 'An error occurred loading the project counts.',
+      shouldUpdateActiveTabCountFromTabQuery: true,
       paginationType: PAGINATION_TYPE_KEYSET,
     });
   });

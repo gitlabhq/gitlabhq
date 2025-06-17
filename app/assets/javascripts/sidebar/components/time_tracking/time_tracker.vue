@@ -26,6 +26,7 @@ export default {
   i18n: {
     noTimeTrackingText: __('No estimate or time spent'),
     estimatedOnlyText: s__('TimeTracking|Estimated:'),
+    addTimeEntryText: s__('TimeTracking|Add time entry'),
   },
   components: {
     GlLink,
@@ -243,7 +244,8 @@ export default {
           icon="plus"
           size="small"
           data-testid="add-time-entry-button"
-          :title="__('Add time entry')"
+          :title="$options.i18n.addTimeEntryText"
+          :aria-label="$options.i18n.addTimeEntryText"
           @click="openRegisterTimeSpentModal()"
         />
       </div>

@@ -28,6 +28,7 @@ module Tooling
         %r{doc/api/usage_data.md} => [:analytics_instrumentation],
 
         %r{\Adoc/.*(\.(md|png|gif|jpg|yml))\z} => :docs,
+        %r{\Adoc-locale/.*(\.md)\z} => :docs,
         %r{\A(CONTRIBUTING|LICENSE|MAINTENANCE|PHILOSOPHY|PROCESS|README)(\.md)?\z} => :docs,
         %r{\Adata/whats_new/} => :docs,
         %r{\Adata/deprecations/} => :none,

@@ -4,8 +4,8 @@
       = image_tag 'illustrations/empty-state/empty-pipeline-md.svg'
   .row.gl-items-center.gl-justify-center
     .text-content.gl-text-center.order-md-1
-      %h4= s_("GitLabPages|Waiting for the Pages Pipeline to complete...")
-      %p= s_("GitLabPages|Your project is configured for GitLab Pages and the pipeline is running...")
+      %h4= s_("GitLabPages|Waiting for the Pages Pipeline to complete…")
+      %p= s_("GitLabPages|Your project is configured for GitLab Pages and the pipeline is running…")
       = render Pajamas::ButtonComponent.new(variant: :confirm, href: project_pipelines_path(@project)) do
         = s_("GitLabPages|Check the Pipeline Status")
       = render Pajamas::ButtonComponent.new(href: new_namespace_project_pages_path) do

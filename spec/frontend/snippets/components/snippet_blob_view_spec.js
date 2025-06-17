@@ -5,8 +5,8 @@ import {
   Blob as BlobMock,
   SimpleViewerMock,
   RichViewerMock,
-  RichBlobContentMock,
-  SimpleBlobContentMock,
+  RichSnippetContentMock,
+  SimpleSnippetContentMock,
 } from 'jest/blob/components/mock_data';
 import GetBlobContent from 'shared_queries/snippet/snippet_blob_content.query.graphql';
 import BlobContent from '~/blob/components/blob_content.vue';
@@ -37,20 +37,20 @@ describe('Blob Embeddable', () => {
 
   const mockDefaultHandler = ({ path, nodes } = { path: BlobMock.path }) => {
     const renderedNodes = nodes || [
-      { __typename: 'Blob', path, richData: 'richData', plainData: 'plainData' },
+      { __typename: 'SnippetBlobConnection', path, richData: 'richData', plainData: 'plainData' },
     ];
 
     return jest.fn().mockResolvedValue({
       data: {
         snippets: {
-          __typename: 'Snippet',
+          __typename: 'SnippetConnection',
           id: '1',
           nodes: [
             {
               __typename: 'Snippet',
               id: '2',
               blobs: {
-                __typename: 'Blob',
+                __typename: 'SnippetBlobConnection',
                 hasUnretrievableBlobs: false,
                 nodes: renderedNodes,
               },
@@ -126,6 +126,7 @@ describe('Blob Embeddable', () => {
       });
       await waitForPromises();
       expect(findRichViewer().exists()).toBe(true);
+      expect(findRichViewer().props('isSnippet')).toBe(true);
     });
 
     it('correctly switches viewer type', async () => {
@@ -160,33 +161,33 @@ describe('Blob Embeddable', () => {
     });
 
     describe('bob content in multi-file scenario', () => {
-      const SimpleBlobContentMock2 = {
-        ...SimpleBlobContentMock,
+      const SimpleSnippetContentMock2 = {
+        ...SimpleSnippetContentMock,
         plainData: 'Another Plain Foo',
       };
-      const RichBlobContentMock2 = {
-        ...SimpleBlobContentMock,
+      const RichSnippetContentMock2 = {
+        ...SimpleSnippetContentMock,
         richData: 'Another Rich Foo',
       };
 
-      const MixedSimpleBlobContentMock = {
-        ...SimpleBlobContentMock,
+      const MixedSimpleSnippetContentMock = {
+        ...SimpleSnippetContentMock,
         richData: '<h1>Rich</h1>',
       };
 
-      const MixedRichBlobContentMock = {
-        ...RichBlobContentMock,
+      const MixedRichSnippetContentMock = {
+        ...RichSnippetContentMock,
         plainData: 'Plain',
       };
 
       it.each`
-        snippetBlobs                                         | description                                  | currentBlob              | expectedContent                    | activeViewerType
-        ${[SimpleBlobContentMock]}                           | ${'one existing textual blob'}               | ${SimpleBlobContentMock} | ${SimpleBlobContentMock.plainData} | ${SimpleViewerMock.type}
-        ${[RichBlobContentMock]}                             | ${'one existing rich blob'}                  | ${RichBlobContentMock}   | ${RichBlobContentMock.richData}    | ${RichViewerMock.type}
-        ${[SimpleBlobContentMock, MixedRichBlobContentMock]} | ${'mixed blobs with current textual blob'}   | ${SimpleBlobContentMock} | ${SimpleBlobContentMock.plainData} | ${SimpleViewerMock.type}
-        ${[MixedSimpleBlobContentMock, RichBlobContentMock]} | ${'mixed blobs with current rich blob'}      | ${RichBlobContentMock}   | ${RichBlobContentMock.richData}    | ${RichViewerMock.type}
-        ${[SimpleBlobContentMock, SimpleBlobContentMock2]}   | ${'textual blobs with current textual blob'} | ${SimpleBlobContentMock} | ${SimpleBlobContentMock.plainData} | ${SimpleViewerMock.type}
-        ${[RichBlobContentMock, RichBlobContentMock2]}       | ${'rich blobs with current rich blob'}       | ${RichBlobContentMock}   | ${RichBlobContentMock.richData}    | ${RichViewerMock.type}
+        snippetBlobs                                               | description                                  | currentBlob                 | expectedContent                       | activeViewerType
+        ${[SimpleSnippetContentMock]}                              | ${'one existing textual blob'}               | ${SimpleSnippetContentMock} | ${SimpleSnippetContentMock.plainData} | ${SimpleViewerMock.type}
+        ${[RichSnippetContentMock]}                                | ${'one existing rich blob'}                  | ${RichSnippetContentMock}   | ${RichSnippetContentMock.richData}    | ${RichViewerMock.type}
+        ${[SimpleSnippetContentMock, MixedRichSnippetContentMock]} | ${'mixed blobs with current textual blob'}   | ${SimpleSnippetContentMock} | ${SimpleSnippetContentMock.plainData} | ${SimpleViewerMock.type}
+        ${[MixedSimpleSnippetContentMock, RichSnippetContentMock]} | ${'mixed blobs with current rich blob'}      | ${RichSnippetContentMock}   | ${RichSnippetContentMock.richData}    | ${RichViewerMock.type}
+        ${[SimpleSnippetContentMock, SimpleSnippetContentMock2]}   | ${'textual blobs with current textual blob'} | ${SimpleSnippetContentMock} | ${SimpleSnippetContentMock.plainData} | ${SimpleViewerMock.type}
+        ${[RichSnippetContentMock, RichSnippetContentMock2]}       | ${'rich blobs with current rich blob'}       | ${RichSnippetContentMock}   | ${RichSnippetContentMock.richData}    | ${RichViewerMock.type}
       `(
         'renders correct content for $description',
         async ({ snippetBlobs, currentBlob, expectedContent, activeViewerType }) => {

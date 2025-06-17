@@ -146,6 +146,25 @@ RSpec.describe Users::UpdateService, feature_category: :user_profile do
             end.to change { user.reload.job_title }
             expect(result[:status]).to eq(:success)
           end
+
+          context 'when password authentication is disabled for SSO users' do
+            before do
+              stub_application_setting(disable_password_authentication_for_users_with_sso_identities: true)
+            end
+
+            context 'when the user has SSO identity' do
+              let_it_be(:user) { create(:omniauth_user) }
+
+              it 'does not require password', :aggregate_failures do
+                result = {}
+
+                expect do
+                  result = update_user(user, { email: 'example@example.com' })
+                end.to change { user.reload.unconfirmed_email }
+                expect(result[:status]).to eq(:success)
+              end
+            end
+          end
         end
       end
 

@@ -64,6 +64,9 @@ export const mockIssuable = {
     completedCount: 1,
   },
   type: 'issue',
+  namespace: {
+    fullPath: 'gitlab-org/gitlab-shell',
+  },
 };
 
 export const mockIssuableItems = (n) =>

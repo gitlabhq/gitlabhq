@@ -3,6 +3,7 @@ stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Issue boards
+description: Visualization, workflow, Kanban, and prioritization.
 ---
 
 {{< details >}}
@@ -368,7 +369,7 @@ them to change their position and epic assignment:
 - To reorder an issue, drag it to the new position in a list.
 - To assign an issue to another epic, drag it to the epic's horizontal lane.
 - To remove an issue from an epic, drag it to the **Issues with no epic assigned** lane.
-- To move an issue to another epic _and_ another list, at the same time, drag the issue diagonally.
+- To move an issue to another epic and another list, at the same time, drag the issue diagonally.
 
 ![Drag issues between swimlanes](img/epics_swimlanes_drag_and_drop_v13_6.png)
 
@@ -505,8 +506,8 @@ You can edit the following issue attributes in the right sidebar:
 - [Weight](issues/issue_weight.md)
 - Time tracking
 
-<!-- When issues_list_drawer feature flag is removed, use the info below
-and in issues/managing_issues.md#open-issues-in-a-drawer to update the main topic above -->
+<!-- When issues_list_drawer feature flag is removed, use the following info
+and the ones outlined in issues/managing_issues.md#open-issues-in-a-drawer to update the main previous topic. -->
 
 If your administrator enabled the [issue drawer](issues/managing_issues.md#open-issues-in-a-drawer),
 when you select an issue card from the issue board, the issue opens in a drawer.

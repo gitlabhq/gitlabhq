@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Deploying Python repositories
 ---
 
@@ -49,7 +49,7 @@ To configure deployment of the PyPI package:
 ### Runway deployment for .com
 
 Services for GitLab.com, GitLab Dedicated and self-hosted customers using CloudConnect are deployed using [Runway](https://docs.runway.gitlab.com/welcome/onboarding/).
-Please refer to the project documentation on how to add or manage Runway services.
+Refer to the project documentation on how to add or manage Runway services.
 
 ### Deploying in self-hosted environments
 

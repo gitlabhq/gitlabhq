@@ -25,8 +25,6 @@ module Ci
       end
 
       def accessible?(accessed_project)
-        return true if self_referential?(accessed_project)
-
         if inbound_accessible?(accessed_project)
           # We capture only successful inbound authorizations
           Ci::JobToken::Authorization.capture(origin_project: current_project, accessed_project: accessed_project)
@@ -40,14 +38,12 @@ module Ci
       end
 
       def policies_allowed?(accessed_project, policies)
-        return true if self_referential?(accessed_project)
-
         # We capture policies even if job token policies or allowlists are disabled, or the project is not allowlisted
         Ci::JobToken::Authorization.capture_job_token_policies(policies) if policies.present?
 
         return true unless accessed_project.job_token_policies_enabled?
-        return true unless accessed_project.ci_inbound_job_token_scope_enabled? # allowlists are disabled
-        return false unless inbound_accessible?(accessed_project) # the current project is not allowlisted
+        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
+        return false unless accessible?(accessed_project)
 
         policies_allowed_for_accessed_project?(accessed_project, policies)
       end
@@ -90,7 +86,8 @@ module Ci
         if accessed_project.ci_inbound_job_token_scope_enabled?
           ::Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter.increment(legacy: false)
 
-          inbound_linked_as_accessible?(accessed_project) ||
+          self_referential?(accessed_project) ||
+            inbound_linked_as_accessible?(accessed_project) ||
             group_linked_as_accessible?(accessed_project)
         else
           ::Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter.increment(legacy: true)
@@ -102,6 +99,7 @@ module Ci
 
       def policies_allowed_for_accessed_project?(accessed_project, policies)
         scope = nearest_scope(accessed_project)
+        return true if scope.nil? && self_referential?(accessed_project)
         return true if scope.default_permissions?
         return false if policies.empty?
 

@@ -1,0 +1,19 @@
+---
+description: Package recipe_revision deleted from the registry
+action: delete_recipe_revision
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: The name of the package type
+  property:
+    description: The auth type. Either 'guest', 'user' or 'deploy_token'
+product_group: package_registry
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186073
+tiers:
+  - free
+  - premium
+  - ultimate

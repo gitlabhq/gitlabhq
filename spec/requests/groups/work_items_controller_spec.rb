@@ -20,14 +20,15 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         get work_items_path
 
         expect(response).to have_gitlab_http_status(:ok)
+        expect(response.body).to have_pushed_frontend_feature_flags(workItemPlanningView: true)
       end
 
-      context 'when the namespace_level_work_items feature flag is disabled' do
+      context 'when work_item_planning_view is disabled' do
         before do
-          stub_feature_flags(namespace_level_work_items: false)
+          stub_feature_flags(work_item_planning_view: false)
         end
 
-        it 'returns not found' do
+        it 'renders not found' do
           get work_items_path
 
           expect(response).to have_gitlab_http_status(:not_found)
@@ -73,8 +74,9 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
   end
 
   describe 'GET /groups/:group/-/work_items/:iid' do
-    let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
     let(:iid) { work_item.iid }
+    let(:current_user) { developer }
+    let_it_be(:work_item) { create(:work_item, :group_level, namespace: group) }
     let(:work_items_path) do
       url_for(controller: 'groups/work_items', action: :show, group_id: group.full_path, iid: iid)
     end
@@ -83,72 +85,32 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
       sign_in(current_user)
     end
 
-    context 'when the user can read the group' do
-      let(:current_user) { developer }
+    it 'returns not found' do
+      get work_items_path
 
-      it 'renders show' do
-        get work_items_path
+      expect(response).to have_gitlab_http_status(:not_found)
+    end
 
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template(:show)
-      end
+    context 'when the new page gets requested' do
+      let(:iid) { 'new' }
 
-      context 'when the new page gets requested' do
-        let(:iid) { 'new' }
-
+      context "with signed in user" do
         it 'renders show' do
           get work_items_path
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:show)
-          expect(response.body).to have_pushed_frontend_feature_flags(namespaceLevelWorkItems: true)
         end
       end
 
-      it 'has correct metadata' do
-        get work_items_path
-
-        expect(response.body).to include("#{work_item.title} (#{work_item.to_reference})")
-        expect(response.body).to include(work_item.work_item_type.name.pluralize)
-      end
-
-      context 'when the namespace_level_work_items feature flag is disabled' do
-        before do
-          stub_feature_flags(namespace_level_work_items: false)
-        end
+      context "with signed out user" do
+        let(:current_user) { create(:user) }
 
         it 'returns not found' do
           get work_items_path
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
-
-        context 'on new page' do
-          let(:iid) { 'new' }
-
-          it 'returns not found' do
-            get work_items_path
-
-            expect(response).to have_gitlab_http_status(:not_found)
-          end
-        end
-      end
-    end
-
-    context 'when the user cannot read the group' do
-      let(:current_user) { create(:user) }
-
-      it 'returns not found' do
-        get work_items_path
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-
-      it 'does not include sensitive metadata' do
-        get work_items_path
-
-        expect(response.body).not_to include("#{work_item.title} (#{work_item.to_reference})")
-        expect(response.body).not_to include(work_item.work_item_type.name.pluralize)
       end
     end
   end

@@ -69,7 +69,7 @@ class UploadsController < ApplicationController
     when Organizations::OrganizationDetail
       can?(current_user, :read_organization, model.organization)
     else
-      can?(current_user, "read_#{model.class.underscore}".to_sym, model)
+      can?(current_user, :"read_#{model.class.underscore}", model)
     end
   end
 

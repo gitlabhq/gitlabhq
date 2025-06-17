@@ -3,6 +3,7 @@
 module RapidDiffs
   class DiffFileComponent < ViewComponent::Base
     include TreeHelper
+    include DiffHelper
 
     renders_one :header
 
@@ -25,7 +26,7 @@ module RapidDiffs
     end
 
     def viewer_component
-      return Viewers::NoPreviewComponent if empty_diff?
+      return Viewers::NoPreviewComponent if @diff_file.no_preview?
 
       if @diff_file.diffable_text?
         return Viewers::Text::ParallelViewComponent if @parallel_view
@@ -33,11 +34,9 @@ module RapidDiffs
         return Viewers::Text::InlineViewComponent
       end
 
-      Viewers::NoPreviewComponent
-    end
+      return Viewers::ImageViewComponent if @diff_file.image_diff?
 
-    def empty_diff?
-      @diff_file.collapsed? || !@diff_file.modified_file?
+      Viewers::NoPreviewComponent
     end
 
     def default_header
@@ -45,11 +44,11 @@ module RapidDiffs
     end
 
     def total_rows
-      return 0 unless !empty_diff? && @diff_file.diffable_text?
+      return 0 unless !@diff_file.no_preview? && @diff_file.diffable_text?
 
       count = 0
       @diff_file.viewer_hunks.each do |hunk|
-        count += hunk.header.expand_directions.count if hunk.header
+        count += 1 if hunk.header
         count += @parallel_view ? hunk.parallel_lines.count : hunk.lines.count
       end
       count
@@ -58,6 +57,10 @@ module RapidDiffs
     # enables virtual rendering through content-visibility: auto, significantly boosts client performance
     def virtual?
       total_rows > 0
+    end
+
+    def heading_id
+      file_heading_id(@diff_file)
     end
   end
 end

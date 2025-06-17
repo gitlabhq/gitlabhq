@@ -127,7 +127,7 @@ This is an expansion phase that takes place during the `script` execution.
 Its behavior depends on the shell used (`bash`, `sh`, `cmd`, PowerShell). For example, if the job's
 `script` contains a line `echo $MY_VARIABLE-${MY_VARIABLE_2}`, it should be properly handled
 by bash/sh (leaving empty strings or some values depending whether the variables were
-defined or not), but don't work with Windows' `cmd` or PowerShell, since these shells
+defined or not), but don't work with Windows' `cmd` or PowerShell, because these shells
 use a different variables syntax.
 
 Supported:
@@ -153,13 +153,13 @@ These restrictions exist because `after_script` scripts are executed in a
 
 ## Persisted variables
 
-Some predefined variables are called "persisted". Persisted variables are:
+Some predefined variables are called persisted. Persisted variables are:
 
-- Supported for definitions where the ["Expansion place"](#gitlab-ciyml-file) is:
+- Supported for definitions where the [expansion place](#gitlab-ciyml-file) is:
   - Runner.
   - Script execution shell.
 - Not supported:
-  - For definitions where the ["Expansion place"](#gitlab-ciyml-file) is GitLab.
+  - For definitions where the [expansion place](#gitlab-ciyml-file) is GitLab.
   - In `rules` [variables expressions](../jobs/job_rules.md#cicd-variable-expressions).
 
 [Pipeline trigger jobs](../yaml/_index.md#trigger) cannot use job-level persisted variables,

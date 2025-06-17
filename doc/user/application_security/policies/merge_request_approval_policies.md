@@ -141,9 +141,9 @@ pipelines, each of which may contain a security scan.
   when enforcing merge request approval policies.
 
 If a project uses [merge request pipelines](../../../ci/pipelines/merge_request_pipelines.md), you must set the CI/CD variable `AST_ENABLE_MR_PIPELINES` to `"true"` for the security scanning jobs to be present in the pipeline.
-For more information see [Use security scanning tools with merge request pipelines](../detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+For more information see [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
-For projects where many pipelines have run on the latest commit (for example, inactive projects), policy evaluation considers a maximum of 1,000 pipelines from both the source and target branches of the merge request.
+For projects where many pipelines have run on the latest commit (for example, dormant projects), policy evaluation considers a maximum of 1,000 pipelines from both the source and target branches of the merge request.
 
 For parent-child pipelines, policy evaluation considers a maximum of 1,000 child pipelines.
 
@@ -253,7 +253,7 @@ This rule enforces the defined actions based on security scan findings.
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/8092) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `license_scanning_policies`.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/397644) in GitLab 15.11. Feature flag `license_scanning_policies` removed.
 - The `branch_exceptions` field was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/418741) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `security_policies_branch_exceptions`. Enabled by default. [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133753) in GitLab 16.5. Feature flag removed.
-- The `licenses` field was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10203) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `exclude_license_packages`. Enabled by default.
+- The `licenses` field was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10203) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `exclude_license_packages`. Feature flag removed.
 
 {{< /history >}}
 
@@ -311,9 +311,6 @@ This rule enforces the defined actions for any merge request based on the commit
 
 ## `require_approval` action type
 
-This action sets an approval rule to be required when conditions are met for at least one rule in
-the defined policy.
-
 {{< history >}}
 
 - [Added](https://gitlab.com/groups/gitlab-org/-/epics/12319) support for up to five separate `require_approval` actions in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `multiple_approval_actions`.
@@ -322,6 +319,11 @@ the defined policy.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505742) in GitLab 17.10. Feature flag `security_policy_custom_roles` removed.
 
 {{< /history >}}
+
+This action makes an approval rule required when the conditions are met for at least one rule in
+the defined policy.
+
+If you specify multiple approvers in the same `require_approval` block, any of the eligible approvers can satisfy the approval requirement. For example, if you specify two `group_approvers` and `approvals_required` as `2`, both of the approvals can come from the same group. To require multiple approvals from unique approver types, use multiple `require_approval` actions.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
@@ -448,7 +450,7 @@ The availability of support for pipeline execution policies is controlled by a f
 #### Example of `policy_tuning` with a scan execution policy
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 scan_execution_policy:
@@ -502,7 +504,7 @@ For more information, see [Recreate pipeline execution policies created before G
 {{< /alert >}}
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---
@@ -557,7 +559,7 @@ specified projects, groups, or compliance framework labels. For more details, se
 ## Example `policy.yml` in a security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---
@@ -615,7 +617,7 @@ In this example:
 - Every MR that contains new `critical` vulnerabilities identified by container scanning requires
   one approval from `alberto.dare`.
 - Every MR that contains more than one preexisting `low` or `unknown` vulnerability older than 30 days identified by
-  container scanning requires one approval from a project member with the Owner role and one approval from a user with the custom role "AppSec Engineer".
+  container scanning requires one approval from either a project member with the Owner role or a user with the custom role `AppSec Engineer`.
 
 ## Example for Merge Request Approval Policy editor
 

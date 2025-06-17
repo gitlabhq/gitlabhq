@@ -13,7 +13,7 @@ shows either:
 - The status of its most recent pipeline.
 - **No pipeline** if a pipeline hasn't run yet.
 
-![The bottom status bar, showing the most recent pipeline has failed.](../img/status_bar_pipeline_v17_6.png)
+![The bottom status bar, showing the most recent pipeline has failed.](img/status_bar_pipeline_v17_6.png)
 
 Possible statuses include:
 
@@ -49,7 +49,7 @@ To view pipeline information:
 
 This extension can display an alert in VS Code when a pipeline for your current branch completes:
 
-![Alert showing a pipeline failure](../img/pipeline_alert_v17_6.png)
+![Alert showing a pipeline failure](img/pipeline_alert_v17_6.png)
 
 To show alerts for your current Git branch:
 
@@ -66,7 +66,7 @@ To view the output for a CI/CD job for your current branch:
 1. On the sidebar, expand **For current branch** to show its most recent pipeline.
 1. Select your desired job to open it in a new VS Code tab:
 
-   ![A pipeline containing CI/CD jobs that are passing, allowed to fail, and failing.](../img/view_job_output_v17_6.png)
+   ![A pipeline containing CI/CD jobs that are passing, allowed to fail, and failing.](img/view_job_output_v17_6.png)
 
 ### Test GitLab CI/CD configuration
 
@@ -87,7 +87,7 @@ Use this command to see a preview of your merged CI/CD configuration file, with 
 1. In VS Code, open your `.gitlab-ci.yml` file, and ensure the file's tab is in focus.
 1. On the top right, select **Show Merged GitLab CI/CD Configuration**:
 
-   ![The VS Code application, showing the icon for viewing merged results.](../img/show_merged_configuration_v17_6.png)
+   ![The VS Code application, showing the icon for viewing merged results.](img/show_merged_configuration_v17_6.png)
 
 VS Code opens a new tab (`.gitlab-ci (Merged).yml`) with full information.
 
@@ -107,4 +107,4 @@ To autocomplete a variable:
 1. Begin entering the name of a variable to display auto-complete options.
 1. Select an option to use it:
 
-   ![Autocomplete options shown for a string](../img/ci_variable_autocomplete_v16_6.png)
+   ![Autocomplete options shown for a string](img/ci_variable_autocomplete_v16_6.png)

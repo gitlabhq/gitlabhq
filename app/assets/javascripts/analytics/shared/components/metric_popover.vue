@@ -1,6 +1,5 @@
 <script>
 import { GlPopover, GlLink, GlIcon } from '@gitlab/ui';
-import { METRIC_POPOVER_LABEL } from '../constants';
 
 export default {
   name: 'MetricPopover',
@@ -13,6 +12,12 @@ export default {
     metric: {
       type: Object,
       required: true,
+      validator: (metric) => ['label', 'description'].every((key) => metric[key]),
+    },
+    metricUrl: {
+      type: String,
+      required: false,
+      default: '',
     },
     target: {
       type: String,
@@ -20,40 +25,36 @@ export default {
     },
   },
   computed: {
-    metricLink() {
-      return this.metric.links?.find((link) => !link.docs_link);
-    },
     docsLink() {
-      return this.metric.links?.find((link) => link.docs_link);
+      return this.metric.docsLink;
     },
   },
-  metricPopoverLabel: METRIC_POPOVER_LABEL,
 };
 </script>
 
 <template>
   <gl-popover :target="target" placement="top">
     <template #title>
-      <div class="gl-flex gl-items-center gl-justify-between gl-py-1 gl-text-right">
+      <div class="gl-flex gl-w-full gl-items-center gl-justify-between gl-py-1">
         <span data-testid="metric-label">{{ metric.label }}</span>
         <gl-link
-          v-if="metricLink"
-          :href="metricLink.url"
+          v-if="metricUrl"
+          :href="metricUrl"
           class="gl-text-sm gl-font-normal"
           data-testid="metric-link"
-          >{{ $options.metricPopoverLabel }}
+          >{{ s__('ValueStreamAnalytics|View details') }}
           <gl-icon name="chart" />
         </gl-link>
       </div>
     </template>
-    <span v-if="metric.description" data-testid="metric-description">{{ metric.description }}</span>
+    <p data-testid="metric-description" class="gl-mb-0">{{ metric.description }}</p>
     <gl-link
       v-if="docsLink"
-      :href="docsLink.url"
-      class="gl-text-sm"
+      :href="docsLink"
+      class="gl-mt-2 gl-block gl-text-sm"
       target="_blank"
       data-testid="metric-docs-link"
-      >{{ docsLink.label }}
+      >{{ __('Go to docs') }}
       <gl-icon name="external-link" class="gl-align-middle" />
     </gl-link>
   </gl-popover>

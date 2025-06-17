@@ -35,9 +35,6 @@ instance_audit_events_streaming_headers:
 issue_links:
   index_issue_links_on_source_id_and_target_id:
   - index_issue_links_on_source_id
-issues:
-  index_issues_on_author_id_and_id_and_created_at:
-  - index_issues_on_author_id
 list_user_preferences:
   index_list_user_preferences_on_user_id_and_list_id:
   - index_list_user_preferences_on_user_id

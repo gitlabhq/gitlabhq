@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn how to install a GitLab instance on Google Cloud Platform.
 title: Installing GitLab on Google Cloud Platform
@@ -81,9 +81,8 @@ the first time.
 
 ### Assigning a static IP
 
-By default, Google assigns an ephemeral IP to your instance. It is strongly
-recommended to assign a static IP if you are using GitLab in production
-and use a domain name as shown below.
+By default, Google assigns an ephemeral IP to your instance. If you use GitLab in a production
+environment with a domain name, you should assign a static IP.
 
 For more information, see [Promote an ephemeral external IP address](https://cloud.google.com/vpc/docs/reserve-static-external-ip-address#promote_ephemeral_ip).
 

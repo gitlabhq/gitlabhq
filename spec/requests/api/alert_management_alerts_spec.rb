@@ -16,6 +16,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     before do
       project.add_developer(user)
+      stub_feature_flags(hide_incident_management_features: false)
     end
 
     subject do
@@ -133,6 +134,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
       before do
         # Local storage
         stub_uploads_object_storage(MetricImageUploader, enabled: false)
+        stub_feature_flags(hide_incident_management_features: false)
         allow_next_instance_of(MetricImageUploader) do |uploader|
           allow(uploader).to receive(:file_storage?).and_return(true)
         end
@@ -145,6 +147,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     context 'file size too large' do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         allow_next_instance_of(UploadedFile) do |upload_file|
           allow(upload_file).to receive(:size).and_return(AlertManagement::MetricImage::MAX_FILE_SIZE + 1)
         end
@@ -160,6 +163,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     context 'error when saving' do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.add_developer(user)
 
         allow_next_instance_of(::AlertManagement::MetricImages::UploadService) do |service|
@@ -184,6 +188,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
         allow_next_instance_of(MetricImageUploader) do |uploader|
           allow(uploader).to receive(:file_storage?).and_return(true)
         end
+        stub_feature_flags(hide_incident_management_features: false)
         project.add_developer(user)
       end
 
@@ -241,6 +246,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     with_them do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.send("add_#{user_role}", user) unless user_role == :not_member
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE) unless public_project
       end
@@ -289,6 +295,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     with_them do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.send("add_#{user_role}", user) unless user_role == :not_member
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE) unless public_project
       end
@@ -298,6 +305,8 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     context 'when user has access' do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
+
         project.add_developer(user)
       end
 
@@ -366,6 +375,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     with_them do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.send("add_#{user_role}", user) unless user_role == :not_member
         project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE) unless public_project
       end
@@ -375,6 +385,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
     context 'when user has access' do
       before do
+        stub_feature_flags(hide_incident_management_features: false)
         project.add_developer(user)
       end
 
@@ -395,6 +406,7 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
 
       context 'when error when deleting' do
         before do
+          stub_feature_flags(hide_incident_management_features: false)
           allow_next_instance_of(AlertManagement::AlertsFinder) do |finder|
             allow(finder).to receive(:execute).and_return([alert])
           end
@@ -410,6 +422,36 @@ RSpec.describe API::AlertManagementAlerts, feature_category: :incident_managemen
           expect(json_response['message']).to eq('Metric image could not be deleted')
         end
       end
+    end
+  end
+
+  describe 'with feature flag hide_incident_management_features enabled' do
+    include WorkhorseHelpers
+    include_context 'workhorse headers'
+
+    let(:path) { "/projects/#{project.id}/alert_management_alerts/#{alert.iid}/metric_images" }
+    let(:headers) { workhorse_headers }
+    let!(:image) { create(:alert_metric_image, alert: alert) }
+
+    shared_examples 'feature flag returns 404' do |http_method|
+      before do
+        project.add_developer(user)
+      end
+
+      it "returns 404 for #{http_method}" do
+        request_path = %i[put delete].include?(http_method) ? "#{path}/#{image.id}" : path
+        send(http_method, api(request_path), headers: headers)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+        expect(json_response['message']).to eq('404 Not Found')
+      end
+    end
+
+    context 'when making a POST request' do
+      it_behaves_like 'feature flag returns 404', :post
+      it_behaves_like 'feature flag returns 404', :put
+      it_behaves_like 'feature flag returns 404', :delete
+      it_behaves_like 'feature flag returns 404', :get
     end
   end
 end

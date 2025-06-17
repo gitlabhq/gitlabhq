@@ -11,7 +11,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
     sign_in user
   end
 
-  shared_examples "compare view of branches" do
+  describe "compare view of branches" do
     shared_examples 'compares branches' do
       it 'compares branches' do
         visit project_compare_index_path(project, from: 'master', to: 'master')
@@ -156,9 +156,24 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
         expect(page).not_to have_content 'Commits on Source (29)'
       end
     end
+
+    context 'when displayed with rapid_diffs' do
+      let(:from) { RepoHelpers.sample_commit.parent_id }
+      let(:to) { RepoHelpers.sample_commit.id }
+      let(:compare) { CompareService.new(project, to).execute(project, from) }
+      let(:diffs) { compare.diffs }
+
+      before do
+        visit project_compare_path(project, from: from, to: to, rapid_diffs: true)
+
+        wait_for_requests
+      end
+
+      it_behaves_like 'Rapid Diffs application'
+    end
   end
 
-  shared_examples "compare view of tags" do
+  describe "compare view of tags" do
     it "compares tags" do
       visit project_compare_index_path(project, from: "master", to: "master")
 
@@ -192,9 +207,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
       # wait for searching for commits to finish
       has_testid?('listbox-no-results-text')
 
-      within(find_by_testid('listbox-search-input')) do
-        find('input').send_keys(:return)
-      end
+      find_by_testid('listbox-search-input').send_keys(:return)
     else
       # find before all to wait for the items visibility
       within(".js-compare-#{dropdown_type}-dropdown") do
@@ -202,7 +215,4 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
       end
     end
   end
-
-  it_behaves_like "compare view of branches"
-  it_behaves_like "compare view of tags"
 end

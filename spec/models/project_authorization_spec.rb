@@ -148,6 +148,33 @@ RSpec.describe ProjectAuthorization, feature_category: :groups_and_projects do
         ].map(&:attributes))
       end
     end
+
+    describe '.for_user' do
+      let_it_be(:user_1) { create(:user) }
+      let_it_be(:user_2) { create(:user) }
+
+      let_it_be(:project_1) { create(:project) }
+      let_it_be(:project_2) { create(:project) }
+
+      let_it_be(:project_auth_1) { create(:project_authorization, user: user_1, project: project_1) }
+      let_it_be(:project_auth_2) { create(:project_authorization, user: user_1, project: project_2) }
+      let_it_be(:project_auth_3) { create(:project_authorization, user: user_2, project: project_1) }
+      let_it_be(:project_auth_4) { create(:project_authorization, user: user_2, project: project_2) }
+
+      subject(:for_user) { described_class.for_user(user_1) }
+
+      it 'returns all records for the user' do
+        expect(for_user).to match_array([project_auth_1, project_auth_2])
+      end
+    end
+
+    describe '.count_by_user_id' do
+      subject(:count_by_user_id) { described_class.count_by_user_id }
+
+      it 'returns the number of records grouped by user' do
+        expect(count_by_user_id).to eq({ user.id => 1 })
+      end
+    end
   end
 
   describe '.insert_all' do

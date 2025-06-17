@@ -12,7 +12,10 @@ title: Keys API
 
 {{< /details >}}
 
-If using a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
+Use the keys API to identify the user associated with a SSH key, or its fingerprint. Queries about
+deploy key fingerprints also retrieve information about the projects using that key.
+
+If you use a SHA256 fingerprint in an API call, you should URL-encode the fingerprint.
 
 ## Get SSH key with user by ID of an SSH key
 
@@ -30,7 +33,7 @@ Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/keys/1"
+  --url "https://gitlab.example.com/api/v4/keys/1"
 ```
 
 ```json
@@ -92,7 +95,7 @@ Example request:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
+  --url "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
 ```
 
 Example response:
@@ -152,14 +155,14 @@ Example request with an MD5 fingerprint:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
+  --url "https://gitlab.example.com/api/v4/keys?fingerprint=ba:81:59:68:d7:6c:cd:02:02:bf:6a:9b:55:4e:af:d1"
 ```
 
 In this SHA256 example, `/` is represented by `%2F` and `:` is represented by`%3A`:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \
-  "https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg"
+  --url "https://gitlab.example.com/api/v4/keys?fingerprint=SHA256%3AnUhzNyftwADy8AH3wFY31tAKs7HufskYTte2aXo%2FlCg"
 ```
 
 Example response:

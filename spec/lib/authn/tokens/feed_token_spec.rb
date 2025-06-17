@@ -14,7 +14,7 @@ RSpec.describe Authn::Tokens::FeedToken, feature_category: :system_access do
     it_behaves_like 'finding the valid revocable'
 
     context 'with different instance prefix' do
-      let(:instance_prefix) { 'instance-prefix-' }
+      let(:instance_prefix) { 'instanceprefix' }
 
       before do
         stub_application_setting(instance_token_prefix: instance_prefix)

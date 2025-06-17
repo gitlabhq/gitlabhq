@@ -108,6 +108,7 @@ except those captured by `runit`.
 | [LogRotate logs](#logrotate-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Mailroom](#mail_room_jsonlog-default)          | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 | [NGINX](#nginx-logs)                            | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
+| [Patroni logs](#patroni-logs)                   | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [PgBouncer logs](#pgbouncer-logs)               | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [PostgreSQL logs](#postgresql-logs)             | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Praefect logs](#praefect-logs)                 | {{< icon name="dotted-circle" >}} Yes | {{< icon name="check-circle" >}} Yes  |
@@ -115,6 +116,7 @@ except those captured by `runit`.
 | [Puma](#puma-logs)                              | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 | [Redis logs](#redis-logs)                       | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Registry logs](#registry-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
+| [Sentinel logs](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 
 ## `production_json.log`
@@ -617,7 +619,7 @@ processing them, such as before being enqueued.
 
 This log file follows the same structure as
 [`sidekiq.log`](#sidekiqlog), so it is structured as JSON if
-you've configured this for Sidekiq as mentioned above.
+you've configured this for Sidekiq as mentioned previously.
 
 ## `gitlab-shell.log`
 
@@ -861,7 +863,8 @@ This file is located at:
 - `/home/git/gitlab/log/mail_room_json.log` on self-compiled installations.
 
 This structured log file records internal activity in the `mail_room` gem.
-Its name and path are configurable, so the name and path may not match the above.
+Its name and path are configurable, so the name and path may not match this one
+documented previously.
 
 ## `web_hooks.log`
 
@@ -1120,7 +1123,6 @@ LLM prompt input and response output can be logged by enabling the `expanded_ai_
 This flag is disabled by default and can only be enabled:
 
 - For GitLab.com, when you provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
-- For GitLab Self-Managed, when you enable this feature flag.
 
 By default, the log does not contain LLM prompt input and response output to support [data retention policies](../../user/gitlab_duo/data_usage.md#data-retention) of AI feature data.
 
@@ -1231,7 +1233,14 @@ For example:
 
 ## Product Usage Data log
 
-Note: We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy. Certified in-product adoption reports will be available once the data is ready for analysis.
+{{< alert type="note" >}}
+
+We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy. 
+
+The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
+
+{{< /alert >}}
+
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/product_usage_data.log` on Linux package installations.
@@ -1284,6 +1293,10 @@ For Linux package installations, Mattermost logs are in these locations:
 
 For Linux package installations, Workhorse logs are in `/var/log/gitlab/gitlab-workhorse/current`.
 
+## Patroni logs
+
+For Linux package installations, Patroni logs are in `/var/log/gitlab/patroni/current`.
+
 ## PgBouncer logs
 
 For Linux package installations, PgBouncer logs are in `/var/log/gitlab/pgbouncer/current`.
@@ -1292,6 +1305,8 @@ For Linux package installations, PgBouncer logs are in `/var/log/gitlab/pgbounce
 
 For Linux package installations, PostgreSQL logs are in `/var/log/gitlab/postgresql/current`.
 
+If Patroni is being used, the PostgreSQL logs are stored in the [Patroni logs](#patroni-logs) instead.
+
 ## Prometheus logs
 
 For Linux package installations, Prometheus logs are in `/var/log/gitlab/prometheus/current`.
@@ -1299,6 +1314,10 @@ For Linux package installations, Prometheus logs are in `/var/log/gitlab/prometh
 ## Redis logs
 
 For Linux package installations, Redis logs are in `/var/log/gitlab/redis/current`.
+
+## Sentinel logs
+
+For Linux package installations, Sentinel logs are in `/var/log/gitlab/sentinel/current`.
 
 ## Alertmanager logs
 
@@ -1387,12 +1406,10 @@ sudo gitlab-ctl tail | tee /tmp/<case-ID-and-keywords>.log
 
 Conclude the log gathering with <kbd>Control</kbd> + <kbd>C</kbd>.
 
-### GitLabSOS
+### Gathering SOS logs
 
 If performance degradations or cascading errors occur that can't readily be attributed to one
-of the previously listed GitLab components, [GitLabSOS](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/)
-can provide a broader perspective of the GitLab instance. For more details and instructions
-to run it, read [the GitLabSOS documentation](https://gitlab.com/gitlab-com/support/toolbox/gitlabsos/#gitlabsos).
+of the previously listed GitLab components, [use our SOS scripts](../troubleshooting/diagnostics_tools.md#sos-scripts).
 
 ### Fast-stats
 

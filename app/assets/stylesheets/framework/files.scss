@@ -454,7 +454,11 @@ span.idiff {
   }
 }
 
-.mr-tree-list:not(.tree-list-blobs) .tree-list-parent::before {
+.diffs-tree-drawer .mr-tree-list {
+  max-height: none;
+}
+
+.mr-tree-list:not(.tree-list-blobs) .tree-list-parent::before, .repository-tree-list .tree-list-parent::before {
   content: '';
   position: absolute;
   z-index: 1;

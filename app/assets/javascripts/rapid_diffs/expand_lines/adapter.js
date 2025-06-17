@@ -52,6 +52,8 @@ export const ExpandLinesAdapter = {
         hunkHeaderRow.nextElementSibling.querySelector('[data-line-number]').focus();
       }
       hunkHeaderRow.remove();
+      const totalRows = this.diffElement.querySelectorAll('[data-file-body] tbody tr').length;
+      this.diffElement.style.setProperty('--total-rows', totalRows);
     },
   },
 };

@@ -10,17 +10,19 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
-export default async function initBrowserComponent(router) {
+export default async function initBrowserComponent(router, options) {
   const el = document.getElementById('js-file-browser');
   if (!el) return false;
 
+  const { projectPath, ref, refType } = options;
   return new Vue({
     el,
     pinia,
     router,
     apolloProvider,
+    provide: { apolloProvider },
     render(h) {
-      return h(FileBrowser);
+      return h(FileBrowser, { props: { projectPath, currentRef: ref, refType } });
     },
   });
 }

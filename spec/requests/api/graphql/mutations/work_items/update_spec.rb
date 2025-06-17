@@ -1352,7 +1352,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let_it_be(:current_user) { create(:user) }
 
           it 'does not create a new todo' do
-            expect { update_work_item }.to change { Todo.count }.by(0)
+            expect { update_work_item }.not_to change { Todo.count }
 
             expect(response).to have_gitlab_http_status(:success)
           end
@@ -1393,7 +1393,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let_it_be(:current_user) { create(:user) }
 
           it 'does not mark todos as done' do
-            expect { update_work_item }.to change { Todo.done.count }.by(0)
+            expect { update_work_item }.not_to change { Todo.done.count }
 
             expect(response).to have_gitlab_http_status(:success)
           end
@@ -1436,7 +1436,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let_it_be(:current_user) { create(:user) }
 
           it 'does not mark the todo as done' do
-            expect { update_work_item }.to change { Todo.done.count }.by(0)
+            expect { update_work_item }.not_to change { Todo.done.count }
 
             expect(response).to have_gitlab_http_status(:success)
           end

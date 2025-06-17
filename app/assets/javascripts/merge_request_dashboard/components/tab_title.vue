@@ -1,5 +1,6 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
+import { camelCase } from 'lodash';
 import { QUERIES } from '../constants';
 
 export default {
@@ -13,10 +14,6 @@ export default {
       type: Array,
       required: true,
     },
-    tabKey: {
-      type: String,
-      required: true,
-    },
   },
   data() {
     return {
@@ -24,23 +21,25 @@ export default {
       count: 0,
     };
   },
-  async mounted() {
+  created() {
     this.fetchAllCounts();
   },
   methods: {
-    async fetchAllCounts() {
-      const counts = await Promise.all(
-        this.queries.map(({ query, variables }) => this.fetchCount({ query, variables })),
-      );
+    fetchAllCounts() {
+      this.queries.forEach(({ query, variables }, index) => {
+        this.$apollo.addSmartQuery(`${query}_${index}`, {
+          query: QUERIES[query].countQuery,
+          variables,
+          manual: true,
+          context: { batchKey: `MergeRequestTabsCounts_${camelCase(this.title)}` },
+          result({ data }) {
+            if (data?.currentUser) {
+              this.count += data?.currentUser?.mergeRequests?.count ?? 0;
 
-      this.count = counts.reduce((acc, { data }) => acc + data.currentUser.mergeRequests.count, 0);
-      this.loading = false;
-    },
-    fetchCount({ query, variables }) {
-      return this.$apollo.query({
-        query: QUERIES[query].countQuery,
-        variables,
-        context: { batchKey: `MergeRequestTabsCounts_${this.tabKey}` },
+              this.loading = false;
+            }
+          },
+        });
       });
     },
   },

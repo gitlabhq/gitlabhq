@@ -146,8 +146,7 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
           let(:add_user_to_group) { false }
 
           context 'group deploy token' do
-            let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true) }
-            let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: deploy_token_for_group, group: group) }
+            let_it_be(:deploy_token_for_group) { create(:deploy_token, :group, read_package_registry: true, groups: [group.reload]) }
 
             let(:user) { deploy_token_for_group }
 
@@ -159,8 +158,7 @@ RSpec.describe Packages::GroupPackagesFinder, feature_category: :package_registr
           end
 
           context 'project deploy token' do
-            let_it_be(:deploy_token_for_project) { create(:deploy_token, read_package_registry: true) }
-            let_it_be(:project_deploy_token) { create(:project_deploy_token, deploy_token: deploy_token_for_project, project: subproject) }
+            let_it_be(:deploy_token_for_project) { create(:deploy_token, read_package_registry: true, projects: [subproject]) }
 
             let(:user) { deploy_token_for_project }
 

@@ -16,8 +16,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           concurrency: 20,
           minReplicas: 1,
           resources: {
-            requests: { cpu: "900m", memory: "1.6Gi" },
-            limits: { cpu: "900m", memory: "1.6Gi" }
+            requests: { cpu: "900m", memory: "2Gi" },
+            limits: { cpu: "900m", memory: "2Gi" }
           },
           hpa: {
             cpu: { targetAverageValue: "800m" }
@@ -26,15 +26,14 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
         kas: {
           minReplicas: 1,
           resources: {
-            requests: { cpu: "100m", memory: "256Mi" },
-            limits: { cpu: "100m", memory: "256Mi" }
+            requests: { cpu: "40m", memory: "96Mi" },
+            limits: { cpu: "40m", memory: "96Mi" }
           }
         },
-        gitlab_shell: {
+        "gitlab-shell": {
           minReplicas: 1,
           resources: {
-            requests: { cpu: "80m", memory: "16Mi" },
-            limits: { cpu: "80m", memory: "16Mi" }
+            requests: { cpu: "30m", memory: "16Mi" }
           }
         },
         gitaly: {
@@ -42,12 +41,17 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
             requests: { cpu: "300m", memory: "300Mi" },
             limits: { cpu: "300m", memory: "300Mi" }
           }
+        },
+        toolbox: {
+          resources: {
+            requests: { cpu: "50m", memory: "128Mi" }
+          }
         }
       },
       registry: {
         resources: {
-          requests: { cpu: "50m", memory: "100Mi" },
-          limits: { cpu: "50m", memory: "100Mi" }
+          requests: { cpu: "40m", memory: "96Mi" },
+          limits: { cpu: "40m", memory: "96Mi" }
         },
         hpa: {
           minReplicas: 1,
@@ -59,8 +63,32 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
       },
       minio: {
         resources: {
-          requests: { cpu: "9m", memory: "128Mi" },
-          limits: { cpu: "9m", memory: "128Mi" }
+          requests: { cpu: "30m", memory: "32Mi" },
+          limits: { cpu: "30m", memory: "32Mi" }
+        }
+      },
+      "nginx-ingress": {
+        controller: {
+          resources: {
+            requests: { cpu: "30m", memory: "256Mi" },
+            limits: { cpu: "30m", memory: "256Mi" }
+          }
+        }
+      },
+      postgresql: {
+        primary: {
+          resources: {
+            requests: { cpu: "400m", memory: "1Gi" },
+            limits: { cpu: "400m", memory: "1Gi" }
+          }
+        }
+      },
+      redis: {
+        master: {
+          resources: {
+            requests: { cpu: "50m", memory: "16Mi" },
+            limits: { cpu: "50m", memory: "16Mi" }
+          }
         }
       }
     })
@@ -73,8 +101,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
           workerProcesses: 4,
           minReplicas: 1,
           resources: {
-            requests: { cpu: 3, memory: "4.5Gi" },
-            limits: { cpu: 3, memory: "4.5Gi" }
+            requests: { cpu: 3, memory: "5Gi" },
+            limits: { cpu: 3, memory: "7Gi" }
           },
           hpa: {
             cpu: {
@@ -100,8 +128,8 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
         kas: {
           minReplicas: 1,
           resources: {
-            requests: { cpu: "100m", memory: "256Mi" },
-            limits: { cpu: "100m", memory: "256Mi" }
+            requests: { cpu: "60m", memory: "96Mi" },
+            limits: { cpu: "60m", memory: "96Mi" }
           },
           hpa: {
             cpu: {
@@ -110,11 +138,10 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
             }
           }
         },
-        gitlab_shell: {
-          minReplicas: 1,
+        "gitlab-shell": {
+          minReplicas: 2,
           resources: {
-            requests: { cpu: "24m", memory: "32Mi" },
-            limits: { cpu: "24m", memory: "32Mi" }
+            requests: { cpu: "60m", memory: "32Mi" }
           },
           hpa: {
             cpu: {
@@ -125,15 +152,20 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
         },
         gitaly: {
           resources: {
-            requests: { cpu: "450m", memory: "450Mi" },
-            limits: { cpu: "450m", memory: "450Mi" }
+            requests: { cpu: "400m", memory: "384Mi" },
+            limits: { cpu: "400m", memory: "384Mi" }
+          }
+        },
+        toolbox: {
+          resources: {
+            requests: { cpu: "50m", memory: "128Mi" }
           }
         }
       },
       registry: {
         resources: {
-          requests: { cpu: "100m", memory: "200Mi" },
-          limits: { cpu: "100m", memory: "200Mi" }
+          requests: { cpu: "50m", memory: "128Mi" },
+          limits: { cpu: "50m", memory: "128Mi" }
         },
         hpa: {
           minReplicas: 1,
@@ -145,8 +177,32 @@ RSpec.describe Gitlab::Orchestrator::Deployment::ResourcePresets do
       },
       minio: {
         resources: {
-          requests: { cpu: "15m", memory: "256Mi" },
-          limits: { cpu: "15m", memory: "256Mi" }
+          requests: { cpu: "50m", memory: "32Mi" },
+          limits: { cpu: "50m", memory: "32Mi" }
+        }
+      },
+      "nginx-ingress": {
+        controller: {
+          resources: {
+            requests: { cpu: "30m", memory: "256Mi" },
+            limits: { cpu: "30m", memory: "256Mi" }
+          }
+        }
+      },
+      postgresql: {
+        primary: {
+          resources: {
+            requests: { cpu: "600m", memory: "1536Mi" },
+            limits: { cpu: "600m", memory: "1536Mi" }
+          }
+        }
+      },
+      redis: {
+        master: {
+          resources: {
+            requests: { cpu: "100m", memory: "16Mi" },
+            limits: { cpu: "100m", memory: "16Mi" }
+          }
         }
       }
     })

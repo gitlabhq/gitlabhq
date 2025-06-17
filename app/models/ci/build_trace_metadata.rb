@@ -8,7 +8,7 @@ module Ci
     self.table_name = :p_ci_build_trace_metadata
     self.primary_key = :build_id
 
-    before_validation :set_project_id, on: :create
+    before_validation :set_project_id
 
     belongs_to :build,
       ->(trace_metadata) { in_partition(trace_metadata) },
@@ -26,11 +26,12 @@ module Ci
     validates :build, presence: true
     validates :archival_attempts, presence: true
 
-    def self.find_or_upsert_for!(build_id, partition_id)
+    def self.find_or_upsert_for!(build_id, partition_id, project_id)
       record = find_by(build_id: build_id, partition_id: partition_id)
       return record if record
 
-      upsert({ build_id: build_id, partition_id: partition_id }, unique_by: %w[build_id partition_id])
+      upsert({ build_id: build_id, partition_id: partition_id, project_id: project_id },
+        unique_by: %w[build_id partition_id])
       find_by!(build_id: build_id, partition_id: partition_id)
     end
 

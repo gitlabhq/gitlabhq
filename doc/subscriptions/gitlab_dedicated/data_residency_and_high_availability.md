@@ -84,7 +84,7 @@ These limitations may affect your service in the following ways:
   volumes instead. GP3 volumes have lower durability (99.8-99.9% compared to 99.999% for io2), which
   increases the risk of disk failures in your replica region. This can affect availability during failover
   or while operating in the failed-over state. As a result, these regions are not covered by our standard
-  [RTO and RPO](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/) time objectives.
+  recovery time objective (RTO) and recovery point objective (RPO) targets.
 
 - **No SES support**: In regions where AWS does not support Simple Email Service (SES), GitLab
   cannot send email notifications using the default configuration. To maintain email functionality
@@ -116,8 +116,6 @@ While the reference architectures serve as a foundation for GitLab Dedicated env
 
 {{< /alert >}}
 
-For more information, see the [Current Service Level Objective](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#current-service-level-objective).
-
 ## Disaster recovery
 
 During [onboarding](../../administration/dedicated/create_instance/_index.md#step-2-create-your-gitlab-dedicated-instance),
@@ -131,4 +129,4 @@ Some secondary regions have [limited support](#secondary-regions-with-limited-su
 
 You can also opt to store backup copies in a separate cloud region for increased redundancy.
 
-For more information, including Recovery Point Objective (RPO) and Recovery Time Objective (RTO) targets, see the [disaster recovery plan](https://handbook.gitlab.com/handbook/engineering/infrastructure/team/gitlab-dedicated/slas/#disaster-recovery-plan).
+For more information, see [disaster recovery for GitLab Dedicated](../../administration/dedicated/disaster_recovery.md).

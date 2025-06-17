@@ -11,6 +11,7 @@ import {
   GlPopover,
   GlFormCheckbox,
   GlTooltipDirective,
+  GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { s__, sprintf } from '~/locale';
@@ -73,6 +74,7 @@ export default {
     GlPagination,
     GlPopover,
     GlFormCheckbox,
+    GlAnimatedChevronRightDownIcon,
     TimeAgo,
     CiIcon,
     JobCheckbox,
@@ -507,15 +509,11 @@ export default {
         #cell(artifacts)="{ item: { id, artifacts, hasArtifacts }, toggleDetails, detailsShowing }"
       >
         <span
-          :class="{ 'gl-cursor-pointer': hasArtifacts }"
+          :class="{ 'gl-flex gl-cursor-pointer gl-gap-2': hasArtifacts }"
           data-testid="job-artifacts-count"
           @click="handleRowToggle(toggleDetails, hasArtifacts, id, detailsShowing)"
         >
-          <gl-icon
-            v-if="hasArtifacts"
-            :name="detailsShowing ? 'chevron-down' : 'chevron-right'"
-            class="gl-mr-2"
-          />
+          <gl-animated-chevron-right-down-icon v-if="hasArtifacts" :is-on="detailsShowing" />
           <strong>
             {{ $options.i18n.artifactsCount(artifacts.nodes.length) }}
           </strong>

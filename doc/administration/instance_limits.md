@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab application limits
 ---
@@ -198,6 +198,7 @@ This endpoint has been requested too many times. Try again later.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523595) in GitLab 18.1. Feature flag `autocomplete_users_rate_limit` removed.
 
 {{< /history >}}
 
@@ -532,6 +533,33 @@ You can change the maximum time a job can run before it times out:
 - At the [runner level](../ci/runners/configure_runners.md#set-the-maximum-job-timeout).
   This limit must be 10 minutes or longer.
 
+Regardless of configured timeout limits, GitLab terminates any job that has been inactive for 60 minutes. An inactive job is one that has produced no new logs or trace updates.
+
+### Maximum number of jobs in a pipeline
+
+You can limit the maximum number of jobs in a pipeline. The number
+of jobs in a pipeline is checked at pipeline creation and when new commit statuses are created.
+Pipelines that have too many jobs fail with a `size_limit_exceeded` error.
+
+- On GitLab.com, a limit is
+  [defined for each subscription tier](../user/gitlab_com/_index.md#cicd),
+  and this limit affects all projects with that tier.
+- On GitLab Self-Managed, [Premium or Ultimate](https://about.gitlab.com/pricing/) subscriptions,
+  this limit is defined under a `default` plan that affects all
+  projects. This limit is disabled (`0`) by default.
+
+To change the limit for a GitLab Self-Managed instance, change the `default` plan's limit with the following
+[GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session) command:
+
+```ruby
+# If limits don't exist for the default plan, you can create one with:
+# Plan.default.create_limits!
+
+Plan.default.actual_limits.update!(ci_pipeline_size: 500)
+```
+
+Set the limit to `0` to disable it.
+
 ### Maximum number of deployment jobs in a pipeline
 
 You can limit the maximum number of deployment jobs in a pipeline. A deployment is
@@ -562,17 +590,17 @@ When this limit is exceeded, pipeline creation fails with the error `downstream 
 
 Increasing this limit is not recommended. The default limit protects your GitLab instance from excessive resource consumption, potential pipeline recursion, and database overload.
 
-Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines or using parallel jobs.
+Instead of increasing the limit, restructure your CI/CD configuration by splitting large pipeline hierarchies into smaller pipelines. Consider using `needs` between jobs or dependent stages within a single pipeline.
 
 {{< /alert >}}
 
-To modify this limit on your instance, run the following command in the GitLab Rails console:
+To modify this limit on your instance use the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits) or the [Plan Limits API](../api/plan_limits.md).
+
+You can also run the following command in the GitLab Rails console:
 
 ```ruby
 Plan.default.actual_limits.update!(pipeline_hierarchy_size: 500)
 ```
-
-You can also set this limit by using the GitLab UI in the [Admin area](settings/continuous_integration.md#set-cicd-limits).
 
 This limit is enabled on GitLab.com and cannot be changed.
 
@@ -1223,7 +1251,7 @@ ApplicationSetting.update(math_rendering_limits_enabled: false)
 These limits can also be disabled per-group using the GraphQL or REST API.
 
 If the limits are disabled, math is rendered with mostly no limits in issues, merge requests, epics, wikis, and repository files.
-This means a malicious actor _could_ add math that would cause a DoS when viewing in the browser. You must ensure
+This means a malicious actor could add math that would cause a DoS when viewing in the browser. You must ensure
 that only people you trust can add content.
 
 ## Wiki limits
@@ -1345,7 +1373,7 @@ Issues and merge requests enforce these maximums:
 
 ## CDN-based limits on GitLab.com
 
-In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are [not public](https://handbook.gitlab.com/handbook/communication/confidentiality-levels/#not-public) because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
+In addition to application-based limits, GitLab.com is configured to use Cloudflare's standard DDoS protection and Spectrum to protect Git over SSH. Cloudflare terminates client TLS connections but is not application aware and cannot be used for limits tied to users or groups. Cloudflare page rules and rate limits are configured with Terraform. These configurations are not public because they include security and abuse implementations that detect malicious activities and making them public would undermine those operations.
 
 ## Container Repository tag deletion limit
 

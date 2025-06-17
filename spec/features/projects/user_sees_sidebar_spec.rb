@@ -157,6 +157,7 @@ RSpec.describe 'Projects > User sees sidebar', :js, feature_category: :groups_an
 
     before do
       project.add_guest(guest)
+      stub_feature_flags(hide_incident_management_features: false)
 
       sign_in(guest)
     end

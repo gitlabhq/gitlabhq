@@ -139,8 +139,8 @@ GitLab cannot display the combined results of multiple `browser_performance` rep
 
 Use `coverage_report:` to collect [coverage report](../testing/_index.md) in Cobertura or JaCoCo formats.
 
-The `coverage_format:` Can be either [`cobertura`](../testing/test_coverage_visualization/cobertura.md) or
-[`jacoco`](../testing/test_coverage_visualization/jacoco.md).
+The `coverage_format:` Can be either [`cobertura`](../testing/code_coverage/cobertura.md) or
+[`jacoco`](../testing/code_coverage/jacoco.md).
 
 Cobertura was originally developed for Java, but there are many third-party ports for other languages such as
 JavaScript, Python, and Ruby.
@@ -247,7 +247,7 @@ as a list of filenames, a filename pattern, or both:
 - A combination of both (`cyclonedx: [gl-sbom-*.json, my-cyclonedx.json]`).
 - Directories are not supported(`cyclonedx: test-results`, `cyclonedx: test-results/**`).
 
-Below is an example of a job exposing CycloneDX artifacts:
+The following example shows a job that exposes CycloneDX artifacts:
 
 ```yaml
 artifacts:
@@ -299,7 +299,7 @@ GitLab can display the results of one or more reports in:
 The `dotenv` report collects a set of environment variables as artifacts.
 
 The collected variables are registered as runtime-created variables of the job,
-which you can [use in subsequent job scripts](../variables/_index.md#pass-an-environment-variable-to-another-job)
+which you can [use in subsequent job scripts](../variables/job_scripts.md#pass-an-environment-variable-to-another-job)
 or to [set dynamic environment URLs after a job finishes](../environments/_index.md#set-a-dynamic-environment-url).
 
 If duplicate environment variables are present in a `dotenv` report, the last one specified is used.
@@ -332,7 +332,7 @@ The collected Unit test reports upload to GitLab as an artifact. Although JUnit 
 are many third-party ports for other languages such as JavaScript, Python, and Ruby.
 
 See [Unit test reports](../testing/unit_test_reports.md) for more details and examples.
-Below is an example of collecting a JUnit report format XML file from Ruby's RSpec test tool:
+The following example shows how to collect a JUnit XML report from Ruby RSpec tests:
 
 ```yaml
 rspec:
@@ -347,8 +347,8 @@ rspec:
 
 GitLab can display the results of one or more reports in:
 
-- The merge request [code quality widget](../testing/unit_test_reports.md#unit-test-reporting-workflow).
-- The [full report](../testing/unit_test_reports.md#view-unit-test-reports-on-gitlab).
+- The merge request [**Test summary** panel](../testing/unit_test_reports.md#view-test-results-in-merge-requests).
+- The [pipeline **Tests** tab](../testing/unit_test_reports.md#view-test-results-in-pipelines).
 
 Some JUnit tools export to multiple XML files. You can specify multiple test report paths in a single job to
 concatenate them into a single file. Use either:

@@ -314,7 +314,7 @@ describe('DiffFileHeader component', () => {
         it('dispatches toggleFileDiscussionWrappers when user clicks on toggle discussions button', () => {
           createComponent({ props: { diffFile, addMergeRequestButtons: true } });
           expect(findToggleDiscussionsButton().exists()).toBe(true);
-          findToggleDiscussionsButton().vm.$emit('click');
+          findToggleDiscussionsButton().props('item').action();
           expect(useLegacyDiffs().toggleFileDiscussionWrappers).toHaveBeenCalledWith(
             getFirstDiffFile(),
           );
@@ -375,8 +375,8 @@ describe('DiffFileHeader component', () => {
               addMergeRequestButtons: true,
             },
           });
-          expect(findViewFileButton().attributes('href')).toBe(viewPath);
-          expect(findViewFileButton().text()).toEqual(
+          expect(findViewFileButton().props('item').href).toBe(viewPath);
+          expect(findViewFileButton().props('item').text).toEqual(
             `View file @ ${getFirstDiffFile().content_sha.substr(0, 8)}`,
           );
         });
@@ -420,8 +420,10 @@ describe('DiffFileHeader component', () => {
 
         it('toggles full diff on click', () => {
           createComponent({ props: fullyNotExpandedFileProps });
-          findExpandButton().vm.$emit('click');
-          expect(useLegacyDiffs().toggleFullDiff).toHaveBeenCalled();
+          findExpandButton().props('item').action();
+          expect(useLegacyDiffs().toggleFullDiff).toHaveBeenCalledWith(
+            fullyNotExpandedFileProps.diffFile.file_path,
+          );
         });
       });
     });

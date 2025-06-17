@@ -23,7 +23,7 @@ You can enforce the following restrictions on sign ups:
 ## Disable new sign ups
 
 By default, any user visiting your GitLab domain can sign up for an account. For customers running
-public-facing GitLab instances, we **highly** recommend that you consider disabling new sign ups if
+public-facing GitLab instances, we highly recommend that you consider disabling new sign ups if
 you do not expect public users to sign up for an account. For GitLab Dedicated, new sign ups are
 disabled by default when your instance is provisioned.
 

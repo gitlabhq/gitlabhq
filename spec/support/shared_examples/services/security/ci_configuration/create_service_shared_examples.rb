@@ -160,7 +160,7 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
       end
 
       context 'when the project is empty' do
-        let(:params) { nil }
+        let(:params) { {} }
         let_it_be(:project) { create(:project_empty_repo) }
 
         it 'returns a ServiceResponse error' do

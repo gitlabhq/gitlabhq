@@ -120,12 +120,6 @@ Use these rules for your commit messages.
 
 ## Reject commits that aren't DCO certified
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/98810) in GitLab 15.5.
-
-{{< /history >}}
-
 Commits signed with the [Developer Certificate of Origin](https://developercertificate.org/) (DCO)
 certify the contributor wrote, or has the right to submit, the code contributed in that commit.
 You can require all commits to your project to comply with the DCO. This push rule requires a
@@ -353,7 +347,7 @@ created in GitLab itself. As expected, commits created outside GitLab and
 pushed to the repository are rejected. For more information about this issue,
 read [issue #19185](https://gitlab.com/gitlab-org/gitlab/-/issues/19185).
 
-### Bulk update push rules for _all_ projects
+### Bulk update push rules for all projects
 
 To update the push rules to be the same for all projects,
 use the [Rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session),

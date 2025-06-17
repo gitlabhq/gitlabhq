@@ -12,9 +12,10 @@ title: Project badges API
 
 {{< /details >}}
 
-## Placeholder tokens
+Use this API to manage and review [project badges](../user/project/badges.md).
 
-[Badges](../user/project/badges.md) support placeholders that are replaced in real-time in both the link and image URL. The allowed placeholders are:>
+Badges can include placeholders that are replaced in both the
+link and image URL. The available placeholders are:
 
 - `%{project_path}`: Replaced by the project path.
 - `%{project_title}`: Replaced by the project title.
@@ -38,7 +39,7 @@ GET /projects/:id/badges
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name`    | string         | no  | Name of the badges to return (case-sensitive). |
 
 ```shell
@@ -81,7 +82,7 @@ GET /projects/:id/badges/:badge_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `badge_id` | integer | yes   | The badge ID |
 
 ```shell
@@ -113,7 +114,7 @@ POST /projects/:id/badges
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `link_url` | string         | yes | URL of the badge link |
 | `image_url` | string | yes | URL of the badge image |
 | `name` | string | no | Name of the badge |
@@ -149,7 +150,7 @@ PUT /projects/:id/badges/:badge_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `badge_id` | integer | yes   | The badge ID |
 | `link_url` | string         | no | URL of the badge link |
 | `image_url` | string | no | URL of the badge image |
@@ -185,7 +186,7 @@ DELETE /projects/:id/badges/:badge_id
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `badge_id` | integer | yes   | The badge ID |
 
 ```shell
@@ -204,7 +205,7 @@ GET /projects/:id/badges/render
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id`      | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id`      | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `link_url` | string         | yes | URL of the badge link|
 | `image_url` | string | yes | URL of the badge image |
 

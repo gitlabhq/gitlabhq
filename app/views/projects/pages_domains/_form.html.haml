@@ -19,7 +19,7 @@
 - if domain_presenter.persisted?
   = render 'dns'
 
-- if Gitlab.config.pages.external_https
+- if Gitlab.config.pages.external_https || Gitlab.config.pages.custom_domain_mode == 'https'
   = render 'certificate', f: f
 - else
   .gl-text-subtle.gl-my-5

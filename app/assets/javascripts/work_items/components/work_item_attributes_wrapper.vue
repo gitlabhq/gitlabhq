@@ -186,7 +186,8 @@ export default {
       return this.workItemHierarchy?.hasParent;
     },
     workItemCrmContacts() {
-      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
+      const crmContactsWidget = this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS);
+      return crmContactsWidget && crmContactsWidget.contactsAvailable ? crmContactsWidget : null;
     },
     customFields() {
       return this.isWidgetPresent(WIDGET_TYPE_CUSTOM_FIELDS)?.customFieldValues;
@@ -214,6 +215,7 @@ export default {
       :work-item-type="workItemType"
       :full-path="fullPath"
       @error="$emit('error', $event)"
+      @statusUpdated="$emit('attributesUpdated', { type: $options.ListType.status, ids: [$event] })"
     />
     <work-item-assignees
       v-if="workItemAssignees"
@@ -244,6 +246,19 @@ export default {
       @error="$emit('error', $event)"
       @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
     />
+    <work-item-parent
+      v-if="showParent"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :full-path="fullPath"
+      :work-item-id="workItem.id"
+      :work-item-type="workItemType"
+      :parent="workItemParent"
+      :has-parent="hasParent"
+      :group-path="groupPath"
+      :is-group="isGroup"
+      @error="$emit('error', $event)"
+    />
     <work-item-weight
       v-if="workItemWeight"
       class="work-item-attributes-item"
@@ -253,19 +268,6 @@ export default {
       :work-item-id="workItem.id"
       :work-item-iid="workItem.iid"
       :work-item-type="workItemType"
-      @error="$emit('error', $event)"
-    />
-    <work-item-dates
-      v-if="workItemStartAndDueDate"
-      class="work-item-attributes-item"
-      :can-update="canUpdateMetadata"
-      :full-path="fullPath"
-      :start-date="workItemStartAndDueDate.startDate"
-      :due-date="workItemStartAndDueDate.dueDate"
-      :is-fixed="workItemStartAndDueDate.isFixed"
-      :should-roll-up="canWorkItemRollUp"
-      :work-item-type="workItemType"
-      :work-item="workItem"
       @error="$emit('error', $event)"
     />
     <work-item-milestone
@@ -296,6 +298,19 @@ export default {
       @iterationUpdated="
         $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
       "
+    />
+    <work-item-dates
+      v-if="workItemStartAndDueDate"
+      class="work-item-attributes-item"
+      :can-update="canUpdateMetadata"
+      :full-path="fullPath"
+      :start-date="workItemStartAndDueDate.startDate"
+      :due-date="workItemStartAndDueDate.dueDate"
+      :is-fixed="workItemStartAndDueDate.isFixed"
+      :should-roll-up="canWorkItemRollUp"
+      :work-item-type="workItemType"
+      :work-item="workItem"
+      @error="$emit('error', $event)"
     />
     <work-item-progress
       v-if="workItemProgress"
@@ -330,18 +345,6 @@ export default {
       :custom-fields="customFields"
       :full-path="fullPath"
       :can-update="canUpdateMetadata"
-      @error="$emit('error', $event)"
-    />
-    <work-item-parent
-      v-if="showParent"
-      class="work-item-attributes-item"
-      :can-update="canUpdateMetadata"
-      :work-item-id="workItem.id"
-      :work-item-type="workItemType"
-      :parent="workItemParent"
-      :has-parent="hasParent"
-      :group-path="groupPath"
-      :is-group="isGroup"
       @error="$emit('error', $event)"
     />
     <work-item-time-tracking

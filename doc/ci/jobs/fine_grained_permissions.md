@@ -17,24 +17,25 @@ title: Fine-grained permissions for CI/CD job tokens
 
 {{< details >}}
 
-Tier: Free, Premium, Ultimate
-Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-Status: Experiment
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15234) in GitLab 17.10. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15234) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.10.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/16199) from experiment to beta in GitLab 18.0.
 
 {{< /history >}}
 
 You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints.
 These permissions are applied to the CI/CD job tokens in a specified project.
 
-This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature is not ready for production use. If you want to use this feature, you should test outside of production first.
+This feature is in [beta](../../policy/development_stages_support.md#beta).
 
-## Enable use of fine-grained permissions
+## Enable fine-grained permissions
 
 Prerequisites:
 
@@ -139,6 +140,8 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/:package_id/package_files/:package_file_id` | Delete a package file |
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/:package_id` | Delete a project package |
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v1/conans/:package_name/:package_version/:package_username/:package_channel` | Delete Package |
+| Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision` | Delete package revision |
+| Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision` | Delete recipe revision |
 | Packages: Read and write | `ADMIN_PACKAGES` | `DELETE /projects/:id/packages/npm/-/package/*package_name/dist-tags/:tag` | Deletes the given tag |
 | Packages: Read and write | `ADMIN_PACKAGES` | `POST /projects/:id/packages/composer` | Composer packages endpoint for registering packages |
 | Packages: Read and write | `ADMIN_PACKAGES` | `POST /projects/:id/packages/pypi/authorize` | Authorize the PyPi package upload from workhorse |
@@ -194,6 +197,8 @@ The following endpoints are available for CI/CD job tokens.
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/latest` | Get the latest package revision |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files/:file_name` | Download package files |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions/:package_revision/files` | List package files |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/packages/:conan_package_reference/revisions` | Get the list of package revisions |
+| Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions/:recipe_revision/search` | Get package references metadata |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/revisions` | Get the list of revisions |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/conan/v2/conans/:package_name/:package_version/:package_username/:package_channel/search` | Get package references metadata |
 | Packages: Read | `READ_PACKAGES` | `GET /projects/:id/packages/generic/:package_name/*package_version/(*path/):file_name` | Download package file |

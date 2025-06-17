@@ -8,7 +8,6 @@ title: 'Tutorial: Use GitLab Observability with a Django application'
 {{< alert type="flag" >}}
 
 The availability of this feature is controlled by a feature flag.
-For more information, see the history of the **Distributed tracing** feature.
 <!-- Update this note when observability_features flag is removed -->
 
 {{< /alert >}}

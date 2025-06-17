@@ -1,4 +1,4 @@
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 
@@ -20,6 +20,9 @@ describe('diff_stats', () => {
           addedLines: TEST_ADDED_LINES,
           removedLines: TEST_REMOVED_LINES,
           ...props,
+        },
+        stubs: {
+          GlSprintf,
         },
       }),
     );
@@ -81,6 +84,16 @@ describe('diff_stats', () => {
 
     it('shows the amount of lines removed', () => {
       expect(findFileLine('js-file-deletion-line').text()).toBe(TEST_REMOVED_LINES.toString());
+    });
+
+    it('labels stats', () => {
+      expect(
+        wrapper
+          .find(
+            `[aria-label="Added ${TEST_ADDED_LINES} lines. Removed ${TEST_REMOVED_LINES} lines."]`,
+          )
+          .exists(),
+      ).toBe(true);
     });
   });
 

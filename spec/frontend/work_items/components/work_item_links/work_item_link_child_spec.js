@@ -206,7 +206,7 @@ describe('WorkItemLinkChild', () => {
 
       findTreeChildren().vm.$emit('click', 'event');
 
-      expect(wrapper.emitted('click')).toEqual([['event']]);
+      expect(wrapper.emitted('toggleDrawer')).toEqual([['event']]);
     });
 
     it('emits event on removing child item', () => {
@@ -227,6 +227,7 @@ describe('WorkItemLinkChild', () => {
           showLabels: true,
           workItemFullPath,
           showWeight: true,
+          contextualViewEnabled: false,
         });
       });
 

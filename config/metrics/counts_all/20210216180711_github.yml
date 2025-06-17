@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.manage.projects_imported.github
 description: Distinct count of users that imported projects from GitHub
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 value_type: number

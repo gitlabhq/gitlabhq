@@ -58,7 +58,7 @@ enforce security policies. GitLab includes a suite of security tools
 that you can incorporate into the development of customer applications,
 including but not limited to:
 
-- [Security configuration](../user/application_security/configuration/_index.md)
+- [Security configuration](../user/application_security/detect/security_configuration.md)
 - [Container Scanning](../user/application_security/container_scanning/_index.md)
 - [Dependency Scanning](../user/application_security/dependency_scanning/_index.md)
 - [Static Application Security Testing](../user/application_security/sast/_index.md)

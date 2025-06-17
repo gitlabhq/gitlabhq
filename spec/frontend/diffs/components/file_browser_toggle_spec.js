@@ -100,7 +100,7 @@ describe('FileBrowserToggle', () => {
     it('Displays hide message for open file browser', () => {
       createComponent();
       expect(findTooltip().value).toBe(
-        'Hide file browser <kbd aria-hidden="true" class="flat gl-ml-1">f</kbd>',
+        'Hide file browser <kbd class="flat gl-ml-1" aria-hidden="true">f</kbd>',
       );
     });
 
@@ -109,7 +109,7 @@ describe('FileBrowserToggle', () => {
       useFileBrowser().fileBrowserVisible = false;
       await nextTick();
       expect(findTooltip().value).toBe(
-        'Show file browser <kbd aria-hidden="true" class="flat gl-ml-1">f</kbd>',
+        'Show file browser <kbd class="flat gl-ml-1" aria-hidden="true">f</kbd>',
       );
     });
   });

@@ -188,6 +188,8 @@ RSpec.shared_examples 'it runs batched background migration jobs' do |tracking_d
                 Database::BatchedBackgroundMigration::MainExecutionWorker
               when :ci
                 Database::BatchedBackgroundMigration::CiExecutionWorker
+              when :sec
+                Database::BatchedBackgroundMigration::SecExecutionWorker
               end
             end
 

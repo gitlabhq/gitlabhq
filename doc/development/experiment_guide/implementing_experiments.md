@@ -1,7 +1,7 @@
 ---
 stage: Growth
 group: Acquisition
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Implementing an A/B/n experiment
 ---
 
@@ -255,7 +255,7 @@ if a context should even be considered as something we should include in the exp
 and track events toward. Exclusion means we don't care about the events in relation
 to the given context.
 
-These examples exclude all users named `'Richard'`, *and* any account
+These examples exclude all users named `'Richard'`, and any account
 older than 2 weeks old. Not only are they given the control behavior - which could
 be nothing - but no events are tracked in these cases as well.
 

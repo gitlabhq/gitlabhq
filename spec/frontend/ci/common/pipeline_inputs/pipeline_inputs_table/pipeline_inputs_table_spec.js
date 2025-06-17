@@ -14,10 +14,11 @@ describe('PipelineInputsTable', () => {
         name: 'input1',
         description: 'This is a **markdown** description',
         type: '',
-        default: 'value1',
+        value: 'value1',
         required: true,
+        isSelected: true,
       },
-      { name: 'input2', description: '', type: '', default: 'value2' },
+      { name: 'input2', description: '', type: '', value: 'value2', isSelected: true },
     ],
   };
 
@@ -53,6 +54,22 @@ describe('PipelineInputsTable', () => {
     });
   });
 
+  describe('selected inputs', () => {
+    it('only renders rows for selected inputs', () => {
+      createComponent({
+        props: {
+          inputs: [
+            { name: 'input1', description: '', type: '', value: 'value1', isSelected: true },
+            { name: 'input2', description: '', type: '', value: 'value2', isSelected: false },
+          ],
+        },
+      });
+      expect(findRows()).toHaveLength(1);
+      expect(findRows().at(0).text()).toContain('input1');
+      expect(findRows().at(0).text()).not.toContain('input2');
+    });
+  });
+
   describe('name column', () => {
     it('shows a red asterisk for required inputs', () => {
       createComponent();
@@ -83,7 +100,7 @@ describe('PipelineInputsTable', () => {
     it('renders an info icon if the type is ARRAY', () => {
       createComponent({
         props: {
-          inputs: [{ name: 'input1', description: '', type: 'ARRAY', default: [] }],
+          inputs: [{ name: 'input1', description: '', type: 'ARRAY', value: [], isSelected: true }],
         },
       });
 
@@ -94,7 +111,7 @@ describe('PipelineInputsTable', () => {
     it('does not render an info icon if the type is not ARRAY', () => {
       createComponent({
         props: {
-          inputs: [{ name: 'input1', description: '', type: 'STRING', default: 'value1' }],
+          inputs: [{ name: 'input1', description: '', type: 'STRING', value: 'value1' }],
         },
       });
 
@@ -130,7 +147,7 @@ describe('PipelineInputsTable', () => {
       expect(wrapper.emitted().update).toHaveLength(1);
       expect(wrapper.emitted().update[0][0]).toEqual({
         ...updatedItem,
-        default: newValue,
+        value: newValue,
       });
     });
   });

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be_with_reload(:project) { create(:project, :repository, creator: user) }
   let_it_be_with_reload(:project2) { create(:project, :repository) }
@@ -281,16 +281,15 @@ RSpec.describe API::Ci::Triggers, feature_category: :pipeline_composition do
         expect(json_response.dig(1, 'token')).to eq trigger_token_2[0..3]
       end
 
-      context 'for multiple pipelines and trigger requests' do
+      context 'for multiple pipelines' do
         it 'does not generate N+1 queries' do
           control = ActiveRecord::QueryRecorder.new { get api("/projects/#{project.id}/triggers", user) }
 
-          trigger3 = create(:ci_trigger, project: project, token: 'trigger_token_3', owner: user2)
-          create(:ci_empty_pipeline, trigger: trigger2, project: project)
-          create(:ci_empty_pipeline, trigger: trigger3, project: project)
-          create(:ci_empty_pipeline, trigger: trigger3, project: project)
+          create(:ci_trigger, project: project, token: 'trigger_token_3', owner: user2)
 
-          expect { get api("/projects/#{project.id}/triggers", user) }.not_to exceed_query_limit(control)
+          control2 = ActiveRecord::QueryRecorder.new { get api("/projects/#{project.id}/triggers", user) }
+          expect(control.log.grep(/"p_ci_pipelines"."created_at"/).count)
+            .to eq(control2.log.grep(/"p_ci_pipelines"."created_at"/).count)
         end
       end
     end

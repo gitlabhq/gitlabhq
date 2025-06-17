@@ -199,7 +199,6 @@ Style/RedundantSelf:
     - 'ee/lib/gitlab/geo/oauth/logout_state.rb'
     - 'ee/lib/gitlab/geo/replicator.rb'
     - 'ee/lib/gitlab/template/custom_template.rb'
-    - 'ee/lib/system_check/app/search_check.rb'
     - 'ee/spec/helpers/ee/feature_flags_helper_spec.rb'
     - 'ee/spec/helpers/ee/graph_helper_spec.rb'
     - 'lib/api/entities/wiki_attachment.rb'

@@ -58,5 +58,11 @@ FactoryBot.define do
     trait :shared_runners_disabled do
       shared_runners_enabled { false }
     end
+
+    trait :archived do
+      after(:create) do |namespace|
+        namespace.namespace_settings.update!(archived: true)
+      end
+    end
   end
 end

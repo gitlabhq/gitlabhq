@@ -1,7 +1,8 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: no
 title: Object storage
 ---
 
@@ -138,7 +139,7 @@ For an example, see how to [use the consolidated form and Amazon S3](#full-examp
 
 #### Disable object storage for specific features
 
-As seen above, object storage can be disabled for specific types by
+As seen previously, object storage can be disabled for specific types by
 setting the `enabled` flag to `false`. For example, to disable object
 storage for CI artifacts:
 
@@ -208,7 +209,7 @@ The connection settings match those provided by [fog-aws](https://github.com/fog
 | `region`                                    | AWS region.                        | |
 | `host`                                      | DEPRECATED: Use `endpoint` instead. S3 compatible host for when not using AWS. For example, `localhost` or `storage.example.com`. HTTPS and port 443 is assumed. | `s3.amazonaws.com` |
 | `endpoint`                                  | Can be used when configuring an S3 compatible service such as [MinIO](https://min.io), by entering a URL such as `http://127.0.0.1:9000`. This takes precedence over `host`. Always use `endpoint` for consolidated form. | (optional) |
-| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false`. |
+| `path_style`                                | Set to `true` to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Set to `true` for using [MinIO](https://min.io). Leave as `false` for AWS S3. | `false` |
 | `use_iam_profile`                           | Set to `true` to use IAM profile instead of access keys. | `false` |
 | `aws_credentials_refresh_threshold_seconds` | Sets the [automatic refresh threshold](https://github.com/fog/fog-aws#controlling-credential-refresh-time-with-iam-authentication) in seconds when using temporary credentials in IAM. | `15` |
 | `disable_imds_v2`                           | Force the use of IMDS v1 by disabling access to the IMDS v2 endpoint that retrieves `X-aws-ec2-metadata-token`. | `false` |
@@ -342,7 +343,7 @@ If you use ADC, be sure that:
   Typically this is done by granting the `Service Account Token Creator` role to the service account.
 - If you are using Google Compute virtual machines, ensure they have the [correct access scopes to access Google Cloud APIs](https://cloud.google.com/compute/docs/access/create-enable-service-accounts-for-instances#changeserviceaccountandscopes). If the machines do not have the right scope, the error logs may show:
 
-  ```markdown
+  ```shell
   Google::Apis::ClientError (insufficientPermissions: Request had insufficient authentication scopes.)
   ```
 
@@ -1138,7 +1139,7 @@ additional complexity and unnecessary redundancy. Because both GitLab
 Rails and Workhorse components need access to object storage, the
 consolidated form avoids excessive duplication of credentials.
 
-The consolidated form is used _only_ if all lines from
+The consolidated form is used only if all lines from
 the original form is omitted. To move to the consolidated form, remove the
 original configuration (for example, `artifacts_object_store_enabled`, or
 `uploads_object_store_connection`)
@@ -1472,7 +1473,7 @@ Assume the following Geo scenario:
 - Both systems have been migrated to object storage
   - The secondary uses the same object storage as the primary
   - The option `Allow this secondary site to replicate content on Object Storage` is deactivated
-- Multiple *uploads* were manually deleted before the object storage migration
+- Multiple uploads were manually deleted before the object storage migration
   - For this example, two images which were uploaded to an issue
 
 In such a scenario, the secondary does no longer need to replicate any data as
@@ -1483,9 +1484,9 @@ On the primary site:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
-1. Look at the **primary site** and check the verification information. All *uploads* were verified:
+1. Look at the **primary site** and check the verification information. All uploads were verified:
    ![The Geo Sites dashboard displaying successful verification of the primary.](img/geo_primary_uploads_verification_v17_11.png)
-1. Look at the **secondary site** and check the verification information. Notice that two *uploads* are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
+1. Look at the **secondary site** and check the verification information. Notice that two uploads are still being synced, even though the secondary should use the same object storage. Meaning it should not have to synchronize any uploads:
    ![The Geo Sites dashboard displaying inconsistencies of the secondary.](img/geo_secondary_uploads_inconsistencies_v17_11.png)
 
 #### Clean up inconsistencies
@@ -1520,7 +1521,7 @@ Proceed as follows to properly delete potential leftovers:
    | Pages content            | `PagesDeployment`                                       |
 
 1. Start a [Rails console](operations/rails_console.md). When using Geo, run it on the primary site.
-1. Query for all "files" which are still stored locally (instead of in object storage) based on the *model name* of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
+1. Query for all "files" which are still stored locally (instead of in object storage) based on the model name of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
 
    ```ruby
    Upload.with_files_stored_locally

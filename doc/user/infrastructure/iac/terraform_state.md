@@ -94,7 +94,7 @@ To configure GitLab CI/CD as a backend:
    `gitlab-tofu plan` commands.
 1. Trigger the manual `deploy` job from the previous pipeline. This action runs the `gitlab-tofu apply` command, which provisions the defined infrastructure.
 
-The output from the above commands should be viewable in the job logs.
+The output from the previous commands should be viewable in the job logs.
 
 The `gitlab-tofu` CLI is a wrapper around the `tofu` CLI.
 

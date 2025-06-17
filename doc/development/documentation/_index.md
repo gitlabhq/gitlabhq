@@ -22,7 +22,7 @@ Prerequisites:
 
 To update the documentation:
 
-1. Go to the GitLab community fork [`/doc` directory](https://gitlab.com/gitlab-community/gitlab/-/tree/master/doc).
+1. In the GitLab community fork, go to the [`/doc` directory](https://gitlab.com/gitlab-community/gitlab-org/gitlab/-/tree/master/doc).
 1. Find the documentation page you want to update. If you're not sure where the page is,
    look at the URL of the page on <https://docs.gitlab.com>.
    The path is listed there.

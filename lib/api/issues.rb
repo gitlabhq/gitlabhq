@@ -2,17 +2,16 @@
 
 module API
   class Issues < ::API::Base
-    include PaginationParams
+    include ::API::Concerns::AiWorkflowsAccess
     include APIGuard
+    include PaginationParams
+
+    allow_ai_workflows_access
 
     helpers Helpers::IssuesHelpers
     helpers SpammableActions::CaptchaCheck::RestApiActionsSupport
 
     before { authenticate_non_get! }
-
-    allow_access_with_scope :ai_workflows, if: ->(request) do
-      request.get? || request.head? || request.post? || request.put?
-    end
 
     feature_category :team_planning
     urgency :low

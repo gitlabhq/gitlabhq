@@ -39,7 +39,7 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
         let(:project_id) { -1 }
 
         it 'does not close related issues' do
-          expect { perform }.to change { Issues::CloseWorker.jobs.size }.by(0)
+          expect { perform }.to not_change { Issues::CloseWorker.jobs.size }
 
           perform
         end
@@ -73,6 +73,26 @@ RSpec.describe ProcessCommitWorker, feature_category: :source_code_management do
       end
 
       context 'when commit is not a merge request merge commit' do
+        context 'when commit has work_item reference' do
+          let(:work_item) { create(:work_item, :task, project: project) }
+          let(:work_item_url) { Gitlab::UrlBuilder.build(work_item) }
+
+          before do
+            allow(commit).to receive_messages(
+              safe_message: "Ref #{work_item_url}",
+              author: author
+            )
+          end
+
+          it 'creates cross references', :sidekiq_inline do
+            expect(work_item_url).to match(%r{/work_items/\d+})
+
+            expect { perform }.to change { Note.count }.by(1)
+            created_note = Note.last
+            expect(created_note.note).to match(/mentioned in commit/)
+          end
+        end
+
         context 'when commit has issue reference' do
           before do
             allow(commit).to receive_messages(

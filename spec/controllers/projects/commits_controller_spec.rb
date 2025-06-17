@@ -88,6 +88,16 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         end
       end
 
+      context 'when branch has only empty commits' do
+        let(:id) { 'empty-branch' }
+
+        it 'allows to see commits' do
+          request
+
+          is_expected.to respond_with(:success)
+        end
+      end
+
       context "with an invalid limit" do
         let(:id) { "master/README.md" }
 

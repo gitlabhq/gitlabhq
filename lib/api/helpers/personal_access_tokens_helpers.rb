@@ -87,6 +87,24 @@ module API
           bad_request!(service.message)
         end
       end
+
+      def rotate_token_for_resource(token, resource, params)
+        response = if resource.is_a?(Project)
+                     ::ProjectAccessTokens::RotateService.new(
+                       current_user, token, resource, params).execute
+                   elsif resource.is_a?(Group)
+                     ::GroupAccessTokens::RotateService.new(
+                       current_user, token, resource, params).execute
+                   end
+
+        if response.success?
+          status :ok
+
+          response.payload[:personal_access_token]
+        else
+          bad_request!(response.message)
+        end
+      end
     end
   end
 end

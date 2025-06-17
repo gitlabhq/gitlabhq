@@ -43,7 +43,7 @@ describe('Board card component', () => {
 
   const itemWithNoLinkedItems = {
     ...mockIssue,
-    linkedWorkItems: { ...mockIssue.linkedWorkItems, nodes: [] },
+    blockedByCount: 0,
   };
 
   let wrapper;

@@ -58,13 +58,8 @@ describe('tags list row', () => {
   const getTooltipFor = (component) => getBinding(component.element, 'gl-tooltip');
   const findProtectedBadge = () => wrapper.findByTestId('protected-badge');
   const findProtectedPopover = () => wrapper.findByTestId('protected-popover');
-  const findImmutableBadge = () => wrapper.findByTestId('immutable-badge');
-  const findImmutablePopover = () => wrapper.findByTestId('immutable-popover');
 
-  const mountComponent = (
-    propsData = defaultProps,
-    { immutableTagsFeatureFlagState = false } = {},
-  ) => {
+  const mountComponent = (propsData = defaultProps) => {
     wrapper = shallowMountExtended(TagsListRow, {
       stubs: {
         GlSprintf,
@@ -75,11 +70,6 @@ describe('tags list row', () => {
       },
       propsData,
       directives: { GlTooltip: createMockDirective('gl-tooltip') },
-      provide: {
-        glFeatures: {
-          containerRegistryImmutableTags: immutableTagsFeatureFlagState,
-        },
-      },
     });
   };
 
@@ -221,56 +211,6 @@ describe('tags list row', () => {
       expect(popoverText).toContain('Minimum role to push:');
       expect(popoverText).toContain('Minimum role to delete:');
       expect(popoverText).toContain('Maintainer');
-    });
-  });
-
-  describe('immutable tag', () => {
-    const immutableProtection = {
-      minimumAccessLevelForDelete: null,
-      minimumAccessLevelForPush: null,
-      immutable: true,
-    };
-
-    it('hidden if tag.protection does not exists', () => {
-      mountComponent(defaultProps, { immutableTagsFeatureFlagState: true });
-
-      expect(findImmutableBadge().exists()).toBe(false);
-    });
-
-    it('displays if tag.protection.immutable exists', () => {
-      mountComponent(
-        {
-          ...defaultProps,
-          tag: {
-            ...tag,
-            protection: {
-              ...immutableProtection,
-            },
-          },
-        },
-        { immutableTagsFeatureFlagState: true },
-      );
-
-      expect(findImmutableBadge().text()).toBe('immutable');
-    });
-
-    it('has the correct text for the popover', () => {
-      mountComponent(
-        {
-          ...defaultProps,
-          tag: {
-            ...tag,
-            protection: {
-              ...immutableProtection,
-            },
-          },
-        },
-        { immutableTagsFeatureFlagState: true },
-      );
-
-      const popoverText = findImmutablePopover().text();
-
-      expect(popoverText).toBe('This container image tag cannot be overwritten or deleted.');
     });
   });
 

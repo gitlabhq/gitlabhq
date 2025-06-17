@@ -37,6 +37,7 @@ describe('Board Column Component', () => {
         highlightedLists,
         canAdminList,
         last,
+        columnIndex: 0,
       },
       stubs: {
         BoardAddNewColumnBetween,
@@ -123,5 +124,17 @@ describe('Board Column Component', () => {
     findList().vm.$emit('cannot-find-active-item');
 
     expect(wrapper.emitted('cannot-find-active-item')).toHaveLength(1);
+  });
+
+  it('emits `dragStart` and `dragStop` event when the board list emits the same', () => {
+    createComponent();
+
+    findList().vm.$emit('dragStart');
+
+    expect(wrapper.emitted('dragStart')).toHaveLength(1);
+
+    findList().vm.$emit('dragStop');
+
+    expect(wrapper.emitted('dragStop')).toHaveLength(1);
   });
 });

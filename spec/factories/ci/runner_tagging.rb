@@ -6,5 +6,6 @@ FactoryBot.define do
     tag factory: :ci_tag
 
     sharding_key_id { runner.sharding_key_id }
+    organization_id { runner.organization_id }
   end
 end

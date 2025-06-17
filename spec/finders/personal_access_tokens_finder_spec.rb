@@ -5,6 +5,14 @@ require 'spec_helper'
 RSpec.describe PersonalAccessTokensFinder, :enable_admin_mode, feature_category: :system_access do
   using RSpec::Parameterized::TableSyntax
 
+  before_all do
+    freeze_time
+  end
+
+  after(:all) do
+    unfreeze_time
+  end
+
   describe '#execute' do
     let_it_be(:organization) { create(:organization) }
     let_it_be(:admin) { create(:admin, organizations: [organization]) }

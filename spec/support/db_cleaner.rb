@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'test_prof/before_all/adapters/active_record'
-
 module DbCleaner
   def all_connection_classes
     ::ActiveRecord::Base.connection_handler

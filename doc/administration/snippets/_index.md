@@ -13,15 +13,15 @@ title: Snippets
 
 {{< /details >}}
 
-You can configure a maximum size for a snippet to prevent abuse.
+To prevent abuse of snippets on your instance, configure a maximum snippet size that is enforced
+when users create or update snippets. Existing snippets are not affected by the limit unless a
+user updates them, and their content changes.
+
 The default limit is 52428800 bytes (50 MB).
-The limit is applied when a snippet is created or updated.
-The limit does not affect existing snippets unless they are updated and their
-content changes.
 
 ## Configure the snippet size limit
 
-To configure the snippet size limit, you can use the Rails console
+To configure the snippet size limit, use either the Rails console
 or the [Application settings API](../../api/settings.md).
 
 The limit must be in bytes.
@@ -57,7 +57,8 @@ curl --request PUT \
   --url "https://gitlab.example.com/api/v4/application/settings?snippet_size_limit=52428800"
 ```
 
-You can also use the API to [retrieve the current value](../../api/settings.md#get-details-on-current-application-settings).
+To [retrieve the current value](../../api/settings.md#get-details-on-current-application-settings)
+from the API:
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" \

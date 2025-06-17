@@ -14,7 +14,11 @@ GitLab is built on top of (and with) Git, and provides you a Git-based, fully-in
 platform for software development. GitLab adds many powerful
 [features](https://about.gitlab.com/features/) on top of Git to enhance your workflow.
 
-| | | |
-|--|--|--|
-| [**Getting started**](get_started.md)<br>Understand Git, install, common commands, tutorial. | [**Basic operations**](basics.md)<br>Create a project, clone a repository, stash changes, branches, forks. | [**Advanced operations**](advanced.md)<br>Rebase, cherry-pick, revert changes, repository and file management. |
-| [**Troubleshooting**](troubleshooting_git.md)<br>Tips to resolve Git issues. | | |
+{{< cards >}}
+
+- [Getting started](get_started.md)
+- [Basic operations](basics.md)
+- [Advanced operations](advanced.md)
+- [Troubleshooting](troubleshooting_git.md)
+
+{{< /cards >}}

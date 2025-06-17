@@ -13,7 +13,7 @@ title: Sign-in restrictions
 
 {{< /details >}}
 
-You can use **Sign-in restrictions** to customize authentication restrictions for web interfaces as well as Git over HTTP(S).
+Use sign-in restrictions to customize authentication restrictions for web interfaces, and Git over HTTP(S).
 
 ## Settings
 
@@ -58,7 +58,7 @@ When Admin Mode is enabled, it applies to all administrators on the instance.
 When Admin Mode is enabled for an instance, administrators:
 
 - Are allowed to access group and projects for which they are members.
-- Cannot access the **Admin area**.
+- Cannot access the **Admin** area.
 
 ### Enable Admin Mode for your instance
 
@@ -147,7 +147,7 @@ To turn off Admin Mode for your current session:
 
 Admin Mode times out after six hours, and you cannot change this timeout limit.
 
-The following access methods are **not** protected by Admin Mode:
+The following access methods are not protected by Admin Mode:
 
 - Git client access (SSH using public keys or HTTPS using Personal access tokens).
 
@@ -166,13 +166,13 @@ on a secondary node. A fix is proposed when projects ([issue 367926](https://git
 
 If necessary, you can disable **Admin Mode** as an administrator by using one of these two methods:
 
-- **API**:
+- API:
 
   ```shell
   curl --request PUT --header "PRIVATE-TOKEN:$ADMIN_TOKEN" "<gitlab-url>/api/v4/application/settings?admin_mode=false"
   ```
 
-- [**Rails console**](../operations/rails_console.md#starting-a-rails-console-session):
+- [Rails console](../operations/rails_console.md#starting-a-rails-console-session):
 
   ```ruby
   ::Gitlab::CurrentSettings.update!(admin_mode: false)

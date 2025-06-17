@@ -1,6 +1,8 @@
+import path from 'node:path';
 import { generateEntries } from '../webpack.helpers';
 
 const entrypointsDir = '/javascripts/entrypoints/';
+const actualDirRoot = path.resolve(__dirname, '../../app/assets/javascripts/');
 
 /**
  * This Plugin provides virtual entrypoints for our automatic
@@ -24,7 +26,7 @@ export function PageEntrypointsPlugin() {
     const importPath = modulePath.startsWith('./') ? `~/${modulePath.substring(2)}` : modulePath;
     acc[`${entryName}.js`] = {
       virtual: `${comment}/* ${modulePath} */ import '${importPath}';\n`,
-      actual: `${importPath.replace('~/', './app/assets/javascripts/')}`,
+      actual: `${importPath.replace('~/', `${actualDirRoot}/`)}`,
     };
     return acc;
   }, {});

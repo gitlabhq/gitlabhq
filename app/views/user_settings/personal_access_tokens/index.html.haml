@@ -5,7 +5,7 @@
 - @force_desktop_expanded_sidebar = true
 
 - if Feature.enabled?(:migrate_user_access_tokens_ui, current_user)
-  #js-shared-access-token-app{ data: personal_access_token_data }
+  #js-shared-access-token-app{ data: personal_access_token_data(@personal_access_token) }
 - else
   = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
     - c.with_description do

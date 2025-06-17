@@ -9,7 +9,7 @@ module Gitlab
 
       attr_accessor :issues, :external_url, :project
 
-      alias_attribute :gitlab_project, :project
+      alias_method :gitlab_project, :project
 
       def initialize(project:, external_url: nil, issues: [])
         @project = project

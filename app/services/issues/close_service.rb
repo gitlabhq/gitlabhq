@@ -3,10 +3,10 @@
 module Issues
   class CloseService < Issues::BaseService
     # Closes the supplied issue if the current user is able to do so.
-    def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false)
+    def execute(issue, commit: nil, notifications: true, system_note: true, skip_authorization: false, status: nil)
       return issue unless can_close?(issue, skip_authorization: skip_authorization)
 
-      close_issue(issue, closed_via: commit, notifications: notifications, system_note: system_note)
+      close_issue(issue, closed_via: commit, notifications: notifications, system_note: system_note, status: status)
     end
 
     # Closes the supplied issue without checking if the user is authorized to
@@ -14,7 +14,7 @@ module Issues
     #
     # The code calling this method is responsible for ensuring that a user is
     # allowed to close the given issue.
-    def close_issue(issue, closed_via: nil, notifications: true, system_note: true)
+    def close_issue(issue, closed_via: nil, notifications: true, system_note: true, status: nil)
       if issue.is_a?(ExternalIssue)
         close_external_issue(issue, closed_via)
 
@@ -23,7 +23,7 @@ module Issues
 
       return issue unless handle_closing_issue!(issue, current_user)
 
-      after_close(issue, closed_via: closed_via, notifications: notifications, system_note: system_note)
+      after_close(issue, status, closed_via: closed_via, notifications: notifications, system_note: system_note)
     end
 
     private
@@ -34,7 +34,7 @@ module Issues
     end
 
     # overriden in EE
-    def after_close(issue, closed_via: nil, notifications: true, system_note: true)
+    def after_close(issue, _status, closed_via: nil, notifications: true, system_note: true)
       event_service.close_issue(issue, current_user)
       create_note(issue, closed_via) if system_note
 
@@ -45,7 +45,13 @@ module Issues
 
       closed_via = _("commit %{commit_id}") % { commit_id: closed_via.id } if closed_via.is_a?(Commit)
 
-      notification_service.async.close_issue(issue, current_user, { closed_via: closed_via }) if notifications
+      if notifications
+        user = current_user
+        issue.run_after_commit_or_now do
+          NotificationService.new.async.close_issue(issue, user, { closed_via: closed_via })
+        end
+      end
+
       todo_service.close_issue(issue, current_user)
       perform_incident_management_actions(issue)
       execute_hooks(issue, 'close')

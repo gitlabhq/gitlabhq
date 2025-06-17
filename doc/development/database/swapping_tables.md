@@ -9,8 +9,7 @@ Sometimes you need to replace one table with another. For example, when
 migrating data in a very large table it's often better to create a copy of the
 table and insert & migrate the data into this new table in the background.
 
-Let's say you want to swap the table `events` with `events_for_migration`. In
-this case you need to follow 3 steps:
+For example, to swap a table called `events` with another table called `events_for_migration`, you would need to:
 
 1. Rename `events` to `events_temporary`
 1. Rename `events_for_migration` to `events`
@@ -25,7 +24,7 @@ rename_table :events_temporary, :events_for_migration
 ```
 
 This does not require any downtime as long as the 3 `rename_table` calls are
-executed in the _same_ database transaction. Rails by default uses database
+executed in the same database transaction. Rails by default uses database
 transactions for migrations, but if it doesn't you need to start one
 manually:
 

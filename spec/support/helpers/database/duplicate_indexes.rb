@@ -25,12 +25,7 @@ module Database
     end
 
     def self.btree_index_struct(index)
-      columns =
-        if ::Gitlab.next_rails?
-          Array.wrap(index.columns) + Array.wrap(index.include)
-        else
-          Array.wrap(index.columns)
-        end
+      columns = Array.wrap(index.columns) + Array.wrap(index.include)
 
       BTREE_INDEX_STRUCT.new(
         index.name,

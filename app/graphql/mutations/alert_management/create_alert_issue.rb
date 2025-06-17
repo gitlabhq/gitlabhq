@@ -7,6 +7,10 @@ module Mutations
 
       def resolve(args)
         alert = authorized_find!(project_path: args[:project_path], iid: args[:iid])
+        if Feature.enabled?(:hide_incident_management_features, alert.project)
+          raise_resource_not_available_error! 'This feature is not available.'
+        end
+
         result = create_alert_issue(alert, current_user)
 
         track_alert_events('incident_management_incident_created', alert)

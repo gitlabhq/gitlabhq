@@ -66,11 +66,11 @@ To migrate an existing compliance framework to use the pipeline execution policy
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Compliance center**.
-1. [Edit](compliance_frameworks.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
+1. [Edit](compliance_frameworks/_index.md#create-edit-or-delete-a-compliance-framework) the existing compliance framework.
 1. In the banner than appears, select **Migrate pipeline to a policy** to create a new policy in the security policies.
 1. Edit the compliance framework again to remove the compliance pipeline.
 
-For more information, see [Security policy project](../application_security/policies/_index.md#security-policy-project).
+For more information, see [Security policy project](../application_security/policies/security_policy_projects.md).
 
 If you receive a `Pipeline execution policy error: Job names must be unique` error during the migration, see the
 [relevant troubleshooting information](#error-job-names-must-be-unique).
@@ -88,7 +88,7 @@ Therefore, communicate with project users about compliance pipeline configuratio
 
 ### Multiple compliance frameworks
 
-You can [apply to a single project](compliance_frameworks.md#apply-a-compliance-framework-to-a-project) multiple compliance frameworks with compliance pipelines configured.
+You can [apply to a single project](compliance_frameworks/_index.md#apply-a-compliance-framework-to-a-project) multiple compliance frameworks with compliance pipelines configured.
 In this case, only the first compliance framework applied to a project has its compliance pipeline included in the project pipeline.
 
 To ensure that the correct compliance pipeline is included in a project:
@@ -125,7 +125,7 @@ The user running the pipeline in the labeled project must at least have the Repo
 When used to enforce scan execution, this feature has some overlap with
 [scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
 [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312). For details on
-the similarities and differences between these features, see [Enforce scan execution](../application_security/_index.md#enforce-scan-execution).
+the similarities and differences between these features, see [Scan execution policy compared to compliance framework](../application_security/detect/security_configuration.md#scan-execution-policy-compared-to-compliance-framework).
 
 ### Example configuration
 
@@ -206,7 +206,7 @@ You can leave it out if your compliance pipeline only ever runs in labeled proje
 
 #### Compliance pipelines and custom pipeline configuration hosted externally
 
-The example above assumes that all projects host their pipeline configuration in the same project.
+The previous example assumes that all projects host their pipeline configuration in the same project.
 If any projects use [configuration hosted externally](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
 the example configuration does not work. See [issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960)
 for more details.
@@ -242,7 +242,7 @@ With projects that use externally hosted configuration, you can try the this wor
 #### Compliance pipelines in merge requests originating in project forks
 
 When a merge request originates in a fork, the branch to be merged usually only exists in the fork.
-When creating such a merge request against a project with compliance pipelines, the above snippet fails with a
+When creating such a merge request against a project with compliance pipelines, the previous snippet fails with a
 `Project <project-name> reference <branch-name> does not exist!` error message.
 This error occurs because in the context of the target project, `$CI_COMMIT_REF_NAME` evaluates to a non-existing
 branch name.
@@ -270,7 +270,7 @@ include:  # Execute individual project's configuration (if project contains .git
 
 #### Compliance pipelines in projects with no configuration file
 
-The [example configuration](#example-configuration) above assumes that all projects contain
+The [example configuration](#example-configuration) assumes that all projects contain
 a pipeline configuration file (`.gitlab-ci.yml` by default). However, in projects
 with no configuration file (and therefore no pipelines by default), the compliance pipeline
 fails because the file specified in `include:project` is required.
@@ -295,7 +295,7 @@ In this example, a configuration file is only included if it exists for the give
 in the project in `exists:project: $CI_PROJECT_PATH'`.
 
 If `exists:project` is not specified in the compliance pipeline configuration, it searches for files in the project
-in which the `include` is defined. In compliance pipelines, the `include` from the example above
+in which the `include` is defined. In compliance pipelines, the `include` from the previous example
 is defined in the project hosting the compliance pipeline configuration file, not the project
 running the pipeline.
 

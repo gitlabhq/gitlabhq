@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Groups
+description: Project management, access control, client groups, and team groups.
 ---
 
 {{< details >}}
@@ -413,8 +414,8 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 - For GitLab Self-Managed instances:
-  - If [New sign-ups are disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
-  - If [User invitations are disabled](../../administration/settings/visibility_and_access_controls.md#disable-user-invitations), an administrator must add the user.
+  - If [new sign-ups are disabled](../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [user invitations are not allowed](../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects), an administrator must add the user.
   - If [administrator approval is enabled](../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 1. On the left sidebar, select **Search or go to** and find your group.

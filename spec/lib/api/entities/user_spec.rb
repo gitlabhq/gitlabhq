@@ -19,7 +19,7 @@ RSpec.describe API::Entities::User do
       :state, :locked, :avatar_url, :web_url,
       # User
       :created_at, :bio, :location, :public_email, :skype, :linkedin, :twitter, :discord,
-      :website_url, :organization, :job_title, :pronouns, :bot, :work_information,
+      :github, :website_url, :organization, :job_title, :pronouns, :bot, :work_information,
       :followers, :following, :is_followed, :local_time
     )
   end

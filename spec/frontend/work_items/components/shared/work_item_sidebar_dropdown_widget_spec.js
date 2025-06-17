@@ -194,26 +194,20 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
   describe('watcher', () => {
     describe('when createdLabelId prop is updated', () => {
-      it('appends itself to the selected items list', async () => {
-        createComponent({
-          isEditing: true,
-          itemValue: ['gid://gitlab/Label/11', 'gid://gitlab/Label/22'],
-          multiSelect: true,
-        });
+      it('emits "updateValue" event on listbox hide', async () => {
+        createComponent({ isEditing: true, multiSelect: true });
         await nextTick();
 
-        expect(findCollapsibleListbox().props('selected')).toEqual([
-          'gid://gitlab/Label/11',
-          'gid://gitlab/Label/22',
-        ]);
+        findCollapsibleListbox().vm.$emit('hidden');
+        await nextTick();
 
+        expect(wrapper.emitted('updateValue')).toBeUndefined();
+
+        findEditButton().vm.$emit('click');
         await wrapper.setProps({ createdLabelId: 'gid://gitlab/Label/33' });
+        findCollapsibleListbox().vm.$emit('hidden');
 
-        expect(findCollapsibleListbox().props('selected')).toEqual([
-          'gid://gitlab/Label/11',
-          'gid://gitlab/Label/22',
-          'gid://gitlab/Label/33',
-        ]);
+        expect(wrapper.emitted('updateValue')).toBeDefined();
       });
     });
   });
@@ -234,7 +228,7 @@ describe('WorkItemSidebarDropdownWidget component', () => {
 
     it('shows tooltip with key when shortcut is provided', () => {
       createComponent({ canUpdate: true, shortcut });
-      const expectedTooltip = 'Edit dropdown <kbd aria-hidden="true" class="flat gl-ml-1">e</kbd>';
+      const expectedTooltip = 'Edit dropdown <kbd class="flat gl-ml-1" aria-hidden="true">e</kbd>';
 
       expect(findEditButton().attributes('title')).toContain(expectedTooltip);
     });

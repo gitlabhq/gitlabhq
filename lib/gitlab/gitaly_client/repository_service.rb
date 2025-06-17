@@ -65,6 +65,18 @@ module Gitlab
         response.size
       end
 
+      def migrate_reference_backend(to_reftable: false)
+        target = if to_reftable
+                   Gitaly::MigrateReferenceBackendRequest::ReferenceBackend::REFERENCE_BACKEND_REFTABLE
+                 else
+                   Gitaly::MigrateReferenceBackendRequest::ReferenceBackend::REFERENCE_BACKEND_FILES
+                 end
+
+        request = Gitaly::MigrateReferenceBackendRequest.new(repository: @gitaly_repo, target_reference_backend: target)
+
+        gitaly_client_call(@storage, :repository_service, :migrate_reference_backend, request, timeout: GitalyClient.medium_timeout)
+      end
+
       def info_attributes
         request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
 

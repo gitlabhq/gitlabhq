@@ -2,8 +2,6 @@
 
 module Oauth
   class DeviceAuthorizationsController < Doorkeeper::DeviceAuthorizationGrant::DeviceAuthorizationsController
-    include ViteCSP
-
     layout 'minimal'
 
     def index

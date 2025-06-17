@@ -10,6 +10,8 @@ module Packages
         end
       rescue ::Packages::DuplicatePackageError => e
         ServiceResponse.error(message: e.message, reason: :package_file_already_exists)
+      rescue ::Packages::PackageProtectedError
+        ::Packages::CreatePackageService::ERROR_RESPONSE_PACKAGE_PROTECTED
       end
 
       private
@@ -22,9 +24,13 @@ module Packages
           status: params[:status]
         }
 
-        package = ::Packages::Generic::FindOrCreatePackageService
+        response = ::Packages::Generic::FindOrCreatePackageService
           .new(project, current_user, package_params)
           .execute
+
+        raise ::Packages::PackageProtectedError, response.message if response.cause.package_protected?
+
+        package = response[:package]
 
         unless Namespace::PackageSetting.duplicates_allowed?(package)
           raise ::Packages::DuplicatePackageError if target_file_is_duplicate?(package)

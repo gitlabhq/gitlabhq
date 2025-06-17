@@ -147,7 +147,7 @@
 .issuable-note-warning {
   color: $orange-600;
   background-color: $orange-50;
-  @apply gl-rounded-t-base gl-rounded-b-none;
+  @apply gl-rounded-t-lg gl-rounded-b-none;
   padding: 3px 12px;
   margin: auto;
   align-items: center;
@@ -261,10 +261,6 @@ table {
   .md-area-wrapper {
     @apply gl-bg-subtle;
   }
-
-  .md-area {
-    @apply gl-rounded-base;
-  }
 }
 
 .js-note-attachment-delete {
@@ -297,7 +293,7 @@ table {
 .commit-diff {
   .discussion-reply-holder {
     padding: 0 $gl-padding $gl-padding-12 $gl-padding;
-    @apply gl-rounded-t-none gl-rounded-b-base;
+    @apply gl-rounded-t-none gl-rounded-b-lg;
 
     + .new-note {
       @apply gl-border-t gl-border-t-subtle;
@@ -487,4 +483,8 @@ table {
 .comment-warning-wrapper {
   transition: border-color ease-in-out 0.15s,
     box-shadow ease-in-out 0.15s;
+}
+
+.text-file .notes-content {
+  @apply gl-rounded-b-none;
 }

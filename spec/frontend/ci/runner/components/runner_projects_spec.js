@@ -186,6 +186,30 @@ describe('RunnerProjects', () => {
 
         expect(mockRunnerProjectsQuery).toHaveBeenCalledTimes(1);
       });
+
+      describe('No results', () => {
+        beforeEach(() => {
+          runnerProjectsData.data.runner.projectCount = 1;
+          runnerProjectsData.data.runner.projects = {
+            nodes: [],
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: '',
+              endCursor: '',
+            },
+          };
+
+          mockRunnerProjectsQuery.mockResolvedValueOnce(runnerProjectsData);
+
+          findGlSearchBoxByType().vm.$emit('input', 'my search');
+          return waitForPromises();
+        });
+
+        it('renders the list', () => {
+          expect(findCrud().exists()).toBe(true);
+        });
+      });
     });
   });
 

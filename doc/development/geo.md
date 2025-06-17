@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Geo
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Geo (development)
 ---
 
@@ -10,7 +10,7 @@ designated as a **primary** site and can be run with multiple
 **secondary** sites. Geo orchestrates quite a few components that can be seen on
 the diagram below and are described in more detail in this document.
 
-![Geo Architecture Diagram](../administration/geo/replication/img/geo_architecture_v13_8.png)
+![Geo Architecture Diagram](img/geo_architecture_v13_8.png)
 
 ## Replication layer
 

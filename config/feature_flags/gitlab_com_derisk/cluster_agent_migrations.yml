@@ -1,9 +1,0 @@
----
-name: cluster_agent_migrations
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510703
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179947
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/516955
-milestone: '17.9'
-group: group::environments
-type: gitlab_com_derisk
-default_enabled: false

@@ -11,13 +11,13 @@ Verify session cookie has correct flags and expiration.
 
 ## Remediation
 
-Since HTTP is a stateless protocol, web sites commonly use cookies to store
+HTTP is a stateless protocol, so websites commonly use cookies to store
 session IDs that uniquely identify a user from request to request. Consequently,
 each session ID's confidentiality must be maintained in order to prevent
 multiple users from accessing the same account. A stolen session ID can be used
 to view another user's account or perform a fraudulent transaction.
 
-- One part of securing session ID's is to property mark them to expire and also
+- One part of securing session IDs is to properly mark them to expire and also
   require the correct set of flags to ensure they are not transmitted in the
   clear or accessible from scripting.
 - HttpOnly is an additional flag included in a Set-Cookie HTTP response header.
@@ -37,14 +37,7 @@ to view another user's account or perform a fraudulent transaction.
 - Insufficient Session Expiration occurs when a Web application permits an
   attacker to reuse old session credentials or session IDs for authorization.
   Insufficient Session Expiration increases a website's exposure to attacks that
-  steal or reuse user's session identifiers. Since HTTP is a stateless protocol,
-  websites commonly use cookies to store session IDs that uniquely identify a
-  user from request to request. Consequently, each session ID's confidentiality
-  must be maintained in order to prevent multiple users from accessing the same
-  account. A stolen session ID can be used to view another user's account or
-  perform a fraudulent transaction. One part of securing session ID's is to
-  property mark them to expire and also require the correct set of flags to
-  ensure they are not transmitted in the clear or accessible from scripting.
+  steal or reuse a user's session identifiers.
 
 ## Links
 

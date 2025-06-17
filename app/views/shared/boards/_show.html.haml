@@ -4,10 +4,13 @@
 - @content_wrapper_class = "#{@content_wrapper_class} gl-relative gl-pb-0"
 - @content_class = "issue-boards-content js-focus-mode-board"
 - is_epic_board = board.to_type == "EpicBoard"
-- if is_epic_board
-  - breadcrumb_title _("Epic Boards")
-- else
-  - breadcrumb_title _("Issue Boards")
+- title = is_epic_board ? _("Epic Boards") : _("Issue Boards")
+- page_title title
+- breadcrumb_title title
+
+%h1.gl-sr-only= title
+
+- if !is_epic_board
   = render 'shared/alerts/positioning_disabled'
 
 = content_for :after_content do

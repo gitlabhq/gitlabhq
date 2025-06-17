@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: API style guide
 ---
 
@@ -280,9 +280,9 @@ the `update` method in controllers. With Grape, the framework we use to write
 the GitLab API, you must explicitly set the `PATCH` or `PUT` HTTP verb for an
 endpoint that does updates.
 
-If the endpoint updates *all* attributes of a given resource, use the
+If the endpoint updates all attributes of a given resource, use the
 [`PUT`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PUT) request
-method. If the endpoint updates *some* attributes of a given resource, use the
+method. If the endpoint updates some attributes of a given resource, use the
 [`PATCH`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/PATCH)
 request method.
 

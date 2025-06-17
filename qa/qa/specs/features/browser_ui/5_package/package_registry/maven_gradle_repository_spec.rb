@@ -103,7 +103,7 @@ module QA
           end
 
           Page::Project::Packages::Show.perform do |show|
-            expect(show).to have_package_info(package_name, package_version)
+            expect(show).to have_package_info(name: nil, version: package_version)
           end
         end
       end

@@ -26,7 +26,7 @@
         - if can?(current_user, :register_group_runners, @project.group) || can?(current_user, :create_runner, @project.group)
           - group_link_start = "<a href='#{group_runners_path(@project.group)}'>".html_safe
           - group_link_end = '</a>'.html_safe
-          = s_("Runners|To register them, go to the %{link_start}group's Runners page%{link_end}.").html_safe % { link_start: group_link_start, link_end: group_link_end }
+          = s_("Runners|To register them, go to the %{linkStart}group's Runners page%{linkEnd}.").html_safe % { linkStart: group_link_start, linkEnd: group_link_end }
         - else
           = _('Ask your group owner to set up a group runner.')
 

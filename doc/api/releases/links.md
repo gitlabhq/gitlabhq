@@ -18,10 +18,19 @@ title: Release links API
 
 {{< /history >}}
 
-Use this API to manipulate GitLab [Release](../../user/project/releases/_index.md)
-links. For manipulating other Release assets, see [Release API](_index.md).
+Use this API to interact with links to [releases](../../user/project/releases/_index.md).
 
-GitLab supports links to `http`, `https`, and `ftp` assets.
+GitLab supports asset links with the following protocols:
+
+- `http`
+- `https`
+- `ftp`
+
+{{< alert type="note" >}}
+
+To interact with project releases directly, see the [project release API](_index.md).
+
+{{< /alert >}}
 
 ## List links of a release
 

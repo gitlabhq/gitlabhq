@@ -3,8 +3,8 @@ stages:
     display_name: "Manage"
     section: core_platform
     groups:
-      import_and_integrate:
-        name: Import and Integrate
+      import:
+        name: Import
       foundations:
         name: Foundations
 

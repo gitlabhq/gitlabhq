@@ -28,9 +28,12 @@ module Resolvers
 
       def preloads
         {
-          user: [{ user: [:identities] }]
+          user: [:user],
+          badges: [{ user: [:identities] }]
         }
       end
     end
   end
 end
+
+Resolvers::Organizations::OrganizationUsersResolver.prepend_mod

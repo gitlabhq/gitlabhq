@@ -831,3 +831,40 @@ export function stripRelativeUrlRootFromPath(path) {
 
   return joinPaths('/', path.substring(relativeUrlRoot.length));
 }
+
+const LINE_RANGE_HASH_REGEX = /^#L(\d+)(?:-(\d+))?$/;
+
+/**
+ * Retrieves the line number range from the url hash if it exists.
+ *
+ * @param {string} [hash=window.location.hash] - The URL hash string to parse. Defaults to the current window's location hash.
+ *
+ * @returns {{beginning: number, end: number}| null} An object containing the line number range selected,
+ *                   otherwise returns null
+ */
+export const getLineRangeFromHash = (hash = window.location.hash) => {
+  const match = hash.match(LINE_RANGE_HASH_REGEX);
+  if (!match || !match[1]) return null;
+
+  const beginning = parseInt(match[1], 10);
+  // If there's a second number (end of range), use it; otherwise use the start number
+  const end = match[2] ? parseInt(match[2], 10) : beginning;
+
+  return { beginning, end };
+};
+
+/**
+ * Appends the current window's line reference hash to a URL if it exists.
+ *
+ * @param {string} url - The base URL to which the line reference should be appended
+ * @param {string} [hash=window.location.hash] - The hash string to check and potentially append. Defaults to the current window's location hash.
+ * @returns {string} The URL with the line reference hash appended if the current window's
+ *                   hash matches the line reference pattern (#L<number> or #L<number>-<number>),
+ *                   otherwise returns the original URL unchanged
+ */
+export function appendLineRangeHashToUrl(url, hash = window.location.hash) {
+  if (LINE_RANGE_HASH_REGEX.test(hash)) {
+    return url + hash;
+  }
+  return url;
+}

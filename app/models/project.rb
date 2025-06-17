@@ -43,7 +43,6 @@ class Project < ApplicationRecord
   include Subquery
   include WorkItems::Parent
   include UpdatedAtFilterable
-  include CrossDatabaseIgnoredTables
   include UseSqlFunctionForPrimaryKeyLookups
   include Importable
   include SafelyChangeColumnDefault
@@ -53,8 +52,6 @@ class Project < ApplicationRecord
   columns_changing_default :organization_id
 
   ignore_column :emails_disabled, remove_with: '16.3', remove_after: '2023-08-22'
-
-  cross_database_ignore_tables %w[routes redirect_routes], url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/424277'
 
   extend Gitlab::Cache::RequestCache
   extend Gitlab::Utils::Override
@@ -537,6 +534,7 @@ class Project < ApplicationRecord
   accepts_nested_attributes_for :prometheus_integration, update_only: true
   accepts_nested_attributes_for :alerting_setting, update_only: true
 
+  delegate :deletion_schedule, to: :project_namespace, allow_nil: true
   delegate :merge_requests_access_level, :forking_access_level, :issues_access_level, :wiki_access_level, :snippets_access_level, :builds_access_level, :repository_access_level, :package_registry_access_level, :pages_access_level, :metrics_dashboard_access_level, :analytics_access_level, :operations_access_level, :security_and_compliance_access_level, :container_registry_access_level, :environments_access_level, :feature_flags_access_level, :monitor_access_level, :releases_access_level, :infrastructure_access_level, :model_experiments_access_level, :model_registry_access_level, to: :project_feature, allow_nil: true
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :jira_dvcs_server_last_sync_at, to: :feature_usage
@@ -589,6 +587,7 @@ class Project < ApplicationRecord
     delegate :previous_default_branch, :previous_default_branch=
     delegate :squash_option, :squash_option=
     delegate :extended_prat_expiry_webhooks_execute, :extended_prat_expiry_webhooks_execute=
+    delegate :protect_merge_request_pipelines, :protect_merge_request_pipelines=, :protect_merge_request_pipelines?
 
     with_options allow_nil: true do
       delegate :merge_commit_template, :merge_commit_template=
@@ -600,6 +599,7 @@ class Project < ApplicationRecord
       delegate :duo_features_enabled, :duo_features_enabled=
       delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=
       delegate :merge_request_title_regex, :merge_request_title_regex=
+      delegate :web_based_commit_signing_enabled, :web_based_commit_signing_enabled=
     end
   end
 
@@ -659,12 +659,29 @@ class Project < ApplicationRecord
   scope :not_hidden, -> { where(hidden: false) }
   scope :not_in_groups, ->(groups) { where.not(group: groups) }
   scope :by_not_in_root_id, ->(root_id) { joins(:project_namespace).where('namespaces.traversal_ids[1] NOT IN (?)', root_id) }
+
+  scope :aimed_for_deletion, -> { where.not(marked_for_deletion_at: nil).without_deleted }
+  scope :self_or_ancestors_aimed_for_deletion, -> do
+    left_joins(:group)
+      .where.not(marked_for_deletion_at: nil)
+      .or(where(Group.self_or_ancestors_deletion_schedule_subquery.exists))
+      .without_deleted
+  end
+
   scope :not_aimed_for_deletion, -> { where(marked_for_deletion_at: nil).without_deleted }
-  scope :aimed_for_deletion, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
-  scope :with_deleting_user, -> { includes(:deleting_user) }
-  scope :by_marked_for_deletion_on, ->(marked_for_deletion_on) do
+  scope :self_and_ancestors_not_aimed_for_deletion, -> do
+    left_joins(:group)
+      .where(marked_for_deletion_at: nil)
+      .where.not(Group.self_or_ancestors_deletion_schedule_subquery.exists)
+      .without_deleted
+  end
+
+  scope :marked_for_deletion_before, ->(date) { where('marked_for_deletion_at <= ?', date).without_deleted }
+  scope :marked_for_deletion_on, ->(marked_for_deletion_on) do
     where(marked_for_deletion_at: marked_for_deletion_on)
   end
+
+  scope :with_deleting_user, -> { includes(:deleting_user) }
 
   scope :with_storage_feature, ->(feature) do
     where(arel_table[:storage_version].gteq(HASHED_STORAGE_FEATURES[feature]))
@@ -799,8 +816,24 @@ class Project < ApplicationRecord
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
   scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
+
   scope :archived, -> { where(archived: true) }
+  scope :self_or_ancestors_archived, -> do
+    left_joins(:group)
+      .where(archived: true)
+      .or(where(Group.self_or_ancestors_archived_setting_subquery.exists))
+  end
+
   scope :non_archived, -> { where(archived: false) }
+  scope :self_and_ancestors_non_archived, -> do
+    left_joins(:group)
+      .where(archived: false)
+      .where.not(Group.self_or_ancestors_archived_setting_subquery.exists)
+  end
+
+  scope :self_and_ancestors_active, -> { self_and_ancestors_non_archived.self_and_ancestors_not_aimed_for_deletion }
+  scope :self_or_ancestors_inactive, -> { self_or_ancestors_archived.or(self_or_ancestors_aimed_for_deletion) }
+
   scope :with_push, -> { joins(:events).merge(Event.pushed_action) }
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_jira_dvcs_server, -> { joins(:feature_usage).merge(ProjectFeatureUsage.with_jira_dvcs_integration_enabled(cloud: false)) }
@@ -1529,8 +1562,10 @@ class Project < ApplicationRecord
   end
 
   def merge_base_commit(first_commit_id, second_commit_id)
-    sha = repository.merge_base(first_commit_id, second_commit_id)
-    commit_by(oid: sha) if sha
+    strong_memoize(:"merge_base_commit_#{first_commit_id}_#{second_commit_id}") do
+      sha = repository.merge_base(first_commit_id, second_commit_id)
+      commit_by(oid: sha) if sha
+    end
   end
 
   def saved?
@@ -1782,13 +1817,13 @@ class Project < ApplicationRecord
   end
 
   def pages_https_only
-    return false unless Gitlab.config.pages.external_https
+    return false unless Gitlab.config.pages.external_https || Gitlab.config.pages.custom_domain_mode == 'https'
 
     super
   end
 
   def pages_https_only?
-    return false unless Gitlab.config.pages.external_https
+    return false unless Gitlab.config.pages.external_https || Gitlab.config.pages.custom_domain_mode == 'https'
 
     super
   end
@@ -2694,7 +2729,7 @@ class Project < ApplicationRecord
     Gitlab::Ci::Variables::Collection.new
       .append(key: 'CI', value: 'true')
       .append(key: 'GITLAB_CI', value: 'true')
-      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab_ci.server_fqdn)
+      .append(key: 'CI_SERVER_FQDN', value: Gitlab.config.gitlab.server_fqdn)
       .append(key: 'CI_SERVER_URL', value: Gitlab.config.gitlab.url)
       .append(key: 'CI_SERVER_HOST', value: Gitlab.config.gitlab.host)
       .append(key: 'CI_SERVER_PORT', value: Gitlab.config.gitlab.port.to_s)
@@ -3362,8 +3397,14 @@ class Project < ApplicationRecord
       end
   end
 
-  def pending_delete_or_hidden?
-    pending_delete? || hidden?
+  # Overriding of Namespaces::AdjournedDeletable method
+  override :self_deletion_in_progress?
+  def self_deletion_in_progress?
+    pending_delete?
+  end
+
+  def self_deletion_in_progress_or_hidden?
+    self_deletion_in_progress? || hidden?
   end
 
   def work_items_feature_flag_enabled?
@@ -3376,6 +3417,10 @@ class Project < ApplicationRecord
 
   def work_items_alpha_feature_flag_enabled?
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
+  end
+
+  def work_item_epic_milestones_feature_flag_enabled?
+    group&.work_item_epic_milestones_feature_flag_enabled? || Feature.enabled?(:work_item_epic_milestones, type: :beta)
   end
 
   def work_item_status_feature_available?
@@ -3542,9 +3587,9 @@ class Project < ApplicationRecord
     end
   end
 
-  def has_container_registry_protected_tag_rules?(action:, access_level:)
-    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level) do
-      container_registry_protection_tag_rules.for_actions_and_access([action], access_level).exists?
+  def has_container_registry_protected_tag_rules?(action:, access_level:, include_immutable: true)
+    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level, include_immutable) do
+      container_registry_protection_tag_rules.for_actions_and_access([action], access_level, include_immutable:).exists?
     end
   end
 

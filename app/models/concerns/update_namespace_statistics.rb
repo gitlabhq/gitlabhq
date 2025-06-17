@@ -11,7 +11,7 @@
 #   include UpdateNamespaceStatistics
 #
 #   belongs_to :group
-#   alias_attribute :namespace, :group
+#   alias_method :namespace, :group
 #
 #   update_namespace_statistics namespace_statistics_name: :dependency_proxy_size
 # end

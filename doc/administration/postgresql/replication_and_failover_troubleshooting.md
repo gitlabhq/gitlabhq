@@ -129,8 +129,8 @@ This may be required if your Patroni cluster is in an unknown or bad state and n
 +-------------------------------------+--------------+---------+---------+----+-----------+
 ```
 
-**Before deleting the Patroni state in Consul**,
-[try and resolve the `gitlab-ctl` errors](#errors-running-gitlab-ctl) on the Patroni nodes.
+Before deleting the Patroni state in Consul,
+[try to resolve the `gitlab-ctl` errors](#errors-running-gitlab-ctl) on the Patroni nodes.
 
 This process results in a reinitialized Patroni cluster when
 the first Patroni node starts.
@@ -142,7 +142,7 @@ To reset the Patroni state in Consul:
    - Look on the PgBouncer nodes in `/var/opt/gitlab/consul/databases.ini`,
      which contains the hostname of the current leader.
    - Look in the Patroni logs `/var/log/gitlab/patroni/current` (or the older rotated and
-     compressed logs `/var/log/gitlab/patroni/@40000*`) on **all** database nodes to see
+     compressed logs `/var/log/gitlab/patroni/@40000*`) on all database nodes to see
      which server was most recently identified as the leader by the cluster:
 
      ```plaintext
@@ -278,10 +278,14 @@ the current state of PostgreSQL on this node is discarded:
    sudo rm -rf data
    ```
 
-   **Take care with this step to avoid data loss**.
+   {{< alert type="warning" >}}
+
+   Take care with this step to avoid data loss.
    This step can be also achieved by renaming `data/`:
    make sure there's enough free disk for a new copy of the primary database,
    and remove the extra directory when the replica is fixed.
+
+   {{< /alert >}}
 
 1. With PostgreSQL not running, the nodes file now gets created successfully:
 
@@ -314,13 +318,13 @@ the current state of PostgreSQL on this node is discarded:
    sudo gitlab-ctl patroni reinitialize-replica
    ```
 
-If this procedure doesn't work **and** if the cluster is unable to elect a leader,
+If this procedure doesn't work and if the cluster is unable to elect a leader,
 [there is a another fix](#reset-the-patroni-state-in-consul) which should only be
 used as a last resort.
 
 ## PostgreSQL major version upgrade fails on a Patroni replica
 
-A Patroni **replica** can get stuck in a loop during `gitlab-ctl pg-upgrade`, and
+A Patroni replica can get stuck in a loop during `gitlab-ctl pg-upgrade`, and
 the upgrade fails.
 
 An example set of symptoms is as follows:
@@ -355,7 +359,7 @@ An example set of symptoms is as follows:
    ERROR: Error when fetching backup: pg_basebackup exited with code=1
    ```
 
-**Important**: This workaround applies when the Patroni cluster is in the following state:
+This workaround applies when the Patroni cluster is in the following state:
 
 - The [leader has been successfully upgraded to the new major version](replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
 - The step to upgrade PostgreSQL on replicas is failing.

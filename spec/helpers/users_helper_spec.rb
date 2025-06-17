@@ -21,6 +21,12 @@ RSpec.describe UsersHelper, feature_category: :user_management do
       it { is_expected.to be true }
     end
 
+    context 'when user has ORCID' do
+      let_it_be(:user) { create(:user, orcid: '1234-1234-1234-1234') }
+
+      it { is_expected.to be true }
+    end
+
     context 'when user has public email' do
       let_it_be(:user) { create(:user, :public_email) }
 
@@ -29,6 +35,12 @@ RSpec.describe UsersHelper, feature_category: :user_management do
 
     context 'when user public email is blank' do
       let_it_be(:user) { create(:user, public_email: '') }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when user ORCID is blank' do
+      let_it_be(:user) { create(:user, orcid: '') }
 
       it { is_expected.to be false }
     end
@@ -316,7 +328,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     context 'with an external user' do
       let(:user) { create(:user, external: true) }
 
-      it { is_expected.to match_array([{ text: s_("AdminUsers|External"), variant: "secondary" }]) }
+      it { is_expected.to match_array([{ text: s_("AdminUsers|External"), variant: "muted" }]) }
     end
 
     context 'with the current user' do
@@ -339,7 +351,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
           [
             { text: s_("AdminUsers|Blocked"), variant: "danger" },
             { text: s_("AdminUsers|Admin"), variant: "success" },
-            { text: s_("AdminUsers|External"), variant: "secondary" }
+            { text: s_("AdminUsers|External"), variant: "muted" }
           ])
       end
     end

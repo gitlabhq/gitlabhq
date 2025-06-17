@@ -15,19 +15,17 @@ title: Issue closing pattern
 
 {{< alert type="note" >}}
 
-This page explains how an administrator can configure issue closing patterns.
-For user documentation about the feature, see
+For user documentation about issue closing patterns, see
 [Closing issues automatically](../user/project/issues/managing_issues.md#closing-issues-automatically).
 
 {{< /alert >}}
 
 When a commit or merge request resolves one or more issues, GitLab can close those issues when the
-commit or merge request lands in the project's default branch.
+commit or merge request lands in the project's default branch. The
+[default issue closing pattern](../user/project/issues/managing_issues.md#default-closing-pattern)
+covers a wide range of words, and administrators can configure the word list as needed.
 
 ## Change the issue closing pattern
-
-The [default issue closing pattern](../user/project/issues/managing_issues.md#default-closing-pattern)
-covers a wide range of words.
 
 To change the default issue closing pattern to suit your needs:
 

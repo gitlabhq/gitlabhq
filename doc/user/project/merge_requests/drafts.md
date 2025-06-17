@@ -21,13 +21,6 @@ cannot merge until you remove the **Draft** flag, even if they meet all other me
 
 ## Mark merge requests as drafts
 
-{{< history >}}
-
-- `/draft` quick action as a toggle [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92654) in GitLab 15.4.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108073) the draft status to use a checkbox in GitLab 15.8.
-
-{{< /history >}}
-
 You can flag a merge request as a draft in several ways:
 
 - Viewing a merge request: In the upper-right corner of the merge request,
@@ -80,8 +73,5 @@ draft merge requests:
 ## Pipelines for drafts
 
 Draft merge requests run the same pipelines as merge requests marked as ready.
-
-In GitLab 15.0 and earlier, you must [mark the merge request as ready](#mark-merge-requests-as-ready)
-if you want to run [merged results pipelines](../../../ci/pipelines/merged_results_pipelines.md).
 
 To skip a pipeline for a draft merge request, see [Skip pipelines for draft merge requests](../../../ci/yaml/workflow.md#skip-pipelines-for-draft-merge-requests).

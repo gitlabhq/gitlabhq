@@ -37,11 +37,11 @@ When using Auto DevOps to deploy your applications, choose the
 [continuous deployment strategy](../../ci/_index.md)
 that works best for your needs:
 
-| Deployment strategy | Setup | Methodology |
-|--|--|--|
-| **Continuous deployment to production** | Enables [Auto Deploy](stages.md#auto-deploy) with the default branch continuously deployed to production. | Continuous deployment to production.|
+| Deployment strategy                                                     | Setup | Methodology |
+|-------------------------------------------------------------------------|-------|-------------|
+| **Continuous deployment to production**                                 | Enables [Auto Deploy](stages.md#auto-deploy) with the default branch continuously deployed to production. | Continuous deployment to production.|
 | **Continuous deployment to production using timed incremental rollout** | Sets the [`INCREMENTAL_ROLLOUT_MODE`](cicd_variables.md#timed-incremental-rollout-to-production) variable to `timed`. | Continuously deploy to production with a 5 minutes delay between rollouts. |
-| **Automatic deployment to staging, manual deployment to production** | Sets [`STAGING_ENABLED`](cicd_variables.md#deploy-policy-for-staging-and-production-environments) to `1` and [`INCREMENTAL_ROLLOUT_MODE`](cicd_variables.md#incremental-rollout-to-production) to `manual`. | The default branch is continuously deployed to staging and continuously delivered to production. |
+| **Automatic deployment to staging, manual deployment to production**    | Sets [`STAGING_ENABLED`](cicd_variables.md#deploy-policy-for-staging-and-production-environments) to `1` and [`INCREMENTAL_ROLLOUT_MODE`](cicd_variables.md#incremental-rollout-to-production) to `manual`. | The default branch is continuously deployed to staging and continuously delivered to production. |
 
 You can choose the deployment method when enabling Auto DevOps or later:
 
@@ -173,7 +173,7 @@ controller to external clients and, indirectly, to any application running insid
 Bare-metal environments lack this commodity, requiring a slightly different setup to offer the
 same kind of access to external consumers.
 
-The docs linked above explain the issue and present possible solutions, for example:
+The documentation linked previously explains the issue and provides possible solutions, for example:
 
 - Through [MetalLB](https://github.com/metallb/metallb).
 - Through [PorterLB](https://github.com/kubesphere/porterlb).

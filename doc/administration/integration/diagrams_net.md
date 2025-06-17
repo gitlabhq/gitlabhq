@@ -2,33 +2,33 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure a Diagrams.net integration for GitLab Self-Managed.
+description: Configure a Diagrams.net integration for GitLab.
+gitlab_dedicated: yes
 title: Diagrams.net
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/86206) in GitLab 15.10.
 - Offline environment support [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116281) in GitLab 16.1.
 
 {{< /history >}}
 
-With the [diagrams.net](https://www.drawio.com/) integration, you can create and embed SVG diagrams in wikis.
+Use the [diagrams.net](https://www.drawio.com/) integration to create and embed SVG diagrams in wikis.
 The diagram editor is available in both the plain text editor and the rich text editor.
 
-On GitLab.com, this integration is enabled for all SaaS users and does not require any additional configuration.
+GitLab.com enables this integration for all SaaS users. No additional configuration is required.
 
-On GitLab Self-Managed, you can choose to integrate with the free [diagrams.net](https://www.drawio.com/)
+For GitLab Self-Managed and GitLab Dedicated, integrate with either the free [diagrams.net](https://www.drawio.com/)
 website, or host your own diagrams.net site in offline environments.
 
-To set up the integration, you must:
+To set up the integration:
 
 1. Choose to integrate with the free diagrams.net website or
    [configure your diagrams.net server](#configure-your-diagramsnet-server).

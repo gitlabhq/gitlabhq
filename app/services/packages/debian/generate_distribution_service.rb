@@ -62,6 +62,8 @@ module Packages
         Installer-Menu-Item
       ].freeze
 
+      GenerateDistributionError = Class.new(StandardError)
+
       def initialize(distribution)
         @distribution = distribution
         @oldest_kept_generated_at = nil
@@ -202,7 +204,8 @@ module Packages
       end
 
       def generate_release
-        @distribution.key || @distribution.create_key(GenerateDistributionKeyService.new.execute)
+        generate_distribution_key unless @distribution.key
+
         @distribution.file = CarrierWaveStringFile.new(release_content)
         @distribution.file_signature = SignDistributionService.new(@distribution, release_content, detach: true).execute
         @distribution.signed_file = CarrierWaveStringFile.new(
@@ -271,6 +274,14 @@ module Packages
       # used by ExclusiveLeaseGuard
       def lease_timeout
         DEFAULT_LEASE_TIMEOUT
+      end
+
+      def generate_distribution_key
+        response = GenerateDistributionKeyService.new.execute
+
+        raise GenerateDistributionError, response.message unless response.success?
+
+        @distribution.create_key(response.payload)
       end
     end
   end

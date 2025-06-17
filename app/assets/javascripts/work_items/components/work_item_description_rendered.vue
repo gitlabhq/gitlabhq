@@ -44,6 +44,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    fullPath: {
+      type: String,
+      required: true,
+    },
     isGroup: {
       type: Boolean,
       required: false,
@@ -380,6 +384,7 @@ export default {
     </div>
     <create-work-item-modal
       :description="childDescription"
+      :full-path="fullPath"
       hide-button
       :is-group="isGroup"
       :parent-id="workItemId"

@@ -20,7 +20,7 @@ module Resolvers
       end
 
       def can_read_group_count?
-        current_user&.can?(:read_group_count, user)
+        current_user&.can?(:read_user_membership_counts, user)
       end
     end
   end

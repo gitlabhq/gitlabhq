@@ -73,4 +73,3 @@ Users with the Guest role cannot:
 - Modify existing data that they have not created.
 - View code in GitLab projects by default.
 - Create projects, groups, and snippets in their personal namespaces.
-- Access internal or private projects or groups without administrator access.

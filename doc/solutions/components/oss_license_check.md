@@ -37,7 +37,7 @@ The OSS Library License Check provides:
 
 - GitLab Ultimate tier
 - Administrator access to your GitLab instance or group
-- [Dependency scanning](../../user/application_security/dependency_scanning/_index.md) enabled for your projects (this can optionally be enabled and enforced for all projects of a specified scope by following the [Dependency Scanning Setup](#setting-up-dependency-scanning-from-scratch) instructions below)
+- [Dependency scanning](../../user/application_security/dependency_scanning/_index.md) enabled for your projects (this can optionally be enabled and enforced for all projects of a specified scope by following the [Dependency Scanning Setup](#setting-up-dependency-scanning-from-scratch) instructions)
 
 ## Implementation Guide
 
@@ -105,7 +105,7 @@ If you already have a security policy project but don't have dependency and/or l
 1. Navigate to your group's Security policy project.
 1. Navigate to the `policy.yml` file in `.gitlab/security-policies/`.
 1. Click on **Edit** > **Edit single file**.
-1. Add the `scan_execution_policy` and `approval_policy` sections from the configuration below.
+1. Add the `scan_execution_policy` and `approval_policy` sections from [Complete Policy Configuration](#complete-policy-configuration).
 1. Make sure to:
    - Maintain the existing YAML structure
    - Place these sections at the same level as other top-level sections
@@ -401,7 +401,7 @@ This ensures your policy always reflects the most current Blue Oak Council licen
 
 ### Policy not applying
 
-Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/_index.md#link-to-a-security-policy-project) for more.
+Ensure the security policy project you modified is correctly linked to your group. See [Link to a security policy project](../../user/application_security/policies/security_policy_projects.md#link-to-a-security-policy-project) for more.
 
 ### Dependency scan not running
 

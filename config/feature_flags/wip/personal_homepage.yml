@@ -1,0 +1,10 @@
+---
+name: personal_homepage
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/546151
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192774
+rollout_issue_url:
+milestone: '18.1'
+group: group::personal productivity
+type: wip
+default_enabled: false

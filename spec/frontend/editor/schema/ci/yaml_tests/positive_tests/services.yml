@@ -59,6 +59,13 @@ services_with_kubernetes_user:
       kubernetes:
         user: "1001"
 
+services_with_kubernetes_user_int:
+  script: echo "Specifying user."
+  services:
+    - name: mysql:5.7
+      kubernetes:
+        user: 1001
+
 services_with_kubernetes_user_and_group:
   script: echo "Specifying user and group."
   services:

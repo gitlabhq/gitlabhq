@@ -85,7 +85,7 @@ RSpec.describe '1_settings', feature_category: :shared do
       }
     end
 
-    context 'when legacy topology service config is provided' do
+    context 'when legacy topology service client config is provided as a top-level key' do
       before do
         stub_config({ cell: { enabled: true, id: 1 }, topology_service: config })
         load_settings
@@ -95,6 +95,72 @@ RSpec.describe '1_settings', feature_category: :shared do
       it { expect(Settings.cell.topology_service_client.ca_file).to eq(config[:ca_file]) }
       it { expect(Settings.cell.topology_service_client.certificate_file).to eq(config[:certificate_file]) }
       it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
+    end
+
+    context 'when topology service client config is provided as a key nested' do
+      before do
+        stub_config({ cell: { enabled: true, id: 1, topology_service_client: config } })
+        load_settings
+      end
+
+      it { expect(Settings.cell.topology_service_client.address).to eq(config[:address]) }
+      it { expect(Settings.cell.topology_service_client.ca_file).to eq(config[:ca_file]) }
+      it { expect(Settings.cell.topology_service_client.certificate_file).to eq(config[:certificate_file]) }
+      it { expect(Settings.cell.topology_service_client.private_key_file).to eq(config[:private_key_file]) }
+    end
+  end
+
+  describe 'Pages custom domains settings' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:external_http, :external_https, :initial_custom_domain_mode, :expected_custom_domain_mode) do
+      nil   | true  | nil     | 'https'
+      true  | nil   | nil     | 'http'
+      true  | true  | nil     | 'https'
+      nil   | nil   | 'https' | 'https'
+      false | false | 'http'  | 'http'
+      nil   | true  | 'http'  | 'https'
+      nil   | nil   | nil     | nil
+    end
+
+    with_them do
+      before do
+        stub_config(pages: {
+          enabled: true,
+          external_http: external_http,
+          external_https: external_https,
+          custom_domain_mode: initial_custom_domain_mode
+        })
+
+        allow(Settings.pages).to receive(:__getobj__).and_return(Settings.pages)
+      end
+
+      it 'sets the expected custom_domain_mode value' do
+        load_settings
+
+        expect(Settings.pages['custom_domain_mode']).to eq(expected_custom_domain_mode)
+      end
+    end
+  end
+
+  describe 'ci_id_tokens_issuer_url' do
+    after do
+      Settings.ci_id_tokens['issuer_url'] = nil
+      load_settings
+    end
+
+    it 'is set as Settings.gitlab.url by default' do
+      Settings.ci_id_tokens['issuer_url'] = nil
+      load_settings
+
+      expect(Settings.ci_id_tokens.issuer_url).to eq Settings.gitlab.url
+    end
+
+    it 'uses the configured value' do
+      Settings.ci_id_tokens['issuer_url'] = 'https://example.com'
+      load_settings
+
+      expect(Settings.ci_id_tokens.issuer_url).to eq('https://example.com')
     end
   end
 end

@@ -96,7 +96,7 @@ describe('CE IssueCardTimeInfo component', () => {
         it('renders', () => {
           wrapper = mountComponent({ issue: object({ dueDate: '2020-12-12' }) });
           expect(findWorkItemAttribute().props('title')).toBe('Dec 12, 2020');
-          expect(findWorkItemAttribute().props('tooltipText')).toBe('Due date');
+          expect(findWorkItemAttribute().props('tooltipText')).toBe('Dates');
           expect(findDueDateIcon().props()).toMatchObject({
             variant: 'current',
             name: 'calendar',

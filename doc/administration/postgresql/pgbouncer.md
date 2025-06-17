@@ -103,7 +103,7 @@ Do not backup or restore GitLab through a PgBouncer connection: it causes a GitL
 
 ## Enable Monitoring
 
-If you enable Monitoring, it must be enabled on **all** PgBouncer servers.
+If you enable Monitoring, it must be enabled on all PgBouncer servers.
 
 1. Create/edit `/etc/gitlab/gitlab.rb` and add the following configuration:
 
@@ -255,7 +255,7 @@ the database. Each of the listed services below use the following formula to def
   - `headroom` can be configured via `DB_POOL_HEADROOM` environment variable (default to `10`)
 
 To calculate the `default_pool_size`, multiply the number of instances of `puma`, `sidekiq` and `geo-logcursor` by the
-number of connections each can consume as per listed above. The total is the suggested `default_pool_size`.
+number of connections each can consume as per listed previously. The total is the suggested `default_pool_size`.
 
 If you are using more than one PgBouncer with an internal Load Balancer, you may be able to divide the
 `default_pool_size` by the number of instances to guarantee an evenly distributed load between them.

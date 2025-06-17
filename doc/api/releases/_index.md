@@ -2,7 +2,7 @@
 stage: Deploy
 group: Environments
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Releases API
+title: Project release API
 ---
 
 {{< details >}}
@@ -12,9 +12,15 @@ title: Releases API
 
 {{< /details >}}
 
-Use this API to manipulate [release entries](../../user/project/releases/_index.md).
+Use this API to interact with [releases](../../user/project/releases/_index.md) for projects.
 
-To manipulate links as a release asset, see [Release Links API](links.md).
+{{< alert type="note" >}}
+
+To interact with releases for a group, see the [group release API](../group_releases.md).
+
+To interact with links as a release asset, see [release links API](links.md).
+
+{{< /alert >}}
 
 ## Authentication
 

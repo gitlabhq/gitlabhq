@@ -182,8 +182,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
         context 'when the user is not allowed to create a pipeline schedule with variables' do
           before do
-            project.update!(restrict_user_defined_variables: true,
-              ci_pipeline_variables_minimum_override_role: :maintainer)
+            project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
           end
 
           it 'does not create a new schedule' do
@@ -277,8 +276,7 @@ RSpec.describe Projects::PipelineSchedulesController, feature_category: :continu
 
           context 'when the user is not allowed to update pipeline schedule variables' do
             before do
-              project.update!(restrict_user_defined_variables: true,
-                ci_pipeline_variables_minimum_override_role: :maintainer)
+              project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
             end
 
             it 'does not update the schedule' do

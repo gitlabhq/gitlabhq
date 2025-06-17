@@ -129,7 +129,7 @@ To add a Kubernetes cluster to your project, group, or instance:
       scoped to a particular `namespace`.
       **The token used should belong to a service account with
       [`cluster-admin`](https://kubernetes.io/docs/reference/access-authn-authz/rbac/#user-facing-roles)
-      privileges.** To create this service account:
+      privileges**. To create this service account:
       1. Create a file called `gitlab-admin-service-account.yaml` with contents:
 
          ```yaml
@@ -226,7 +226,7 @@ After about 10 minutes, your cluster is ready.
 
 When connecting a cluster through GitLab integration, you may specify whether the
 cluster is RBAC-enabled or not. This affects how GitLab interacts with the
-cluster for certain operations. If you did *not* check the **RBAC-enabled cluster**
+cluster for certain operations. If you did not check the **RBAC-enabled cluster**
 checkbox at creation time, GitLab assumes RBAC is disabled for your cluster
 when interacting with it. If so, you must disable RBAC on your cluster for the
 integration to work properly.

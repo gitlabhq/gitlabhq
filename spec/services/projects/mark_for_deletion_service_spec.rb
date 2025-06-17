@@ -21,59 +21,46 @@ RSpec.describe Projects::MarkForDeletionService, feature_category: :groups_and_p
   end
 
   context 'with downtier_delayed_deletion feature flag enabled' do
-    context 'when adjourned deletion is enabled' do
-      before do
-        allow(project).to receive(:adjourned_deletion?).and_return(true)
-        allow(notification_service).to receive(:project_scheduled_for_deletion).with(project)
-      end
-
-      it 'marks project as archived and marked for deletion', :aggregate_failures do
-        expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
-         .with(project.namespace_id).and_call_original
-        expect(result[:status]).to eq(:success)
-        expect(Project.unscoped.all).to include(project)
-        expect(project.archived).to be(false)
-        expect(project.marked_for_deletion_at).not_to be_nil
-        expect(project.deleting_user).to eq(user)
-        expect(project).not_to be_hidden
-      end
-
-      it 'renames project name' do
-        expect { result }.to change {
-          project.name
-        }.from(original_project_name).to("#{original_project_name}-deleted-#{project.id}")
-      end
-
-      it 'renames project path' do
-        expect { result }.to change {
-          project.path
-        }.from(original_project_path).to("#{original_project_path}-deleted-#{project.id}")
-      end
-
-      it 'logs the event' do
-        allow(Gitlab::AppLogger).to receive(:info).and_call_original
-        expect(Gitlab::AppLogger).to receive(:info).with(
-          "User #{user.id} marked project #{project.full_path}-deleted-#{project.id} for deletion"
-        )
-
-        result
-      end
-
-      it 'sends notification' do
-        expect(notification_service).to receive(:project_scheduled_for_deletion).with(project)
-
-        result
-      end
+    before do
+      allow(notification_service).to receive(:project_scheduled_for_deletion).with(project)
     end
 
-    context 'when adjourned deletion is disabled' do
-      it 'does not send notification' do
-        allow(project).to receive(:adjourned_deletion?).and_return(false)
+    it 'marks project as archived and marked for deletion', :aggregate_failures do
+      expect(Namespaces::ScheduleAggregationWorker).to receive(:perform_async)
+        .with(project.namespace_id).and_call_original
+      expect(result[:status]).to eq(:success)
+      expect(Project.unscoped.all).to include(project)
+      expect(project.archived).to be(false)
+      expect(project.marked_for_deletion_at).not_to be_nil
+      expect(project.deleting_user).to eq(user)
+      expect(project).not_to be_hidden
+    end
 
-        expect(notification_service).not_to receive(:project_scheduled_for_deletion)
+    it 'renames project name' do
+      expect { result }.to change {
+        project.name
+      }.from(original_project_name).to("#{original_project_name}-deleted-#{project.id}")
+    end
 
-        result
-      end
+    it 'renames project path' do
+      expect { result }.to change {
+        project.path
+      }.from(original_project_path).to("#{original_project_path}-deleted-#{project.id}")
+    end
+
+    it 'logs the event' do
+      allow(Gitlab::AppLogger).to receive(:info).and_call_original
+      expect(Gitlab::AppLogger).to receive(:info).with(
+        "User #{user.id} marked project #{project.full_path}-deleted-#{project.id} for deletion"
+      )
+
+      result
+    end
+
+    it 'sends notification' do
+      expect(notification_service).to receive(:project_scheduled_for_deletion).with(project)
+
+      result
     end
   end
 

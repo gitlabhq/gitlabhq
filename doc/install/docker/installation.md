@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn about the prerequisites, strategies, and steps for installing GitLab in a Docker container.
 title: Install GitLab in a Docker container
@@ -69,6 +69,13 @@ To change the server's SSH port:
    the new port.
 
 ## Create a directory for the volumes
+
+{{< alert type="warning" >}}
+
+Specific recommendations exist for volumes hosting Gitaly data. NFS-based filesystems can
+cause performance issues and so [EFS is not recommended](../aws/_index.md#elastic-file-system-efs).
+
+{{< /alert >}}
 
 Create a directory for the configuration files, logs,
 and data files. The directory can be in your user's home directory (for example
@@ -334,7 +341,7 @@ Here's an example that deploys GitLab with four runners as a [stack](https://doc
        file: ./root_password.txt
    ```
 
-   To reduce complexity, the example above excludes the `network` configuration.
+   To reduce complexity, the previous example excludes the `network` configuration.
    You can find more information in the official [Compose file reference](https://docs.docker.com/compose/compose-file/).
 
 1. Create a `gitlab.rb` file:

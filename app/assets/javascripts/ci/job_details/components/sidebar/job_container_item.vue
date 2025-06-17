@@ -52,12 +52,12 @@ export default {
 </script>
 
 <template>
-  <div class="build-job gl-relative" :class="classes">
+  <div class="build-job gl-relative gl-px-2" :class="classes">
     <gl-link
       v-gl-tooltip.left.viewport
       :href="job.status.details_path"
       :title="tooltipText"
-      class="gl-flex gl-items-center gl-py-3 gl-pl-7"
+      class="gl-mb-1 gl-flex gl-items-center gl-py-2 gl-pl-7"
       :data-testid="dataTestId"
     >
       <gl-icon
@@ -67,7 +67,7 @@ export default {
         class="icon-arrow-right gl-absolute gl-block"
       />
 
-      <ci-icon :status="job.status" :show-tooltip="false" class="gl-mr-3" />
+      <ci-icon tabindex="-1" :status="job.status" :show-tooltip="false" class="gl-mr-3" />
 
       <span class="gl-w-full gl-truncate">{{ jobName }}</span>
 

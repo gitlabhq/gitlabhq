@@ -30,20 +30,17 @@ describe('GroupListItemDelayedDeletionModalFooter', () => {
   const findGlLink = () => wrapper.findComponent(GlLink);
 
   describe.each`
-    isAdjournedDeletionEnabled | markedForDeletionOn | footer                                                                        | link
-    ${false}                   | ${null}             | ${false}                                                                      | ${false}
-    ${false}                   | ${'2024-03-24'}     | ${false}                                                                      | ${false}
-    ${true}                    | ${null}             | ${`This group can be restored until ${MOCK_PERM_DELETION_DATE}. Learn more.`} | ${HELP_PATH}
-    ${true}                    | ${'2024-03-24'}     | ${false}                                                                      | ${false}
+    markedForDeletionOn | footer                                                                        | link
+    ${null}             | ${`This group can be restored until ${MOCK_PERM_DELETION_DATE}. Learn more.`} | ${HELP_PATH}
+    ${'2024-03-24'}     | ${false}                                                                      | ${false}
   `(
-    'when group.isAdjournedDeletionEnabled is $isAdjournedDeletionEnabled and group.markedForDeletionOn is $markedForDeletionOn',
-    ({ isAdjournedDeletionEnabled, markedForDeletionOn, footer, link }) => {
+    'when group.markedForDeletionOn is $markedForDeletionOn',
+    ({ markedForDeletionOn, footer, link }) => {
       beforeEach(() => {
         createComponent({
           props: {
             group: {
               ...group,
-              isAdjournedDeletionEnabled,
               markedForDeletionOn,
               permanentDeletionDate: MOCK_PERM_DELETION_DATE,
             },

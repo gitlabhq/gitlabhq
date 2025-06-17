@@ -519,7 +519,36 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
       subject { destroy_project(project, user) }
 
-      context 'when there are tag protection rules' do
+      context 'when there are immutable tag protection rules' do
+        before_all do
+          create(:container_registry_protection_tag_rule,
+            :immutable,
+            project: project,
+            tag_name_pattern: 'immutable'
+          )
+
+          project.add_owner(user)
+          project.container_repositories << create(:container_repository)
+        end
+
+        context 'when there are registry tags' do
+          before do
+            stub_container_registry_tags(repository: project.full_path, tags: ['tag'])
+            allow_any_instance_of(described_class)
+              .to receive(:remove_legacy_registry_tags).and_return(true)
+          end
+
+          it 'ignores the immutable tag protection rules' do
+            is_expected.to be(true)
+          end
+        end
+
+        context 'when there are no registry tags' do
+          it { is_expected.to be true }
+        end
+      end
+
+      context 'when there are mutable tag protection rules only' do
         before_all do
           create(:container_registry_protection_tag_rule,
             project: project,
@@ -974,6 +1003,62 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
 
         expect { service.send(:delete_environments) }
           .to change { Environment.for_project(project).count }.from(3).to(0)
+      end
+    end
+  end
+
+  describe '#destroy_orphaned_ci_job_artifacts!' do
+    let(:service) { described_class.new(project, user) }
+
+    context 'when there are no orphaned job artifacts' do
+      let(:no_job_artifacts) { Ci::JobArtifact.none }
+
+      before do
+        allow(Ci::JobArtifact).to receive(:for_project).with(project).and_return(no_job_artifacts)
+      end
+
+      it 'returns early without performing any destroy operations' do
+        expect(no_job_artifacts).not_to receive(:begin_fast_destroy)
+        expect(no_job_artifacts).not_to receive(:finalize_fast_destroy)
+
+        service.send(:destroy_orphaned_ci_job_artifacts!)
+      end
+    end
+
+    context 'when there are orphaned job artifacts' do
+      let(:job) { create(:ci_build, project: project) }
+      let(:orphaned_job_artifact) { create(:ci_job_artifact, job: job, project: project) }
+
+      before do
+        orphaned_job_artifact.connection.transaction do
+          orphaned_job_artifact.connection.execute(<<~SQL)
+            SET session_replication_role = 'replica';
+          SQL
+
+          orphaned_job_artifact.update_column(:job_id, non_existing_record_id)
+
+          orphaned_job_artifact.connection.execute(<<~SQL)
+            SET session_replication_role = 'origin';
+          SQL
+        end
+      end
+
+      it 'destroys orphaned artifacts' do
+        expect { destroy_project(project, user) }.to change { Ci::JobArtifact.count }.by(-1)
+
+        expect(Ci::JobArtifact.exists?(orphaned_job_artifact.id)).to be_falsey
+      end
+
+      it 'logs that the artifacts have been destroyed' do
+        allow(Gitlab::AppLogger).to receive(:info) # Logged during artifact deletion
+
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          class: described_class.name,
+          project_id: project.id,
+          message: 'Orphaned CI job artifacts deleted'
+        )
+
+        service.send(:destroy_orphaned_ci_job_artifacts!)
       end
     end
   end

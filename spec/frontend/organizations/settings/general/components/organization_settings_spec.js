@@ -1,5 +1,6 @@
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
+import { GlSprintf } from '@gitlab/ui';
 
 import organizationUpdateResponse from 'test_fixtures/graphql/organizations/organization_update.mutation.graphql.json';
 import organizationUpdateResponseWithErrors from 'test_fixtures/graphql/organizations/organization_update.mutation.graphql_with_errors.json';
@@ -14,6 +15,7 @@ import {
   FORM_FIELD_DESCRIPTION,
 } from '~/organizations/shared/constants';
 import FormErrorsAlert from '~/organizations/shared/components/errors_alert.vue';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import organizationUpdateMutation from '~/organizations/settings/general/graphql/mutations/organization_update.mutation.graphql';
 import { createAlert } from '~/alert';
 import { visitUrlWithAlerts } from '~/lib/utils/url_utility';
@@ -41,25 +43,36 @@ describe('OrganizationSettings', () => {
     },
   };
 
+  const defaultPropsData = {
+    id: 'organization-settings',
+    expanded: false,
+  };
+
   const file = new File(['foo'], 'foo.jpg', {
     type: 'text/plain',
   });
 
   const successfulResponseHandler = jest.fn().mockResolvedValue(organizationUpdateResponse);
 
+  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
+
   const createComponent = ({
     handlers = [[organizationUpdateMutation, successfulResponseHandler]],
     provide = {},
+    propsData = {},
   } = {}) => {
     mockApollo = createMockApollo(handlers);
 
     wrapper = shallowMountExtended(OrganizationSettings, {
       provide: { ...defaultProvide, ...provide },
+      propsData: { ...defaultPropsData, ...propsData },
       apolloProvider: mockApollo,
+      stubs: { GlSprintf },
     });
   };
 
   const findForm = () => wrapper.findComponent(NewEditForm);
+  const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
   const submitForm = async (data = {}) => {
     findForm().vm.$emit('submit', {
       name: 'Foo bar',
@@ -79,8 +92,10 @@ describe('OrganizationSettings', () => {
     mockApollo = null;
   });
 
-  it('renders settings block', () => {
+  it('renders settings block with correct props and link to docs', () => {
     expect(wrapper.findComponent(SettingsBlock).exists()).toBe(true);
+    expect(findHelpPageLink().text()).toBe('Learn more about organizations');
+    expect(findHelpPageLink().props('href')).toBe('user/organization/_index.md');
   });
 
   it('renders form with correct props', () => {
@@ -90,6 +105,16 @@ describe('OrganizationSettings', () => {
       loading: false,
       initialFormValues: defaultProvide.organization,
       fieldsToRender: [FORM_FIELD_NAME, FORM_FIELD_ID, FORM_FIELD_DESCRIPTION, FORM_FIELD_AVATAR],
+    });
+  });
+
+  describe('when SettingsBlock component emits `toggle-expand` event', () => {
+    beforeEach(() => {
+      findSettingsBlock().vm.$emit('toggle-expand', true);
+    });
+
+    it('emits `toggle-expand` event', () => {
+      expect(wrapper.emitted('toggle-expand')).toEqual([[true]]);
     });
   });
 

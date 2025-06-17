@@ -11,7 +11,7 @@ module Types
       authorize :admin_operations
 
       def type
-        :http
+        object.type_identifier.to_sym
       end
 
       def api_url

@@ -4,7 +4,10 @@ module Authn
   module Tokens
     class IncomingEmailToken
       def self.prefix?(plaintext)
-        plaintext.start_with?(::User::INCOMING_MAIL_TOKEN_PREFIX)
+        incoming_email_token_prefixes = [::User.prefix_for_incoming_mail_token,
+          ::User::INCOMING_MAIL_TOKEN_PREFIX].uniq
+
+        plaintext.start_with?(*incoming_email_token_prefixes)
       end
 
       attr_reader :revocable, :source

@@ -189,6 +189,9 @@ export default {
     showCompactCodeDropdown() {
       return this.glFeatures.directoryCodeDropdownUpdates;
     },
+    showBlobControls() {
+      return this.$route.params.path && this.$route.name === 'blobPathDecoded';
+    },
   },
   methods: {
     onInput(selectedRef) {
@@ -272,7 +275,11 @@ export default {
       </h1>
 
       <!-- Tree controls -->
-      <div v-if="isTreeView" class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0">
+      <div
+        v-if="!showBlobControls"
+        class="tree-controls gl-mb-3 gl-flex gl-flex-wrap gl-gap-3 sm:gl-mb-0"
+        data-testid="tree-controls-container"
+      >
         <add-to-tree
           v-if="!isReadmeView && showCompactCodeDropdown"
           class="gl-hidden sm:gl-block"
@@ -292,7 +299,7 @@ export default {
           :upload-path="uploadPath"
           :new-dir-path="newDirPath"
         />
-        <!-- EE: = render_if_exists 'projects/tree/lock_link' -->
+        <!-- EE lock directory -->
         <lock-directory-button
           v-if="!isRoot"
           :project-path="projectPath"
@@ -411,6 +418,7 @@ export default {
 
       <!-- Blob controls -->
       <blob-controls
+        v-if="showBlobControls"
         :project-path="projectPath"
         :project-id-as-number="projectIdAsNumber"
         :ref-type="getRefType"

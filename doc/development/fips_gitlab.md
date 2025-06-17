@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: FIPS 140-2 and 140-3
 ---
 
@@ -126,7 +126,7 @@ Additionally, these package repositories are disabled in FIPS mode:
 
 ### Development guidelines
 
-Please refer to the information above and the GitLab [Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/). Reach out
+For more information, refer to the information above and see the [GitLab Cryptography Standard](https://handbook.gitlab.com/handbook/security/cryptographic-standard/). Reach out
 to `#sec-assurance` with questions or open an MR if something needs to be clarified.
 
 Here are some guidelines for developing GitLab FIPS-approved software:
@@ -398,9 +398,9 @@ for builds of the Omnibus GitLab which are built with FIPS compliance.
 These GitLab builds are compiled to use the system OpenSSL, instead of
 the Omnibus-embedded version of OpenSSL. These packages are built for:
 
-- RHEL 8 (and compatible)
-- AmazonLinux 2
-- Ubuntu
+- RHEL 8 and 9 (and compatible)
+- AmazonLinux 2 and 2023
+- Ubuntu 20.04
 
 These are [consumed by the GitLab Environment Toolkit](#install-gitlab-with-fips-compliance) (GET).
 
@@ -426,7 +426,7 @@ system for which FIPS Linux packages are available.
 ### Nightly Omnibus FIPS builds
 
 The Distribution team has created [nightly FIPS Omnibus builds](https://packages.gitlab.com/gitlab/nightly-fips-builds),
-which can be used for *testing* purposes. These should never be used for production environments.
+which can be used for testing purposes. These should never be used for production environments.
 
 ## Runner
 
@@ -560,7 +560,7 @@ the `webservice` container has the following tags:
 
 #### Base images for FIPS Builds
 
-- Current: [UBI 9.5 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
+- Current: [UBI 9.6 Micro](https://gitlab.com/gitlab-org/build/CNG/-/blob/master/ci_files/variables.yml?ref_type=heads#L4)
 
 ### Testing merge requests with a FIPS pipeline
 

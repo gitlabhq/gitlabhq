@@ -7,6 +7,13 @@ module Ci
     RUNNER_REMOTE_TAG_PREFIX = 'refs/tags/'
     RUNNER_REMOTE_BRANCH_PREFIX = 'refs/remotes/origin/'
 
+    attr_reader :queue_size, :queue_depth
+
+    def set_queue_metrics(size:, depth:)
+      @queue_size = [0, size.to_i].max
+      @queue_depth = [0, depth.to_i].max
+    end
+
     def artifacts
       return unless options[:artifacts]
 

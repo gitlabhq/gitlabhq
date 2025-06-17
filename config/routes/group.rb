@@ -128,6 +128,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
         end
 
         delete :leave
+
+        get :invite_search, format: :json
       end
     end
 
@@ -182,6 +184,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :work_items, only: [:index, :show], param: :iid
 
     resource :import_history, only: [:show]
+
+    resources :observability, only: [:show]
 
     post :preview_markdown
 

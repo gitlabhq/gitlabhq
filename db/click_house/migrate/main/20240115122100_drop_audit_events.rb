@@ -28,10 +28,5 @@ class DropAuditEvents < ClickHouse::Migration
       PARTITION BY toYear(created_at)
       ORDER BY (entity_type, entity_id, author_id, created_at, id);
     SQL
-
-    execute <<~SQL
-      ALTER TABLE audit_events
-      ADD PROJECTION IF NOT EXISTS by_id (SELECT * ORDER BY id);
-    SQL
   end
 end

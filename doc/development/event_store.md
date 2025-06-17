@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: GitLab EventStore
 ---
 
@@ -156,7 +156,7 @@ product and design counterparts to ensure new events will address the needs of
 subscribers. Whenever possible, new events should strive to meet the following
 principles:
 
-- **Semantic**: Events should describe what occurred within the bounded context, _not_ the intended
+- **Semantic**: Events should describe what occurred within the bounded context, not the intended
   action for subscribers.
 - **Specific**: Events should be narrowly defined without being overly precise. This minimizes the
   amount of event filtering that subscribers have to perform, as well as the number of unique events

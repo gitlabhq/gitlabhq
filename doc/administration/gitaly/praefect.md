@@ -275,6 +275,15 @@ instructions only work on the Linux package-provided PostgreSQL:
    Replace `<PRAEFECT_SQL_PASSWORD_HASH>` with the hash of the password you generated in the
    preparation step. It is prefixed with `md5` literal.
 
+1. Create a new user `pgbouncer` to be used by PgBouncer:
+
+   ```sql
+   CREATE ROLE pgbouncer WITH LOGIN;
+   ALTER USER pgbouncer WITH password 'md5<PGBOUNCER_SQL_PASSWORD_HASH>';
+   ```
+
+   Replace `PGBOUNCER_SQL_PASSWORD_HASH` with the strong password hash you generated in the preparation step.
+
 1. The PgBouncer that is shipped with the Linux package is configured to use [`auth_query`](https://www.pgbouncer.org/config.html#generic-settings)
    and uses `pg_shadow_lookup` function. You need to create this function in `praefect_production`
    database:
@@ -462,7 +471,8 @@ praefect['configuration'] = {
          # ...
          dbname: 'praefect_production_direct',
          # There is no need to repeat the following. Parameters of direct
-         # database connection will fall back to the values above.
+         # database connection will fall back to the values specified in the
+         # database block.
          #
          # host: PGBOUNCER_HOST,
          # port: 6432,
@@ -532,7 +542,7 @@ application server, or a Gitaly node.
 
 {{< /alert >}}
 
-On the **Praefect** node:
+On the Praefect node:
 
 1. Disable all other services by editing `/etc/gitlab/gitlab.rb`:
 
@@ -564,7 +574,7 @@ Updates to example must be made at:
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Configure **Praefect** to listen on network interfaces by editing
+1. Configure Praefect to listen on network interfaces by editing
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -592,7 +602,7 @@ Updates to example must be made at:
    }
    ```
 
-1. Configure a strong authentication token for **Praefect** by editing
+1. Configure a strong authentication token for Praefect by editing
    `/etc/gitlab/gitlab.rb`, which is needed by clients outside the cluster
    (like GitLab Shell) to communicate with the Praefect cluster:
 
@@ -606,7 +616,7 @@ Updates to example must be made at:
    }
    ```
 
-1. Configure **Praefect** to [connect to the PostgreSQL database](#postgresql). We
+1. Configure Praefect to [connect to the PostgreSQL database](#postgresql). We
    highly recommend using [PgBouncer](#use-pgbouncer) as well.
 
    If you want to use a TLS client certificate, the options below can be used:
@@ -640,7 +650,7 @@ Updates to example must be made at:
    }
    ```
 
-1. Configure the **Praefect** cluster to connect to each Gitaly node in the
+1. Configure the Praefect cluster to connect to each Gitaly node in the
    cluster by editing `/etc/gitlab/gitlab.rb`.
 
    The virtual storage's name must match the configured storage name in GitLab
@@ -1044,7 +1054,7 @@ Prerequisites:
    ```
 
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
-1. Repeat the above steps on each Praefect server to use with
+1. Repeat the previous steps on each Praefect server to use with
    service discovery.
 1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
    `/etc/gitlab/gitlab.rb` as follows. Replace `CONSUL_SERVER` with the IP or
@@ -1061,7 +1071,7 @@ Prerequisites:
 
 1. Use `dig` from the Praefect clients to confirm that each IP address has been registered to
    `praefect.service.consul` with `dig A praefect.service.consul @CONSUL_SERVER -p 8600`.
-   Replace `CONSUL_SERVER` with the value configured above and all Praefect node IP addresses
+   Replace `CONSUL_SERVER` with the value configured previously and all Praefect node IP addresses
    should be present in the output.
 1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
@@ -1069,7 +1079,7 @@ Prerequisites:
 
 {{< alert type="note" >}}
 
-Complete these steps for **each** Gitaly node.
+Complete these steps for each Gitaly node.
 
 {{< /alert >}}
 
@@ -1102,7 +1112,7 @@ Particular attention should be shown to:
 For more information on Gitaly server configuration, see our
 [Gitaly documentation](configure_gitaly.md#configure-gitaly-servers).
 
-1. SSH into the **Gitaly** node and login as root:
+1. SSH into the Gitaly node and login as root:
 
    ```shell
    sudo -i
@@ -1131,7 +1141,7 @@ For more information on Gitaly server configuration, see our
    gitlab_rails['auto_migrate'] = false
    ```
 
-1. Configure **Gitaly** to listen on network interfaces by editing
+1. Configure Gitaly to listen on network interfaces by editing
    `/etc/gitlab/gitlab.rb`:
 
    ```ruby
@@ -1147,7 +1157,7 @@ For more information on Gitaly server configuration, see our
    }
    ```
 
-1. Configure a strong `auth_token` for **Gitaly** by editing
+1. Configure a strong `auth_token` for Gitaly by editing
    `/etc/gitlab/gitlab.rb`, which is needed by clients to communicate with
    this Gitaly nodes. Typically, this token is the same for all Gitaly
    nodes.
@@ -1220,13 +1230,17 @@ For more information on Gitaly server configuration, see our
    gitlab-ctl restart gitaly
    ```
 
-**The steps above must be completed for each Gitaly node!**
+{{< alert type="note" >}}
+
+The previous steps must be completed for each Gitaly node!
+
+{{< /alert >}}
 
 After all Gitaly nodes are configured, run the Praefect connection
 checker to verify Praefect can connect to all Gitaly servers in the Praefect
 configuration.
 
-1. SSH into each **Praefect** node and run the Praefect connection checker:
+1. SSH into each Praefect node and run the Praefect connection checker:
 
    ```shell
    sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dial-nodes
@@ -1335,7 +1349,7 @@ Particular attention should be shown to:
   was set in the [Praefect](#praefect) section of this guide. This document uses
   `default` as the Praefect storage name.
 
-1. SSH into the **GitLab** node and login as root:
+1. SSH into the GitLab node and login as root:
 
    ```shell
    sudo -i
@@ -1498,7 +1512,7 @@ for detailed documentation.
 
 To get started quickly:
 
-1. SSH into the **GitLab** node (or whichever node has Grafana enabled) and login as root:
+1. SSH into the GitLab node (or whichever node has Grafana enabled) and login as root:
 
    ```shell
    sudo -i
@@ -1593,7 +1607,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 - `-virtual-storage` is the virtual storage the repository is located in.
 - `-repository` is the repository's relative path in the storage.
 - `-replication-factor` is the desired replication factor of the repository. The minimum value is
-  `1`, as the primary needs a copy of the repository. The maximum replication factor is the number of
+  `1` because the primary needs a copy of the repository. The maximum replication factor is the number of
   storages in the virtual storage.
 
 On success, the assigned host storages are printed. For example:

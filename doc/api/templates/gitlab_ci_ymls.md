@@ -2,7 +2,7 @@
 stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab CI YAML API
+title: CI/CD templates API
 ---
 
 {{< details >}}
@@ -12,15 +12,13 @@ title: GitLab CI YAML API
 
 {{< /details >}}
 
-In GitLab, there is an API endpoint available to work with GitLab CI/CD YAML. For more
-information on CI/CD pipeline configuration in GitLab, see the
-[CI/CD YAML syntax reference](../../ci/yaml/_index.md).
+Use this API to retreive available [CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates).
 
-Users with the Guest role can't access the GitLab CI YAML templates. For more information, see [Project and group visibility](../../user/public_access.md).
+Users with the Guest role cannot access CI/CD templates. For more information, see [project and group visibility](../../user/public_access.md).
 
-## List GitLab CI YAML templates
+## List all CI/CD templates
 
-Get all GitLab CI/CD YAML templates.
+Lists all GitLab CI/CD YAML templates.
 
 ```plaintext
 GET /templates/gitlab_ci_ymls
@@ -119,9 +117,9 @@ Example response:
 ]
 ```
 
-## Single GitLab CI YAML template
+## Get details of a CI/CD template
 
-Get a single GitLab CI/CD YAML template.
+Gets the details of a specific CI/CD template.
 
 ```plaintext
 GET /templates/gitlab_ci_ymls/:key

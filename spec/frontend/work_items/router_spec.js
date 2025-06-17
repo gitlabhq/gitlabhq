@@ -74,6 +74,7 @@ describe('Work items router', () => {
         hasIssuableHealthStatusFeature: false,
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',
+        workItemPlanningViewEnabled: false,
       },
       stubs: {
         WorkItemWeight: true,

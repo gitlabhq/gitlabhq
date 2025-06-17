@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Dependency Management in Go
 ---
 
@@ -10,7 +10,7 @@ source-based instead of artifact-based. In an artifact-based dependency
 management system, packages consist of artifacts generated from source code and
 are stored in a separate repository system from source code. For example, many
 NodeJS packages use `npmjs.org` as a package repository and `github.com` as a
-source repository. On the other hand, packages in Go *are* source code and
+source repository. On the other hand, packages in Go are source code and
 releasing a package does not involve artifact generation or a separate
 repository. Go packages must be stored in a version control repository on a VCS
 server. Dependencies are fetched directly from their VCS server or via an
@@ -51,7 +51,7 @@ on the official Go website.
 
 - A package is a folder containing `*.go` files.
 - A module is a folder containing a `go.mod` file.
-- A module is *usually* also a package, that is a folder containing a `go.mod`
+- A module is usually also a package, that is a folder containing a `go.mod`
   file and `*.go` files.
 - A module may have subdirectories, which may be packages.
 - Modules usually come in the form of a VCS repository (Git, SVN, Hg, and so on).

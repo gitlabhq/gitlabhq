@@ -1,4 +1,6 @@
+import { GlLabel } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent } from 'helpers/stub_component';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import LabelPresenter from '~/glql/components/presenters/label.vue';
 import UserPresenter from '~/glql/components/presenters/user.vue';
@@ -14,6 +16,11 @@ describe('CollectionPresenter', () => {
         presenter: new Presenter(),
       },
       propsData: { data },
+      stubs: {
+        GlLabel: stubComponent(GlLabel, {
+          template: '<span>{{ title }}</span>',
+        }),
+      },
     });
   };
 
@@ -30,8 +37,6 @@ describe('CollectionPresenter', () => {
     expect(presenters.at(0).props('data')).toBe(mockData.nodes[0]);
     expect(presenters.at(1).props('data')).toBe(mockData.nodes[1]);
 
-    expectedTexts.forEach((text) => {
-      expect(wrapper.text()).toContain(text);
-    });
+    expect(wrapper.text()).toEqual(expectedTexts.join(' '));
   });
 });

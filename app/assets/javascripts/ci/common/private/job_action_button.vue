@@ -31,6 +31,11 @@ export default {
       error: i18n.errors.playJob,
       mutation: playJobMutation,
     },
+    stop: {
+      dataName: 'jobPlay',
+      error: i18n.errors.playJob,
+      mutation: playJobMutation,
+    },
     retry: {
       dataName: 'jobRetry',
       error: i18n.errors.retryJob,

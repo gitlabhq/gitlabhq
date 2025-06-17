@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
     end
 
     context 'when dry_run is set to false' do
-      subject { described_class.new.run!(dry_run: false) }
+      subject(:run) { described_class.new.run!(dry_run: false) }
 
       it 'moves files that are not in uploads table' do
         expect(remote_files[0]).not_to receive(:copy)
@@ -43,14 +43,14 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
         expect(remote_files[3]).not_to receive(:copy)
         expect(remote_files[3]).not_to receive(:destroy)
 
-        subject
+        run
       end
     end
 
     context 'when dry_run is set to true' do
-      subject { described_class.new.run!(dry_run: true) }
+      subject(:run) { described_class.new.run!(dry_run: true) }
 
-      it 'does not move filese' do
+      it 'does not move files' do
         expect(remote_files[0]).not_to receive(:copy)
         expect(remote_files[0]).not_to receive(:destroy)
         expect(remote_files[1]).not_to receive(:copy)
@@ -60,16 +60,37 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
         expect(remote_files[3]).not_to receive(:copy)
         expect(remote_files[3]).not_to receive(:destroy)
 
-        subject
+        run
       end
+    end
+
+    it 'logs tracked and untracked paths' do
+      logger = Logger.new(nil)
+
+      expect(logger).to receive(:info).once.with(
+        "Looking for orphaned remote uploads files to move to lost and found. Dry run...")
+      expect(logger).to receive(:debug).once.with(hash_including(
+        message: "Found DB record for remote stored file", file_path: "dir/file1", is_tracked: true))
+      expect(logger).to receive(:info).once.with(hash_including(
+        message: "Did not find DB record for remote stored file", file_path: "dir/file2", is_tracked: false))
+      expect(logger).to receive(:info).once.with(hash_including(
+        message: "Did not find DB record for remote stored file", file_path: "dir/file3", is_tracked: false))
+
+      described_class.new(logger: logger).run!
     end
   end
 
   context 'when object_storage is not enabled' do
+    before do
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:object_store).and_return(double(enabled: false))
+      end
+    end
+
     it 'does not connect to any storage' do
       expect(::Fog::Storage).not_to receive(:new)
 
-      subject
+      described_class.new.run!
     end
   end
 
@@ -86,16 +107,21 @@ RSpec.describe Gitlab::Cleanup::RemoteUploads do
 
     let(:config) { { connection: credentials, bucket_prefix: bucket_prefix, remote_directory: 'uploads' } }
 
-    subject { described_class.new.run!(dry_run: false) }
+    subject(:run) { described_class.new.run!(dry_run: false) }
 
     before do
       stub_uploads_object_storage(FileUploader, config: config)
+
+      allow_next_instance_of(described_class) do |instance|
+        allow(instance).to receive(:bucket_prefix).and_return(bucket_prefix)
+      end
     end
 
-    it 'does not connect to any storage' do
+    it 'does not connect to any storage and logs error' do
       expect(::Fog::Storage).not_to receive(:new)
+      expect(Gitlab::AppLogger).to receive(:error)
 
-      expect { subject }.to raise_error(/prefixes are not supported/)
+      run
     end
   end
 end

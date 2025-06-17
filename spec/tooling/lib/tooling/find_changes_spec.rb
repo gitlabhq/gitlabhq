@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../../../../tooling/lib/tooling/find_changes'
-require 'gitlab/rspec/all'
+require 'fast_spec_helper'
 require 'json'
 require 'tempfile'
 

@@ -31,49 +31,52 @@ export const globalAccessorPlugin = (context) => {
  */
 // use this only for component migration
 export const syncWithVuex = (context) => {
-  const config = context.options.syncWith;
-  if (!config) {
-    return;
-  }
-  const {
-    store: vuexStore,
-    name: vuexName,
-    namespaced,
-  } = /** @type {{ store: VuexStore, [name]: string, [namespaced]: boolean }} */ config;
-  const getVuexState = vuexName ? () => vuexStore.state[vuexName] : () => vuexStore.state;
-  if (!isEqual(context.store.$state, getVuexState())) {
-    Object.entries(getVuexState()).forEach(([key, value]) => {
-      // we can't use store.$patch here because it will merge state, but we need to overwrite it
-      // eslint-disable-next-line no-param-reassign
-      context.store[key] = cloneDeep(value);
-    });
-  }
+  const syncWith = (config) => {
+    const {
+      store: vuexStore,
+      name: vuexName,
+      namespaced,
+    } = /** @type {{ store: VuexStore, [name]: string, [namespaced]: boolean }} */ config;
+    const getVuexState = vuexName ? () => vuexStore.state[vuexName] : () => vuexStore.state;
+    if (!isEqual(context.store.$state, getVuexState())) {
+      Object.entries(getVuexState()).forEach(([key, value]) => {
+        // we can't use store.$patch here because it will merge state, but we need to overwrite it
+        // eslint-disable-next-line no-param-reassign
+        context.store[key] = cloneDeep(value);
+      });
+    }
 
-  let committing = false;
+    let committing = false;
 
-  vuexStore.subscribe(
-    (mutation) => {
+    vuexStore.subscribe(
+      (mutation) => {
+        if (committing) return;
+        const { payload, type } = mutation;
+        const [prefixOrName, mutationName] = type.split('/');
+        committing = true;
+        if (!mutationName && prefixOrName in context.store) {
+          context.store[prefixOrName](cloneDeep(payload));
+        } else if (prefixOrName === vuexName && mutationName in context.store) {
+          context.store[mutationName](cloneDeep(payload));
+        }
+        committing = false;
+      },
+      { prepend: true },
+    );
+
+    context.store.$onAction(({ name: mutationName, args }) => {
       if (committing) return;
-      const { payload, type } = mutation;
-      const [prefixOrName, mutationName] = type.split('/');
+      const fullMutationName = namespaced ? `${vuexName}/${mutationName}` : mutationName;
+      // eslint-disable-next-line no-underscore-dangle
+      if (!(fullMutationName in vuexStore._mutations)) return;
       committing = true;
-      if (!mutationName && prefixOrName in context.store) {
-        context.store[prefixOrName](cloneDeep(payload));
-      } else if (prefixOrName === vuexName && mutationName in context.store) {
-        context.store[mutationName](cloneDeep(payload));
-      }
+      vuexStore.commit(fullMutationName, ...cloneDeep(args));
       committing = false;
-    },
-    { prepend: true },
-  );
+    });
+  };
 
-  context.store.$onAction(({ name: mutationName, args }) => {
-    if (committing) return;
-    const fullMutationName = namespaced ? `${vuexName}/${mutationName}` : mutationName;
-    // eslint-disable-next-line no-underscore-dangle
-    if (!(fullMutationName in vuexStore._mutations)) return;
-    committing = true;
-    vuexStore.commit(fullMutationName, ...cloneDeep(args));
-    committing = false;
-  });
+  const initialConfig = context.options.syncWith;
+  if (initialConfig) syncWith(initialConfig);
+
+  return { syncWith };
 };

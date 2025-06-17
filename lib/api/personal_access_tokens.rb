@@ -17,7 +17,7 @@ module API
       desc 'List personal access tokens' do
         detail 'Get all personal access tokens the authenticated user has access to.'
         is_array true
-        success Entities::PersonalAccessToken
+        success Entities::PersonalAccessTokenWithLastUsedIps
         tags %w[personal_access_tokens]
         failure [
           { code: 401, message: 'Unauthorized' }
@@ -31,7 +31,7 @@ module API
       get do
         tokens = PersonalAccessTokensFinder.new(finder_params(current_user), current_user).execute
 
-        present paginate(tokens), with: Entities::PersonalAccessToken
+        present paginate(tokens), with: Entities::PersonalAccessTokenWithLastUsedIps
       end
 
       desc 'Get single personal access token' do
@@ -56,7 +56,7 @@ module API
       end
 
       desc 'Rotate personal access token' do
-        detail 'Roates a personal access token.'
+        detail 'Rotates a personal access token.'
         success Entities::PersonalAccessTokenWithToken
       end
       params do

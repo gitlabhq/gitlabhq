@@ -169,25 +169,6 @@ RSpec.describe 'PipelineScheduleUpdate', feature_category: :continuous_integrati
             { 'name' => 'input_for_update', 'value' => 'new_value' }
           )
       end
-
-      context 'when ci_inputs_for_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_inputs_for_pipelines: false)
-        end
-
-        it 'does not change the inputs' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(response).to have_gitlab_http_status(:success)
-
-          expect(mutation_response['errors']).to be_empty
-          expect(mutation_response['pipelineSchedule']['inputs']['nodes'])
-            .to contain_exactly(
-              { 'name' => 'input_for_update', 'value' => 'value' },
-              { 'name' => 'input_for_destroy', 'value' => 'value' }
-            )
-        end
-      end
     end
 
     context 'when failure' do

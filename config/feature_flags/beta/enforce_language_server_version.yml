@@ -1,0 +1,10 @@
+---
+name: enforce_language_server_version
+description: Enforce a minimum version for GitLab Language Server clients
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/541744
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193642
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/541743
+milestone: '18.1'
+group: group::editor extensions
+type: beta
+default_enabled: false

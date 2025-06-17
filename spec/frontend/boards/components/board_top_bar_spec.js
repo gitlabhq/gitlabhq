@@ -61,6 +61,8 @@ describe('BoardTopBar', () => {
         iterationFeatureAvailable: false,
         healthStatusFeatureAvailable: false,
         hasCustomFieldsFeature: false,
+        statusListsAvailable: false,
+        workItemStatusAvailable: false,
         ...provide,
       },
       stubs: { IssueBoardFilteredSearch },

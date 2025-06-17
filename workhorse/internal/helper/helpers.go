@@ -7,6 +7,7 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/log"
 )
@@ -55,4 +56,9 @@ func URLMustParse(s string) *url.URL {
 func IsContentType(expected, actual string) bool {
 	parsed, _, err := mime.ParseMediaType(actual)
 	return err == nil && parsed == expected
+}
+
+// IsURL checks if the given string starts with http:// or https://
+func IsURL(path string) bool {
+	return strings.HasPrefix(path, "http://") || strings.HasPrefix(path, "https://")
 }

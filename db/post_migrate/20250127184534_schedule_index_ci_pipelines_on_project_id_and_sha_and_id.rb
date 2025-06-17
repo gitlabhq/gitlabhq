@@ -8,12 +8,11 @@ class ScheduleIndexCiPipelinesOnProjectIdAndShaAndId < Gitlab::Database::Migrati
   COLUMN_NAMES = [:project_id, :sha, :id]
   INDEX_NAME = 'ci_pipelines_on_project_id_and_sha_and_id'
 
-  # TODO: Index to be created synchronously in https://gitlab.com/gitlab-org/gitlab/-/issues/516073
   def up
-    prepare_async_index(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
+    # no-op
   end
 
   def down
-    unprepare_async_index(TABLE_NAME, COLUMN_NAMES, name: INDEX_NAME)
+    # no-op
   end
 end

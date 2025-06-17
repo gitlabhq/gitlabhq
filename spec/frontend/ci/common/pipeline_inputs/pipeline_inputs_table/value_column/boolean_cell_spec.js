@@ -7,7 +7,7 @@ describe('BooleanCell', () => {
   let wrapper;
 
   const defaultProps = {
-    input: { name: 'boolInput', type: 'BOOLEAN', default: false },
+    input: { name: 'boolInput', type: 'BOOLEAN', value: false },
   };
 
   const createComponent = ({ props = {} } = {}) => {
@@ -43,10 +43,10 @@ describe('BooleanCell', () => {
       expect(findFalseButton().text()).toBe('false');
     });
 
-    it('selects the button matching the default value', () => {
+    it('selects the button matching the value', () => {
       createComponent({
         props: {
-          input: { ...defaultProps.input, default: true },
+          input: { ...defaultProps.input, value: true },
         },
       });
 
@@ -61,7 +61,7 @@ describe('BooleanCell', () => {
     });
 
     it('emits update event when value is updated', async () => {
-      // First set to true (since default is false)
+      // First set to true (since current value is false)
       findTrueButton().vm.$emit('click');
       await waitForPromises();
       expect(wrapper.emitted('update')).toHaveLength(1);
@@ -72,7 +72,7 @@ describe('BooleanCell', () => {
     });
 
     it('does not emit event when clicking already selected button', async () => {
-      // Default is false, so clicking false button should not emit
+      // Current value is false, so clicking false button should not emit
       findFalseButton().vm.$emit('click');
       await waitForPromises();
 
@@ -84,7 +84,7 @@ describe('BooleanCell', () => {
     it('converts undefined to "false"', () => {
       createComponent({
         props: {
-          input: { ...defaultProps.input, default: undefined },
+          input: { ...defaultProps.input, value: undefined },
         },
       });
       expect(findFalseButton().props('selected')).toBe(true);
@@ -93,7 +93,7 @@ describe('BooleanCell', () => {
     it('converts null to "false"', () => {
       createComponent({
         props: {
-          input: { ...defaultProps.input, default: null },
+          input: { ...defaultProps.input, value: null },
         },
       });
       expect(findFalseButton().props('selected')).toBe(true);
@@ -102,7 +102,7 @@ describe('BooleanCell', () => {
     it('converts boolean values to string values for display', () => {
       createComponent({
         props: {
-          input: { ...defaultProps.input, default: true },
+          input: { ...defaultProps.input, value: true },
         },
       });
 

@@ -12,7 +12,7 @@ RSpec.describe Integrations::ZentaoTrackerData, feature_category: :integrations 
   end
 
   describe 'encrypted attributes' do
-    subject { described_class.attr_encrypted_attributes.keys }
+    subject { described_class.attr_encrypted_encrypted_attributes.keys }
 
     it { is_expected.to contain_exactly(:url, :api_url, :zentao_product_xid, :api_token) }
   end

@@ -16,15 +16,7 @@
  *    }"
  *   />
  */
-import {
-  GlButton,
-  GlSkeletonLoader,
-  GlTooltipDirective,
-  GlIcon,
-  GlAnimatedLoaderIcon,
-  GlAvatar,
-  GlAvatarLink,
-} from '@gitlab/ui';
+import { GlButton, GlSkeletonLoader, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapActions, mapState } from 'vuex';
@@ -59,9 +51,6 @@ export default {
     TimelineEntryItem,
     GlButton,
     GlSkeletonLoader,
-    GlAnimatedLoaderIcon,
-    GlAvatar,
-    GlAvatarLink,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -128,9 +117,6 @@ export default {
       }
       return icon;
     },
-    isDuoCodeReviewSystemNote() {
-      return this.note.author.user_type === 'duo_code_review_bot';
-    },
   },
   mounted() {
     renderGFM(this.$refs['gfm-content']);
@@ -172,52 +158,23 @@ export default {
         {
           'system-note-icon -gl-mt-1 gl-ml-2 gl-h-6 gl-w-6': isAllowedIcon,
           'system-note-dot -gl-top-1 gl-ml-4 gl-mt-3 gl-h-3 gl-w-3 gl-border-2 gl-border-solid gl-border-subtle':
-            !isAllowedIcon && !isDuoCodeReviewSystemNote,
-          'gl-bg-white': isDuoCodeReviewSystemNote,
-          'gl-mb-4 gl-ml-5': isDuoCodeReviewSystemNote && note.type,
+            !isAllowedIcon,
         },
       ]"
       class="gl-relative gl-float-left gl-flex gl-items-center gl-justify-center gl-rounded-full"
     >
-      <gl-avatar-link
-        v-if="isDuoCodeReviewSystemNote"
-        :href="note.author.path"
-        :data-user-id="note.author.id"
-        :data-username="note.author.username"
-        class="js-user-link"
-      >
-        <gl-avatar
-          :src="note.author.avatar_url"
-          :entity-name="note.author.username"
-          :alt="note.author.name"
-          :size="32"
-          data-testid="system-note-avatar"
-        />
-      </gl-avatar-link>
       <gl-icon
-        v-else-if="isAllowedIcon"
+        v-if="isAllowedIcon"
         :name="systemNoteIconName"
         :size="14"
         data-testid="timeline-icon"
       />
     </div>
-    <div class="gl-ml-7" :class="{ 'gl-h-7': isDuoCodeReviewSystemNote }">
-      <div
-        class="gl-flex"
-        :class="{
-          'gl-items-start gl-justify-between': !isDuoCodeReviewSystemNote,
-          'gl-h-full gl-items-center': isDuoCodeReviewSystemNote,
-        }"
-      >
-        <gl-animated-loader-icon
-          v-if="isDuoCodeReviewSystemNote"
-          is-on
-          class="gl-ml-3 gl-self-center"
-          data-testid="duo-loading-icon"
-        />
+    <div class="gl-ml-7">
+      <div class="gl-flex gl-items-start gl-justify-between">
         <note-header
           :author="note.author"
-          :created-at="isDuoCodeReviewSystemNote ? null : note.created_at"
+          :created-at="note.created_at"
           :note-id="note.id"
           is-system-note
           :is-imported="note.imported"
@@ -249,7 +206,10 @@ export default {
           </template>
         </note-header>
       </div>
-      <div class="note-body gl-pb-0 gl-pl-3">
+      <div
+        class="note-body gl-pb-0 gl-pl-3"
+        :class="{ '!gl-block': showLines || shouldShowDescriptionVersion }"
+      >
         <div
           v-safe-html="note.note_html"
           :class="{

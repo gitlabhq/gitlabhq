@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Custom group-level project templates development guidelines
 ---
 
@@ -93,8 +93,8 @@ steps:
   - Defined in `lib/gitlab/import_export/design_repo_saver.rb`.
 - `Gitlab::ImportExport::Error`: Custom error object.
   - Defined in `lib/gitlab/import_export/error.rb`.
-- `Gitlab::ImportExport::AfterExportStrategyBuilder`: Acts as callback to run after export is completed.
-  - Defined in `lib/gitlab/import_export/after_export_strategy_builder.rb`.
+- `Import::AfterExportStrategies::AfterExportStrategyBuilder`: Acts as callback to run after export is completed.
+  - Defined in `lib/import/after_export_strategies/after_export_strategy_builder.rb`.
 - `Gitlab::Export::Logger`: Logger used during export.
   - Defined in `lib/gitlab/export/logger.rb`.
 - `Gitlab::ImportExport::LogUtil`: Builds log messages.
@@ -105,8 +105,8 @@ steps:
   - Defined in `lib/gitlab/template_helper.rb`.
 - `ImportExportUpload`: Stores the import and export archive files.
   - Defined in `app/models/import_export_upload.rb`.
-- `Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy`: Base after export strategy.
-  - Defined in `lib/gitlab/import_export/after_export_strategies/base_after_export_strategy.rb`.
+- `Import::AfterExportStrategies::BaseAfterExportStrategy`: Base after export strategy.
+  - Defined in `lib/import/after_export_strategies/base_after_export_strategy.rb`.
 - `RepositoryImportWorker`: Worker to trigger the import step.
   - Defined in `app/workers/repository_import_worker.rb`.
 - `EE::RepositoryImportWorker`: Extension to repository import worker.

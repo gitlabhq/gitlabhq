@@ -44,7 +44,6 @@ Sidekiq/EnforceDatabaseHealthSignalDeferral:
     - 'app/workers/design_management/copy_design_collection_worker.rb'
     - 'app/workers/emails_on_push_worker.rb'
     - 'app/workers/file_hook_worker.rb'
-    - 'app/workers/flush_counter_increments_worker.rb'
     - 'app/workers/gitlab/version/version_check_cron_worker.rb'
     - 'app/workers/google_cloud/fetch_google_ip_list_worker.rb'
     - 'app/workers/incident_management/close_incident_worker.rb'

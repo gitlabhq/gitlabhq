@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Diff::ViewerHunk, feature_category: :code_review_workflow
     it 'returns up and down' do
       lines = [old_line(old_pos: 1), match_line, new_line(old_pos: 25)]
       instance = described_class.init_from_diff_lines(lines)[1]
-      expect(instance.header.expand_directions).to match_array([:down, :up])
+      expect(instance.header.expand_directions).to match_array([:up, :down])
     end
   end
 

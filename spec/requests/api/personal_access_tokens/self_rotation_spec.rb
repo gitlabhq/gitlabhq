@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :system_access do
   let(:path) { '/personal_access_tokens/self/rotate' }
   let(:token) { create(:personal_access_token, user: current_user) }
-  let(:expiry_date) { Date.today + 1.week }
+  let(:expiry_date) { 1.week.from_now }
   let(:params) { {} }
 
   let_it_be(:current_user) { create(:user) }
@@ -19,7 +19,7 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['token']).not_to eq(token.token)
-        expect(json_response['expires_at']).to eq(expiry_date.to_s)
+        expect(json_response['expires_at']).to eq(expiry_date.to_date.iso8601)
         expect(token.reload).to be_revoked
       end
     end
@@ -38,7 +38,7 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
       it_behaves_like 'rotating token succeeds'
 
       context 'when expiry is defined' do
-        let(:expiry_date) { Date.today + 1.month }
+        let(:expiry_date) { 1.month.from_now }
         let(:params) { { expires_at: expiry_date } }
 
         it_behaves_like 'rotating token succeeds'
@@ -70,7 +70,7 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
       it_behaves_like 'rotating token succeeds'
 
       context 'when expiry is defined' do
-        let(:expiry_date) { Date.today + 1.month }
+        let(:expiry_date) { 1.month.from_now }
         let(:params) { { expires_at: expiry_date } }
 
         it_behaves_like 'rotating token succeeds'
@@ -182,7 +182,7 @@ RSpec.describe API::PersonalAccessTokens::SelfRotation, feature_category: :syste
       it_behaves_like 'rotating token succeeds'
 
       context 'when expiry is defined' do
-        let(:expiry_date) { Date.today + 1.month }
+        let(:expiry_date) { 1.month.from_now }
         let(:params) { { expires_at: expiry_date } }
 
         it_behaves_like 'rotating token succeeds'

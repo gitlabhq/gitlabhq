@@ -160,6 +160,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	cfg.TrustedCIDRsForXForwardedFor = cfgFromFile.TrustedCIDRsForXForwardedFor
 	cfg.TrustedCIDRsForPropagation = cfgFromFile.TrustedCIDRsForPropagation
 	cfg.Listeners = cfgFromFile.Listeners
+	cfg.CircuitBreakerConfig = cfgFromFile.CircuitBreakerConfig
 
 	return boot, cfg, nil
 }

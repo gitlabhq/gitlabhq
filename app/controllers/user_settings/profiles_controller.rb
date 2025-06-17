@@ -56,6 +56,7 @@ module UserSettings
         :location,
         :mastodon,
         :name,
+        :orcid,
         :organization,
         :private_profile,
         :pronouns,
@@ -67,6 +68,7 @@ module UserSettings
         :username,
         :validation_password,
         :website_url,
+        :github,
         { status: [:emoji, :message, :availability, :clear_status_after] }
       ]
     end

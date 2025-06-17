@@ -32,5 +32,26 @@ RSpec.describe CreateNoteDiffFileWorker, feature_category: :code_review_workflow
         described_class.new.perform(nil)
       end
     end
+
+    context 'when DiffNote::NoteDiffFileCreationError is raised' do
+      before do
+        allow_next_found_instance_of(DiffNote) do |diff_note|
+          allow(diff_note)
+            .to receive(:create_diff_file)
+            .and_raise(DiffNote::NoteDiffFileCreationError)
+        end
+      end
+
+      it 'tracks exception' do
+        expect(Gitlab::ErrorTracking)
+          .to receive(:track_exception)
+          .with(
+            an_instance_of(DiffNote::NoteDiffFileCreationError),
+            diff_note_id: diff_note.id
+          ).and_call_original
+
+        described_class.new.perform(diff_note.id)
+      end
+    end
   end
 end

@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, no-param-reassign, consistent-return */
 
 import { scrollToElement } from '~/lib/utils/common_utils';
+import { updateHash } from '~/blob/state';
 
 // LineHighlighter
 //
@@ -174,6 +175,7 @@ LineHighlighter.prototype.setHash = function (firstLineNumber, lastLineNumber) {
     hash = `#L${firstLineNumber}`;
   }
   this._hash = hash;
+  updateHash(hash);
   return this.__setLocationHash__(hash);
 };
 

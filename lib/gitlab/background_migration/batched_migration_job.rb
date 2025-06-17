@@ -14,13 +14,14 @@ module Gitlab
       include Gitlab::ClassAttributes
 
       DEFAULT_FEATURE_CATEGORY = :database
+      MINIMUM_PAUSE_MS = 100
 
       class << self
         def generic_instance(batch_table:, batch_column:, connection:, job_arguments: [])
           new(
             batch_table: batch_table, batch_column: batch_column,
             job_arguments: job_arguments, connection: connection,
-            start_id: 0, end_id: 0, sub_batch_size: 0, pause_ms: 0
+            start_id: 0, end_id: 0, sub_batch_size: 0, pause_ms: MINIMUM_PAUSE_MS
           )
         end
 
@@ -87,7 +88,7 @@ module Gitlab
         @batch_table = batch_table
         @batch_column = batch_column
         @sub_batch_size = sub_batch_size
-        @pause_ms = pause_ms
+        @pause_ms = [pause_ms, self.class::MINIMUM_PAUSE_MS].max
         @job_arguments = job_arguments
         @connection = connection
         @sub_batch_exception = sub_batch_exception
@@ -130,7 +131,7 @@ module Gitlab
             raise exception_class, exception
           end
 
-          sleep([pause_ms, 0].max * 0.001)
+          sleep(pause_ms * 0.001)
         end
       end
 
@@ -146,7 +147,7 @@ module Gitlab
             yield relation
           end
 
-          sleep([pause_ms, 0].max * 0.001)
+          sleep(pause_ms * 0.001)
         end
       end
 

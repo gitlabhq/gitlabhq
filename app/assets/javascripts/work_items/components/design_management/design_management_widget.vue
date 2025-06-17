@@ -228,8 +228,7 @@ export default {
     issueAsWorkItem() {
       return Boolean(
         !this.isGroup &&
-          (this.glFeatures.workItemViewForIssues ||
-            (this.glFeatures.workItemsViewPreference && gon.current_user_use_work_items_view)),
+          (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view),
       );
     },
     canUseRouter() {
@@ -472,10 +471,11 @@ export default {
 
 <template>
   <div
-    class="work-item-design-widget-container gl-mt-5 gl-rounded-base focus:gl-focus"
+    class="work-item-design-widget-container gl-rounded-base focus:gl-focus"
+    :class="{ 'gl-mt-5': hasDesignsAndVersions }"
     :tabindex="0"
-    @focusin="toggleOnPasteListener"
-    @focusout="toggleOffPasteListener"
+    @mouseenter="toggleOnPasteListener"
+    @mouseleave="toggleOffPasteListener"
   >
     <slot v-if="!hasDesignsAndVersions" name="empty-state"></slot>
     <crud-component

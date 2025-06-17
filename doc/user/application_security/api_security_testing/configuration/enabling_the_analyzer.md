@@ -359,15 +359,15 @@ requests. These placeholders are called variables, as explained in [using variab
 You can use variables to store and reuse values in your requests and scripts. For example, you can
 edit the collection to add variables to the document:
 
-![Edit collection variable tab View](../img/dast_api_postman_collection_edit_variable_v13_9.png)
+![Edit collection variable tab View](img/dast_api_postman_collection_edit_variable_v13_9.png)
 
 Or alternatively, you can add variables in an environment:
 
-![Edit environment variables View](../img/dast_api_postman_environment_edit_variable_v13_9.png)
+![Edit environment variables View](img/dast_api_postman_environment_edit_variable_v13_9.png)
 
 You can then use the variables in sections such as URL, headers, and others:
 
-![Edit request using variables View](../img/dast_api_postman_request_edit_v13_9.png)
+![Edit request using variables View](img/dast_api_postman_request_edit_v13_9.png)
 
 Postman has grown from a basic client tool with a nice UX experience to a more complex ecosystem that allows testing APIs with scripts, creating complex collections that trigger secondary requests, and setting variables along the way. Not every feature in the Postman ecosystem is supported. For example, scripts are not supported. The main focus of the Postman support is to ingest Postman Collection definitions that are used by the Postman Client and their related variables defined in the workspace, environments, and the collections themselves.
 
@@ -375,7 +375,7 @@ Postman allows creating variables in different scopes. Each scope has a differen
 
 Variable scopes in Postman can be a daunting topic and not everyone is familiar with it. We strongly recommend that you read [Variable Scopes](https://learning.postman.com/docs/sending-requests/variables/variables/#variable-scopes) from Postman documentation before moving forward.
 
-As mentioned above, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
+As mentioned previously, there are different variable scopes, and each of them has a purpose and can be used to provide more flexibility to your Postman document. There is an important note on how values for variables are computed, as per Postman documentation:
 
 > If a variable with the same name is declared in two different scopes, the value stored in the variable with narrowest scope is used. For example, if there is a global variable named `username` and a local variable named `username`, the local value is used when the request runs.
 

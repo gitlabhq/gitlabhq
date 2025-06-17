@@ -53,7 +53,7 @@ export const setupEndlessScroll = ($) => {
     var defaults = {
       bottomPixels  : 50,
       fireOnce      : true,
-      loader        : "<br />Loading...<br />",
+      loader        : "<br />Loading…<br />",
       data          : "",
       insertAfter   : "div:last",
       resetCounter  : function() { return false; },

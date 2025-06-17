@@ -265,14 +265,14 @@ In this example:
 
 The availability objectives for Gitaly clusters assuming a single node failure are:
 
-- **Recovery Point Objective (RPO):** Less than 1 minute.
+- Recovery Point Objective (RPO): Less than 1 minute.
 
   Writes are replicated asynchronously. Any writes that have not been replicated
   to the newly promoted primary are lost.
 
   [Strong consistency](#strong-consistency) prevents loss in some circumstances.
 
-- **Recovery Time Objective (RTO):** Less than 10 seconds.
+- Recovery Time Objective (RTO): Less than 10 seconds.
   Outages are detected by a health check run by each Praefect node every
   second. Failover requires ten consecutive failed health checks on each
   Praefect node.
@@ -282,7 +282,7 @@ Improvements to RPO and RTO are proposed in epic [8903](https://gitlab.com/group
 {{< alert type="warning" >}}
 
 If complete cluster failure occurs, disaster recovery plans should be executed. These can affect the
-RPO and RTO discussed above.
+RPO and RTO discussed previously.
 
 {{< /alert >}}
 
@@ -458,7 +458,7 @@ conflict. The first to complete creates the metadata record and the other operat
 The failing creation leaves leftover repositories on the storages. There is on-going work on a
 [background crawler](https://gitlab.com/gitlab-org/gitaly/-/issues/3719) that clean up the leftover repositories from the storages.
 
-The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the above example, the failing operation took
+The repository IDs are generated from the `repositories_repository_id_seq` in PostgreSQL. In the previous example, the failing operation took
 one repository ID without successfully creating a repository with it. Failed repository creations are expected lead to gaps in the repository IDs.
 
 ##### Repository deletions
@@ -515,10 +515,10 @@ the [virtual storage](#virtual-storage).
 All RPCs marked with the `ACCESSOR` option are redirected to an up to date and healthy Gitaly node.
 For example, [`GetBlob`](https://gitlab.com/gitlab-org/gitaly/-/blob/v12.10.6/proto/blob.proto#L16).
 
-_Up to date_ in this context means that:
+"Up to date" in this context means that:
 
 - There is no replication operations scheduled for this Gitaly node.
-- The last replication operation is in _completed_ state.
+- The last replication operation is in a completed state.
 
 The primary node is chosen to serve the request if:
 
@@ -587,7 +587,7 @@ To downgrade a Gitaly Cluster (assuming multiple Praefect nodes):
    ```
 
 1. Count the number of migrations with `unknown migration` in the `APPLIED` column.
-1. On a Praefect node that has **not** been downgraded, perform a dry run of the rollback to validate which migrations to revert. `<CT_UNKNOWN>`
+1. On a Praefect node that has not been downgraded, perform a dry run of the rollback to validate which migrations to revert. `<CT_UNKNOWN>`
    is the number of unknown migrations reported by the downgraded node.
 
    ```shell
@@ -640,17 +640,3 @@ off Gitaly Cluster to a sharded Gitaly instance:
 1. Create and configure a new [Gitaly server](configure_gitaly.md#run-gitaly-on-its-own-server).
 1. [Move the repositories](../operations/moving_repositories.md#moving-repositories) to the newly created storage. You can
    move them by shard or by group, which gives you the opportunity to spread them over multiple Gitaly servers.
-
-### Transition to Gitaly Cluster
-
-For the sake of removing complexity, we must remove direct Git access in GitLab. However, we can't
-remove it as long some GitLab installations require Git repositories on NFS.
-
-Two facets of our efforts to remove direct Git access in GitLab are:
-
-- Reduce the number of inefficient Gitaly queries made by GitLab.
-- Persuade administrators of fault-tolerant or horizontally-scaled GitLab instances to migrate off
-  NFS.
-
-The second facet presents the only real solution. For this, we developed
-[Gitaly Cluster](#gitaly-cluster).

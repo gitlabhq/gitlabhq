@@ -2,6 +2,7 @@ import { start } from '@gitlab/web-ide';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
 import Tracking from '~/tracking';
+import { getLineRangeFromHash } from '~/lib/utils/url_utility';
 import {
   getBaseConfig,
   getOAuthConfig,
@@ -63,6 +64,8 @@ export const initGitlabWebIDE = async (el) => {
 
   const isLanguageServerEnabled = gon?.features?.webIdeLanguageServer || false;
 
+  const lineRange = getLineRangeFromHash();
+
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
     await start(rootEl, {
@@ -73,6 +76,7 @@ export const initGitlabWebIDE = async (el) => {
       projectPath,
       ref,
       filePath,
+      lineRange,
       mrId,
       mrTargetProject: getMRTargetProject(),
       forkInfo,

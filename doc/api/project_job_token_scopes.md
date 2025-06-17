@@ -2,7 +2,7 @@
 stage: Software Supply Chain Security
 group: Pipeline Security
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Project CI/CD job token scope API
+title: CI/CD job token scope API
 ---
 
 {{< details >}}
@@ -12,7 +12,7 @@ title: Project CI/CD job token scope API
 
 {{< /details >}}
 
-You can read more about the [CI/CD job token](../ci/jobs/ci_job_token.md).
+Use this API to interact with [CI/CD job token](../ci/jobs/ci_job_token.md) scopes.
 
 {{< alert type="note" >}}
 
@@ -39,7 +39,7 @@ If successful, returns [`200`](rest/troubleshooting.md#status-codes) and the fol
 
 | Attribute          | Type    | Description |
 |--------------------|---------|-------------|
-| `inbound_enabled`  | boolean | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). |
+| `inbound_enabled`  | boolean | Indicates if the [**Limit access to this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) is enabled. If disabled, then [all projects have access](../ci/jobs/ci_job_token.md#allow-any-project-to-access-your-project). |
 | `outbound_enabled` | boolean | Indicates if the CI/CD job token generated in this project has access to other projects. [Deprecated and planned for removal in GitLab 18.0](../update/deprecations.md#cicd-job-token---limit-access-from-your-project-setting-removal). |
 
 Example request:
@@ -61,11 +61,12 @@ Example response:
 
 {{< history >}}
 
-- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) from **Allow access to this project with a CI_JOB_TOKEN** to **Limit access to this project** in GitLab 16.3.
+- [Renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) from **Limit access to this project** to **Authorized groups and projects** in GitLab 17.2.
 
 {{< /history >}}
 
-Patch the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
+Patch the [**Authorized groups and projects** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) (job token scope) of a project.
 
 ```plaintext
 PATCH /projects/:id/job_token_scope
@@ -76,7 +77,7 @@ Supported attributes:
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
-| `enabled` | boolean        | Yes      | Indicates if the [**Limit access _to_ this project** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) should be enabled. |
+| `enabled` | boolean        | Yes      | The state of the [**Authorized groups and projects** setting](../ci/jobs/ci_job_token.md#add-a-group-or-project-to-the-job-token-allowlist) to select. Set to `true` to select the **This project and any groups and projects in the allowlist** option, and set to `false` to select **All groups and projects**. |
 
 If successful, returns [`204`](rest/troubleshooting.md#status-codes) and no response body.
 

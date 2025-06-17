@@ -10,7 +10,7 @@ module WorkItems
       end
 
       def self.api_symbol
-        "#{type}_widget".to_sym
+        :"#{type}_widget"
       end
 
       def self.quick_action_commands

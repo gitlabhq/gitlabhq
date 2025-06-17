@@ -23,6 +23,7 @@ module RuboCop
 
         MSG = 'Only String objects are permitted in API detail field.'
 
+        # @!method detail_in_desc(node)
         def_node_matcher :detail_in_desc, <<~PATTERN
           (block
             (send nil? :desc ...)

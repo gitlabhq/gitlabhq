@@ -51,6 +51,16 @@ module QA
         )
       end
 
+      def wait_for_pipeline_to_have_status_by_source_branch(project:, source_branch:, status: nil, wait: 240)
+        wait_for_pipeline_status(
+          project: project,
+          status: status,
+          wait: wait,
+          pipeline_finder: -> { project.pipelines.find { |p| p[:ref] == source_branch } },
+          pipeline_identifier: source_branch
+        )
+      end
+
       def wait_for_pipeline_to_have_status_by_id(project:, pipeline_id:, status: nil, wait: 240)
         wait_for_pipeline_status(
           project: project,

@@ -20,12 +20,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
       approvals_before_merge: 1)
   end
 
-  let_it_be(:issue) do
-    # TODO: .reload can be removed after the migration https://gitlab.com/gitlab-org/gitlab/-/issues/497857
-    create(:issue,
-      assignees: [user],
-      project: exportable).reload
-  end
+  let_it_be(:issue) { create(:issue, assignees: [user], project: exportable) }
 
   let(:exportable_path) { 'project' }
   let(:logger) { Gitlab::Export::Logger.build }
@@ -367,8 +362,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
 
     describe 'with inaccessible associations' do
       let_it_be(:milestone) { create(:milestone, project: exportable) }
-      # TODO: .reload can be removed after the migration https://gitlab.com/gitlab-org/gitlab/-/issues/497857
-      let_it_be(:issue) { create(:issue, assignees: [user], project: exportable, milestone: milestone).reload }
+      let_it_be(:issue) { create(:issue, assignees: [user], project: exportable, milestone: milestone) }
       let_it_be(:label1) { create(:label, project: exportable) }
       let_it_be(:label2) { create(:label, project: exportable) }
       let_it_be(:link1) { create(:label_link, label: label1, target: issue) }

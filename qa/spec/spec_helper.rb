@@ -3,6 +3,8 @@
 # Silence logger output for tests and disable colorization
 ENV["QA_LOG_LEVEL"] = "FATAL"
 ENV["COLORIZED_LOGS"] = "false"
+require 'rainbow'
+Rainbow.enabled = false
 
 require_relative '../qa'
 

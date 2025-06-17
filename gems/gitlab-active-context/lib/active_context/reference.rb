@@ -5,6 +5,7 @@ module ActiveContext
     extend Concerns::ReferenceUtils
     extend Concerns::Preprocessor
     include Preprocessors::Chunking
+    include Preprocessors::ContentFetcher
     include Preprocessors::Embeddings
     include Preprocessors::Preload
 
@@ -48,7 +49,7 @@ module ActiveContext
       @routing = routing
       @serialized_args = Array(args)
       @ref_version = Time.now.to_i
-      @include_ref_fields = collection.include_ref_fields
+      @include_ref_fields = @collection.respond_to?(:include_ref_fields) ? @collection.include_ref_fields : true
       init
     end
 

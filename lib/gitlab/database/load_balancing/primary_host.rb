@@ -41,7 +41,11 @@ module Gitlab
         end
 
         def connection
-          @load_balancer.pool.connection
+          if Gem::Version.new(Rails.version) >= Gem::Version.new('7.2')
+            @load_balancer.pool.lease_connection
+          else
+            @load_balancer.pool.connection
+          end
         end
 
         def disconnect!(timeout: 120)

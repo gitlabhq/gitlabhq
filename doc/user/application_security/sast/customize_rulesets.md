@@ -132,7 +132,7 @@ If remote configuration file doesn't seem to be applying customizations correctl
 
 ### The top-level section
 
-The top-level section contains one or more _configuration sections_, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
+The top-level section contains one or more configuration sections, defined as [TOML tables](https://toml.io/en/v1.0.0#table).
 
 | Setting | Description |
 | --------| ----------- |
@@ -145,7 +145,7 @@ Configuration example:
 ...
 ```
 
-Avoid creating configuration sections that modify existing rules _and_ build a custom ruleset, as
+Avoid creating configuration sections that modify existing rules and build a custom ruleset, as
 the latter replaces predefined rules completely.
 
 ### The `[$analyzer]` configuration section

@@ -11,6 +11,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
   let_it_be_with_reload(:project) do
     create(:project,
+      group_runners_enabled: true,
       keep_latest_artifact: true,
       ci_outbound_job_token_scope_enabled: true,
       ci_inbound_job_token_scope_enabled: true
@@ -20,6 +21,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
   let(:variables) do
     {
       full_path: project.full_path,
+      group_runners_enabled: false,
       keep_latest_artifact: false,
       job_token_scope_enabled: false,
       inbound_job_token_scope_enabled: false,
@@ -64,6 +66,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
       expect(response).to have_gitlab_http_status(:success)
       expect(response_errors).to be_blank
+      expect(project.group_runners_enabled).to be(false)
       expect(project.keep_latest_artifact).to be(false)
       expect(project.restrict_user_defined_variables?).to be(true)
       expect(project.ci_pipeline_variables_minimum_override_role).to eq('no_one_allowed')
@@ -225,15 +228,15 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       end
 
       before do
+        override_role = initial_restrict_user_defined_variables ? 'no_one_allowed' : 'developer'
         project.ci_cd_settings.update!(
-          pipeline_variables_minimum_override_role: 'no_one_allowed',
-          restrict_user_defined_variables: initial_restrict_user_defined_variables
+          pipeline_variables_minimum_override_role: override_role
         )
       end
 
       specify do
         expect { post_graphql_mutation(mutation, current_user: maintainer) }.to(
-          change { project.reload.restrict_user_defined_variables }
+          change { project.reload.restrict_user_defined_variables? }
             .from(false)
             .to(true)
         )
@@ -254,7 +257,7 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
         with_them do
           specify do
             expect { post_graphql_mutation(mutation, current_user: maintainer) }.not_to(
-              change { project.reload.restrict_user_defined_variables }
+              change { project.reload.restrict_user_defined_variables? }
                 .from(initial_restrict_user_defined_variables)
             )
           end

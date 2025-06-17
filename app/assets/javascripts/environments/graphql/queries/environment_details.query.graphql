@@ -52,6 +52,7 @@ query getEnvironmentDetails(
             ...DeploymentJob
             deploymentPipeline: pipeline {
               id
+              path
               ... on Pipeline {
                 jobs(whenExecuted: ["manual"], retried: false) {
                   nodes {
@@ -60,6 +61,10 @@ query getEnvironmentDetails(
                   }
                 }
               }
+            }
+            downstreamPipeline {
+              id
+              path
             }
           }
           commit {

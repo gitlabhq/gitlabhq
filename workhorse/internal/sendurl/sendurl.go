@@ -7,12 +7,15 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
+
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 
 	"gitlab.com/gitlab-org/labkit/mask"
 
@@ -115,6 +118,11 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 	if err := e.Unpack(&params, sendData); err != nil {
 		fail.Request(w, r, fmt.Errorf("SendURL: unpack sendData: %v", err))
 		return
+	}
+
+	// Get the tracker from context and set flags
+	if tracker, ok := metrics.FromContext(r.Context()); ok {
+		tracker.SetFlag(metrics.KeyFetchedExternalURL, strconv.FormatBool(true))
 	}
 
 	setDefaultMethod(&params)

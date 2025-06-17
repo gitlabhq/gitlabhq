@@ -17,8 +17,6 @@ When upgrading GitLab, there are two types of migrations to check:
 - Database migrations.
 - Advanced search migrations.
 
-Read below for detailed information about the two types of migrations.
-
 ## Database background migrations
 
 {{< history >}}
@@ -180,7 +178,7 @@ Use the following database queries to see the state of the current batched backg
    If no new row has been added, the migration has been paused.
 
 1. After confirming the migration has paused, restart the migration (using the `enable`
-   command above) to proceed with the batch when ready. On larger instances,
+   command mentioned previously) to proceed with the batch when ready. On larger instances,
    background migrations can take as long as 48 hours to complete each batch.
 
 ##### Automatic batch size optimization
@@ -401,7 +399,7 @@ end
 
 There may be cases where you want to force background migrations to run in the foreground during a maintenance window.
 
-Note that this script may timeout/exit before all migrations are completed. You can run it again until all migrations are complete.
+This script may timeout/exit before all migrations are completed. You can run it again until all migrations are complete.
 
 ```ruby
 # Start the rails console

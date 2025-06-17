@@ -1,9 +1,6 @@
 ---
 Capybara/VisibilityMatcher:
   Exclude:
-    - 'ee/spec/features/epics/epic_show_spec.rb'
-    - 'ee/spec/features/epics/todo_spec.rb'
-    - 'ee/spec/features/epics/update_epic_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/issues_spec.rb'
     - 'ee/spec/features/issues/related_issues_spec.rb'
@@ -43,7 +40,6 @@ Capybara/VisibilityMatcher:
     - 'spec/features/users/email_verification_on_login_spec.rb'
     - 'spec/features/users/overview_spec.rb'
     - 'spec/features/users/user_browses_projects_on_user_page_spec.rb'
-    - 'spec/features/webauthn_spec.rb'
     - 'spec/support/helpers/features/canonical_link_helpers.rb'
     - 'spec/support/shared_examples/features/discussion_comments_shared_example.rb'
     - 'spec/support/shared_examples/features/page_description_shared_examples.rb'

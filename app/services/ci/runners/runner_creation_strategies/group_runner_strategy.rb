@@ -15,6 +15,7 @@ module Ci
           params.merge!({
             runner_type: 'group_type',
             sharding_key_id: scope&.id,
+            organization_id: scope&.organization_id,
             groups: [scope]
           })
         end

@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: How to set up Consul
 ---
@@ -30,7 +30,7 @@ Before configuring Consul:
 
 ## Configure the Consul nodes
 
-On _each_ Consul server node:
+On each Consul server node:
 
 1. Follow the instructions to [install](https://about.gitlab.com/install/)
    GitLab by choosing your preferred platform, but do not supply the

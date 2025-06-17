@@ -2,9 +2,9 @@
 
 module ActiveContext
   module CollectionCache
-    class << self
-      TTL = 1.minute
+    TTL = 1.minute
 
+    class << self
       def collections
         refresh_cache if cache_expired?
 
@@ -25,10 +25,14 @@ module ActiveContext
 
       private
 
+      def ttl
+        Rails.env.test? ? 0.seconds : TTL
+      end
+
       def cache_expired?
         return true unless @last_refreshed_at
 
-        Time.current - @last_refreshed_at > TTL
+        Time.current - @last_refreshed_at > ttl
       end
 
       def refresh_cache

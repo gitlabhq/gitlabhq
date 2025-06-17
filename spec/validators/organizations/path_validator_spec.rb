@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::PathValidator, feature_category: :cell do
+RSpec.describe Organizations::PathValidator, feature_category: :organization do
   let(:validator) { described_class.new(attributes: [:path]) }
 
   describe '.valid_path?' do

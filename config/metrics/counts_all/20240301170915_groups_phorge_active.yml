@@ -1,7 +1,7 @@
 ---
 key_path: counts.groups_phorge_active
 description: Count of groups with active integrations for Phorge
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "16.11"

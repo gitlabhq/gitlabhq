@@ -2,6 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: no
 description: Configure a faster SSH authorization method for GitLab instances with many users.
 title: Fast lookup of SSH keys
 ---
@@ -13,13 +14,6 @@ title: Fast lookup of SSH keys
 
 {{< /details >}}
 
-{{< alert type="note" >}}
-
-For standard (non-deploy key) users, you can also use [SSH certificates](ssh_certificates.md).
-They are faster than database lookups but are not a drop-in replacement for the `authorized_keys` file.
-
-{{< /alert >}}
-
 When the number of users grows, SSH operations become slow because OpenSSH performs a
 linear search through the `authorized_keys` file to authenticate users.
 This process requires significant time and disk I/O, which delays users attempting to
@@ -29,6 +23,13 @@ If users add or remove keys frequently, the operating system may not cache the
 
 Instead of using the `authorized_keys` file, you can configure GitLab Shell to look up
 SSH keys. It is faster because the lookup is indexed in the GitLab database.
+
+{{< alert type="note" >}}
+
+For standard (non-deploy key) users, consider using [SSH certificates](ssh_certificates.md).
+They are faster than database lookups, but are not a drop-in replacement for the `authorized_keys` file.
+
+{{< /alert >}}
 
 ## Fast lookup is required for Geo
 
@@ -40,10 +41,9 @@ SSH keys. It is faster because the lookup is indexed in the GitLab database.
 {{< /details >}}
 
 Unlike [Cloud Native GitLab](https://docs.gitlab.com/charts/), by default Linux package installations
-manage an `authorized_keys` file that is located in the
-`git` user's home directory. For most installations, this file is located under
-`/var/opt/gitlab/.ssh/authorized_keys`, but you can use the following command to
-locate the `authorized_keys` on your system:
+manage an `authorized_keys` file that is located in the `git` user's home directory. For most installations,
+this file is located under `/var/opt/gitlab/.ssh/authorized_keys`. Use this command to locate the
+`authorized_keys` on your system:
 
 ```shell
 getent passwd git | cut -d: -f6 | awk '{print $1"/.ssh/authorized_keys"}'
@@ -154,7 +154,7 @@ or for users to re-add their keys.
 
 ### How to go back to using the `authorized_keys` file
 
-This overview is brief. Refer to the above instructions for more context.
+This overview is brief. Refer to the previous instructions for more context.
 
 1. [Rebuild the `authorized_keys` file](../raketasks/maintenance.md#rebuild-authorized_keys-file).
 1. Enable writes to the `authorized_keys` file.

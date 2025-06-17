@@ -8,7 +8,7 @@ import {
   GlFormSelect,
   GlToggle,
 } from '@gitlab/ui';
-import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/components/secret_manager_settings.vue';
+import SecretManagerSettings from 'ee_component/pages/projects/shared/permissions/secrets_manager/secrets_manager_settings.vue';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -311,6 +311,11 @@ export default {
       type: String,
       required: true,
     },
+    isSecretsManagerAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     showVisibilityConfirmModal: {
       type: Boolean,
       required: false,
@@ -433,7 +438,7 @@ export default {
       }
 
       return s__(
-        'ProjectSettings|View and edit files in this project. When set to **Everyone With Access** non-project members have only read access.',
+        'ProjectSettings|View and edit files in this project. When set to %{em_start}Everyone With Access%{em_end} non-project members have only read access.',
       );
     },
     cveIdRequestIsDisabled() {
@@ -489,7 +494,7 @@ export default {
       if (this.licensedAiFeaturesAvailable) {
         return {
           label: s__('ProjectSettings|GitLab Duo'),
-          helpText: s__('ProjectSettings|Use AI-powered features in this project.'),
+          helpText: s__('ProjectSettings|Use AI-native features in this project.'),
           helpPath: duoHelpPath,
         };
       }
@@ -1222,7 +1227,11 @@ export default {
         </gl-form-checkbox>
       </project-setting-row>
       <ci-catalog-settings v-if="canAddCatalogResource" :full-path="confirmationPhrase" />
-      <secret-manager-settings v-if="canManageSecretManager" :full-path="confirmationPhrase" />
+      <secret-manager-settings
+        v-if="isSecretsManagerAvailable"
+        :can-manage-secrets-manager="canManageSecretManager"
+        :full-path="confirmationPhrase"
+      />
       <other-project-settings />
       <project-setting-row
         v-if="policySettingsAvailable"

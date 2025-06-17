@@ -17,7 +17,7 @@ module Gitlab
         end
 
         def self.fqdn_prefix
-          "#{Gitlab.config.gitlab_ci.server_fqdn}/"
+          "#{Gitlab.config.gitlab.server_fqdn}/"
         end
 
         def initialize(address:)

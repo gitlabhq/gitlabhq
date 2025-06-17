@@ -8,7 +8,7 @@ title: Rate limits on Users API
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -16,18 +16,11 @@ title: Rate limits on Users API
 
 - Rate limits for Users API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 with a [flag](../feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) customizable rate limits in GitLab 17.10.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/524831) in GitLab 18.1. Feature flag `rate_limiting_user_endpoints` removed.
 
 {{< /history >}}
 
 You can configure the per minute rate limit per IP address and per user for requests to the following [Users API](../../api/users.md).
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 | Limit                                                           | Default |
 |-----------------------------------------------------------------|---------|

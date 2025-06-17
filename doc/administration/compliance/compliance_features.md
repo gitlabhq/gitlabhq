@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Compliance
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Compliance features for administrators
+description: Compliance center, audit events, security policies, and compliance frameworks.
 ---
 
 {{< details >}}
@@ -18,7 +19,7 @@ of the features are also available for groups and projects.
 ## Compliant workflow automation
 
 It is important for compliance teams to be confident that their controls and
-requirements are set up correctly, but also that they _stay_ set up correctly.
+requirements are set up correctly, but also that they stay set up correctly.
 One way of doing this is manually checking settings periodically, but this is
 error prone and time consuming. A better approach is to use single-source-of-truth
 settings and automation to ensure that whatever a compliance team has configured,

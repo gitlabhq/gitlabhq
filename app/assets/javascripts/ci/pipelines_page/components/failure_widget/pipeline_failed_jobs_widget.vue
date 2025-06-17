@@ -130,7 +130,7 @@ export default {
     <template #title>
       <gl-button
         variant="link"
-        class="!gl-text-subtle"
+        class="!gl-text-subtle !gl-no-underline"
         :aria-expanded="isExpanded.toString()"
         :aria-controls="$options.ariaControlsId"
         data-testid="toggle-button"

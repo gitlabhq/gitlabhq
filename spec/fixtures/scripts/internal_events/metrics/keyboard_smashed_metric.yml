@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.count_distinct_user_id_from_random_name
 description: Count of unique users random metric string
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - acquisition
 performance_indicator_type: []

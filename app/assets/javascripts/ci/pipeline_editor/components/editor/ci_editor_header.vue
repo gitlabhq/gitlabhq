@@ -1,5 +1,6 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlLink } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { __, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -15,9 +16,11 @@ export default {
     browseCatalog: __('CI/CD Catalog'),
     help: __('Help'),
     jobAssistant: s__('JobAssistant|Job assistant'),
+    editorA11y: s__('PipelineEditor|Editor accessibility guide'),
   },
   components: {
     GlButton,
+    GlLink,
   },
   mixins: [glFeatureFlagMixin(), Tracking.mixin()],
   inject: ['ciCatalogPath'],
@@ -29,6 +32,13 @@ export default {
     showJobAssistantDrawer: {
       type: Boolean,
       required: true,
+    },
+  },
+  computed: {
+    editorA11yHelpPagePath() {
+      return helpPagePath('ci/pipeline_editor/_index.md', {
+        anchor: 'editor-accessibility-options',
+      });
     },
   },
   methods: {
@@ -61,7 +71,7 @@ export default {
 
 <template>
   <div
-    class="gl-flex gl-flex-col gl-gap-3 gl-border-1 gl-border-solid gl-border-default gl-p-3 md:gl-flex-row"
+    class="gl-flex gl-flex-col gl-gap-3 gl-border-1 gl-border-solid gl-border-default gl-p-3 md:gl-flex-row md:gl-items-center"
   >
     <slot></slot>
     <gl-button
@@ -90,5 +100,12 @@ export default {
     >
       {{ $options.i18n.jobAssistant }}
     </gl-button>
+    <gl-link
+      class="gl-p-2 gl-text-center"
+      :href="editorA11yHelpPagePath"
+      data-testid="editor-accessibility-link"
+    >
+      {{ $options.i18n.editorA11y }}
+    </gl-link>
   </div>
 </template>

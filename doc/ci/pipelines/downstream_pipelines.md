@@ -17,9 +17,9 @@ Downstream pipelines run independently and concurrently to the upstream pipeline
 that triggered them.
 
 - A [parent-child pipeline](downstream_pipelines.md#parent-child-pipelines) is a downstream pipeline
-  triggered in the *same* project as the first pipeline.
+  triggered in the same project as the first pipeline.
 - A [multi-project pipeline](#multi-project-pipelines) is a downstream pipeline triggered
-  in a *different* project than the first pipeline.
+  in a different project than the first pipeline.
 
 You can sometimes use parent-child pipelines and multi-project pipelines for similar purposes,
 but there are [key differences](pipeline_architectures.md).
@@ -273,7 +273,7 @@ For example, using `rules`:
 In child pipelines, `$CI_PIPELINE_SOURCE` always has a value of `parent_pipeline`, so:
 
 - You can use `if: $CI_PIPELINE_SOURCE == "parent_pipeline"` to ensure child pipeline jobs always run.
-- You _can't_ use `if: $CI_PIPELINE_SOURCE == "merge_request_event"` to configure child pipeline
+- You can't use `if: $CI_PIPELINE_SOURCE == "merge_request_event"` to configure child pipeline
   jobs to run for merge request pipelines. Instead, use `if: $CI_MERGE_REQUEST_ID`
   to set child pipeline jobs to run only when the parent pipeline is a merge request pipeline. The parent pipeline's
   [`CI_MERGE_REQUEST_*` predefined variables](../variables/predefined_variables.md#predefined-variables-for-merge-request-pipelines)
@@ -841,7 +841,7 @@ the ones defined in the upstream project take precedence.
 
 {{< /details >}}
 
-You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/_index.md#pass-an-environment-variable-to-another-job).
+You can pass variables to a downstream pipeline with [`dotenv` variable inheritance](../variables/job_scripts.md#pass-an-environment-variable-to-another-job).
 
 For example, in a [multi-project pipeline](#multi-project-pipelines):
 

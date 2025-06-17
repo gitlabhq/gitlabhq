@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: 'Tutorial: Install and secure a single node GitLab instance'
 ---
@@ -366,31 +366,23 @@ You should now be able to send emails. To test that the configuration worked:
 If you're unable to send emails, see the
 [SMTP troubleshooting section](https://docs.gitlab.com/omnibus/settings/smtp.html#troubleshooting).
 
-#### Enable the email verification
+#### Require email verification for locked accounts
 
 Account email verification provides an additional layer of GitLab account
 security. When some conditions are met, for example, if there are three or more
 failed sign-in attempts in 24 hours, an account is locked.
 
-This feature is behind a feature flag. To enable it:
+Prerequisites:
 
-1. Enter the Rails console:
+- You must be an administrator.
 
-   ```shell
-   sudo gitlab-rails console
-   ```
+To require email verification for locked accounts:
 
-1. Enable the feature flag:
-
-   ```ruby
-   Feature.enable(:require_email_verification)
-   ```
-
-1. Check if it's enabled (should return `true`):
-
-   ```ruby
-   Feature.enabled?(:require_email_verification)
-   ```
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Sign-in restrictions**.
+1. Select the **Email verification for locked accounts** checkbox.
+1. Select **Save changes**.
 
 For more information, read about
 [account email verification](../../security/email_verification.md).

@@ -252,9 +252,8 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         end
       end
 
-      context 'when can invite members' do
+      context 'with invite members' do
         let(:with_can_admin_in_group) { true }
-        let(:with_invite_members_experiment) { true }
         let(:expected_title) { 'In this group' }
         let(:expected_href) { "/groups/#{group.full_path}/-/group_members" }
 
@@ -269,13 +268,11 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
       let(:with_show_new_issue_link) { false }
       let(:with_merge_project) { nil }
       let(:with_can_create_snippet_in_project) { false }
-      let(:with_can_admin_project_member) { false }
 
       before do
         allow(helper).to receive(:show_new_issue_link?).with(project) { with_show_new_issue_link }
         allow(helper).to receive(:merge_request_source_project_for_project).with(project) { with_merge_project }
         allow(helper).to receive(:can?).with(user, :create_snippet, project) { with_can_create_snippet_in_project }
-        allow(helper).to receive(:can_admin_project_member?) { with_can_admin_project_member }
       end
 
       it 'has base results' do
@@ -379,11 +376,13 @@ RSpec.describe Nav::NewDropdownHelper, feature_category: :navigation do
         end
       end
 
-      context 'when invite members experiment' do
-        let(:with_invite_members_experiment) { true }
-        let(:with_can_admin_project_member) { true }
+      context 'with invite members' do
         let(:expected_title) { 'In this project' }
         let(:expected_href) { "/#{project.path_with_namespace}/-/project_members" }
+
+        before do
+          allow(helper).to receive(:can?).with(user, :invite_member, project).and_return(true)
+        end
 
         it_behaves_like 'invite member item', 'projects/invite_members_top_nav_link'
       end

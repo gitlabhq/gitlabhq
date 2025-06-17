@@ -114,6 +114,7 @@ Buildah
 Buildkite
 buildpack
 buildpacks
+Buildx
 bundler
 bundlers
 burndown
@@ -549,6 +550,9 @@ Kucoin
 Kustomization
 Kustomize
 kwargs
+LangChain
+LangGraph
+LangSmith
 Laravel
 LaunchDarkly
 ldapsearch

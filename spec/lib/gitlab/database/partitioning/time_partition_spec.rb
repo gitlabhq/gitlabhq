@@ -43,8 +43,8 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
     end
   end
 
-  describe '#to_sql' do
-    subject { described_class.new(table, from, to, partition_name: partition_name).to_sql }
+  describe '#to_create_sql' do
+    subject { described_class.new(table, from, to, partition_name: partition_name).to_create_sql }
 
     let(:table) { 'foo' }
     let(:from) { '2020-04-01 00:00:00' }
@@ -52,10 +52,27 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
     let(:suffix) { '202004' }
     let(:partition_name) { "#{table}_#{suffix}" }
 
-    it 'transforms to a CREATE TABLE statement' do
+    it 'creates a table with LIKE statement' do
       expect(subject).to eq(<<~SQL)
         CREATE TABLE IF NOT EXISTS "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_202004"
-        PARTITION OF "foo"
+        (LIKE "foo" INCLUDING ALL)
+      SQL
+    end
+  end
+
+  describe '#to_attach_sql' do
+    subject { described_class.new(table, from, to, partition_name: partition_name).to_attach_sql }
+
+    let(:table) { 'foo' }
+    let(:from) { '2020-04-01 00:00:00' }
+    let(:to) { '2020-05-01 00:00:00' }
+    let(:suffix) { '202004' }
+    let(:partition_name) { "#{table}_#{suffix}" }
+
+    it 'creates an ALTER TABLE ATTACH PARTITION statement' do
+      expect(subject).to eq(<<~SQL)
+        ALTER TABLE "foo"
+        ATTACH PARTITION "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_202004"
         FOR VALUES FROM ('2020-04-01') TO ('2020-05-01')
       SQL
     end
@@ -66,8 +83,8 @@ RSpec.describe Gitlab::Database::Partitioning::TimePartition, feature_category: 
 
       it 'uses MINVALUE instead' do
         expect(subject).to eq(<<~SQL)
-          CREATE TABLE IF NOT EXISTS "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_000000"
-          PARTITION OF "foo"
+          ALTER TABLE "foo"
+          ATTACH PARTITION "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_000000"
           FOR VALUES FROM (MINVALUE) TO ('2020-05-01')
         SQL
       end

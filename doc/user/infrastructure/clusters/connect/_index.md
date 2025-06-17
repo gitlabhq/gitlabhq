@@ -33,10 +33,10 @@ in GitLab 14.5.
 
 Choose your cluster's level according to its purpose:
 
-| Level | Purpose |
-|--|--|
-| [Project level](../../../project/clusters/_index.md) | Use your cluster for a single project. |
-| [Group level](../../../group/clusters/_index.md) | Use the same cluster across multiple projects within your group. |
+| Level                                                  | Purpose |
+|--------------------------------------------------------|---------|
+| [Project level](../../../project/clusters/_index.md)   | Use your cluster for a single project. |
+| [Group level](../../../group/clusters/_index.md)       | Use the same cluster across multiple projects within your group. |
 | [Instance level](../../../instance/clusters/_index.md) | Use the same cluster across groups and projects within your instance. |
 
 ### View your clusters
@@ -45,17 +45,17 @@ To view the Kubernetes clusters connected to your project,
 group, or instance, open the cluster's page according to
 your cluster's level.
 
-**Project-level clusters:**
+**Project-level clusters**:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Operate > Kubernetes clusters**.
 
-**Group-level clusters:**
+**Group-level clusters**:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Operate > Kubernetes clusters**.
 
-**Instance-level clusters:**
+**Instance-level clusters**:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Kubernetes**.

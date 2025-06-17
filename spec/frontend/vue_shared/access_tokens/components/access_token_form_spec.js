@@ -22,14 +22,22 @@ describe('AccessTokenForm', () => {
 
   const accessTokenMaxDate = '2021-07-06';
   const accessTokenMinDate = '2020-07-06';
+  const accessTokenAvailableScopes = [
+    { value: 'read_service_ping', text: 'scope 1' },
+    { value: 'read_user', text: 'scope 2' },
+    { value: 'other', text: 'scope 3' },
+  ];
 
-  const createComponent = (provide = {}) => {
+  const createComponent = (props = {}) => {
     wrapper = mountExtended(AccessTokenForm, {
       pinia,
       provide: {
         accessTokenMaxDate,
         accessTokenMinDate,
-        ...provide,
+        accessTokenAvailableScopes,
+      },
+      propsData: {
+        ...props,
       },
     });
   };
@@ -80,12 +88,10 @@ describe('AccessTokenForm', () => {
     createComponent();
 
     const checkboxes = findCheckboxes();
-    expect(checkboxes).toHaveLength(13);
+    expect(checkboxes).toHaveLength(3);
     const checkbox = checkboxes.at(0);
     expect(checkbox.find('input').element.value).toBe('read_service_ping');
-    expect(checkbox.find('label').text()).toContain(
-      'Grant access to download Service Ping payload via API when authenticated as an admin user.',
-    );
+    expect(checkbox.find('label').text()).toContain('scope 1');
   });
 
   describe('reset button', () => {
@@ -145,6 +151,22 @@ describe('AccessTokenForm', () => {
           );
         });
       });
+    });
+  });
+
+  describe('when token name, description or scopes are provided', () => {
+    it('pre-fills the form', () => {
+      createComponent({
+        name: 'My token',
+        description: 'My description',
+        scopes: ['read_service_ping', 'read_user'],
+      });
+
+      expect(findInput().props('value')).toBe('My token');
+      expect(findTextArea().props('value')).toBe('My description');
+      expect(findCheckboxes().at(0).find('input').element.checked).toBe(true);
+      expect(findCheckboxes().at(1).find('input').element.checked).toBe(true);
+      expect(findCheckboxes().at(2).find('input').element.checked).toBe(false);
     });
   });
 });

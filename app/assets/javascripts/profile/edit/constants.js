@@ -32,6 +32,12 @@ export const statusI18n = {
 export const timezoneI18n = {
   setTimezoneTitle: s__('Profiles|Time settings'),
   setTimezoneDescription: s__('Profiles|Set your local time zone.'),
+  timezone: s__('Profiles|Timezone'),
+};
+
+export const mainI18n = {
+  mainTitle: s__('Profiles|Main settings'),
+  mainDescription: s__('Profiles|This information will appear on your profile.'),
 };
 
 export const i18n = {

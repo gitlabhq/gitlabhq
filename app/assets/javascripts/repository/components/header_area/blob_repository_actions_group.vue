@@ -74,6 +74,6 @@ export default {
       class="js-blob-blame-link sm:gl-hidden"
       data-testid="blame-dropdown-item"
     />
-    <permalink-dropdown-item :permalink-path="permalinkPath" />
+    <permalink-dropdown-item :permalink-path="permalinkPath" source="blob" />
   </gl-disclosure-dropdown-group>
 </template>

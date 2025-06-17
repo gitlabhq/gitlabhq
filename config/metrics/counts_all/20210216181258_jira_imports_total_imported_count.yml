@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.jira_imports_total_imported_count
 description: Count of Jira imports completed
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - integrations
 value_type: number

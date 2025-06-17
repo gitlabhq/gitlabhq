@@ -7,7 +7,7 @@
     GitLab SAST uses various [analyzers](https://docs.gitlab.com/user/application_security/sast/analyzers/) to scan code for vulnerabilities.
 
     We are reducing the number of analyzers used in GitLab SAST as part of our long-term strategy to deliver a better and more consistent user experience.
-    Streamlining the set of analyzers will also enable faster [iteration](https://handbook.gitlab.com/handbook/values/#iteration), better [results](https://handbook.gitlab.com/handbook/values/#results), and greater [efficiency](https://handbook.gitlab.com/handbook/values/#efficiency) (including a reduction in CI runner usage in most cases).
+    Streamlining the set of analyzers will also enable faster iteration, better results, and greater efficiency (including a reduction in CI runner usage in most cases).
 
     In GitLab 15.4, GitLab SAST will no longer use the following analyzers:
 
@@ -21,7 +21,7 @@
     These analyzers will be removed from the [GitLab-managed SAST CI/CD template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Security/SAST.gitlab-ci.yml) and replaced with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
     Effective immediately, they will receive only security updates; other routine improvements or updates are not guaranteed.
     After these analyzers reach End of Support, no further updates will be provided.
-    We will not delete container images previously published for these analyzers; any such change would be announced as a [deprecation, removal, or breaking change announcement](https://handbook.gitlab.com/handbook/marketing/blog/release-posts/#deprecations-removals-and-breaking-changes).
+    We will not delete container images previously published for these analyzers; any such change would be announced as a deprecation, removal, or breaking change announcement.
 
     We will also remove Java from the scope of the [SpotBugs](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs) analyzer and replace it with the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
     This change will make it simpler to scan Java code; compilation will no longer be required.

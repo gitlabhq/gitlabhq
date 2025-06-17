@@ -1,7 +1,7 @@
 ---
 stage: AI-powered
 group: AI Framework
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Model Migration Process
 ---
 
@@ -425,7 +425,7 @@ Priority: [Priority level]
 
 ## Implementation Details
 
-Please follow the issues below with the associated rollout plans:
+Follow the issues below with the associated rollout plans:
 
 | Feature | DRI | ETA | Issue Link |
 |---------|-----|-----|------------|

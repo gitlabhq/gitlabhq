@@ -3,6 +3,7 @@ stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Milestones
+description: Burndown charts, goals, progress tracking, and releases.
 ---
 
 {{< details >}}
@@ -185,10 +186,14 @@ To edit a milestone:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/343889) the minimum user role from Developer to Reporter in GitLab 15.0.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}
+
+A milestone closes after its due date.
+You can also close a milestone manually.
+
+When a milestone is closed, its open issues remain open.
 
 Prerequisites:
 

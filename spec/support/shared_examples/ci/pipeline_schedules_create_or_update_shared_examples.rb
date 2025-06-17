@@ -72,7 +72,7 @@ RSpec.shared_examples 'pipeline schedules checking variables permission' do
 
     context 'when restrict_user_defined_variables is true' do
       before_all do
-        project.update!(restrict_user_defined_variables: true, ci_pipeline_variables_minimum_override_role: :maintainer)
+        project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
       end
 
       it_behaves_like 'success response with variables'
@@ -104,7 +104,7 @@ RSpec.shared_examples 'pipeline schedules checking variables permission' do
 
     context 'when restrict_user_defined_variables is true' do
       before_all do
-        project.update!(restrict_user_defined_variables: true)
+        project.update!(ci_pipeline_variables_minimum_override_role: :maintainer)
       end
 
       it_behaves_like 'success response'

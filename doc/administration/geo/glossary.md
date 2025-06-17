@@ -21,8 +21,8 @@ these definitions yet.
 
 These are the defined terms to describe all aspects of Geo. Using a set of clearly
 defined terms helps us to communicate efficiently and avoids confusion. The language
-on this page aims to be [ubiquitous](https://handbook.gitlab.com/handbook/communication/#ubiquitous-language)
-and [as simple as possible](https://handbook.gitlab.com/handbook/communication/#simple-language).
+on this page aims to be ubiquitous
+and as simple as possible.
 
 ## Main terms
 
@@ -41,7 +41,7 @@ We provide [example diagrams and statements](#examples) to demonstrate correct u
 | Promoting              | Changing the role of a site from secondary to primary.                                                                                                                                         | Geo-specific |                                                 |
 | Demoting               | Changing the role of a site from primary to secondary.                                                                                                                                         | Geo-specific |                                                 |
 | Failover               | The entire process that shifts users from a primary Site to a secondary site. This includes promoting a secondary, but contains other parts as well. For example, scheduling maintenance.      | Geo-specific |                                                 |
-| Replication            | Also called "synchronization". The uni-directional process that updates a resource on a secondary site to match the resource on the primary site.                                              | Geo-specific |                                                 |
+| Replication            | Also called "synchronization." The uni-directional process that updates a resource on a secondary site to match the resource on the primary site.                                              | Geo-specific |                                                 |
 | Replication slot       | The PostgreSQL replication feature that ensures a persistent connection point with the database, and tracks which WAL segments are still needed by standby servers. It can be helpful to name replication slots to match the `geo_node_name` of a site, but this is not required. | PostgreSQL   |                                                 |
 | Verification           | The process of comparing the data that exist on a primary site to the data replicated to a secondary site. Used to ensure integrity of replicated data.                                        | Geo-specific |                                                 |
 | Unified URL            | A single external URL used for all Geo sites. Allows requests to be routed to either the primary Geo site or any secondary Geo sites.                                                          | Geo-specific |                                                 |
@@ -50,7 +50,7 @@ We provide [example diagrams and statements](#examples) to demonstrate correct u
 
 ## Replicator terms
 
-Geo uses *replicators* to replicate data of individual GitLab components
+Geo uses replicators to replicate data of individual GitLab components
 between primary and secondary sites. They define how the individual [data types](replication/datatypes.md#data-types)
 of these components have to be processed and verified. For example, data of the
 GitLab container registry has to be handled differently than CI job artifacts.
@@ -63,14 +63,14 @@ or when using Geo-related console commands.
 
 | Geo replicator name            | GitLab component name                  |
 |--------------------------------|----------------------------------------|
-| Ci Secure Files                | CI Secure Files                        |
+| CI Secure Files                | CI Secure Files                        |
 | Container Repositories         | Container registry                     |
 | Dependency Proxy Blobs         | Dependency Proxy Images                |
 | Dependency Proxy Manifests     | Dependency Proxy Images                |
 | Design Management Repositories | Project designs repository             |
 | Group Wiki Repositories        | Group wiki repository                  |
-| Job Artifacts                  | CI job artifacts                       |
-| Lfs Objects                    | LFS objects                            |
+| CI Job Artifacts               | CI job artifacts                       |
+| LFS Objects                    | LFS objects                            |
 | Merge Request Diffs            | External merge request diffs           |
 | Package Files                  | Package registry                       |
 | Pages Deployments              | Pages                                  |

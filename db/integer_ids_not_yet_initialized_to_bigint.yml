@@ -141,10 +141,6 @@ ci_sources_pipelines:
 - id
 - project_id
 - source_project_id
-ci_trigger_requests:
-- commit_id
-- id
-- trigger_id
 ci_triggers:
 - id
 - owner_id

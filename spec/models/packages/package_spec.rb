@@ -100,12 +100,6 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it { is_expected.to validate_presence_of(:project) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:project_id, :version, :package_type) }
 
-    describe '#name' do
-      it { is_expected.to allow_value("my/domain/com/my-app").for(:name) }
-      it { is_expected.to allow_value("my.app-11.07.2018").for(:name) }
-      it { is_expected.not_to allow_value("my(dom$$$ain)com.my-app").for(:name) }
-    end
-
     Packages::Package.package_types.keys.without('conan').each do |pt|
       context "project id, name, version and package type uniqueness for package type #{pt}" do
         let(:package) { create("#{pt}_package") }

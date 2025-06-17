@@ -41,7 +41,9 @@ module Markup
     end
 
     def asciidoc_unsafe
-      Gitlab::Asciidoc.render(text, context)
+      context[:pipeline] = :ascii_doc
+
+      Banzai.render(text, context)
     end
 
     def plain_unsafe

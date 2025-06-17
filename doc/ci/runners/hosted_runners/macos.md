@@ -20,6 +20,8 @@ Our [Mobile DevOps section](../../mobile_devops/mobile_devops_tutorial_ios.md#se
 Hosted runners on macOS are in [beta](../../../policy/development_stages_support.md#beta) and available for open source programs and customers in Premium and Ultimate plans.
 [General availability](../../../policy/development_stages_support.md#generally-available) of Hosted runners on macOS is proposed in [epic 8267](https://gitlab.com/groups/gitlab-org/-/epics/8267).
 
+Review the list of [known issues and usage constraints](#known-issues-and-usage-constraints) that affect hosted runners on macOS before you use them.  
+
 ## Machine types available for macOS
 
 GitLab offers the following machine type for hosted runners on macOS. To build for an x86-64 target, you can use Rosetta 2 to emulate an Intel x86-64 environment.
@@ -165,3 +167,5 @@ but it does increase the overall size of your project's repository.
   Any workloads that require UI interactions such as `testmanagerd` are not supported.
 - Job performance might vary between job executions as Apple silicon chips have efficiency and
   performance cores. You can't control core allocation or scheduling, which might lead to inconsistencies.
+- The availability of AWS bare metal macOS machines used for hosted runners on macOS is limited. Jobs might experience extended queuing times when no machines are available.
+- Hosted runner instances on macOS sometimes do not respond to requests, which results in jobs hanging until the maximum job duration is reached.

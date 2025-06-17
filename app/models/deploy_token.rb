@@ -50,6 +50,11 @@ class DeployToken < ApplicationRecord
   accepts_nested_attributes_for :project_deploy_tokens
 
   scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
+  scope :with_encrypted_tokens, ->(tokens) {
+    return none if tokens.empty?
+
+    where(token_encrypted: tokens)
+  }
 
   def self.gitlab_deploy_token
     active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)
@@ -58,9 +63,7 @@ class DeployToken < ApplicationRecord
   def self.prefix_for_deploy_token
     return DEPLOY_TOKEN_PREFIX unless Feature.enabled?(:custom_prefix_for_all_token_types, :instance)
 
-    # Manually remove gl - we'll add this from the configuration.
-    # Once the feature flag has been removed, we can change DEPLOY_TOKEN_PREFIX to `ft-`
-    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX.delete_prefix('gl'))
+    ::Authn::TokenField::PrefixHelper.prepend_instance_prefix(DEPLOY_TOKEN_PREFIX)
   end
 
   def valid_for_dependency_proxy?

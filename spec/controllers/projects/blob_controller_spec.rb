@@ -40,56 +40,58 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
         it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
       end
 
-      context "valid branch, valid file" do
-        let(:id) { 'master/README.md' }
+      context 'when the branch is valid' do
+        let(:id) { "#{ref}/#{path}" }
+        let(:ref) { 'master' }
 
-        it { is_expected.to respond_with(:success) }
-      end
+        context 'and the file is valid' do
+          let(:path) { 'README.md' }
 
-      context "valid branch, invalid file" do
-        let(:id) { 'master/invalid-path.rb' }
+          it { is_expected.to respond_with(:success) }
 
-        it 'redirects' do
-          expect(subject)
-              .to redirect_to("/#{project.full_path}/-/tree/master")
+          context 'and the ref_type is valid' do
+            let(:ref_type) { 'heads' }
+
+            it { is_expected.to respond_with(:success) }
+          end
+
+          context 'and the ref_type is wrong' do
+            let(:ref_type) { 'tags' }
+
+            it { is_expected.to respond_with(:not_found) }
+          end
+
+          context 'and ref is a sha' do
+            let(:ref) { head_sha }
+
+            it { is_expected.to respond_with(:success) }
+
+            context 'and there ref_type is present' do
+              let(:ref_type) { 'heads' }
+
+              it { is_expected.to respond_with(:not_found) }
+            end
+          end
+        end
+
+        context 'and the file is invalid' do
+          let(:path) { 'invalid-path.rb' }
+
+          it 'redirects' do
+            expect(subject)
+                .to redirect_to("/#{project.full_path}/-/tree/master")
+          end
         end
       end
 
-      context "invalid branch, valid file" do
+      context 'when the branch is invalid' do
         let(:id) { 'invalid-branch/README.md' }
 
         it { is_expected.to respond_with(:not_found) }
       end
 
-      context 'valid branch, valid file, correct ref_type' do
-        let(:id) { 'master/README.md' }
-        let(:ref_type) { 'heads' }
-
-        it { is_expected.to respond_with(:success) }
-      end
-
-      context 'valid branch, valid file, wrong ref_type' do
-        let(:id) { 'master/README.md' }
-        let(:ref_type) { 'tags' }
-
-        it { is_expected.to respond_with(:not_found) }
-      end
-
-      context 'sha ref, valid file' do
-        let(:id) { "#{head_sha}/README.md" }
-
-        it { is_expected.to respond_with(:success) }
-      end
-
       context 'wrong sha ref, valid file' do
         let(:id) { '0000000000000000000000000000000000000000/README.md' }
-
-        it { is_expected.to respond_with(:not_found) }
-      end
-
-      context 'sha ref, valid file, non-empty ref_type' do
-        let(:id) { "#{head_sha}/README.md" }
-        let(:ref_type) { 'heads' }
 
         it { is_expected.to respond_with(:not_found) }
       end
@@ -112,12 +114,6 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
       context "binary file" do
         let(:id) { 'binary-encoding/encoding/binary-1.bin' }
-
-        it { is_expected.to respond_with(:success) }
-      end
-
-      context "Markdown file" do
-        let(:id) { 'master/README.md' }
 
         it { is_expected.to respond_with(:success) }
       end
@@ -364,6 +360,31 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
       put :update, params: default_params
 
       expect(response).to redirect_to(blob_after_edit_path)
+    end
+
+    context "when user doesn't have permission to push" do
+      before do
+        create(:protected_branch, :no_one_can_push, project: mutable_project, name: '*')
+      end
+
+      context 'when branch_name is not provided' do
+        let(:params) do
+          {
+            project_id: mutable_project,
+            namespace_id: mutable_project.namespace,
+            id: 'master/CHANGELOG',
+            content: 'Added changes',
+            commit_message: 'Update CHANGELOG'
+          }
+        end
+
+        it 'handles missing branch_name gracefully and returns permission error' do
+          put :update, params: params, format: :json
+
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+          expect(json_response['error']).to eq('You are not allowed to push into this branch')
+        end
+      end
     end
 
     context 'when file is renamed' do

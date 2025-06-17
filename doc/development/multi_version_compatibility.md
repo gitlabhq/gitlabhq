@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Backwards compatibility across updates
 ---
 
@@ -231,7 +231,7 @@ If we look at this schema from a database point of view, we can see two deployme
 And these deployments align perfectly with application changes.
 
 1. At the beginning we have `Version N` on `Schema A`.
-1. Then we have a _long_ transition period with both `Version N` and `Version N+1` on `Schema B`.
+1. Then we have a long transition period with both `Version N` and `Version N+1` on `Schema B`.
 1. When we only have `Version N+1` on `Schema B` the schema changes again.
 1. Finally we have `Version N+1` on `Schema C`.
 

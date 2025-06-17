@@ -2,6 +2,7 @@
 
 class Projects::ProjectMembersController < Projects::ApplicationController
   include MembershipActions
+  include Members::InviteModalActions
   include MembersPresentation
   include SortingHelper
 

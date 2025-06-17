@@ -246,8 +246,8 @@ compile:
 
 {{< alert type="note" >}}
 
-You can also start with migrating one job, instead of all jobs. Follow the instructions below,
-and only migrate the `build` CI/CD job in the first iteration.
+For a more incremental approach, migrate one job at a time.
+Start with the `build` job, then repeat the steps for the `format` and `test` jobs.
 
 {{< /alert >}}
 

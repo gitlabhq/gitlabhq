@@ -1,27 +1,36 @@
 import { omit } from 'lodash';
 
-const dataSourceTransformers = {
-  issues: (data) => (data.project || data.group).issues,
-  mergeRequests: (data) => (data.project || data.group).mergeRequests,
-  workItems: (data) => {
-    const { workItems } = structuredClone(data.project || data.group);
-    for (const workItem of workItems.nodes || []) {
-      for (const widget of workItem.widgets || []) {
-        Object.assign(workItem, omit(widget, ['type', '__typename']));
-      }
-      delete workItem.widgets;
-    }
+const DATA_SOURCES = ['epics', 'issues', 'mergeRequests', 'workItems'];
 
-    return workItems;
-  },
+const transformWorkItems = (workItems) => {
+  for (const workItem of workItems.nodes || []) {
+    for (const widget of workItem.widgets || []) {
+      Object.assign(workItem, omit(widget, ['type', '__typename']));
+    }
+    delete workItem.widgets;
+  }
+
+  return workItems;
 };
 
 const transformForDataSource = (data) => {
-  for (const [source, transformer] of Object.entries(dataSourceTransformers)) {
-    const transformed = transformer(data);
-    if (transformed) return { source, transformed };
+  const scope = data.project || data.group;
+
+  let source;
+  let transformed;
+
+  for (source of DATA_SOURCES) {
+    if (source in scope) {
+      transformed = scope[source];
+      break;
+    }
   }
-  return undefined;
+
+  if (source === 'workItems') {
+    transformed = transformWorkItems(structuredClone(transformed));
+  }
+
+  return { source, transformed };
 };
 
 const transformField = (data, field) => {

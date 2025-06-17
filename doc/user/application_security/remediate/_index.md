@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Remediate
+description: Root cause determination and analysis.
 ---
 
 Remediation is the fourth phase of the vulnerability management lifecycle: detect, triage, analyze,
@@ -28,8 +29,8 @@ The scope of the remediation phase is all those vulnerabilities that have been t
 phase and confirmed as needing further action. To list these vulnerabilities, use the following
 filter criteria in the vulnerability report:
 
-- **Status:** Confirmed
-- **Activity:** Has issue
+- **Status**: Confirmed
+- **Activity**: Has issue
 
 ## Document the vulnerability
 

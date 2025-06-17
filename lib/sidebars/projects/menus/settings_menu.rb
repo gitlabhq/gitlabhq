@@ -99,7 +99,7 @@ module Sidebars
           ::Sidebars::MenuItem.new(
             title: _('Repository'),
             link: project_settings_repository_path(context.project),
-            active_routes: { path: 'repository#show' },
+            active_routes: { path: ['repository#show'], controller: ['deploy_keys'] },
             item_id: :repository
           )
         end

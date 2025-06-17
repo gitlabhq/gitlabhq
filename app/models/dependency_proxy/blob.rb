@@ -2,21 +2,21 @@
 
 class DependencyProxy::Blob < ApplicationRecord
   include FileStoreMounter
+  include ObjectStorable
   include TtlExpirable
   include Packages::Destructible
   include EachBatch
   include UpdateNamespaceStatistics
 
   belongs_to :group
-  alias_attribute :namespace, :group
+  alias_method :namespace, :group
 
+  STORE_COLUMN = :file_store
   MAX_FILE_SIZE = 5.gigabytes.freeze
 
   validates :group, presence: true
   validates :file, presence: true
   validates :file_name, presence: true
-
-  scope :with_files_stored_locally, -> { where(file_store: ::DependencyProxy::FileUploader::Store::LOCAL) }
 
   mount_file_store_uploader DependencyProxy::FileUploader
   update_namespace_statistics namespace_statistics_name: :dependency_proxy_size

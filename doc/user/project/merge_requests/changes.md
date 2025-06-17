@@ -257,7 +257,6 @@ To change how a merge request shows changed lines:
 
 {{< history >}}
 
-- Introduced in GitLab 15.11 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 
@@ -266,6 +265,9 @@ To change how a merge request shows changed lines:
 If you spend a lot of time trying to understand code that others have created, or
 you struggle to understand code written in a language you are not familiar with,
 you can ask GitLab Duo to explain the code to you.
+
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://youtu.be/1izKaLmmaCA?si=O2HDokLLujRro_3O)
+<!-- Video published on 2023-11-18 -->
 
 Prerequisites:
 
@@ -285,7 +287,7 @@ To explain the code in a merge request:
 1. On the new tab, select the lines you want to have explained.
 1. On the left side, select the question mark ({{< icon name="question" >}}). You might have to scroll to the first line of your selection to view it.
 
-   ![explain code in a merge request](../repository/img/explain_code_v17_1.png)
+   ![explain code in a merge request](img/explain_code_v17_1.png)
 
 Duo Chat explains the code. It might take a moment for the explanation to be generated.
 
@@ -347,13 +349,6 @@ Files marked as viewed are not shown to you again unless either:
 - You clear the **Viewed** checkbox.
 
 ## Show merge request conflicts in diff
-
-{{< history >}}
-
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.7.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/276918) in GitLab 15.8. Feature flag `display_merge_conflicts_in_diff` removed.
-
-{{< /history >}}
 
 To avoid displaying changes already on target branch, we compare the merge request's
 source branch with the `HEAD` of the target branch.

@@ -21,6 +21,7 @@ import (
 	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/metrics"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/queueing"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
@@ -137,6 +138,16 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 	if opts != nil && opts.isGeoProxyRoute {
 		handler = instrumentGeoProxyRoute(handler, method, metadata) // Add Geo prometheus metrics
 	}
+
+	originalHandler := handler
+
+	// Wrap with metrics tracking (add the tracker to the context)
+	handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		tracker := metrics.NewRequestTracker()
+		ctx := metrics.NewContext(r.Context(), tracker)
+		r = r.WithContext(ctx)
+		originalHandler.ServeHTTP(w, r)
+	})
 
 	return handler
 }

@@ -32,6 +32,13 @@ module Authn
         service.execute
       end
 
+      def resource_name
+        return revocable.class.name if revocable.user.human?
+        return unless resource
+
+        "#{resource.class.name}AccessToken"
+      end
+
       private
 
       attr_reader :current_user

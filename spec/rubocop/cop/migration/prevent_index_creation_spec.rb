@@ -7,7 +7,7 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
   include RuboCop::MigrationHelpers
 
   let(:forbidden_tables) do
-    described_class::FORBIDDEN_TABLES + large_or_over_limit_tables
+    (described_class::FORBIDDEN_TABLES + large_or_over_limit_tables).uniq
   end
 
   context 'when in migration' do
@@ -51,6 +51,15 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
           end
         end
 
+        it "registers an offense when add_concurrent_partitioned_index is used", :aggregate_failures do
+          expect_offense(<<~RUBY)
+            def change
+              add_concurrent_partitioned_index :p_ci_builds, :protected
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+            end
+          RUBY
+        end
+
         it "registers an offense when prepare_async_index is used", :aggregate_failures do
           forbidden_tables.each do |table_name|
             expect_offense(<<~RUBY)
@@ -60,6 +69,15 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
               end
             RUBY
           end
+        end
+
+        it "registers an offense when prepare_partitioned_async_index is used", :aggregate_failures do
+          expect_offense(<<~RUBY)
+            def change
+              prepare_partitioned_async_index :p_ci_builds, :protected
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+            end
+          RUBY
         end
       end
 
@@ -99,6 +117,17 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
       end
 
       context 'when table_name is a constant' do
+        it "registers an offense when add_concurrent_partitioned_index is used", :aggregate_failures do
+          expect_offense(<<~RUBY)
+            TABLE_NAME = :p_ci_builds
+
+            def change
+              add_concurrent_partitioned_index TABLE_NAME, :protected
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
+            end
+          RUBY
+        end
+
         it "registers an offense when add_concurrent_index is used", :aggregate_failures do
           expect_offense(<<~RUBY)
             INDEX_NAME = "index_name"
@@ -121,6 +150,17 @@ RSpec.describe RuboCop::Cop::Migration::PreventIndexCreation, feature_category: 
             def change
               prepare_async_index TABLE_NAME, :protected
               ^^^^^^^^^^^^^^^^^^^ #{offense}
+            end
+          RUBY
+        end
+
+        it "registers an offense when prepare_partitioned_async_index is used", :aggregate_failures do
+          expect_offense(<<~RUBY)
+            TABLE_NAME = :p_ci_builds
+
+            def change
+              prepare_partitioned_async_index TABLE_NAME, :protected
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{offense}
             end
           RUBY
         end

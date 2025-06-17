@@ -269,7 +269,8 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     it('shows model version list when clicks versions tabs', async () => {
       await createWrapper({ mountFn: mountExtended });
 
-      await findVersionsTab().vm.$emit('click');
+      findVersionsTab().vm.$emit('click');
+      await waitForPromises();
 
       expect(findTabs().props('value')).toBe(1);
       expect(findModelDetail().exists()).toBe(false);
@@ -280,7 +281,8 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     it('shows candidate list when user clicks candidates tab', async () => {
       await createWrapper({ mountFn: mountExtended });
 
-      await findCandidateTab().vm.$emit('click');
+      findCandidateTab().vm.$emit('click');
+      await waitForPromises();
 
       expect(findTabs().props('value')).toBe(2);
       expect(findModelDetail().exists()).toBe(false);
@@ -309,7 +311,8 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       });
 
       it(`on click on ${tab}, navigates to ${JSON.stringify(navigatedTo)}`, async () => {
-        await tab().vm.$emit('click');
+        tab().vm.$emit('click');
+        await waitForPromises();
 
         expect(findTabs().props('value')).toBe(navigatedTo);
       });

@@ -78,12 +78,7 @@ quality_level = Quality::TestLevel.new
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
   config.use_instantiated_fixtures = false
-
-  if ::Gitlab.next_rails?
-    config.fixture_paths = [Rails.root]
-  else
-    config.fixture_path = Rails.root
-  end
+  config.fixture_paths = [Rails.root]
 
   config.verbose_retry = true
   config.display_try_failure_messages = true
@@ -229,6 +224,7 @@ RSpec.configure do |config|
   config.include_context 'when rendered has no HTML escapes', type: :view
   config.include_context 'with STI disabled', type: :model
 
+  include StubCurrentOrganization
   include StubFeatureFlags
   include StubSnowplow
   include StubMember
@@ -326,10 +322,6 @@ RSpec.configure do |config|
       stub_feature_flags(disable_anonymous_project_search: false)
       stub_feature_flags(disable_cancel_redundant_pipelines_service: false)
 
-      # Specs should not require email verification by default, this makes the sign-in flow simpler in
-      # most cases. We do test the email verification flow in the appropriate specs.
-      stub_feature_flags(require_email_verification: false)
-
       # Keep-around refs should only be turned off for specific projects/repositories.
       stub_feature_flags(disable_keep_around_refs: false)
 
@@ -349,6 +341,10 @@ RSpec.configure do |config|
       # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/523493 for tracking revisiting this.
       stub_feature_flags(your_work_groups_vue: false)
 
+      # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
+      # Please see https://gitlab.com/groups/gitlab-org/-/epics/17781 for tracking the progress.
+      stub_feature_flags(repository_file_tree_browser: false)
+
       # New issue page can cause tests to fail if they link to issue or issue list page
       # Default false while we make it compatible
       stub_feature_flags(work_item_view_for_issues: false)
@@ -356,6 +352,9 @@ RSpec.configure do |config|
       # New approval rules cause tests to fail
       # Default false while we make them compatible
       stub_feature_flags(v2_approval_rules: false)
+
+      # New personal homepage is still a WIP and not functional.
+      stub_feature_flags(personal_homepage: false)
     else
       unstub_all_feature_flags
     end

@@ -155,7 +155,7 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
-A project's _path_ isn't necessarily the same as its _name_. A project's path is
+A project's path isn't necessarily the same as its name. A project's path is
 found in the project's URL or in the project's settings, under
 **General > Advanced > Change path**.
 

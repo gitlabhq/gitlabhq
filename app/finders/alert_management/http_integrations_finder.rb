@@ -46,10 +46,13 @@ module AlertManagement
     end
 
     def filter_by_type
-      return unless params[:type_identifier]
-      return unless TYPE_IDENTIFIERS.include?(params[:type_identifier])
+      requested_types = Array.wrap(params[:type_identifier])
+      types = TYPE_IDENTIFIERS.slice(*requested_types).keys
 
-      @collection = collection.for_type(params[:type_identifier])
+      # simplify SQL query when selecting all types
+      return if types.none? || types == TYPE_IDENTIFIERS.keys
+
+      @collection = collection.for_type(types)
     end
   end
 end

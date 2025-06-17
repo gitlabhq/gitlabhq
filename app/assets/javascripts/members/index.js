@@ -42,6 +42,7 @@ export const initMembersApp = (el, context, options) => {
     reassignmentCsvPath,
     restrictReassignmentToEnterprise,
     allowInactivePlaceholderReassignment,
+    allowBypassPlaceholderConfirmation,
     ...vuexStoreAttributes
   } = parseDataAttributes(el);
 
@@ -89,6 +90,7 @@ export const initMembersApp = (el, context, options) => {
       reassignmentCsvPath,
       restrictReassignmentToEnterprise,
       allowInactivePlaceholderReassignment: parseBoolean(allowInactivePlaceholderReassignment),
+      allowBypassPlaceholderConfirmation: parseBoolean(allowBypassPlaceholderConfirmation),
       group: {
         id: isGroup ? sourceId : null,
         name: groupName,

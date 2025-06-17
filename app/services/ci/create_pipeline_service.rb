@@ -75,7 +75,7 @@ module Ci
 
       validate_options!(options)
 
-      command = Gitlab::Ci::Pipeline::Chain::Command.new(
+      @command = Gitlab::Ci::Pipeline::Chain::Command.new(
         source: source,
         origin_ref: params[:ref],
         checkout_sha: params[:checkout_sha],
@@ -97,13 +97,13 @@ module Ci
         bridge: bridge,
         logger: @logger,
         partition_id: params[:partition_id],
-        inputs: ::Feature.enabled?(:ci_inputs_for_pipelines, project) ? inputs : {},
+        inputs: inputs,
         **extra_options(**options))
 
-      @pipeline.readonly! if command.readonly?
+      @pipeline.readonly! if @command.readonly?
 
       Gitlab::Ci::Pipeline::Chain::Sequence
-        .new(pipeline, command, SEQUENCE)
+        .new(pipeline, @command, SEQUENCE)
         .build!
 
       if pipeline.persisted?
@@ -129,7 +129,7 @@ module Ci
 
     ensure
       @logger.commit(pipeline: pipeline, caller: self.class.name)
-      @command_logger.commit(pipeline: pipeline, command: command) if command
+      @command_logger.commit(pipeline: pipeline, command: @command) if @command
     end
     # rubocop: enable Metrics/ParameterLists, Metrics/AbcSize
 
@@ -143,6 +143,10 @@ module Ci
       )
 
       ServiceResponse.success(payload: pipeline_creation_request['id'])
+    end
+
+    def yaml_processor_result
+      @command.yaml_processor_result
     end
 
     private

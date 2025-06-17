@@ -7,10 +7,10 @@ title: Backport documentation changes
 
 There are two types of backports:
 
-- **Current stable release:** Any maintainer can backport
+- **Current stable release**: Any maintainer can backport
   changes, usually bug fixes but also important documentation changes, into the
   current stable release.
-- **Older stable releases:** To guarantee the
+- **Older stable releases**: To guarantee the
   [maintenance policy](../../policy/maintenance.md) is respected, merging to
   older stable releases is restricted to release managers.
 

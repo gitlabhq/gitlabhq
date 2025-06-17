@@ -55,6 +55,7 @@ class MembersFinder
     members = members.search(params[:search]) if params[:search].present?
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
     members = members.owners_and_maintainers if params[:owners_and_maintainers].present?
+    members = members.by_access_level(params[:access_levels]) if params[:access_levels].present?
     filter_by_max_role(members)
   end
 

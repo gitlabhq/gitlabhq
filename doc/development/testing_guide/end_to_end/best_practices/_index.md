@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: End-to-end testing Best Practices
 ---
 
@@ -292,7 +292,7 @@ end
 
 Our framework includes a couple of parallelization mechanisms that work by executing spec files in parallel.
 
-However, because tests are parallelized by spec *file* and not by test/example, we can't achieve greater parallelization if a new test is added to an existing file.
+However, because tests are parallelized by spec file and not by test/example, we can't achieve greater parallelization if a new test is added to an existing file.
 
 Nonetheless, there could be other reasons to add a new test to an existing file.
 
@@ -361,7 +361,7 @@ When running tests locally or configuring a pipeline, the environment variable `
 
 {{< alert type="note" >}}
 
-If the _only_ action in the test that requires administrator access is to toggle a feature flag, use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
+If the only action in the test that requires administrator access is to toggle a feature flag, use the `feature_flag` tag instead. More details can be found in [testing with feature flags](feature_flags.md).
 
 {{< /alert >}}
 
@@ -416,7 +416,7 @@ click_element_coordinates(:title)
 
 ## Ensure `expect` statements wait efficiently
 
-In general, we use an `expect` statement to check that something _is_ as we expect it. For example:
+In general, we use an `expect` statement to check that something is as we expect it. For example:
 
 ```ruby
 Page::Project::Pipeline::Show.perform do |pipeline|
@@ -436,7 +436,7 @@ expect { async_value }.to eventually_eq(value).within(max_duration: 120, max_att
 
 ### Create negatable matchers to speed `expect` checks
 
-However, sometimes we want to check that something is _not_ as we _don't_ want it to be. In other
+However, sometimes we want to check that something is not as we don't want it to be. In other
 words, we want to make sure something is absent. For unit tests and feature specs,
 we commonly use `not_to`
 because RSpec's built-in matchers are negatable, as are Capybara's, which means the following two statements are
@@ -487,7 +487,7 @@ We need to create custom negatable matchers only for the predicate methods we've
 
 ### Why we need negatable matchers
 
-Consider the following code, but assume that we _don't_ have a custom negatable matcher for `have_job`.
+Consider the following code, but assume that we don't have a custom negatable matcher for `have_job`.
 
 ```ruby
 # Bad

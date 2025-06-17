@@ -12,6 +12,18 @@ RSpec.describe 'gitlab:clickhouse', click_house: :without_migrations, feature_ca
     Rake.application.rake_require 'tasks/gitlab/click_house/migration'
   end
 
+  it 'creates and drops the database' do
+    run_rake_task('gitlab:clickhouse:create:main')
+
+    expect(main_database_exists?).to be true
+
+    run_rake_task('gitlab:clickhouse:drop:main')
+
+    expect(main_database_exists?).to be false
+
+    run_rake_task('gitlab:clickhouse:create:main')
+  end
+
   it 'migrates and rolls back the database' do
     expect { run_rake_task('gitlab:clickhouse:migrate:main') }.to change { active_schema_migrations_count }.from(0)
       .and output.to_stdout

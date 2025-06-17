@@ -6,12 +6,12 @@ import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { projectLabelsResponse } from 'jest/work_items/mock_data';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { createAlert } from '~/alert';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
 import { WIDGET_TYPE_LABELS } from '~/work_items/constants';
 
-jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -112,10 +112,11 @@ describe('WorkItemBulkEditLabels component', () => {
       findListbox().vm.$emit('shown');
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([
-        ['Something went wrong when fetching labels. Please try again.'],
-      ]);
-      expect(Sentry.captureException).toHaveBeenCalledWith(new Error('error!'));
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: new Error('error!'),
+        message: 'Something went wrong when fetching labels. Please try again.',
+      });
     });
   });
 
@@ -210,7 +211,7 @@ describe('WorkItemBulkEditLabels component', () => {
       });
     });
 
-    describe('with fewer than 4 selected labels', () => {
+    describe('with fewer than 3 selected labels', () => {
       it('renders all label titles', async () => {
         createComponent({
           props: { selectedLabelsIds: ['gid://gitlab/Label/2', 'gid://gitlab/Label/3'] },
@@ -223,7 +224,7 @@ describe('WorkItemBulkEditLabels component', () => {
       });
     });
 
-    describe('with more than 3 selected labels', () => {
+    describe('with more than 2 selected labels', () => {
       it('renders first label title followed by the count', async () => {
         createComponent({
           props: {
@@ -239,7 +240,7 @@ describe('WorkItemBulkEditLabels component', () => {
         findListbox().vm.$emit('shown');
         await waitForPromises();
 
-        expect(findListbox().props('toggleText')).toBe('Label 1, and 3 more');
+        expect(findListbox().props('toggleText')).toBe('Label 1 +3 more');
       });
     });
   });

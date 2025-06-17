@@ -44,8 +44,18 @@ Capybara.register_driver :chrome do |app|
 
   options.add_argument("disable-search-engine-choice-screen")
 
-  # Run headless by default unless WEBDRIVER_HEADLESS specified
-  options.add_argument("headless") unless ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i || ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
+  unless ENV['WEBDRIVER_HEADLESS'] =~ /^(false|no|0)$/i || ENV['CHROME_HEADLESS'] =~ /^(false|no|0)$/i
+    # Run headless by default unless WEBDRIVER_HEADLESS specified
+    options.add_argument("headless")
+
+    # Chrome may not run `requestAnimationFrame` callbacks when running multiple test cases in headless
+    # mode due to background tab optimizations. We can disable some troublesome optimizations below.
+    # See https://github.com/teamcapybara/capybara/issues/2796#issuecomment-2678172710
+
+    # Normally, Chrome will treat a 'foreground' tab instead as backgrounded if the surrounding window is occluded (aka
+    # visually covered) by another window. This flag disables that.
+    options.add_argument("disable-backgrounding-occluded-windows")
+  end
 
   # Disable /dev/shm use in CI. See https://gitlab.com/gitlab-org/gitlab/issues/4252
   options.add_argument("disable-dev-shm-usage") if ENV['CI'] || ENV['CI_SERVER']

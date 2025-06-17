@@ -14,18 +14,46 @@ module Gitlab
         # If these versions or error messages are updated, the documentation should be updated as well.
 
         TROUBLESHOOTING_URL = Rails.application.routes.url_helpers.help_page_url('user/project/releases/_index.md', anchor: 'gitlab-cli-version-requirement')
-        GLAB_REQUIRED_VERSION = '1.53.0'
-        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 18.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
+        GLAB_REQUIRED_VERSION = '1.58.0'
+        GLAB_WARNING_MESSAGE = "Warning: release-cli will not be supported after 19.0. Please use glab version >= #{GLAB_REQUIRED_VERSION}. Troubleshooting: #{TROUBLESHOOTING_URL}".freeze
 
         GLAB_ENV_SET_UNIX = 'export GITLAB_HOST=$CI_SERVER_URL'
-        GLAB_ENV_SET_WINDOWS = '$env:GITLAB_HOST = $env:CI_SERVER_URL'
-        GLAB_LOGIN_UNIX = 'glab auth login --job-token $CI_JOB_TOKEN --hostname $CI_SERVER_FQDN --api-protocol $CI_SERVER_PROTOCOL'
-        GLAB_LOGIN_WINDOWS = 'glab auth login --job-token $env:CI_JOB_TOKEN --hostname $env:CI_SERVER_FQDN --api-protocol $env:CI_SERVER_PROTOCOL'
-        GLAB_CREATE_UNIX = 'glab -R $CI_PROJECT_PATH release create'
-        GLAB_CREATE_WINDOWS = 'glab -R $env:CI_PROJECT_PATH release create'
+        GLAB_ENV_SET_WINDOWS = '$$env:GITLAB_HOST = $$env:CI_SERVER_URL'
+        GLAB_LOGIN_UNIX = 'glab auth login --job-token $CI_JOB_TOKEN --hostname "$CI_SERVER_FQDN" --api-protocol $CI_SERVER_PROTOCOL'
+        GLAB_LOGIN_WINDOWS = 'glab auth login --job-token $$env:CI_JOB_TOKEN --hostname "$$env:CI_SERVER_FQDN" --api-protocol $$env:CI_SERVER_PROTOCOL'
+        GLAB_CREATE_UNIX = 'glab release create -R $CI_PROJECT_PATH'
+        GLAB_CREATE_WINDOWS = 'glab release create -R $$env:CI_PROJECT_PATH'
         GLAB_PUBLISH_TO_CATALOG_FLAG = '--publish-to-catalog' # enables publishing to the catalog after creating the release
         GLAB_NO_UPDATE_FLAG = '--no-update' # disables updating the release if it already exists
         GLAB_NO_CLOSE_MILESTONE_FLAG = '--no-close-milestone' # disables closing the milestone after creating the release
+
+        GLAB_CA_CERT_FILENAME = 'ca_cert_for_releasing_with_glab.pem'
+        GLAB_CA_CERT_CONFIG_UNIX = <<~BASH.chomp.freeze
+          if [ -n "$ADDITIONAL_CA_CERT_BUNDLE" ]; then
+            echo "Setting CA certificate for $CI_SERVER_FQDN"
+
+            echo "$ADDITIONAL_CA_CERT_BUNDLE" > "#{GLAB_CA_CERT_FILENAME}"
+            glab config set ca_cert "#{GLAB_CA_CERT_FILENAME}" --host "$CI_SERVER_FQDN"
+          fi
+        BASH
+        GLAB_CA_CERT_CLEANUP_UNIX = <<~BASH.chomp.freeze
+          if [ -f "#{GLAB_CA_CERT_FILENAME}" ]; then
+            rm -f "#{GLAB_CA_CERT_FILENAME}"
+          fi
+        BASH
+        GLAB_CA_CERT_CONFIG_WINDOWS = <<~POWERSHELL.chomp.freeze
+          if ($$env:ADDITIONAL_CA_CERT_BUNDLE) {
+            Write-Output "Setting CA certificate for $$env:CI_SERVER_FQDN"
+
+            "$$env:ADDITIONAL_CA_CERT_BUNDLE" > "#{GLAB_CA_CERT_FILENAME}"
+            glab config set ca_cert "#{GLAB_CA_CERT_FILENAME}" --host "$$env:CI_SERVER_FQDN"
+          }
+        POWERSHELL
+        GLAB_CA_CERT_CLEANUP_WINDOWS = <<~POWERSHELL.chomp.freeze
+          if (Test-Path "#{GLAB_CA_CERT_FILENAME}") {
+            Remove-Item -Force "#{GLAB_CA_CERT_FILENAME}"
+          }
+        POWERSHELL
 
         attr_reader :job, :config, :runner_manager
 
@@ -64,12 +92,20 @@ module Gitlab
         def glab_windows_script
           <<~POWERSHELL
           if (Get-Command glab -ErrorAction SilentlyContinue) {
-            $glabVersion = (glab --version | Select-String -Pattern '\d+\.\d+\.\d+').Matches[0].Value
+            $$glabVersionOutput = (glab --version | Select-Object -First 1) -as [string]
 
-            if ([version]"#{GLAB_REQUIRED_VERSION}" -le [version]$glabVersion) {
-              #{GLAB_ENV_SET_WINDOWS}
-              #{GLAB_LOGIN_WINDOWS}
-              #{glab_create_command('windows')}
+            if ($$glabVersionOutput -match 'glab (\\\d+\\\.\\\d+\\\.\\\d+)') {
+              if ([version]$$matches[1] -ge [version]"#{GLAB_REQUIRED_VERSION}") {
+                #{GLAB_ENV_SET_WINDOWS}
+                #{GLAB_CA_CERT_CONFIG_WINDOWS}
+                #{GLAB_LOGIN_WINDOWS}
+                #{glab_create_command('windows')}
+                #{GLAB_CA_CERT_CLEANUP_WINDOWS}
+              }
+              else {
+                Write-Output "#{GLAB_WARNING_MESSAGE}"
+                #{script_with_release_cli}
+              }
             }
             else {
               Write-Output "#{GLAB_WARNING_MESSAGE}"
@@ -86,10 +122,12 @@ module Gitlab
         def glab_unix_script
           <<~BASH
           if command -v glab &> /dev/null; then
-            if [ "$(printf "%s\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
+            if [ "$(printf "%s\\n%s" "#{GLAB_REQUIRED_VERSION}" "$(glab --version | grep -oE '[0-9]+\\.[0-9]+\\.[0-9]+')" | sort -V | head -n1)" = "#{GLAB_REQUIRED_VERSION}" ]; then
               #{GLAB_ENV_SET_UNIX}
+              #{GLAB_CA_CERT_CONFIG_UNIX}
               #{GLAB_LOGIN_UNIX}
               #{glab_create_command('unix')}
+              #{GLAB_CA_CERT_CLEANUP_UNIX}
             else
               echo "#{GLAB_WARNING_MESSAGE}"
 
@@ -121,8 +159,8 @@ module Gitlab
             command = GLAB_CREATE_WINDOWS.dup
 
             # More information: https://gitlab.com/groups/gitlab-org/-/epics/15437#note_2432564707
-            tag_name = config[:tag_name].presence || '$env:CI_COMMIT_TAG'
-            ref = config[:ref].presence || '$env:CI_COMMIT_SHA'
+            tag_name = config[:tag_name].presence || '$$env:CI_COMMIT_TAG'
+            ref = config[:ref].presence || '$$env:CI_COMMIT_SHA'
           else
             command = GLAB_CREATE_UNIX.dup
 

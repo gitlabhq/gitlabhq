@@ -85,30 +85,6 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
             expect(job.pipeline_id).to be_present
             expect(job.pipeline_id).not_to eq(pipeline.id)
           end
-
-          context 'when the flag is disabled' do
-            before do
-              stub_feature_flags(ci_limit_commit_statuses: false)
-            end
-
-            it 'creates commit status on the pipeline and logs a message' do
-              expect(Gitlab::AppJsonLogger).to receive(:info).with(
-                a_hash_including(
-                  class: described_class.name,
-                  project_id: project.id,
-                  pipeline_id: nil,
-                  subscription_plan: project.actual_plan_name
-                )
-              )
-
-              expect(response).to be_success
-              expect(job.sha).to eq(commit.id)
-              expect(job.status).to eq(status)
-              expect(job.name).to eq('default')
-              expect(job.ref).not_to be_empty
-              expect(job.pipeline_id).to eq(pipeline.id)
-            end
-          end
         end
       end
     end
@@ -443,30 +419,6 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
           expect(response).to be_error
           expect(response.http_status).to eq(:unprocessable_entity)
           expect(response.message).to eq("The number of jobs has exceeded the limit")
-        end
-
-        context 'when the flag is disabled' do
-          before do
-            stub_feature_flags(ci_limit_commit_statuses: false)
-          end
-
-          it 'creates the status and logs a message', :aggregate_failures do
-            expect(Gitlab::AppJsonLogger).to receive(:info).with(
-              a_hash_including(
-                class: described_class.name,
-                project_id: project.id,
-                pipeline_id: other_pipeline.id,
-                subscription_plan: project.actual_plan_name
-              )
-            )
-
-            expect { response }
-              .to not_change { ::Ci::Pipeline.count }.from(2)
-              .and change { ::Ci::Stage.count }.by(1)
-              .and change { ::CommitStatus.count }.by(1)
-
-            expect(response).to be_success
-          end
         end
       end
     end

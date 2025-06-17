@@ -44,19 +44,20 @@ Before migrating by using direct transfer, see the following prerequisites.
 
 ### Versions
 
-To maximize the chance of a successful and performant migration, you should:
+To maximize the chance of a successful and performant migration:
 
-- Upgrade both the source and destination instances to GitLab 16.8 or later to use bulk import and export of relations.
+- Upgrade both the source and destination instances to GitLab 16.8 or later for bulk import and export of relations.
   For more information, see [epic 9036](https://gitlab.com/groups/gitlab-org/-/epics/9036).
-- Migrate between versions that are as new as possible. Update the source and destination instances to as late a version
-  as possible to take advantage of bug fixes and improvements added over time.
-- [Configure Sidekiq](../../project/import/_index.md#sidekiq-configuration) properly.
+- Migrate between versions that are as late as possible for bug fixes and other improvements.
 
-We have successfully tested migrations between a source instance running GitLab 16.2 and a destination instance running
-GitLab 16.8.
+If the source and destination instances are not the same version,
+the source instance must not be more than two [minor](../../../policy/maintenance.md#versioning)
+versions earlier than the destination instance.
+This requirement does not apply for migrations from GitLab.com to GitLab Dedicated.
 
 ### Configuration
 
+- Ensure [Sidekiq is properly configured](../../project/import/_index.md#sidekiq-configuration).
 - Both GitLab instances must have group migration by direct transfer
   [enabled in application settings](../../../administration/settings/import_and_export_settings.md#enable-migration-of-groups-and-projects-by-direct-transfer)
   by an instance administrator.
@@ -121,11 +122,6 @@ When mapping [inherited and shared](../../project/members/_index.md#membership-t
 has an existing membership in the destination namespace with a [higher role](../../permissions.md#roles) than
 the one being mapped, the membership is mapped as a direct membership instead. This ensures the member does not get
 elevated permissions.
-
-[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group has at least one
-[enterprise user](../../enterprise_user/_index.md), you can only reassign users' contributions to enterprise users claimed
-by your organization. This significantly reduces the potential for errors during user reassignment. The same scoping is
-also applied to CSV-based reassignment, preventing accidental assignment to users outside your organization.
 
 {{< alert type="note" >}}
 

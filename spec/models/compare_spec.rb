@@ -220,4 +220,20 @@ RSpec.describe Compare, feature_category: :source_code_management do
       let(:resource) { compare }
     end
   end
+
+  describe '#first_diffs_slice' do
+    let(:limit) { 5 }
+
+    subject(:first_diffs_slice) { compare.first_diffs_slice(limit) }
+
+    it 'returns limited diffs' do
+      expect(first_diffs_slice.count).to eq(limit)
+    end
+
+    it 'passes the correct options to diffs' do
+      expect(compare).to receive(:diffs).with(hash_including(max_files: limit)).and_call_original
+
+      first_diffs_slice
+    end
+  end
 end

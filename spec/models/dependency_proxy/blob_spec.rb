@@ -59,4 +59,26 @@ RSpec.describe DependencyProxy::Blob, type: :model, feature_category: :dependenc
       it_behaves_like 'mounted file in object store'
     end
   end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      dependency_proxy_blob = create(:dependency_proxy_blob)
+
+      if dependency_proxy_blob.file_store == ObjectStorage::Store::REMOTE
+        dependency_proxy_blob.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      dependency_proxy_blob
+    end
+
+    let(:remotely_stored) do
+      dependency_proxy_blob = create(:dependency_proxy_blob)
+
+      if dependency_proxy_blob.file_store == ObjectStorage::Store::LOCAL
+        dependency_proxy_blob.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      dependency_proxy_blob
+    end
+  end
 end

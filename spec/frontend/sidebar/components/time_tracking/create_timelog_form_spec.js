@@ -13,6 +13,27 @@ import { TYPENAME_ISSUE, TYPENAME_MERGE_REQUEST } from '~/graphql_shared/constan
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import { updateWorkItemMutationResponse } from 'jest/work_items/mock_data';
 
+import {
+  WORK_ITEM_TYPE_NAME_EPIC,
+  WORK_ITEM_TYPE_NAME_INCIDENT,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_REQUIREMENTS,
+  WORK_ITEM_TYPE_NAME_TASK,
+  WORK_ITEM_TYPE_NAME_TEST_CASE,
+  WORK_ITEM_TYPE_NAME_TICKET,
+} from '~/work_items/constants';
+
+import {
+  TYPE_ISSUE,
+  TYPE_EPIC,
+  TYPE_MERGE_REQUEST,
+  TYPE_ALERT,
+  TYPE_INCIDENT,
+  TYPE_TEST_CASE,
+} from '~/issues/constants';
+
 const mockMutationErrorMessage = 'Example error message';
 
 const resolvedMutationWithoutErrorsMock = jest.fn().mockResolvedValue({
@@ -258,16 +279,57 @@ describe('Create Timelog Form', () => {
     });
   });
 
+  describe('when type is coming from legacy issues type', () => {
+    it.each`
+      type                  | typeDescription
+      ${TYPE_ISSUE}         | ${'issue'}
+      ${TYPE_EPIC}          | ${'epic'}
+      ${TYPE_MERGE_REQUEST} | ${'merge request'}
+      ${TYPE_ALERT}         | ${'alert'}
+      ${TYPE_INCIDENT}      | ${'incident'}
+      ${TYPE_TEST_CASE}     | ${'test case'}
+    `('the description mentions the correct issuable type', ({ type, typeDescription }) => {
+      mountComponent({
+        providedProps: { issuableType: type },
+      });
+
+      expect(wrapper.text()).toContain(`Track time spent on this ${typeDescription}.`);
+    });
+  });
+
+  describe('when type is coming from workItemType', () => {
+    it.each`
+      type                                | typeDescription
+      ${TYPE_ISSUE}                       | ${'issue'}
+      ${TYPE_EPIC}                        | ${'epic'}
+      ${TYPE_ALERT}                       | ${'alert'}
+      ${TYPE_INCIDENT}                    | ${'incident'}
+      ${TYPE_TEST_CASE}                   | ${'test case'}
+      ${WORK_ITEM_TYPE_NAME_EPIC}         | ${'epic'}
+      ${WORK_ITEM_TYPE_NAME_INCIDENT}     | ${'incident'}
+      ${WORK_ITEM_TYPE_NAME_ISSUE}        | ${'issue'}
+      ${WORK_ITEM_TYPE_NAME_KEY_RESULT}   | ${'key result'}
+      ${WORK_ITEM_TYPE_NAME_OBJECTIVE}    | ${'objective'}
+      ${WORK_ITEM_TYPE_NAME_REQUIREMENTS} | ${'requirement'}
+      ${WORK_ITEM_TYPE_NAME_TASK}         | ${'task'}
+      ${WORK_ITEM_TYPE_NAME_TEST_CASE}    | ${'test case'}
+      ${WORK_ITEM_TYPE_NAME_TICKET}       | ${'ticket'}
+    `('the description mentions the correct work item type', ({ type, typeDescription }) => {
+      mountComponent({
+        props: { workItemId: 'gid://gitlab/WorkItem/1', workItemType: type },
+        providedProps: { issuableType: null },
+      });
+
+      expect(wrapper.text()).toContain(`Track time spent on this ${typeDescription}.`);
+    });
+  });
+
   describe('with work item task', () => {
     beforeEach(() => {
       mountComponent({
         props: { workItemId: 'gid://gitlab/WorkItem/1', workItemType: 'Task' },
         providedProps: { issuableType: null },
       });
-    });
-
-    it('mentions the correct work item type', () => {
-      expect(wrapper.text()).toContain('Track time spent on this task.');
     });
 
     it('calls mutation to update work item when adding time entry when to spent at is not provided', async () => {

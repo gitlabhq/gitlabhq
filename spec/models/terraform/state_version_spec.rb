@@ -10,6 +10,28 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
   it { is_expected.to belong_to(:created_by_user).class_name('User').optional }
   it { is_expected.to belong_to(:build).class_name('Ci::Build').optional }
 
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      terraform_state_version = create(:terraform_state_version)
+
+      if terraform_state_version.file_store == ObjectStorage::Store::REMOTE
+        terraform_state_version.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      terraform_state_version
+    end
+
+    let(:remotely_stored) do
+      terraform_state_version = create(:terraform_state_version)
+
+      if terraform_state_version.file_store == ObjectStorage::Store::LOCAL
+        terraform_state_version.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      terraform_state_version
+    end
+  end
+
   describe 'default attributes' do
     before do
       allow(Terraform::StateUploader).to receive(:default_store).and_return(5)
@@ -33,24 +55,6 @@ RSpec.describe Terraform::StateVersion, feature_category: :infrastructure_as_cod
       end
 
       it { expect(subject.map(&:version)).to eq(versions.sort.reverse) }
-    end
-
-    describe '.with_files_stored_locally' do
-      subject { described_class.with_files_stored_locally }
-
-      it 'includes states with local storage' do
-        create_list(:terraform_state_version, 5)
-
-        expect(subject).to have_attributes(count: 5)
-      end
-
-      it 'excludes states without local storage' do
-        stub_terraform_state_object_storage
-
-        create_list(:terraform_state_version, 5)
-
-        expect(subject).to have_attributes(count: 0)
-      end
     end
   end
 

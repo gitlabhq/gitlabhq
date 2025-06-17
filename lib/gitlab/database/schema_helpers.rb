@@ -20,6 +20,14 @@ module Gitlab
         execute("ALTER FUNCTION #{quote_table_name(function_name)} RESET ALL")
       end
 
+      def reset_all_trigger_functions(table_name)
+        triggers = find_table_triggers(table_name)
+
+        triggers.each do |trigger|
+          reset_trigger_function(trigger['function_name'])
+        end
+      end
+
       def function_exists?(name)
         !!connection.select_value("SELECT 1 FROM pg_proc WHERE proname = '#{name}'")
       end
@@ -135,6 +143,21 @@ module Gitlab
 
       def optional_clause(flag, clause)
         flag ? clause : ""
+      end
+
+      def find_table_triggers(table_name)
+        schema_qualified_table = "#{quote_table_name(current_schema)}.#{quote_table_name(table_name)}"
+
+        triggers_query = <<~SQL
+          SELECT DISTINCT
+            p.proname AS function_name
+          FROM pg_trigger tr
+          JOIN pg_proc p ON tr.tgfoid = p.oid
+          WHERE tr.tgisinternal IS FALSE
+            AND tr.tgrelid = '#{schema_qualified_table}'::regclass
+        SQL
+
+        select_all(triggers_query).to_a
       end
     end
   end

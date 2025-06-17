@@ -29,8 +29,6 @@ class Note < ApplicationRecord
   include EachBatch
   include Spammable
 
-  ignore_column :attachment, remove_with: '18.1', remove_after: '2025-05-15'
-
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 
   redact_field :note

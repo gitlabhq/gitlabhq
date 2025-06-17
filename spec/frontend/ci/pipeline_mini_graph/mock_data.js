@@ -119,6 +119,14 @@ export const mockJobActions = [
     path: '/flightjs/Flight/-/jobs/1001/unschedule',
     title: 'Unschedule',
   },
+  {
+    __typename: 'StatusAction',
+    confirmationMessage: null,
+    id: 'Ci::Build-stop-1001',
+    icon: 'stop',
+    path: '/flightjs/Flight/-/jobs/1001/play',
+    title: 'Stop',
+  },
 ];
 
 export const mockJobMutationResponse = (dataName) => ({

@@ -5,6 +5,13 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Internal users
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97584) in GitLab 15.4, bots are indicated with a badge in user listings.
@@ -47,11 +54,11 @@ Other examples of internal users:
 [GitLab Admin Bot](https://gitlab.com/gitlab-org/gitlab/-/blob/1d38cfdbed081f8b3fa14b69dd743440fe85081b/lib/users/internal.rb#L104)
 is an internal user that cannot be accessed or modified by regular users and is responsible for many tasks including:
 
-- Applying [default compliance frameworks](../user/compliance/compliance_frameworks.md#default-compliance-frameworks) to
+- Applying [default compliance frameworks](../user/compliance/compliance_frameworks/_index.md#default-compliance-frameworks) to
   projects.
 - [Automatically deactivating dormant users](moderate_users.md#automatically-deactivate-dormant-users).
 - [Automatically deleting unconfirmed users](moderate_users.md#automatically-delete-unconfirmed-users).
-- [Deleting inactive projects](inactive_project_deletion.md).
+- [Deleting dormant projects](dormant_project_deletion.md).
 - [Locking users](../security/unlock_user.md).
 
 ## GitLab Security Bot

@@ -21,6 +21,7 @@ RSpec.describe Types::Ci::Catalog::ResourceType, feature_category: :pipeline_com
       starrers_path
       topics
       last_30_day_usage_count
+      archived
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

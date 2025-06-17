@@ -8,6 +8,7 @@ RSpec.describe 'Incident Management index', :js, feature_category: :incident_man
   let_it_be(:incident) { create(:incident, project: project) }
 
   before do
+    stub_feature_flags(hide_incident_management_features: false)
     sign_in(developer)
 
     visit project_incidents_path(project)

@@ -113,15 +113,6 @@ You might receive a [`Failed to pull image'](../../../ci/debugging.md#failed-to-
 error message when a CI/CD job is unable to pull a container image from a project with a limited
 [CI/CD job token scope](../../../ci/jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects).
 
-## Slow uploads when using `kaniko` to push large images
-
-When you push large images with `kaniko`, you might experience uncharacteristically long delays.
-
-This is typically a result of [a performance issue with `kaniko` and HTTP/2](https://github.com/GoogleContainerTools/kaniko/issues/2751).
-The current workaround is to use HTTP/1.1 when pushing with `kaniko`.
-
-To use HTTP/1.1, set the `GODEBUG` environment variable to `"http2client=0"`.
-
 ## `OCI manifest found, but accept header does not support OCI manifests` error
 
 If you are unable to pull an image, the registry logs could have an error similar to:

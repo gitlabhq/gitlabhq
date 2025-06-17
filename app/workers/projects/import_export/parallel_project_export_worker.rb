@@ -12,6 +12,7 @@ module Projects
       feature_category :importers
       worker_resource_boundary :memory
       urgency :low
+      tags :import_shared_storage
       loggable_arguments 1, 2
       sidekiq_options retries: 3, dead: false, status_expiration: StuckExportJobsWorker::EXPORT_JOBS_EXPIRATION
 
@@ -45,7 +46,7 @@ module Projects
         export_service.execute
 
         export_job.finish!
-      rescue Gitlab::ImportExport::AfterExportStrategyBuilder::StrategyNotFoundError
+      rescue ::Import::AfterExportStrategies::AfterExportStrategyBuilder::StrategyNotFoundError
         export_job.fail_op!
       end
 
@@ -54,7 +55,7 @@ module Projects
       def build!(after_export_strategy)
         strategy_klass = after_export_strategy&.delete('klass')
 
-        Gitlab::ImportExport::AfterExportStrategyBuilder.build!(strategy_klass, after_export_strategy)
+        ::Import::AfterExportStrategies::AfterExportStrategyBuilder.build!(strategy_klass, after_export_strategy)
       end
     end
   end

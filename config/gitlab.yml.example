@@ -217,6 +217,10 @@ production: &base
     # this setting should be toggled from the admin pages in the UI.
     # initial_gitlab_product_usage_data: true
 
+  ## Custom claim values for JWT ID Tokens
+  # ci_id_tokens:
+    # issuer_url: <custom-issuer-url>
+
   # Allows delivery of emails using Microsoft Graph API with OAuth 2.0 client credentials flow.
   microsoft_graph_mailer:
     enabled: false
@@ -502,6 +506,7 @@ production: &base
     artifacts_server: true # Set to false if you want to disable online view of HTML artifacts
     # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
+    # custom_domain_mode: http # Configure Pages to enable custom domain: `http` or `https`
 
     # File that contains the shared secret key for verifying access for gitlab-pages.
     # Default is '.gitlab_pages_secret' relative to Rails.root (i.e. root of the GitLab app).

@@ -47,7 +47,7 @@ describe('PanelsBase', () => {
         titlePopover: {},
         loading: false,
         loadingDelayed: false,
-        loadingDelayedText: 'Still loading...',
+        loadingDelayedText: 'Still loading…',
         actions: [],
         actionsToggleText: 'Actions',
       });

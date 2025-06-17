@@ -9,11 +9,13 @@ module RuboCop
       https://gitlab.com/gitlab-com/gl-infra/production/-/issues/6132
       EOF
 
+      # @!method system?(node)
       def_node_matcher :system?, <<~PATTERN
         (send {nil? | const} {:system | :exec | :spawn | :popen}
           (str $_))
       PATTERN
 
+      # @!method subshell?(node)
       def_node_matcher :subshell?, <<~PATTERN
         (xstr
           (str $_))

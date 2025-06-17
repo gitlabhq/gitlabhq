@@ -535,7 +535,7 @@ RSpec.describe Gitlab::Database::LoadBalancing, :suppress_gitlab_schemas_validat
       end
 
       with_them do
-        it 'redirects queries to the right roles' do
+        it 'redirects queries to the right roles', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/520708' do
           roles = []
 
           # If we don't run any queries, the pool may be a NullPool. This can

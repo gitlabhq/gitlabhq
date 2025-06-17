@@ -15,8 +15,7 @@ title: Configure workspaces
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
-- [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
+- Feature flag `remote_development_feature_flag` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
 {{< /history >}}
@@ -37,9 +36,9 @@ To set up infrastructure for workspaces, regardless of cloud provider, you must:
    1. Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
       is defined so that volumes can be dynamically provisioned for each workspace.
 1. Complete all steps in the [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md).
-1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
+1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 
 If you use AWS, you can use our OpenTofu tutorial. For more information, see
 [Tutorial: Set up workspaces infrastructure on AWS](set_up_infrastructure.md).
@@ -77,7 +76,7 @@ Prerequisites:
 1. Select **Edit > New workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
-   GitLab uses to create the workspace.
+   GitLab uses to create the workspace. By default, this is the branch you're viewing.
 1. From the **Devfile** dropdown list, select one of the following:
    - [GitLab default devfile](_index.md#gitlab-default-devfile).
    - [Custom devfile](_index.md#custom-devfile).
@@ -90,11 +89,12 @@ Prerequisites:
 {{< tab title="From a merge request" >}}
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. On the left sidebar, Select **Code > Merge requests**.
+1. On the left sidebar, select **Code > Merge requests**.
+1. Select the merge request you want to create a workspace for.
 1. Select **Code > Open in Workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
-   GitLab uses to create the workspace. By default this is the source branch of the merge request.
+   GitLab uses to create the workspace. By default, this is the source branch of the merge request.
 1. From the **Devfile** dropdown list, select one of the following:
    - [GitLab default devfile](_index.md#gitlab-default-devfile).
    - [Custom devfile](_index.md#custom-devfile).
@@ -109,6 +109,27 @@ Prerequisites:
 The workspace might take a few minutes to start.
 To open the workspace, under **Preview**, select the workspace.
 You also have access to the terminal and can install any necessary dependencies.
+
+## Platform compatibility
+
+The platform requirements for workspaces depend on your development needs.
+
+For basic workspace functionality, workspaces run on any `linux/amd64` Kubernetes cluster that supports
+the GitLab agent, regardless of the underlying operating system.
+
+To choose a method that fits your platform requirements, see [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
+
+## Build and run containers in a workspace
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
+
+{{< /history >}}
+
+Development environments often require building and running containers to manage and use dependencies
+during runtime.
+To build and run containers in a workspace, see [configure sudo access for a workspace with Sysbox](#with-sysbox).
 
 ## Configure support for private container registries
 
@@ -134,11 +155,13 @@ For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets)
 {{< /history >}}
 
 Development environments often require sudo permissions to install, configure, and use dependencies
-during runtime. You can configure sudo access for a workspace with:
+during runtime. Choose the method that fits your platform requirements:
 
-- [Sysbox](#with-sysbox)
-- [Kata Containers](#with-kata-containers)
-- [User namespaces](#with-user-namespaces)
+| Method                                   | Platform requirements                                                                                                                                                                                                                                                                     | Usage |
+|------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------|
+| [Sysbox](#with-sysbox)                   | For up-to-date information, see the [Sysbox distribution compatibility matrix](https://github.com/nestybox/sysbox/blob/master/docs/distro-compat.md).                                                                                                                                     | Improves container isolation and enables containers to run the same workloads as virtual machines. |
+| [Kata Containers](#with-kata-containers) | For up-to-date information, see the [Kata Containers installation guides](https://github.com/kata-containers/kata-containers/tree/main/docs/install).                                                                                                                                     | Lightweight VMs perform like containers but provide enhanced workload isolation and security. |
+| [User namespaces](#with-user-namespaces) | Kubernetes version 1.33 or later have the user namespaces enabled behind a Kubernetes feature gate which is enabled by default. For up-to-date information, see the [Kubernetes Feature Gates](https://kubernetes.io/docs/reference/command-line-tools-reference/feature-gates/). | No additional runtime installation required. Isolates container users from host users for improved security. |
 
 Prerequisites:
 
@@ -191,18 +214,6 @@ To configure sudo access with user namespaces:
 
    - Set [`use_kubernetes_user_namespaces`](settings.md#use_kubernetes_user_namespaces) to `true`.
    - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
-
-## Build and run containers in a workspace
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13983) in GitLab 17.4.
-
-{{< /history >}}
-
-Development environments often require building and running containers to manage and use dependencies
-during runtime.
-To build and run containers in a workspace, see [configure sudo access for a workspace with Sysbox](#with-sysbox).
 
 ## Connect to a workspace with SSH
 

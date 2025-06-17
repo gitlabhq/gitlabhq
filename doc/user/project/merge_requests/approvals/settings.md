@@ -199,12 +199,6 @@ for more details.
 
 ## Remove approvals by Code Owners if their files changed
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90578) in GitLab 15.3.
-
-{{< /history >}}
-
 To remove approvals only from Code Owners whose files change in a new commit:
 
 Prerequisites:

@@ -1,9 +1,0 @@
----
-name: rate_limit_groups_and_projects_api
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/421909
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152733
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/461316
-milestone: '17.1'
-group: group::organizations
-type: gitlab_com_derisk
-default_enabled: false

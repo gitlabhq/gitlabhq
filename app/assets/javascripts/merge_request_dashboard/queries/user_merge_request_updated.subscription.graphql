@@ -2,6 +2,9 @@ subscription currentUserMergeRequestUpdatedSubscription($userId: UserID!) {
   userMergeRequestUpdated(userId: $userId) {
     ... on MergeRequest {
       id
+      author {
+        id
+      }
       assignees {
         nodes {
           id

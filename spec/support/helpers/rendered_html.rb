@@ -2,10 +2,6 @@
 
 module RenderedHtml
   def rendered_html
-    if ::Gitlab.next_rails?
-      Capybara::Node::Simple.new(rendered.html)
-    else
-      Capybara::Node::Simple.new(rendered)
-    end
+    Capybara.string(rendered)
   end
 end

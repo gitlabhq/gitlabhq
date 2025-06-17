@@ -263,7 +263,7 @@ describe('GlobalSearchModal', () => {
         });
 
         it('should provide an alternative placeholder to the search input', () => {
-          expect(findGlobalSearchInput().attributes('placeholder')).toBe('Type to search...');
+          expect(findGlobalSearchInput().attributes('placeholder')).toBe('Type to search…');
         });
       });
 

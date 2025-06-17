@@ -56,7 +56,7 @@ RSpec.describe 'getting pipeline information nested in a project', feature_categ
 
     it 'executes the finder once' do
       mock = double(Ci::PipelinesFinder)
-      opts = { iids: [pipeline.iid, pipeline2.iid, pipeline3.iid].map(&:to_s) }
+      opts = { iids: [pipeline.iid, pipeline2.iid, pipeline3.iid].map(&:to_s), sort: :asc }
 
       expect(Ci::PipelinesFinder).to receive(:new).once.with(project, current_user, opts).and_return(mock)
       expect(mock).to receive(:execute).once.and_return(Ci::Pipeline.none)

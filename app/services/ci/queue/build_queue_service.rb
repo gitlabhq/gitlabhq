@@ -15,6 +15,27 @@ module Ci
         strategy.new_builds
       end
 
+      def build_candidates
+        candidates =
+          if runner.project_type?
+            builds_for_project_runner
+          elsif runner.group_type?
+            builds_for_group_runner
+          else
+            builds_for_shared_runner
+          end
+
+        candidates = builds_for_protected_runner(candidates) if runner.ref_protected?
+
+        # pick builds that does not have other tags than runner's one
+        candidates = builds_matching_tag_ids(candidates, runner.tag_ids)
+
+        # pick builds that have at least one tag
+        candidates = builds_with_any_tags(candidates) unless runner.run_untagged?
+
+        candidates
+      end
+
       ##
       # This is overridden in EE
       #

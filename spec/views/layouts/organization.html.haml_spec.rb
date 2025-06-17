@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/organization', feature_category: :cell do
+RSpec.describe 'layouts/organization', feature_category: :organization do
   let_it_be(:organization) { build_stubbed(:organization) }
   let_it_be(:current_user) { build_stubbed(:user, :admin) }
 

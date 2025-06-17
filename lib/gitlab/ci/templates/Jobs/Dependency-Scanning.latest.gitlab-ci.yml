@@ -274,19 +274,7 @@ dependency-scanning:
     name: "$SECURE_ANALYZERS_PREFIX/dependency-scanning:v0"
   script:
     - |
-      /analyzer run || exit $?
-      if [ "$DS_STATIC_REACHABILITY_ENABLED" != "true" ]; then
-        exit 0
-      fi
-      /analyzer reachability || exit $?
-      if [ -f "reachable_packages.json" ]; then
-          echo "Found reachable_packages.json"
-          echo "Downloading SCA-to-sarif-matcher ${SCA_TO_SARIF_MATCHER_VERSION}"
-          curl -L "gitlab.com/api/v4/projects/60962090/packages/generic/sca-to-sarif-matcher/${SCA_TO_SARIF_MATCHER_VERSION}/matcher" -o /home/gitlab/sbom-enricher
-          chmod +x  /home/gitlab/sbom-enricher
-          /home/gitlab/sbom-enricher process --glas_report="reachable_packages.json"
-      fi
-
+      /analyzer run
   allow_failure: true
   artifacts:
     access: "developer"

@@ -7,17 +7,22 @@ module Projects
     DELETED_SUFFIX_REGEX = /-deleted-[a-zA-Z0-9]+\z/
 
     def execute
-      return error(_('Project already deleted')) if project.pending_delete?
+      return error(_('Project has not been marked for deletion')) unless project.self_deletion_scheduled?
+      return error(_('Project already deleted')) if project.self_deletion_in_progress?
 
       result = ::Projects::UpdateService.new(
         project,
         current_user,
-        { archived: false,
+        {
+          archived: false,
           hidden: false,
-          marked_for_deletion_at: nil,
-          deleting_user: nil,
           name: updated_value(project.name),
-          path: updated_value(project.path) }
+          path: updated_value(project.path),
+          remove_deletion_schedule: true,
+          # These deletion parameters must be removed as part of https://gitlab.com/gitlab-org/gitlab/-/issues/492405
+          marked_for_deletion_at: nil,
+          deleting_user: nil
+        }
       ).execute
 
       if result[:status] == :success

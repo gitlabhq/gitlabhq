@@ -62,6 +62,16 @@ export const SimpleBlobContentMock = {
   plainData: 'Plain',
 };
 
+export const RichSnippetContentMock = {
+  ...RichBlobContentMock,
+  __typename: 'SnippetBlobConnection',
+};
+
+export const SimpleSnippetContentMock = {
+  ...SimpleBlobContentMock,
+  __typename: 'SnippetBlobConnection',
+};
+
 export const mockEnvironmentName = 'my.testing.environment';
 export const mockEnvironmentPath = 'https://my.testing.environment';
 
@@ -73,5 +83,3 @@ export const userInfoMock = {
     profileEnableGitpodPath: '/-/profile?user%5Bgitpod_enabled%5D=true',
   },
 };
-
-export const applicationInfoMock = { gitpodEnabled: true };

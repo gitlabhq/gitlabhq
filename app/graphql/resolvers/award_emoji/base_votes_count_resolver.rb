@@ -10,7 +10,7 @@ module Resolvers
       private
 
       def authorized_resource?(object)
-        Ability.allowed?(current_user, "read_#{object.to_ability_name}".to_sym, object)
+        Ability.allowed?(current_user, :"read_#{object.to_ability_name}", object)
       end
 
       def votes_batch_loader

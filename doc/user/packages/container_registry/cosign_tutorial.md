@@ -135,7 +135,7 @@ and matches what you expect based on your build process.
 
 ## Example `.gitlab-ci.yml` configuration
 
-When you follow all the steps mentioned above, your `.gitlab-ci.yml` should look similar to this:
+When you follow all the previous steps, the `.gitlab-ci.yml` file should look like this:
 
 ```yaml
 stages:

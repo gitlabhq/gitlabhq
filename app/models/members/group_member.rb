@@ -34,6 +34,21 @@ class GroupMember < Member
     Gitlab::Access.options_with_owner
   end
 
+  def self.max_access_members(group_ids, user)
+    groups = ::Namespace
+      .select('traversal_ids[1] as root_id, unnest(traversal_ids) as id')
+      .where(id: group_ids)
+
+    groups_cte = Gitlab::SQL::CTE.new(:groups, groups, materialized: false)
+
+    with_user(user)
+      .non_request
+      .with(groups_cte.to_arel)
+      .select('DISTINCT ON (groups.root_id) members.*')
+      .joins('JOIN groups ON groups.id = source_id')
+      .order('groups.root_id, members.access_level DESC')
+  end
+
   def group
     source
   end

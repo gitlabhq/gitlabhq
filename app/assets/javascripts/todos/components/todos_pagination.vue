@@ -2,11 +2,13 @@
 import { GlKeysetPagination } from '@gitlab/ui';
 import PageSizeSelector from '~/vue_shared/components/page_size_selector.vue';
 import { DEFAULT_PAGE_SIZE } from '~/todos/constants';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 
 export const CURSOR_CHANGED_EVENT = 'cursor-changed';
 
 export default {
   components: {
+    LocalStorageSync,
     GlKeysetPagination,
     PageSizeSelector,
   },
@@ -95,13 +97,15 @@ export default {
 </script>
 
 <template>
-  <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:gl-justify-center">
-    <gl-keyset-pagination v-bind="$props" @prev="prevPage" @next="nextPage" />
+  <local-storage-sync storage-key="todos-page-size" :value="pageSize" @input="handlePageSizeChange">
+    <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:gl-justify-center">
+      <gl-keyset-pagination v-bind="$props" @prev="prevPage" @next="nextPage" />
 
-    <page-size-selector
-      :value="pageSize"
-      class="gl-right-0 md:gl-absolute"
-      @input="handlePageSizeChange"
-    />
-  </div>
+      <page-size-selector
+        :value="pageSize"
+        class="gl-right-0 md:gl-absolute"
+        @input="handlePageSizeChange"
+      />
+    </div>
+  </local-storage-sync>
 </template>

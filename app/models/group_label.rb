@@ -8,7 +8,7 @@ class GroupLabel < Label
 
   validates :group, presence: true
 
-  alias_attribute :subject, :group
+  alias_method :subject, :group
 
   def subject_foreign_key
     'group_id'

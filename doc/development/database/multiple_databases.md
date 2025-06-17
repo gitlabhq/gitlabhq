@@ -1,7 +1,7 @@
 ---
 stage: Tenant Scale
 group: Cells Infrastructure
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Multiple Databases
 ---
 
@@ -27,9 +27,9 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 | Schema | Description | Notes |
 | -------- | ----------- | ------- |
-| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. |
+| `gitlab_main` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
-| `gitlab_main_clusterwide_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
+| `gitlab_main_cell_setting` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_clusterwide` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_main_cell_local` | See [Cells / Organizations schemas](../cells/_index.md#available-cells--organization-schemas) | |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
@@ -51,15 +51,10 @@ The usage of schema enforces the base class to be used:
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
 - `SecApplicationRecord` for `gitlab_sec`
 
-### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
-
-This content has been moved to a
-[new location](../cells/_index.md#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema)
-
 ### Defining a sharding key for all cell-local tables
 
 This content has been moved to a
-[new location](../cells/_index.md#defining-a-sharding-key-for-all-organizational-tables)
+[new location](../organization/_index.md#defining-a-sharding-key-for-all-organizational-tables)
 
 ### The impact of `gitlab_schema`
 
@@ -839,10 +834,11 @@ space by truncating tables. This results in a smaller data set: For example,
 the data in `users` table on CI database is no longer read and also no
 longer updated. So this data can be removed by truncating the tables.
 
-For this purpose, GitLab provides two Rake tasks, one for each database:
+For this purpose, GitLab provides separate Rake tasks, one for each database:
 
-- `gitlab:db:truncate_legacy_tables:main` will truncate the CI tables in Main database.
-- `gitlab:db:truncate_legacy_tables:ci` will truncate the Main tables in CI database.
+- `gitlab:db:truncate_legacy_tables:main` will truncate the legacy tables in Main database.
+- `gitlab:db:truncate_legacy_tables:ci` will truncate the legacy tables in CI database.
+- `gitlab:db:truncate_legacy_tables:sec` will truncate the legacy tables in Sec database.
 
 {{< alert type="note" >}}
 

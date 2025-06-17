@@ -22,7 +22,7 @@ module BlobViewer
 
       @validation_message = Gitlab::Ci::Lint
         .new(project: opts[:project], current_user: opts[:user], sha: opts[:sha], verify_project_sha: false)
-        .validate(blob.data).errors.first
+        .legacy_validate(blob.data).errors.first
     end
 
     def valid?(opts)

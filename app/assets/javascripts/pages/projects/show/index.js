@@ -87,10 +87,9 @@ const initCodeDropdown = () => {
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
     convertObjectPropsToCamelCase(ideData ? JSON.parse(ideData) : {});
 
-  const CodeDropdownComponent =
-    gon.features.directoryCodeDropdownUpdates && gon.features.blobRepositoryVueHeaderApp
-      ? CompactCodeDropdown
-      : CodeDropdown;
+  const CodeDropdownComponent = gon.features.directoryCodeDropdownUpdates
+    ? CompactCodeDropdown
+    : CodeDropdown;
 
   return new Vue({
     el: codeDropdownEl,

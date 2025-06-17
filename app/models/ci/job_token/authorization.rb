@@ -39,11 +39,7 @@ module Ci
           }
         )
 
-        # Skip self-referential accesses as they are always allowed and don't need
-        # to be logged neither added to the allowlist.
-        return if label == 'same-project'
-
-        # We are tracking an attempt of cross-project utilization but we
+        # We are tracking ci job token access to project resources, but we
         # are not yet persisting this log until a request successfully
         # completes. We will do that in a middleware. This is because the policy
         # rule about job token scope may be satisfied but a subsequent rule in

@@ -98,7 +98,11 @@ export default {
     :toggle-text="$options.i18n.dropdownLabel"
     text-sr-only
   >
-    <permalink-dropdown-item v-if="permalinkPath" :permalink-path="permalinkPath" />
+    <permalink-dropdown-item
+      v-if="permalinkPath"
+      :permalink-path="permalinkPath"
+      source="repository"
+    />
     <gl-disclosure-dropdown-item v-if="comparePath" :item="compareItem" class="shortcuts-compare" />
   </gl-disclosure-dropdown>
 </template>

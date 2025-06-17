@@ -46,6 +46,7 @@ If you use a cloud-managed service, or provide your own PostgreSQL instance:
    gitlab_rails['db_adapter'] = 'postgresql'
    gitlab_rails['db_encoding'] = 'unicode'
    gitlab_rails['db_host'] = '10.1.0.5' # IP/hostname of database server
+   gitlab_rails['db_port'] = 5432
    gitlab_rails['db_password'] = 'DB password'
    ```
 

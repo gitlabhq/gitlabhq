@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
-import { visitUrl } from '~/lib/utils/url_utility';
 import getOpenMrCountForBlobPath from '~/repository/queries/open_mr_count.query.graphql';
 import getOpenMrsForBlobPath from '~/repository/queries/open_mrs.query.graphql';
 import { nDaysBefore } from '~/lib/utils/datetime/date_calculation_utility';
@@ -84,6 +83,13 @@ export default {
       update({ project: { mergeRequests: { count } = {} } = {} } = {}) {
         return count;
       },
+      result() {
+        if (this.openMrsCount > 0) {
+          this.trackEvent('render_recent_mrs_for_file_on_branch_badge', {
+            value: this.openMrsCount,
+          });
+        }
+      },
       error(error) {
         logError(
           `Failed to fetch merge request count. See exception details for more information.`,
@@ -100,7 +106,12 @@ export default {
       skip() {
         return !this.isDropdownOpen;
       },
-      update: (data) => data?.project?.mergeRequests?.nodes || [],
+      update: (data) =>
+        data?.project?.mergeRequests?.nodes?.map((node) => ({
+          ...node,
+          text: node.title,
+          href: node.webUrl,
+        })) || [],
       error(error) {
         logError(
           `Failed to fetch merge requests. See exception details for more information.`,
@@ -108,14 +119,6 @@ export default {
         );
         Sentry.captureException(error);
       },
-    },
-  },
-  mounted() {
-    this.trackEvent('render_recent_mrs_for_file_on_branch_badge', { value: this.openMrsCount });
-  },
-  methods: {
-    handleMergeRequestClick(webUrl) {
-      visitUrl(webUrl);
     },
   },
 };
@@ -153,7 +156,7 @@ export default {
     </template>
 
     <template #header>
-      <div class="gl-border-b-1 gl-border-gray-100 gl-p-4 gl-font-bold gl-border-b-solid">
+      <div class="gl-border-b-1 gl-border-default gl-p-4 gl-font-bold gl-border-b-solid">
         {{ s__('OpenMrBadge|Open merge requests') }}
         <gl-badge>{{ openMrsCount }}</gl-badge>
       </div>
@@ -168,7 +171,7 @@ export default {
       <gl-disclosure-dropdown-item
         v-for="mergeRequest in openMrs"
         :key="mergeRequest.iid"
-        @action="handleMergeRequestClick(mergeRequest.webUrl)"
+        :item="mergeRequest"
       >
         <template #list-item>
           <merge-request-list-item :merge-request="mergeRequest" />

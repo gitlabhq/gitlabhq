@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'create environment for job' do
-  let!(:job) { build(factory_type, project: project, pipeline: pipeline, **attributes) }
+  let!(:job) { build(factory_type, project: project, pipeline: pipeline, user: user, **attributes) }
   let(:merge_request) {} # rubocop:disable Lint/EmptyBlock
 
   describe '#execute' do
@@ -40,6 +40,14 @@ RSpec.shared_examples 'create environment for job' do
 
           expect(subject).to be_persisted
           expect(subject).to eq(environment)
+        end
+
+        it_behaves_like 'internal event tracking' do
+          let(:event) { 'create_job_with_environment' }
+          let(:category) { described_class.name }
+          let(:additional_properties) do
+            { label: job.environment_action, value: environment.id, property: environment.tier }
+          end
         end
       end
     end
@@ -194,22 +202,6 @@ RSpec.shared_examples 'create environment for job' do
           expect(subject).to be_a(Environment)
           expect(subject).to be_persisted
           expect(subject.cluster_agent).to eq(agent)
-        end
-
-        context 'when the gitlab_managed_cluster_resources feature flag is disabled' do
-          before do
-            stub_feature_flags(gitlab_managed_cluster_resources: false)
-          end
-
-          it 'creates an environment without the specified cluster agent' do
-            expect(Clusters::Agents::Authorizations::CiAccess::Finder).not_to receive(:new)
-
-            expect { subject }.to change { Environment.count }.by(1)
-
-            expect(subject).to be_a(Environment)
-            expect(subject).to be_persisted
-            expect(subject.cluster_agent).to be_nil
-          end
         end
 
         context 'when the agent is not configured for resource_management' do

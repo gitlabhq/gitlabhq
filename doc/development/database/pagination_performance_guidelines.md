@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Pagination performance guidelines
 ---
 
@@ -351,7 +351,7 @@ Running the query in production for the GitLab project produces the following ex
 
 The query looks up the `assignees` first, filtered by the `user_id` (`user_id = 4156052`) and it finds 215 rows. Using those 215 rows, the database looks up the 215 associated issue rows by the primary key. Notice that the filter on the `project_id` column is not backed by an index.
 
-In most cases, we are lucky that the joined relation does not return too many rows, therefore, we end up with a relatively efficient database query that accesses a small number of rows. As the database grows, these queries might start to behave differently. Let's say the number `issue_assignees` records for a particular user is very high, in the millions. This join query does not perform well, and it likely times out.
+In most cases, joined relations do not return too many rows, and we end up with a relatively efficient database query that accesses a small number of rows. As the database grows, these queries might start to behave differently. For example, a user with a very high number of `issue_assignees` records might cause this join query to perform poorly and time out.
 
 A similar problem could be a double join, where the filter exists in the 2nd `JOIN` query. Example: `Issue -> LabelLink -> Label(name=bug)`.
 

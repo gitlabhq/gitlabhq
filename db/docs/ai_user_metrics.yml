@@ -9,5 +9,7 @@ feature_categories:
 description: Stores AI metrics per user. One record per every Duo Pro+ user.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178559
 milestone: '17.9'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

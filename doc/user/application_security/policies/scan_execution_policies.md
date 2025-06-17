@@ -17,13 +17,13 @@ title: Scan execution policies
 - Group-level security policies [introduced](https://gitlab.com/groups/gitlab-org/-/epics/4425) in GitLab 15.2.
 - Group-level security policies [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/356258) in GitLab 15.4.
 - Operational container scanning [introduced](https://gitlab.com/groups/gitlab-org/-/epics/3410) in GitLab 15.5
-- Support for custom CI variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
+- Support for custom CI/CD variables in the Scan Execution Policies editor [introduced](https://gitlab.com/groups/gitlab-org/-/epics/9566) in GitLab 16.2.
 - Enforcement of scan execution policies on projects with an existing GitLab CI/CD configuration [introduced](https://gitlab.com/groups/gitlab-org/-/epics/6880) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `scan_execution_policy_pipelines`. Feature flag `scan_execution_policy_pipelines` removed in GitLab 16.5.
 - Overriding predefined variables in scan execution policies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440855) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `allow_restricted_variables_at_policy_level`. Enabled by default. Feature flag `allow_restricted_variables_at_policy_level` removed in GitLab 17.5.
 
 {{< /history >}}
 
-Use scan execution policies to enforce GitLab security scans based on the default or latest [security CI templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs), either as part of the pipeline or on a
+Use scan execution policies to enforce GitLab security scans based on the default or latest [security CI/CD templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs), either as part of the pipeline or on a
 specified schedule.
 
 Scan execution policies are enforced across all projects that are linked to the security policy project and are within the scope of the policy. For projects without a
@@ -270,7 +270,7 @@ Use this schema to define `agents` objects in the [`schedule` rule type](#schedu
 |--------------|---------------------|----------|-------------|
 | `namespaces` | `array` of `string` | true | The namespace that is scanned. If empty, all namespaces are scanned. |
 
-#### Policy example
+#### `agent` example
 
 ```yaml
 - name: Enforce Container Scanning in cluster connected through my-gitlab-agent for default and kube-system namespaces
@@ -303,7 +303,7 @@ Define how scheduled scans are distributed over time with the `time_window` obje
 | `distribution` | `string`  | true     | Distribution pattern for schedule scans. Currently only supports `random`, where scans will be distributed randomly in the interval defined by the `value` key of the `time_window`. |
 | `value`        | `integer` | true     | The time window in seconds the schedule scans should run. Enter a value between 3600 (1 hour) and 86400 (24 hours).                                               |
 
-#### Policy example
+#### `time_window` example
 
 ```yaml
 - name: Enforce Container Scanning with a time window of 1 hour
@@ -366,16 +366,16 @@ rule in the defined policy are met.
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `scan` | `string` | `sast`, `sast_iac`, `dast`, `secret_detection`, `container_scanning`, `dependency_scanning` | The action's type. |
-| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/on-demand_scan.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
-| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/on-demand_scan.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
-| `variables` | `object` | | A set of CI variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI job supports for the specified scan. |
+| `site_profile` | `string` | Name of the selected [DAST site profile](../dast/profiles.md#site-profile). | The DAST site profile to execute the DAST scan. This field should only be set if `scan` type is `dast`. |
+| `scanner_profile` | `string` or `null` | Name of the selected [DAST scanner profile](../dast/profiles.md#scanner-profile). | The DAST scanner profile to execute the DAST scan. This field should only be set if `scan` type is `dast`.|
+| `variables` | `object` | | A set of CI/CD variables, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the variable name, with its `value` provided as a string. This parameter supports any variable that the GitLab CI/CD job supports for the specified scan. |
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 | `template` | `string` | `default`, `latest` | CI/CD template version to enforce. The `latest` version may introduce breaking changes. See the `stable` and `latest` [security templates](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates/Jobs). |
 | `scan_settings` | `object` | | A set of scan settings, supplied as an array of `key: value` pairs, to apply and enforce for the selected scan. The `key` is the setting name, with its `value` provided as a boolean or string. This parameter supports the settings defined in [scan settings](#scan-settings). |
 
 {{< alert type="note" >}}
 
-If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../../application_security/detect/roll_out_security_scanning.md#use-security-scanning-tools-with-merge-request-pipelines).
+If you have merge request pipelines enabled for your project, you must set the `AST_ENABLE_MR_PIPELINES` CI/CD variable to `"true"` in your policy for each enforced scan. For more information on using security scanning tools with merge request pipelines, refer to the [security scanning documentation](../../application_security/detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines).
 
 {{< /alert >}}
 
@@ -410,8 +410,8 @@ scan.
 The following requirements apply when enforcing Dynamic Application Security Testing (DAST):
 
 - For every project in the policy's scope the specified
-  [site profile](../dast/on-demand_scan.md#site-profile) and
-  [scanner profile](../dast/on-demand_scan.md#scanner-profile) must exist. If these are not
+  [site profile](../dast/profiles.md#site-profile) and
+  [scanner profile](../dast/profiles.md#scanner-profile) must exist. If these are not
   available, the policy is not applied and a job with an error message is created instead.
 - When a DAST site profile or scanner profile is named in an enabled scan execution policy, the
   profile cannot be modified or deleted. To edit or delete the profile, you must first set the
@@ -469,7 +469,7 @@ specified projects, groups, or compliance framework labels. For more details, se
 ## Example security policy project
 
 You can use this example in a `.gitlab/security-policies/policy.yml` file stored in a
-[security policy project](_index.md#security-policy-project):
+[security policy project](security_policy_projects.md):
 
 ```yaml
 ---

@@ -104,6 +104,7 @@ class ProfilesController < Profiles::ApplicationController
       :username,
       :validation_password,
       :website_url,
+      :github,
       { status: [:emoji, :message, :availability, :clear_status_after] }
     ]
   end

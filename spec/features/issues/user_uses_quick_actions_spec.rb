@@ -34,6 +34,7 @@ RSpec.describe 'Issues > User uses quick actions', :js, feature_category: :team_
     let(:issue) { create(:issue, project: project, due_date: Date.new(2016, 8, 28)) }
 
     before do
+      stub_feature_flags(work_item_view_for_issues: true)
       project.add_maintainer(user)
       sign_in(user)
       visit project_issue_path(project, issue)

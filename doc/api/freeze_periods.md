@@ -12,7 +12,7 @@ title: Freeze Periods API
 
 {{< /details >}}
 
-You can use the Freeze Periods API to manipulate GitLab [Freeze Period](../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze) entries.
+Use this API to interact with deployment [freeze periods](../user/project/releases/_index.md#prevent-unintentional-releases-by-setting-a-deploy-freeze).
 
 ## Permissions and security
 
@@ -53,9 +53,9 @@ Example response:
 ]
 ```
 
-## Get a freeze period by a `freeze_period_id`
+## Get a freeze period
 
-Get a freeze period for the given `freeze_period_id`.
+Get a freeze period for a specified `freeze_period_id`.
 
 ```plaintext
 GET /projects/:id/freeze_periods/:freeze_period_id

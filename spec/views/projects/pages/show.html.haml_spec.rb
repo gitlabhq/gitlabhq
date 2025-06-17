@@ -22,8 +22,8 @@ RSpec.describe 'projects/pages/show' do
 
   describe 'validation warning' do
     let(:warning_message) do
-      "#{domain.domain} is not verified. To learn how to verify ownership, "\
-      "visit your domain details."
+      "Domain ownership verification required. Add a TXT record "\
+      "to verify ownership at your domain provider."
     end
 
     it "doesn't show auto ssl error warning" do

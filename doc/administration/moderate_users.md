@@ -21,9 +21,29 @@ This topic is specifically related to user moderation in GitLab Self-Managed. Fo
 
 {{< /alert >}}
 
+## View users by type
+
+{{< history >}}
+
+- Filter users by type [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541186) in GitLab 18.1.
+
+{{< /history >}}
+
+Established GitLab instances can often have large numbers of human and bot users. You can filter the list of users
+to display only human or [bot users](internal_users.md).
+
+To view users by type:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Overview > Users**.
+1. In the search box, enter a filter.
+   - To display human users, enter **Type=Humans**.
+   - To display bot users, enter **Type=Bots**.
+1. Press <kbd>Enter</kbd>.
+
 ## Users pending approval
 
-A user in _pending approval_ state requires action by an administrator. A user sign up can be in a
+A user in a pending approval state requires action by an administrator. A user sign up can be in a
 pending approval state because an administrator has enabled any of the following options:
 
 - [Require administrator approval for new sign-ups](settings/sign_up_restrictions.md#require-administrator-approval-for-new-sign-ups) setting.
@@ -228,6 +248,9 @@ To do this:
 When this feature is enabled, GitLab runs a daily job to deactivate the dormant users.
 
 A maximum of 100,000 users can be deactivated per day.
+
+By default, users receive an email notification when their account is deactivated.
+You can disable [user deactivation emails](settings/email.md#user-deactivation-emails).
 
 {{< alert type="note" >}}
 

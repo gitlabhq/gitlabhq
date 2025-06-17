@@ -108,7 +108,7 @@ To create server hooks for a repository:
      `pre-receive` server hook, the filename should be `pre-receive` with no extension.
    - To create many server hooks, create a directory for the hooks that matches the hook type. For example, for a
      `pre-receive` server hook, the directory name should be `pre-receive.d`. Put the files for the hook in that directory.
-1. **Make the server hook files executable** and ensure that they are owned by the Git user.
+1. Make the server hook files executable and ensure that they are owned by the Git user.
 1. Write the code to make the server hook function as expected. Git server hooks can be in any programming language. Ensure
    the [shebang](https://en.wikipedia.org/wiki/Shebang_(Unix)) at the top reflects the language type. For
    example, if the script is in Ruby the shebang is probably `#!/usr/bin/env ruby`.

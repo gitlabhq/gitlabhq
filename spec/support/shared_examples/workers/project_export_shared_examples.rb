@@ -19,7 +19,7 @@ RSpec.shared_examples 'export worker' do
           expect(service).to receive(:execute)
         end
 
-        subject.perform(user.id, project.id, { 'klass' => 'Gitlab::ImportExport::AfterExportStrategies::DownloadNotificationStrategy' }, params)
+        subject.perform(user.id, project.id, { 'klass' => 'Import::AfterExportStrategies::DownloadNotificationStrategy' }, params)
       end
 
       context 'export job' do

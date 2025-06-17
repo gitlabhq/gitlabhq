@@ -20,6 +20,14 @@ module Types
       field :title, GraphQL::Types::String,
         null: false, description: 'Wiki page title.'
 
+      field :subscribed, GraphQL::Types::Boolean,
+        null: false,
+        description: 'Whether the current user is subscribed to notifications on the wiki page.'
+
+      def subscribed
+        object.subscribed?(current_user, object.project)
+      end
+
       def web_url
         Gitlab::UrlBuilder.build(object)
       end

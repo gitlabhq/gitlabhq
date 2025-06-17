@@ -102,6 +102,30 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
   end
 
+  describe '.with_parent_ids' do
+    let_it_be(:parent_item) { create(:work_item, :epic, project: reusable_project) }
+
+    context 'when given valid parent IDs' do
+      let_it_be(:child_item) { create(:work_item, project: reusable_project) }
+
+      before do
+        create(:parent_link, work_item_parent: parent_item, work_item: child_item)
+      end
+
+      it 'returns the work items with the specified parent IDs' do
+        expect(described_class.with_work_item_parent_ids([parent_item.id])).to contain_exactly(child_item)
+      end
+    end
+
+    context 'when work item does not have parent link' do
+      let_it_be(:work_item_without_parent) { create(:work_item, project: reusable_project) }
+
+      it 'does not return the work item' do
+        expect(described_class.with_work_item_parent_ids([parent_item.id])).to be_empty
+      end
+    end
+  end
+
   describe '#create_dates_source_from_current_dates' do
     let_it_be(:start_date) { nil }
     let_it_be(:due_date) { nil }
@@ -338,7 +362,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     it 'returns quick action commands supported for all work items' do
       is_expected.to include(:title, :reopen, :close, :cc, :tableflip, :shrug, :type, :promote_to, :checkin_reminder,
         :subscribe, :unsubscribe, :confidential, :award, :move, :clone, :copy_metadata, :duplicate,
-        :promote_to_incident, :board_move, :convert_to_ticket)
+        :promote_to_incident, :board_move, :convert_to_ticket, :zoom, :remove_zoom)
     end
 
     it 'omits quick action commands from assignees widget' do
@@ -427,13 +451,49 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   describe 'callbacks' do
-    describe 'record_create_action' do
+    describe 'record_create_action', :clean_gitlab_redis_shared_state do
+      let_it_be(:user) { create(:user) }
+
       it 'records the creation action after saving' do
-        expect(Gitlab::UsageDataCounters::WorkItemActivityUniqueCounter).to receive(:track_work_item_created_action)
         # During the work item transition we also want to track work items as issues
         expect(Gitlab::UsageDataCounters::IssueActivityUniqueCounter).to receive(:track_issue_created_action)
 
         create(:work_item)
+      end
+
+      it "triggers an internal event" do
+        expect { create(:work_item, project: reusable_project, author: user) }
+          .to trigger_internal_events('users_creating_work_items').with(
+            project: reusable_project,
+            user: user,
+            additional_properties: {
+              label: 'issue'
+            }
+          ).and increment_usage_metrics(
+            'counts_weekly.aggregated_metrics.users_work_items',
+            'counts_monthly.aggregated_metrics.users_work_items'
+          ).and not_increment_usage_metrics(
+            'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_monthly',
+            'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_weekly'
+          )
+      end
+
+      context 'when work item is of type epic' do
+        it "triggers an internal event" do
+          expect { create(:work_item, :epic, project: reusable_project, author: user) }
+            .to trigger_internal_events('users_creating_work_items').with(
+              project: reusable_project,
+              user: user,
+              additional_properties: {
+                label: 'epic'
+              }
+            ).and increment_usage_metrics(
+              'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_monthly',
+              'redis_hll_counters.count_distinct_user_id_from_create_work_type_epic_weekly',
+              'counts_weekly.aggregated_metrics.users_work_items',
+              'counts_monthly.aggregated_metrics.users_work_items'
+            )
+        end
       end
 
       it_behaves_like 'internal event tracking' do

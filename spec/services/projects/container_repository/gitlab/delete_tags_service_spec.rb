@@ -45,18 +45,18 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
       end
 
       context 'with tag protection rules' do
-        let_it_be(:rule1) do
-          create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'A')
-        end
-
         let(:tag_names) { %w[A Ba Bb C D] }
+        let(:protected_patterns) { nil }
 
         before do
+          allow(service).to receive(:protected_patterns_for_delete).and_return(protected_patterns)
           allow(repository.client).to receive(:supports_tag_delete?).and_return(true)
           stub_delete_reference_requests(tag_names)
         end
 
         context 'when not all tags are protected' do
+          let(:protected_patterns) { %w[A].map { |pattern| ::Gitlab::UntrustedRegexp.new(pattern) } }
+
           before do
             expect_delete_tags(%w[Ba Bb C D])
           end
@@ -65,65 +65,15 @@ RSpec.describe Projects::ContainerRepository::Gitlab::DeleteTagsService, feature
         end
 
         context 'when all tags are protected' do
-          before do
-            create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'B')
-            create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'C')
-            create(:container_registry_protection_tag_rule, project: project, tag_name_pattern: 'D')
-          end
+          let(:protected_patterns) { %w[A B C D].map { |pattern| ::Gitlab::UntrustedRegexp.new(pattern) } }
 
           it { is_expected.to include(status: :error, message: 'cannot delete protected tag(s)') }
         end
 
-        context 'when the user has admin permissions' do
-          before do
-            allow(user).to receive(:can_admin_all_resources?).and_return(true)
-          end
-
-          it 'deletes tags including protected ones' do
+        context 'when no tags are protected' do
+          it 'deletes all tags' do
             expect_delete_tags(tag_names)
 
-            is_expected.to include(status: :success)
-          end
-        end
-
-        context 'when the user has no admin permissions' do
-          before do
-            create(:container_registry_protection_tag_rule,
-              project: project,
-              tag_name_pattern: 'B',
-              minimum_access_level_for_delete: :maintainer)
-            create(:container_registry_protection_tag_rule,
-              project: project,
-              tag_name_pattern: 'C',
-              minimum_access_level_for_delete: :owner)
-
-            project.add_maintainer(user)
-          end
-
-          it 'applies tag protection rules based on the user access level' do
-            expect_delete_tags(%w[A Ba Bb D])
-
-            is_expected.to include(status: :success)
-          end
-        end
-
-        context 'when there is no user, run by a cleanup policy' do
-          let(:user) { nil }
-
-          before do
-            create(:container_registry_protection_tag_rule,
-              project: project,
-              tag_name_pattern: 'B',
-              minimum_access_level_for_delete: :maintainer)
-            create(:container_registry_protection_tag_rule,
-              project: project,
-              tag_name_pattern: 'C',
-              minimum_access_level_for_delete: :owner)
-
-            expect_delete_tags(%w[D])
-          end
-
-          it 'uses all the tag protection rules' do
             is_expected.to include(status: :success)
           end
         end

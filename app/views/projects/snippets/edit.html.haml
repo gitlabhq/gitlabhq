@@ -3,7 +3,5 @@
 - breadcrumb_title _("Edit")
 - page_title _("Edit"), "#{@snippet.title} (#{@snippet.to_reference})", _("Snippets")
 
-%h1.page-title.gl-text-size-h-display
-  = _("Edit snippet")
-
+= render ::Layouts::PageHeadingComponent.new(_('Edit snippet'))
 = render "shared/snippets/form", url: project_snippet_path(@project, @snippet)

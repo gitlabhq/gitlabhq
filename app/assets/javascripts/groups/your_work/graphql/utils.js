@@ -20,9 +20,8 @@ export const formatGroupForGraphQLResolver = (group) => ({
     viewEditPage: group.can_edit,
   },
   webUrl: group.web_url,
-  groupMembersCount: group.group_members_count,
+  groupMembersCount: group.group_members_count ?? null,
   isLinkedToSubscription: group.is_linked_to_subscription,
-  isAdjournedDeletionEnabled: group.is_adjourned_deletion_enabled,
   permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
     integerValue: group.permission
@@ -32,11 +31,8 @@ export const formatGroupForGraphQLResolver = (group) => ({
   parent: {
     id: group.parent_id,
   },
-  descendantGroupsCount: group.subgroup_count,
-  projectsCount: group.project_count,
+  descendantGroupsCount: group.subgroup_count ?? null,
+  projectsCount: group.project_count ?? null,
   children: group.children?.length ? group.children.map(formatGroupForGraphQLResolver) : [],
-  childrenCount: group.subgroup_count,
-  // Properties below are hard coded for now until API has been
-  // updated to support these fields.
-  organizationEditPath: '',
+  childrenCount: group.subgroup_count ?? 0,
 });

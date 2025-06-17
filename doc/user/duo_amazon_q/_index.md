@@ -23,15 +23,14 @@ title: GitLab Duo with Amazon Q
 
 {{< alert type="note" >}}
 
-If you have a GitLab Duo Pro or Duo Enterprise add-on, this feature is not available.
+GitLab Duo with Amazon Q cannot be combined with other GitLab Duo add-ons.
 
 {{< /alert >}}
 
 At Re:Invent 2024, Amazon announced the GitLab Duo with Amazon Q integration.
 With this integration, you can automate tasks and increase productivity.
 
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
-- For a click-through demo, see [the GitLab Duo with Amazon Q Product Tour](https://gitlab.navattic.com/duo-with-q).
+For a click-through demo, see [the GitLab Duo with Amazon Q Product Tour](https://gitlab.navattic.com/duo-with-q).
 <!-- Demo published on 2025-04-23 -->
 
 To get a subscription to GitLab Duo with Amazon Q, contact your Account Executive.
@@ -99,6 +98,11 @@ Amazon Q can analyze your merge request and suggest improvements to your code.
 It can find things like security issues, quality issues, inefficiencies,
 and other errors.
 
+[You can have Amazon Q review automatically](setup.md#enter-the-arn-in-gitlab-and-enable-amazon-q)
+when you open or reopen a merge request, or you can manually start a review.
+
+To manually start:
+
 1. Open your merge request.
 1. On the **Overview** tab, in a comment, type `/q review`.
 1. Select **Comment**.
@@ -165,3 +169,6 @@ In addition, these features are available on GitLab Duo with Amazon Q.
 
 - [Set up GitLab Duo with Amazon Q](setup.md)
 - [GitLab Duo authentication and authorization](../gitlab_duo/security.md)
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - From idea to merge request](https://youtu.be/jxxzNst3jpo?si=QHO8JnPgMoFIllbL) <!-- Video published on 2025-04-17 -->
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Code review optimization](https://youtu.be/4gFIgyFc02Q?si=S-jO2M2jcXnukuN_) <!-- Video published on 2025-05-20 -->
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [GitLab Duo with Amazon Q - Make code changes based on feedback](https://youtu.be/31E9X9BrK5s?si=v232hBDmlGpv6fqC) <!-- Video published on 2025-05-30 -->

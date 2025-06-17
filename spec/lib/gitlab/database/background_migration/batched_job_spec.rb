@@ -17,6 +17,12 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedJob, type: :model, 
     )
   end
 
+  describe 'validations' do
+    subject { build(:batched_background_migration_job) }
+
+    it { is_expected.to validate_numericality_of(:pause_ms).is_greater_than_or_equal_to(described_class::MINIMUM_PAUSE_MS) }
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:batched_migration).with_foreign_key(:batched_background_migration_id) }
     it { is_expected.to have_many(:batched_job_transition_logs).with_foreign_key(:batched_background_migration_job_id) }

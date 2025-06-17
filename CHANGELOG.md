@@ -877,6 +877,51 @@ entry.
 - [Finalize migration BackfillContainerRepositoryStatesProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/78f333c76a39d0a85938318b3be49905c19074e6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185869))
 - [Finalize migration BackfillPackagesRpmMetadataProjectId](https://gitlab.com/gitlab-org/gitlab/-/commit/d066d88be1fff7cfcf64017124af797e085a4b4f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184553))
 
+## 17.11.4 (2025-06-11)
+
+### Fixed (2 changes)
+
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/813a005dc240c1bfafc313ded694317a96f1a877)
+- [Attempt to migrate ci_runner_taggings table (try 2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/706a075f79838d5d8421c5eae2e96a7601164201)
+
+### Security (8 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a0d74cdeed26661b221446efc90fb5bd19b54d95) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5060))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/24d25f0b270337679bcfe282370ad169d137471f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5039))
+- [Backport for "Add validation for board name length" to 17-11-stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5ed051286369ec256431faeb44a16c848b6d0edc) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5045))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/071c88429e0974fdf1c0d67e7ba9d1f419843244) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5043))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/373f9840af59eae05b14ea200fa10c1e4ecd7367) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5019))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/862a14acb446e9f7ce962404d8d472b19d832ff8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4987))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/94d20db29203681d75da5642fe4d1da51238863e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5015))
+- [Fix authorization for compliance frameworks projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0eecdfe1df4254e2674efe9c0e309d9325db5c4b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5035))
+
+## 17.11.3 (2025-05-21)
+
+### Fixed (1 change)
+
+- [Merge branch 'bwill/fix-auto-resolve-misalignment' into 'master'](https://gitlab.com/gitlab-org/security/gitlab/-/commit/45c7b8836ebe00032c1c12c319b3a38df58a1330) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Add outbound allowlist to allowed endpoints for SSRF filter](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1e69af7ba0add6b581cf68d1cbb25bdae59fcda6) **GitLab Enterprise Edition**
+- [Add backport to fix shortSHA uniqueness](https://gitlab.com/gitlab-org/security/gitlab/-/commit/56f834658d280f32c1c491d18561a6d7fdb18dc2)
+
+### Security (9 changes)
+
+- [Use CI::VariableValue in BasicEntity to prevent exposing hidden values in collapsible UI element](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3ce5ec566dddc9dab96ef984184685c25fc69f41) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4951))
+- [Show full path of project in create MR dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/428aa73cd69a5133c8e726eba6631d47ca9faab6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4972))
+- [Security 479168 discord zip vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cd8d42946d4f13b91cdf0e68fb74c13fa3566512) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4945))
+- [Limit length of certificate cluster text fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/47af9186f2460faf4382815af35da81bc163eeba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5000))
+- [Check rate limit for over-sized blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0e992167ee000e8fb7de00ae5feaa059c5cfb9c8) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4970))
+- [Added size constraint validation to notes position fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/db0ce6860c09da1bec9773fc9a4f6cc4550fdbad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5006))
+- [Obfuscate emails in note.bodyFirstLineHtml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/16877dbcebf3a666e5a62ab1dc556a8de7777930) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4992))
+- [Need to update 2fa requirement after accepting request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6283ed9ef3438bbd06108df0c2dca4ce6ad5ecd1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4984))
+- [Ensure SAML authn context comes from signed portion of SAML response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/0a0a136eced16e4513ee7130d9331aad01590770) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4978))
+
+### Other (1 change)
+
+- [Drop ci_runner_machines_archived table](https://gitlab.com/gitlab-org/security/gitlab/-/commit/61e11b320c03d843cc656321710dc643d692f60f)
+
 ## 17.11.2 (2025-05-07)
 
 ### Fixed (3 changes)
@@ -1676,6 +1721,41 @@ entry.
 - [Cleanupp the no_onboarding_enterprise_users feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/7d9d548746a1b6dd2f2f074f64c7758745fb0494) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184478)) **GitLab Enterprise Edition**
 - [Remove feature flag allow_merge_request_pipelines_from_fork](https://gitlab.com/gitlab-org/gitlab/-/commit/b62f9187a57cc5ba66ce26889516cc55a425181a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182862))
 - [Finalize migration BackfillNewAuditEventTables](https://gitlab.com/gitlab-org/gitlab/-/commit/1bc0f07ffd3af5b9fab8a0ea0b1af5f2759d25db) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181881))
+
+## 17.10.8 (2025-06-11)
+
+### Fixed (2 changes)
+
+- [Fix gitpod button is missing in the edit dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c3ad6f66e6f17a5bf8fa2489a7335dfa58fc55a6)
+- [Attempt to migrate ci_runner_taggings table (try 2)](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c2520ea439dcb4fee531fcc39efc85ab4b607a6c)
+
+### Security (7 changes)
+
+- [Protect webhook from excessive payload lengths](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1fb7390786ae5c22ec7f1bc172423a76835aa14c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5061))
+- [Endless Redirect Loop in any project when query param "format" is "git"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fddb00a30506eb534dc9e1f5c1923eee3e33c0b3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5040))
+- [Backport for "Add validation for board name length" to 17-10-stable](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a69cf8ef367ef1897158af0619cd537fe5d2a5df) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5046))
+- [Fix # #1329 - IDOR in compliance framework export endpoint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7b4f9e9fb7411a18185ada44dc88dd264e6a228b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5042))
+- [security: Git redirection inconsistency](https://gitlab.com/gitlab-org/security/gitlab/-/commit/12003cbfb9b4081a352724922e6ed9aa97656ace) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4900))
+- [Fix XSS with CSP bypass in JSON tables](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1b02f9ed79b3a999baae5c02fa4f26c487927cba) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4988))
+- [Limit HTTP response size](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1411cb581f68400b5370d694cce3c67e5f0e2294) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5016))
+
+## 17.10.7 (2025-05-21)
+
+### Security (9 changes)
+
+- [Use CI::VariableValue in BasicEntity to prevent exposing hidden values in collapsible UI element](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6e71c801f9fea1afe19de9911813d4921c98bbd4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4952))
+- [Show full path of project in create MR dropdown](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bb2266cdea6444523aa98a400f91a6c494391987) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4973))
+- [Security 479168 discord zip vulnerability](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1f913df837c85a447f5d3b1bb9e929dbf950c3db) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4946))
+- [Limit length of certificate cluster text fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/414468af6fd95eef1a2d9ec0161ddd361f6c4619) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5001))
+- [Check rate limit for over-sized blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/63f67c5ca1c2ff013b2784786b4af92b675f9ea9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4976))
+- [Added size constraint validation to notes position fields](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7c430a29ae43c91ed0b01eb976e158be6c3847a7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5007))
+- [Obfuscate emails in note.bodyFirstLineHtml](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7f955b50aa72821f04ab8b7998c5260c13af9801) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4993))
+- [Need to update 2fa requirement after accepting request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68c6a45662755fb7c00935dbf588fe22d9275aad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4983))
+- [Ensure SAML authn context comes from signed portion of SAML response](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3822ca4e9e5050a90908c933a56b266eca24e959) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4979))
+
+### Other (1 change)
+
+- [Drop ci_runner_machines_archived table](https://gitlab.com/gitlab-org/security/gitlab/-/commit/21e2e68dd2ad0bd83979243618b0ca0f79b7f578)
 
 ## 17.10.6 (2025-05-07)
 

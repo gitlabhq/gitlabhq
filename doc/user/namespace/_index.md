@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Namespaces
+description: Learn more about different types of namespaces.
 ---
 
 Namespaces organize projects in GitLab. Because each namespace is separate,
@@ -25,7 +26,7 @@ GitLab has two types of namespaces:
 
 - **User**: Your personal namespace is based on your username. In a personal namespace:
   - You cannot create subgroups.
-  - Groups do not inherit your namespace permissions or group features.
+  - Groups you belong to do not inherit your personal namespace permissions or features.
   - All the projects you create are under the scope of this namespace.
   - Changes to your username also change project and namespace URLs. Before you change your username,
     read about [repository redirects](../project/repository/_index.md#repository-path-changes).

@@ -25,13 +25,12 @@ describe('Merge requests app component', () => {
   const findMergeRequests = () => wrapper.findAllComponents(MergeRequest);
   const findLoadMoreButton = () => wrapper.findByTestId('load-more');
   const findCountExplanation = () => wrapper.findByTestId('merge-request-count-explanation');
-  const findFeedbackLink = () => wrapper.findAllComponents(GlLink).at(0);
 
   const $router = {
     push: jest.fn(),
   };
 
-  function createComponent(lists = null, listTypeToggleEnabled = false) {
+  function createComponent(lists = null) {
     subscriptionHandler = createMockSubscription();
     assigneeQueryMock = jest.fn().mockResolvedValue({
       data: {
@@ -106,7 +105,6 @@ describe('Merge requests app component', () => {
       },
       provide: {
         mergeRequestsSearchDashboardPath: '/search',
-        listTypeToggleEnabled,
       },
       stubs: {
         MergeRequestsQuery,
@@ -219,12 +217,17 @@ describe('Merge requests app component', () => {
                 },
               ],
             },
+            author: { id: 'gid://gitlab/User/1' },
             reviewers: { nodes: [] },
           },
         },
       });
 
       expect(eventHub.$emit).toHaveBeenCalledWith('refetch.mergeRequests', 'assignedMergeRequests');
+      expect(eventHub.$emit).toHaveBeenCalledWith(
+        'refetch.mergeRequests',
+        'authorOrAssigneeMergeRequests',
+      );
     });
 
     it('emits refetch.mergeRequests with assignedMergeRequests when current user is a reviewer', async () => {
@@ -243,6 +246,7 @@ describe('Merge requests app component', () => {
                 },
               ],
             },
+            author: { id: 'gid://gitlab/User/1' },
             assignees: { nodes: [] },
           },
         },
@@ -251,24 +255,6 @@ describe('Merge requests app component', () => {
       expect(eventHub.$emit).toHaveBeenCalledWith(
         'refetch.mergeRequests',
         'reviewRequestedMergeRequests',
-      );
-    });
-  });
-
-  describe('feedback link', () => {
-    it('shows the default feedback link when feature flag is off', async () => {
-      createComponent();
-      await waitForPromises();
-      expect(findFeedbackLink().attributes('href')).toBe(
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/515912',
-      );
-    });
-
-    it('shows the new feedback link when feature flag is on', async () => {
-      createComponent(null, { listTypeToggleEnabled: true });
-      await waitForPromises();
-      expect(findFeedbackLink().attributes('href')).toBe(
-        'https://gitlab.com/gitlab-org/gitlab/-/issues/533850',
       );
     });
   });

@@ -1,7 +1,6 @@
 import { GlDisclosureDropdown, GlModal, GlDisclosureDropdownItem, GlLoadingIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_namespace_work_item_types.query.graphql.json';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -31,10 +30,11 @@ import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_ite
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 
 import {
+  convertWorkItemMutationErrorResponse,
   convertWorkItemMutationResponse,
+  namespaceWorkItemTypesQueryResponse,
   updateWorkItemMutationResponse,
   updateWorkItemNotificationsMutationResponse,
-  convertWorkItemMutationErrorResponse,
 } from 'ee_else_ce_jest/work_items/mock_data';
 
 jest.mock('~/lib/utils/common_utils');
@@ -275,7 +275,7 @@ describe('WorkItemActions component', () => {
         text: 'Copy issue email address',
       },
       {
-        divider: true,
+        group: true,
       },
       {
         testId: 'report-abuse-action',

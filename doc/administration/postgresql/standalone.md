@@ -21,7 +21,7 @@ together with the Linux package. This is recommended as part of our
 
 1. SSH in to the PostgreSQL server.
 1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package you want using *steps 1 and 2* from the GitLab downloads page. Do not complete any other steps on the
+   package you want using steps 1 and 2 from the GitLab downloads page. Do not complete any other steps on the
    download page.
 1. Generate a password hash for PostgreSQL. This assumes you are using the default
    username of `gitlab` (recommended). The command requests a password

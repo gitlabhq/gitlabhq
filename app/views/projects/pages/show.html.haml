@@ -4,14 +4,28 @@
   = render 'waiting'
 - else
   = render 'header'
-  #js-pages{ data: { full_path: @project.full_path } }
-  %h2.gl-heading-2
-    = s_('Settings')
-  = render 'pages_settings'
-  = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
-  = render 'access'
-  - if Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
-    = render 'list'
-  - else
-    = render 'no_domains'
-  = render 'destroy'
+
+  = gl_tabs_nav({ class: 'js-pages-tabs' }) do
+    = gl_tab_link_to '#overview', item_active: true, 'aria-controls': 'overview' do
+      = _('Overview')
+    = gl_tab_link_to '#domains-settings', 'aria-controls': 'domains-settings' do
+      = s_('GitLabPages|Domains & settings')
+
+  .tab-content.gl-tab-content.gl-pt-5
+    .tab-pane.active#overview
+      #js-pages{ data: {
+        full_path: @project.full_path,
+        primary_domain: @project.pages_domains.present? ? @project.project_setting.pages_primary_domain : ''
+      } }
+
+    .tab-pane#domains-settings
+      .gl-flex.gl-flex-col.gl-gap-5
+        = render 'ssl_limitations_warning' if pages_subdomain(@project).include?(".")
+        - if Gitlab.config.pages.custom_domain_mode || Gitlab.config.pages.external_http || Gitlab.config.pages.external_https
+          = render 'list'
+        - else
+          = render 'no_domains'
+
+        = render 'access'
+        = render 'pages_settings'
+        = render 'destroy'

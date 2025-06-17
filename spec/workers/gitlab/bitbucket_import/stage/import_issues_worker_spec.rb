@@ -69,7 +69,7 @@ RSpec.describe Gitlab::BitbucketImport::Stage::ImportIssuesWorker, feature_categ
           ).and_call_original
 
         expect { worker.perform(project.id) }
-          .to change { Gitlab::BitbucketImport::AdvanceStageWorker.jobs.size }.by(0)
+          .to not_change { Gitlab::BitbucketImport::AdvanceStageWorker.jobs.size }
           .and raise_error(exception)
       end
     end

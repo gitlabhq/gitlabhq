@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe FixInconsistentOrganizationId, migration: :gitlab_main, feature_category: :cell do
+RSpec.describe FixInconsistentOrganizationId, migration: :gitlab_main, feature_category: :organization do
   let(:organization_2) { table(:organizations).create!(path: 'organization_2') }
   let(:organization_3) { table(:organizations).create!(path: 'organization_3') }
   let(:organization_4) { table(:organizations).create!(path: 'organization_4') }

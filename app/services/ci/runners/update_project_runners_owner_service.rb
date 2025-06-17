@@ -7,8 +7,10 @@ module Ci
       BATCH_SIZE = 1000
 
       # @param [Int] project_id: the ID of the deleted project
-      def initialize(project_id)
+      # @param [Int] namespace_id: the ID of the parent namespace of the deleted project
+      def initialize(project_id, namespace_id)
         @project_id = project_id
+        @organization_id = Namespace.find(namespace_id).organization_id
       end
 
       def execute
@@ -58,7 +60,8 @@ module Ci
         runner_projects = Ci::RunnerProject.where(Ci::RunnerProject.arel_table[:runner_id].eq(runner_id_column))
 
         <<~SQL
-          sharding_key_id = (#{runner_projects.order(id: :asc).limit(1).select(:project_id).to_sql})
+          sharding_key_id = (#{runner_projects.order(id: :asc).limit(1).select(:project_id).to_sql}),
+          organization_id = #{@organization_id}
         SQL
         # rubocop: enable CodeReuse/ActiveRecord
       end

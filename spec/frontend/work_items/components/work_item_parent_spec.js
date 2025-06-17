@@ -84,11 +84,9 @@ describe('WorkItemParent component', () => {
         [workItemsByReferencesQuery, workItemReferencesSuccessHandler],
         [getAllowedWorkItemParentTypes, allowedParentTypesHandler],
       ]),
-      provide: {
-        fullPath: mockFullPath,
-      },
       propsData: {
         canUpdate,
+        fullPath: mockFullPath,
         parent,
         workItemId,
         workItemType,
@@ -340,7 +338,7 @@ describe('WorkItemParent component', () => {
         refs,
       });
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
-        { text: 'Objective linked items 104', value: 'gid://gitlab/WorkItem/705' },
+        { text: 'Objective _linked_ items 104', value: 'gid://gitlab/WorkItem/705' },
       ]);
     });
   });

@@ -14,10 +14,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     expect(suggested_content).to eq(expected_suggested_content)
   end
 
-  def expect_appliable_suggestions(amount)
-    expect(all('button', text: 'Apply suggestion').size).to eq(amount)
-  end
-
   let(:project) { create(:project, :repository) }
   let(:merge_request) do
     create(:merge_request_with_diffs, source_project: project, target_project: project, source_branch: 'merge-test')
@@ -30,12 +26,21 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))
+    wait_for_requests
   end
 
   context 'single suggestion note' do
-    it 'hides suggestion popover' do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+    let(:file_hash) { Digest::SHA1.hexdigest(sample_compare.changes[1][:file_path]) }
+    let(:line_code) { sample_compare.changes[1][:line_code] }
 
+    before do
+      container = find_by_scrolling("[id='#{file_hash}']") # scroll to the file
+      page.within(container) do
+        click_diff_line(find("[id='#{line_code}']")) # Click on the line
+      end
+    end
+
+    it 'hides suggestion popover' do
       expect(page).to have_selector('.diff-suggest-popover')
 
       page.within('.diff-suggest-popover') do
@@ -46,8 +51,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     end
 
     it 'suggestion is presented' do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
-
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
         click_button('Add comment now')
@@ -74,8 +77,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     end
 
     it 'allows suggestions in replies' do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
-
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
         click_button('Add comment now')
@@ -91,8 +92,6 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     end
 
     it 'suggestion is appliable' do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
-
       page.within('.js-discussion-note-form') do
         fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
         click_button('Add comment now')
@@ -134,10 +133,11 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       ]
     end
 
-    it 'can add and remove suggestions from a batch' do
-      # rubocop:disable Style/CombinableLoops -- "Add suggestion to batch" only exists with more than one suggestion
+    before do
       files.each_with_index do |file, index|
-        page.within("[id='#{file[:hash]}']") do
+        container = find_by_scrolling("[id='#{file[:hash]}']")
+
+        page.within(container) do
           find('.js-diff-more-actions').click
           click_button 'Show full file'
           wait_for_requests
@@ -151,9 +151,13 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           end
         end
       end
+    end
 
+    it 'can add and remove suggestions from a batch' do
       files.each_with_index do |file, index|
-        page.within("[id='#{file[:hash]}']") do
+        container = find_by_scrolling("[id='#{file[:hash]}']")
+
+        page.within(container) do
           expect(page).not_to have_content('Applied')
 
           click_button('Add suggestion to batch')
@@ -167,47 +171,42 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
             expect(page).to have_content("Apply #{index + 1} suggestions")
           end
         end
-        # rubocop:enable Style/CombinableLoops
       end
 
-      page.within("[id='#{files[0][:hash]}']") do
+      container = find_by_scrolling("[id='#{files[0][:hash]}']")
+      page.within(container) do
         click_button('Remove from batch')
         wait_for_requests
 
         expect(page).to have_content('Add suggestion to batch')
       end
 
-      page.within("[id='#{files[1][:hash]}']") do
+      container = find_by_scrolling("[id='#{files[1][:hash]}']")
+      page.within(container) do
         expect(page).to have_content('Remove from batch')
         expect(page).to have_content('Apply suggestion')
       end
     end
 
-    it 'can apply multiple suggestions as a batch', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/224100' do
+    it 'can apply multiple suggestions as a batch' do
       files.each_with_index do |file, index|
-        page.within("[id='#{file[:hash]}']") do
-          find("button[title='Show full file']").click
-          wait_for_requests
+        container = find_by_scrolling("[id='#{file[:hash]}']")
 
-          click_diff_line(find("[id='#{file[:line_code]}']"))
+        page.within(container) do
+          expect(page).to have_button('Add suggestion to batch')
 
-          page.within('.js-discussion-note-form') do
-            fill_in('note_note', with: "```suggestion\n# change to a comment\n```")
-            click_button('Add comment now')
-            wait_for_requests
-          end
-        end
-
-        page.within("[id='#{file[:hash]}']") do
           click_button('Add suggestion to batch')
           wait_for_requests
         end
       end
 
       expect(page).not_to have_content('Applied')
+      expect(page).to have_button("Apply #{files.count} suggestions").twice
 
-      page.within("[id='#{files[0][:hash]}']") do
-        click_button('Apply suggestions 2')
+      container = find_by_scrolling("[id='#{files[0][:hash]}']")
+      page.within(container) do
+        click_button("Apply #{files.count} suggestions")
+        click_button('Apply')
         wait_for_requests
       end
 
@@ -216,7 +215,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   end
 
   context 'multiple suggestions in expanded lines' do
-    it 'suggestions are appliable', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/38277' do
+    it 'suggestions are appliable' do
       diff_file = merge_request.diffs(paths: ['files/ruby/popen.rb']).diff_files.first
       hash = Digest::SHA1.hexdigest(diff_file.file_path)
 
@@ -232,8 +231,10 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
       ]
       changes = sample_compare(expanded_changes).changes.last(expanded_changes.size)
 
-      page.within("[id='#{hash}']") do
-        find("button[title='Show full file']").click
+      container = find_by_scrolling("[id='#{hash}']")
+      page.within(container) do
+        find('.js-diff-more-actions').click
+        click_button 'Show full file'
         wait_for_requests
 
         click_diff_line(find("[id='#{changes.first[:line_code]}']"))
@@ -244,6 +245,9 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           wait_for_requests
         end
 
+        expect(page).to have_button('Apply suggestion')
+        expect(page).not_to have_button('Add suggestion to batch')
+
         click_diff_line(find("[id='#{changes.last[:line_code]}']"))
 
         page.within('.js-discussion-note-form') do
@@ -252,37 +256,51 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
           wait_for_requests
         end
 
-        expect_appliable_suggestions(2)
+        expect(page).to have_button('Apply suggestion').twice
+        expect(page).to have_button('Add suggestion to batch').twice
       end
 
       # Making sure it's not a Front-end cache.
       visit(diffs_project_merge_request_path(project, merge_request))
+      wait_for_requests
 
-      page.within '.line-resolve-all-container' do
-        page.find('.discussion-next-btn').click
-      end
+      expect(page).to have_button('Apply suggestion').twice
+      expect(page).to have_button('Add suggestion to batch').twice
 
-      expect_appliable_suggestions(2)
-
-      page.within("[id='#{hash}']") do
-        all('button', text: 'Apply suggestion').last.click
+      container = find_by_scrolling("[id='#{hash}']")
+      page.within(container) do
+        all('button', text: 'Apply suggestion').first.click
+        click_button('Apply')
         wait_for_requests
 
-        expect(page).to have_content('Applied')
+        expect(page).to have_content('Applied').once
+        expect(page).to have_button('Apply suggestion').once
+
+        click_button('Apply suggestion')
+        click_button('Apply')
+        wait_for_requests
+
+        expect(page).to have_content('A file has been changed.')
       end
     end
   end
 
   context 'multiple suggestions in a single note' do
-    it 'suggestions are presented', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/258989' do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+    let(:file_hash) { Digest::SHA1.hexdigest(sample_compare.changes[1][:file_path]) }
+    let(:line_code) { sample_compare.changes[1][:line_code] }
 
-      page.within('.js-discussion-note-form') do
-        fill_in('note_note', with: "```suggestion\n# change to a comment\n```\n```suggestion:-2\n# or that\n# heh\n```")
-        click_button('Add comment now')
+    it 'suggestions are presented' do
+      container = find_by_scrolling("[id='#{file_hash}']")
+      page.within(container) do
+        click_diff_line(find("[id='#{line_code}']"))
+
+        page.within('.js-discussion-note-form') do
+          fill_in('note_note', with: "```suggestion\n# change to a comment\n```\n```suggestion:-2\n# or that\n# heh\n```")
+          click_button('Add comment now')
+        end
+
+        wait_for_requests
       end
-
-      wait_for_requests
 
       page.within('.diff-discussions') do
         suggestion_1 = page.all(:css, '.md-suggestion-diff')[0]
@@ -321,48 +339,54 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
   end
 
   context 'multi-line suggestions' do
+    let(:last_change) { sample_compare.changes[1] }
+    let(:hash) { Digest::SHA1.hexdigest(last_change[:file_path]) }
+
     before do
-      click_diff_line(find_by_scrolling("[id='#{sample_compare.changes[1][:line_code]}']"))
+      container = find_by_scrolling("[id='#{hash}']")
 
-      page.within('.js-discussion-note-form') do
-        fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")
-        click_button('Add comment now')
+      page.within(container) do
+        click_diff_line(find("[id='#{last_change[:line_code]}']"))
+
+        page.within('.js-discussion-note-form') do
+          fill_in('note_note', with: "```suggestion:-3+5\n# change to a\n# comment\n# with\n# broken\n# lines\n```")
+          click_button('Add comment now')
+          wait_for_requests
+        end
       end
-
-      wait_for_requests
     end
 
-    it 'suggestion is presented', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/268240' do
-      page.within('.diff-discussions') do
+    it 'suggestion is presented' do
+      page.within("[id='#{hash}']") do
         expect(page).to have_button('Apply suggestion')
         expect(page).to have_content('Suggested change')
-      end
 
-      page.within('.md-suggestion-diff') do
-        expected_changing_content = [
-          "3 url = git://github.com/randx/six.git",
-          "4 [submodule \"gitlab-shell\"]",
-          "5 path = gitlab-shell",
-          "6 url = https://github.com/gitlabhq/gitlab-shell.git",
-          "7 [submodule \"gitlab-grack\"]",
-          "8 path = gitlab-grack",
-          "9 url = https://gitlab.com/gitlab-org/gitlab-grack.git"
-        ]
+        page.within('.md-suggestion-diff') do
+          expected_changing_content = [
+            "3 url = git://github.com/randx/six.git",
+            "4 [submodule \"gitlab-shell\"]",
+            "5 path = gitlab-shell",
+            "6 url = https://github.com/gitlabhq/gitlab-shell.git",
+            "7 [submodule \"gitlab-grack\"]",
+            "8 path = gitlab-grack",
+            "9 url = https://gitlab.com/gitlab-org/gitlab-grack.git"
+          ]
 
-        expected_suggested_content = [
-          "3 # change to a",
-          "4 # comment",
-          "5 # with",
-          "6 # broken",
-          "7 # lines"
-        ]
+          expected_suggested_content = [
+            "3 # change to a",
+            "4 # comment",
+            "5 # with",
+            "6 # broken",
+            "7 # lines"
+          ]
 
-        expect_suggestion_has_content(page, expected_changing_content, expected_suggested_content)
+          expect_suggestion_has_content(page, expected_changing_content, expected_suggested_content)
+        end
       end
     end
 
     it 'suggestion is appliable' do
-      page.within('.diff-discussions') do
+      page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Applied')
 
         click_button('Apply suggestion')
@@ -374,7 +398,7 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
     end
 
     it 'resolves discussion when applied' do
-      page.within('.diff-discussions') do
+      page.within("[id='#{hash}']") do
         expect(page).not_to have_content('Unresolve thread')
 
         click_button('Apply suggestion')

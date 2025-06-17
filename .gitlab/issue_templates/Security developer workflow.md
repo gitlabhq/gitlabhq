@@ -34,7 +34,7 @@ After your merge request has been approved according to our [approval guidelines
   - You can use the script `bin/secpick` instead of the following steps, to help you cherry-picking. See the [secpick documentation]
 - [ ] Create each MR targeting the stable branch `X-Y-stable`, using the [Security merge request template].
   - Every merge request will have its own set of to-dos, so make sure to complete those.
-- [ ]  On the `Related merge requests` section, ensure that **ONLY** `4` merge requests matching these conditions:
+- [ ]  On the `Development` section, ensure that **ONLY** `4` merge requests matching these conditions:
   - From the security namespace (`gitlab-org/security`)
   - Status is not `Closed`
   - (Other MRs not matching these above conditions are acceptable)
@@ -47,6 +47,7 @@ After your merge request has been approved according to our [approval guidelines
 - [ ]  **IMPORTANT**: When this issue is ready for release (Default branch MR and backports are approved and ready to be merged), apply the ~"security-target" label.
   - The `gitlab-release-tools-bot` evaluates and links issues with the label to the active [Security Tracking Issue]. If the bot finds the issue is not ready to be included in the patch release, it will leave a comment on the issue explaining what needs to be done.
   - This issue will only be included in a patch release if it is successfully linked to the [Security Tracking Issue].
+  - Refer to the ["Release Information" dashboard](https://dashboards.gitlab.net/d/delivery-release_info/delivery3a-release-information?orgId=1) for information about the next patch release, including the targeted versions, expected release date, and current status.
 
 ## Documentation and final details
 

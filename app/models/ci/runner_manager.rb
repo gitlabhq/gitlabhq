@@ -52,6 +52,8 @@ module Ci
     belongs_to :runner_version, inverse_of: :runner_managers, primary_key: :version, foreign_key: :version,
       class_name: 'Ci::RunnerVersion'
 
+    before_validation :ensure_organization_id, on: :update, if: :runner
+
     validates :runner, presence: true
     validates :runner_type, presence: true, on: :create
     validates :system_xid, presence: true, length: { maximum: 64 }
@@ -136,6 +138,10 @@ module Ci
         .transform_values { |s| Ci::RunnerVersion.statuses.key(s).to_sym }
     end
 
+    def self.ip_address_exists?(ip_address)
+      exists?(ip_address:)
+    end
+
     def uncached_contacted_at
       read_attribute(:contacted_at)
     end
@@ -188,9 +194,11 @@ module Ci
     end
 
     def no_sharding_key_id
-      return if sharding_key_id.nil?
+      errors.add(:runner_manager, 'cannot have sharding_key_id assigned') if sharding_key_id
+    end
 
-      errors.add(:runner_manager, 'cannot have sharding_key_id assigned')
+    def ensure_organization_id
+      self.organization_id = runner.organization_id
     end
 
     def self.version_regex_expression_for_version(version)

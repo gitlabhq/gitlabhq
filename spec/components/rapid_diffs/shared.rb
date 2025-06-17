@@ -70,6 +70,17 @@ RSpec.shared_context "with diff file component tests" do
     end
   end
 
+  context "when is image diff" do
+    before do
+      allow(diff_file).to receive_messages(diffable_text?: false, image_diff?: true)
+    end
+
+    it "renders image viewer" do
+      render_component
+      expect(file_data['viewer']).to eq('image')
+    end
+  end
+
   context "when no viewer found" do
     before do
       allow(diff_file).to receive_messages(text?: false, content_changed?: false)

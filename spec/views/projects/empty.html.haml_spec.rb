@@ -2,16 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe 'projects/empty' do
-  let_it_be(:user) { create(:user) }
-  let_it_be(:project) { ProjectPresenter.new(create(:project, :empty_repo), current_user: user) }
+RSpec.describe 'projects/empty', feature_category: :groups_and_projects do
+  let(:user) { build(:user) }
+  let(:project) do
+    ProjectPresenter.new(
+      build_stubbed(:project, :empty_repo, statistics: build(:project_statistics)), current_user: user
+    )
+  end
 
   let(:can_admin_project_member) { true }
 
   before do
-    allow(view).to receive(:can_admin_project_member?).and_return(can_admin_project_member)
-    allow(view).to receive(:experiment_enabled?).and_return(true)
-    allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive(:can?).with(user, :invite_member, project).and_return(can_admin_project_member)
+    allow(view).to receive_messages(experiment_enabled?: true, current_user: user)
     assign(:project, project)
   end
 
@@ -54,8 +57,12 @@ RSpec.describe 'projects/empty' do
     end
   end
 
-  context 'project is archived' do
-    let(:project) { ProjectPresenter.new(create(:project, :empty_repo, :archived), current_user: user) }
+  context 'when project is archived' do
+    let(:project) do
+      ProjectPresenter.new(
+        build_stubbed(:project, :empty_repo, :archived, statistics: build(:project_statistics)), current_user: user
+      )
+    end
 
     it 'shows archived notice' do
       render

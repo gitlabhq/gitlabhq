@@ -11,6 +11,7 @@ export const MOCK_USERS = [
     badges: [
       { text: 'Admin', variant: 'success' },
       { text: "It's you!", variant: 'muted' },
+      { text: 'Admin role', variant: 'info', icon: 'admin' },
     ],
     projectsCount: 0,
     actions: [],

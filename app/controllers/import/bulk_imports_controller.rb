@@ -68,7 +68,7 @@ class Import::BulkImportsController < ApplicationController
       end
 
       ::BulkImports::CreateService.new(
-        current_user, entry, credentials, fallback_organization: Current.organization
+        current_user, entry.to_h, credentials, fallback_organization: Current.organization
       ).execute
     end
 

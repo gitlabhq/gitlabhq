@@ -16,6 +16,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { __, s__, sprintf } from '~/locale';
 import toast from '~/vue_shared/plugins/global_toast';
 import { STATUS_CLOSED, STATUS_MERGED } from '~/issues/constants';
+import { localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 
 export default {
   components: {
@@ -106,6 +107,10 @@ export default {
     iconTooltip() {
       return __('Merge request');
     },
+    badgeTooltip() {
+      const tooltipTime = this.isMRMerged ? this.itemContent.mergedAt : this.itemContent.closedAt;
+      return localeDateFormat.asDateTimeFull.format(newDate(tooltipTime));
+    },
   },
   methods: {
     copyToClipboard(text, message) {
@@ -167,7 +172,12 @@ export default {
             <div
               class="item-assignees order-md-2 gl-flex gl-shrink-0 gl-items-center gl-gap-3 gl-self-end"
             >
-              <gl-badge v-if="isMergedOrClosed" :variant="stateBadgeVariant">
+              <gl-badge
+                v-if="isMergedOrClosed"
+                v-gl-tooltip
+                :variant="stateBadgeVariant"
+                :title="badgeTooltip"
+              >
                 {{ stateBadgeLabel }}
               </gl-badge>
               <ci-icon v-if="detailedStatus" :status="detailedStatus" />

@@ -80,7 +80,7 @@ module API
 
         if Feature.enabled?(:packages_protected_packages_delete, user_project)
           service_response =
-            Packages::Protection::CheckDeleteRuleExistenceService.new(
+            Packages::Protection::CheckRuleExistenceService.for_delete(
               project: user_project,
               current_user: current_user,
               params: { package_name: package.name, package_type: package.package_type }

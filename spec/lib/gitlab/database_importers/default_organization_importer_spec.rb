@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::DatabaseImporters::DefaultOrganizationImporter, feature_category: :cell do
+RSpec.describe Gitlab::DatabaseImporters::DefaultOrganizationImporter, feature_category: :organization do
   describe '#create_default_organization' do
     let(:default_id) { Organizations::Organization::DEFAULT_ORGANIZATION_ID }
 

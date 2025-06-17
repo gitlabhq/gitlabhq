@@ -10,6 +10,9 @@ Search/NamespacedClass:
 RSpec/AnyInstanceOf:
   Enabled: false
 
+Naming/MethodParameterName:
+  Enabled: false
+
 RSpec/MultipleMemoizedHelpers:
   Max: 25
 
@@ -29,3 +32,9 @@ RSpec/VerifiedDoubleReference:
 Gitlab/ModuleWithInstanceVariables:
   Exclude:
   - 'lib/active_context/databases/concerns/elastic_indexer.rb'
+
+Database/EstablishConnection:
+  Enabled: false
+
+Database/MultipleDatabases:
+  Enabled: false

@@ -75,11 +75,7 @@ module Projects
     end
 
     def delete_project(project, user)
-      if project.adjourned_deletion?
-        ::Projects::MarkForDeletionService.new(project, user, {}).execute
-      else
-        ::Projects::DestroyService.new(project, user, {}).async_execute
-      end
+      ::Projects::MarkForDeletionService.new(project, user, {}).execute
     end
 
     def send_notification(project)

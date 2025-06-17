@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
+RSpec.describe GitlabSchema.types['SnippetBlobViewer'], feature_category: :source_code_management do
   let_it_be(:snippet) { create(:personal_snippet, :repository) }
   let_it_be(:blob) { snippet.repository.blob_at('HEAD', 'files/images/6049019_460s.jpg') }
 
@@ -31,7 +31,11 @@ RSpec.describe GitlabSchema.types['SnippetBlobViewer'] do
     end
 
     it 'returns false' do
-      snippet_blob = subject.dig('data', 'snippets', 'edges').first.dig('node', 'blobs', 'nodes').find { |b| b['path'] == blob.path }
+      snippet_blob = subject
+        .dig('data', 'snippets', 'edges')
+        .first
+        .dig('node', 'blobs', 'nodes')
+        .find { |b| b['path'] == blob.path }
 
       expect(snippet_blob['path']).to eq blob.path
       expect(blob_attribute).to be_nil

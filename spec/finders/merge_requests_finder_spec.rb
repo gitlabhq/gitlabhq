@@ -664,6 +664,13 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           it { is_expected.to contain_exactly(*expected_mr) }
         end
 
+        context 'by no review requested OR only reviewer OR reviewers with state' do
+          let(:params) { { or: { reviewer_wildcard: 'none', only_reviewer_username: user2.username, review_states: %w[requested_changes] } } }
+          let(:expected_mr) { [merge_request1, merge_request2, merge_request4, merge_request5] }
+
+          it { is_expected.to contain_exactly(*expected_mr) }
+        end
+
         context 'by no review requested OR with reviewer states' do
           let(:params) { { or: { reviewer_wildcard: 'none', review_states: %w[requested_changes reviewed] } } }
           let(:expected_mr) { [merge_request1, merge_request2, merge_request4, merge_request5] }
@@ -1199,7 +1206,8 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
     context 'external authorization' do
       it_behaves_like 'a finder with external authorization service' do
         let!(:subject) { create(:merge_request, source_project: project) }
-        let(:project_params) { { project_id: project.id } }
+        let(:execute) { described_class.new(user).execute }
+        let(:project_execute) { described_class.new(user, project_id: project.id).execute }
       end
     end
   end

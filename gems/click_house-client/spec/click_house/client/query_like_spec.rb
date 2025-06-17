@@ -13,7 +13,7 @@ RSpec.describe ClickHouse::Client::QueryLike, feature_category: :database do
     it { expect { query.to_redacted_sql }.to raise_error(NotImplementedError) }
   end
 
-  describe '#placeholders' do
-    it { expect(query.placeholders).to eq({}) }
+  describe '#prepared_placeholders' do
+    it { expect(query.prepared_placeholders).to eq({}) }
   end
 end

@@ -42,3 +42,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Projects::SuperSidebarPanel.prepend_mod_with('Sidebars::Projects::SuperSidebarPanel')

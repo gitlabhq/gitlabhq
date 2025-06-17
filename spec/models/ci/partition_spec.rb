@@ -110,7 +110,17 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
           create_list(:ci_partition, 2)
         end
 
-        it 'returns the first ci_partition with status preparing' do
+        it 'returns the first ci_partition' do
+          expect(provisioning).to eq(next_ci_partition)
+        end
+      end
+
+      context 'when the next partition has a different status' do
+        before do
+          next_ci_partition.ready!
+        end
+
+        it 'allows the next partition to be considered' do
           expect(provisioning).to eq(next_ci_partition)
         end
       end
@@ -133,6 +143,7 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
 
       before do
         ci_partition.update!(status: described_class.statuses[:current])
+        allow(next_ci_partition).to receive(:all_partitions_exist?).and_return(true)
         next_ci_partition.switch_writes!
       end
 
@@ -149,6 +160,10 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     let_it_be_with_reload(:current_partition) { create(:ci_partition, :current) }
 
     it 'switches from ready to current' do
+      expect(ready_partition)
+        .to receive(:all_partitions_exist?)
+        .and_return(true)
+
       expect { ready_partition.switch_writes! }
         .to change { described_class.current }
         .from(current_partition).to(ready_partition)
@@ -158,12 +173,29 @@ RSpec.describe Ci::Partition, feature_category: :ci_scaling do
     end
 
     it 'switches from active to current' do
+      expect(active_partition)
+        .to receive(:all_partitions_exist?)
+        .and_return(true)
+
       expect { active_partition.switch_writes! }
         .to change { described_class.current }
         .from(current_partition).to(active_partition)
 
       expect(current_partition.reload).to be_active
       expect(active_partition.reload).to be_current
+    end
+
+    context 'when the candidate partition status is incorrect' do
+      it 'prevents the switch' do
+        expect(ready_partition)
+          .to receive(:all_partitions_exist?)
+          .and_return(false)
+
+        expect { ready_partition.switch_writes! }
+          .to raise_error(StateMachines::InvalidTransition)
+
+        expect(described_class.current).to eq(current_partition)
+      end
     end
   end
 

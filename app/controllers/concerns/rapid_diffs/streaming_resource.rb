@@ -61,50 +61,54 @@ module RapidDiffs
     def stream_diff_files(options, view_context)
       return unless resource
 
-      diffs = resource.diffs_for_streaming(options)
-
-      if params.permit(:offset)[:offset].blank? && diffs.diff_files.empty?
-        empty_state_component = ::RapidDiffs::EmptyStateComponent.new
-        response.stream.write empty_state_component.render_in(view_context)
-        return
-      end
-
       # NOTE: This is a temporary flag to test out the new diff_blobs
       if !!ActiveModel::Type::Boolean.new.cast(params.permit(:diff_blobs)[:diff_blobs])
         stream_diff_blobs(options, view_context)
       else
-        stream_diff_collection(diffs.diff_files(sorted: sorted?), view_context)
+        stream_diff_collection(options, view_context)
       end
     end
 
-    def stream_diff_collection(diff_files, view_context)
-      each_growing_slice(diff_files, 5, 2) do |slice|
-        response.stream.write(render_diff_files_collection(slice, view_context))
+    def stream_diff_collection(options, view_context)
+      diff_files = resource.diffs_for_streaming(options).diff_files(sorted: sorted?)
+
+      return render_empty_state if diff_files.empty?
+
+      skipped = []
+      diff_files.each do |diff_file|
+        if diff_file.no_preview?
+          skipped << diff_file
+        else
+          unless skipped.empty?
+            response.stream.write(diff_files_collection(skipped).render_in(view_context))
+            skipped = []
+          end
+
+          response.stream.write(diff_file_component(diff_file).render_in(view_context))
+        end
       end
+
+      response.stream.write(diff_files_collection(skipped).render_in(view_context)) unless skipped.empty?
     end
 
-    def each_growing_slice(collection, initial_size, growth_factor = 2)
-      position = 0
-      size = initial_size
-      total = collection.size
-
-      while position < total
-        yield collection.drop(position).first(size)
-
-        position = [position + size, total].min
-        size = (size * growth_factor).to_i
-      end
+    def diff_file_component(diff_file)
+      ::RapidDiffs::DiffFileComponent.new(diff_file: diff_file, parallel_view: view == :parallel)
     end
 
-    def render_diff_files_collection(diff_files, view_context)
+    def diff_files_collection(diff_files)
       ::RapidDiffs::DiffFileComponent.with_collection(diff_files, parallel_view: view == :parallel)
-        .render_in(view_context)
     end
 
     def stream_diff_blobs(options, view_context)
+      return render_empty_state if resource.diffs_for_streaming(options).count == 0
+
       resource.diffs_for_streaming(options) do |diff_files_batch|
-        response.stream.write(render_diff_files_collection(diff_files_batch, view_context))
+        response.stream.write(diff_files_collection(diff_files_batch).render_in(view_context))
       end
+    end
+
+    def render_empty_state
+      response.stream.write render ::RapidDiffs::EmptyStateComponent.new
     end
 
     def sorted?

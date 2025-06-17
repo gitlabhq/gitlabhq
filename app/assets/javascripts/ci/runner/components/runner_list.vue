@@ -5,8 +5,8 @@ import { __, s__ } from '~/locale';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import checkedRunnerIdsQuery from '../graphql/list/checked_runner_ids.query.graphql';
 import { tableField } from '../utils';
-import RunnerBulkDelete from './runner_bulk_delete.vue';
-import RunnerBulkDeleteCheckbox from './runner_bulk_delete_checkbox.vue';
+import RunnerBulkActions from './runner_bulk_actions.vue';
+import RunnerBulkActionsCheckbox from './runner_bulk_actions_checkbox.vue';
 import RunnerConfigurationPopover from './runner_configuration_popover.vue';
 import RunnerSummaryCell from './cells/runner_summary_cell.vue';
 import RunnerStatusCell from './cells/runner_status_cell.vue';
@@ -16,7 +16,16 @@ const defaultFields = [
   tableField({ key: 'status', label: s__('Runners|Status'), thClasses: ['gl-w-3/20'] }),
   tableField({ key: 'summary', label: s__('Runners|Runner configuration') }),
   tableField({ key: 'owner', label: s__('Runners|Owner'), thClasses: ['gl-w-4/20'] }),
-  tableField({ key: 'actions', label: __('Actions'), thClasses: ['md:gl-invisible', 'gl-w-3/20'] }),
+  tableField({
+    key: 'actions',
+    label: __('Actions'),
+    thClasses: [
+      'md:gl-invisible', // hides the "Actions" header in large viewports
+      'gl-w-4/20',
+      'lg:gl-w-3/20',
+    ],
+    tdClass: 'gl-text-right',
+  }),
 ];
 
 export default {
@@ -25,8 +34,8 @@ export default {
     GlTableLite,
     GlSkeletonLoader,
     HelpPopover,
-    RunnerBulkDelete,
-    RunnerBulkDeleteCheckbox,
+    RunnerBulkActions,
+    RunnerBulkActionsCheckbox,
     RunnerConfigurationPopover,
     RunnerSummaryCell,
     RunnerStatusCell,
@@ -69,7 +78,7 @@ export default {
       required: true,
     },
   },
-  emits: ['deleted'],
+  emits: ['deleted', 'toggledPaused'],
   data() {
     return { checkedRunnerIds: [] };
   },
@@ -101,6 +110,9 @@ export default {
     canDelete(runner) {
       return runner.userPermissions?.deleteRunner;
     },
+    onToggledPaused(event) {
+      this.$emit('toggledPaused', event);
+    },
     onDeleted(event) {
       this.$emit('deleted', event);
     },
@@ -126,7 +138,12 @@ export default {
 </script>
 <template>
   <div>
-    <runner-bulk-delete v-if="checkable" :runners="runners" @deleted="onDeleted" />
+    <runner-bulk-actions
+      v-if="checkable"
+      :runners="runners"
+      @deleted="onDeleted"
+      @toggledPaused="onToggledPaused"
+    />
     <gl-table-lite
       :aria-busy="loading"
       :class="tableClass"
@@ -139,7 +156,7 @@ export default {
       primary-key="id"
     >
       <template #head(checkbox)>
-        <runner-bulk-delete-checkbox :runners="runners" />
+        <runner-bulk-actions-checkbox :runners="runners" />
       </template>
 
       <template #cell(checkbox)="{ item }">
@@ -196,8 +213,8 @@ export default {
       </template>
     </gl-table-lite>
 
-    <template v-if="!runners.length && loading">
+    <div v-if="!runners.length && loading" class="gl-mx-5 gl-mt-5">
       <gl-skeleton-loader v-for="i in 4" :key="i" />
-    </template>
+    </div>
   </div>
 </template>

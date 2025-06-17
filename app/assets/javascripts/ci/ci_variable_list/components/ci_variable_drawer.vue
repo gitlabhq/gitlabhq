@@ -482,7 +482,7 @@ export default {
       @close="close"
     >
       <template #title>
-        <h2 class="gl-m-0">{{ modalTitle }}</h2>
+        <h2 class="gl-heading-3 gl-mb-0">{{ modalTitle }}</h2>
       </template>
       <gl-alert
         v-if="isMutationAlertVisible"

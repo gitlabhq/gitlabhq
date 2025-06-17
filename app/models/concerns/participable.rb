@@ -196,7 +196,7 @@ module Participable
   def read_ability_for(participable_source)
     name =  participable_source.try(:to_ability_name) || participable_source.model_name.element
 
-    { name: "read_#{name}".to_sym, subject: participable_source }
+    { name: :"read_#{name}", subject: participable_source }
   end
 end
 

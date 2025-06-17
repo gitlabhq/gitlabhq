@@ -10,11 +10,7 @@ import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.quer
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
 import IssueMilestone from '~/issuable/components/issue_milestone.vue';
-import {
-  LINKED_CATEGORIES_MAP,
-  STATE_CLOSED,
-  WORK_ITEM_TYPE_NAME_EPIC,
-} from '~/work_items/constants';
+import { WORK_ITEM_TYPE_NAME_EPIC } from '~/work_items/constants';
 import WorkItemRelationshipIcons from '~/work_items/components/shared/work_item_relationship_icons.vue';
 import { ListType } from '../constants';
 import { setError } from '../graphql/cache_updates';
@@ -38,6 +34,8 @@ export default {
       import('ee_component/related_items_tree/components/issue_health_status.vue'),
     EpicCountables: () =>
       import('ee_else_ce/vue_shared/components/epic_countables/epic_countables.vue'),
+    WorkItemStatusBadge: () =>
+      import('ee_component/work_items/components/shared/work_item_status_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -191,16 +189,23 @@ export default {
     workItemFullPath() {
       return this.item.namespace?.fullPath || this.item.referencePath?.split(this.itemPrefix)[0];
     },
-    filteredLinkedItems() {
-      const linkedItems = this.item.linkedWorkItems?.nodes || [];
-      return linkedItems.filter((item) => {
-        return (
-          item.linkType !== LINKED_CATEGORIES_MAP.RELATES_TO && item.workItemState !== STATE_CLOSED
-        );
-      });
+    blockingCount() {
+      return this.item?.blockingCount || 0;
+    },
+    blockedByCount() {
+      return this.item?.blockedByCount || 0;
+    },
+    hasBlockingRelationships() {
+      return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     targetId() {
       return uniqueId(`${this.item.iid}`);
+    },
+    showStatus() {
+      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag;
+    },
+    hasStatus() {
+      return Boolean(this.item.status);
     },
   },
   methods: {
@@ -250,10 +255,10 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div class="gl-p-4">
     <div class="gl-flex" dir="auto">
-      <h4
-        class="board-card-title gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
+      <h3
+        class="board-card-title gl-isolate gl-mb-0 gl-mt-0 gl-min-w-0 gl-hyphens-auto gl-break-words gl-text-base"
         :class="{ 'gl-mr-6': hasActions }"
       >
         <gl-icon
@@ -286,9 +291,10 @@ export default {
           class="gl-text-default hover:gl-text-default"
           data-testid="board-card-title-link"
           @mousemove.stop
+          @click.prevent
           >{{ item.title }}</a
         >
-      </h4>
+      </h3>
       <slot></slot>
     </div>
     <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-flex gl-flex-wrap">
@@ -305,7 +311,9 @@ export default {
         />
       </template>
     </div>
-    <div class="board-card-footer gl-mt-3 gl-flex gl-items-end gl-justify-between">
+    <div
+      class="board-card-footer gl-mt-3 gl-flex gl-flex-wrap gl-items-end gl-justify-between gl-gap-y-3"
+    >
       <div
         class="align-items-start board-card-number-container gl-flex gl-flex-wrap-reverse gl-overflow-hidden"
       >
@@ -313,7 +321,7 @@ export default {
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
-            class="board-card-number gl-mr-3 gl-mt-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
+            class="board-card-number gl-isolate gl-mr-3 gl-gap-2 gl-overflow-hidden gl-text-sm gl-text-subtle"
             :class="{ 'gl-text-base': isEpicBoard }"
           >
             <work-item-type-icon
@@ -334,6 +342,7 @@ export default {
           </span>
           <epic-countables
             v-if="shouldRenderEpicCountables"
+            class="gl-isolate"
             :allow-sub-epics="allowSubEpics"
             :opened-epics-count="descendantCounts.openedEpics"
             :closed-epics-count="descendantCounts.closedEpics"
@@ -343,30 +352,39 @@ export default {
             :closed-issues-weight="descendantWeightSum.closedIssues"
           />
           <span v-if="!isEpicBoard">
-            <issue-weight v-if="validIssueWeight(item)" :weight="item.weight" />
+            <issue-weight v-if="validIssueWeight(item)" class="gl-isolate" :weight="item.weight" />
             <issue-milestone
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
+              class="gl-isolate gl-mr-3 gl-inline-flex gl-max-w-15 gl-cursor-help gl-items-center gl-align-bottom gl-text-sm gl-text-subtle"
             />
             <issue-iteration
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-align-bottom"
+              class="gl-isolate gl-align-bottom"
             />
             <issue-due-date
               v-if="item.dueDate"
+              class="gl-isolate"
               :date="item.dueDate"
               :closed="Boolean(item.closedAt)"
             />
-            <issue-time-estimate v-if="item.timeEstimate" :estimate="item.timeEstimate" />
-            <issue-health-status v-if="item.healthStatus" :health-status="item.healthStatus" />
+            <issue-time-estimate
+              v-if="item.timeEstimate"
+              class="gl-isolate"
+              :estimate="item.timeEstimate"
+            />
+            <issue-health-status
+              v-if="item.healthStatus"
+              class="gl-isolate"
+              :health-status="item.healthStatus"
+            />
           </span>
         </span>
       </div>
-      <div class="gl-flex gl-items-center">
+      <div class="gl-flex gl-flex-1 gl-flex-wrap gl-items-center gl-justify-end gl-gap-3">
         <div class="board-card-assignee gl-flex">
           <user-avatar-link
             v-for="assignee in cappedAssignees"
@@ -394,15 +412,25 @@ export default {
           >
         </div>
         <work-item-relationship-icons
-          v-if="filteredLinkedItems.length"
-          class="gl-ml-3 gl-whitespace-nowrap"
+          v-if="hasBlockingRelationships"
+          class="gl-isolate gl-whitespace-nowrap"
           :work-item-type="workItemType"
-          :linked-work-items="filteredLinkedItems"
+          :blocking-count="blockingCount"
+          :blocked-by-count="blockedByCount"
           :work-item-full-path="workItemFullPath"
           :work-item-iid="item.iid"
           :work-item-web-url="item.webUrl"
           :target-id="targetId"
         />
+        <div class="gl-max-w-20">
+          <work-item-status-badge
+            v-if="showStatus"
+            class="gl-isolate"
+            :name="item.status.name"
+            :icon-name="item.status.iconName"
+            :color="item.status.color"
+          />
+        </div>
       </div>
     </div>
   </div>

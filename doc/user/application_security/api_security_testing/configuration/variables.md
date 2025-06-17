@@ -5,9 +5,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Available CI/CD variables and configuration files
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
-- [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/450445) Changed template name from `DAST-API.gitlab-ci.yml` to `API-Security.gitlab-ci.yml` and variable prefixed from `DAST_API_` to `APISEC_` in GitLab 17.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/450445) template name from `DAST-API.gitlab-ci.yml` to `API-Security.gitlab-ci.yml` and variable prefixed from `DAST_API_` to `APISEC_` in GitLab 17.1.
 
 {{< /history >}}
 

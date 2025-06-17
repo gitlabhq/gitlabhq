@@ -378,7 +378,7 @@ In GitLab 15.6 and earlier, use one of the following workarounds:
 - Add entries in `/etc/hosts` for `pool.ntp.org` to direct the request to valid local time servers.
   This fixes the long timeout and the timeout error.
 - Direct the check to any valid IP address. This resolves the timeout issue, but the check fails
-  with the `No route to host` error, as noted above.
+  with the `No route to host` error, as noted previously.
 
 [Cloud native GitLab deployments](https://docs.gitlab.com/charts/advanced/geo/#set-the-geo-primary-site)
 generate an error because containers in Kubernetes do not have access to the host clock:
@@ -718,7 +718,7 @@ primary.internal_uri
 Gitlab::HTTP.get(primary.internal_uri, allow_local_requests: true, limit: 10)
 ```
 
-Make sure that the value of `internal_uri` is correct in the output above.
+Make sure that the value of `internal_uri` is correct in the previous output.
 If the URL of the primary site is incorrect, double-check it in `/etc/gitlab/gitlab.rb`, and in **Admin > Geo > Sites**.
 
 ### Excessive database IO from Geo metrics collection

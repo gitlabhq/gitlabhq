@@ -3,6 +3,7 @@ stage: Verify
 group: Pipeline Authoring
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Debugging CI/CD pipelines
+description: Configuration validation, warnings, errors, and troubleshooting.
 ---
 
 {{< details >}}
@@ -25,7 +26,7 @@ for that feature:
 - [Caching](caching/_index.md#troubleshooting).
 - [CI/CD job tokens](jobs/ci_job_token.md#troubleshooting).
 - [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
-- [Docker](docker/using_docker_build.md#troubleshooting).
+- [Docker](docker/docker_build_troubleshooting.md).
 - [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md).
 - [Environments](environments/_index.md#troubleshooting).
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/).
@@ -36,9 +37,9 @@ for that feature:
   [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
   and [merge trains](pipelines/merge_trains.md#troubleshooting).
 - [Pipeline editor](pipeline_editor/_index.md#troubleshooting).
-- [Variables](variables/_index.md#troubleshooting).
+- [Variables](variables/variables_troubleshooting.md).
 - [YAML `includes` keyword](yaml/includes.md#troubleshooting).
-- [YAML `script` keyword](yaml/script.md#troubleshooting).
+- [YAML `script` keyword](yaml/script_troubleshooting.md).
 
 ## Debugging techniques
 
@@ -121,7 +122,7 @@ pipeline, and what their values are. A lot of pipeline configuration is dependen
 on variables, and verifying them is one of the fastest ways to find the source of
 a problem.
 
-[Export the full list of variables](variables/_index.md#list-all-variables)
+[Export the full list of variables](variables/variables_troubleshooting.md#list-all-variables)
 available in each problematic job. Check if the variables you expect are present,
 and check if their values are what you expect.
 
@@ -242,7 +243,7 @@ as they could be viewed by any user with access to the pipelines.
 
 ### Run the job's commands locally
 
-You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or [similar alternatives](https://handbook.gitlab.com/handbook/tools-and-tips/mac/#docker-desktop)
+You can use a tool like [Rancher Desktop](https://rancherdesktop.io/) or similar alternatives
 to run the job's container image on your local machine. Then, run the job's `script` commands
 in the container and verify the behavior.
 
@@ -447,7 +448,7 @@ Ensure that included configuration files do not create a loop of references to e
 
 {{< history >}}
 
-- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+- **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 
 {{< /history >}}
 
@@ -473,7 +474,7 @@ For example:
 
 These errors can happen if the following are both true:
 
-- The [**Limit access _to_ this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
+- The [**Limit access to this project**](jobs/ci_job_token.md#limit-job-token-scope-for-public-or-internal-projects)
   option is enabled in the private project hosting the image.
 - The job attempting to fetch the image is running in a project that is not listed in
   the private project's allowlist.

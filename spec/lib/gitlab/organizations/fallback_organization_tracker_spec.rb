@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_store, feature_category: :cell do
+RSpec.describe Gitlab::Organizations::FallbackOrganizationTracker, :request_store, feature_category: :organization do
   shared_examples 'tracker that is enabled' do
     before do
       described_class.enable

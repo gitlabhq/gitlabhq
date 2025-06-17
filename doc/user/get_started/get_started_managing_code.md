@@ -2,8 +2,9 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Learn about the GitLab tools for building, tracking, and delivering the code for your project.
+description: Learn how to build, track, and deliver the code for your project.
 title: Get started managing code
+description: Overview of how features fit together.
 ---
 
 GitLab provides tools for the full software development lifecycle,
@@ -57,7 +58,7 @@ don't interfere with one another.
 For details, see:
 
 - [Create a file in the repository from the UI](../project/repository/_index.md#add-a-file-from-the-ui)
-- [Open a file in the Web IDE](../project/web_ide/_index.md#from-a-file-or-directory)
+- [Open a file in the Web IDE](../project/web_ide/_index.md#from-a-file)
 - [Create a remote development environment with workspaces](../workspace/_index.md)
 - [Available editor extensions](../../editor_extensions/_index.md)
 - [Use Code Suggestions to write code more quickly](../project/repository/code_suggestions/_index.md)

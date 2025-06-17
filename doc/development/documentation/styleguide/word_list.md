@@ -178,6 +178,17 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
+## Agentic Chat, GitLab Duo Agentic Chat
+
+GitLab Duo Agentic Chat is an experimental, enhanced version of [GitLab Duo Chat](#chat-gitlab-duo-chat).
+
+Use **Agentic Chat** with a capital `a` and `c` for **Agentic Chat** or **GitLab Duo Agentic Chat**.
+
+On first use on a page, use **GitLab Duo Agentic Chat**.
+Thereafter, use **Agentic Chat** by itself.
+
+Do not use **Duo Agentic Chat**.
+
 ## agnostic
 
 Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
@@ -294,7 +305,7 @@ Use **authenticated user** instead of other variations, like **signed in user** 
 
 ## authenticate
 
-Try to use the most suitable preposition when using **authenticate** as a verb.
+Try to use the most suitable preposition when you use **authenticate** as a verb.
 
 Use **authenticate with** when referring to a system or provider that
 performs the authentication, like a token or a service like OAuth.
@@ -371,7 +382,7 @@ Do not use the terms **feature branch** or **merge request branch**. Be as speci
 
 ## bullet
 
-Don't refer to individual items in an ordered or unordered list as **bullets**. Use **list item** instead. If you need to be less ambiguous, you can use:
+Don't refer to individual items in an ordered or unordered list as **bullets**. Use **list item** instead. To be less ambiguous, you can use:
 
 - **Ordered list item** for items in an ordered list.
 - **Unordered list item** for items in an unordered list.
@@ -408,6 +419,11 @@ Instead of:
 - On the **Seat utilization** card, select **Assign seats**.
 
 ## Chat, GitLab Duo Chat
+
+GitLab Duo Chat is an AI-native assistant that helps developers with contextual,
+conversational code explanations, troubleshooting, and guidance.
+
+It is different from [GitLab Duo Agentic Chat](#agentic-chat-gitlab-duo-agentic-chat).
 
 Use **Chat** with a capital `c` for **Chat** or **GitLab Duo Chat**.
 
@@ -449,7 +465,7 @@ When talking about GitLab features, use **CI/CD**. Do not use **CI** or **CD** a
 
 ## CI/CD
 
-**CI/CD** is always uppercase. No need to spell it out on first use.
+**CI/CD** is always uppercase. You are not required spell it out on first use.
 
 You can omit **CI/CD** when the context is clear, especially after the first use. For example:
 
@@ -591,7 +607,7 @@ Use **collapse** instead of **close** when you are talking about expanding or co
 
 Use **From the command line** to introduce commands.
 
-Hyphenate when using as an adjective. For example, **a command-line tool**.
+Hyphenate when you use it as an adjective. For example, **a command-line tool**.
 
 ## compute
 
@@ -761,7 +777,7 @@ Use **dialog** rather than any of these alternatives:
 
 See also [**confirmation dialog**](#confirmation-dialog). For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/d/dialog-box-dialog-dialogue).
 
-Before using this term, confirm whether **dialog** or [**drawer**](#drawer) is
+Before you use this term, confirm whether **dialog** or [**drawer**](#drawer) is
 the correct term for your use case.
 
 When the dialog is the location of an action, use **on** as a preposition. For example:
@@ -824,7 +840,7 @@ To see examples of drawers:
 - Go to the [Technical Writing Pipeline Editor](https://gitlab.com/gitlab-org/technical-writing/team-tasks/-/ci/editor?branch_name=main) and select **Help** ({{< icon name="information-o" >}}).
 - Open GitLab Duo Chat.
 
-Before using this term, confirm whether **drawer** or [**dialog**](#dialog) is
+Before you use this term, confirm whether **drawer** or [**dialog**](#dialog) is
 the correct term for your use case.
 
 ## dropdown list
@@ -875,17 +891,15 @@ use three periods with no space (`...`) instead of the `&hellip;` HTML entity or
 
 For more information, see [code blocks](_index.md#code-blocks).
 
-Do not include any ellipses when documenting UI text.
+Do not include any ellipses when documenting UI text. For example, use:
 
-For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
-
-Use:
-
-- **Create new**
+- **Search or go to**
 
 Instead of:
 
-- **Create new...**
+- **Search or go to...**
+
+For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/punctuation/ellipses).
 
 ## email
 
@@ -986,11 +1000,11 @@ Do not confuse with [download](#download).
 ## FAQ
 
 We want users to find information quickly, and they rarely search for the term **FAQ**.
-Information in FAQs belongs with other similar information, under an easily searchable topic title.
+Information in FAQs belongs with other similar information, under a searchable topic title.
 
 ## feature
 
-You should rarely need to use the word **feature**. Instead, explain what GitLab does.
+You should rarely use the word **feature**. Instead, explain what GitLab does.
 For example, use:
 
 - Use merge requests to incorporate changes into the target branch.
@@ -1015,7 +1029,7 @@ Instead of:
 
 - In the **Variable name** field, enter `my text`.
 
-However, you can make an exception when you are writing a task and you need to refer to all
+However, you can make an exception when you are writing a task and you want to refer to all
 of the fields at once. For example:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -1027,7 +1041,7 @@ Learn more about [documenting multiple fields at once](_index.md#documenting-mul
 
 ## filename
 
-Use one word for **filename**. When using filename as a variable, use `<filename>`.
+Use one word for **filename**. When you use filename as a variable, use `<filename>`.
 
 ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
 
@@ -1112,11 +1126,11 @@ This guidance follows the [Use of Third-party Trademarks](https://handbook.gitla
 ## GitLab AI vendor model
 
 Use **GitLab AI vendor model** to refer to a [language model](#language-model-large-language-model)
-that is hosted by a third-party provider, and that customers access using the GitLab
+that is hosted by a third-party provider, and that customers access by using the GitLab
 [AI gateway](#ai-gateway) through the [Cloud Connector](../../cloud_connector/architecture.md).
 
 Do not use this term when the [language model is hosted by a customer](#self-hosted-model),
-or when the customer is using the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)
+or when the customer uses the [GitLab Duo Self-Hosted](#gitlab-duo-self-hosted)
 feature.
 
 ## GitLab Dedicated
@@ -1159,14 +1173,14 @@ without **GitLab Duo**.
 
 Always use **GitLab Duo Enterprise** for the add-on. Do not use **Duo Enterprise** unless approved by legal.
 
-You can use **the GitLab Duo Enterprise add-on** (with this capitalization) but you do not need to use **add-on**
+You can use **the GitLab Duo Enterprise add-on** (with this capitalization) but you are not required to use **add-on**
 and should leave it off when you can.
 
 ## GitLab Duo Pro
 
 Always use **GitLab Duo Pro** for the add-on. Do not use **Duo Pro** unless approved by legal.
 
-You can use **the GitLab Duo Pro add-on** (with this capitalization) but you do not need to use **add-on**
+You can use **the GitLab Duo Pro add-on** (with this capitalization) but you are not required to use **add-on**
 and should leave it off when you can.
 
 ## GitLab Duo Self-Hosted
@@ -1224,7 +1238,7 @@ See also:
 
 ## GitLab SaaS
 
-**GitLab SaaS** refers to both [GitLab.com](#gitlabcom) (multi-tenant SaaS) as well as [GitLab Dedicated](#gitlab-dedicated) (single-tenant SaaS).
+**GitLab SaaS** refers to both [GitLab.com](#gitlabcom) (multi-tenant SaaS) and [GitLab Dedicated](#gitlab-dedicated) (single-tenant SaaS).
 
 Try to avoid **GitLab SaaS** and instead, refer to the [specific offering](#offerings) instead.
 
@@ -1358,8 +1372,7 @@ However, for Elasticsearch, use [**indices**](https://www.elastic.co/blog/what-i
 
 ## Installation from source
 
-When referring to the installation method using the self-compiled code, refer to it
-as **self-compiled**.
+To refer to the installation method that uses the self-compiled code, use **self-compiled**.
 
 Use:
 
@@ -1469,7 +1482,7 @@ Instead of:
 
 ## level
 
-If you can, avoid using `level` in the context of an instance, project, or group.
+If you can, avoid `level` in the context of an instance, project, or group.
 
 Use:
 
@@ -1513,7 +1526,7 @@ The following terms are displayed in the UI and in emails. You can use them when
 - **Offline license** - a license not synchronized with GitLab
 - **Legacy license** - a license created before synchronization was possible
 
-However, if you can, rather than using the term, use the more specific description instead.
+However, if you can, rather than the relying on the term, use the more specific description instead.
 
 Use:
 
@@ -1997,7 +2010,7 @@ Use **press** when talking about keyboard keys. For example:
 
 ## profanity
 
-Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
+Do not use profanity. Doing so might negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
 
 ## project
 
@@ -2144,7 +2157,7 @@ Instead of:
 
 Do not use **roles** and [**permissions**](#permissions) interchangeably. Each user is assigned a role. Each role includes a set of permissions.
 
-There are two types of roles: [custom](#custom-role) and [default](#default-role).
+Two types of roles exist: [custom](#custom-role) and [default](#default-role).
 
 Roles are not the same as [**access levels**](#access-level).
 
@@ -2377,7 +2390,7 @@ Gitaly storages have physical paths and virtual storages have virtual paths.
 ## subgroup
 
 Use **subgroup** (no hyphen) instead of **sub-group**.
-Also, avoid using alternative terms for subgroups, such as **child group** or **low-level group**.
+Also, avoid alternative terms for subgroups, such as **child group** or **low-level group**.
 
 ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/SubstitutionWarning.yml))
 
@@ -2484,7 +2497,7 @@ Always follow these words with a noun. For example:
 - Use: **That droid** is the one you are looking for.
 - Instead of: **That** is the one you are looking for.
 
-- Use: **Those settings** need to be configured. (Or even better, **Configure those settings.**)
+- Use: **Those settings** must be configured. (Or even better, **Configure those settings.**)
 - Instead of: **Those** need to be configured.
 
 ## to which, of which
@@ -2719,7 +2732,7 @@ When possible, do not use **within**. Use **in** instead, unless you are referri
 
 Do not use **yet** when talking about the product or its features. The documentation describes the product as it is today.
 
-Sometimes you might need to use **yet** when writing a task. If you use
+Sometimes you might want to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
 in present tense, active voice.
 
@@ -2754,8 +2767,8 @@ For example:
 
 Use **you can** for optional actions. For example:
 
-- Use code review analytics to view metrics per merge request. You can also use the API.
-- Enter the name and value pairs. You can add up to 20 pairs per streaming destination.
+- Use code review analytics to view metrics for each merge request. You can also use the API.
+- Enter the name and value pairs. You can add up to 20 pairs for each streaming destination.
 
 <!-- vale on -->
 <!-- markdownlint-enable -->

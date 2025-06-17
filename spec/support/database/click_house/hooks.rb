@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return if ENV['GENERATE_FRONTEND_FIXTURES_MAPPING'] == 'true'
+
 # rubocop: disable Gitlab/NamespacedClass
 class ClickHouseTestRunner
   include ClickHouseSchemaHelpers

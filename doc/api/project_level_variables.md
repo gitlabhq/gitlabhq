@@ -12,6 +12,8 @@ title: Project-level CI/CD variables API
 
 {{< /details >}}
 
+Use this API to interact with [CI/CD variables](../ci/variables/_index.md#for-a-project) for a project.
+
 ## List project variables
 
 Get list of a project's variables.

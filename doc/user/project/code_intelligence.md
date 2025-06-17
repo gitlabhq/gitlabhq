@@ -4,6 +4,7 @@ group: Code Review
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Use code intelligence to find all uses of an object in your project.
 title: Code intelligence
+description: Type signatures, symbol documentation, and go-to definition.
 ---
 
 {{< details >}}

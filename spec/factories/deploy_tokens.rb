@@ -12,6 +12,12 @@ FactoryBot.define do
     revoked { false }
     expires_at { 5.days.from_now.to_datetime }
     deploy_token_type { DeployToken.deploy_token_types[:project_type] }
+    projects { [association(:project)] }
+
+    before(:create) do |record|
+      record.project_id ||= record.project&.id
+      record.group_id ||= record.group&.id
+    end
 
     trait :revoked do
       revoked { true }
@@ -27,6 +33,8 @@ FactoryBot.define do
 
     trait :group do
       deploy_token_type { DeployToken.deploy_token_types[:group_type] }
+      projects { [] }
+      groups { [association(:group)] }
     end
 
     trait :project do

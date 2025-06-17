@@ -73,8 +73,12 @@ export default {
     };
   },
   computed: {
-    composedCreateButtonLabel() {
-      return sprintf(__('Create wildcard: %{searchTerm}'), { searchTerm: this.searchTerm });
+    composedCreateScopeButtonLabel() {
+      const label = this.searchTerm?.includes('*')
+        ? __('Create wildcard: %{searchTerm}')
+        : s__('CiVariable|Create environment scope: %{searchTerm}');
+
+      return sprintf(label, { searchTerm: this.searchTerm });
     },
     environmentScopeLabel() {
       return convertEnvironmentScope(this.selectedEnvironmentScope);
@@ -108,15 +112,12 @@ export default {
         text: environment,
       }));
     },
-    shouldRenderCreateButton() {
-      if (!this.canCreateWildcard) {
+    shouldRenderCreateScopeButton() {
+      if (!this.canCreateWildcard || !this.searchTerm) {
         return false;
       }
 
-      return (
-        this.searchTerm?.includes('*') &&
-        ![...this.environments, this.customEnvScope].includes(this.searchTerm)
-      );
+      return ![...this.environments, this.customEnvScope].includes(this.searchTerm);
     },
     shouldRenderDivider() {
       return !this.areEnvironmentsLoading;
@@ -174,14 +175,14 @@ export default {
       <gl-dropdown-item class="gl-list-none" disabled data-testid="search-query-note">
         {{ $options.i18n.searchQueryNote }}
       </gl-dropdown-item>
-      <div v-if="shouldRenderCreateButton">
+      <div v-if="shouldRenderCreateScopeButton">
         <!-- TODO: Rethink create wildcard button. https://gitlab.com/gitlab-org/gitlab/-/issues/396928 -->
         <gl-dropdown-item
           class="gl-list-none"
-          data-testid="create-wildcard-button"
+          data-testid="create-scope-button"
           @click="createEnvironmentScope"
         >
-          {{ composedCreateButtonLabel }}
+          {{ composedCreateScopeButtonLabel }}
         </gl-dropdown-item>
       </div>
     </template>

@@ -103,7 +103,7 @@ export function removeListenerSystemColorSchemeChange(onEvent) {
     .removeEventListener('change', (event) => handleColorSchemeChange(onEvent, event));
 }
 
-function isNarrowScreenMediaQuery() {
+export function isNarrowScreenMediaQuery() {
   const computedStyles = getComputedStyle(document.body);
   const largeBreakpointSize = parseInt(computedStyles.getPropertyValue('--breakpoint-lg'), 10);
   return window.matchMedia(`(max-width: ${largeBreakpointSize - 1}px)`);

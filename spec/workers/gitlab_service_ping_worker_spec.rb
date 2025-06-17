@@ -6,6 +6,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
   let(:payload) { { recorded_at: Time.current.rfc3339 } }
   let(:non_sql_payload) { { recorded_at: Time.current.rfc3339, count: 123 } }
   let(:queries_payload) { { recorded_at: Time.current.rfc3339, users_count: "SELECT COUNT(*) FROM users" } }
+  let_it_be(:organization) { create(:organization) }
 
   before do
     allow_next_instance_of(ServicePing::SubmitService) { |service| allow(service).to receive(:execute) }
@@ -18,7 +19,6 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
       .with(output: :metrics_queries).and_return(queries_payload)
 
     allow(subject).to receive(:sleep)
-    create(:organization)
   end
 
   it 'does not run for SaaS when triggered from cron', :saas do
@@ -34,7 +34,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
   end
 
   it 'delegates to ServicePing::SubmitService' do
-    expect_next_instance_of(ServicePing::SubmitService, payload: payload) do |service|
+    expect_next_instance_of(ServicePing::SubmitService, payload: payload, organization: organization) do |service|
       expect(service).to receive(:execute)
     end
 
@@ -59,7 +59,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
         allow(::ServicePing::BuildPayload).to receive(:new).and_raise(error)
 
         expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-        expect_next_instance_of(::ServicePing::SubmitService, payload: nil) do |service|
+        expect_next_instance_of(::ServicePing::SubmitService, payload: nil, organization: organization) do |service|
           expect(service).to receive(:execute)
         end
 
@@ -90,7 +90,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
           .with(output: :non_sql_metrics_values).and_raise(error)
 
         expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-        expect_next_instance_of(::ServicePing::SubmitService, payload: payload) do |service|
+        expect_next_instance_of(::ServicePing::SubmitService, payload: payload, organization: organization) do |service|
           expect(service).to receive(:execute)
         end
 
@@ -120,7 +120,7 @@ RSpec.describe GitlabServicePingWorker, :clean_gitlab_redis_shared_state, featur
           .with(output: :metrics_queries).and_raise(error)
 
         expect(::Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
-        expect_next_instance_of(::ServicePing::SubmitService, payload: payload) do |service|
+        expect_next_instance_of(::ServicePing::SubmitService, payload: payload, organization: organization) do |service|
           expect(service).to receive(:execute)
         end
 

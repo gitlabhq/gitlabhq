@@ -39,9 +39,9 @@ To create an escalation policy:
 
 When configuring an escalation rule, you can designate who to page:
 
-- **Email on-call user in schedule:** notifies the users who are on-call when the rule is triggered,
+- **Email on-call user in schedule**: notifies the users who are on-call when the rule is triggered,
   covering all rotations on the specified [on-call schedule](oncall_schedules.md).
-- **Email user:** notifies the specified user directly.
+- **Email user**: notifies the specified user directly.
 
 When a notification is sent to a user through an on-call schedule or directly, a system note listing
 the paged users is created on the alert.

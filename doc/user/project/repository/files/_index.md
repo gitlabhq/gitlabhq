@@ -81,7 +81,7 @@ To render an OpenAPI file:
 
 {{< alert type="note" >}}
 
-When `displayOperationId` is present in the query string and has _any_ value, it
+When `displayOperationId` is present in the query string and has any value, it
 evaluates to `true`. This behavior matches the default behavior of Swagger.
 
 {{< /alert >}}
@@ -93,6 +93,23 @@ Historical information about files in your repository is available in the GitLab
 - [Git file history](git_history.md): shows the commit history of an entire file.
 - [Git blame](git_blame.md): shows each line of a text-based file, and the most
   recent commit that changed the line.
+
+## Create permalinks
+
+Permalinks are permanent URLs that point to specific files, directories, or sections of code
+in your repository. They remain valid even when the repository changes, making them ideal for
+sharing and referencing code in documentation, issues, or merge requests.
+
+To create a permalink:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Go to the file or directory you want to link to.
+1. Optional. For specific code selections:
+   - **Single line**: Select the line number.
+   - **Multiple lines**: Select the first line number, then hold <kbd>Shift</kbd> and select the last line number.
+   - **Markdown anchor**: Hover over a heading to reveal the anchor link ({{< icon name="link" >}}), and select it.
+1. Select **Actions** ({{< icon name="ellipsis_v" >}}), then select **Copy Permalink**.
+   Alternatively, press <kbd>y</kbd>. For more shortcuts, see [keyboard shortcuts](../../../shortcuts.md).
 
 ## View open merge requests for a file
 

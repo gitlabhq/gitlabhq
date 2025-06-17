@@ -3,6 +3,7 @@ stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Labels
+description: Project labels, group labels, nested scopes, and filtering.
 ---
 
 {{< details >}}
@@ -24,11 +25,13 @@ Labels:
 
 ## Types of labels
 
-You can use two types of labels in GitLab:
+Use three types of labels in GitLab:
 
 - **Project labels** can be assigned to issues and merge requests in that project only.
 - **Group labels** can be assigned to issues, merge requests, and [epics](../group/epics/_index.md)
   in any project in the selected group or its subgroups.
+- **Instance labels** [are created](../../administration/labels.md) by instance
+  administrators and are copied to all new projects.
 
 ## Assign and unassign labels
 
@@ -421,7 +424,7 @@ Filtering by scoped labels not available on the issues or merge requests dashboa
 
 ### Scoped labels examples
 
-**Example 1.** Updating issue priority:
+**Example 1**. Updating issue priority:
 
 1. You decide that an issue is of low priority, and assign it the `priority::low` label.
 1. After more review, you realize the issue's priority is higher increased, and you assign it the
@@ -429,7 +432,7 @@ Filtering by scoped labels not available on the issues or merge requests dashboa
 1. Because an issue shouldn't have two priority labels at the same time, GitLab removes the
    `priority::low` label.
 
-**Example 2.** You want a custom field in issues to track the operating system platform
+**Example 2**. You want a custom field in issues to track the operating system platform
 that your features target, where each issue should only target one platform.
 
 You create three labels:
@@ -441,7 +444,7 @@ You create three labels:
 If you assign any of these labels to an issue automatically removes any other existing label that
 starts with `platform::`.
 
-**Example 3.** You can use scoped labels to represent the workflow states of your teams.
+**Example 3**. You can use scoped labels to represent the workflow states of your teams.
 
 Suppose you have the following labels:
 
@@ -587,7 +590,7 @@ To set a label to get locked on merge:
 
 ## Related topics
 
-Practice working with labels in the following tutorials:
-
-- [Set up a single project for issue triage](../../tutorials/issue_triage/_index.md)
-- [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/_index.md)
+- Tutorials:
+  - [Set up a single project for issue triage](../../tutorials/issue_triage/_index.md)
+  - [Set up issue boards for team hand-off](../../tutorials/boards_for_teams/_index.md)
+- [Labels administration](../../administration/labels.md)

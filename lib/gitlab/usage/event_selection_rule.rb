@@ -51,7 +51,11 @@ module Gitlab
       end
 
       def sum?
-        operator.present?
+        operator == 'sum(value)'
+      end
+
+      def unique_total?
+        unique_identifier_name && operator == 'total'
       end
 
       def matches?(additional_properties)
@@ -114,7 +118,7 @@ module Gitlab
       def path_part_of_redis_key
         path = name
 
-        if sum?
+        if operator.present?
           # operator should be serialized and used in the path here
           path = "#{path}-operator:#{operator}"
         end

@@ -26,13 +26,13 @@ module FileStoreMounter
       end
 
       if skip_store_file
-        skip_callback :save, :after, "store_#{file_field}!".to_sym
+        skip_callback :save, :after, :"store_#{file_field}!"
 
         return
       end
 
       # This hook is a no-op when the file is uploaded after_commit
-      after_save "update_#{file_field}_store".to_sym, if: "saved_change_to_#{file_field}?".to_sym
+      after_save :"update_#{file_field}_store", if: :"saved_change_to_#{file_field}?"
     end
   end
 end

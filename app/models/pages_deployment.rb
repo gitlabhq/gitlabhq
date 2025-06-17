@@ -7,7 +7,10 @@ class PagesDeployment < ApplicationRecord
   include FromUnion
   include Sortable
   include FileStoreMounter
+  include ObjectStorable
   include Gitlab::Utils::StrongMemoize
+
+  STORE_COLUMN = :file_store
 
   attribute :file_store, :integer, default: -> { ::Pages::DeploymentUploader.default_store }
 
@@ -17,8 +20,6 @@ class PagesDeployment < ApplicationRecord
   belongs_to :ci_build, class_name: 'Ci::Build', optional: true
 
   scope :older_than, ->(id) { where('id < ?', id) }
-  scope :with_files_stored_locally, -> { where(file_store: ::ObjectStorage::Store::LOCAL) }
-  scope :with_files_stored_remotely, -> { where(file_store: ::ObjectStorage::Store::REMOTE) }
   scope :project_id_in, ->(ids) { where(project_id: ids) }
   scope :ci_build_id_in, ->(ids) { where(ci_build_id: ids) }
   scope :with_path_prefix, ->(prefix) { where("COALESCE(path_prefix, '') = ?", prefix.to_s) }

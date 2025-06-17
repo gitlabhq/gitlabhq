@@ -7,5 +7,7 @@ feature_categories:
 description: Stores user accesses and notifications from PIPL countries
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169769
 milestone: '17.6'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

@@ -1,0 +1,14 @@
+---
+table_name: ci_trigger_requests
+classes: []
+feature_categories:
+- continuous_integration
+description: TODO
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/046b28312704f3131e72dcd2dbdacc5264d4aa62
+milestone: '8.0'
+gitlab_schema: gitlab_ci
+table_size: small
+sharding_key:
+  project_id: projects
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191769
+removed_in_milestone: '18.1'

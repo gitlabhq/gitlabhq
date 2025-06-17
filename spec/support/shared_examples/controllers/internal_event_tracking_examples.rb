@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+# This example group is deprecated in favor of composable matchers, it should not be used in any new code.
+# https://gitlab.com/gitlab-org/gitlab/-/issues/536223
+
 # Requires a context containing:
 # - subject
 # - event

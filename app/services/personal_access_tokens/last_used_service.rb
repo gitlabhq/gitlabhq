@@ -3,6 +3,7 @@
 module PersonalAccessTokens
   class LastUsedService
     include ExclusiveLeaseGuard
+    include Gitlab::Utils::StrongMemoize
 
     LEASE_TIMEOUT = 60.seconds.to_i
     LAST_USED_IP_TIMEOUT = 1.minute
@@ -19,7 +20,7 @@ module PersonalAccessTokens
 
       # We _only_ want to update last_used_at and not also updated_at (which
       # would be updated when using #touch).
-      return if ::Gitlab::Database.read_only?
+      return unless needs_update?
 
       lb = @personal_access_token.load_balancer
       try_obtain_lease do
@@ -38,6 +39,13 @@ module PersonalAccessTokens
 
     def lease_key
       @lease_key ||= "pat:last_used_update_lock:#{@personal_access_token.id}"
+    end
+
+    def needs_update?
+      return false if ::Gitlab::Database.read_only?
+      return true unless Feature.enabled?(:pat_last_used_at_optimization, :request)
+
+      last_used_ip_needs_update? || last_used_at_needs_update?
     end
 
     def update_timestamp
@@ -62,7 +70,7 @@ module PersonalAccessTokens
         .delete_all
     end
 
-    def last_used_ip_needs_update?
+    strong_memoize_attr def last_used_ip_needs_update?
       return false unless Gitlab::IpAddressState.current
       return true if @personal_access_token.last_used_at.nil?
 
@@ -75,7 +83,7 @@ module PersonalAccessTokens
     end
     # rubocop:enable CodeReuse/ActiveRecord
 
-    def last_used_at_needs_update?
+    strong_memoize_attr def last_used_at_needs_update?
       last_used = @personal_access_token.last_used_at
 
       return true if last_used.nil?

@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab 17 changes
 ---
@@ -159,7 +159,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 - Migration failures when upgrading from GitLab 17.3.
 
-  When upgrading from 17.3 to 17.4, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+  When upgrading from 17.3 to 17.4, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
 
   ```shell
   main: == [advisory_lock_connection] object_id: 127900, pg_backend_pid: 76263
@@ -188,7 +188,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
   To safely resolve this issue, follow these steps:
 
   1. Open the Rails console where the migrations are being run.
-  1. Copy and paste the script below into the console and execute it.
+  1. Run the following script in the Rails console.
   1. Re-run the migrations, and they should complete successfully.
 
    ```Ruby
@@ -222,7 +222,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 - Migration failures when upgrading from GitLab 17.5.
 
-  When upgrading from 17.5 to 17.6, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+  When upgrading from 17.5 to 17.6, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
 
   ```shell
   rake aborted!
@@ -249,7 +249,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
 - Migration failures when upgrading to GitLab 17.8.
 
-  When upgrading to 17.8, there is a slight chance of encountering an error. During the migration process, you might see an error message like the one below:
+  When upgrading to 17.8, there is a slight chance of encountering an error. During the migration process, you might see an error message similar to the following:
 
   ```shell
   ERROR:  duplicate key value violates unique constraint "work_item_types_pkey"
@@ -263,7 +263,7 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
 
   To safely resolve this issue, follow these steps:
 
-  1. **Only do this if you got this error when trying to upgrade to 17.8.**
+  1. **Only do this if you got this error when trying to upgrade to 17.8**.
      Run the following SQL query in your `gitlab_main` database:
 
       ```sql
@@ -361,6 +361,9 @@ For more information, see [issue 480328](https://gitlab.com/gitlab-org/gitlab/-/
   If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
 ## 17.11.0
+
+- To avoid a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/537325) that causes a database migration to run for a long time and use excessive CPU,
+  update to GitLab 17.11.3 or later.
 
 ### New encryption secrets
 
@@ -464,7 +467,8 @@ to identify and assess the compatibility of your external integrations.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
   action is needed. However, [Cloud Native Hybrid](../../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services) installations
   use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
-  the TLS versions, ciphers, and certificates that are used work with the security level changes discussed below.
+  the TLS versions, ciphers, and certificates that are used to work with the security level changes 
+  in the following discussion.
 
 With the upgrade to OpenSSL 3:
 
@@ -697,7 +701,7 @@ Mixlib::ShellOut::CommandTimeout: Command timed out after 3600s:
 
 To fix this:
 
-1. Run the Rake task above to complete the batched migration.
+1. Run the previous Rake task to complete the batched migration.
 1. [Complete the rest of the timed-out operation](../package/package_troubleshooting.md#mixlibshelloutcommandtimeout-rails_migrationgitlab-rails--command-timed-out-after-3600s). At the end of this process, Sidekiq and Puma are restarted to fix the `500` errors.
 
 Feedback about this conditional stop on the upgrade path can be provided [in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/503891).
@@ -783,7 +787,7 @@ If you have a multi-node configuration, you must ensure these secrets are the sa
       gitlab-rake gitlab:doctor:encryption_keys
       ```
 
-   For other versions, you can proceed directly to selecting a reference node ("Case 1" below), as we assume you don't have encrypted data yet.
+   For other versions, you can proceed directly to select a reference node ("Case 1" in the following list), as we assume you don't have encrypted data yet.
 
    Based on the command output, determine which process to follow:
 

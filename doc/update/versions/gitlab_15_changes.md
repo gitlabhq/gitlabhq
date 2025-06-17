@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab 15 changes
 ---
@@ -30,7 +30,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 - **Upgrade to patch release 15.11.3 or later**. This avoids [issue 408304](https://gitlab.com/gitlab-org/gitlab/-/issues/408304) when upgrading from 15.5.0 and earlier.
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -411,7 +411,7 @@ if you can't upgrade to 15.11.12 and later.
 - A database constraint is added, specifying that the `namespace_id` column on the issues
   table has no `NULL` values.
 
-  - If the `namespace_id` batched background migration from 15.4 failed (see above) then the 15.7 upgrade
+  - If the `namespace_id` batched background migration from 15.4 failed (see previous item) then the 15.7 upgrade
     fails with a database migration error.
 
   - On GitLab instances with large issues tables, validating this constraint causes the upgrade to take
@@ -1078,7 +1078,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
 
   It is mandatory to restart PostgreSQL when underlying version changes, to avoid
   errors like the [one related to loading necessary libraries](https://docs.gitlab.com/omnibus/settings/database.html#could-not-load-library-plpgsqlso)
-  that can cause downtime. So, if you skip the automatic restarts using the above
+  that can cause downtime. So, if you skip the automatic restarts using the previous
   method, ensure that you restart the services manually before upgrading to GitLab
   15.0.
 

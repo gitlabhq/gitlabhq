@@ -6,7 +6,7 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, appendLineRangeHashToUrl } from '~/lib/utils/url_utility';
 import Tracking from '~/tracking';
 import ConfirmForkModal from '~/vue_shared/components/web_ide/confirm_fork_modal.vue';
 import { keysFor, GO_TO_PROJECT_WEBIDE } from '~/behaviors/shortcuts/keybindings';
@@ -233,7 +233,8 @@ export default {
           }
         : {
             handle: () => {
-              visitUrl(this.webIdeUrl, true);
+              const url = appendLineRangeHashToUrl(this.webIdeUrl);
+              visitUrl(url, true);
             },
           };
 

@@ -69,7 +69,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
    Take the version from the `CHART` column which is in the format `{release}-v{chart_version}`,
    then edit the `version:` attribute in the `./applications/gitlab-runner/helmfile.yaml`, so that it matches the version
    you have deployed. This is a safe step to avoid upgrading versions during this migration.
-   Make sure you replace `gitlab-managed-apps` from the above command if you have your apps deployed to a different
+   Make sure you replace `gitlab-managed-apps` from the previous command if you have your apps deployed to a different
    namespace.
 
 1. Edit the `applications/{app}/values.yaml` associated with your app to match the
@@ -101,7 +101,7 @@ See also [video walk-throughs](#video-walk-throughs) with examples.
 
    - Cert-manager:
 
-     - For users on Kubernetes version 1.20 or above, the deprecated cert-manager v0.10 is no longer valid
+     - For users on Kubernetes version 1.20 or later, the deprecated cert-manager v0.10 is no longer valid
        and the upgrade includes a breaking change. So we suggest that you [backup and uninstall cert-manager v0.10](#backup-and-uninstall-cert-manager-v010),
        and install the latest cert-manager instead. To install this version, uncomment `applications/cert-manager/helmfile.yaml`
        from [`./helmfile.yaml`](management_project_template.md#the-main-helmfileyml-file).

@@ -6,6 +6,12 @@ import { PluginKey } from '@tiptap/pm/state';
 import { uniqueId } from 'lodash';
 import SuggestionsDropdown from '../components/suggestions_dropdown.vue';
 import { COMMANDS } from '../constants';
+import CodeBlockHighlight from './code_block_highlight';
+import Diagram from './diagram';
+import Frontmatter from './frontmatter';
+import Code from './code';
+
+const CODE_NODE_TYPES = [CodeBlockHighlight.name, Diagram.name, Frontmatter.name, Code.name];
 
 function createSuggestionPlugin({
   editor,
@@ -47,6 +53,7 @@ function createSuggestionPlugin({
     },
 
     async items({ query, editor: tiptapEditor }) {
+      if (CODE_NODE_TYPES.some((type) => tiptapEditor.isActive(type))) return [];
       const slice = tiptapEditor.state.doc.slice(0, tiptapEditor.state.selection.to);
       const markdownLine = serializer.serialize({ doc: slice.content }).split('\n').pop();
 

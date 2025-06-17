@@ -131,10 +131,31 @@ Be aware of the following impacts when redacting text from your repository:
 {{< /alert >}}
 
 - Open merge requests might fail to merge and require manual rebasing.
-- Existing local clones are incompatible with the updated repository and must be re-cloned.
+- This is a destructive operation. Existing local clones are incompatible with the updated repository and must be re-cloned.
 - Pipelines referencing old commit SHAs might break and require reconfiguration.
 - Historical tags and branches based on the old commit history might not function correctly.
 - Commit signatures are dropped during the rewrite process.
+- Commit hashes are updated because their content is updated by the redact operation.
+
+While the redact feature in GitLab removes exposed secrets, it also:
+
+- Corrupts the Git history state.
+- Requires all developers to re-clone the repository after redaction.
+- Breaks features that depend on commit hashes, including:
+  - Open merge requests.
+  - Links to previous commits, which results in 404 errors.
+
+For better repository integrity, you should instead:
+
+- Revoke or rotate exposed secrets.
+- Implement [the secret detection capabilities of GitLab](../../application_security/secret_detection/_index.md).
+
+This approach:
+
+- Proactively prevents future secret leaks.
+- Maintains Git history while ensuring security compliance.
+
+For more information, see [secret push protection](../../application_security/secret_detection/secret_push_protection/_index.md).
 
 Alternatively, to completely delete specific files from a repository, see
 [Remove blobs](../repository/repository_size.md#remove-blobs).
@@ -157,6 +178,13 @@ To redact text from your repository:
 1. On the left sidebar, select **Settings > General**.
 1. Expand **Advanced**.
 1. Select **Run housekeeping**.
+
+{{< alert type="note" >}}
+
+If the project containing the sensitive information has been forked, the housekeeping task may not be able to complete this redaction process [to maintain the integrity of the special object pool repository which contains the forked data](../../../administration/housekeeping.md#object-pool-repositories).
+For help, contact GitLab Support.
+
+{{< /alert >}}
 
 ## Related topics
 

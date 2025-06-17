@@ -2,6 +2,8 @@
 
 module Security
   module CiConfiguration
+    DEFAULT_TEST_STAGE = 'test'
+
     class BaseBuildAction
       def initialize(auto_devops_enabled, existing_gitlab_ci_content, ci_config_path = ::Ci::Pipeline::DEFAULT_CONFIG_PATH)
         @auto_devops_enabled = auto_devops_enabled
@@ -24,6 +26,16 @@ module Security
         includes = Array.wrap(includes)
         includes << { 'template' => template }
         includes.uniq
+      end
+
+      def add_stages!(stages)
+        existing_stages = @existing_gitlab_ci_content['stages'] || []
+        @existing_gitlab_ci_content['stages'] = (existing_stages + stages).uniq
+      end
+
+      def auto_devops_stages
+        auto_devops_template = YAML.safe_load(Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content)
+        auto_devops_template['stages']
       end
 
       def prepare_existing_content

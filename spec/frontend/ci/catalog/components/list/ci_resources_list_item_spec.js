@@ -8,6 +8,7 @@ import CiVerificationBadge from '~/ci/catalog/components/shared/ci_verification_
 import ProjectVisibilityIcon from '~/ci/catalog/components/shared/project_visibility_icon.vue';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
 import TopicBadges from '~/vue_shared/components/topic_badges.vue';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { catalogSinglePageResponse, longResourceDescription } from '../../mock';
 
 const defaultEvent = { preventDefault: jest.fn, ctrlKey: false, metaKey: false };
@@ -39,6 +40,9 @@ describe('CiResourcesListItem', () => {
         ...defaultProps,
         ...props,
       },
+      directives: {
+        GlTooltip: createMockDirective('gl-tooltip'),
+      },
       stubs: {
         GlSprintf,
         GlTruncate,
@@ -53,6 +57,7 @@ describe('CiResourcesListItem', () => {
   const findTopicBadgesComponent = () => wrapper.findComponent(TopicBadges);
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
+  const findVersionBadge = () => wrapper.findComponent(GlBadge);
 
   const findComponentNames = () => wrapper.findByTestId('ci-resource-component-names');
   const findFavorites = () => wrapper.findByTestId('stats-favorites');
@@ -252,6 +257,12 @@ describe('CiResourcesListItem', () => {
         expect(findBadge().exists()).toBe(true);
         expect(findBadge().text()).toBe('Unreleased');
       });
+
+      it('does not have tooltip attributes on the badge', () => {
+        const badge = findVersionBadge();
+        expect(badge.attributes('title')).toBeUndefined();
+        expect(badge.attributes('href')).toBeUndefined();
+      });
     });
 
     describe('when there is release data', () => {
@@ -285,6 +296,18 @@ describe('CiResourcesListItem', () => {
       it('renders the version badge', () => {
         expect(findBadge().exists()).toBe(true);
         expect(findBadge().text()).toBe(release.name);
+      });
+
+      it('has tooltip with release information on the badge', () => {
+        const badge = findVersionBadge();
+        const tooltip = getBinding(badge.element, 'gl-tooltip');
+        const title = 'Released Jan 26, 2024 7:40pm UTC';
+
+        expect(badge.attributes()).toMatchObject({
+          title,
+          href: resource.versions.nodes[0].path,
+        });
+        expect(tooltip).toBeDefined();
       });
     });
   });

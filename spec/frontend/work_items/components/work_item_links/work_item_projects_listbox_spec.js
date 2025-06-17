@@ -81,16 +81,10 @@ describe('WorkItemProjectsListbox', () => {
       removeLocalstorageFrequentItems();
 
       findDropdown().vm.$emit('shown');
-
       await nextTick();
-
       await findDropdownItemFor(namespaceProjectsData[0].fullPath).trigger('click');
 
-      await nextTick();
-
-      const emitted = wrapper.emitted('selectProject');
-
-      expect(emitted[0][0]).toBe(namespaceProjectsData[0].fullPath);
+      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[0].fullPath]);
     });
 
     it('renders recent projects if present', async () => {
@@ -112,16 +106,10 @@ describe('WorkItemProjectsListbox', () => {
       setLocalstorageFrequentItems();
 
       findDropdown().vm.$emit('shown');
-
       await nextTick();
-
       await findRecentDropdownItemAt(0).trigger('click');
 
-      await nextTick();
-
-      const emitted = wrapper.emitted('selectProject');
-
-      expect(emitted[0][0]).toBe(namespaceProjectsData[1].fullPath);
+      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[1].fullPath]);
     });
 
     it('supports filtering recent projects via search input', async () => {
@@ -145,12 +133,11 @@ describe('WorkItemProjectsListbox', () => {
       expect(content.at(0).text()).toContain(namespaceProjectsData[0].name);
     });
 
-    it('filters out archived projects', () => {
-      expect(namespaceProjectsFormLinksWidgetResolver).toHaveBeenCalledWith(
-        expect.objectContaining({
-          includeArchived: false,
-        }),
-      );
+    it('default-selects the first project from the API when there is no `selectedProjectFullPath`', async () => {
+      findDropdown().vm.$emit('shown');
+      await nextTick();
+
+      expect(wrapper.emitted('selectProject')).toEqual([[namespaceProjectsData[0].fullPath]]);
     });
   });
 
@@ -174,23 +161,17 @@ describe('WorkItemProjectsListbox', () => {
     it('auto-selects the current project', async () => {
       await nextTick();
 
-      expect(findDropdownToggle().text()).toContain(namespaceProjectsData[0].nameWithNamespace);
+      expect(findDropdownToggle().text()).toBe(namespaceProjectsData[0].name);
     });
 
     it('supports selecting a project', async () => {
       removeLocalstorageFrequentItems();
 
       findDropdown().vm.$emit('shown');
-
       await nextTick();
-
       await findDropdownItemFor(namespaceProjectsData[1].fullPath).trigger('click');
 
-      await nextTick();
-
-      const emitted = wrapper.emitted('selectProject');
-
-      expect(emitted[0][0]).toBe(namespaceProjectsData[1].fullPath);
+      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[1].fullPath]);
     });
 
     it('renders recent projects if present', async () => {
@@ -212,16 +193,10 @@ describe('WorkItemProjectsListbox', () => {
       setLocalstorageFrequentItems();
 
       findDropdown().vm.$emit('shown');
-
       await nextTick();
-
       await findRecentDropdownItemAt(0).trigger('click');
 
-      await nextTick();
-
-      const emitted = wrapper.emitted('selectProject');
-
-      expect(emitted[0][0]).toBe(namespaceProjectsData[1].fullPath);
+      expect(wrapper.emitted('selectProject').pop()).toEqual([namespaceProjectsData[1].fullPath]);
     });
 
     it('supports filtering recent projects via search input', async () => {
@@ -243,14 +218,6 @@ describe('WorkItemProjectsListbox', () => {
 
       expect(content).toHaveLength(1);
       expect(content.at(0).text()).toContain(namespaceProjectsData[0].name);
-    });
-
-    it('filters out archived projects', () => {
-      expect(namespaceProjectsFormLinksWidgetResolver).toHaveBeenCalledWith(
-        expect.objectContaining({
-          includeArchived: false,
-        }),
-      );
     });
   });
 

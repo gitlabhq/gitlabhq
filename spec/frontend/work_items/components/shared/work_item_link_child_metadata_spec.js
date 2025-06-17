@@ -22,6 +22,7 @@ describe('WorkItemLinkChildMetadata', () => {
         metadataWidgets,
       },
       scopedSlots: {
+        'weight-metadata': `<div data-testid="weight-metadata-slot">Weight</div>`,
         'left-metadata': `<div data-testid="left-metadata-slot">Foo</div>`,
         'right-metadata': `<div data-testid="right-metadata-slot">Bar</div>`,
       },
@@ -33,6 +34,7 @@ describe('WorkItemLinkChildMetadata', () => {
   });
 
   it('renders scoped slot contents', () => {
+    expect(wrapper.findByTestId('weight-metadata-slot').text()).toBe('Weight');
     expect(wrapper.findByTestId('left-metadata-slot').text()).toBe('Foo');
     expect(wrapper.findByTestId('right-metadata-slot').text()).toBe('Bar');
   });

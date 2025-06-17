@@ -31,56 +31,6 @@ The subscription determines which features are available for your private projec
 Qualifying open source projects also get 50,000 compute minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
-## Renew GitLab.com subscription
-
-15 days before a subscription expires, a banner with the subscription expiry date displays for group owners in the GitLab user interface.
-
-Before you renew your GitLab.com subscription, you should [review your account](../self_managed/_index.md#review-your-account).
-
-You can renew your subscription [manually](../self_managed/_index.md#renew-subscription-manually) or [automatically](#automatic-subscription-renewal).
-Your updated subscription is applied to your namespace.
-The renewal period start date is displayed on the group Billing page under **Next subscription term start date**.
-
-You can view and [manage renewal invoice](../self_managed/_index.md#manage-renewal-invoice) at any time.
-
-### Renew for fewer seats
-
-Subscription renewals with fewer seats must have or exceed the current number of billable users.
-Before you renew your subscription, [reduce the number of billable users](#remove-users-from-subscription)
-if it exceeds the number of seats you want to renew for.
-
-To manually renew your subscription for fewer seats, you can either:
-
-- [Manually renew](../self_managed/_index.md#renew-subscription-manually) within 15 days of the
-  subscription renewal date. Ensure that you specify the seat quantity when you renew.
-- [Disable automatic renewal of your subscription](../self_managed/_index.md#enable-or-disable-automatic-subscription-renewal),
-  and contact the [sales team](https://customers.gitlab.com/contact_us) to renew it for the number of seats you want.
-
-### Automatic subscription renewal
-
-When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
-You receive [email notifications](../self_managed/_index.md#email-notifications) before a subscription automatically renews.
-Subscriptions purchased through the Customers Portal or GitLab.com are set to auto-renew by default,
-but you can [disable automatic subscription renewal](../self_managed/_index.md#enable-or-disable-automatic-subscription-renewal).
-
-The number of seats is adjusted to fit the [number of billable users in your group](#view-seat-usage) at the time of renewal,
-if that number is higher than the current subscription quantity.
-
-## Expired subscriptions
-
-When your subscription expires, you can continue to use paid features of GitLab for 14 days.
-On the 15th day, paid features are no longer available. You can
-continue to use free features.
-
-For example, if a subscription has a start date of January 1, 2024 and an end date of January 1, 2025:
-
-- It expires at 11:59:59 PM UTC December 31, 2024.
-- It is considered expired from 12:00:00 AM UTC January 1, 2025.
-- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
-- Paid features are no longer available as of 12:00:00 AM UTC January 15, 2025.
-
-To resume paid feature functionality, purchase a new subscription.
-
 ## Add or change subscription contacts
 
 Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
@@ -328,7 +278,7 @@ Prerequisites:
 {{< alert type="note" >}}
 
 Storage subscriptions **renew automatically each year**.
-You can [disable automatic subscription renewal](../self_managed/_index.md#enable-or-disable-automatic-subscription-renewal).
+You can [disable automatic subscription renewal](../manage_subscription.md#turn-on-or-turn-off-automatic-subscription-renewal).
 
 {{< /alert >}}
 
@@ -372,7 +322,7 @@ To purchase additional storage for your group on GitLab.com:
 
 After your payment is processed, the extra storage is available for your group namespace.
 
-To confirm the available storage, follow the first three steps listed above.
+To confirm the available storage, follow the first three steps listed previously.
 
 The **Purchased storage available** total is incremented by the amount purchased. All locked
 projects are unlocked and their excess usage is deducted from the additional storage.

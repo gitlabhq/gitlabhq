@@ -1,11 +1,8 @@
 <script>
 import { GlButton, GlButtonGroup, GlDisclosureDropdown, GlTooltipDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters } from 'vuex';
 import { mapActions, mapState } from 'pinia';
 import { throttle } from 'lodash';
 import { __ } from '~/locale';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   keysFor,
   MR_NEXT_UNRESOLVED_DISCUSSION,
@@ -14,6 +11,7 @@ import {
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { sanitize } from '~/lib/dompurify';
 import { useMrNotes } from '~/mr_notes/store/legacy_mr_notes';
+import { useNotes } from '~/notes/store/legacy_notes';
 import discussionNavigation from '../mixins/discussion_navigation';
 
 export default {
@@ -25,7 +23,7 @@ export default {
     GlButton,
     GlButtonGroup,
   },
-  mixins: [glFeatureFlagsMixin(), discussionNavigation],
+  mixins: [discussionNavigation],
   props: {
     blocksMerge: {
       type: Boolean,
@@ -39,11 +37,10 @@ export default {
     };
   },
   computed: {
-    ...mapVuexGetters([
+    ...mapState(useNotes, [
       'getNoteableData',
       'resolvableDiscussionsCount',
       'unresolvedDiscussionsCount',
-      'allResolvableDiscussions',
     ]),
     ...mapState(useMrNotes, ['allVisibleDiscussionsExpanded']),
     allResolved() {
@@ -106,9 +103,6 @@ export default {
 
       return options;
     },
-    isNotificationsTodosButtons() {
-      return this.glFeatures.notificationsTodosButtons;
-    },
   },
   methods: {
     ...mapActions(useMrNotes, ['toggleAllVisibleDiscussions']),
@@ -128,8 +122,6 @@ export default {
       :class="{
         'gl-bg-feedback-warning': blocksMerge && !allResolved,
         'gl-bg-strong': !blocksMerge || allResolved,
-        'gl-mr-3': !isNotificationsTodosButtons,
-        'gl-mr-5': isNotificationsTodosButtons,
       }"
       data-testid="discussions-counter-text"
     >

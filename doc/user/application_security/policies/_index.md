@@ -3,6 +3,7 @@ stage: Security Risk Management
 group: Security Policies
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Policies
+description: Security policies, enforcement, compliance, approvals, and scans.
 ---
 
 {{< details >}}
@@ -23,11 +24,11 @@ Security teams can ensure:
 - Vulnerabilities that are no longer detected are resolved automatically, reducing the workload of
   triaging vulnerabilities.
 
-Compliance teams can:
+Compliance teams can enforce:
 
-- Centrally enforce multiple approvers on all merge requests
-- Enforce various settings on projects in scope of organizational requirements, such as enabling or
-  locking merge request and repository settings.
+- Multiple approvers on all merge requests
+- Projects settings based on organizational requirements, such as enabling or
+  locking merge request settings or repository settings.
 
 The following policy types are available:
 
@@ -40,42 +41,7 @@ The following policy types are available:
 - [Vulnerability management policy](vulnerability_management_policy.md). Automatically resolve
   vulnerabilities that are no longer detected in the default branch.
 
-## Security policy project
-
-A security policy project is a special type of project used only to contain policies. The
-policies are stored in the `.gitlab/security-policies/policy.yml` YAML file.
-
-To enforce the policies contained in a security policy project, link the security policy
-project to the projects, subgroups, or groups you want to enforce the policies on.
-A security policy project can contain multiple policies but they are
-enforced together. A security policy project enforced on a group or subgroup applies to everything
-below in the hierarchy, including all subgroups and their projects.
-
-Policy changes made in a merge request take effect as soon as the merge request is merged. Those
-that do not go through a merge request, but instead are committed directly to the default branch,
-may require up to 10 minutes before the policy changes take effect.
-
-## Deleting security policy projects
-
-{{< history >}}
-
-- The deletion protection for security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/482967) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion`. Enabled by default.
-- The deletion protection for groups that contain security policy projects was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512043) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `reject_security_policy_project_deletion_groups`. Enabled by default.
-- The deletion protection for security policy projects is generally available in GitLab 17.10. Feature flag `reject_security_policy_project_deletion` removed.
-- The deletion protection for groups that contain security policy projects is generally available in GitLab 17.10. Feature flag `reject_security_policy_project_deletion_groups` removed.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
-
-To delete a security policy project or one of its parent groups, you must remove the link to it
-from all other projects or groups. Otherwise, an error message is displayed when you attempt
-to delete a linked security policy project or a parent group.
+To enforce policies across multiple projects, use [security policy projects](security_policy_projects.md). A security policy project is a special type of project used only to contain policies. To enforce the policies from a security policy project in other groups and projects, link to the security policy project from groups or other projects.
 
 ## Policy design guidelines
 
@@ -88,9 +54,9 @@ When designing your policies, your goals should be to:
 
 To enforce policies to meet your requirements, consider the following factors:
 
-- **Inheritance:** By default, a policy is enforced on the organizational units it's linked to, and
+- **Inheritance**: By default, a policy is enforced on the organizational units it's linked to, and
   all their descendent subgroups and their projects.
-- **Scope:** To customize policy enforcement, you can define a policy's scope to match your needs.
+- **Scope**: To customize policy enforcement, you can define a policy's scope to match your needs.
 
 #### Inheritance
 
@@ -279,147 +245,6 @@ If you're not a group member, you may face limitations in adding or editing poli
 
 {{< /alert >}}
 
-## Policy implementation
-
-Implementation options for security policy projects differ slightly between GitLab.com, GitLab
-Dedicated, and GitLab Self-Managed. The main difference is that on GitLab.com it's only possible to
-create subgroups. Ensuring separation of duties requires more granular permission configuration.
-
-### Enforce policies globally in your GitLab.com namespace
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab.com
-
-{{< /details >}}
-
-Prerequisites:
-
-- You must have the Owner role or [custom role](../../custom_roles/_index.md) with the
-  `manage_security_policy_link` permission to link to the security policy project. For more
-  information, see [separation of duties](#separation-of-duties).
-
-The high-level workflow for enforcing policies globally across all subgroups and projects in your GitLab.com namespace:
-
-1. Visit the **Policies** tab from your top-level group.
-1. In the subgroup, go to the **Policies** tab and create a test policy.
-
-   (Tip: You can create a policy as disabled for testing.) Creating the policy automatically creates
-   a new security policy project under your top-level group. This project is used to store your
-   `policy.yml` or policy-as-code.
-1. Check and set permissions in the newly created project as desired.
-
-   By default, Owners and Maintainers are able to create, edit, and delete policies. Developers can
-   propose policy changes but cannot merge them.
-1. In the security policy project created within your subgroup, create the policies required.
-
-   You can use the policy editor in the `Security Policy Management` project you created, under the
-   **Policies** tab. Or you can directly update the policies in the `policy.yml` file stored in the
-   newly-created security policy project `Security Policy Management - security policy project`.
-1. Link up groups, subgroups, or projects to the security policy project.
-
-   As a subgroup owner, or project owner with proper permissions, you can visit the **Policies**
-   page and create a link to the security policy project. Include the full path and the project's
-   name should end with "- security policy project". All linked groups, subgroups, and projects
-   become "enforceable" by any policies created in the security policy project. For details, see
-   [Link to a security policy project](#link-to-a-security-policy-project).
-1. By default, when a policy is enabled, it is enforced on all projects in linked groups,
-   subgroups, and projects.
-
-   For more granular enforcement, add a "policy scope". Policy scopes allow you to enforce policies
-   against a specific set of projects or against projects containing a given set of compliance
-   framework labels.
-1. If you need additional restrictions, for example to block inherited permissions or require
-   additional review or approval of policy changes, you can create an additional policy scoped only
-   to your security policy project and enforce additional approvals.
-
-### Enforce policies globally in GitLab Dedicated or GitLab Self-Managed
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
-
-{{< /details >}}
-
-Prerequisites:
-
-- You must have the Owner role or [custom role](../../custom_roles/_index.md) with the
-  `manage_security_policy_link` permission to link to the security policy project. For more
-  information, see [separation of duties](#separation-of-duties).
-- To support approval groups globally across your instance, enable
-  `security_policy_global_group_approvers_enabled` in your
-  [GitLab instance application settings](../../../api/settings.md).
-
-The high-level workflow for enforcing policies across multiple groups:
-
-1. Create a separate group to contain your policies and ensure separation of duties.
-
-   By creating a separate standalone group, you can minimize the number of users who inherit
-   permissions.
-1. In the new group, visit the **Policies** tab.
-
-   This serves as the primary location of the policy editor, allowing you to
-   create and manage policies in the UI.
-1. Create a test policy (you can create a policy as disabled for testing).
-
-   Creating the policy automatically creates a new security policy project under your group. This
-   project is used to store your `policy.yml` or policy-as-code.
-1. Check and set permissions in the newly created project as desired.
-
-   By default, Owners and Maintainers are able to create, edit, and delete policies. Developers can
-   propose policy changes but cannot merge them.
-1. In the security policy project created in your subgroup, create the policies required.
-
-   You can use the policy editor in the `Security Policy Management` project you created, under the
-   Policies tab. Or you can directly update the policies in the `policy.yml` file stored in the
-   newly-created security policy project `Security Policy Management - security policy project`.
-1. Link up groups, subgroups, or projects to the security policy project.
-
-   As a subgroup owner, or project owner with proper permissions, you can visit the **Policies**
-   page and create a link to the security policy project. Include the full path and the project's
-   name should end with "-security policy project". All linked groups, subgroups, and projects
-   become "enforceable" by any policies created in the security policy project. For more information, see
-   [link to a security policy project](#link-to-a-security-policy-project).
-1. By default, when a policy is enabled, it is enforced on all projects in linked groups, subgroups,
-   and projects. For more granular enforcement, add a policy scope. Policy scopes allow you to
-   enforce policies against a specific set of projects or against projects containing a given set of
-   compliance framework labels.
-1. If you need additional restrictions, for example to block inherited permissions or require
-   additional review or approval of policy changes, you can create an additional policy scoped only
-   to your security policy project and enforce additional approvals.
-
-## Link to a security policy project
-
-To enforce the policies contained in a security policy project against a group, subgroup, or
-project, you link them. By default, all linked entities are enforced. To enforce policies
-granularly per policy, you can set a "policy scope" in each policy.
-
-Prerequisites:
-
-- You must have the Owner role or [custom role](../../custom_roles/_index.md) with the`manage_security_policy_link` permission to link to the security policy project. For more information, see [separation of duties](#separation-of-duties).
-- You must have at least the Reporter role or [custom role](../../custom_roles/_index.md) with the `manage_security_policy_link` permission to the project you want to assign as the security policy project. For more information, see [separation of duties](#separation-of-duties).
-
-To link a group, subgroup, or project to a security policy project:
-
-1. On the left sidebar, select **Search or go to** and find your project, subgroup, or group.
-1. Select **Secure > Policies**.
-1. Select **Edit Policy Project**, then search for and select the project you would like to link
-   from the dropdown list.
-1. Select **Save**.
-
-To unlink a security policy project, follow the same steps but instead select the trash can icon in
-the dialog.
-You can link to a security policy project from a different subgroup in the same top-level group, or from an entirely different top-level group.
-However, when you enforce a
-[pipeline execution policy](pipeline_execution_policies.md#pipeline-execution-policy-schema), users must have at least read-only access to the project that contains the CI/CD configuration referenced in the policy to trigger the pipeline.
-
-### Viewing the linked security policy project
-
-All users who have access to the project policy page and are not project owners instead view a
-button linking out to the associated security policy project.
-
 ## Policy recommendations
 
 When implementing policies, consider the following recommendations.
@@ -495,12 +320,12 @@ Use the policy editor to create, edit, and delete policies:
 
    The policy editor has two modes:
 
-   - The visual _Rule_ mode allows you to construct and preview policy
+   - The visual **Rule mode** allows you to construct and preview policy
      rules using rule blocks and related controls.
 
      ![Policy Editor Rule Mode](img/policy_rule_mode_v15_9.png)
 
-   - YAML mode allows you to enter a policy definition in `.yaml` format
+   - **YAML mode** allows you to enter a policy definition in `.yaml` format
      and is aimed at expert users and cases that the Rule mode doesn't
      support.
 
@@ -519,6 +344,64 @@ Use the policy editor to create, edit, and delete policies:
 
    If you are a project owner and a security policy project is not associated with this project,
    a security policy project is created and linked to this project when the merge request is created.
+
+### Annotate IDs in `policy.yml`
+
+{{< details >}}
+
+Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/497774) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 with an `annotate_ids` option defined in the `policy.yml` file.
+
+{{< /history >}}
+
+To simplify your `policy.yml` file, GitLab can automatically add comments after IDs, such as project IDs, group IDs, user IDs, or compliance framework IDs. The annotations help users identify the meaning or origin of each ID, which makes the `policy.yml` file easier to understand and maintain.
+
+To enable this experimental feature, add an `annotate_ids` section to the `experiments` section in the `.gitlab/security-policies/policy.yml` file for your security policy project:
+
+```yaml
+experiments:
+  annotate_ids:
+    enabled: true
+```
+
+After you enable the option, any change to the security policies made with the GitLab [policy editor](#policy-editor) creates annotation comments next to the IDs in the `policy.yml` file.
+
+{{< alert type="note" >}}
+
+To apply the annotations, you must use the policy editor. If you edit the `policy.yml` file manually (for example, with a Git commit), the annotations are not applied.
+
+{{< /alert>}}
+
+For example:
+
+```yaml
+# Example policy.yml with annotated IDs
+approval_policy:
+- name: Your policy name
+  # ... other policy fields ...
+  policy_scope:
+    projects:
+      including:
+      - id: 361 # my-group/my-project
+  actions:
+  - type: require_approval
+    approvals_required: 1
+    user_approvers_ids:
+    - 75 # jane.doe
+    group_approvers_ids:
+    - 203 # security-approvers
+```
+
+{{< alert type="note" >}}
+
+When you apply annotations for the first time, GitLab creates the annotations for all IDs in the `policy.yml` file, including those in policies that you aren't editing.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

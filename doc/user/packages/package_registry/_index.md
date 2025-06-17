@@ -19,7 +19,7 @@ title: Package registry
 {{< /history >}}
 
 With the GitLab package registry, you can use GitLab as a private or public registry for a variety
-of [supported package managers](supported_package_managers.md).
+of [supported package managers](supported_functionality.md).
 You can publish and share packages, which can be consumed as a dependency in downstream projects.
 
 ## Package workflows
@@ -49,7 +49,7 @@ When you view packages in a group:
 - Only the projects you can access are displayed.
 - If a project is private, or you are not a member of the project, the packages from that project are not displayed.
 
-To learn how to create and upload a package, follow the instructions for your [package type](supported_package_managers.md).
+To learn how to create and upload a package, follow the instructions for your [package type](supported_functionality.md).
 
 ## Use GitLab CI/CD
 

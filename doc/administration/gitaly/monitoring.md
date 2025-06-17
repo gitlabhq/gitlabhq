@@ -251,7 +251,7 @@ The following are some queries for monitoring Gitaly:
   The only non-zero number should have `enforced="true",status="ok"`. If you have other non-zero
   numbers, something is wrong in your configuration.
 
-  The `status="ok"` number reflects your current request rate. In the example above, Gitaly is
+  The `status="ok"` number reflects your current request rate. In the previous example, Gitaly is
   handling about 4000 requests per second.
 
 - Use the following Prometheus query to observe the [Git protocol versions](../git_protocol.md)

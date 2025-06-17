@@ -19,6 +19,7 @@ import {
   injectUsersScope,
   scopeCrawler,
   buildDocumentTitle,
+  modifySearchQuery,
 } from '~/search/store/utils';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
@@ -316,57 +317,6 @@ describe('Global Search Store Utils', () => {
     });
   });
 
-  describe('injectRegexSearch', () => {
-    describe.each`
-      urlIn                                                            | urlOut
-      ${`${TEST_HOST}/search?search=test&group_id=123`}                | ${'/search?search=test&group_id=123'}
-      ${'/search?search=test&group_id=123'}                            | ${'/search?search=test&group_id=123'}
-      ${`${TEST_HOST}/search?search=test&project_id=123`}              | ${'/search?search=test&project_id=123'}
-      ${'/search?search=test&project_id=123'}                          | ${'/search?search=test&project_id=123'}
-      ${`${TEST_HOST}/search?search=test&project_id=123&group_id=123`} | ${'/search?search=test&project_id=123&group_id=123'}
-      ${'/search?search=test&project_id=123&group_id=123'}             | ${'/search?search=test&project_id=123&group_id=123'}
-    `('modifies urls and links', ({ urlIn, urlOut }) => {
-      it(`should add regex=true to ${urlIn}`, () => {
-        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
-        expect(injectRegexSearch(urlIn)).toEqual(`${urlOut}&regex=true`);
-      });
-
-      it(`should NOT add regex=true to ${urlIn}`, () => {
-        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
-        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
-      });
-    });
-
-    describe.each`
-      urlIn                                | urlOut
-      ${'/search?search=test'}             | ${'/search?search=test'}
-      ${`${TEST_HOST}/search?search=test`} | ${'/search?search=test'}
-      ${'/'}                               | ${'/'}
-    `('does not modify urls and links', ({ urlIn, urlOut }) => {
-      it('should return link with regex equals true', () => {
-        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
-        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
-      });
-    });
-
-    describe.each`
-      urlIn                                                           | urlOut
-      ${'/search?search=test&group_id=123&regex=true'}                | ${'/search?search=test&group_id=123&regex=true'}
-      ${'/search?search=test&project_id=123&regex=true'}              | ${'/search?search=test&project_id=123&regex=true'}
-      ${'/search?search=test&project_id=123&group_id=123&regex=true'} | ${'/search?search=test&project_id=123&group_id=123&regex=true'}
-    `('does not double params', ({ urlIn, urlOut }) => {
-      it(`should not add additional regex=true to ${urlIn} if enabled`, () => {
-        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
-        expect(injectRegexSearch(urlIn)).toEqual(`${urlOut}`);
-      });
-
-      it(`should NOT remove regex=true from ${urlIn} if disabled`, () => {
-        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
-        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
-      });
-    });
-  });
-
   describe('injectUsersScope', () => {
     useMockLocationHelper();
     it.each([
@@ -445,6 +395,86 @@ describe('Global Search Store Utils', () => {
       document.title = `Something · With · Dots · ${SEARCH_WINDOW_TITLE} · GitLab`;
       const result = buildDocumentTitle('test');
       expect(result).toBe(`test · ${SEARCH_WINDOW_TITLE} · GitLab`);
+    });
+  });
+
+  describe('modifySearchQuery', () => {
+    beforeEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('adds new query parameters to a URL without existing parameters', () => {
+      const result = modifySearchQuery('/search', { search: 'test' });
+
+      expect(result).toBe('/search?search=test');
+    });
+
+    it('adds new query parameters to a URL with existing parameters', () => {
+      const result = modifySearchQuery('/search?scope=projects', { search: 'test' });
+
+      expect(result).toBe('/search?scope=projects&search=test');
+    });
+
+    it('overrides existing query parameters with the same name', () => {
+      const result = modifySearchQuery('/search?search=old&scope=projects', { search: 'new' });
+
+      expect(result).toBe('/search?search=new&scope=projects');
+    });
+
+    it('handles absolute URLs correctly', () => {
+      const result = modifySearchQuery(`${TEST_HOST}/search`, { search: 'test' });
+
+      expect(result).toBe('/search?search=test');
+    });
+  });
+
+  describe('injectRegexSearch', () => {
+    describe('with objectOnly parameter', () => {
+      it('returns an empty object when regex is not enabled in localStorage', () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
+
+        const result = injectRegexSearch('/search', true);
+
+        expect(result).toEqual({});
+      });
+
+      it('returns the regex search object when regex is enabled in localStorage', () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+
+        const result = injectRegexSearch('/search', true);
+        expect(result).toEqual({ regex: true });
+      });
+
+      it('returns an empty object when regex is not set in localStorage', () => {
+        localStorage.removeItem(LS_REGEX_HANDLE);
+
+        const result = injectRegexSearch('/search', true);
+
+        expect(result).toEqual({});
+      });
+    });
+
+    describe.each`
+      urlIn                                                            | urlOut
+      ${`${TEST_HOST}/search?search=test&group_id=123`}                | ${'/search?search=test&group_id=123'}
+      ${'/search?search=test&group_id=123'}                            | ${'/search?search=test&group_id=123'}
+      ${`${TEST_HOST}/search?search=test&project_id=123`}              | ${'/search?search=test&project_id=123'}
+      ${'/search?search=test&project_id=123'}                          | ${'/search?search=test&project_id=123'}
+      ${`${TEST_HOST}/search?search=test&project_id=123&group_id=123`} | ${'/search?search=test&project_id=123&group_id=123'}
+      ${'/search?search=test&project_id=123&group_id=123'}             | ${'/search?search=test&project_id=123&group_id=123'}
+    `('modifies urls and links', ({ urlIn, urlOut }) => {
+      it(`should add regex=true to ${urlIn}`, () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(true));
+
+        const result = injectRegexSearch(urlIn);
+
+        expect(result).toEqual(`${urlOut}&regex=true`);
+      });
+
+      it(`should NOT add regex=true to ${urlIn}`, () => {
+        localStorage.setItem(LS_REGEX_HANDLE, JSON.stringify(false));
+        expect(injectRegexSearch(urlIn)).toEqual(urlOut);
+      });
     });
   });
 });

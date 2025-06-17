@@ -88,6 +88,28 @@
   animation-timing-function: ease-in-out;
 }
 
+.board-column-not-applicable::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.96;
+  background-color: var(--gl-feedback-warning-background-color);
+  @apply gl-rounded-base;
+}
+
+.board-column-not-applicable-content {
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+  width: 100%;
+  color: var(--gl-feedback-warning-text-color);
+}
+
 @keyframes board-column-flash-border {
   0%,
   100% {

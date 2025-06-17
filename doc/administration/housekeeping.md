@@ -134,13 +134,17 @@ from your project every `200` push, freeing up storage space for your project.
 
 ### Prune unreachable objects
 
-Unreachable objects are pruned as part of scheduled housekeeping. However,
-you can trigger manual pruning as well. An example: removing commits that contain sensitive
-information. Triggering housekeeping prunes unreachable objects with a grace period of
-two weeks. When you manually trigger the pruning of unreachable objects, the grace period
-is reduced to 30 minutes.
+Unreachable objects are pruned as part of scheduled housekeeping. However, you can trigger
+manual pruning as well. Triggering housekeeping prunes unreachable objects with a grace
+period of two weeks. When you manually trigger the pruning of unreachable objects, the
+grace period is reduced to 30 minutes.
 
 {{< alert type="warning" >}}
+
+Pruning unreachable objects does not guarantee the removal of leaked secrets and other sensitive information. For information on how to remove secrets that
+were committed but not pushed, see the [remove a secret from your commits tutorial](../user/application_security/secret_detection/remove_secrets_tutorial.md).
+Additionally, you can [remove blobs individually](../user/project/repository/repository_size.md#remove-blobs). Refer to that documentation for possible
+consequences of performing that operation.
 
 If a concurrent process (like `git push`) has created an object but hasn't created
 a reference to the object yet, your repository can become corrupted if a reference
@@ -172,7 +176,7 @@ To trigger a manual prune of unreachable objects:
 
 While GitLab automatically performs housekeeping tasks based on the number of
 pushes, it does not maintain repositories that don't receive any pushes at all.
-As a result, inactive repositories or repositories that are only getting read
+As a result, dormant repositories or repositories that are only getting read
 requests may not benefit from improvements in the repository housekeeping
 strategy.
 
@@ -264,7 +268,7 @@ your [Gitaly log](logs/_index.md#gitaly-logs):
 ```
 
 The `actual_duration` (in nanoseconds) indicates how long the scheduled maintenance
-took to execute. In the example above, the scheduled housekeeping completed
+took to execute. In the previous example, the scheduled housekeeping completed
 in just over 5 minutes.
 
 ## Object pool repositories

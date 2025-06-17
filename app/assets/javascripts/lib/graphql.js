@@ -58,6 +58,9 @@ export const typePolicies = {
   TreeEntry: {
     keyFields: ['webPath'],
   },
+  Blob: {
+    keyFields: ['webPath'],
+  },
   Subscription: {
     fields: {
       aiCompletionResponse: {
@@ -77,6 +80,9 @@ export const typePolicies = {
     merge: true,
   },
   ProjectValueStreamAnalyticsFlowMetrics: {
+    merge: true,
+  },
+  ValueStreamStageMetrics: {
     merge: true,
   },
   ScanExecutionPolicy: {

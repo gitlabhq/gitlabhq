@@ -7,6 +7,7 @@ module Projects
         include BaseServiceUtility
         include ::Gitlab::Utils::StrongMemoize
         include ::Projects::ContainerRepository::Gitlab::Timeoutable
+        include ContainerRegistry::Protection::Concerns::TagRule
 
         PROTECTED_TAGS_ERROR_MESSAGE = 'cannot delete protected tag(s)'
 
@@ -52,18 +53,8 @@ module Projects
         end
 
         def filter_out_protected!
-          tag_rules = ::ContainerRegistry::Protection::TagRule.tag_name_patterns_for_project(project.id)
-
-          if current_user
-            return if current_user.can_admin_all_resources?
-
-            user_access_level = project.team.max_member_access(current_user.id)
-            tag_rules = tag_rules.for_delete_and_access(user_access_level)
-          end
-
-          return if tag_rules.blank?
-
-          patterns = tag_rules.map { |rule| ::Gitlab::UntrustedRegexp.new(rule.tag_name_pattern) }
+          patterns = protected_patterns_for_delete(project:, current_user:)
+          return if patterns.blank?
 
           tag_names.reject! do |tag_name|
             patterns.detect do |pattern|

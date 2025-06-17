@@ -69,8 +69,15 @@ export default {
       type: String,
       required: true,
     },
+    status: {
+      type: String,
+      required: true,
+    },
   },
   computed: {
+    environment() {
+      return this.approvalEnvironment.environment;
+    },
     isRollbackAvailable() {
       return Boolean(this.rollback?.lastDeployment);
     },
@@ -79,9 +86,6 @@ export default {
     },
     isActionsShown() {
       return this.actions.length > 0;
-    },
-    environment() {
-      return this.approvalEnvironment.environment;
     },
     rollbackButtonTitle() {
       return this.rollback.lastDeployment?.isLast
@@ -115,9 +119,10 @@ export default {
     />
     <environment-approval
       v-if="approvalEnvironment.isApprovalActionAvailable"
-      :required-approval-count="environment.requiredApprovalCount"
       :deployment-web-path="deploymentWebPath"
+      :required-approval-count="environment.requiredApprovalCount"
       :show-text="false"
+      :status="status"
     />
   </div>
 </template>

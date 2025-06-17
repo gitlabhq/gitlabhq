@@ -330,7 +330,7 @@ describe('Pipeline header', () => {
 
         await waitForPromises();
 
-        expect(findAlert().exists()).toBe(true);
+        expect(findAlert().props('title')).toBe('An error occurred while making the request.');
       });
 
       it('retry button loading state should reset on error', async () => {
@@ -381,7 +381,7 @@ describe('Pipeline header', () => {
 
           await waitForPromises();
 
-          expect(findAlert().exists()).toBe(true);
+          expect(findAlert().props('title')).toBe('An error occurred while making the request.');
         });
       });
     });
@@ -419,7 +419,7 @@ describe('Pipeline header', () => {
 
         await waitForPromises();
 
-        expect(findAlert().exists()).toBe(true);
+        expect(findAlert().props('title')).toBe('An error occurred while deleting the pipeline.');
       });
 
       it('delete button loading state should reset on error', async () => {

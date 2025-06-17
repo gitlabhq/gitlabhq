@@ -196,9 +196,12 @@ export default {
 
         <aside-item v-if="hasJob" class="gl-mb-3">
           <template #header>{{ $options.i18n.job }}</template>
-          <gl-link :href="deployment.job.webPath">
-            {{ deployment.job.name }}
-          </gl-link>
+          <component
+            :is="deployment.job.webPath ? 'gl-link' : 'span'"
+            :href="deployment.job.webPath"
+            data-testid="deployment-job"
+            >{{ deployment.job.name }}</component
+          >
         </aside-item>
 
         <aside-item class="gl-mb-3" data-testid="deployment-ref">

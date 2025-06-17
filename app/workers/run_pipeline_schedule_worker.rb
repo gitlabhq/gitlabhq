@@ -15,9 +15,16 @@ class RunPipelineScheduleWorker
 
   def perform(schedule_id, user_id, options = {})
     schedule = Ci::PipelineSchedule.find_by_id(schedule_id)
+    return unless schedule&.project
+
+    if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable,
+      schedule.project) && !schedule_owner_still_available?(schedule)
+      return
+    end
+
     user = User.find_by_id(user_id)
 
-    return unless schedule && schedule.project && user
+    return unless user
 
     options.symbolize_keys!
 
@@ -48,6 +55,17 @@ class RunPipelineScheduleWorker
     # Ensure `next_run_at` is set properly before creating a pipeline.
     # Otherwise, multiple pipelines could be created in a short interval.
     schedule.schedule_next_run!
+  end
+
+  def schedule_owner_still_available?(schedule)
+    return true if schedule.owner&.can?(:create_pipeline, schedule.project)
+
+    notify_project_owner(schedule)
+    false
+  end
+
+  def notify_project_owner(schedule)
+    NotificationService.new.pipeline_schedule_owner_unavailable(schedule)
   end
 
   def error(schedule, error)

@@ -630,10 +630,14 @@ RSpec.describe API::ProjectJobTokenScope, feature_category: :secrets_management 
         expect(response).to have_gitlab_http_status(:bad_request)
       end
 
-      it 'returns bad_request when adding the source project' do
+      it 'returns created and creates a job token scope link for self-project when adding the source project' do
         post api(post_job_token_scope_allowlist_path, user), params: { target_project_id: project.id }
 
-        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to include(
+          'target_project_id' => project.id,
+          'source_project_id' => project.id
+        )
       end
 
       it 'returns not_found when project for param `project_id` does not exist' do

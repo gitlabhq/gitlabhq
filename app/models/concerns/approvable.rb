@@ -63,6 +63,10 @@ module Approvable
   def eligible_for_unapproval_by?(user)
     user && approved_by?(user) && user.can?(:approve_merge_request, self)
   end
+
+  def approvals_for_user_ids(user_ids)
+    approvals.where(user_id: user_ids)
+  end
 end
 
 Approvable.prepend_mod

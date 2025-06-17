@@ -31,7 +31,7 @@ RSpec.describe RemoveDuplicateUserMemberRoles, feature_category: :system_access 
       name: 'admin 1',
       created_at: time_now,
       updated_at: time_now,
-      permissions: { read_admin_dashboard: true }.to_json
+      permissions: { read_admin_users: true }.to_json
     )
   end
 
@@ -40,7 +40,7 @@ RSpec.describe RemoveDuplicateUserMemberRoles, feature_category: :system_access 
       name: 'admin 2',
       created_at: time_now,
       updated_at: time_now,
-      permissions: { read_admin_dashboard: true }.to_json
+      permissions: { read_admin_users: true }.to_json
     )
   end
 

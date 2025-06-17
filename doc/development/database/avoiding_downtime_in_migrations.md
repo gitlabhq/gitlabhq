@@ -218,6 +218,14 @@ the `remove_after` date has passed.
 
 ## Renaming columns
 
+{{< alert type="note" >}}
+The below procedure is only appropriate for small tables. The procedure copies
+all the data from one column to the other in a regular migration which may take
+too long for large tables. For large tables you should look at using
+[Batched Background Migrations](batched_background_migrations.md) to copy
+the data over and perform the rename over multiple milestones.
+{{< /alert >}}
+
 Renaming columns the standard way requires downtime as an application may continue
 to use the old column names during or after a database migration. To rename a column
 without requiring downtime, we need two migrations: a regular migration and a

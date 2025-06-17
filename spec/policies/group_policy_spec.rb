@@ -95,6 +95,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   shared_examples 'deploy token does not get confused with user' do
     before do
+      # We force the id of the deploy token and the user to be the same,
+      # which requires deleting the joining record as we cannot update
+      # the id while foreign keys reference it.
+      deploy_token.project_deploy_tokens.delete_all(:delete_all)
       deploy_token.update!(id: user_id)
     end
 
@@ -552,10 +556,6 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
   end
 
   describe 'archive_group' do
-    before do
-      stub_feature_flags(archive_group: true)
-    end
-
     context 'when archive_group allowed for owner and admin' do
       context 'with owner' do
         let(:current_user) { owner }
@@ -587,6 +587,117 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       let(:current_user) { owner }
 
       it { is_expected.to be_disallowed(:archive_group) }
+    end
+  end
+
+  describe 'group archiving abilities' do
+    let(:group) { create(:group, :public) }
+    let(:policy) { described_class.new(current_user, group) }
+    let(:current_user) { owner }
+
+    let(:archived_abilities) do
+      %i[
+        admin_build
+        admin_group_member
+        admin_issue
+        admin_issue_board
+        admin_issue_board_list
+        admin_label
+        admin_milestone
+        admin_pipeline
+        admin_work_item
+        create_package
+        create_projects
+        create_runner
+        create_subgroup
+        edit_billing
+        import_projects
+        remove_group
+        reopen_issue
+        transfer_projects
+        update_issue
+      ]
+    end
+
+    let(:destroy_abilities) do
+      %i[
+        destroy_issue
+        destroy_user_achievement
+        destroy_package
+        destroy_upload
+      ]
+    end
+
+    shared_examples 'prevents archived abilities' do
+      it 'prevents abilities defined in ARCHIVED_ABILITIES' do
+        archived_abilities.each do |ability|
+          expect(policy).not_to be_allowed(ability)
+        end
+      end
+    end
+
+    shared_examples 'prevents destroy actions' do
+      it 'prevents destroy actions on archived features' do
+        destroy_abilities.each do |feature|
+          expect(policy).not_to be_allowed(feature)
+        end
+      end
+    end
+
+    shared_examples 'allows destroy actions' do
+      it 'allows destroy actions on archived features' do
+        destroy_abilities.each do |feature|
+          expect(policy).to be_allowed(feature) if policy.respond_to?(:"#{feature}")
+        end
+      end
+    end
+
+    shared_examples 'archived but not marked for deletion' do
+      it_behaves_like 'prevents archived abilities'
+      it_behaves_like 'prevents destroy actions'
+    end
+
+    shared_examples 'archived and marked for deletion' do
+      it_behaves_like 'prevents archived abilities'
+      it_behaves_like 'allows destroy actions'
+    end
+
+    context 'when group is archived but not marked for deletion' do
+      before do
+        group.archive
+      end
+
+      it_behaves_like 'archived but not marked for deletion'
+    end
+
+    context 'when group is archived and marked for deletion' do
+      before do
+        group.archive
+        group.namespace_details.update!(deleted_at: Time.current)
+      end
+
+      it_behaves_like 'archived and marked for deletion'
+    end
+
+    context 'when group ancestor is archived' do
+      let(:group) { create(:group, :nested) }
+
+      before do
+        group.parent.archive
+      end
+
+      it_behaves_like 'archived but not marked for deletion'
+    end
+
+    context 'when group ancestor is marked for deletion' do
+      let(:group) { create(:group, :nested) }
+
+      before do
+        group.parent.archive
+        group.parent.namespace_details.update!(deleted_at: Time.current)
+      end
+
+      it_behaves_like 'archived and marked for deletion'
     end
   end
 
@@ -1362,14 +1473,10 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
 
   context 'package registry' do
     context 'deploy token user' do
-      let!(:group_deploy_token) do
-        create(:group_deploy_token, group: group, deploy_token: deploy_token)
-      end
-
       subject { described_class.new(deploy_token, group) }
 
       context 'with read_package_registry scope' do
-        let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true) }
+        let(:deploy_token) { create(:deploy_token, :group, read_package_registry: true, groups: [group]) }
 
         it { is_expected.to be_allowed(:read_package) }
         it { is_expected.to be_allowed(:read_group) }
@@ -1377,7 +1484,7 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
       end
 
       context 'with write_package_registry scope' do
-        let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true) }
+        let(:deploy_token) { create(:deploy_token, :group, write_package_registry: true, groups: [group]) }
 
         it { is_expected.to be_allowed(:create_package) }
         it { is_expected.to be_allowed(:read_package) }

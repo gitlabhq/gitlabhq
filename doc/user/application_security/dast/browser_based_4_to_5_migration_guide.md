@@ -5,9 +5,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Migrating from the DAST version 4 browser-based analyzer to DAST version 5
 ---
 
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
 {{< history >}}
 
-- The [DAST proxy-based analyzer](proxy-based.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
+- The [DAST proxy-based analyzer](proxy_based_to_browser_based_migration_guide.md) was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/430966) in GitLab 16.6 and removed in 17.0.
 
 {{< /history >}}
 
@@ -147,4 +154,4 @@ See [configuration](browser/configuration/_index.md) for more information on con
 | `DAST_TARGET_AVAILABILITY_TIMEOUT`          | Rename             | To `DAST_TARGET_CHECK_TIMEOUT`                |
 | `DAST_USERNAME`                             | Rename             | To `DAST_AUTH_USERNAME`                       |
 | `DAST_USERNAME_FIELD`                       | Rename             | To `DAST_AUTH_USERNAME_FIELD`                 |
-| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`<br/>GitLab Self-Managed: Upgrade your instance to version 17.0 or newer before removing `DAST_WEBSITE`. This variable is required if you use the `DAST.gitlab-ci.yml` file included with pre-17.0 versions of GitLab. |
+| `DAST_WEBSITE`                              | Rename             | To `DAST_TARGET_URL`<br/>GitLab Self-Managed: Upgrade your instance to version 17.0 or later before removing `DAST_WEBSITE`. This variable is required if you use the `DAST.gitlab-ci.yml` file included with pre-17.0 versions of GitLab. |

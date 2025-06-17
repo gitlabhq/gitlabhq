@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Load Balancer for multi-node GitLab
 ---
@@ -28,7 +28,7 @@ options:
 - Each application node terminates SSL
 - The load balancers terminate SSL and communication is not secure between
   the load balancers and the application nodes
-- The load balancers terminate SSL and communication is *secure* between the
+- The load balancers terminate SSL and communication is secure between the
   load balancers and the application nodes
 
 ### Application nodes terminate SSL
@@ -109,7 +109,7 @@ GitLab Pages requires a separate virtual IP address. Configure DNS to point the
 Some organizations have policies against opening SSH port 22. In this case,
 it may be helpful to configure an alternate SSH hostname that allows users
 to use SSH on port 443. An alternate SSH hostname requires a new virtual IP address
-compared to the other GitLab HTTP configuration above.
+compared to the other GitLab HTTP configuration documented previously.
 
 Configure DNS for an alternate SSH hostname such as `altssh.gitlab.example.com`.
 

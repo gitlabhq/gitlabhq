@@ -2,6 +2,6 @@
 
 module Gitlab
     module DuoWorkflowService
-      VERSION = "0.1"
+      VERSION = "0.2"
     end
   end

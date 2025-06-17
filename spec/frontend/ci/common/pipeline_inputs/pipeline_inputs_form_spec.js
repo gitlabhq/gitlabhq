@@ -1,5 +1,6 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -22,10 +23,47 @@ jest.mock('~/alert');
 
 const defaultProps = {
   queryRef: 'main',
+  emptySelectionText: 'Select inputs to create a new pipeline.',
 };
 const defaultProvide = {
   projectPath: '/root/project',
 };
+
+const expectedInputs = [
+  {
+    name: 'deploy_environment',
+    description: 'Specify deployment environment',
+    default: 'staging',
+    value: 'staging',
+    type: 'text',
+    required: false,
+    options: ['staging', 'production'],
+    regex: '^(staging|production)$',
+    isSelected: false,
+  },
+  {
+    name: 'api_token',
+    description: 'API token for deployment',
+    default: '',
+    value: '',
+    type: 'text',
+    required: true,
+    options: [],
+    regex: null,
+    isSelected: false,
+  },
+  {
+    name: 'tags',
+    description: 'Tags for deployment',
+    default: '',
+    value: '',
+    type: 'ARRAY',
+    required: false,
+    options: [],
+    regex: null,
+    isSelected: false,
+  },
+];
 
 describe('PipelineInputsForm', () => {
   let wrapper;
@@ -44,6 +82,9 @@ describe('PipelineInputsForm', () => {
         ...provide,
       },
       apolloProvider: mockApollo,
+      stubs: {
+        CrudComponent,
+      },
     });
     await waitForPromises();
   };
@@ -52,6 +93,13 @@ describe('PipelineInputsForm', () => {
   const findInputsTable = () => wrapper.findComponent(PipelineInputsTable);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findEmptyState = () => wrapper.findByText('There are no inputs for this configuration.');
+  const findEmptySelectionState = () => wrapper.findByTestId('empty-selection-state');
+  const findInputsSelector = () => wrapper.findComponent(GlCollapsibleListbox);
+
+  const selectInputs = async (inputs = ['deploy_environment', 'api_token', 'tags']) => {
+    findInputsSelector().vm.$emit('select', inputs);
+    await nextTick();
+  };
 
   describe('mounted', () => {
     beforeEach(() => {
@@ -62,9 +110,8 @@ describe('PipelineInputsForm', () => {
     it('sets the initial props for crud component', () => {
       expect(findCrudComponent().exists()).toBe(true);
       expect(findCrudComponent().props()).toMatchObject({
-        count: 0,
-        description: 'Specify the input values to use in this pipeline.',
-        icon: 'code',
+        description:
+          'Specify the input values to use in this pipeline. Any inputs left unselected will use their default values.',
         title: 'Inputs',
       });
     });
@@ -81,45 +128,172 @@ describe('PipelineInputsForm', () => {
         await createComponent();
       });
 
-      it('renders a table when inputs are available', () => {
-        expect(findInputsTable().exists()).toBe(true);
+      it('renders input selector listbox with correct props', () => {
+        expect(findInputsSelector().props()).toMatchObject({
+          toggleText: 'Select inputs',
+          headerText: 'Inputs',
+          searchPlaceholder: 'Search input name',
+          resetButtonLabel: 'Clear',
+          disabled: false,
+        });
       });
 
-      it('sends the correct props to the table', () => {
-        const expectedInputs = [
-          {
-            name: 'deploy_environment',
-            description: 'Specify deployment environment',
-            default: 'staging',
-            type: 'text',
-            required: false,
-            options: ['staging', 'production'],
-            regex: '^(staging|production)$',
-          },
-          {
-            name: 'api_token',
-            description: 'API token for deployment',
-            default: '',
-            type: 'text',
-            required: true,
-            options: [],
-            regex: null,
-          },
-          {
-            name: 'tags',
-            description: 'Tags for deployment',
-            default: '',
-            type: 'ARRAY',
-            required: false,
-            options: [],
-            regex: null,
-          },
-        ];
-        expect(findInputsTable().props('inputs')).toEqual(expectedInputs);
+      it('provides available items to the listbox', () => {
+        expect(findInputsSelector().props('items')).toEqual([
+          { text: 'deploy_environment', value: 'deploy_environment' },
+          { text: 'api_token', value: 'api_token' },
+          { text: 'tags', value: 'tags' },
+        ]);
       });
 
-      it('updates the count in the crud component', () => {
-        expect(findCrudComponent().props('count')).toBe(3);
+      describe('when no inputs are selected', () => {
+        it('does not render a table', () => {
+          expect(findInputsTable().exists()).toBe(false);
+        });
+
+        it('renders an empty state message', () => {
+          expect(findEmptySelectionState().text()).toBe('Select inputs to create a new pipeline.');
+        });
+
+        it('renders an empty state illustration', () => {
+          expect(findEmptySelectionState().find('img').exists()).toBe(true);
+          expect(findEmptySelectionState().find('img').attributes('alt')).toBe(
+            'Pipeline inputs empty state image',
+          );
+        });
+      });
+
+      describe('input name search functionality', () => {
+        it('filters listbox items based on search term', async () => {
+          findInputsSelector().vm.$emit('search', 'api');
+          await nextTick();
+
+          expect(findInputsSelector().props('items')).toEqual([
+            { text: 'api_token', value: 'api_token' },
+          ]);
+
+          findInputsSelector().vm.$emit('search', 'deploy');
+          await nextTick();
+
+          expect(findInputsSelector().props('items')).toEqual([
+            { text: 'deploy_environment', value: 'deploy_environment' },
+          ]);
+        });
+
+        it('shows all items when search is cleared', async () => {
+          findInputsSelector().vm.$emit('search', 'api');
+          await nextTick();
+          expect(findInputsSelector().props('items')).toEqual([
+            { text: 'api_token', value: 'api_token' },
+          ]);
+
+          findInputsSelector().vm.$emit('search', '');
+          await nextTick();
+          expect(findInputsSelector().props('items')).toEqual([
+            { text: 'deploy_environment', value: 'deploy_environment' },
+            { text: 'api_token', value: 'api_token' },
+            { text: 'tags', value: 'tags' },
+          ]);
+        });
+      });
+
+      describe('input selection', () => {
+        beforeEach(() => {
+          selectInputs();
+        });
+
+        it('does not render an empty state message', () => {
+          expect(findEmptySelectionState().exists()).toBe(false);
+        });
+
+        it('renders a table when inputs are available', () => {
+          expect(findInputsTable().exists()).toBe(true);
+        });
+
+        it('adds a group for selected inputs in the listbox', () => {
+          expect(findInputsSelector().props('items')).toEqual([
+            {
+              text: 'Selected',
+              options: [
+                { text: 'deploy_environment', value: 'deploy_environment' },
+                { text: 'api_token', value: 'api_token' },
+                { text: 'tags', value: 'tags' },
+              ],
+            },
+          ]);
+        });
+
+        it('sends the correct props to the table', () => {
+          const updatedSelection = [
+            { ...expectedInputs[0], isSelected: true },
+            { ...expectedInputs[1], isSelected: true },
+            { ...expectedInputs[2], isSelected: true },
+          ];
+          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+        });
+
+        it('removes isSelected property when deselected', async () => {
+          await selectInputs(['api_token', 'tags']);
+          const updatedSelection = [
+            { ...expectedInputs[0], isSelected: false },
+            { ...expectedInputs[1], isSelected: true },
+            { ...expectedInputs[2], isSelected: true },
+          ];
+          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+        });
+
+        it('updates a group for selected inputs in the listbox on change', async () => {
+          await selectInputs(['api_token', 'tags']);
+          expect(findInputsSelector().props('items')).toEqual([
+            {
+              text: 'Selected',
+              options: [
+                { text: 'api_token', value: 'api_token' },
+                { text: 'tags', value: 'tags' },
+              ],
+            },
+            {
+              textSrOnly: true,
+              text: 'Available',
+              options: [{ text: 'deploy_environment', value: 'deploy_environment' }],
+            },
+          ]);
+        });
+
+        it('clears selection on clear button click', async () => {
+          findInputsSelector().vm.$emit('reset');
+          await nextTick();
+
+          expect(findInputsTable().exists()).toBe(false);
+          expect(findEmptySelectionState().exists()).toBe(true);
+        });
+
+        it('selects all inputs on select all button click', async () => {
+          findInputsSelector().vm.$emit('select-all');
+          await nextTick();
+
+          const updatedSelection = [
+            { ...expectedInputs[0], isSelected: true },
+            { ...expectedInputs[1], isSelected: true },
+            { ...expectedInputs[2], isSelected: true },
+          ];
+          expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+        });
+
+        it('selects only filtered inputs when search is active', async () => {
+          findInputsSelector().vm.$emit('search', 'api');
+          await nextTick();
+
+          findInputsSelector().vm.$emit('select-all');
+          await nextTick();
+
+          const updatedSelection = findInputsTable().props('inputs');
+          const apiTokenInput = updatedSelection.find((i) => i.name === 'api_token');
+          const otherInputs = updatedSelection.filter((i) => i.name !== 'api_token');
+
+          expect(apiTokenInput.isSelected).toBe(true);
+          expect(otherInputs.every((i) => !i.isSelected)).toBe(true);
+        });
       });
     });
 
@@ -129,12 +303,20 @@ describe('PipelineInputsForm', () => {
         await createComponent();
       });
 
-      it('does not render a table when there are no inputs', () => {
+      it('renders input selector listbox as disabled', () => {
+        expect(findInputsSelector().props('disabled')).toBe(true);
+      });
+
+      it('does not render a table', () => {
         expect(findInputsTable().exists()).toBe(false);
       });
 
-      it('displays the empty state message when there are no inputs', () => {
+      it('displays the empty state message', () => {
         expect(findEmptyState().exists()).toBe(true);
+      });
+
+      it('does not display the empty selection state message', () => {
+        expect(findEmptySelectionState().exists()).toBe(false);
       });
     });
 
@@ -171,58 +353,107 @@ describe('PipelineInputsForm', () => {
     });
   });
 
-  describe('savedInputs prop', () => {
-    it('overwrites default values if saved input values are provided', async () => {
+  describe('when preselectAllInputs is true', () => {
+    beforeEach(async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
-      const savedInputs = [{ name: 'deploy_environment', value: 'saved-value' }];
-      await createComponent({ props: { savedInputs } });
+      await createComponent({ props: { preselectAllInputs: true } });
+    });
 
-      const updatedInput = findInputsTable()
-        .props('inputs')
-        .find((i) => i.name === 'deploy_environment');
-      expect(updatedInput.default).toBe('saved-value');
+    it('preselects all inputs', () => {
+      const updatedSelection = [
+        { ...expectedInputs[0], isSelected: true },
+        { ...expectedInputs[1], isSelected: true },
+        { ...expectedInputs[2], isSelected: true },
+      ];
+      expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
     });
   });
 
-  describe('event handling', () => {
+  describe('savedInputs prop', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      const savedInputs = [{ name: 'deploy_environment', value: 'saved-value' }];
+      await createComponent({ props: { savedInputs } });
+    });
+
+    it('overwrites default values if saved input values are provided', () => {
+      const updatedInput = findInputsTable()
+        .props('inputs')
+        .find((i) => i.name === 'deploy_environment');
+
+      expect(updatedInput.default).toBe('staging');
+      expect(updatedInput.savedValue).toBe('saved-value');
+      expect(updatedInput.value).toBe('saved-value');
+    });
+
+    it('preselects saved inputs', () => {
+      const updatedSelection = [
+        { ...expectedInputs[0], isSelected: true, value: 'saved-value', savedValue: 'saved-value' },
+        { ...expectedInputs[1], isSelected: false },
+        { ...expectedInputs[2], isSelected: false },
+      ];
+      expect(findInputsTable().props('inputs')).toEqual(updatedSelection);
+    });
+  });
+
+  describe('input update event handling', () => {
     it('processes and emits update events from the table component', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
+      await selectInputs();
 
-      const updatedInput = { ...wrapper.vm.inputs[0], value: 'updated-value' };
-      findInputsTable().vm.$emit('update', updatedInput);
-
-      expect(wrapper.vm.inputs.find((input) => input.name === updatedInput.name).value).toBe(
-        'updated-value',
-      );
+      // Emits an event on inputs select
       expect(wrapper.emitted()['update-inputs']).toHaveLength(1);
 
-      const expectedEmittedValue = wrapper.vm.inputs.map((input) => ({
-        name: input.name,
-        value: input.default,
-      }));
-      expect(wrapper.emitted()['update-inputs'][0][0]).toEqual(expectedEmittedValue);
+      const updatedInput = { ...expectedInputs[0], value: 'updated-value', isSelected: true };
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      expect(wrapper.emitted()['update-inputs']).toHaveLength(2);
+
+      const expectedEmittedValue = [
+        { name: 'deploy_environment', value: 'updated-value' },
+        { name: 'api_token', value: '' },
+        { name: 'tags', value: '' },
+      ];
+
+      expect(wrapper.emitted('update-inputs')[1][0]).toEqual(expectedEmittedValue);
     });
 
     it('only emits modified inputs when emitModifiedOnly is true', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent({ props: { emitModifiedOnly: true } });
+      await selectInputs();
 
       const inputs = findInputsTable().props('inputs');
       const totalInputsCount = inputs.length;
-      const inputToModify = { ...inputs[0], default: 'modified-value' };
+      const inputToModify = { ...inputs[0], value: 'modified-value', isSelected: true };
 
       findInputsTable().vm.$emit('update', inputToModify);
 
-      const emittedNameValuePairs = wrapper.emitted()['update-inputs'][0][0];
+      const emittedNameValuePairs = wrapper.emitted('update-inputs')[1][0];
 
       expect(emittedNameValuePairs).toHaveLength(1);
       expect(emittedNameValuePairs.length).toBeLessThan(totalInputsCount);
     });
 
+    it('when saved input is unselected restores value to default and emits destroy property', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      const savedInputs = [{ name: 'deploy_environment', value: 'saved-value' }];
+      await createComponent({ props: { savedInputs } });
+
+      await selectInputs([]);
+
+      const expectedEmittedValue = [
+        { name: 'deploy_environment', value: 'staging', destroy: true },
+      ];
+
+      expect(wrapper.emitted('update-inputs')[0][0]).toEqual(expectedEmittedValue);
+    });
+
     it('converts string values to arrays for ARRAY type inputs', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
+      await selectInputs();
 
       // Get the array input from the current inputs prop of the table
       const inputs = findInputsTable().props('inputs');
@@ -230,13 +461,13 @@ describe('PipelineInputsForm', () => {
 
       const updatedInput = {
         ...arrayInput,
-        default: '[1,2,3]',
+        value: '[1,2,3]',
       };
 
       findInputsTable().vm.$emit('update', updatedInput);
 
       // Check that the emitted value contains the converted array
-      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedValues = wrapper.emitted('update-inputs')[1][0];
       const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
 
       expect(Array.isArray(emittedArrayValue)).toBe(true);
@@ -246,22 +477,78 @@ describe('PipelineInputsForm', () => {
     it('converts complex object arrays correctly', async () => {
       pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
       await createComponent();
+      await selectInputs();
 
       const inputs = findInputsTable().props('inputs');
       const arrayInput = inputs.find((input) => input.type === 'ARRAY');
 
       const updatedInput = {
         ...arrayInput,
-        default: '[{"key": "value"}, {"another": "object"}]',
+        value: '[{"key": "value"}, {"another": "object"}]',
       };
 
       findInputsTable().vm.$emit('update', updatedInput);
 
-      const emittedValues = wrapper.emitted()['update-inputs'][0][0];
+      const emittedValues = wrapper.emitted('update-inputs')[1][0];
       const emittedArrayValue = emittedValues.find((item) => item.name === 'tags').value;
 
       expect(Array.isArray(emittedArrayValue)).toBe(true);
       expect(emittedArrayValue).toEqual([{ key: 'value' }, { another: 'object' }]);
+    });
+
+    it('restores input defaults and emits empty array when all inputs are deselected', async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+      await selectInputs();
+
+      expect(wrapper.emitted('update-inputs')).toHaveLength(1);
+
+      const updatedInput = { ...expectedInputs[0], value: 'updated-value', isSelected: true };
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      expect(wrapper.emitted('update-inputs')).toHaveLength(2);
+
+      const expectedEmittedValue = [
+        { name: 'deploy_environment', value: 'updated-value' },
+        { name: 'api_token', value: '' },
+        { name: 'tags', value: '' },
+      ];
+
+      expect(wrapper.emitted('update-inputs')[1][0]).toEqual(expectedEmittedValue);
+
+      findInputsSelector().vm.$emit('reset');
+      await nextTick();
+
+      expect(wrapper.emitted('update-inputs')).toHaveLength(3);
+      expect(wrapper.emitted('update-inputs')[2][0]).toEqual([]);
+    });
+  });
+
+  describe('input metadata update event handling', () => {
+    beforeEach(async () => {
+      pipelineInputsHandler = jest.fn().mockResolvedValue(mockPipelineInputsResponse);
+      await createComponent();
+      await selectInputs();
+    });
+
+    it('emits total available and modified counts when receives the inputs', () => {
+      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(2);
+      expect(wrapper.emitted()['update-inputs-metadata'][0][0]).toEqual({
+        totalAvailable: 3,
+        totalModified: 0,
+      });
+    });
+
+    it('emits updated metadata values when inputs are updated', () => {
+      const inputs = findInputsTable().props('inputs');
+      const updatedInput = { ...inputs[0], savedValue: 'saved-value', value: 'new-updated-value' };
+      findInputsTable().vm.$emit('update', updatedInput);
+
+      expect(wrapper.emitted()['update-inputs-metadata']).toHaveLength(3);
+      expect(wrapper.emitted()['update-inputs-metadata'][2][0]).toEqual({
+        totalModified: 1,
+        newlyModified: 1,
+      });
     });
   });
 });

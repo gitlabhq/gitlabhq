@@ -13,6 +13,7 @@ import { createNewMenuGroups, createNewMenuProjects } from '../mock_data';
 
 describe('CreateMenu component', () => {
   let wrapper;
+  const mockToast = jest.fn();
 
   const findGlDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findGlDisclosureDropdownGroups = () => wrapper.findAllComponents(GlDisclosureDropdownGroup);
@@ -45,12 +46,16 @@ describe('CreateMenu component', () => {
       directives: {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
+      mocks: {
+        $toast: { show: mockToast },
+      },
     });
   };
 
   describe('default', () => {
     beforeEach(() => {
       createWrapper();
+      mockToast.mockReset();
     });
 
     it('passes custom offset to the dropdown', () => {
@@ -116,6 +121,30 @@ describe('CreateMenu component', () => {
 
         expect(findCreateGroupWorkItemModal().exists()).toBe(false);
       });
+
+      it('shows a toast when work item is created', async () => {
+        const workItem = {
+          workItemType: { name: 'Epic' },
+          webUrl: 'https://gitlab.com/group/project/-/epics/123',
+        };
+
+        findCreateGroupWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
+        expect(findCreateGroupWorkItemModal().exists()).toBe(true);
+        findCreateGroupWorkItemModal().vm.$emit('workItemCreated', workItem);
+        await nextTick();
+
+        expect(findCreateGroupWorkItemModal().exists()).toBe(false);
+
+        expect(mockToast).toHaveBeenCalledWith('Epic created', {
+          autoHideDelay: 10000,
+          action: {
+            text: 'View details',
+            onClick: expect.any(Function),
+          },
+        });
+      });
     });
 
     describe('create new work item modal', () => {
@@ -150,6 +179,29 @@ describe('CreateMenu component', () => {
         await nextTick();
 
         expect(findCreateWorkItemModal().exists()).toBe(false);
+      });
+
+      it('shows a toast when work item is created', async () => {
+        const workItem = {
+          workItemType: { name: 'Epic' },
+          webUrl: 'https://gitlab.com/group/project/-/epics/123',
+        };
+
+        findCreateWorkItemModalTrigger().vm.$emit('action');
+        await nextTick();
+
+        findCreateWorkItemModal().vm.$emit('workItemCreated', workItem);
+        await nextTick();
+
+        expect(findCreateWorkItemModal().exists()).toBe(false);
+
+        expect(mockToast).toHaveBeenCalledWith('Epic created', {
+          autoHideDelay: 10000,
+          action: {
+            text: 'View details',
+            onClick: expect.any(Function),
+          },
+        });
       });
     });
 

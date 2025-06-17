@@ -29,7 +29,8 @@ module MergeRequests
         merge_after: [:merge_schedule],
         mergeable: [:merge_schedule],
         detailed_merge_status: [:merge_schedule],
-        milestone: [:milestone],
+        mergeability_checks: [:merge_schedule, :unresolved_notes, { target_project: [:lfs_file_locks] }],
+        milestone: [:milestone, { milestone: [:project, :group] }],
         security_auto_fix: [:author],
         head_pipeline: [:merge_request_diff, { head_pipeline: [:merge_request, :project] }],
         timelogs: [:timelogs],
@@ -38,7 +39,8 @@ module MergeRequests
         suggested_reviewers: [:predictions],
         diff_stats: [latest_merge_request_diff: [:merge_request_diff_commits]],
         source_branch_exists: [:source_project, { source_project: [:route] }],
-        squash_read_only: { target_project: :project_setting }
+        squash_read_only: { target_project: :project_setting },
+        web_url: { target_project: [:route, { namespace: [:route] }] }
       }
     end
   end

@@ -1,8 +1,4 @@
-query namespaceProjectsForLinksWidget(
-  $fullPath: ID!
-  $projectSearch: String
-  $includeArchived: Boolean = false
-) {
+query namespaceProjectsForLinksWidget($fullPath: ID!, $projectSearch: String) {
   namespace(fullPath: $fullPath) {
     id
     projects(
@@ -10,7 +6,8 @@ query namespaceProjectsForLinksWidget(
       includeSubgroups: true
       includeSiblingProjects: true
       sort: ACTIVITY_DESC
-      includeArchived: $includeArchived
+      includeArchived: false
+      withIssuesEnabled: true
     ) {
       nodes {
         id

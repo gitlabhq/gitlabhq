@@ -42,10 +42,17 @@ export default {
       required: false,
       default: false,
     },
+    showDateWhenOverAYear: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     timeAgo() {
-      return this.timeFormatted(this.time, this.dateTimeFormat);
+      return this.timeFormatted(this.time, this.dateTimeFormat, {
+        showDateWhenOverAYear: this.showDateWhenOverAYear,
+      });
     },
     tooltipText() {
       return this.enableTruncation ? undefined : this.tooltipTitle(this.time);
@@ -56,8 +63,10 @@ export default {
 <template>
   <time
     v-gl-tooltip.viewport="{ placement: tooltipPlacement }"
+    tabindex="0"
     :class="cssClass"
     :title="tooltipText"
+    :aria-label="tooltipText"
     :datetime="time"
     ><slot :time-ago="timeAgo"
       ><template v-if="enableTruncation"><gl-truncate :text="timeAgo" with-tooltip /></template

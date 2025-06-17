@@ -11,27 +11,21 @@ module Gitlab
       include Gitlab::Utils::StrongMemoize
       include Gitlab::UsageDataCounters::RedisCounter
       include Gitlab::UsageDataCounters::RedisSum
+      include Gitlab::UsageDataCounters::RedisHashCounter
 
       def track_event(event_name, category: nil, additional_properties: {}, **kwargs)
-        unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
-          Gitlab::AppJsonLogger.warn("InternalEvents.track_event called with undefined event: #{event_name}")
-        end
-
         Gitlab::Tracking::EventValidator.new(event_name, additional_properties, kwargs).validate!
 
-        event_definition = Gitlab::Tracking::EventDefinition.find(event_name)
-        send_snowplow_event = kwargs.fetch(:send_snowplow_event, true)
-
+        send_snowplow_event = kwargs.key?(:send_snowplow_event) ? kwargs.delete(:send_snowplow_event) : true
+        event_router = Gitlab::InternalEvents::EventsRouter.new(event_name, additional_properties, kwargs)
         track_analytics_event(event_name, send_snowplow_event, category: category,
-          additional_properties: additional_properties, **kwargs)
+          additional_properties: event_router.public_additional_properties, **kwargs)
 
-        return unless event_definition
+        event_router.event_definition.extra_trackers.each do |tracking_class, properties|
+          next unless tracking_class
 
-        kwargs[:additional_properties] = additional_properties
-        event_definition.extra_tracking_classes.each do |tracking_class|
-          tracking_class.track_event(event_name, **kwargs)
+          tracking_class.track_event(event_name, **event_router.extra_tracking_data(properties))
         end
-
       rescue StandardError => e
         extra = {}
         kwargs.each_key do |k|
@@ -75,7 +69,9 @@ module Gitlab
 
           next unless matches_filter
 
-          if event_selection_rule.total_counter?
+          if event_selection_rule.unique_total?
+            update_unique_hash_totals_counter(event_selection_rule, **kwargs, **additional_properties)
+          elsif event_selection_rule.total_counter?
             update_total_counter(event_selection_rule)
           elsif event_selection_rule.sum?
             update_sums(event_selection_rule, **kwargs, **additional_properties)
@@ -104,6 +100,15 @@ module Gitlab
         expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
 
         increment_sum_by(event_selection_rule.redis_key_for_date, properties[:value], expiry: expiry)
+      end
+
+      def update_unique_hash_totals_counter(event_selection_rule, properties)
+        return unless properties.has_key?(event_selection_rule.unique_identifier_name)
+
+        value = properties[event_selection_rule.unique_identifier_name]
+        expiry = event_selection_rule.time_framed? ? KEY_EXPIRY_LENGTH : nil
+
+        hash_increment(event_selection_rule.redis_key_for_date, value, expiry: expiry)
       end
 
       def update_unique_counter(event_selection_rule, properties)
@@ -136,7 +141,6 @@ module Gitlab
           project_id: project&.id,
           user: user,
           namespace: namespace,
-          plan_name: namespace&.actual_plan_name,
           feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
           **extra
         ).to_context

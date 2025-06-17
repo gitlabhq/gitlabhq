@@ -11,7 +11,7 @@ class List < ApplicationRecord
 
   has_many :list_user_preferences
 
-  enum :list_type, { backlog: 0, label: 1, closed: 2, assignee: 3, milestone: 4, iteration: 5 }
+  enum :list_type, { backlog: 0, label: 1, closed: 2, assignee: 3, milestone: 4, iteration: 5, status: 6 }
 
   validates :board, :list_type, presence: true, unless: :importing?
   validates :label_id, uniqueness: { scope: :board_id }, if: :label?

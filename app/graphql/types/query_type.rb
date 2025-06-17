@@ -13,7 +13,12 @@ module Types
     field :ci_application_settings, Types::Ci::ApplicationSettingType,
       null: true,
       description: 'CI related settings that apply to the entire instance.'
-    field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126 # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
+
+    field :ci_config, resolver: Resolvers::Ci::ConfigResolver, complexity: 126, # AUTHENTICATED_MAX_COMPLEXITY / 2 + 1
+      deprecated: {
+        reason: 'Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>',
+        milestone: '18.1'
+      }
 
     field :ci_pipeline_stage, ::Types::Ci::StageType,
       null: true, description: 'Stage belonging to a CI pipeline.' do

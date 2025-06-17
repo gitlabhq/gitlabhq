@@ -123,14 +123,14 @@ Code Suggestions provides a LSP (Language Server Protocol) server, to support th
 All editor extensions from GitLab, except Neovim, add an icon to your IDE's status bar.
 For example, in Visual Studio:
 
-![The status bar in Visual Studio.](../../../../editor_extensions/img/visual_studio_status_bar_v17_4.png)
+![The status bar in Visual Studio.](img/visual_studio_status_bar_v17_4.png)
 
 | Icon | Status | Meaning |
 | :--- | :----- | :------ |
 | {{< icon name="tanuki-ai" >}} | **Ready** | You've configured and enabled GitLab Duo, and you're using a language that supports Code Suggestions. |
 | {{< icon name="tanuki-ai-off" >}} | **Not configured** | You haven't entered a personal access token, or you're using a language that Code Suggestions doesn't support. |
-| ![The status icon for fetching Code Suggestions.](../../../../editor_extensions/img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
-| ![The status icon for a Code Suggestions error.](../../../../editor_extensions/img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
+| ![The status icon for fetching Code Suggestions.](img/code_suggestions_loading_v17_4.svg) | **Loading suggestion** | GitLab Duo is fetching Code Suggestions for you. |
+| ![The status icon for a Code Suggestions error.](img/code_suggestions_error_v17_4.svg) | **Error** | GitLab Duo has encountered an error. |
 
 ## Turn off Code Suggestions
 

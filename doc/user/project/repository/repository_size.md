@@ -18,7 +18,7 @@ It can differ slightly from one instance to another due to compression, housekee
 
 ## Size calculation
 
-The **Project overview** page shows the size of all files in the repository, including repository files,
+The project overview page shows the size of all files in the repository, including repository files,
 artifacts, and LFS. This size is updated every 15 minutes.
 
 The size of a repository is determined by computing the accumulated size of all files in the repository.
@@ -180,6 +180,16 @@ To remove blobs from your repository:
 1. In the same **Settings > General > Advanced** section, select **Prune unreachable objects**.
    This operation takes approximately 5-10 minutes to complete.
 
+{{< alert type="note" >}}
+
+If the project containing the sensitive information has been forked, the housekeeping task might
+succeed without completing this process. Housekeeping must maintain the integrity of the
+[special object pool repository](../../../administration/housekeeping.md#object-pool-repositories),
+which contains the forked data.
+For help, contact GitLab Support.
+
+{{< /alert >}}
+
 #### Get a list of object IDs
 
 To remove blobs, you need a list of objects to remove.
@@ -230,7 +240,7 @@ exported `.tar.gz` or local repository:
 
    ```ruby
    p.repository.expire_all_method_caches
-   UpdateProjectStatisticsWorker.perform_async(p.id, ["commit_count","repository_size","storage_size","lfs_objects_size"])
+   UpdateProjectStatisticsWorker.perform_async(p.id, ["commit_count","repository_size","storage_size","lfs_objects_size","container_registry_size"])
    ```
 
 1. To check the total artifact storage space:

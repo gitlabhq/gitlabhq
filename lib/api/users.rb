@@ -59,6 +59,7 @@ module API
           optional :twitter, type: String, desc: 'The Twitter username'
           optional :discord, type: String, desc: 'The Discord user ID'
           optional :website_url, type: String, desc: 'The website of the user'
+          optional :github, type: String, desc: 'The GitHub username'
           optional :organization, type: String, desc: 'The organization of the user'
           optional :projects_limit, type: Integer, desc: 'The number of projects a user can create'
           optional :extern_uid, type: String, desc: 'The external authentication provider UID'
@@ -262,9 +263,7 @@ module API
         requires :user_id, type: String, desc: 'The ID or username of the user'
       end
       get ":user_id/status", requirements: API::USER_REQUIREMENTS, feature_category: :user_profile, urgency: :default do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_status)
-        end
+        check_rate_limit_by_user_or_ip!(:user_status)
 
         user = find_user(params[:user_id])
 
@@ -326,11 +325,7 @@ module API
       get ':id/following', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
-        unless current_user.can_read_all_resources?
-          if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-            check_rate_limit_by_user_or_ip!(:user_following)
-          end
-        end
+        check_rate_limit_by_user_or_ip!(:user_following) unless current_user.can_read_all_resources?
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
@@ -348,11 +343,7 @@ module API
       get ':id/followers', feature_category: :user_profile do
         forbidden!('Not authorized!') unless current_user
 
-        unless current_user.can_read_all_resources?
-          if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-            check_rate_limit_by_user_or_ip!(:user_followers)
-          end
-        end
+        check_rate_limit_by_user_or_ip!(:user_followers) unless current_user.can_read_all_resources?
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user_profile, user)
@@ -377,7 +368,7 @@ module API
       post feature_category: :user_profile do
         authenticated_as_admin!
 
-        params = declared_params(include_missing: false).merge(organization_id: Current.organization&.id)
+        params = declared_params(include_missing: false).merge(organization_id: Current.organization.id)
 
         # TODO: Remove in 16.0. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/387005
         if params.key?(:private_profile) && params[:private_profile].nil?
@@ -563,9 +554,7 @@ module API
         use :pagination
       end
       get ':user_id/keys', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_ssh_keys)
-        end
+        check_rate_limit_by_user_or_ip!(:user_ssh_keys)
 
         user = find_user(params[:user_id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -582,9 +571,7 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the SSH key'
       end
       get ':id/keys/:key_id', requirements: API::USER_REQUIREMENTS, feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_ssh_key)
-        end
+        check_rate_limit_by_user_or_ip!(:user_ssh_key)
 
         user = find_user(params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
@@ -654,9 +641,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys', feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_gpg_keys)
-        end
+        check_rate_limit_by_user_or_ip!(:user_gpg_keys)
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -675,9 +660,7 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get ':id/gpg_keys/:key_id', feature_category: :system_access do
-        if Feature.enabled?(:rate_limiting_user_endpoints, ::Feature.current_request)
-          check_rate_limit_by_user_or_ip!(:user_gpg_key)
-        end
+        check_rate_limit_by_user_or_ip!(:user_gpg_key)
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
@@ -812,7 +795,10 @@ module API
 
         user = User.find_by(id: params[:id])
         not_found!('User') unless user
-        conflict!('User cannot be removed while is the sole-owner of a group') unless user.can_be_removed? || params[:hard_delete]
+
+        unless user.can_be_removed? || params[:hard_delete]
+          conflict!('User cannot be removed while is the sole-owner of a group')
+        end
 
         destroy_conditionally!(user) do
           user.delete_async(deleted_by: current_user, params: params)
@@ -1122,7 +1108,7 @@ module API
           end
           post feature_category: :system_access do
             response = ::PersonalAccessTokens::CreateService.new(
-              current_user: current_user, target_user: target_user, organization_id: Current.organization&.id, params: declared_params(include_missing: false)
+              current_user: current_user, target_user: target_user, organization_id: Current.organization.id, params: declared_params(include_missing: false)
             ).execute
 
             if response.success?
@@ -1583,7 +1569,7 @@ module API
         end
         post feature_category: :system_access do
           response = ::PersonalAccessTokens::CreateService.new(
-            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization&.id
+            current_user: current_user, target_user: current_user, params: declared_params(include_missing: false), organization_id: Current.organization.id
           ).execute
 
           if response.success?

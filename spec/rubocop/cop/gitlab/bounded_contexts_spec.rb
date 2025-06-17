@@ -156,42 +156,53 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
   end
 
   describe 'GraphQL code' do
-    it 'flags an offense for a mutation not in a bounded context' do
-      expect_offense(<<~SOURCE)
-        module Mutations
+    %w[
+      Mutations
+      Types
+      Resolvers
+      Subscriptions
+    ].each do |clazz|
+      it "flags an offense for a #{clazz.downcase.singularize} not in a bounded context" do
+        expect_offense(<<~SOURCE)
+        module #{clazz}
           module NotABoundedContext
                  ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
           end
         end
-      SOURCE
-    end
+        SOURCE
+      end
 
-    it 'does not flag an offense for a mutation in a bounded context' do
-      expect_no_offenses(<<~SOURCE)
-        module Mutations
+      it "does not flag an offense for a #{clazz.downcase.singularize} in a bounded context" do
+        expect_no_offenses(<<~SOURCE)
+        module #{clazz}
           module RemoteDevelopment
           end
         end
-      SOURCE
-    end
+        SOURCE
+      end
 
-    it 'flags an offense for a type not in a bounded context' do
-      expect_offense(<<~SOURCE)
-        module Types
-          module NotABoundedContext
-                 ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+      it "does not flag an offense for a #{clazz.downcase.singularize} in a bounded context inside an EE extension" do
+        expect_no_offenses(<<~SOURCE)
+        module EE
+          module #{clazz}
+            module RemoteDevelopment
+            end
           end
         end
-      SOURCE
-    end
+        SOURCE
+      end
 
-    it 'does not flag an offense for a type in a bounded context' do
-      expect_no_offenses(<<~SOURCE)
-        module Types
-          module RemoteDevelopment
+      it "flags an offense for a #{clazz.downcase.singularize} not in a bounded context inside an EE extension" do
+        expect_offense(<<~SOURCE)
+          module EE
+            module #{clazz}
+              module NotABoundedContext
+                     ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+              end
+            end
           end
-        end
-      SOURCE
+        SOURCE
+      end
     end
 
     it 'flags an offense for a permission type not in a bounded context' do
@@ -225,45 +236,30 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
       SOURCE
     end
 
-    it 'flags an offense for a resolver not in a bounded context' do
-      expect_offense(<<~SOURCE)
-        module Resolvers
-          module NotABoundedContext
-                 ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
-          end
-        end
-      SOURCE
-    end
-
-    it 'does not flag an offense for a resolver in a bounded context' do
+    it 'does not flag an offense for a permission type in a bounded context inside an EE extension' do
       expect_no_offenses(<<~SOURCE)
-        module Resolvers
-          module RemoteDevelopment
-          end
-        end
-      SOURCE
-    end
-
-    it 'does not flag an offense for a resolver in a bounded context inside an EE extension' do
-      expect_no_offenses(<<~SOURCE)
-        module EE
-          module Resolvers
+      module EE
+        module Types
+          module PermissionTypes
             module RemoteDevelopment
             end
           end
         end
+      end
       SOURCE
     end
 
-    it 'flags an offense for a resolver not in a bounded context inside an EE extension' do
+    it 'flags an offense for a permission type not in a bounded context inside an EE extension' do
       expect_offense(<<~SOURCE)
-        module EE
-          module Resolvers
+      module EE
+        module Types
+          module PermissionTypes
             module NotABoundedContext
                    ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
             end
           end
         end
+      end
       SOURCE
     end
   end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['OrganizationUserAccess'], feature_category: :cell do
+RSpec.describe GitlabSchema.types['OrganizationUserAccess'], feature_category: :organization do
   specify { expect(described_class.graphql_name).to eq('OrganizationUserAccess') }
   specify { expect(described_class).to require_graphql_authorizations(nil) }
 

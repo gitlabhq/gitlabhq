@@ -286,6 +286,11 @@ export const FiltersInfo = {
   search: {
     negatedSupport: false,
   },
+  status: {
+    transform: (val) => {
+      return { name: val };
+    },
+  },
 };
 
 /**
@@ -394,7 +399,7 @@ export function getBoardQuery(boardType) {
 }
 
 export function getListByTypeId(lists, type, id) {
-  // type can be assignee/label/milestone/iteration
+  // type can be assignee/label/milestone/iteration/status
   if (type && id) return find(lists, (l) => l.listType === ListType[type] && l[type]?.id === id);
 
   return null;

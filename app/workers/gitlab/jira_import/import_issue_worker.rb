@@ -32,20 +32,10 @@ module Gitlab
 
       private
 
-      # Necessary temporarily as new version might process jobs enqueued in old version
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/520048
-      def ensure_correct_work_item_type(attributes)
-        return attributes unless attributes.key?('correct_work_item_type_id')
-
-        work_item_type_id = attributes['correct_work_item_type_id']
-
-        attributes.except('correct_work_item_type_id').merge('work_item_type_id' => work_item_type_id)
-      end
-
       def create_issue(issue_attributes, project_id)
         label_ids = issue_attributes.delete('label_ids')
         assignee_ids = issue_attributes.delete('assignee_ids')
-        issue_id = insert_and_return_id(ensure_correct_work_item_type(issue_attributes), Issue)
+        issue_id = insert_and_return_id(issue_attributes, Issue)
 
         label_issue(project_id, issue_id, label_ids)
         assign_issue(project_id, issue_id, assignee_ids)

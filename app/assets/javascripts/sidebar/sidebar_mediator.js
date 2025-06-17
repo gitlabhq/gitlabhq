@@ -83,10 +83,16 @@ export default class SidebarMediator {
   requestReview({ userId, callback }) {
     return this.service
       .requestReview(userId)
-      .then(() => {
-        this.store.updateReviewer(userId, 'reviewed');
-        toast(__('Requested review'));
-        callback(userId, true);
+      .then((e) => {
+        const errorMessage = e.data.mergeRequestReviewerRereview.errors?.[0];
+
+        if (errorMessage) {
+          callback(userId, false, errorMessage);
+        } else {
+          this.store.updateReviewer(userId, 'reviewed');
+          toast(__('Requested review'));
+          callback(userId, true);
+        }
       })
       .catch(() => callback(userId, false));
   }

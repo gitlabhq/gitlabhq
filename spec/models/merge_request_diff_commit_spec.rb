@@ -61,7 +61,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
   end
 
   describe '.create_bulk' do
-    subject { described_class.create_bulk(merge_request_diff_id, commits, skip_commit_data: skip_commit_data) }
+    subject { described_class.create_bulk(merge_request_diff_id, commits, project, skip_commit_data: skip_commit_data) }
 
     let(:merge_request_diff_id) { merge_request.merge_request_diff.id }
     let(:skip_commit_data) { false }
@@ -108,8 +108,7 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
 
     it 'creates diff commit users' do
       diff = create(:merge_request_diff, merge_request: merge_request)
-
-      described_class.create_bulk(diff.id, [commits.first])
+      described_class.create_bulk(diff.id, [commits.first], project)
 
       commit_row = described_class
         .find_by(merge_request_diff_id: diff.id, relative_order: 0)
@@ -162,10 +161,60 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         subject
       end
     end
+
+    context 'with add_organization_to_diff_commit_users feature flag' do
+      let(:test_project) { create(:project) }
+      let(:test_diff) { create(:merge_request_diff) }
+      let(:organization_id) { test_project.organization_id }
+      let(:commits) do
+        [double(:commit, to_hash: {
+          id: 'test123',
+          author_name: 'Feature Test Author',
+          author_email: 'feature@test.com',
+          committer_name: 'Feature Test Committer',
+          committer_email: 'committer@test.com',
+          authored_date: Time.current,
+          committed_date: Time.current,
+          message: 'Test commit'
+        })]
+      end
+
+      context 'when enabled' do
+        it 'uses organization_id in hash lookup' do
+          users_hash = {
+            ['Feature Test Author', 'feature@test.com', organization_id] =>
+              instance_double(MergeRequest::DiffCommitUser, id: 1),
+            ['Feature Test Committer', 'committer@test.com', organization_id] =>
+              instance_double(MergeRequest::DiffCommitUser, id: 2)
+          }
+
+          allow(MergeRequest::DiffCommitUser).to receive(:bulk_find_or_create).and_return(users_hash)
+
+          expect { described_class.create_bulk(test_diff.id, commits, test_project) }.not_to raise_error
+        end
+      end
+
+      context 'when disabled' do
+        it 'uses name and email only in hash lookup' do
+          stub_feature_flags(add_organization_to_diff_commit_users: false)
+          users_hash = {
+            ['Feature Test Author', 'feature@test.com'] =>
+              instance_double(MergeRequest::DiffCommitUser, id: 1),
+            ['Feature Test Committer', 'committer@test.com'] =>
+              instance_double(MergeRequest::DiffCommitUser, id: 2)
+          }
+
+          allow(MergeRequest::DiffCommitUser).to receive(:bulk_find_or_create).and_return(users_hash)
+
+          expect { described_class.create_bulk(test_diff.id, commits, test_project) }.not_to raise_error
+        end
+      end
+    end
   end
 
   describe '.prepare_commits_for_bulk_insert' do
-    it 'returns the commit hashes and unique user tuples' do
+    it 'returns the commit hashes and unique user triples' do
+      organization_id = create(:organization).id
       commit = double(:commit, to_hash: {
         parent_ids: %w[foo bar],
         author_name: 'a' * 1000,
@@ -173,18 +222,15 @@ RSpec.describe MergeRequestDiffCommit, feature_category: :code_review_workflow d
         committer_name: 'Alice',
         committer_email: 'alice@example.com'
       })
-
-      hashes, tuples = described_class.prepare_commits_for_bulk_insert([commit])
-
+      hashes, triples = described_class.prepare_commits_for_bulk_insert([commit], organization_id)
       expect(hashes).to eq([{
         author_name: 'a' * 512,
         author_email: 'a' * 512,
         committer_name: 'Alice',
         committer_email: 'alice@example.com'
       }])
-
-      expect(tuples)
-        .to include(['a' * 512, 'a' * 512], %w[Alice alice@example.com])
+      expect(triples)
+        .to include(['a' * 512, 'a' * 512, organization_id], ['Alice', 'alice@example.com', organization_id])
     end
   end
 end

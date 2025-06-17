@@ -496,6 +496,22 @@ GitlabSecurity/PublicSend:
     - 'ee/lib/**/*.rake'
     - 'ee/spec/**/*'
 
+Gitlab/DeprecatedAuditEventService:
+  Enabled: true
+  Exclude:
+    - 'ee/app/services/ee/audit_event_service.rb'
+    - 'ee/app/services/ee/applications/create_service.rb'
+    - 'ee/app/services/audit_events/release_audit_event_service.rb'
+    - 'ee/app/services/ee/keys/create_service.rb'
+    - 'ee/app/services/ee/users/migrate_records_to_ghost_user_service.rb'
+    - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
+    - 'ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb'
+    - 'ee/spec/services/audit_event_service_spec.rb'
+    - 'ee/lib/gitlab/auth/group_saml/membership_updater.rb'
+    - 'app/controllers/sessions_controller.rb'
+    - 'app/services/audit_event_service.rb'
+    - 'spec/services/audit_event_service_spec.rb'
+
 Database/MultipleDatabases:
   Enabled: true
   Exclude:
@@ -554,6 +570,18 @@ Gitlab/AvoidCurrentOrganization:
     - 'spec/**/*'
     - 'ee/spec/**/*'
 
+Gitlab/DisallowCurrentOrganizationIdSafeNavigation:
+  Description: 'Use `Current.organization.id` instead of `Current.organization&.id`. `Current.organization` is expected to be assigned.'
+  Enabled: true
+  Include:
+    - 'app/**/*.rb'
+    - 'ee/app/**/*.rb'
+    - 'lib/**/*.rb'
+    - 'ee/lib/**/*.rb'
+  Exclude:
+    # Exclude the cop's own spec file to prevent self-reporting.
+    - 'spec/rubocop/cop/gitlab/disallow_current_organization_id_safe_navigation_spec.rb'
+
 # See https://gitlab.com/groups/gitlab-org/-/epics/7374
 Gitlab/AvoidGitlabInstanceChecks:
   Enabled: true
@@ -567,6 +595,12 @@ Gitlab/EeOnlyClass:
   Include:
     - 'ee/**/ee/**/*.rb'
 
+Gitlab/RSpec/AvoidCreateDefaultOrganization:
+  Enabled: true
+  Include:
+    - 'spec/**/*.rb'
+    - 'ee/spec/**/*.rb'
+
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/373194
 Gitlab/RSpec/AvoidSetup:
   Enabled: true
@@ -576,6 +610,29 @@ Gitlab/RSpec/AvoidSetup:
     - 'ee/spec/features/gitlab_subscriptions/trials/access_denied_spec.rb'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/**/*'
     - 'ee/spec/features/gitlab_subscriptions/trials/duo_enterprise/**/*'
+
+# WIP: See https://gitlab.com/gitlab-org/gitlab/-/issues/543719
+Gitlab/RSpec/MisplacedEeSpecFile:
+  Enabled: true
+  Include:
+    - 'ee/spec/lib/**/*_spec.rb'
+    - 'ee/spec/components/**/*_spec.rb'
+    - 'ee/spec/controllers/**/*_spec.rb'
+    - 'ee/spec/experiments/**/*_spec.rb'
+    - 'ee/spec/finders/**/*_spec.rb'
+    - 'ee/spec/graphql/**/*_spec.rb'
+    - 'ee/spec/helpers/**/*_spec.rb'
+    - 'ee/spec/mailers/**/*_spec.rb'
+    - 'ee/spec/models/**/*_spec.rb'
+    - 'ee/spec/policies/**/*_spec.rb'
+    - 'ee/spec/presenters/**/*_spec.rb'
+    - 'ee/spec/serializers/**/*_spec.rb'
+    - 'ee/spec/services/**/*_spec.rb'
+    - 'ee/spec/validators/**/*_spec.rb'
+    - 'ee/spec/workers/**/*_spec.rb'
+  Exclude:
+    - 'ee/spec/**/ee/**/*_spec.rb'
+    - 'ee/spec/lib/remote_development/**/*_spec.rb'
 
 RSpec/DuplicateSpecLocation:
   Enabled: true
@@ -1257,6 +1314,12 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'ee/spec/**/*.rb'
     - 'qa/qa/specs/**/*.rb'
 
+Database/AvoidUsingConnectionExecute:
+  Enabled: true
+  Include:
+    - '{,ee/}app/models/**/*'
+    - '{,ee/}lib/**/*'
+
 Style/SymbolProc:
   AllowedMethods:
     - define_method
@@ -1348,3 +1411,8 @@ Rails/EnumSyntax:
     - 'ee/app/models/**/*.rb'
     - 'lib/**/*.rb'
     - 'ee/lib/**/*.rb'
+
+Database/AvoidScopeTo:
+  Enabled: true
+  Include:
+    - 'lib/gitlab/background_migration/**/*.rb'

@@ -5,15 +5,9 @@ import { DEFAULT_PER_PAGE } from '~/api';
 import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 import { TIMESTAMP_TYPES } from '~/vue_shared/components/resource_lists/constants';
-import { ACCESS_LEVELS_INTEGER_TO_STRING } from '~/access_level/constants';
 import { COMPONENT_NAME as NESTED_GROUPS_PROJECTS_LIST_COMPONENT_NAME } from '~/vue_shared/components/nested_groups_projects_list/constants';
 import { InternalEvents } from '~/tracking';
-import {
-  FILTERED_SEARCH_TOKEN_LANGUAGE,
-  FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
-  PAGINATION_TYPE_KEYSET,
-  PAGINATION_TYPE_OFFSET,
-} from '../constants';
+import { PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET } from '../constants';
 
 const trackingMixin = InternalEvents.mixin();
 
@@ -21,11 +15,6 @@ export default {
   PAGINATION_TYPE_KEYSET,
   PAGINATION_TYPE_OFFSET,
   name: 'TabView',
-  i18n: {
-    errorMessage: __(
-      'An error occurred loading the projects. Please refresh the page to try again.',
-    ),
-  },
   components: {
     GlLoadingIcon,
     GlKeysetPagination,
@@ -60,9 +49,18 @@ export default {
       type: Object,
       required: true,
     },
+    filtersAsQueryVariables: {
+      type: Object,
+      required: true,
+    },
     filteredSearchTermKey: {
       type: String,
       required: true,
+    },
+    search: {
+      type: String,
+      required: false,
+      default: '',
     },
     timestampType: {
       type: String,
@@ -71,10 +69,6 @@ export default {
       validator(value) {
         return TIMESTAMP_TYPES.includes(value);
       },
-    },
-    programmingLanguages: {
-      type: Array,
-      required: true,
     },
     eventTracking: {
       type: Object,
@@ -107,9 +101,8 @@ export default {
             ...(this.paginationType === PAGINATION_TYPE_KEYSET ? this.keysetPagination : {}),
             ...(this.paginationType === PAGINATION_TYPE_OFFSET ? this.offsetPagination : {}),
             ...this.tab.variables,
+            ...this.filtersAsQueryVariables,
             sort: this.sort,
-            programmingLanguageName: this.programmingLanguageName,
-            minAccessLevel: this.minAccessLevel,
             search: this.search,
           };
           const transformedVariables = transformVariables
@@ -119,18 +112,19 @@ export default {
           return transformedVariables;
         },
         update(response) {
-          const { nodes, pageInfo } = get(response, this.tab.queryPath);
+          const { nodes, pageInfo, count } = get(response, this.tab.queryPath);
 
           return {
             nodes: this.tab.formatter(nodes),
             pageInfo,
+            count,
           };
         },
         result() {
           this.$emit('query-complete');
         },
         error(error) {
-          createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
+          createAlert({ message: this.queryErrorMessage, error, captureError: true });
         },
       };
     },
@@ -165,22 +159,6 @@ export default {
     isLoading() {
       return this.$apollo.queries.items.loading;
     },
-    search() {
-      return this.filters[this.filteredSearchTermKey];
-    },
-    minAccessLevel() {
-      const { [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: minAccessLevelInteger } = this.filters;
-
-      return minAccessLevelInteger && ACCESS_LEVELS_INTEGER_TO_STRING[minAccessLevelInteger];
-    },
-    programmingLanguageName() {
-      const { [FILTERED_SEARCH_TOKEN_LANGUAGE]: programmingLanguageId } = this.filters;
-
-      return (
-        programmingLanguageId &&
-        this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
-      );
-    },
     apolloClient() {
       return this.$apollo.provider.defaultClient;
     },
@@ -205,6 +183,14 @@ export default {
       }
 
       return baseProps;
+    },
+    queryErrorMessage() {
+      return this.tab.queryErrorMessage || __('An error occurred. Refresh the page to try again.');
+    },
+  },
+  watch: {
+    'items.count': function watchCount(newCount) {
+      this.$emit('update-count', this.tab, newCount);
     },
   },
   methods: {
@@ -269,7 +255,7 @@ export default {
 
         item.children = this.tab.formatter(nodes);
       } catch (error) {
-        createAlert({ message: this.$options.i18n.errorMessage, error, captureError: true });
+        createAlert({ message: this.queryErrorMessage, error, captureError: true });
       } finally {
         item.childrenLoading = false;
       }

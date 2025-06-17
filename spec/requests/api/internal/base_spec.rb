@@ -1434,6 +1434,65 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         end
       end
     end
+
+    context 'workhorse circuit breaker header' do
+      let(:request) do
+        post(api('/internal/allowed'),
+          params: {
+            key_id: key.id,
+            project: project.full_path,
+            gl_repository: gl_repository,
+            protocol: protocol
+          }, headers: headers
+        )
+      end
+
+      shared_examples 'a response with no circuit breaker header' do
+        it 'does not add a Enable-Workhorse-Circuit-Breaker header to the response' do
+          request
+
+          expect(response.headers['Enable-Workhorse-Circuit-Breaker']).to be_nil
+        end
+      end
+
+      context 'with the feature flag enabled' do
+        context 'with a ssh protocol and Gitlab-Shell-Api-Request header' do
+          let(:protocol) { 'ssh' }
+          let(:headers) { gitlab_shell_internal_api_request_header }
+
+          it 'adds a Enable-Workhorse-Circuit-Breaker header to the response' do
+            request
+
+            expect(response.headers['Enable-Workhorse-Circuit-Breaker']).to eq('true')
+          end
+        end
+
+        context 'without ssh protocol' do
+          let(:protocol) { 'http' }
+          let(:headers) { gitlab_shell_internal_api_request_header }
+
+          it_behaves_like 'a response with no circuit breaker header'
+        end
+
+        context 'without the Gitlab-Shell-Api-Request header' do
+          let(:protocol) { 'ssh' }
+          let(:headers) { {} }
+
+          it_behaves_like 'a response with no circuit breaker header'
+        end
+      end
+
+      context 'with the feature flag disabled' do
+        let(:protocol) { 'ssh' }
+        let(:headers) { gitlab_shell_internal_api_request_header }
+
+        before do
+          stub_feature_flags(workhorse_circuit_breaker: false)
+        end
+
+        it_behaves_like 'a response with no circuit breaker header'
+      end
+    end
   end
 
   describe 'POST /internal/post_receive', :clean_gitlab_redis_shared_state do

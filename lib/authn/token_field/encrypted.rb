@@ -50,10 +50,14 @@ module Authn
         get_encrypted_token(token_owner_record)
       end
 
+      def encode(token)
+        Authn::TokenField::EncryptionHelper.encrypt_token(token)
+      end
+
       def set_token(token_owner_record, token)
         raise ArgumentError unless token.present?
 
-        token_owner_record[encrypted_field] = Authn::TokenField::EncryptionHelper.encrypt_token(token)
+        token_owner_record[encrypted_field] = encode(token)
         token_owner_record[token_field] = token if migrating?
         token_owner_record[token_field] = nil if optional?
         token
@@ -95,7 +99,7 @@ module Authn
       end
 
       def find_by_encrypted_token(token, unscoped)
-        encrypted_value = Authn::TokenField::EncryptionHelper.encrypt_token(token)
+        encrypted_value = encode(token)
         token_encrypted_with_static_iv = Gitlab::CryptoHelper.aes256_gcm_encrypt(token)
         relation(unscoped).find_by(encrypted_field => [encrypted_value, token_encrypted_with_static_iv]) # rubocop:disable CodeReuse/ActiveRecord: -- This is meant to be used in AR models.
       end

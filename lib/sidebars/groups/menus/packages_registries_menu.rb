@@ -107,3 +107,5 @@ module Sidebars
     end
   end
 end
+
+Sidebars::Groups::Menus::PackagesRegistriesMenu.prepend_mod_with('Sidebars::Groups::Menus::PackagesRegistriesMenu')

@@ -44,6 +44,7 @@ const initSettingsApp = (el, pinia) => {
           addedLines: this.diffsStats?.addedLines,
           removedLines: this.diffsStats?.removedLines,
           diffsCount: this.diffsStats?.diffsCount,
+          hideOnNarrowScreen: false,
         },
         on: {
           updateDiffViewType: this.updateViewType,

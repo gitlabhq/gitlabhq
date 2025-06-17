@@ -50,7 +50,7 @@ In GitLab 16.8, 16.9, and 16.10, GitLab Duo Chat is available in beta. To enable
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **AI-powered features** and select **Enable Experiment and Beta AI-powered features**.
+1. Expand **AI-native features** and select **Enable Experiment and Beta AI-native features**.
 1. Select **Save changes**.
 1. To make sure GitLab Duo Chat works immediately, you must
    [manually synchronize your subscription](#manually-synchronize-your-subscription).

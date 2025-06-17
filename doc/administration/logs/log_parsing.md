@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Parsing GitLab logs with `jq`
 ---
@@ -182,21 +182,30 @@ CT: 190  ROUTE: /api/:version/projects/:id/repository/commits    DURS: 1079.02, 
 #### Print top API user agents
 
 ```shell
-jq --raw-output 'select(.remote_ip != "127.0.0.1") | [.remote_ip, .username, .route, .ua] | @tsv' api_json.log |
-  sort | uniq -c | sort -n | tail
+jq --raw-output '
+  select(.remote_ip != "127.0.0.1") | [
+    (.time | split(".")[0] | strptime("%Y-%m-%dT%H:%M:%S") | strftime("…%m-%dT%H…")),
+    ."meta.caller_id", .username, .ua
+  ] | @tsv' api_json.log | sort | uniq -c \
+  | grep --invert-match --extended-regexp '^\s+\d{1,3}\b'
 ```
 
 **Example output**:
 
 ```plaintext
-  89 1.2.3.4, 127.0.0.1  some_user  /api/:version/projects/:id/pipelines  # plus browser details; OK
- 567 5.6.7.8, 127.0.0.1      /api/:version/jobs/:id/trace gitlab-runner   # plus version details; OK
-1234 98.76.54.31, 127.0.0.1  some_bot  /api/:version/projects/:id/repository/files/:file_path/raw
+ 1234 …01-12T01…  GET /api/:version/projects/:id/pipelines  some_user  # plus browser details; OK
+54321 …01-12T01…  POST /api/:version/projects/:id/repository/files/:file_path/raw  some_bot
+ 5678 …01-12T01…  PATCH /api/:version/jobs/:id/trace gitlab-runner     # plus version details; OK
 ```
 
-This example shows a custom tool or script causing an unexpectedly high number of requests.
+This example shows a custom tool or script causing an unexpectedly high [request rate (>15 RPS)](../reference_architectures/_index.md#available-reference-architectures).
 User agents in this situation can be specialized [third-party clients](../../api/rest/third_party_clients.md),
 or general tools like `curl`.
+
+The hourly aggregation helps to:
+
+- Correlate spikes of bot or user activity to data from monitoring tools such as [Prometheus](../monitoring/prometheus/_index.md).
+- Evaluate [rate limit settings](../settings/user_and_ip_rate_limits.md).
 
 You can also use `fast-stats top` (see top of page) to extract performance statistics for those users or bots.
 
@@ -216,8 +225,12 @@ For common issues, see [troubleshooting](../raketasks/import_export_rake_tasks_t
 #### Print top Workhorse user agents
 
 ```shell
-jq --raw-output 'select(.remote_ip != "127.0.0.1") | [.remote_ip, .uri, .user_agent] | @tsv' current |
-  sort | uniq -c | sort -n | tail
+jq --raw-output '
+  select(.remote_ip != "127.0.0.1") | [
+    (.time | split(".")[0] | strptime("%Y-%m-%dT%H:%M:%S") | strftime("…%m-%dT%H…")),
+    .remote_ip, .uri, .user_agent
+  ] | @tsv' current |
+  sort | uniq -c
 ```
 
 Similar to the [API `ua` example](#print-top-api-user-agents),
@@ -237,7 +250,11 @@ repeatedly reports that some items never reach 100%,
 the following command helps to focus on the most common errors.
 
 ```shell
-jq --raw-output 'select(.severity == "ERROR") | [.class, .id, .message, .error] | @tsv' geo.log | sort | uniq -c | sort -n | tail
+jq --raw-output 'select(.severity == "ERROR") | [
+  (.time | split(".")[0] | strptime("%Y-%m-%dT%H:%M:%S") | strftime("…%m-%dT%H:%M…")),
+  .class, .id, .message, .error
+  ] | @tsv' geo.log \
+  | sort | uniq -c
 ```
 
 Refer to our [Geo troubleshooting page](../geo/replication/troubleshooting/_index.md)
@@ -305,8 +322,28 @@ jq --raw-output --slurp '
 #### Types of user and project activity overview
 
 ```shell
-jq --raw-output '[.username, ."grpc.method", ."grpc.request.glProjectPath"] | @tsv' current | sort | uniq -c | sort -n
+jq --raw-output '[
+    (.time | split(".")[0] | strptime("%Y-%m-%dT%H:%M:%S") | strftime("…%m-%dT%H…")),
+    .username, ."grpc.method", ."grpc.request.glProjectPath"
+  ] | @tsv' current | sort | uniq -c \
+  | grep --invert-match --extended-regexp '^\s+\d{1,3}\b'
 ```
+
+**Example output**:
+
+```plaintext
+ 5678 …01-12T01…     ReferenceTransactionHook  # Praefect operation; OK
+54321 …01-12T01…  some_bot   GetBlobs    namespace/subgroup/project
+ 1234 …01-12T01…  some_user  FindCommit  namespace/subgroup/project
+```
+
+This example shows a custom tool or script causing unexpectedly high of [request rate (>15 RPS)](../reference_architectures/_index.md#available-reference-architectures) on Gitaly.
+The hourly aggregation helps to:
+
+- Correlate spikes of bot or user activity to data from monitoring tools such as [Prometheus](../monitoring/prometheus/_index.md).
+- Evaluate [rate limit settings](../settings/user_and_ip_rate_limits.md).
+
+You can also use `fast-stats top` (see top of page) to extract performance statistics for those users or bots.
 
 #### Find all projects affected by a fatal Git problem
 

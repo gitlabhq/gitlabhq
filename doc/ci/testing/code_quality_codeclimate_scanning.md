@@ -174,7 +174,7 @@ Both the JSON and HTML files are output as job artifacts. The HTML file is conta
 
 #### Output in only HTML format
 
-To download the Code Quality report in _only_ HTML format, set `REPORT_FORMAT` to `html`, overriding
+To download the Code Quality report in only HTML format, set `REPORT_FORMAT` to `html`, overriding
 the default definition of the `code_quality` job.
 
 {{< alert type="note" >}}
@@ -365,7 +365,7 @@ To use private runners:
      --non-interactive
    ```
 
-1. **Optional, but recommended:** Set the builds directory to `/tmp/builds`,
+1. **Optional, but recommended**: Set the builds directory to `/tmp/builds`,
    so job artifacts are periodically purged from the runner host. If you skip
    this step, you must clean up the default builds directory (`/builds`) yourself.
    You can do this by adding the following two flags to `gitlab-runner register`
@@ -489,7 +489,7 @@ To ensure Code Quality jobs can run on a Kubernetes executor:
 
 - If you're using TLS to communicate with the Docker daemon, the executor [must be running in privileged mode](https://docs.gitlab.com/runner/executors/kubernetes/#other-configtoml-settings). Additionally, the certificate directory must be [specified as a volume mount](../docker/using_docker_build.md#docker-in-docker-with-tls-enabled-in-kubernetes).
 - It is possible that the DinD service doesn't start up fully before the Code Quality job starts. This is a limitation documented in
-  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file below.
+  [Troubleshooting the Kubernetes executor](https://docs.gitlab.com/runner/executors/kubernetes/troubleshooting.html#docker-cannot-connect-to-the-docker-daemon-at-tcpdocker2375-is-the-docker-daemon-running). To resolve the issue, use `before_script` to wait for the Docker daemon to fully boot up. For an example, see the configuration in the `.gitlab-ci.yml` file described in the following section.
 
 #### Kubernetes
 
@@ -529,9 +529,9 @@ name = "docker:20.10.12-dind"
 {{< alert type="note" >}}
 
 If you use the [GitLab Runner Helm Chart](https://docs.gitlab.com/runner/install/kubernetes.html), you can use
-the above Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
-in the `values.yaml` file.
-
+the previous Kubernetes configuration in the [`config` field](https://docs.gitlab.com/runner/install/kubernetes_helm_chart_configuration.html)
+of the `values.yaml` file.
+x
 {{< /alert >}}
 
 To ensure that you use the `overlay2` [storage driver](https://docs.docker.com/storage/storagedriver/select-storage-driver/), which offers the best overall performance:
@@ -568,9 +568,9 @@ impact on [performance](https://docs.docker.com/storage/storagedriver/select-sto
 
 {{< /alert >}}
 
-To configure permissions for the Docker daemon,
+To configure permissions for the Docker daemon:
 
-1. Create a file called `config.toml` with the configuration provided below. This configuration will be used to customized GitLab Runner generated `config.toml`:
+1. Create a `config.toml` file with this configuration template to customize the runner's configuration:
 
 ```toml
 [[runners]]

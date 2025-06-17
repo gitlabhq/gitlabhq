@@ -17,7 +17,7 @@ module RateLimitedService
     end
 
     def log_request(request, current_user)
-      rate_limiter.log_request(request, "#{key}_request_limit".to_sym, current_user)
+      rate_limiter.log_request(request, :"#{key}_request_limit", current_user)
     end
 
     private

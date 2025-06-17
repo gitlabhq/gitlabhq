@@ -211,9 +211,8 @@ RSpec.describe UserSettings::PersonalAccessTokensController, feature_category: :
       end
     end
 
-    context 'with virtual_registry_maven feature flag disabled and dependency proxy disabled' do
+    context 'with dependency proxy disabled' do
       before do
-        stub_feature_flags(virtual_registry_maven: false)
         stub_config(dependency_proxy: { enabled: false })
       end
 

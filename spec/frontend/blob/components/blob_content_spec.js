@@ -50,6 +50,11 @@ describe('Blob Content component', () => {
       expect(wrapper.findComponent(SimpleViewer).exists()).toBe(false);
     });
 
+    it('passes isSnippet prop to the viewer', () => {
+      createComponent({ isSnippet: true }, RichViewerMock);
+      expect(wrapper.findComponent(RichViewer).props('isSnippet')).toBe(true);
+    });
+
     it.each`
       type        | mock                | viewer
       ${'simple'} | ${SimpleViewerMock} | ${SimpleViewer}

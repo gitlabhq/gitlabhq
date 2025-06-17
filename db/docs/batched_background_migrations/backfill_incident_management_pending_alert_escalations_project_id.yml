@@ -5,4 +5,4 @@ feature_category: incident_management
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166816
 milestone: '17.6'
 queued_migration_version: 20241025073808
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: 20250605012904

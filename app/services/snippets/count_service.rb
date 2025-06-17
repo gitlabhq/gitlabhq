@@ -63,13 +63,18 @@ module Snippets
     def snippet_counts
       @snippets_finder.execute
         .reorder(nil)
-        .select("
-          count(case when snippets.visibility_level=#{Snippet::PUBLIC} and snippets.secret is FALSE then 1 else null end) as are_public,
-          count(case when snippets.visibility_level=#{Snippet::INTERNAL} then 1 else null end) as are_internal,
-          count(case when snippets.visibility_level=#{Snippet::PRIVATE} then 1 else null end) as are_private,
-          count(case when visibility_level=#{Snippet::PUBLIC} OR visibility_level=#{Snippet::INTERNAL} then 1 else null end) as are_public_or_internal,
+        .select(<<~SQL)
+          count(case when snippets.visibility_level=#{Snippet::PUBLIC}
+            and snippets.secret is FALSE then 1 else null end) as are_public,
+          count(case when snippets.visibility_level=#{Snippet::INTERNAL}
+            then 1 else null end) as are_internal,
+          count(case when snippets.visibility_level=#{Snippet::PRIVATE}
+            then 1 else null end) as are_private,
+          count(case when visibility_level=#{Snippet::PUBLIC}
+            OR visibility_level=#{Snippet::INTERNAL}
+            then 1 else null end) as are_public_or_internal,
           count(*) as total
-        ")
+        SQL
         .take
     end
     # rubocop: enable CodeReuse/ActiveRecord

@@ -146,7 +146,7 @@ need to upgrade the `fastify` package.
 To fix the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper right, select **Edit > Gitpod** and open
+1. In the upper right, select **Code > Gitpod** and open
    Gitpod in a new tab.
 1. If you are prompted to, select **Continue with GitLab**, then select **Authorize**.
 1. On the **New Workspace** page, select **Continue**.
@@ -183,7 +183,7 @@ To fix the vulnerability:
 1. In the **Status** dropdown list, select **Resolve**, then select **Change status**.
 1. Go to **Secure > Vulnerability report**.
 
-   You should now see _no_ vulnerabilities listed in the vulnerability report.
+   You should now see no vulnerabilities listed in the vulnerability report.
 
 ## Test vulnerability detection in a merge request
 

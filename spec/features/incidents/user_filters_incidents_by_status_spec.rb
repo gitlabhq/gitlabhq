@@ -14,6 +14,7 @@ RSpec.describe 'User filters Incident Management table by status', :js, feature_
   end
 
   before do
+    stub_feature_flags(hide_incident_management_features: false)
     sign_in(developer)
 
     visit project_incidents_path(project)

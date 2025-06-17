@@ -112,17 +112,26 @@ describe('TodoItem', () => {
   });
 
   describe('multi-select checkbox', () => {
-    it('renders a checkbox', () => {
-      createComponent();
-      expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
+    describe('with `selectable` prop `false` (default)', () => {
+      it('renders a checkbox', () => {
+        createComponent();
+        expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(false);
+      });
     });
 
-    it('emits select-change event when checkbox changes', async () => {
-      createComponent();
-      const checkbox = wrapper.findComponent(GlFormCheckbox);
-      await checkbox.vm.$emit('change', true);
+    describe('with `selectable` prop `true`', () => {
+      it('renders a checkbox', () => {
+        createComponent({ selectable: true });
+        expect(wrapper.findComponent(GlFormCheckbox).exists()).toBe(true);
+      });
 
-      expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
+      it('emits select-change event when checkbox changes', async () => {
+        createComponent({ selectable: true });
+        const checkbox = wrapper.findComponent(GlFormCheckbox);
+        await checkbox.vm.$emit('change', true);
+
+        expect(wrapper.emitted('select-change')[0]).toEqual([MR_REVIEW_REQUEST_TODO.id, true]);
+      });
     });
   });
 

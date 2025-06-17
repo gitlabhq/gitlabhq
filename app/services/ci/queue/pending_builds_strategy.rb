@@ -25,7 +25,7 @@ module Ci
       end
 
       def builds_matching_tag_ids(relation, ids)
-        relation.for_tags(runner.tags_ids)
+        relation.for_tags(ids)
       end
 
       def builds_with_any_tags(relation)

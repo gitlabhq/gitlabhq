@@ -113,6 +113,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
     @diffs_slice = @merge_request.first_diffs_slice(streaming_offset, diff_options)
     @diff_files_endpoint = diff_files_metadata_namespace_project_merge_request_path
+    @diff_file_endpoint = diff_file_namespace_project_merge_request_path
     @diffs_stats_endpoint = diffs_stats_namespace_project_merge_request_path
 
     show_merge_request
@@ -704,8 +705,14 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         "Close this merge request and create a new one.")
   end
 
-  def diffs_resource
-    @merge_request.latest_diffs
+  def diffs_resource(diff_options = {})
+    @merge_request.latest_diffs(diff_options)
+  end
+
+  def diff_file_component(base_args)
+    ::RapidDiffs::MergeRequestDiffFileComponent.new(
+      **base_args.merge({ merge_request: @merge_request })
+    )
   end
 
   def complete_diff_path

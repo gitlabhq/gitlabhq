@@ -16,7 +16,7 @@ RSpec.configure do |config|
     metadata[:type] = :rubocop
   end
 
-  config.define_derived_metadata(file_path: %r{spec/rubocop/cop/rspec}) do |metadata|
+  config.define_derived_metadata(file_path: %r{spec/rubocop/cop/(rspec|gitlab/rspec)}) do |metadata|
     metadata[:type] = :rubocop_rspec
   end
 

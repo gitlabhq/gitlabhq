@@ -2,7 +2,7 @@
 
 module Users
   class BuildService < BaseService
-    ALLOWED_USER_TYPES = %i[project_bot security_policy_bot].freeze
+    ALLOWED_USER_TYPES = %i[project_bot security_policy_bot placeholder].freeze
 
     delegate :user_default_internal_regex_enabled?,
       :user_default_internal_regex_instance,
@@ -210,7 +210,8 @@ module Users
         :user_type,
         :username,
         :view_diffs_file_by_file,
-        :website_url
+        :website_url,
+        :github
       ]
     end
 

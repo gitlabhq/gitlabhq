@@ -1,4 +1,7 @@
 ---
+# This internal event is used in triage-ops to push failure categories on CI/CD pipeline failures.
+#
+# See https://gitlab.com/gitlab-org/quality/triage-ops/-/merge_requests/3436
 description: CI job failed in the gitlab.com/gitlab-org namespace
 internal_events: true
 action: glci_job_failed

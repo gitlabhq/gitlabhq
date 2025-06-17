@@ -1293,7 +1293,7 @@ const loadingSpinner = loadingIconForLegacyJS({
 }).outerHTML;
 
 GfmAutoComplete.Loading = {
-  template: `<li style="pointer-events: none;">${loadingSpinner}Loading...</li>`,
+  template: `<li style="pointer-events: none;">${loadingSpinner}Loading…</li>`,
 };
 
 export default GfmAutoComplete;

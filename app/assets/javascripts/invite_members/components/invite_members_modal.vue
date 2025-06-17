@@ -16,7 +16,6 @@ import {
   BLOCKED_SEAT_OVERAGES_BODY,
   BLOCKED_SEAT_OVERAGES_CTA,
   BLOCKED_SEAT_OVERAGES_CTA_DOCS,
-  USERS_FILTER_ALL,
   MEMBER_MODAL_LABELS,
   INVITE_MEMBER_MODAL_TRACKING_CATEGORY,
 } from '../constants';
@@ -90,16 +89,6 @@ export default {
     helpLink: {
       type: String,
       required: true,
-    },
-    usersFilter: {
-      type: String,
-      required: false,
-      default: USERS_FILTER_ALL,
-    },
-    filterId: {
-      type: Number,
-      required: false,
-      default: null,
     },
     fullPath: {
       type: String,
@@ -495,8 +484,6 @@ export default {
         aria-labelledby="empty-invites-alert"
         :input-id="inputId"
         :exception-state="exceptionState"
-        :users-filter="usersFilter"
-        :filter-id="filterId"
         :users-with-warning="usersWithWarning"
         :invalid-members="invalidMembers"
         @clear="clearValidation"

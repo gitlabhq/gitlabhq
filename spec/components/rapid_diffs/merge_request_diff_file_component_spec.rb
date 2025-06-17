@@ -25,16 +25,37 @@ RSpec.describe RapidDiffs::MergeRequestDiffFileComponent, type: :component, feat
     )
   end
 
-  describe 'rendering' do
-    it 'renders additional options in the header menu' do
-      render_component
+  describe 'header menu options' do
+    context 'with text diff file' do
+      before do
+        allow(diff_file).to receive(:text?).and_return(true)
+      end
 
-      options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+      it 'renders additional options' do
+        render_component
 
-      expect(options_menu_items.length).to eq(2)
-      expect(options_menu_items[0]['text']).to eq('View file @ abc123')
-      expect(options_menu_items[1]['text']).to eq('Edit in single-file editor')
-      expect(options_menu_items[1]['href']).to include("#{edit_path_base}#{merge_request.iid}")
+        options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+        expect(options_menu_items.length).to eq(2)
+        expect(options_menu_items[0]['text']).to eq('View file @ abc123')
+        expect(options_menu_items[1]['text']).to eq('Edit in single-file editor')
+        expect(options_menu_items[1]['href']).to include("#{edit_path_base}#{merge_request.iid}")
+      end
+    end
+
+    context 'with non text diff file' do
+      before do
+        allow(diff_file).to receive(:text?).and_return(false)
+      end
+
+      it 'renders no additional options' do
+        render_component
+
+        options_menu_items = Gitlab::Json.parse(page.find('script', visible: false).text)
+
+        expect(options_menu_items.length).to eq(1)
+        expect(options_menu_items[0]['text']).to eq('View file @ abc123')
+      end
     end
   end
 

@@ -21,7 +21,7 @@ For help developing custom feature flags, see
 <div class="d-none">
   <strong>If you don't see the feature flag tables below, view them at <a href="https://docs.gitlab.com/ee/user/feature_flags.html">docs.gitlab.com</a>.</strong>
 </div>
-<!-- the div above will not display on the docs site but will display on /help -->
+<!-- the div tag will not display on the docs site but will display on /help -->
 
 <!-- markdownlint-enable MD044 -->
 

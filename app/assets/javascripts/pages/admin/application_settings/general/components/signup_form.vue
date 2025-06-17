@@ -44,7 +44,17 @@ export default {
   mixins: [glFeatureFlagMixin()],
   provide() {
     return {
-      beforeSubmitHook: this.addBeforeSubmitHook,
+      /**
+       * This enables different components to register their own pre-submission checks without conflicts (collected
+       * in `beforeSubmitHooks` data prop). Additionally, the hook registration being injected (instead of passed as a prop),
+       * allows all descendant to use it, avoiding useless props proxying. For instance,
+       *
+       * `SignUpRestrictionsApp` > `ApproveUsersModal` receives the hook registration function
+       * `SignUpRestrictionsApp` > `SeatControlSection` > `UserCapOverLicensedUsersModal` receives the hook registration function
+       *
+       * See more at https://gitlab.com/gitlab-org/gitlab/-/issues/548052#why-a-beforesubmithook
+       */
+      addBeforeSubmitHook: this.addBeforeSubmitHook,
       beforeSubmitHookContexts: {
         [this.approveUsersModalId]: { shouldPreventSubmit: () => this.shouldShowUserApprovalModal },
       },
@@ -273,7 +283,10 @@ export default {
         :value="form.shouldProceedWithAutoApproval"
       />
 
-      <seat-control-section @checkUsersAutoApproval="handleCheckUsersAutoApproval" />
+      <seat-control-section
+        @checkUsersAutoApproval="handleCheckUsersAutoApproval"
+        @submit="submitForm"
+      />
 
       <gl-form-group
         :label="$options.i18n.minimumPasswordLengthLabel"

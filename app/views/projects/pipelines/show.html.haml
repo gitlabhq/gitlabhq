@@ -1,7 +1,7 @@
 - @force_fluid_layout = true
 - add_to_breadcrumbs _('Pipelines'), project_pipelines_path(@project)
 - breadcrumb_title "##{@pipeline.id}"
-- page_title _('Pipeline')
+- page_title sprintf(s_("Pipeline|Pipeline #%{pipeline_id}"), {pipeline_id: @pipeline.id})
 - pipeline_has_errors = @pipeline.builds.empty? && @pipeline.error_messages.any?
 - add_page_specific_style 'page_bundles/pipeline'
 - add_page_specific_style 'page_bundles/reports'

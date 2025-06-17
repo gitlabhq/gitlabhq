@@ -949,6 +949,7 @@ export default {
     locked: false,
   },
   name: 'test',
+  test_suite_name: 'test',
   stage: 'build',
   build_path: '/root/ci-mock/-/jobs/4757',
   retry_path: '/root/ci-mock/-/jobs/4757/retry',

@@ -24,7 +24,7 @@ module CustomerRelations
 
     def execute_sql(sql, args)
       sanitized_sql = ApplicationRecord.sanitize_sql([sql, args])
-      ApplicationRecord.connection.execute(sanitized_sql, args)
+      ApplicationRecord.connection.execute(sanitized_sql)
     end
 
     def copy_organizations

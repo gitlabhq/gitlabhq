@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Security::CiConfiguration::SastIacBuildAction do
+RSpec.describe Security::CiConfiguration::SastIacBuildAction, feature_category: :static_application_security_testing do
   subject(:result) { described_class.new(auto_devops_enabled, gitlab_ci_content).generate }
 
   let(:params) { {} }
@@ -59,7 +59,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
         end
       end
 
-      context 'secret_detection has been included' do
+      context 'iac-sast has been included' do
         let(:expected_yml) do
           <<-CI_YML.strip_heredoc
           # You can override the included template(s) by including variable overrides
@@ -78,7 +78,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
           CI_YML
         end
 
-        context 'secret_detection template include are an array' do
+        context 'iac-sast template include are an array' do
           let(:gitlab_ci_content) do
             { "stages" => %w[test],
               "variables" => { "RANDOM" => "make sure this persists" },
@@ -91,7 +91,7 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
           end
         end
 
-        context 'secret_detection template include is not an array' do
+        context 'iac-sast template include is not an array' do
           let(:gitlab_ci_content) do
             { "stages" => %w[test],
               "variables" => { "RANDOM" => "make sure this persists" },
@@ -102,6 +102,34 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
             expect(result[:action]).to eq('update')
             expect(result[:content]).to eq(expected_yml)
           end
+        end
+      end
+
+      context 'with update stage' do
+        let(:gitlab_ci_content) do
+          { "stages" => %w[build] }
+        end
+
+        let(:expected_yml) do
+          <<-CI_YML.strip_heredoc
+          # You can override the included template(s) by including variable overrides
+          # SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
+          # Secret Detection customization: https://docs.gitlab.com/user/application_security/secret_detection/pipeline/configure
+          # Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
+          # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
+          # Note that environment variables can be set in several places
+          # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+          stages:
+          - build
+          - test
+          include:
+          - template: Security/SAST-IaC.latest.gitlab-ci.yml
+          CI_YML
+        end
+
+        it 'generates the correct YML' do
+          expect(result[:action]).to eq('update')
+          expect(result[:content]).to eq(expected_yml)
         end
       end
     end
@@ -133,6 +161,8 @@ RSpec.describe Security::CiConfiguration::SastIacBuildAction do
           # Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
           # Note that environment variables can be set in several places
           # See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
+          stages:
+          - test
           include:
           - template: Security/SAST-IaC.latest.gitlab-ci.yml
         CI_YML

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Current, feature_category: :cell do
+RSpec.describe Current, feature_category: :organization do
   let_it_be(:current_organization) { create(:organization) }
 
   after do

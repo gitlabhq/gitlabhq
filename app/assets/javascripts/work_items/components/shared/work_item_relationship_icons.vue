@@ -1,21 +1,18 @@
 <script>
 import { GlIcon } from '@gitlab/ui';
 import { n__, sprintf } from '~/locale';
-import { LINKED_CATEGORIES_MAP, sprintfWorkItem, STATE_CLOSED } from '../../constants';
-import workItemLinkedItemsQuery from '../../graphql/work_item_linked_items.query.graphql';
+import { LINKED_CATEGORIES_MAP, sprintfWorkItem, STATE_OPEN } from '../../constants';
+import workItemLinkedItemsSlimQuery from '../../graphql/work_items_linked_items_slim.query.graphql';
 import { findLinkedItemsWidget } from '../../utils';
 import WorkItemRelationshipPopover from './work_item_relationship_popover.vue';
 
 export default {
+  name: 'WorkItemRelationshipIcons',
   components: {
     GlIcon,
     WorkItemRelationshipPopover,
   },
   props: {
-    linkedWorkItems: {
-      type: Array,
-      required: true,
-    },
     workItemType: {
       type: String,
       required: true,
@@ -37,14 +34,31 @@ export default {
       required: false,
       default: '',
     },
+    blockingCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    blockedByCount: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+  },
+  data() {
+    return {
+      loadingItems: true,
+      childItemLinkedItems: [],
+      activePopoverType: null,
+    };
   },
   apollo: {
     childItemLinkedItems: {
       skip() {
-        return this.skipQuery;
+        return this.loadingItems;
       },
       query() {
-        return workItemLinkedItemsQuery;
+        return workItemLinkedItemsSlimQuery;
       },
       variables() {
         return {
@@ -59,23 +73,7 @@ export default {
       },
     },
   },
-  data() {
-    return {
-      skipQuery: true,
-      childItemLinkedItems: [],
-    };
-  },
   computed: {
-    itemsBlockedBy() {
-      return this.linkedWorkItems.filter((item) => {
-        return item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY;
-      });
-    },
-    itemsBlocks() {
-      return this.linkedWorkItems.filter((item) => {
-        return item.linkType === LINKED_CATEGORIES_MAP.BLOCKS;
-      });
-    },
     itemsBlockedByIconId() {
       return `relationship-blocked-by-icon-${this.targetId || this.workItemIid}`;
     },
@@ -87,9 +85,9 @@ export default {
         n__(
           'WorkItem|%{workItemType} is blocked by 1 item',
           'WorkItem|%{workItemType} is blocked by %{itemCount} items',
-          this.itemsBlockedBy.length,
+          this.blockedByCount,
         ),
-        { itemCount: this.itemsBlockedBy.length },
+        { itemCount: this.blockedByCount },
       );
       return sprintfWorkItem(message, this.workItemType);
     },
@@ -98,34 +96,34 @@ export default {
         n__(
           'WorkItem|%{workItemType} blocks 1 item',
           'WorkItem|%{workItemType} blocks %{itemCount} items',
-          this.itemsBlocks.length,
+          this.blockingCount,
         ),
-        { itemCount: this.itemsBlocks.length },
+        { itemCount: this.blockingCount },
       );
       return sprintfWorkItem(message, this.workItemType);
     },
-    isLoading() {
-      return this.$apollo.queries.childItemLinkedItems.loading;
-    },
-    childBlockedByItems() {
-      return this.childItemLinkedItems.filter((item) => {
-        return (
+    blockedByItems() {
+      return this.childItemLinkedItems.filter(
+        (item) =>
           item.linkType === LINKED_CATEGORIES_MAP.IS_BLOCKED_BY &&
-          item.workItemState !== STATE_CLOSED
-        );
-      });
+          item.workItem.state === STATE_OPEN,
+      );
     },
-    childBlocksItems() {
-      return this.childItemLinkedItems.filter((item) => {
-        return (
-          item.linkType === LINKED_CATEGORIES_MAP.BLOCKS && item.workItemState !== STATE_CLOSED
-        );
-      });
+    blockingItems() {
+      return this.childItemLinkedItems.filter(
+        (item) =>
+          item.linkType === LINKED_CATEGORIES_MAP.BLOCKS && item.workItem.state === STATE_OPEN,
+      );
     },
   },
   methods: {
-    handleMouseEnter() {
-      this.skipQuery = false;
+    handleBlockedByMouseEnter() {
+      this.activePopoverType = 'blockedBy';
+      this.loadingItems = false;
+    },
+    handleBlocksMouseEnter() {
+      this.activePopoverType = 'blocks';
+      this.loadingItems = false;
     },
   },
 };
@@ -133,49 +131,51 @@ export default {
 
 <template>
   <span class="gl-flex gl-gap-3">
-    <template v-if="itemsBlockedBy.length > 0">
+    <template v-if="blockedByCount > 0">
       <span
         :id="itemsBlockedByIconId"
         :aria-label="blockedByLabel"
         tabIndex="0"
         class="gl-cursor-pointer gl-text-sm gl-text-subtle"
         data-testid="relationship-blocked-by-icon"
-        @mouseenter="handleMouseEnter"
+        @mouseenter="handleBlockedByMouseEnter"
       >
         <gl-icon name="entity-blocked" variant="danger" />
-        {{ itemsBlockedBy.length }}
+        {{ blockedByCount }}
       </span>
       <work-item-relationship-popover
         :target="itemsBlockedByIconId"
-        :title="s__('WorkItem|Blocked by')"
-        :loading="isLoading"
-        :linked-work-items="childBlockedByItems"
+        :title="blockedByLabel"
+        :linked-work-items="blockedByItems"
         :work-item-full-path="workItemFullPath"
-        :work-item-web-url="workItemWebUrl"
         :work-item-type="workItemType"
+        :work-item-web-url="workItemWebUrl"
+        placement="bottom"
+        data-testid="work-item-blocked-by-popover"
       />
     </template>
 
-    <template v-if="itemsBlocks.length > 0">
+    <template v-if="blockingCount > 0">
       <span
         :id="itemsBlocksIconId"
         :aria-label="blocksLabel"
         tabIndex="0"
         class="gl-cursor-pointer gl-text-sm gl-text-subtle"
         data-testid="relationship-blocks-icon"
-        @mouseenter="handleMouseEnter"
+        @mouseenter="handleBlocksMouseEnter"
       >
         <gl-icon name="entity-blocking" variant="warning" />
-        {{ itemsBlocks.length }}
+        {{ blockingCount }}
       </span>
       <work-item-relationship-popover
         :target="itemsBlocksIconId"
-        :title="s__('WorkItem|Blocking')"
-        :loading="isLoading"
-        :linked-work-items="childBlocksItems"
+        :title="blocksLabel"
+        :linked-work-items="blockingItems"
         :work-item-full-path="workItemFullPath"
-        :work-item-web-url="workItemWebUrl"
         :work-item-type="workItemType"
+        :work-item-web-url="workItemWebUrl"
+        placement="bottom"
+        data-testid="work-item-blocks-popover"
       />
     </template>
   </span>

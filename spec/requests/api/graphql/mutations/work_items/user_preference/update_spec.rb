@@ -10,12 +10,14 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
   let_it_be(:work_item_type) { WorkItems::Type.default_by_type(:incident) }
 
   let(:sorting_value) { 'CREATED_ASC' }
+  let(:display_settings) { { 'hiddenMetadataKeys' => %w[assignee labels milestone] } }
 
   let(:input) do
     {
       namespacePath: namespace.full_path,
       workItemTypeId: work_item_type&.to_gid,
-      sort: sorting_value
+      sort: sorting_value,
+      displaySettings: display_settings
     }
   end
 
@@ -30,6 +32,7 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
         name
       }
       sort
+      displaySettings
     }
     FIELDS
   end
@@ -66,7 +69,8 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
           'workItemType' => {
             'name' => work_item_type.name
           },
-          'sort' => sorting_value
+          'sort' => sorting_value,
+          'displaySettings' => display_settings
         )
       end
 
@@ -74,7 +78,8 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
         let(:input) do
           {
             namespacePath: namespace.full_path,
-            sort: sorting_value
+            sort: sorting_value,
+            displaySettings: display_settings
           }
         end
 
@@ -89,7 +94,8 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
               'path' => namespace.path
             },
             'workItemType' => nil,
-            'sort' => sorting_value
+            'sort' => sorting_value,
+            'displaySettings' => display_settings
           )
         end
       end
@@ -107,6 +113,37 @@ RSpec.describe 'Update work items user preferences', feature_category: :team_pla
           on #{namespace.full_path} for work items type #{work_item_type.name}
           MESSAGE
           expect(mutation_response['userPreferences']).to be_nil
+        end
+      end
+
+      context 'when display settings are not valid' do
+        let_it_be(:display_settings) { { 'hiddenMetadataKeys' => 'test' } }
+
+        it 'updates the user preferences successfully' do
+          post_graphql_mutation(mutation, current_user: user)
+          expect(response).to have_gitlab_http_status(:success)
+          expect(graphql_errors).to be_blank
+          expect(mutation_response['errors']).to include(
+            'Display settings must be a valid json schema'
+          )
+          expect(mutation_response['userPreferences']).to be_nil
+        end
+      end
+
+      context 'with hiddenMetadataKeys in display settings' do
+        let(:display_settings) do
+          {
+            'hiddenMetadataKeys' => %w[assignee labels milestone]
+          }
+        end
+
+        it 'updates the user preferences with hidden metadata keys' do
+          post_graphql_mutation(mutation, current_user: user)
+
+          expect(response).to have_gitlab_http_status(:success)
+          expect(graphql_errors).to be_blank
+          expect(mutation_response['errors']).to be_blank
+          expect(mutation_response['userPreferences']['displaySettings']).to eq(display_settings)
         end
       end
     end

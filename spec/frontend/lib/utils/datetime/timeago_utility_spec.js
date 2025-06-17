@@ -48,6 +48,24 @@ describe('TimeAgo utils', () => {
       ])('formats date `%p` as `%p`', (date, result) => {
         expect(getTimeago().format(date)).toEqual(result);
       });
+
+      describe('when dates are over a year and showDateWhenRelativeTimeOverAYear is true', () => {
+        beforeEach(() => {
+          window.gon.features = { showDateWhenRelativeTimeOverAYear: true };
+        });
+
+        it.each([
+          [new Date().getTime() + 60e3 * 60 * 24 * 365],
+          [new Date().getTime() + 60e3 * 60 * 24 * 366],
+          [new Date().getTime() + 60e3 * 60 * 24 * 366 * 2],
+          [new Date().getTime() - 60e3 * 60 * 24 * 366],
+          [new Date().getTime() - 60e3 * 60 * 24 * 366 * 2],
+        ])('formats date `%p` as date', (date) => {
+          expect(getTimeago().format(date)).toEqual(
+            localeDateFormat[DATE_ONLY_FORMAT].format(date),
+          );
+        });
+      });
     });
 
     describe('with User Setting timeDisplayRelative: false', () => {

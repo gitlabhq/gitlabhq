@@ -242,7 +242,7 @@ When only one job runs at a time, the fair usage algorithm assigns jobs in this 
 
 ## Group runners
 
-Use _group runners_ when you want all projects in a group
+Use group runners when you want all projects in a group
 to have access to a set of runners.
 
 Group runners process jobs by using a first in, first out queue.
@@ -471,7 +471,7 @@ Filter entries where stale runners were removed:
 
 ## Project runners
 
-Use _project runners_ when you want to use runners for specific projects. For example,
+Use project runners when you want to use runners for specific projects. For example,
 when you have:
 
 - Jobs with specific requirements, like a deploy job that requires credentials.
@@ -485,7 +485,7 @@ Project runners process jobs by using a first in, first out ([FIFO](https://en.w
 {{< alert type="note" >}}
 
 Project runners do not get instance with forked projects automatically.
-A fork *does* copy the CI/CD settings of the cloned repository.
+A fork does copy the CI/CD settings of the cloned repository.
 
 {{< /alert >}}
 
@@ -768,7 +768,7 @@ To determine the IP address of an instance runner:
 1. Select **CI/CD > Runners**.
 1. Find the runner in the table and view the **IP Address** column.
 
-![Instance runner IP address](img/shared_runner_ip_address_v14_5.png)
+![Screenshot showing the IP address column for an instance runner in the GitLab Admin area](img/shared_runner_ip_address_v14_5.png)
 
 ### Determine the IP address of a project runner
 
@@ -779,7 +779,7 @@ project.
 1. Go to the project's **Settings > CI/CD** and expand the **Runners** section.
 1. Select the runner name and find the **IP Address** row.
 
-![Project runner IP address](img/project_runner_ip_address_v17_6.png)
+![Screenshot showing where to find the IP address for a project runner in the runner details](img/project_runner_ip_address_v17_6.png)
 
 ## Enable use of runner registration tokens in projects and groups
 

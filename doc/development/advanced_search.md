@@ -242,7 +242,7 @@ system provides significant benefits:
 
 The migration system consists of:
 
-- **Migration Runner**: A [cron worker](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic/migration_worker.rb) that executes every 5 minutes to check for and process pending migrations. 
+- **Migration Runner**: A [cron worker](https://gitlab.com/gitlab-org/gitlab/-/blob/409b55d072b0008baca42dc53bda3e3dc56f588a/ee/app/workers/elastic/migration_worker.rb) that executes every 5 minutes to check for and process pending migrations.
 - **Migration Files**: Similar to database migrations, these Ruby files define the migration steps with accompanying
   YAML documentation
 - **Migration Status Tracking**: All migration states are stored in a dedicated Elasticsearch index
@@ -547,10 +547,11 @@ updates for transfers are handled in the [`Projects::TransferService`](https://g
 and [`Groups::TransferService`](https://gitlab.com/gitlab-org/gitlab/-/blob/4d2a86ed035d3c2a960f5b89f2424bee990dc8ab/ee/app/services/ee/groups/transfer_service.rb).
 
 Indexes that contain a `project_id` field must use the [`Search::Elastic::DeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/search/elastic/delete_worker.rb).
-Indexes that contain a `namespace_id` field and no `project_id` field must use [`Search::ElasticGroupAssociationDeleteWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
+Indexes that contain a `namespace_id` field and no `project_id` field must use [`Search::ElasticGroupAssociationDeletionWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/search/elastic_group_association_deletion_worker.rb).
 
 1. Add the indexed class to `excluded_classes` in [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/0105b56d6ad86e04ef46492dcf5537553505b678/ee/app/workers/elastic_delete_project_worker.rb)
-1. Update the worker to remove documents from the index
+1. Create a new service in the `::Search::Elastic::Delete` namespace to delete documents from the index
+1. Update the worker to use the new service
 
 ### Implementing search for a new document type
 
@@ -648,12 +649,11 @@ Always aim to create new search filters in the `QueryBuilder` framework, even if
 
 ##### Add the field to the index
 
-1. Add the field to the index mapping to add it newly created indices
-1. Create a migration to add the field to existing indices. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
+1. Add the field to the index mapping to add it newly created indices and create a migration to add the field to existing indices in the same MR to avoid mapping schema drift. Use the [`MigrationUpdateMappingsHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationupdatemappingshelper)
 1. Populate the new field in the document JSON. The code must check the migration is complete using
    `::Elastic::DataMigrationService.migration_has_finished?`
 1. Bump the `SCHEMA_VERSION` for the document JSON. The format is year and week number: `YYYYWW`
-1. Create a migration to backfill the field in the index. Use the [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper)
+1. Create a migration to backfill the field in the index. If it's a not-nullable field, use [`MigrationBackfillHelper`](search/advanced_search_migration_styleguide.md#searchelasticmigrationbackfillhelper), or [`MigrationReindexBasedOnSchemaVersion`](search/advanced_search_migration_styleguide.md#searchelasticmigrationreindexbasedonschemaversion) if it's a nullable field.
 
 ##### If the new field is an associated record
 
@@ -775,14 +775,14 @@ without affecting the relevance scoring.
 - `query_hash` is expected to contain a hash with this format.
 
   ```json
-   { "query": 
-     { "bool": 
+   { "query":
+     { "bool":
        {
          "must": [],
          "must_not": [],
-         "should": [],  
+         "should": [],
          "filters": [],
-         "minimum_should_match": null    
+         "minimum_should_match": null
        }
      }
    }
@@ -908,7 +908,7 @@ Uses `multi_match` Elasticsearch API. Can be customized with the following optio
 
 - `count_only` - uses the Boolean query clause `filter`. Scoring and highlighting are not performed.
 - `query` - if no query is passed, uses `match_all` Elasticsearch API
-- `keyword_match_clause` - if `:should` is passed, uses the Boolean query clause `should`. Default: `must` clause 
+- `keyword_match_clause` - if `:should` is passed, uses the Boolean query clause `should`. Default: `must` clause
 
 ```json
 {
@@ -1374,11 +1374,11 @@ Requires `source_branch` field. Query with `source_branch` or `not_source_branch
 #### `by_search_level_and_group_membership`
 
 Requires `current_user`, `group_ids`, `traversal_id`, `search_level` fields. Query with `search_level` and
-filter on `namespace_visibility_level` based on permissions user has for each group. 
+filter on `namespace_visibility_level` based on permissions user has for each group.
 
 {{< alert type="note" >}}
 
-This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field. 
+This filter can be used in place of `by_search_level_and_membership` if the data being searched does not contain the `project_id` field.
 
 {{< /alert >}}
 
@@ -1863,9 +1863,9 @@ New scopes must add visibility specs to ensure proper access control.
 To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](https://gitlab.com/gitlab-org/gitlab/-/blob/a489ad0fe4b4d1e392272736b020cf9bd43646da/ee/spec/support/shared_examples/services/search_service_shared_examples.rb)
 in the EE specs:
 
-- `ee/spec/services/search/global_service_spec.rb`
-- `ee/spec/services/search/group_service_spec.rb`
-- `ee/spec/services/search/project_service_spec.rb`
+- `ee/spec/services/ee/search/global_service_spec.rb`
+- `ee/spec/services/ee/search/group_service_spec.rb`
+- `ee/spec/services/ee/search/project_service_spec.rb`
 
 ## Zero-downtime reindexing with multiple indices
 

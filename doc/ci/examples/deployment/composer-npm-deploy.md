@@ -83,7 +83,7 @@ And this is basically all you need in the `before_script` section.
 
 ## How to deploy
 
-As we stated above, we need to deploy the `build` folder from the Docker image to our server. To do so, we create a new job:
+As we stated previously, we need to deploy the `build` folder from the Docker image to our server. To do so, we create a new job:
 
 ```yaml
 stage_deploy:

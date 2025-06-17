@@ -365,7 +365,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner, fe
         table_name: table_name,
         column_name: column_name,
         job_arguments: job_arguments,
-        pause_ms: 0
+        pause_ms: 100
       )
     end
 
@@ -389,7 +389,7 @@ RSpec.describe Gitlab::Database::BackgroundMigration::BatchedMigrationRunner, fe
           batched_migration: batched_migration,
           batch_size: 2,
           sub_batch_size: 1,
-          pause_ms: 0
+          pause_ms: 100
         }
 
         create(:batched_background_migration_job, :succeeded, common_attributes.merge(min_value: 1, max_value: 2))

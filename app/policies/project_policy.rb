@@ -709,6 +709,7 @@ class ProjectPolicy < BasePolicy
     enable :manage_protected_tags
     enable :change_restrict_user_defined_variables
     enable :create_protected_branch
+    enable :create_branch_rule
     enable :admin_protected_branch
     enable :admin_protected_environments
   end

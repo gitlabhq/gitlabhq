@@ -16,6 +16,12 @@ module Gitlab
       end
     end
 
+    class RestrictedLanguageServerClientError < AuthenticationError
+      def initialize(msg)
+        super("Language server client error: #{msg}")
+      end
+    end
+
     class InsufficientScopeError < AuthenticationError
       attr_reader :scopes
 
@@ -48,6 +54,8 @@ module Gitlab
         JOB_TOKEN_HEADER,
         DEPLOY_TOKEN_HEADER
       ].freeze
+
+      attr_accessor :current_token
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden
@@ -148,13 +156,13 @@ module Gitlab
         return unless route_authentication_setting[:deploy_token_allowed]
         return unless Gitlab::ExternalAuthorization.allow_deploy_tokens_and_deploy_keys?
 
-        token = current_request.env[DEPLOY_TOKEN_HEADER].presence || parsed_oauth_token
+        self.current_token = current_request.env[DEPLOY_TOKEN_HEADER].presence || parsed_oauth_token
 
         if has_basic_credentials?(current_request)
-          _, token = user_name_and_password(current_request)
+          _, self.current_token = user_name_and_password(current_request)
         end
 
-        deploy_token = DeployToken.active.find_by_token(token.to_s)
+        deploy_token = DeployToken.active.find_by_token(current_token.to_s)
         @current_authenticated_deploy_token = deploy_token # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         deploy_token
@@ -167,15 +175,15 @@ module Gitlab
         # agents, `Gitlab-Agentk-Api-Request`. Both must be supported until KAS has
         # been updated to use the new header, and then this first lookup can be removed.
         # See https://gitlab.com/gitlab-org/gitlab/-/issues/406582.
-        token, _ = if current_request.authorization.present?
-                     token_and_options(current_request)
-                   else
-                     current_request.headers[Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER]
-                   end
+        self.current_token, _ = if current_request.authorization.present?
+                                  token_and_options(current_request)
+                                else
+                                  current_request.headers[Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER]
+                                end
 
-        return unless token.present?
+        return unless current_token.present?
 
-        ::Clusters::AgentToken.active.find_by_token(token.to_s)
+        ::Clusters::AgentToken.active.find_by_token(current_token.to_s)
       end
 
       def find_runner_from_token
@@ -259,10 +267,10 @@ module Gitlab
       def find_user_from_job_bearer_token
         return unless route_authentication_setting[:job_token_allowed]
 
-        token = parsed_oauth_token
-        return unless token
+        self.current_token = parsed_oauth_token
+        return unless current_token
 
-        job = ::Ci::AuthJobFinder.new(token: token).execute
+        job = ::Ci::AuthJobFinder.new(token: current_token).execute
         return unless job
 
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
@@ -300,24 +308,24 @@ module Gitlab
       end
 
       def find_personal_access_token
-        token = extract_personal_access_token
-        return unless token
+        self.current_token = extract_personal_access_token
+        return unless current_token
 
         # The runner sends the job token for PUT /api/jobs/:id in the PRIVATE-TOKEN header
         # and the token JSON parameter. Ignore this personal access token so
         # that the job token can be authenticated.
-        return if api_request? && token.start_with?(::Ci::Build::TOKEN_PREFIX)
+        return if api_request? && current_token.start_with?(::Ci::Build::TOKEN_PREFIX)
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        PersonalAccessToken.find_by_token(token.to_s) || raise(UnauthorizedError)
+        PersonalAccessToken.find_by_token(current_token.to_s) || raise(UnauthorizedError)
       end
 
       def find_oauth_access_token
-        token = parsed_oauth_token
-        return unless token
+        self.current_token = parsed_oauth_token
+        return unless current_token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        oauth_token = OauthAccessToken.by_token(token)
+        oauth_token = OauthAccessToken.by_token(current_token)
         raise UnauthorizedError unless oauth_token
 
         oauth_token.revoke_previous_refresh_token!
@@ -333,8 +341,8 @@ module Gitlab
         return unless route_authentication_setting[:basic_auth_personal_access_token]
         return unless has_basic_credentials?(current_request)
 
-        _username, password = user_name_and_password(current_request)
-        PersonalAccessToken.find_by_token(password.to_s)
+        _username, self.current_token = user_name_and_password(current_request)
+        PersonalAccessToken.find_by_token(current_token.to_s)
       end
 
       def find_feed_token_user(token)
@@ -373,12 +381,12 @@ module Gitlab
       end
 
       def find_user_from_job_token_query_params_or_header
-        token = current_request.params[JOB_TOKEN_PARAM].presence ||
+        self.current_token = current_request.params[JOB_TOKEN_PARAM].presence ||
           current_request.params[RUNNER_JOB_TOKEN_PARAM].presence ||
           current_request.env[JOB_TOKEN_HEADER].presence
-        return unless token
+        return unless current_token
 
-        job = find_valid_running_job_by_token!(token.to_s)
+        job = find_valid_running_job_by_token!(current_token.to_s)
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         job.user
@@ -387,11 +395,11 @@ module Gitlab
       def find_user_from_job_token_basic_auth
         return unless has_basic_credentials?(current_request)
 
-        login, password = user_name_and_password(current_request)
-        return unless login.present? && password.present?
+        login, self.current_token = user_name_and_password(current_request)
+        return unless login.present? && current_token.present?
         return unless ::Gitlab::Auth::CI_JOB_USER == login
 
-        job = find_valid_running_job_by_token!(password.to_s)
+        job = find_valid_running_job_by_token!(current_token.to_s)
         @current_authenticated_job = job # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         job.user

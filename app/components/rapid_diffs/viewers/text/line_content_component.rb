@@ -11,7 +11,7 @@ module RapidDiffs
 
         def change_type
           return unless @line
-
+          return 'meta' if @line.meta?
           return 'added' if @line.added?
 
           'removed' if @line.removed?

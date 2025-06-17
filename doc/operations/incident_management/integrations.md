@@ -363,7 +363,7 @@ curl --request POST \
 {{< alert type="warning" >}}
 
 Using your authorization key in the URL is insecure, as it's visible in server logs. We recommend
-using one of the above header options if your tooling supports it.
+using one of the header options described previously if your tooling supports it.
 
 {{< /alert >}}
 

@@ -123,8 +123,7 @@ You may need to [Configure Kubernetes or OpenShift runners for CodeClimate-based
 ## Error: `x509: certificate signed by unknown authority`
 
 If you set the `CODE_QUALITY_IMAGE` to an image that is hosted in a Docker registry which uses a TLS
-certificate that is not trusted, such as a self-signed certificate, you can see errors like the one
-below:
+certificate that is not trusted, such as a self-signed certificate, you might see the following error:
 
 ```shell
 $ docker pull --quiet "$CODE_QUALITY_IMAGE"

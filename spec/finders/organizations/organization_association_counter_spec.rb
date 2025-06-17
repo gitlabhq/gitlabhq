@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationAssociationCounter, feature_category: :cell do
+RSpec.describe Organizations::OrganizationAssociationCounter, feature_category: :organization do
   let_it_be(:other_organization) { create(:organization) }
   let_it_be(:organization) { create(:organization) }
   let_it_be(:owner) { create(:organization_user, :owner, organization: organization) }

@@ -13,15 +13,15 @@ import createPackagesProtectionRuleMutation from '~/packages_and_registries/sett
 import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
-import { GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER } from '~/packages_and_registries/settings/project/constants';
+import {
+  GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
+  GRAPHQL_ACCESS_LEVEL_VALUE_NULL,
+} from '~/packages_and_registries/settings/project/constants';
 
 const PACKAGES_PROTECTION_RULES_SAVED_ERROR_MESSAGE = s__(
   'PackageRegistry|Something went wrong while saving the package protection rule.',
 );
 
-// Needs to be an empty string instead of `null` for @vue/compat. The value
-// should be transformed back to `null` as an input to the GraphQL query.
-const GRAPHQL_ACCESS_LEVEL_VALUE_NULL = '';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
 
@@ -123,6 +123,14 @@ export default {
 
       if (this.glFeatures.packagesProtectedPackagesNuget) {
         packageTypeOptions.push({ value: 'NUGET', text: s__('PackageRegistry|NuGet') });
+      }
+
+      if (this.glFeatures.packagesProtectedPackagesHelm) {
+        packageTypeOptions.push({ value: 'HELM', text: s__('PackageRegistry|Helm') });
+      }
+
+      if (this.glFeatures.packagesProtectedPackagesGeneric) {
+        packageTypeOptions.push({ value: 'GENERIC', text: s__('PackageRegistry|Generic') });
       }
 
       return packageTypeOptions.sort((a, b) => a.text.localeCompare(b.text));

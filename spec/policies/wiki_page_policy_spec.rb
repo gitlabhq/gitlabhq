@@ -28,10 +28,12 @@ RSpec.describe WikiPagePolicy, feature_category: :wiki do
           expect(policy).to be_allowed(:read_wiki_page)
           expect(policy).to be_allowed(:read_note)
           expect(policy).to be_allowed(:create_note)
+          expect(policy).to be_allowed(:update_subscription)
         else
           expect(policy).to be_disallowed(:read_wiki_page)
           expect(policy).to be_disallowed(:read_note)
           expect(policy).to be_disallowed(:create_note)
+          expect(policy).to be_disallowed(:update_subscription)
         end
       end
     end

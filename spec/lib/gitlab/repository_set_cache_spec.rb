@@ -164,6 +164,58 @@ RSpec.describe Gitlab::RepositorySetCache, :clean_gitlab_redis_repository_cache,
       is_expected.to contain_exactly('block value')
       expect(cache.read(:foo)).to contain_exactly('block value')
     end
+
+    context 'with repository_set_cache_logging feature flag enabled' do
+      before do
+        stub_feature_flags(repository_set_cache_logging: true)
+      end
+
+      it 'logs cache miss operations' do
+        cache.expire(:foo)
+
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          message: 'RepositorySetCache cache miss',
+          cache_key: :foo,
+          class: 'Gitlab::RepositorySetCache'
+        )
+
+        cache.fetch(:foo, &blk)
+      end
+
+      it 'does not log cache hit operations' do
+        cache.write(:foo, ['value'])
+
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        cache.fetch(:foo, &blk)
+      end
+
+      it 'logs cache miss when result is empty' do
+        cache.expire(:foo)
+
+        expect(Gitlab::AppLogger).to receive(:info).with(
+          message: 'RepositorySetCache cache miss',
+          cache_key: :foo,
+          class: 'Gitlab::RepositorySetCache'
+        )
+
+        cache.fetch(:foo) { [] }
+      end
+    end
+
+    context 'with repository_set_cache_logging feature flag disabled' do
+      before do
+        stub_feature_flags(repository_set_cache_logging: false)
+      end
+
+      it 'does not log cache operations' do
+        cache.expire(:foo)
+
+        expect(Gitlab::AppLogger).not_to receive(:info)
+
+        cache.fetch(:foo, &blk)
+      end
+    end
   end
 
   describe '#search' do

@@ -8,19 +8,13 @@ module WebIde
       def self.generate(context)
         return context unless context.fetch(:requested_setting_names).include?(:vscode_extension_marketplace)
 
-        user = context.dig(:options, :user)
-
-        context[:settings][:vscode_extension_marketplace] = extension_marketplace_from_application_settings(user)
+        context[:settings][:vscode_extension_marketplace] = extension_marketplace_from_application_settings
         context
       end
 
       # @param [User, nil] user
       # @return [Hash]
-      def self.extension_marketplace_from_application_settings(user)
-        unless Feature.enabled?(:vscode_extension_marketplace_settings, user)
-          return ::WebIde::ExtensionMarketplacePreset.open_vsx.values
-        end
-
+      def self.extension_marketplace_from_application_settings
         settings = Gitlab::CurrentSettings.vscode_extension_marketplace
         preset_key = settings.fetch("preset", ::WebIde::ExtensionMarketplacePreset.open_vsx.key)
 

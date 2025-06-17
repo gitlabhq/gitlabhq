@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Create a project
+description: New project and project templates.
 ---
 
 {{< details >}}
@@ -33,6 +34,8 @@ To create a blank project:
    create a default branch, and enable cloning of this project's repository.
    1. **Enable Static Application Security Testing (SAST)**: Select this option to analyze the
    source code for known security vulnerabilities.
+   1. **Enable Secret Detection**: Select this option to analyze the
+   source code for secrets and credentials to prevent unauthorized access.
 1. Select **Create project**.
 
 ## Create a project from a built-in template
@@ -153,7 +156,7 @@ To create a project that uses SHA-256 hashing:
 
 ### Why SHA-256?
 
-By default, Git uses the SHA-1 [hashing algorithm](https://handbook.gitlab.com/handbook/security/cryptographic-standard/#algorithmic-standards)
+By default, Git uses the SHA-1 hashing algorithm
 to generate a 40-character
 ID for objects such as commits, blobs, trees, and tags. The SHA-1 algorithm was proven to be insecure when
 [Google was able to produce a hash collision](https://security.googleblog.com/2017/02/announcing-first-sha1-collision.html).

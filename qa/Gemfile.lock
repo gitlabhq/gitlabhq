@@ -43,10 +43,10 @@ GEM
       tzinfo (~> 2.0)
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    allure-rspec (2.26.0)
-      allure-ruby-commons (= 2.26.0)
+    allure-rspec (2.27.0)
+      allure-ruby-commons (= 2.27.0)
       rspec-core (>= 3.8, < 4)
-    allure-ruby-commons (2.26.0)
+    allure-ruby-commons (2.27.0)
       mime-types (>= 3.3, < 4)
       require_all (>= 2, < 4)
       rspec-expectations (~> 3.12)
@@ -139,7 +139,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (2.10.0)
+    gitlab_quality-test_tooling (2.14.0)
       activesupport (>= 7.0, < 7.3)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -149,7 +149,7 @@ GEM
       nokogiri (~> 1.10)
       parallel (>= 1, < 2)
       rainbow (>= 3, < 4)
-      rspec-parameterized (~> 1.0.0)
+      rspec-parameterized (>= 1.0, < 3.0)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
     google-apis-compute_v1 (0.101.0)
@@ -245,9 +245,10 @@ GEM
       racc
     pastel (0.8.0)
       tty-color (~> 0.5)
-    proc_to_ast (0.1.0)
-      coderay
+    prism (1.4.0)
+    proc_to_ast (0.2.0)
       parser
+      rouge
       unparser
     pry (0.14.1)
       coderay (~> 1.1)
@@ -268,7 +269,7 @@ GEM
       loofah (~> 2.21)
       nokogiri (>= 1.15.7, != 1.16.7, != 1.16.6, != 1.16.5, != 1.16.4, != 1.16.3, != 1.16.2, != 1.16.1, != 1.16.0.rc1, != 1.16.0)
     rainbow (3.1.1)
-    rake (13.2.1)
+    rake (13.3.0)
     regexp_parser (2.1.1)
     representable (3.2.0)
       declarative (< 0.1.0)
@@ -283,7 +284,8 @@ GEM
     retriable (3.1.2)
     rexml (3.3.9)
     rotp (6.3.0)
-    rspec (3.13.0)
+    rouge (4.5.2)
+    rspec (3.13.1)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
       rspec-mocks (~> 3.13.0)
@@ -295,17 +297,18 @@ GEM
     rspec-mocks (3.13.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.13.0)
-    rspec-parameterized (1.0.2)
-      rspec-parameterized-core (< 2)
-      rspec-parameterized-table_syntax (< 2)
-    rspec-parameterized-core (1.0.0)
+    rspec-parameterized (2.0.0)
+      rspec-parameterized-core (>= 2, < 3)
+      rspec-parameterized-table_syntax (>= 2, < 3)
+    rspec-parameterized-core (2.0.0)
       parser
-      proc_to_ast
+      prism
+      proc_to_ast (>= 0.2.0)
       rspec (>= 2.13, < 4)
       unparser
-    rspec-parameterized-table_syntax (1.0.0)
+    rspec-parameterized-table_syntax (2.0.0)
       binding_of_caller
-      rspec-parameterized-core (< 2)
+      rspec-parameterized-core (>= 2, < 3)
     rspec-support (3.13.0)
     rspec_junit_formatter (0.6.0)
       rspec-core (>= 2, < 4, != 2.12.0)
@@ -316,7 +319,7 @@ GEM
       addressable (>= 2.3.5)
       faraday (>= 0.17.3, < 3)
     securerandom (0.4.1)
-    selenium-webdriver (4.32.0)
+    selenium-webdriver (4.33.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -363,14 +366,14 @@ GEM
     wisper (2.0.1)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.7.2)
+    zeitwerk (2.7.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   activesupport (~> 7.1.5.1)
-  allure-rspec (~> 2.26.0)
+  allure-rspec (~> 2.27.0)
   capybara (~> 3.40.0)
   capybara-screenshot (~> 1.0.26)
   deprecation_toolkit (~> 2.2.3)
@@ -382,30 +385,29 @@ DEPENDENCIES
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.5.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 2.10.0)
+  gitlab_quality-test_tooling (~> 2.14.0)
   googleauth (~> 1.9.0)
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
-  mutex_m (~> 0.3.0)
   nokogiri (~> 1.18, >= 1.18.1)
   octokit (~> 9.2.0)
   parallel (~> 1.27)
   parallel_tests (~> 5.1)
   pry-byebug (~> 3.11.0)
   rainbow (~> 3.1.1)
-  rake (~> 13, >= 13.2.1)
+  rake (~> 13, >= 13.3.0)
   rest-client (~> 2.1.0)
   rotp (~> 6.3.0)
-  rspec (~> 3.13)
-  rspec-parameterized (~> 1.0.2)
+  rspec (~> 3.13, >= 3.13.1)
+  rspec-parameterized (~> 2.0.0)
   rspec_junit_formatter (~> 0.6.0)
   ruby-debug-ide (~> 0.7.5)
-  selenium-webdriver (= 4.32.0)
+  selenium-webdriver (= 4.33.0)
   slack-notifier (~> 2.4)
   terminal-table (~> 4.0.0)
   warning (~> 1.5)
-  zeitwerk (~> 2.7, >= 2.7.2)
+  zeitwerk (~> 2.7, >= 2.7.3)
 
 BUNDLED WITH
    2.6.5

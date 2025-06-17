@@ -7,6 +7,7 @@ module Ci
         gitlab_maintained: 100,
         gitlab_partner_maintained: 50,
         verified_creator_maintained: 10,
+        verified_creator_self_managed: 1,
         unverified: 0
       }.freeze
 

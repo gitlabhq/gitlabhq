@@ -106,7 +106,11 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
-  context "when in development or test environment" do
+  context "when in development environment" do
+    before do
+      allow(Rails.env).to receive_messages(test?: false, development?: true)
+    end
+
     it "initializes POST emitter with buffer_size 1" do
       allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
       allow(tracker).to receive(:track_struct_event).and_call_original
@@ -174,7 +178,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     let(:payload) { { "event" => "page_view", "user_id" => "123" } }
 
     before do
-      allow(SnowplowTracker::AsyncEmitter).to receive(:new).and_return(emitter)
+      allow(Gitlab::Tracking::SnowplowTestEmitter).to receive(:new).and_return(emitter)
     end
 
     it "forwards the payload to the emitter" do
@@ -333,6 +337,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     context 'when snowplow is enabled' do
       before do
         stub_application_setting(snowplow_enabled?: true)
+        allow(Rails.env).to receive(:test?).and_return(false)
       end
 
       it 'uses AsyncEmitter' do
@@ -346,6 +351,7 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     context 'when snowplow is disabled' do
       before do
         stub_application_setting(snowplow_enabled?: false)
+        allow(Rails.env).to receive(:test?).and_return(false)
       end
 
       context 'when GITLAB_DISABLE_PRODUCT_USAGE_EVENT_LOGGING env variable is true' do
@@ -377,6 +383,16 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
 
           subject.send(:emitter)
         end
+      end
+    end
+
+    context 'in test environment' do
+      it 'uses SnowplowTestEmitter to prevent HTTP requests' do
+        # In test environment, we expect SnowplowTestEmitter to prevent HTTP requests
+        expect(Gitlab::Tracking::SnowplowTestEmitter).to receive(:new)
+        expect(SnowplowTracker::AsyncEmitter).not_to receive(:new)
+        expect(Gitlab::Tracking::SnowplowLoggingEmitter).not_to receive(:new)
+        subject.send(:emitter)
       end
     end
   end

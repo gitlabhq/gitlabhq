@@ -91,9 +91,11 @@ RSpec.describe Ci::JobToken::Authorization, feature_category: :secrets_managemen
       context 'when origin project is the same as the accessed project' do
         let(:accessed_project) { origin_project }
 
-        it 'does not capture the authorization' do
+        it 'captures the authorization in the RequestStore' do
           capture
-          expect(described_class.captured_authorizations).to be_nil
+          expect(described_class.captured_authorizations).to eq(
+            origin_project_id: origin_project.id,
+            accessed_project_id: accessed_project.id)
         end
 
         it "triggers an internal event" do

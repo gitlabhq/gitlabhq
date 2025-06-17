@@ -113,9 +113,11 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
 
       context 'when timezone is invalid' do
-        let_it_be(:user) { create(:user, timezone: 'Foo/Bar') }
+        let_it_be(:user) { build(:user, timezone: 'Foo/Bar') }
 
         it 'shows local time using the configured default timezone (UTC in this case)' do
+          user.save!(validate: false)
+
           subject
 
           within local_time_selector do

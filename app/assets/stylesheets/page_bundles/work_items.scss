@@ -124,10 +124,11 @@ $work-item-overview-gap-width: 2rem;
 $disclosure-hierarchy-chevron-dimension: 1.2rem;
 
 @mixin hierarchy-active-item-color {
-  @apply gl-bg-strong;
+  background-color: var(--gl-action-neutral-background-color-hover);
 
   &::after {
-    @apply gl-bg-strong;
+    background-color: var(--gl-action-neutral-background-color-hover);
+    z-index: 3;
   }
 }
 
@@ -202,7 +203,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
     &:focus,
     &:focus:active {
       // Custom focus
-      box-shadow: 1px 1px 0 1px $blue-400, 2px -1px 0 1px $blue-400, -1px 1px 0 1px $blue-400, -1px -1px 0 1px $blue-400 !important;
+      box-shadow: 1px 1px 0 1px var(--gl-focus-ring-outer-color), 2px -1px 0 1px var(--gl-focus-ring-outer-color), -1px 1px 0 1px var(--gl-focus-ring-outer-color), -1px -1px 0 1px var(--gl-focus-ring-outer-color) !important;
     }
   }
 
@@ -223,14 +224,12 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 
   &:not([disabled]):hover {
-    border-color: var(--gray-400, $gray-400);
+    border-color: var(--gl-border-color-default);
     @include hierarchy-active-item-color;
     color: var(--gl-action-neutral-foreground-color-hover);
 
     &::after {
-      border-left: 1px solid var(--gray-50, $gray-50);
-      border-bottom: 1px solid var(--gray-50, $gray-50);
-      z-index: 3;
+      @apply gl-border-l-0 gl-border-r-0;
     }
   }
 
@@ -238,17 +237,16 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   &:focus,
   &:focus:active {
     // Custom focus
-    box-shadow: 1px 1px 0 1px $blue-400, 2px -1px 0 1px $blue-400 !important;
+    box-shadow: 1px 1px 0 1px var(--gl-focus-ring-outer-color), 2px -1px 0 1px var(--gl-focus-ring-outer-color) !important;
     outline: none;
-    border-top: 1px solid var(--gray-400, $gray-400);
-    border-bottom: 1px solid var(--gray-400, $gray-400);
+    border-top: 1px solid var(--gl-action-neutral-border-color-default);
+    border-bottom: 1px solid var(--gl-action-neutral-border-color-default);
     @include hierarchy-active-item-color;
-    z-index: 2;
     border-radius: $gl-border-radius-small;
     color: var(--gl-action-neutral-foreground-color-focus);
 
     &::before, &::after {
-      box-shadow: 2px -2px 0 1px $blue-400;
+      box-shadow: 2px -2px 0 1px var(--gl-focus-ring-outer-color);
     }
   }
 }
@@ -389,6 +387,11 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
         @apply gl-max-w-full;
       }
     }
+
+    // stylelint-disable-next-line gitlab/no-gl-class
+    .work-item-sidebar-dropdown .gl-new-dropdown-panel {
+      @apply gl-min-w-0 gl-max-w-[calc(100%-1rem)] #{!important};
+    }
   }
 }
 
@@ -430,6 +433,16 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   .work-item-sidebar-container {
     container-type: unset;
   }
+
+  .work-item-notes .note-container-query-wrapper {
+    container-type: unset !important;
+
+    @media (max-width: $breakpoint-sm) {
+      .note-hidden-xs {
+        @apply gl-hidden
+      }
+    }
+  }
 }
 
 // Safari
@@ -440,4 +453,12 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
 // Firefox
 @-moz-document url-prefix() {
   @include browser-specific-overrides;
+}
+
+ul.content-list {
+  .issue-clickable {
+    a, span {
+      @apply gl-relative gl-z-2;
+    }
+  }
 }

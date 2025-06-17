@@ -118,12 +118,22 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     let(:time) { 3.hours.ago }
     let(:timezone) { 'Europe/London' }
     let(:user) do
-      build_stubbed(:user, status: UserStatus.new(
-        message: 'Some message',
-        emoji: 'basketball',
-        availability: 'busy',
-        clear_status_at: time
-      ), timezone: timezone)
+      build_stubbed(
+        :user,
+        status: UserStatus.new(
+          message: 'Some message',
+          emoji: 'basketball',
+          availability: 'busy',
+          clear_status_at: time
+        ),
+        timezone: timezone,
+        pronouns: 'they/them',
+        pronunciation: 'test-user',
+        job_title: 'Developer',
+        organization: 'GitLab',
+        location: 'Remote',
+        website_url: 'https://example.com',
+        bio: 'Test bio')
     end
 
     before do
@@ -149,6 +159,23 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
       expect(data[:default_emoji]).to eq(UserStatus::DEFAULT_EMOJI)
       expect(data[:timezones]).to eq(helper.timezone_data_with_unique_identifiers.to_json)
       expect(data[:user_timezone]).to eq(timezone)
+    end
+
+    it 'includes all user profile fields' do
+      data = helper.user_profile_data(user)
+
+      expect(data[:id]).to eq(user.id)
+      expect(data[:name]).to eq(user.name)
+      expect(data[:pronouns]).to eq('they/them')
+      expect(data[:pronunciation]).to eq('test-user')
+      expect(data[:website_url]).to eq('https://example.com')
+      expect(data[:location]).to eq('Remote')
+      expect(data[:job_title]).to eq('Developer')
+      expect(data[:organization]).to eq('GitLab')
+      expect(data[:bio]).to eq('Test bio')
+      expect(data[:include_private_contributions]).to eq(user.include_private_contributions?.to_s)
+      expect(data[:achievements_enabled]).to eq(user.achievements_enabled.to_s)
+      expect(data[:private_profile]).to eq(user.private_profile?.to_s)
     end
   end
 

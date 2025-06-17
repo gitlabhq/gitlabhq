@@ -1,0 +1,15 @@
+mutation runnerBulkPause($input: RunnerBulkPauseInput!) {
+  runnerBulkPause(input: $input) {
+    updatedCount
+    updatedRunners {
+      id
+      paused # Keeps runners paused status is up-to-date
+      userPermissions {
+        # Used to call "localMutations.setRunnerChecked(...)" to uncheck the runner
+        updateRunner
+        deleteRunner
+      }
+    }
+    errors
+  }
+}

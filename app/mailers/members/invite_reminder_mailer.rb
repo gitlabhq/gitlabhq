@@ -112,7 +112,7 @@ module Members
       end
 
       def salutation
-        s_('InviteReminderEmail|In case you missed it...')
+        s_('InviteReminderEmail|In case you missed it…')
       end
 
       alias_method :salutation_html, :salutation

@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.importer.github_import_project_failure_weekly
 description: The number of github projects that failed weekly
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "14.4"

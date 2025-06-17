@@ -1,0 +1,11 @@
+---
+migration_job_name: FixVulnerabilitiesTransitionedFromDismissedToResolved
+description: >
+  This migration corrects vulnerabilities that were affected by https://gitlab.com/gitlab-org/gitlab/-/issues/521907.
+  We do not want to change data for all customers, so this migration is enqueued via a rake task.
+  It accepts a namespace_id as a job argument, and migrates only records that are in that namespace.
+feature_category: vulnerability_management
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190859
+milestone: '18.1'
+queued_migration_version:
+finalized_by: 00000000000000 # This migration was enqueued via rake task and can't be finalized.

@@ -8,6 +8,7 @@ import {
   GlIcon,
   GlSprintf,
   GlTooltipDirective,
+  GlAnimatedChevronLgRightDownIcon,
 } from '@gitlab/ui';
 import { isListDraggable } from '~/boards/boards_util';
 import { isScopedLabel, parseBoolean } from '~/lib/utils/common_utils';
@@ -46,6 +47,7 @@ export default {
     GlTooltip,
     GlIcon,
     GlSprintf,
+    GlAnimatedChevronLgRightDownIcon,
     ItemCount,
   },
   directives: {
@@ -117,6 +119,15 @@ export default {
     listTitle() {
       return this.list?.label?.description || this.list?.assignee?.name || this.list.title || '';
     },
+    listStatus() {
+      return this.list?.status || {};
+    },
+    listStatusColor() {
+      return this.listStatus?.color;
+    },
+    listStatusIconName() {
+      return this.listStatus?.iconName;
+    },
     isIterationList() {
       return this.listType === ListType.iteration;
     },
@@ -152,9 +163,6 @@ export default {
     },
     chevronTooltip() {
       return this.list.collapsed ? this.$options.i18n.expand : this.$options.i18n.collapse;
-    },
-    chevronIcon() {
-      return this.list.collapsed ? 'chevron-lg-right' : 'chevron-lg-down';
     },
     isNewIssueShown() {
       return (this.listType === ListType.backlog || this.showListHeaderButton) && !this.isEpicBoard;
@@ -328,7 +336,7 @@ export default {
     class="board-header gl-relative"
     data-testid="board-list-header"
   >
-    <h3
+    <div
       :class="{
         'gl-cursor-grab': userCanDrag,
         'gl-h-full gl-py-3': list.collapsed && !isSwimlanesHeader,
@@ -344,8 +352,7 @@ export default {
         v-gl-tooltip.hover
         :aria-label="chevronTooltip"
         :title="chevronTooltip"
-        :icon="chevronIcon"
-        class="board-title-caret no-drag gl-cursor-pointer hover:gl-bg-strong"
+        class="board-title-caret no-drag btn-icon gl-cursor-pointer hover:gl-bg-strong"
         :class="{
           '-gl-mt-1': list.collapsed && isLabelList,
           'gl-mb-2': list.collapsed && isLabelList && !isSwimlanesHeader,
@@ -356,7 +363,9 @@ export default {
         size="small"
         data-testid="board-title-caret"
         @click="toggleExpanded"
-      />
+      >
+        <gl-animated-chevron-lg-right-down-icon :is-on="!list.collapsed" />
+      </gl-button>
       <!-- EE start -->
 
       <a
@@ -377,9 +386,21 @@ export default {
           class="gl-mr-3"
         />
       </a>
+      <gl-icon
+        v-if="listType === 'status'"
+        data-testid="status-icon"
+        :name="listStatusIconName"
+        :size="12"
+        :class="{
+          'gl-mt-2': list.collapsed,
+          'gl-mx-2': !list.collapsed,
+          'gl-shrink-0': true,
+        }"
+        :style="{ color: listStatusColor }"
+      />
       <!-- EE end -->
-      <div
-        class="board-title-text"
+      <h2
+        class="gl-text-bold board-title-text gl-text-base"
         :class="{
           'gl-hidden': list.collapsed && isSwimlanesHeader,
           'gl-mx-0 gl-my-3 gl-flex-grow-0 gl-rotate-90 gl-py-0': list.collapsed,
@@ -387,6 +408,7 @@ export default {
         }"
       >
         <!-- EE start -->
+
         <span
           v-if="listType !== 'label'"
           v-gl-tooltip.hover
@@ -416,7 +438,7 @@ export default {
           :scoped="showScopedLabels(list.label)"
           :title="list.label.title"
         />
-      </div>
+      </h2>
 
       <!-- EE start -->
       <span
@@ -447,7 +469,7 @@ export default {
       <!-- EE end -->
 
       <div
-        class="issue-count-badge no-drag gl-inline-flex gl-pr-2 gl-text-sm gl-text-subtle"
+        class="issue-count-badge no-drag gl-inline-flex gl-pr-2"
         data-testid="issue-count-badge"
         :class="{
           '!gl-hidden': list.collapsed && isSwimlanesHeader,
@@ -455,26 +477,42 @@ export default {
         }"
       >
         <span class="gl-inline-flex" :class="{ 'gl-rotate-90': list.collapsed }">
-          <gl-tooltip :target="() => $refs.itemCount" :title="itemsTooltipLabel" />
-          <span ref="itemCount" class="gl-inline-flex gl-items-center" data-testid="item-count">
+          <gl-button
+            ref="itemCount"
+            v-gl-tooltip
+            :title="itemsTooltipLabel"
+            class="!gl-bg-transparent !gl-p-0"
+            data-testid="item-count"
+            category="tertiary"
+            size="small"
+            button-text-classes="gl-flex gl-text-subtle gl-text-sm gl-font-bold"
+          >
             <gl-icon class="gl-mr-2" :name="countIcon" :size="14" />
             <item-count
               v-if="!isLoading"
               :current-count="itemsCount"
               :max-count="list.maxIssueCount"
             />
-          </span>
+          </gl-button>
           <!-- EE start -->
           <template v-if="canShowTotalWeight">
-            <gl-tooltip :target="() => $refs.weightTooltip" :title="weightCountToolTip" />
-            <span ref="weightTooltip" class="gl-ml-3 gl-inline-flex" data-testid="weight">
+            <gl-button
+              ref="weightTooltip"
+              v-gl-tooltip
+              :title="weightCountToolTip"
+              class="gl-ml-3 !gl-bg-transparent !gl-p-0"
+              data-testid="weight"
+              category="tertiary"
+              size="small"
+              button-text-classes="gl-flex gl-text-subtle gl-text-sm gl-font-bold"
+            >
               <gl-icon class="gl-mr-2" name="weight" :size="14" />
               <item-count
                 v-if="!isLoading"
                 :current-count="totalIssueWeight"
                 :max-count="list.maxIssueWeight"
               />
-            </span>
+            </gl-button>
           </template>
           <!-- EE end -->
         </span>
@@ -515,6 +553,6 @@ export default {
           @click="openSidebarSettings"
         />
       </gl-button-group>
-    </h3>
+    </div>
   </header>
 </template>

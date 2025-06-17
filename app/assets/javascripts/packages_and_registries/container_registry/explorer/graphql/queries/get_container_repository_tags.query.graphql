@@ -1,4 +1,5 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "ee_else_ce/packages_and_registries/container_registry/explorer/graphql/fragments/container_repository_tag_protection.fragment.graphql"
 
 query getContainerRepositoryTags(
   $id: ContainerRepositoryID!
@@ -40,9 +41,7 @@ query getContainerRepositoryTags(
           destroyContainerRepositoryTag
         }
         protection {
-          minimumAccessLevelForPush
-          minimumAccessLevelForDelete
-          immutable
+          ...ContainerRepositoryTagProtection
         }
         referrers {
           artifactType

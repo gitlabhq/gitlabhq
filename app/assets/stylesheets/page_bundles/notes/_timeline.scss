@@ -60,7 +60,7 @@
 .discussion .timeline-entry {
   margin: 0;
   border-right: 0;
-  border-radius: $gl-border-radius-base $gl-border-radius-base 0 0;
+  @apply gl-rounded-t-lg gl-rounded-r-lg gl-rounded-l-none gl-rounded-b-none;
 }
 
 .issuable-discussion:not(.incident-timeline-events),

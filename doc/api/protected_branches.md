@@ -12,16 +12,21 @@ title: Protected branches API
 
 {{< /details >}}
 
+Use this API to manage [branch protections](../user/project/repository/branches/protected.md)
+for your repositories.
+
+GitLab Premium and GitLab Ultimate support more granular protections for pushing to branches.
+Administrators can grant permission to modify and push to protected branches only to deploy keys,
+instead of specific users.
+
 ## Valid access levels
 
-The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` method. The following levels are recognized:
+The `ProtectedRefAccess.allowed_access_levels` method defines the following access levels:
 
-```plaintext
-0  => No access
-30 => Developer access
-40 => Maintainer access
-60 => Admin access
-```
+- `0`: No access
+- `30`: Developer role
+- `40`: Maintainer role
+- `60`: Administrator
 
 ## List protected branches
 
@@ -41,7 +46,7 @@ GET /projects/:id/protected_branches
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `search` | string | no | Name or part of the name of protected branches to be searched for |
 
 In the following example, the project ID is `5`.
@@ -168,7 +173,7 @@ GET /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name` | string | yes | The name of the branch or wildcard |
 
 In the following example, the project ID is `5` and branch name is `main`:
@@ -252,7 +257,7 @@ POST /projects/:id/protected_branches
 
 | Attribute                                    | Type | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                                         | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. (default: `false`) |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |
@@ -585,7 +590,7 @@ DELETE /projects/:id/protected_branches/:name
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `id` | integer/string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
+| `id` | integer or string | yes | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) |
 | `name` | string | yes | The name of the branch |
 
 In the following example, the project ID is `5` and branch name is `*-stable`.
@@ -600,7 +605,6 @@ curl --request DELETE \
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/101903) in GitLab 15.6.
 - `deploy_key_id` configuration [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166598) in GitLab 17.5.
 
 {{< /history >}}
@@ -613,7 +617,7 @@ PATCH /projects/:id/protected_branches/:name
 
 | Attribute                                    | Type           | Required | Description |
 | -------------------------------------------- | ---- | -------- | ----------- |
-| `id`                                         | integer/string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
+| `id`                                         | integer or string | yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
 | `name`                                       | string         | yes | The name of the branch or wildcard. |
 | `allow_force_push`                           | boolean        | no  | When enabled, members who can push to this branch can also force push. |
 | `allowed_to_merge`                           | array          | no  | Array of merge access levels, with each described by a hash of the form `{user_id: integer}`, `{group_id: integer}`, or `{access_level: integer}`. Premium and Ultimate only. |

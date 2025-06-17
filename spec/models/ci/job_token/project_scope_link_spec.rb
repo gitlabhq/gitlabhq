@@ -80,11 +80,10 @@ RSpec.describe Ci::JobToken::ProjectScopeLink, feature_category: :continuous_int
       expect(link.errors[:target_project]).to contain_exactly("can't be blank")
     end
 
-    it 'must have a target project different than source project', :aggregate_failures do
+    it 'can have a target project that is the source project', :aggregate_failures do
       link = build(:ci_job_token_project_scope_link, target_project: project, source_project: project)
 
-      expect(link).not_to be_valid
-      expect(link.errors[:target_project]).to contain_exactly("can't be the same as the source project")
+      expect(link).to be_valid
     end
 
     describe 'job token policies' do

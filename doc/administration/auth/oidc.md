@@ -490,7 +490,7 @@ Add the [provider's configuration](https://docs.gitlab.com/charts/charts/globals
 
 {{< /tabs >}}
 
-As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or above, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value.
+As you migrate from `azure_oauth2` to `omniauth_openid_connect` as part of upgrading to GitLab 17.0 or later, the `sub` claim value set for your organization can vary. `azure_oauth2` uses Microsoft V1 endpoint while `azure_activedirectory_v2` and `omniauth_openid_connect` both use Microsoft V2 endpoint with a common `sub` value.
 
 - **For users with an email address in Entra ID**, to allow falling back to email address and updating the user's identity,
   configure the following:
@@ -1472,14 +1472,26 @@ To enable step-up authentication for Admin Mode:
            },
            step_up_auth: {
              admin_mode: {
+               # The `id_token` field defines the claims that must be included with the token.
+               # You can specify claims in one or both of the `required` or `included` fields.
+               # The token must include matching values for every claim you define in these fields.
                id_token: {
-                 # The `required` field declares which claims are required in the ID token with exact match.
+                 # The `required` field defines key-value pairs that must be included with the ID token.
+                 # The values must match exactly what is defined.
                  # In this example, the 'acr' (Authentication Context Class Reference) claim
                  # must have the value 'gold' to pass the step-up authentication challenge.
                  # This ensures a specific level of authentication assurance.
                  required: {
                    acr: 'gold'
-                 }
+                 },
+                 # The `included` field also defines key-value pairs that must be included with the ID token.
+                 # Multiple accepted values can be defined in an array. If an array is not used, the value must match exactly.
+                 # In this example, the 'amr' (Authentication Method References) claim 
+                 # must have a value of either 'mfa' or 'fpt' to pass the step-up authentication challenge.
+                 # This is useful for scenarios where the user must provide additional authentication factors.
+                 included: {
+                   amr: ['mfa', 'fpt']
+                 },
                },
                # The `params` field defines any additional parameters that are sent during the authentication process.
                # In this example, the `claims` parameter is added to the authorization request and instructs the
@@ -1551,6 +1563,71 @@ To configure step-up authentication for Admin Mode in GitLab using Keycloak:
              },
            }
          }
+   ```
+
+1. Save the configuration file and restart GitLab for the changes to take effect.
+
+#### Enable step-up authentication for Admin Mode using Microsoft Entra ID
+
+Microsoft Entra ID (formerly known as Azure Active Directory) supports step-up authentication
+through [conditional access authentication context](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
+You should work with your Microsoft Entra ID administrators to define the correct configuration.
+
+Consider the following aspects:
+
+- Authentication context IDs are requested through the `acrs` claim only, not through the ID token
+  claim `acr` used for other identity providers.
+- Authentication context IDs use fixed values from `c1` to `c99`, each representing a specific
+  authentication context with conditional access policies.
+- By default, Microsoft Entra ID does not include the `acrs` claim in the ID token. To enable this, you must
+[configure optional claims](https://learn.microsoft.com/en-us/entra/identity-platform/optional-claims?tabs=appui#configure-optional-claims-in-your-application).
+- When step-up authentication succeeds, the response returns the [`acrs` claim](https://learn.microsoft.com/en-us/entra/identity-platform/access-token-claims-reference#payload-claims) as a JSON array
+  of strings. For example: `acrs: ["c1", "c2", "c3"]`.
+
+To configure step-up authentication for Admin Mode in GitLab using Microsoft Entra ID:
+
+1. [Configure Microsoft Entra ID](#configure-microsoft-azure) in GitLab.
+
+1. Follow the steps in the Microsoft Entra ID documentation to
+[define conditional access authentication contexts in Microsoft Entra ID](https://learn.microsoft.com/en-us/entra/identity-platform/developer-guide-conditional-access-authentication-context).
+
+1. In Microsoft Entra ID, define [the optional claim `acrs` to include in the ID token](https://openid.net/specs/openid-connect-core-1_0.html#IDToken).
+
+1. Edit your GitLab configuration file (`gitlab.yml` or `/etc/gitlab/gitlab.rb`) to enable
+   step-up authentication in the Microsoft Entra ID provider configuration:
+
+   ```yaml
+   production: &base
+     omniauth:
+       providers:
+       - { name: 'openid_connect',
+         label: 'Azure OIDC',
+         args: {
+           name: 'openid_connect',
+           # ...
+           allow_authorize_params: ["claims"] # Match this to the parameters defined in `step_up_auth => admin_mode => params`
+         },
+         step_up_auth: {
+           admin_mode: {
+             id_token: {
+               # In this example, the Microsoft Entra ID administrators have definded `c20`
+               # as the authentication context ID with the desired security level and
+               # an optional claim `acrs` to be included in the ID token.
+               # The `included` field declares that the id token claim `acrs` must include the value `c20`.
+               included: {
+                 acrs: ["c20"],
+               },
+             },
+             params: {
+               claims: {
+                 id_token: {
+                   acrs: { essential: true, value: 'c20' }
+                 }
+               },
+             }
+           },
+         }
+       }
    ```
 
 1. Save the configuration file and restart GitLab for the changes to take effect.

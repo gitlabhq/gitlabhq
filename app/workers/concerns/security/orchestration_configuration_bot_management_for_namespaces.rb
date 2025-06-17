@@ -15,6 +15,7 @@ module Security
     def perform(namespace_id, current_user_id)
       namespace = Namespace.find_by_id(namespace_id)
       return unless namespace
+      return unless namespace.security_orchestration_policy_configuration
 
       return unless User.id_exists?(current_user_id)
 

@@ -12,7 +12,7 @@ title: Pipeline schedules API
 
 {{< /details >}}
 
-You can read more about [pipeline schedules](../ci/pipelines/schedules.md).
+Use this API to interact with [pipeline schedules](../ci/pipelines/schedules.md).
 
 ## Get all pipeline schedules
 
@@ -181,6 +181,7 @@ Example response:
 {{< history >}}
 
 - `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
+- `inputs` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
 {{< /history >}}
 

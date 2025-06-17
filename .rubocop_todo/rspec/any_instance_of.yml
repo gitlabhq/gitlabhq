@@ -2,7 +2,6 @@
 # Cop supports --autocorrect.
 RSpec/AnyInstanceOf:
   Exclude:
-    - 'ee/spec/features/issues/form_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/features/security/project/internal_access_spec.rb'
     - 'ee/spec/features/security/project/private_access_spec.rb'
@@ -85,7 +84,6 @@ RSpec/AnyInstanceOf:
     - 'spec/features/groups/members/tabs_spec.rb'
     - 'spec/features/ide/static_object_external_storage_csp_spec.rb'
     - 'spec/features/issuables/issuable_list_spec.rb'
-    - 'spec/features/issues/form_spec.rb'
     - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'
     - 'spec/features/merge_request/user_reviews_image_spec.rb'
     - 'spec/features/merge_request/user_sees_diff_spec.rb'
@@ -119,7 +117,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/banzai/pipeline/gfm_pipeline_spec.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/lib/gitlab/app_logger_spec.rb'
-    - 'spec/lib/gitlab/asciidoc_spec.rb'
     - 'spec/lib/gitlab/auth/auth_finders_spec.rb'
     - 'spec/lib/gitlab/auth/blocked_user_tracker_spec.rb'
     - 'spec/lib/gitlab/auth/request_authenticator_spec.rb'
@@ -221,7 +218,6 @@ RSpec/AnyInstanceOf:
     - 'spec/serializers/merge_request_poll_widget_entity_spec.rb'
     - 'spec/services/application_settings/update_service_spec.rb'
     - 'spec/services/ci/create_pipeline_service_spec.rb'
-    - 'spec/services/ci/register_job_service_spec.rb'
     - 'spec/services/ci/resource_groups/assign_resource_from_resource_group_service_spec.rb'
     - 'spec/services/ci/retry_pipeline_service_spec.rb'
     - 'spec/services/clusters/cleanup/project_namespace_service_spec.rb'

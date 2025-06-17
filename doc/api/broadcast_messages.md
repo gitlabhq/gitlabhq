@@ -168,8 +168,8 @@ Example request:
 
 ```shell
 curl --data "message=Deploy in progress&target_access_levels[]=10&target_access_levels[]=30&theme=red" \
-     --header "PRIVATE-TOKEN: <your_access_token>" \
-     "https://gitlab.example.com/api/v4/broadcast_messages"
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/broadcast_messages"
 ```
 
 Example response:
@@ -245,8 +245,10 @@ The `theme` options are defined in the `System::BroadcastMessage` class. The fol
 Example request:
 
 ```shell
-curl --request PUT --data "message=Update message" \
-     --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/broadcast_messages/1"
+curl --request PUT \
+  --data "message=Update message" \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/broadcast_messages/1"
 ```
 
 Example response:
@@ -284,5 +286,7 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/broadcast_messages/1"
+curl --request DELETE \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/broadcast_messages/1"
 ```

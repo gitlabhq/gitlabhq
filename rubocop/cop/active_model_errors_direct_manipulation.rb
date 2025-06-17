@@ -11,6 +11,7 @@ module RuboCop
 
       MANIPULATIVE_METHODS = ":<< :append :clear :collect! :compact! :concat :delete :delete_at :delete_if :drop :drop_while :fill :filter! :keep_if :flatten! :insert :map! :pop :prepend :push :reject! :replace :reverse! :rotate! :select! :shift :shuffle! :slice! :sort! :sort_by! :uniq! :unshift"
 
+      # @!method active_model_errors_root_manipulation?(node)
       def_node_matcher :active_model_errors_root_manipulation?, <<~PATTERN
         (send
           (send
@@ -21,6 +22,7 @@ module RuboCop
           ...)
       PATTERN
 
+      # @!method active_model_errors_root_assignment?(node)
       def_node_matcher :active_model_errors_root_assignment?, <<~PATTERN
         (send
           (send {send ivar lvar} :errors)
@@ -28,6 +30,7 @@ module RuboCop
           ...)
       PATTERN
 
+      # @!method active_model_errors_manipulation?(node)
       def_node_matcher :active_model_errors_manipulation?, <<~PATTERN
         (send
           (send
@@ -40,6 +43,7 @@ module RuboCop
           ...)
       PATTERN
 
+      # @!method active_model_errors_assignment?(node)
       def_node_matcher :active_model_errors_assignment?, <<~PATTERN
         (send
           (send

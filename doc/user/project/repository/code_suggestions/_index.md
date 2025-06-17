@@ -11,7 +11,7 @@ title: Code Suggestions
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise, GitLab Duo with Amazon Q
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-- LLMs: For code completion, Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501) and Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
+- LLMs: For code completion, Fireworks AI-hosted [`Codestral`](https://mistral.ai/news/codestral-2501) (default) and Vertex AI-hosted [`Codestral`](https://console.cloud.google.com/vertex-ai/publishers/mistralai/model-garden/codestral-2501). For code generation, Anthropic [Claude 3.7 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-7-sonnet).
 - To opt out of Fireworks for a group, the feature flag `code_completion_opt_out_fireworks` is available.
 - LLM for Amazon Q: Amazon Q Developer
 
@@ -29,14 +29,16 @@ title: Code Suggestions
 - Removed support for Qwen2.5 code completion model
 - Enabled Fireworks hosted `Codestral` by default via the feature flag `use_fireworks_codestral_code_completion` in GitLab 17.11
 - Changed to include GitLab Duo Core in GitLab 18.0.
+- Enabled Fireworks hosted `Codestral` as the default model in GitLab 18.1
 
 {{< /history >}}
 
 Use GitLab Duo Code Suggestions to write code more efficiently by using generative AI to suggest code while you're developing.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-[View a click-through demo](https://gitlab.navattic.com/code-suggestions).
-<!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
+  [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
+  <!-- Video published on 2023-12-09 --> <!-- Demo published on 2024-02-01 -->
+- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://youtu.be/ds7SG1wgcVM)
 
 ## Prerequisites
 
@@ -94,7 +96,7 @@ might be available. To view all available suggestions:
    - Use keyboard shortcuts:
      - On a Mac, press <kbd>Option</kbd> + <kbd>\[</kbd> to view the previous suggestion,
        and press <kbd>Option</kbd> + <kbd>]</kbd> to view the next suggestion.
-     - On Windows, press <kbd>Alt</kbd> + <kbd>\[</kbd> to view the previous suggestion,
+     - On Linux and Windows, press <kbd>Alt</kbd> + <kbd>\[</kbd> to view the previous suggestion,
        and press <kbd>Alt</kbd> + <kbd>]</kbd> to view the next suggestion.
    - On the dialog that's displayed, select the right or left arrow to see next or previous options.
 1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.
@@ -417,7 +419,7 @@ Prerequisites:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
-1. Expand **AI-powered features**.
+1. Expand **AI-native features**.
 1. Choose an option:
    - To enable direct connections and minimize latency for code completion requests, clear the **Disable direct connections for code suggestions** checkbox.
    - To disable direct connections, select the **Disable direct connections for code suggestions** checkbox.

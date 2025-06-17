@@ -142,6 +142,7 @@ To impersonate a user:
   1. On the left sidebar, select **Overview > Users**.
   1. From the list of users, select a user.
   1. On the top right, select **Impersonate**.
+  1. To stop impersonating, on the left sidebar at the top, select **Stop impersonating** ({{< icon name="incognito">}}).
 - With the API, using [impersonation tokens](../api/rest/authentication.md#impersonation-tokens).
 
 All impersonation activities are [captured with audit events](compliance/audit_event_reports.md#user-impersonation).
@@ -416,7 +417,7 @@ This information is shown for each runner:
 
 | Attribute    | Description |
 |--------------|-------------|
-| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the **Ultimate** tier, the upgrade status is available. |
+| Status       | The status of the runner. In [GitLab 15.1 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/22224), for the Ultimate tier, the upgrade status is available. |
 | Runner details | Information about the runner, including partial token and details about the computer the runner was registered from. |
 | Version      | GitLab Runner version. |
 | Jobs         | Total number of jobs run by the runner. |

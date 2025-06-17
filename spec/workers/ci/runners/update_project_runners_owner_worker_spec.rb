@@ -15,7 +15,9 @@ RSpec.describe Ci::Runners::UpdateProjectRunnersOwnerWorker, '#handle_event', fe
   end
 
   it 'calls Ci::Runners::UpdateProjectRunnersOwnerService' do
-    expect_next_instance_of(Ci::Runners::UpdateProjectRunnersOwnerService, project.id) do |service|
+    expect_next_instance_of(
+      Ci::Runners::UpdateProjectRunnersOwnerService, project.id, project.namespace_id
+    ) do |service|
       expect(service).to receive(:execute)
     end
 

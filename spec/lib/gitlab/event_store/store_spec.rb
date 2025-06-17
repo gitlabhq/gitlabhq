@@ -365,5 +365,15 @@ RSpec.describe Gitlab::EventStore::Store, feature_category: :shared do
         subject
       end
     end
+
+    context 'when using handle_event_in' do
+      it 'schedules the event with correct parameters' do
+        constructed_event = event_klass.new(data: event_data)
+
+        expect(worker).to receive(:perform_in).with(5.minutes, event_name, event_data)
+
+        worker_instance.handle_event_in(5.minutes, constructed_event)
+      end
+    end
   end
 end

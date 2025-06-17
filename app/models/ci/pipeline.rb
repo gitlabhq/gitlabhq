@@ -933,7 +933,9 @@ module Ci
     # rubocop: enable Metrics/CyclomaticComplexity
 
     def protected_ref?
-      strong_memoize(:protected_ref) { project.protected_for?(git_ref) }
+      strong_memoize(:protected_ref) do
+        merge_request? ? protected_for_merge_request? : project.protected_for?(git_ref)
+      end
     end
 
     def variables_builder
@@ -950,9 +952,11 @@ module Ci
     end
 
     def queued_duration
-      return unless started_at
+      queueing_finished_time = started_at || finished_at
+      return unless queueing_finished_time
+      return unless created_at
 
-      seconds = (started_at - created_at).to_i
+      seconds = (queueing_finished_time - created_at).to_i
       seconds unless seconds == 0
     end
 
@@ -1169,6 +1173,10 @@ module Ci
       complete? && has_reports?(reports_scope)
     end
 
+    def complete_and_has_self_or_descendant_reports?(reports_scope)
+      complete? && latest_report_builds_in_self_and_project_descendants(reports_scope).exists?
+    end
+
     def complete_or_manual_and_has_reports?(reports_scope)
       complete_or_manual? && has_reports?(reports_scope)
     end
@@ -1182,7 +1190,11 @@ module Ci
     end
 
     def can_generate_codequality_reports?
-      complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        complete_and_has_self_or_descendant_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      else
+        complete_and_has_reports?(Ci::JobArtifact.of_report_type(:codequality))
+      end
     end
 
     def test_report_summary
@@ -1208,9 +1220,17 @@ module Ci
     end
 
     def codequality_reports
-      Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
-        latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
-          build.collect_codequality_reports!(codequality_reports)
+      if Feature.enabled?(:show_child_reports_in_mr_page, project)
+        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+          latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+            build.collect_codequality_reports!(codequality_reports)
+          end
+        end
+      else
+        Gitlab::Ci::Reports::CodequalityReports.new.tap do |codequality_reports|
+          latest_report_builds(Ci::JobArtifact.of_report_type(:codequality)).each do |build|
+            build.collect_codequality_reports!(codequality_reports)
+          end
         end
       end
     end
@@ -1554,6 +1574,27 @@ module Ci
           property: config_source
         }
       )
+    end
+
+    def protected_for_merge_request?
+      return false unless merge_request?
+      return false unless project.protect_merge_request_pipelines?
+
+      # Exposing protected variables to MR Pipelines is explicitly prohibited for cross-project MRs
+      return false unless merge_request.source_project_id == merge_request.target_project_id
+
+      access = Gitlab::UserAccess.new(user, container: project)
+      # Exposing protected variables to MR Pipelines is not allowed if user who created the pipeline CANNOT update the source branch
+      return false unless access.can_update_branch?(merge_request.source_branch)
+      # Exposing protected variables to MR Pipelines is not allowed if user who created the pipeline CANNOT update the target branch
+      # Refer to this discussion for more details: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188008#note_2517290181
+      return false unless access.can_update_branch?(merge_request.target_branch)
+
+      project.protected_for?(merge_request.source_branch) &&
+        project.protected_for?(merge_request.target_branch)
+
+    rescue Repository::AmbiguousRefError
+      false
     end
   end
 end

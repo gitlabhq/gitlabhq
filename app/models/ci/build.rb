@@ -216,8 +216,10 @@ module Ci
 
     scope :with_pipeline_source_type, ->(pipeline_source_type) { joins(:pipeline).where(pipeline: { source: pipeline_source_type }) }
     scope :created_after, ->(time) { where(arel_table[:created_at].gt(time)) }
+    scope :created_before, ->(time) { where(arel_table[:created_at].lt(time)) }
     scope :updated_after, ->(time) { where(arel_table[:updated_at].gt(time)) }
     scope :for_project_ids, ->(project_ids) { where(project_id: project_ids) }
+    scope :with_token_present, -> { where.not(token_encrypted: nil) }
 
     add_authentication_token_field :token,
       encrypted: :required,
@@ -231,6 +233,7 @@ module Ci
 
     after_commit :track_ci_secrets_management_id_tokens_usage, on: :create, if: :id_tokens?
     after_commit :track_ci_build_created_event, on: :create
+    after_commit :trigger_job_status_change_subscription, if: :saved_change_to_status?
 
     class << self
       # This is needed for url_for to work,
@@ -409,6 +412,10 @@ module Ci
 
     def self.taggings_join_model
       ::Ci::BuildTag
+    end
+
+    def trigger_job_status_change_subscription
+      GraphqlTriggers.ci_job_status_updated(self)
     end
 
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
@@ -648,7 +655,6 @@ module Ci
         .concat(dependency_proxy_variables)
         .concat(job_jwt_variables)
         .concat(scoped_variables)
-        .concat(job_variables)
         .concat(persisted_environment_variables)
     end
     strong_memoize_attr :base_variables
@@ -740,7 +746,7 @@ module Ci
     end
 
     def ensure_trace_metadata!
-      Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id)
+      Ci::BuildTraceMetadata.find_or_upsert_for!(id, partition_id, project_id)
     end
 
     def artifacts_expose_as
@@ -1190,11 +1196,6 @@ module Ci
       build_source&.source || pipeline.source
     end
     strong_memoize_attr :source
-
-    # Can be removed in Rails 7.1. Related to: Gitlab.next_rails?
-    def to_partial_path
-      'jobs/job'
-    end
 
     def token
       return encoded_jwt if user&.has_composite_identity? || use_jwt_for_ci_cd_job_token?

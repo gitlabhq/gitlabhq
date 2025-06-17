@@ -253,7 +253,7 @@ You can open the file with:
 git config -e
 ```
 
-Now add the following line to the above section:
+Now add the following line to the previous section:
 
 ```plaintext
 fetch = +refs/merge-requests/*/head:refs/remotes/origin/merge-requests/*
@@ -286,7 +286,7 @@ To check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-All the above can be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
+These commands can be also be done with the [`git-mr`](https://gitlab.com/glensc/git-mr) script.
 
 ## Error: "source branch `<branch_name>` does not exist." when the branch exists
 

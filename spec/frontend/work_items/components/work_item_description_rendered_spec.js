@@ -164,9 +164,9 @@ describe('WorkItemDescriptionRendered', () => {
 
   describe('`disableHeadingAnchors` prop', () => {
     const baseAnchorHtml =
-      '<a id="user-content-this-is-an-anchor" class="anchor" aria-hidden="true" href="#this-is-an-anchor"></a>';
+      '<a href="#this-is-an-anchor" aria-hidden="true" class="anchor" id="user-content-this-is-an-anchor"></a>';
     const uninteractiveAnchorHtml =
-      '<a id="user-content-this-is-an-anchor" class="anchor after:!gl-hidden" aria-hidden="true" href="#this-is-an-anchor"></a>';
+      '<a href="#this-is-an-anchor" aria-hidden="true" class="anchor after:!gl-hidden" id="user-content-this-is-an-anchor"></a>';
     const baseHtml =
       '<h1 data-sourcepos="1:1-1:19" dir="auto">&#x000A;<a href="#this-is-an-anchor" aria-hidden="true" class="anchor" id="user-content-this-is-an-anchor"></a>This is an anchor</h1>';
     it('renders anchor links as normal when prop is `false`', () => {

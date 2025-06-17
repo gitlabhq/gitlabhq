@@ -23,7 +23,8 @@ module Database
       return unless Gitlab::Database.database_mode == Gitlab::Database::MODE_MULTIPLE_DATABASES
       return if Feature.disabled?(:monitor_database_locked_tables, type: :ops)
 
-      lock_writes_results = ::Gitlab::Database::TablesLocker.new(dry_run: true, include_partitions: false).lock_writes
+      lock_writes_results = ::Gitlab::Database::TablesLocker.new(
+        dry_run: true, include_partitions: false).lock_writes
 
       tables_lock_info_per_db = ::Gitlab::Database.database_base_models_with_gitlab_shared.keys.to_h do |db_name, _|
         [db_name, INITIAL_DATABASE_RESULT.deep_dup]

@@ -3,6 +3,7 @@
 class Projects::IncidentsController < Projects::ApplicationController
   include IssuableActions
   include Gitlab::Utils::StrongMemoize
+  include IncidentManagementFeatureFlag
 
   before_action :authorize_read_issue!
   before_action :load_incident, only: [:show]
@@ -12,6 +13,7 @@ class Projects::IncidentsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, !!@project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
   end
+  before_action :check_incidents_feature_flag, only: [:index, :show]
 
   feature_category :incident_management
   urgency :low

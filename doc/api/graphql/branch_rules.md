@@ -12,12 +12,6 @@ title: List branch rules for a project by using GraphQL
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106954) in GitLab 15.8.
-
-{{< /history >}}
-
 You can query for branch rules in a given project by using:
 
 - GraphiQL.

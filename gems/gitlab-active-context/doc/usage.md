@@ -435,7 +435,7 @@ results.to_a
 ```ruby
 target_embedding = ::ActiveContext::Embeddings.generate_embeddings("some text")
 
-query = ActiveContext::Query.filter(project_id: 1).knn(target: "embeddings", vector: target_embedding, limit: 1)
+query = ActiveContext::Query.filter(project_id: 1).knn(target: "embeddings", vector: target_embedding, k: 1)
 
 results = Ai::Context::Collections::MergeRequest.search(user: current_user, query: query)
 

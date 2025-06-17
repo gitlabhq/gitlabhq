@@ -46,6 +46,7 @@ RSpec.describe Ci::Catalog::Resource, feature_category: :pipeline_composition do
 
   it { is_expected.to delegate_method(:avatar_path).to(:project) }
   it { is_expected.to delegate_method(:star_count).to(:project) }
+  it { is_expected.to delegate_method(:archived).to(:project) }
 
   it { is_expected.to define_enum_for(:state).with_values({ unpublished: 0, published: 1 }) }
 

@@ -4,6 +4,8 @@ import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import waitForPromises from 'helpers/wait_for_promises';
 import {
   extendedWrapper,
@@ -26,6 +28,9 @@ import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
 import { mockTracking } from 'helpers/tracking_helper';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -38,6 +43,7 @@ jest.mock('~/lib/utils/secret_detection', () => {
 });
 
 Vue.use(Vuex);
+Vue.use(PiniaVuePlugin);
 
 describe('issue_comment_form component', () => {
   useLocalStorageSpy();
@@ -45,6 +51,7 @@ describe('issue_comment_form component', () => {
   let trackingSpy;
   let wrapper;
   let axiosMock;
+  let pinia;
 
   const findCloseReopenButton = () => wrapper.findByTestId('close-reopen-button');
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
@@ -126,6 +133,7 @@ describe('issue_comment_form component', () => {
         };
       },
       store,
+      pinia,
       provide: {
         glFeatures: features,
       },
@@ -134,6 +142,9 @@ describe('issue_comment_form component', () => {
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useLegacyDiffs();
+    useNotes();
     axiosMock = new MockAdapter(axios);
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
     detectAndConfirmSensitiveTokens.mockReturnValue(true);

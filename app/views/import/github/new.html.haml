@@ -38,6 +38,8 @@
       %label.col-form-label{ for: 'personal_access_token' }= _('Personal access token')
       = hidden_field_tag(:namespace_id, params[:namespace_id])
       = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input js-import-github-pat-field', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
+      - if has_ci_cd_only_params?
+        = hidden_field_tag(:ci_cd_only, 'true')
       %p.invalid-feedback.js-import-github-pat-validation
         = _('Personal access token is required.')
       %span.form-text.gl-text-subtle

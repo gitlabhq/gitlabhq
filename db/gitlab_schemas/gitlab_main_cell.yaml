@@ -1,5 +1,5 @@
 name: gitlab_main_cell
-description: Schema for all Organization tables, ex. namespaces, projects, etc.
+description: Schema for all Organization Main tables, ex. namespaces, projects, etc.
 allow_cross_joins:
   - gitlab_shared
   - gitlab_main
@@ -13,5 +13,8 @@ allow_cross_transactions:
   - gitlab_main_cell_local
 allow_cross_foreign_keys:
   - gitlab_main
-  - gitlab_main_clusterwide
 require_sharding_key: true
+sharding_root_tables:
+  - projects
+  - organizations
+  - namespaces

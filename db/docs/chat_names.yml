@@ -8,6 +8,7 @@ feature_categories:
 description: Stores mappings from external chat accounts to GitLab users.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/7450
 milestone: '8.14'
-gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463856
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

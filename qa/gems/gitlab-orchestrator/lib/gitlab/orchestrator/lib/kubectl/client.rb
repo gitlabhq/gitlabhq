@@ -16,6 +16,15 @@ module Gitlab
           @namespace = namespace
         end
 
+        # Get namespace data
+        #
+        # @return [String]
+        def get_namespace
+          execute_shell(["kubectl", "get", "namespace", namespace])
+        rescue Helpers::Shell::CommandFailure => e
+          raise(Error, e.message)
+        end
+
         # Create namespace
         #
         # @return [String] command output
@@ -58,6 +67,15 @@ module Gitlab
           run_in_namespace("exec", get_pod_name(pod_name), args: args)
         end
 
+        # Get pod data
+        #
+        # @param pod_name [String]
+        # @return [Hash]
+        def pod(pod_name)
+          output = run_in_namespace("get", "pod", pod_name, args: ["--output", "json"])
+          JSON.parse(output, symbolize_names: true)
+        end
+
         # Get pod logs
         #
         # @param [Array<String>] pods
@@ -86,6 +104,22 @@ module Gitlab
                 containers == "default" ? "--container=#{default_container}" : "--all-containers=true"
               ])
             ]
+          end
+        end
+
+        # Get resource consumption from top pods command
+        #
+        # @return [Hash<Array>]
+        def top_pods
+          args = ["--no-headers", "--containers"]
+
+          output = run_in_namespace("top", "pods", args: args).split("\n").map { |line| line.strip.split(/\s+/) }
+          unless output.all? { |row| row.length == 4 }
+            raise Error, "Unexpected top pods output: #{output}\nExpected row format: POD_NAME CONTAINER CPU MEMORY"
+          end
+
+          output.each_with_object(Hash.new { |hsh, key| hsh[key] = [] }) do |item, result|
+            result[item[0]] << { container: item[1], cpu: item[2], memory: item[3] }
           end
         end
 

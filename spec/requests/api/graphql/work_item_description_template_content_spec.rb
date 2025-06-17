@@ -42,6 +42,20 @@ RSpec.describe 'getting a WorkItem description template and content', feature_ca
     end
   end
 
+  context 'when user does not have access to the project' do
+    let_it_be(:unauthorized_user) { create(:user) }
+    let(:query) do
+      graphql_query_for(:workItemDescriptionTemplateContent,
+        { templateContentInput: { projectId: project.id, name: "project_issues_template_a" } })
+    end
+
+    it 'does not retrieve the template' do
+      post_graphql(query, current_user: unauthorized_user)
+
+      expect(expected_graphql_data).to be_nil
+    end
+  end
+
   context 'with a group_id that does not exist' do
     let(:query) do
       graphql_query_for(:workItemDescriptionTemplateContent,

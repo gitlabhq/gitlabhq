@@ -19,12 +19,13 @@ export default {
     integrationsGrouped() {
       return this.integrations.reduce(
         (integrations, integration) => {
-          if (integration.active) {
+          if (integration.name === 'amazon_q') {
+            // Amazon Q will appear in the General Section, not here.
+          } else if (integration.active) {
             integrations.active.push(integration);
           } else {
             integrations.inactive.push(integration);
           }
-
           return integrations;
         },
         { active: [], inactive: [] },

@@ -13,7 +13,7 @@ as we do the design of our features.
 
 When implementing a feature, we think about developing the right capabilities the right way. This helps us
 narrow our scope to a manageable level. When implementing tests for a feature, we must think about developing
-the right tests, but then cover _all_ the important ways the test may fail. This can quickly widen our scope to
+the right tests, but then cover all the important ways the test may fail. This can quickly widen our scope to
 a level that is difficult to manage.
 
 Test heuristics can help solve this problem. They concisely address many of the common ways bugs

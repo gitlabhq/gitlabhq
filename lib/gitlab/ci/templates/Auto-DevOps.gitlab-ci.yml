@@ -83,6 +83,8 @@ stages:
 
 workflow:
   rules:
+    - if: '$GITLAB_SCAN_EXECUTION_POLICY_PIPELINE'
+
     - if: '$BUILDPACK_URL || $AUTO_DEVOPS_EXPLICITLY_ENABLED == "1" || $DOCKERFILE_PATH'
 
     - exists:

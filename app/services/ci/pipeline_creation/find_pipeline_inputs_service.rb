@@ -21,7 +21,7 @@ module Ci
         end
 
         if !project.repository.branch_or_tag?(ref) || sha.blank?
-          return error_response(s_('Pipelines|Can only run new pipelines for an existing branch or tag'))
+          return error_response(s_('Pipelines|The branch or tag does not exist'))
         end
 
         # The project config may not exist if the project is using a policy.

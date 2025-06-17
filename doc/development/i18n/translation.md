@@ -1,7 +1,7 @@
 ---
-stage: Foundations
-group: Import and Integrate
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+stage: none
+group: Localization
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Translating GitLab
 ---
 
@@ -18,9 +18,13 @@ GitLab is being translated into many languages. To select a language to contribu
    [GitLab Crowdin project](https://crowdin.com/project/gitlab-ee).
 
    - If the language you want is available, proceed to the next step.
-   - If the language you want is not available,
-     [open an issue](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=Category%3AInternationalization).
-     Notify our Crowdin administrators by including `@gitlab-org/foundations/import-and-integrate` in your issue.
+   - If the language you want is not available:
+     1. Check the [Localization issues](https://gitlab.com/gitlab-org/gitlab/-/issues?scope=all&utf8=✓&state=all&label_name[]=group%3A%3Alocalization)
+        to see if there is already an open request for that language. If an issue exists,
+        you can add your support for the language in a comment.
+     1. If there is no request for the language, create a new issue for the language.
+        Notify our Crowdin administrators by including `@gitlab-com/localization/maintainers`
+        in a comment or in the description of your issue.
    - After the issue and any merge requests are complete, restart this procedure.
 
 1. View the list of files and folders. Select `gitlab.pot` to open the translation editor.

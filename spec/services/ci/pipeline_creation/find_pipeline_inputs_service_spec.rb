@@ -90,7 +90,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           result = service.execute
 
           expect(result).to be_error
-          expect(result.message).to eq(s_('Pipelines|Can only run new pipelines for an existing branch or tag'))
+          expect(result.message).to eq(s_('Pipelines|The branch or tag does not exist'))
         end
       end
 
@@ -101,7 +101,7 @@ RSpec.describe Ci::PipelineCreation::FindPipelineInputsService, feature_category
           result = service.execute
 
           expect(result).to be_error
-          expect(result.message).to eq(s_('Pipelines|Can only run new pipelines for an existing branch or tag'))
+          expect(result.message).to eq(s_('Pipelines|The branch or tag does not exist'))
         end
       end
 

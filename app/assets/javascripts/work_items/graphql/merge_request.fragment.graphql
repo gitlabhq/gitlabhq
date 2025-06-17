@@ -6,6 +6,8 @@ fragment MergeRequestFragment on MergeRequest {
   title
   webUrl
   state
+  mergedAt
+  closedAt
   sourceBranch
   reference
   headPipeline {

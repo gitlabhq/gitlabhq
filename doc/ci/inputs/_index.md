@@ -322,9 +322,8 @@ include:
 
 Inputs provide advantages over variables including type checking, validation and a clear contract.
 Unexpected inputs are rejected.
-
-Inputs for pipelines can be defined in the [`spec:inputs` header](#define-input-parameters-with-specinputs)
-of the `.gitlab-ci.yml`.
+Inputs for pipelines must be defined in the [`spec:inputs` header](#define-input-parameters-with-specinputs)
+of the main `.gitlab-ci.yml` file. You cannot use inputs defined in included files for pipeline-level configuration.
 
 {{< alert type="note" >}}
 

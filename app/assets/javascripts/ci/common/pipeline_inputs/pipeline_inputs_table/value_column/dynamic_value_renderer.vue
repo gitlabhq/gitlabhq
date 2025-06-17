@@ -99,7 +99,7 @@ export default {
       form: initForm({
         fields: {
           [this.item.name]: {
-            value: this.item.default,
+            value: this.item.value,
             required: this.item.required || false,
           },
         },
@@ -110,10 +110,10 @@ export default {
   computed: {
     inputValue: {
       get() {
-        return this.convertToDisplayValue(this.item.default);
+        return this.convertToDisplayValue(this.item.value);
       },
       set(newValue) {
-        if (newValue === this.convertToDisplayValue(this.item.default)) return;
+        if (newValue === this.convertToDisplayValue(this.item.value)) return;
 
         // convert to number if number type
         const value = this.item.type === INPUT_TYPES.NUMBER ? Number(newValue) : newValue;

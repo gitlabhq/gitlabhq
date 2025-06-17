@@ -12,7 +12,7 @@ title: Project push rules API
 
 {{< /details >}}
 
-You can manage [push rules](../user/project/repository/push_rules.md) for projects by using the REST API.
+Use the project push rules API to manage [push rules for projects](../user/project/repository/push_rules.md).
 
 ## Get project push rules
 

@@ -63,7 +63,7 @@ describe('ConnectToAgentModal', () => {
 
     it('renders link to the docs', () => {
       expect(findDocsLink().attributes('href')).toBe('/help/user/clusters/agent/user_access');
-      expect(findDocsLink().text()).toBe('Learn more about user access.');
+      expect(findDocsLink().text()).toBe('Learn more about user access');
     });
 
     it('renders close button', () => {

@@ -23,6 +23,7 @@ module Sidebars
       def add_menus
         return unless context.current_user
 
+        add_menu(Sidebars::YourWork::Menus::HomepageMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::ProjectsMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::GroupsMenu.new(context))
         add_menu(Sidebars::YourWork::Menus::OrganizationsMenu.new(context))

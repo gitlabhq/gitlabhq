@@ -1,4 +1,3 @@
----
 description: Command is executed from the GitLab CLI
 internal_events: true
 action: gitlab_cli_command_used

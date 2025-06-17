@@ -4,6 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Debugging tips for fixing problems in Git.
 title: Troubleshooting Git
+description: Tips to resolve Git issues.
 ---
 
 Sometimes things don't work the way they should or as you might expect when
@@ -299,7 +300,7 @@ This problem is common in Git itself, due to its inability to handle large files
 - The existence of large files in the repository.
 
 If this error occurs when cloning a large repository, you can
-[decrease the cloning depth](../../user/project/repository/monorepos/_index.md#shallow-cloning) to a value of `1`. For example:
+[decrease the cloning depth](../../user/project/repository/monorepos/_index.md#use-shallow-clones-in-cicd-processes) to a value of `1`. For example:
 
 This approach doesn't resolve the underlying cause, but you can successfully clone the repository.
 To decrease the cloning depth to `1`, run:

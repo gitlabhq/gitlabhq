@@ -23,7 +23,7 @@ Use advanced search to find exactly what you need across your entire GitLab inst
 With advanced search:
 
 - Identify code patterns across all projects to refactor shared components more efficiently.
-- Locate security vulnerabilities in dependencies across your entire organization at once.
+- Locate security vulnerabilities across your entire organization's codebase and dependencies using [advanced vulnerability management](../application_security/vulnerability_report/_index.md#advanced-vulnerability-management).
 - Track usage of deprecated functions or libraries throughout all repositories.
 - Find discussions buried in issues, merge requests, or comments.
 - Discover existing solutions instead of reinventing functionality that already exists.
@@ -43,11 +43,24 @@ users, epics, code, comments, commits, and wikis.
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:
 
-| Search level | Code | Comments | Commits | Epics | Issues | Merge requests | Milestones | Projects | Users | Wikis | Notes                                                                                                                                                                                                                                          |
-|--------------|:----:|:--------:|:-------:|:-----:|:------:|:--------------:|:----------:|:--------:|:-----:|:-----:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| Global       |  ✓   |    ✓     |    ✓    |   ✓   |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |   ✓   | An administrator can [disable global search scopes](_index.md#disable-global-search-scopes). On GitLab Self-Managed, global search is not available when limited indexing is enabled by default. An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces). |
-| Group        |  ✓   |    ✓     |    ✓    |   ✓   |   ✓    |       ✓        |     ✓      |    ✓     |   ✓   |   ✓   |                                                                                                                                                                                                                                                |
-| Project      |  ✓   |    ✓     |    ✓    |       |   ✓    |       ✓        |     ✓      |          |   ✓   |   ✓   |                                                                                                                                                                                                                                                |
+| Scope          | Global <sup>1</sup>                         | Group                                       | Project |
+|----------------|:-------------------------------------------:|:-------------------------------------------:|:-------:|
+| Code           | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Comments       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Commits        | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Epics          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Issues         | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Merge requests | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Milestones     | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Projects       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Users          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Wikis          | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+
+**Footnotes**:
+
+1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
+   On GitLab Self-Managed, global search is not available when limited indexing is enabled by default.
+   An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces).
 
 ## Syntax
 

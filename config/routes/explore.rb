@@ -15,6 +15,7 @@ namespace :explore do
     get '/' => 'catalog#index', as: :catalog_index
     get '/*full_path' => 'catalog#show', as: :catalog, constraints: { full_path: /.*/ }
   end
+  get '/ai-catalog/(*vueroute)' => 'ai_catalog#index', as: :ai_catalog, format: false
   resources :snippets, only: [:index]
   root to: 'projects#index'
 end

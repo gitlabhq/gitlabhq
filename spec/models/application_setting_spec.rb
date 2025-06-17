@@ -18,89 +18,282 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
   it { expect(setting).to have_db_column(:auto_devops_enabled) }
 
   describe 'default values' do
-    subject { described_class.new }
-
-    it 'has correct default values' do
+    it 'has correct default values', :do_not_mock_admin_mode_setting do
       is_expected.to have_attributes(
         id: 1,
-        repository_storages_weighted: {},
-        kroki_formats: {},
-        default_branch_protection_defaults: {},
-        enforce_email_subaddress_restrictions: false,
-        helm_max_packages_count: 1000,
-        max_decompressed_archive_size: 25600,
-        decompress_archive_file_timeout: 210,
-        bulk_import_concurrent_pipeline_batch_limit: 25,
+        admin_mode: false,
+        ai_action_api_rate_limit: 160,
+        akismet_enabled: false,
+        allow_account_deletion: true,
+        allow_bypass_placeholder_confirmation: false,
+        allow_contribution_mapping_to_admins: false,
+        allow_local_requests_from_system_hooks: true,
+        allow_local_requests_from_web_hooks_and_services: false,
+        allow_possible_spam: false,
         allow_project_creation_for_guest_and_below: true,
-        members_delete_limit: 60,
-        downstream_pipeline_trigger_limit_per_project_user_sha: 0,
+        allow_runner_registration_token: true,
+        anonymous_searches_allowed: true,
+        asset_proxy_enabled: false,
         asciidoc_max_includes: 32,
-        concurrent_github_import_jobs_limit: 1000,
-        concurrent_bitbucket_import_jobs_limit: 100,
-        concurrent_bitbucket_server_import_jobs_limit: 100,
-        deletion_adjourned_period: 7,
-        nuget_skip_metadata_url_validation: false,
-        silent_admin_exports_enabled: false,
+        authorized_keys_enabled: true,
         autocomplete_users_limit: 300,
         autocomplete_users_unauthenticated_limit: 100,
-        group_api_limit: 400,
-        group_archive_unarchive_api_limit: 60,
-        group_invited_groups_api_limit: 60,
-        group_projects_api_limit: 600,
-        group_shared_groups_api_limit: 60,
-        groups_api_limit: 200,
+        bulk_import_concurrent_pipeline_batch_limit: 25,
+        bulk_import_enabled: false,
+        bulk_import_max_download_file_size: 5120,
+        can_create_group: true,
+        can_create_organization: true,
+        ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year'),
+        ci_job_live_trace_enabled: false,
+        ci_max_includes: 150,
+        ci_max_total_yaml_size_bytes: 314572800,
+        ci_partitions_size_limit: 100.gigabytes,
+        code_suggestions_api_rate_limit: 60,
+        commit_email_hostname: "users.noreply.#{Gitlab.config.gitlab.host}",
+        concurrent_bitbucket_import_jobs_limit: 100,
+        concurrent_bitbucket_server_import_jobs_limit: 100,
+        concurrent_github_import_jobs_limit: 1000,
+        concurrent_relation_batch_export_limit: 8,
+        container_registry_cleanup_tags_service_max_list_size: 200,
+        container_registry_db_enabled: false,
+        container_registry_delete_tags_service_timeout: 250,
+        container_registry_expiration_policies_caching: true,
+        container_registry_expiration_policies_worker_capacity: 4,
+        container_registry_features: [],
+        container_registry_token_expire_delay: 5,
+        container_registry_vendor: '',
+        container_registry_version: '',
         create_organization_api_limit: 10,
-        organization_cluster_agent_authorization_enabled: false,
-        project_api_limit: 400,
-        project_invited_groups_api_limit: 60,
-        projects_api_limit: 2000,
-        instance_token_prefix: 'gl',
-        use_clickhouse_for_analytics: false,
-        user_contributed_projects_api_limit: 100,
-        user_projects_api_limit: 300,
-        user_starred_projects_api_limit: 100,
-        users_api_limit_followers: 100,
-        users_api_limit_following: 100,
-        users_api_limit_status: 240,
-        users_api_limit_ssh_keys: 120,
-        users_api_limit_ssh_key: 120,
-        users_api_limit_gpg_keys: 120,
-        users_api_limit_gpg_key: 120,
+        custom_http_clone_url_root: nil,
+        decompress_archive_file_timeout: 210,
+        default_artifacts_expire_in: '30 days',
+        default_branch_name: nil,
+        default_branch_protection: Settings.gitlab['default_branch_protection'],
+        default_branch_protection_defaults: {
+          'allow_force_push' => false,
+          'allowed_to_merge' => [{ 'access_level' => 40 }],
+          'allowed_to_push' => [{ 'access_level' => 40 }],
+          'developer_can_initial_push' => false
+        },
+        default_ci_config_path: nil,
+        default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        default_project_creation: Settings.gitlab['default_project_creation'],
+        default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        default_projects_limit: Settings.gitlab['default_projects_limit'],
+        default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
+        default_syntax_highlighting_theme: 1,
+        deletion_adjourned_period: 7,
+        deny_all_requests_except_allowed: false,
+        dependency_proxy_ttl_group_policy_worker_capacity: 2,
+        diagramsnet_enabled: true,
+        diagramsnet_url: 'https://embed.diagrams.net',
+        diff_max_files: Commit::DEFAULT_MAX_DIFF_FILES_SETTING,
+        diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
+        diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,
+        disable_admin_oauth_scopes: false,
+        disable_feed_token: false,
+        disable_invite_members: false,
         disable_password_authentication_for_users_with_sso_identities: false,
-        root_moved_permanently_redirection: false,
-        resource_usage_limits: {},
-        resource_access_token_notify_inherited: false,
-        lock_resource_access_token_notify_inherited: false,
-        ropc_without_client_credentials: true,
+        disabled_oauth_sign_in_sources: [],
+        dns_rebinding_protection_enabled: Settings.gitlab['dns_rebinding_protection_enabled'],
+        domain_allowlist: Settings.gitlab['domain_allowlist'],
+        downstream_pipeline_trigger_limit_per_project_user_sha: 0,
+        dsa_key_restriction: 0,
+        ecdsa_key_restriction: 0,
+        ecdsa_sk_key_restriction: 0,
+        ed25519_key_restriction: 0,
+        ed25519_sk_key_restriction: 0,
+        enable_language_server_restrictions: false,
+        eks_integration_enabled: false,
+        email_confirmation_setting: 'off',
+        email_restrictions_enabled: false,
+        enforce_email_subaddress_restrictions: false,
+        enforce_terms: false,
+        external_authorization_service_enabled: false,
+        external_pipeline_validation_service_timeout: nil,
+        external_pipeline_validation_service_token: nil,
+        external_pipeline_validation_service_url: nil,
+        first_day_of_week: 0,
+        floc_enabled: false,
+        git_push_pipeline_limit: 4,
+        gitaly_timeout_default: 55,
+        gitaly_timeout_fast: 10,
+        gitaly_timeout_medium: 30,
+        gitlab_dedicated_instance: false,
+        gitlab_environment_toolkit_instance: false,
+        gitlab_product_usage_data_enabled: Settings.gitlab['initial_gitlab_product_usage_data'],
+        gitlab_shell_operation_limit: 600,
+        global_search_block_anonymous_searches_enabled: false,
         global_search_issues_enabled: true,
         global_search_merge_requests_enabled: true,
         global_search_snippet_titles_enabled: true,
         global_search_users_enabled: true,
-        vscode_extension_marketplace: { 'enabled' => false },
-        vscode_extension_marketplace_enabled?: false,
-        global_search_block_anonymous_searches_enabled: false,
-        anonymous_searches_allowed: true,
+        gravatar_enabled: Settings.gravatar['enabled'],
+        group_api_limit: 400,
+        group_archive_unarchive_api_limit: 60,
+        group_download_export_limit: 1,
+        group_export_limit: 6,
+        group_import_limit: 6,
+        group_invited_groups_api_limit: 60,
+        group_projects_api_limit: 600,
+        group_shared_groups_api_limit: 60,
+        groups_api_limit: 200,
+        help_page_documentation_base_url: 'https://docs.gitlab.com',
+        help_page_hide_commercial_content: false,
+        help_page_text: nil,
+        helm_max_packages_count: 1000,
+        hide_third_party_offers: false,
+        housekeeping_enabled: true,
+        housekeeping_full_repack_period: 50,
+        housekeeping_gc_period: 200,
+        housekeeping_incremental_repack_period: 10,
+        import_sources: Settings.gitlab['import_sources'],
+        include_optional_metrics_in_service_ping: Settings.gitlab['usage_ping_enabled'],
+        instance_token_prefix: '',
+        invitation_flow_enforcement: false,
+        invisible_captcha_enabled: false,
+        issues_create_limit: 300,
+        jira_connect_public_key_storage_enabled: false,
+        kroki_formats: { 'blockdiag' => false, 'bpmn' => false, 'excalidraw' => false },
+        local_markdown_version: 0,
+        lock_maven_package_requests_forwarding: false,
+        lock_npm_package_requests_forwarding: false,
+        lock_pypi_package_requests_forwarding: false,
+        lock_resource_access_token_notify_inherited: false,
+        login_recaptcha_protection_enabled: false,
+        math_rendering_limits_enabled: true,
+        maven_package_requests_forwarding: true,
+        max_artifacts_content_include_size: 5.megabytes,
+        max_artifacts_size: Settings.artifacts['max_size'],
+        max_attachment_size: Settings.gitlab['max_attachment_size'],
+        max_decompressed_archive_size: 25600,
+        max_export_size: 0,
+        max_github_response_json_value_count: 250_000,
+        max_github_response_size_limit: 8,
+        max_import_remote_file_size: 10240,
+        max_import_size: 0,
+        max_terraform_state_size_bytes: 0,
+        max_yaml_depth: 100,
+        max_yaml_size_bytes: 2.megabytes,
+        members_delete_limit: 60,
+        minimum_language_server_version: '0.1.0',
+        minimum_password_length: ApplicationSettingImplementation::DEFAULT_MINIMUM_PASSWORD_LENGTH,
+        mirror_available: true,
+        notes_create_limit: 300,
+        notes_create_limit_allowlist: [],
+        notify_on_unknown_sign_in: true,
+        npm_package_requests_forwarding: true,
+        nuget_skip_metadata_url_validation: false,
+        organization_cluster_agent_authorization_enabled: false,
+        outbound_local_requests_whitelist: [],
         package_registry_allow_anyone_to_pull_option: true,
         package_registry_cleanup_policies_worker_capacity: 2,
         packages_cleanup_package_file_worker_capacity: 2,
-        npm_package_requests_forwarding: true,
-        lock_npm_package_requests_forwarding: false,
-        maven_package_requests_forwarding: true,
-        lock_maven_package_requests_forwarding: false,
+        pages_extra_deployments_default_expiry_seconds: 86400,
+        password_authentication_enabled_for_git: true,
+        password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
+        personal_access_token_prefix: 'glpat-',
+        plantuml_enabled: false,
+        project_api_limit: 400,
+        project_download_export_limit: 1,
+        project_export_enabled: true,
+        project_export_limit: 6,
+        project_import_limit: 6,
+        project_invited_groups_api_limit: 60,
+        project_jobs_api_rate_limit: 600,
+        projects_api_limit: 2000,
+        projects_api_rate_limit_unauthenticated: 400,
+        protected_ci_variables: true,
+        protected_paths: ApplicationSettingImplementation::DEFAULT_PROTECTED_PATHS,
+        push_event_activities_limit: 3,
+        push_event_hooks_limit: 3,
         pypi_package_requests_forwarding: true,
-        lock_pypi_package_requests_forwarding: false,
-        ci_job_live_trace_enabled: false,
+        raw_blob_request_limit: 300,
+        rate_limiting_response_text: nil,
+        recaptcha_enabled: false,
+        reindexing_minimum_index_size: 1.gigabyte,
+        reindexing_minimum_relative_bloat_size: 0.2,
+        remember_me_enabled: true,
+        repository_checks_enabled: true,
+        repository_storages_weighted: { 'default' => 100 },
+        require_admin_approval_after_user_signup: true,
+        require_admin_two_factor_authentication: false,
+        require_email_verification_on_account_locked: false,
+        require_personal_access_token_expiry: true,
+        require_two_factor_authentication: false,
+        resource_access_token_notify_inherited: false,
+        resource_usage_limits: {},
+        restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
+        root_moved_permanently_redirection: false,
+        ropc_without_client_credentials: true,
+        rsa_key_restriction: 0,
+        search_rate_limit: 30,
+        search_rate_limit_allowlist: [],
+        search_rate_limit_unauthenticated: 10,
+        security_approval_policies_limit: 5,
+        session_expire_delay: Settings.gitlab['session_expire_delay'],
+        session_expire_from_init: false,
+        shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
+        shared_runners_text: nil,
+        show_migrate_from_jenkins_banner: true,
+        sidekiq_job_limiter_compression_threshold_bytes:
+        Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_COMPRESSION_THRESHOLD_BYTES,
+        sidekiq_job_limiter_limit_bytes: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::DEFAULT_SIZE_LIMIT,
+        sidekiq_job_limiter_mode: Gitlab::SidekiqMiddleware::SizeLimiter::Validator::COMPRESS_MODE,
         sign_in_restrictions: {
           'disable_password_authentication_for_users_with_sso_identities' => false,
           'root_moved_permanently_redirection' => false,
           'session_expire_from_init' => false
         },
-        reindexing_minimum_index_size: 1.gigabyte,
-        reindexing_minimum_relative_bloat_size: 0.2,
+        signup_enabled: Settings.gitlab['signup_enabled'],
+        silent_admin_exports_enabled: false,
+        silent_mode_enabled: false,
+        snippet_size_limit: 50.megabytes,
+        sourcegraph_enabled: false,
+        sourcegraph_public_only: true,
+        spam_check_endpoint_enabled: false,
+        suggest_pipeline_enabled: true,
+        terminal_max_session_time: 0,
+        throttle_authenticated_git_http_enabled: false,
+        throttle_authenticated_git_http_requests_per_period:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_LIMIT,
+        throttle_authenticated_git_http_period_in_seconds:
+          ApplicationSetting::DEFAULT_AUTHENTICATED_GIT_HTTP_PERIOD,
+        throttle_unauthenticated_git_http_enabled: false,
+        throttle_unauthenticated_git_http_period_in_seconds: 3600,
+        throttle_unauthenticated_git_http_requests_per_period: 3600,
+        time_tracking_limit_to_hours: false,
         top_level_group_creation_enabled: true,
-        allow_bypass_placeholder_confirmation: false,
-        ci_partitions_size_limit: 100.gigabytes,
-        ci_delete_pipelines_in_seconds_limit: ChronicDuration.parse('1 year')
+        two_factor_grace_period: 48,
+        unique_ips_limit_enabled: false,
+        unique_ips_limit_per_user: 10,
+        unique_ips_limit_time_window: 3600,
+        usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+        usage_ping_features_enabled: false,
+        use_clickhouse_for_analytics: false,
+        user_contributed_projects_api_limit: 100,
+        user_deactivation_emails_enabled: true,
+        user_default_external: false,
+        user_default_internal_regex: nil,
+        user_defaults_to_private_profile: false,
+        user_projects_api_limit: 300,
+        user_show_add_ssh_key_message: true,
+        user_starred_projects_api_limit: 100,
+        users_api_limit_followers: 100,
+        users_api_limit_following: 100,
+        users_api_limit_gpg_key: 120,
+        users_api_limit_gpg_keys: 120,
+        users_api_limit_ssh_key: 120,
+        users_api_limit_ssh_keys: 120,
+        users_api_limit_status: 240,
+        users_get_by_id_limit: 300,
+        users_get_by_id_limit_allowlist: [],
+        valid_runner_registrars: ApplicationSettingImplementation::VALID_RUNNER_REGISTRAR_TYPES,
+        vscode_extension_marketplace: { 'enabled' => false },
+        vscode_extension_marketplace_enabled?: false,
+        whats_new_variant: 'all_tiers', # changed from 0 to "all_tiers" due to enum conversion
+        wiki_asciidoc_allow_uri_includes: false,
+        wiki_page_max_content_bytes: 50.megabytes
       )
     end
   end
@@ -412,6 +605,8 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           throttle_authenticated_deprecated_api_requests_per_period
           throttle_authenticated_files_api_period_in_seconds
           throttle_authenticated_files_api_requests_per_period
+          throttle_authenticated_git_http_requests_per_period
+          throttle_authenticated_git_http_period_in_seconds
           throttle_authenticated_git_lfs_period_in_seconds
           throttle_authenticated_git_lfs_requests_per_period
           throttle_authenticated_packages_api_period_in_seconds
@@ -1166,11 +1361,15 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           expect(setting).to be_valid
         end
 
-        it 'is encrypted' do
-          setting.asset_proxy_secret_key = 'shared secret'
+        context 'with asset_proxy_url set' do
+          before do
+            setting.asset_proxy_url = 'https://example.com'
+          end
 
-          expect(setting.encrypted_asset_proxy_secret_key).to be_present
-          expect(setting.encrypted_asset_proxy_secret_key).not_to eq(setting.asset_proxy_secret_key)
+          it_behaves_like 'encrypted attribute being migrated to the new encryption framework',
+            :asset_proxy_secret_key do
+            let(:record) { setting }
+          end
         end
       end
 
@@ -1957,6 +2156,54 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
 
       # invalid json
       it { is_expected.not_to allow_value({ foo: 'bar' }).for(:default_branch_protection_defaults) }
+    end
+  end
+
+  describe '#editor_extensions' do
+    it 'sets the correct default values' do
+      expect(setting.enable_language_server_restrictions).to be(false)
+      expect(setting.minimum_language_server_version).to eq('0.1.0')
+    end
+
+    context 'when provided different invalid values' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:enable_language_server_restrictions, :minimum_language_server_version) do
+        false | nil
+        true | 'invalid semantic version'
+        true | ''
+      end
+
+      with_them do
+        let(:value) do
+          {
+            enable_language_server_restrictions: enable_language_server_restrictions,
+            minimum_language_server_version: minimum_language_server_version
+          }
+        end
+
+        it { is_expected.not_to allow_value(value).for(:editor_extensions) }
+      end
+    end
+
+    context 'when provided different valid values' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:enable_language_server_restrictions, :minimum_language_server_version) do
+        false | '0.1.0'
+        true | '8.0.0'
+      end
+
+      with_them do
+        let(:value) do
+          {
+            enable_language_server_restrictions: enable_language_server_restrictions,
+            minimum_language_server_version: minimum_language_server_version
+          }
+        end
+
+        it { is_expected.to allow_value(value).for(:editor_extensions) }
+      end
     end
   end
 

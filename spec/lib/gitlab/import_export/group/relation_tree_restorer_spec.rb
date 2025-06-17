@@ -115,6 +115,58 @@ RSpec.describe Gitlab::ImportExport::Group::RelationTreeRestorer, feature_catego
           end
         end
 
+        context 'when relation object has failed subrelations' do
+          let(:board) do
+            {
+              'name' => 'test',
+              'lists' => [List.new],
+              'group_id' => importable.id
+            }
+          end
+
+          before do
+            allow_next_instance_of(Gitlab::ImportExport::Base::RelationObjectSaver) do |saver|
+              exception = ActiveRecord::QueryCanceled.new(
+                "PG::QueryCanceled: ERROR:  canceling statement due to statement timeout"
+              )
+              failed_records = [
+                { record: List.new, exception: exception }
+              ]
+
+              allow(saver).to receive_messages(
+                invalid_subrelations: [],
+                failed_subrelations: failed_records
+              )
+            end
+          end
+
+          it 'logs failed subrelations' do
+            expect(shared.logger)
+              .to receive(:info)
+              .with(
+                hash_including(
+                  message: '[Project/Group Import] Failed subrelation',
+                  group_id: importable.id,
+                  relation_key: 'boards',
+                  exception_class: 'ActiveRecord::QueryCanceled'
+                )
+              ).at_least(:once)
+
+            restore_relations
+
+            board = importable.boards.last
+            failures = importable.import_failures.select { |f| f.exception_class != 'ActiveRecord::RecordInvalid' }
+
+            expect(board.name).to eq('test')
+
+            expect(failures.map(&:exception_class)).to include('ActiveRecord::QueryCanceled')
+            expect(failures.map(&:source)).to all(eq('RelationTreeRestorer#save_relation_object'))
+            expect(failures.map(&:exception_message)).to include(
+              'PG::QueryCanceled: ERROR:  canceling statement due to statement timeout'
+            )
+          end
+        end
+
         describe 'progress tracking' do
           let(:board) { { 'name' => 'test', 'group_id' => importable.id } }
 

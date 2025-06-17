@@ -236,7 +236,7 @@ outside world.
 
 1. Edit `/etc/default/gitlab` and set `gitlab_pages_enabled` to `true` in
    order to enable the pages daemon. In `gitlab_pages_options` the
-   `-pages-domain` must match the `host` setting that you set above.
+   `-pages-domain` must match the `host` value that you set previously.
    The `-root-cert` and `-root-key` settings are the wildcard TLS certificates
    of the `example.io` domain:
 

@@ -37,7 +37,6 @@ A key part of the `internal/allowed` flow is the call to
 - `EE::Gitlab::Checks::PushRules::CommitCheck`
 - `EE::Gitlab::Checks::PushRules::TagCheck`
 - `EE::Gitlab::Checks::PushRules::BranchCheck`
-- `EE::Gitlab::Checks::PushRules::FileSizeCheck`
 
 ## Recursion
 

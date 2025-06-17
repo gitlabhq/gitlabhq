@@ -8,14 +8,6 @@ description: Stores create access settings for protected tags
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/07d7d8e65905a39164b63f55eccdcea8f10f5d14
 milestone: '9.1'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: protected_tag_id
-        table: protected_tags
-        sharding_key: project_id
-        belongs_to: protected_tag
-desired_sharding_key_migration_job_name: BackfillProtectedTagCreateAccessLevelsProjectId
+sharding_key:
+  project_id: projects
 table_size: small

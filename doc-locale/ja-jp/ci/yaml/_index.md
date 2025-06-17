@@ -26,7 +26,7 @@ title: CI/CD YAML構文リファレンス
 
 GitLab CI/CDパイプラインの設定には次のものが含まれます。
 
-- パイプラインの動作を設定する[グローバルキーワード](#global-keywords): 
+- パイプラインの動作を設定する[グローバルキーワード](#global-keywords)
 
   | キーワード                   | 説明 |
   |---------------------------|:------------|
@@ -41,7 +41,7 @@ GitLab CI/CDパイプラインの設定には次のものが含まれます。
   |-----------------|:------------|
   | [`spec`](#spec) | 外部設定ファイルの仕様を定義します。 |
 
-- [ジョブキーワード](#job-keywords)を使用して設定された[ジョブ](../jobs/_index.md): 
+- [ジョブキーワード](#job-keywords)を使用して設定された[ジョブ](../jobs/_index.md)
 
   | キーワード                                       | 説明                                                                                                 |
   |:----------------------------------------------|:------------------------------------------------------------------------------------------------------------|
@@ -156,7 +156,7 @@ rspec 2.7:
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: `include`サブキー
+**サポートされている値**: `include`サブキー。
 
 - [`include:component`](#includecomponent)
 - [`include:local`](#includelocal)
@@ -210,7 +210,7 @@ include:
 
 **サポートされている値**: 
 
-ルートディレクトリ（`/`）を基準にしたフルパス
+ルートディレクトリ（`/`）を基準にしたフルパス。
 
 - YAMLファイルの拡張子は、`.yml`または`.yaml`である必要があります。
 - [ファイルパスではワイルドカード`*`と`**`を使用](includes.md#use-includelocal-with-wildcard-file-paths)できます。
@@ -281,7 +281,7 @@ include:
 - パイプラインの開始時に、すべてのメソッドによってインクルードされる`.gitlab-ci.yml`ファイルの設定が評価されます。設定は特定の時点でのスナップショットであり、データベースに保持されます。GitLabは、次のパイプラインが開始されるまでは、参照されている`.gitlab-ci.yml`ファイル設定に対する変更を反映しません。
 - 別のプライベートプロジェクトのYAMLファイルをインクルードする場合、パイプラインを実行するユーザーは両方のプロジェクトのメンバーであり、パイプラインを実行するための適切な権限を持っている必要があります。ユーザーがインクルードファイルにアクセスできない場合、`not found or access denied`エラーが表示されることがあります。
 - 別のプロジェクトのCI/CD設定ファイルをインクルードする場合は注意してください。CI/CD設定ファイルが変更されても、パイプラインや通知はトリガーされません。セキュリティの観点からは、これはサードパーティの依存関係をプルすることと似ています。`ref`については以下を検討してください。
-  - 特定のSHAハッシュを使用する。これは最も安定したオプションです。目的のコミットが参照されるように、完全な40文字のSHAハッシュを使用する。これは、`ref`に短いSHAハッシュを使用するとあいまいになる可能性があるためです。
+  - 特定のSHAハッシュを使用する。これはもっとも安定したオプションです。目的のコミットが参照されるように、完全な40文字のSHAハッシュを使用する。これは、`ref`に短いSHAハッシュを使用するとあいまいになる可能性があるためです。
   - 他のプロジェクトの`ref`に、[保護ブランチ](../../user/project/repository/branches/protected.md)と[保護タグ](../../user/project/protected_tags.md#prevent-tag-creation-with-the-same-name-as-branches)の両方のルールを適用する。保護タグと保護ブランチは、変更される前に変更管理を通過する可能性が高くなります。
 
 #### `include:remote`
@@ -292,7 +292,7 @@ include:
 
 **サポートされている値**: 
 
-HTTP/HTTPS `GET`リクエストでアクセス可能なパブリックURL
+HTTP/HTTPS `GET`リクエストでアクセス可能なパブリックURL。
 
 - リモートURLの認証はサポートされていません。
 - YAMLファイルの拡張子は、`.yml`または`.yaml`である必要があります。
@@ -318,7 +318,7 @@ include:
 
 **サポートされている値**: 
 
-[CI/CDテンプレート](../examples/_index.md#cicd-templates)
+[CI/CDテンプレート](../examples/_index.md#cicd-templates)。
 
 - すべてのテンプレートは、[`lib/gitlab/ci/templates`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/ci/templates)で確認できます。すべてのテンプレートが`include:template`で使用するように設計されているわけではないため、使用する前にテンプレートのコメントを確認してください。
 - [特定のCI/CD変数](includes.md#use-variables-with-include)を使用できます。
@@ -378,7 +378,7 @@ include:
 
 **関連トピック**
 
-- [`include`を使用する場合のインプット値を設定する](inputs.md#set-input-values-when-using-include)。
+- [`include`を使用する場合のインプット値を設定する](../inputs/_index.md#set-input-values-when-using-include)。
 
 #### `include:rules`
 
@@ -386,7 +386,7 @@ include:
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: 次の`rules`サブキー
+**サポートされている値**: 次の`rules`サブキー。
 
 - [`rules:if`](#rulesif)。
 - [`rules:exists`](#rulesexists)。
@@ -407,10 +407,10 @@ test-job:
   script: echo "This is a test job"
 ```
 
-この例で`INCLUDE_BUILDS`変数が次のように設定されている場合
+この例では、`INCLUDE_BUILDS`変数により次のようになります。
 
 - `true`に設定されている場合、`build_jobs.yml`設定がパイプラインにインクルードされます。
-- `true`ではない場合、または存在しない場合は、`build_jobs.yml`設定はパイプラインにインクルードされません。
+- `true`に設定されていない場合、または存在しない場合は、`build_jobs.yml`設定はパイプラインにインクルードされません。
 
 **関連トピック**
 
@@ -588,7 +588,7 @@ job3:
     - sleep 30
 ```
 
-この例では、`job2`が失敗したが`job1`がまだ実行中であり、`job3`が開始されていない場合、`job1`はキャンセルされません。
+この例では、`job2`が失敗したが`job1`がまだ実行中であり、`job3`が開始されていない場合、`job1`はキャンセルされます。
 
 **関連トピック**
 
@@ -696,7 +696,7 @@ workflow:
 
 **キーワードのタイプ**: グローバルキーワード。
 
-**サポートされている値**: 変数名と値のペア
+**サポートされている値**: 変数名と値のペア。
 
 - 名前には数字、文字、アンダースコア（`_`）のみを使用できます。
 - 値は文字列でなければなりません。
@@ -852,7 +852,7 @@ scan-website:
 
 **関連トピック**
 
-- [`spec:inputs`を使用してインプットパラメーターを定義する](inputs.md#define-input-parameters-with-specinputs)。
+- [`spec:inputs`を使用してインプットパラメーターを定義する](../inputs/_index.md#define-input-parameters-with-specinputs)。
 
 ##### `spec:inputs:default`
 
@@ -1001,7 +1001,7 @@ title: The pipeline configuration would follow...
 
 **サポートされている値**: 次のいずれかです。
 
-- `array`: インプットの[配列](inputs.md#array-type)を受け入れます。
+- `array`: インプットの[配列](../inputs/_index.md#array-type)を受け入れます。
 - `string`: 文字列インプットを受け入れます（定義されていない場合はデフォルト）。
 - `number`: 数値のインプットのみを受け入れます。
 - `boolean`: `true`または`false`のインプットのみを受け入れます。
@@ -1043,7 +1043,7 @@ title: The pipeline configuration would follow...
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用するか、または[`default`セクション](#default)で使用することができます。
 
-**サポートされている値**: 次の内容を含む配列
+**サポートされている値**: 次の内容を含む配列。
 
 - 単一行コマンド。
 - [複数行に分割された](script.md#split-long-commands)長いコマンド。
@@ -1494,7 +1494,7 @@ job:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用するか、または[`default`セクション](#default)で使用することができます。
 
-**サポートされている値**
+**サポートされている値**: 
 
 - `on_success`（デフォルト）: ジョブが成功した場合にのみアーティファクトをアップロードします。
 - `on_failure`: ジョブが失敗した場合にのみアーティファクトをアップロードします。
@@ -1518,7 +1518,7 @@ job:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用するか、または[`default`セクション](#default)で使用することができます。
 
-**サポートされている値**: 次の内容を含む配列
+**サポートされている値**: 次の内容を含む配列。
 
 - 単一行コマンド。
 - [複数行に分割された](script.md#split-long-commands)長いコマンド。
@@ -1978,6 +1978,8 @@ dast:
 
 ジョブで`dependencies`が定義されていない場合、これよりも前のステージのすべてのジョブが依存すると見なされ、ジョブはそれらのジョブからすべてのアーティファクトをフェッチします。
 
+同じステージ内のジョブからアーティファクトをフェッチするには、[`needs:artifacts`](#needsartifacts)を使用する必要があります。同じジョブの中で`dependencies`を`needs`と組み合わせて使用しないでください。
+
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
 **サポートされている値**: 
@@ -2028,7 +2030,6 @@ deploy:
 
 - ジョブの状態は関係ありません。ジョブが失敗した場合、またはトリガーされないマニュアルジョブの場合、エラーは発生しません。
 - 依存ジョブのアーティファクトが[期限切れ](#artifactsexpire_in)であるかまたは[削除](../jobs/job_artifacts.md#delete-job-log-and-artifacts)されている場合、ジョブは失敗します。
-- 同じステージ内のジョブからアーティファクトをフェッチするには、[`needs:artifacts`](#needsartifacts)を使用する必要があります。同じジョブの中で`dependencies`を`needs`と組み合わせて使用しないでください。
 
 ### `environment`
 
@@ -2119,7 +2120,7 @@ deploy to production:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 次のキーワードのいずれか
+**サポートされている値**: 次のキーワードのいずれか。
 
 | **値** | **説明** |
 |:----------|:----------------|
@@ -2229,7 +2230,7 @@ deploy:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 次のいずれか
+**サポートされている値**: 次のいずれか。
 
 - `production`
 - `staging`
@@ -2364,7 +2365,7 @@ rubocop:
 - [Git設定](../jobs/job_troubleshooting.md#get_sources-job-section-fails-because-of-an-http2-problem)を調整する。
 - [トレーシング変数](../../topics/git/troubleshooting_git.md#debug-git-with-traces)をエクスポートする。
 
-**サポートされている値**: 次の内容を含む配列
+**サポートされている値**: 次の内容を含む配列。
 
 - 単一行コマンド。
 - [複数行に分割された](script.md#split-long-commands)長いコマンド。
@@ -2398,7 +2399,7 @@ job1:
 
 {{< history >}}
 
-- GitLab 16.9で`google_cloud_support_feature_flag`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054)。この機能は[ベータ版](../../policy/development_stages_support.md)です。
+- GitLab 16.9で、`google_cloud_support_feature_flag`[フラグとともに](../../administration/feature_flags.md)[導入されました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054)。この機能は[ベータ版](../../policy/development_stages_support.md)です。
 - GitLab 17.1で、[GitLab.comで有効になりました](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472)。機能フラグ`google_cloud_support_feature_flag`が削除されました。
 
 {{< /history >}}
@@ -2425,7 +2426,7 @@ job_with_workload_identity:
 **関連トピック**
 
 - [ワークロードアイデンティティフェデレーション](https://cloud.google.com/iam/docs/workload-identity-federation)。
-- [Google Cloud IAM インテグレーション](../../integration/google_cloud_iam.md)。
+- [Google Cloud IAMインテグレーション](../../integration/google_cloud_iam.md)。
 
 ### `id_tokens`
 
@@ -2860,7 +2861,7 @@ production:
 この例では、4つの実行パスを作成します。
 
 - Linter: `lint`ジョブは、ニーズがないため（`needs: []`）、`build`ステージの完了を待たずにすぐ実行されます。
-- Linux パス: `linux:rspec`ジョブは、`mac:build`の完了を待たずに、`linux:build`ジョブの完了後すぐに実行されます。
+- Linuxパス: `linux:rspec`ジョブは、`mac:build`の完了を待たずに、`linux:build`ジョブの完了後すぐに実行されます。
 - macOSパス: `mac:rspec`ジョブは、`linux:build`の完了を待たずに、`mac:build`ジョブの完了後すぐに実行されます。
 - `production`ジョブは、それ以前のすべてのジョブ（`lint`、`linux:build`、`linux:rspec`、`mac:build`、`mac:rspec`）の完了後すぐに実行されます。
 
@@ -2912,7 +2913,7 @@ test-job3:
 
 この例では次のようになります。
 
-- `test-job1`ジョブは`build_job1`アーティファクトをダウンロードします
+- `test-job1`ジョブは`build_job1`アーティファクトをダウンロードします。
 - `test-job2`ジョブは`build_job2`アーティファクトをダウンロードしません。
 - `test-job3`ジョブは、必要なすべてのジョブで`artifacts`に`true`が指定されているか、またはデフォルトで`true`になっているため、3つの`build_jobs`すべてからアーティファクトをダウンロードします。
 
@@ -2981,7 +2982,7 @@ build_job:
 **追加の詳細情報**
 
 - 現在のプロジェクト内の別のパイプラインからアーティファクトをダウンロードするには、`project`を現在のプロジェクトと同じになるように設定しますが、現在のパイプラインとは異なるrefを使用します。同じrefで複数の並列パイプラインが同時実行されていると、アーティファクトが上書きされる可能性があります。
-- パイプラインを実行しているユーザーは、グループまたはプロジェクトに対して少なくともReporterロールを付与されているか、またはグループ/プロジェクトの表示レベルがパブリックでなければなりません。
+- パイプラインを実行しているユーザーは、グループまたはプロジェクトに対して少なくともReporterロールを付与されているか、またはグループ／プロジェクトの表示レベルがパブリックでなければなりません。
 - `needs:project`を[`trigger`](#trigger)と同じジョブで使用することはできません。
 - `needs:project`を使用して別のパイプラインからアーティファクトをダウンロードする場合、ジョブは必要なジョブが完了するのを待機しません。[`needs`を使用してジョブ完了を待つ](needs.md)機能は、同じパイプライン内のジョブに限定されます。アーティファクトを必要とするジョブがダウンロードを試みる前に、他のパイプライン内の必要なジョブが完了していることを確認してください。
 - [`parallel`](#parallel)で実行されるジョブからアーティファクトをダウンロードすることはできません。
@@ -3032,7 +3033,7 @@ build_job:
         job: create-artifact
   ```
 
-この例では、親パイプライン内の`create-artifact`ジョブがいくつかのアーティファクトを作成します。`child-pipeline`ジョブは子パイプラインをトリガーし、`CI_PIPELINE_ID`変数を新しい `PARENT_PIPELINE_ID` 変数として子パイプラインに渡します。子パイプラインは、`needs:pipeline`の中の変数を使用することにより、親パイプラインからアーティファクトをダウンロードできます。
+この例では、親パイプライン内の`create-artifact`ジョブがいくつかのアーティファクトを作成します。`child-pipeline`ジョブは子パイプラインをトリガーし、`CI_PIPELINE_ID`変数を新しい`PARENT_PIPELINE_ID`変数として子パイプラインに渡します。子パイプラインは、`needs:pipeline`の中の変数を使用することにより、親パイプラインからアーティファクトをダウンロードできます。
 
 **追加の詳細情報**
 
@@ -3129,7 +3130,7 @@ upstream_status:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。`needs:job`と一緒に使用する必要があります。
 
-**サポートされている値**: 変数のハッシュの配列
+**サポートされている値**: 変数のハッシュの配列。
 
 - 変数と値は、`parallel:matrix`ジョブで定義されている変数と値から選択する必要があります。
 
@@ -3191,18 +3192,18 @@ linux:rspec
 
 ### `pages`
 
-`pages`は、静的コンテンツを GitLab にアップロードする[GitLab Pages](../../user/project/pages/_index.md)ジョブを定義するために使用します。コンテンツはウェブサイトとして公開されます。
+`pages`は、静的コンテンツをGitLabにアップロードする[GitLab Pages](../../user/project/pages/_index.md)ジョブを定義するために使用します。コンテンツはウェブサイトとして公開されます。
 
 次のことをする必要があります。
 
-- `pages: true` を定義し、`public`という名前のディレクトリを公開します
+- `pages: true`を定義し、`public`という名前のディレクトリを公開します。
 - 別のコンテンツディレクトリを使用する場合は、代わりに[`pages.publish`](#pagespublish)を定義します。
 
 **キーワードのタイプ**: ジョブキーワードまたはジョブ名（非推奨）。ジョブの一部としてのみ使用できます。
 
 **サポートされている値**: 
 
-- ブール値。`true`に設定すると、デフォルトの設定を使用します
+- ブール値。`true`に設定すると、デフォルトの設定を使用します。
 - 設定オプションのハッシュ。詳細については、この後のセクションを参照してください。
 
 **`pages`の例**
@@ -3461,7 +3462,7 @@ test:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 変数のハッシュの配列
+**サポートされている値**: 変数のハッシュの配列。
 
 - 変数名に使用できるのは、数字、文字、アンダースコア（`_`）のみです。
 - 値は、文字列か文字列の配列のどちらかでなければなりません。
@@ -3488,7 +3489,7 @@ deploystacks:
   environment: $PROVIDER/$STACK
 ```
 
-この例では、`PROVIDER`と`STACK`の値が異なる10個の並列`deploystacks`ジョブが生成されます:
+この例では、`PROVIDER`と`STACK`の値が異なる10個の並列`deploystacks`ジョブが生成されます。
 
 ```plaintext
 deploystacks: [aws, monitoring]
@@ -3542,7 +3543,7 @@ deploystacks: [vultr, processing]
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: `release`サブキー
+**サポートされている値**: `release`サブキー。
 
 - [`tag_name`](#releasetag_name)
 - [`tag_message`](#releasetag_message)（オプション）
@@ -3576,7 +3577,7 @@ release_job:
 
 **追加の詳細情報**
 
-- [トリガー](#trigger)ジョブを除くすべてのリリースジョブには、`script`キーワードを含める必要があります。リリースジョブでは、スクリプトコマンドからの出力を使用できます。スクリプトが不要な場合は、プレースホルダーを使用できます:
+- [トリガー](#trigger)ジョブを除くすべてのリリースジョブには、`script`キーワードを含める必要があります。リリースジョブでは、スクリプトコマンドからの出力を使用できます。スクリプトが不要な場合は、プレースホルダーを使用できます。
 
   ```yaml
   script:
@@ -3747,7 +3748,7 @@ released_at: '2021-03-15T08:00:00Z'
 
 `release:assets:links`は、リリースに[資産リンク](../../user/project/releases/release_fields.md#release-assets)を含めるために使用します。
 
-`release-cli` バージョンv0.4.0以降が必要です。
+`release-cli`バージョンv0.4.0以降が必要です。
 
 **`release:assets:links`の例**
 
@@ -3792,7 +3793,7 @@ deploy-to-production:
 
 **関連トピック**
 
-- [クロスプロジェクト/親子パイプラインによるパイプラインレベルの並行処理制御](../resource_groups/_index.md#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines)。
+- [クロスプロジェクト／親子パイプラインによるパイプラインレベルの並行処理制御](../resource_groups/_index.md#pipeline-level-concurrency-control-with-cross-projectparent-child-pipelines)。
 
 ### `retry`
 
@@ -3835,7 +3836,7 @@ test_advanced:
 
 **サポートされている値**: 
 
-- 単一の失敗タイプ、または1つ以上の失敗タイプの配列
+- 単一の失敗タイプ、または1つ以上の失敗タイプの配列。
 
 <!--
   If you change any of the values below, make sure to update the `RETRY_WHEN_IN_DOCUMENTATION`
@@ -3943,7 +3944,7 @@ test_job_2:
 - `exists`
 - `when`
 
-必要に応じて、ルールを次のものと組み合わせることもできます:
+必要に応じて、ルールを次のものと組み合わせることもできます。
 
 - `allow_failure`
 - `needs`
@@ -3952,12 +3953,12 @@ test_job_2:
 
 複数のキーワードを組み合わせて[複雑なルール](../jobs/job_rules.md#complex-rules)を作成することができます。
 
-ジョブがパイプラインに追加されます。
+ジョブがパイプラインに追加されるのは次の場合です。
 
 - `if`、`changes`、または`exists`のルールが一致し、かつ、`when: on_success`（定義されていない場合のデフォルト）、`when: delayed`、または`when: always`により設定されている場合。
 - `when: on_success`、`when: delayed`、または`when: always`のみのルールに達した場合。
 
-ジョブはパイプラインに追加されません:
+ジョブがパイプラインに追加されないのは次の場合です。
 
 - ルールが一致しない場合。
 - ルールが一致し、かつ`when: never`が指定されている場合。
@@ -4016,9 +4017,9 @@ job:
 
 `rules:changes`は、特定のファイルに加えられた変更をチェックすることにより、ジョブをパイプラインに追加するタイミングを指定するために使用します。
 
-新しいブランチパイプラインの場合、またはGitの`push`イベントがない場合、`rules: changes`の評価結果は常にtrueであり、ジョブは常に実行されます。タグパイプライン、スケジュールパイプライン、手動パイプラインなどのパイプラインのどれについても、Gitの`push`イベントは関連付けられて**いません**。これらのケースに対応するには、[`rules: changes: compare_to`](#ruleschangescompare_to) を使用して、パイプラインrefと比較するブランチを指定します。
+新しいブランチパイプラインの場合、またはGitの`push`イベントがない場合、`rules: changes`の評価結果は常にtrueであり、ジョブは常に実行されます。タグパイプライン、スケジュールパイプライン、手動パイプラインなどのパイプラインのどれについても、Gitの`push`イベントは関連付けられて**いません**。これらのケースに対応するには、[`rules: changes: compare_to`](#ruleschangescompare_to)を使用して、パイプラインrefと比較するブランチを指定します。
 
-`compare_to`を使用しない場合、`rules: changes`を使用するのは[ブランチパイプライン](../pipelines/pipeline_types.md#branch-pipeline)または[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md)においてだけにしてください。それでも、新しいブランチを作成する際、`rules: changes`はtrueと評価されます。 
+`compare_to`を使用しない場合、`rules: changes`を使用するのは[ブランチパイプライン](../pipelines/pipeline_types.md#branch-pipeline)または[マージリクエストパイプライン](../pipelines/merge_request_pipelines.md)においてだけにしてください。それでも、新しいブランチを作成する際、`rules: changes`はtrueと評価されます。以下を使用します。
 
 - マージリクエストパイプラインにおいて`rules:changes`は、変更内容をターゲットMRブランチと比較します。
 - ブランチパイプラインにおいて`rules:changes`は、変更内容をブランチの直前のコミットと比較します。
@@ -4204,7 +4205,7 @@ job2:
 **追加の詳細情報**
 
 - globパターンは、Rubyの[`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)で、[フラグ](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)`File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`を使用して解釈されます。
-- パフォーマンス上の理由から、GitLab は、`exists`パターンまたはファイルパスとの比較チェックを最大50,000回実行します。50,000回のチェック後、パターンglobが含まれるルールは常に一致するようになります。つまり、`exists`ルールは、ファイル数が50,000個を超えるプロジェクト、またはファイル数が50,000未満だが`exists`ルールのチェック回数が50,000回を超えるプロジェクトでは、常に一致することが想定されています。
+- パフォーマンス上の理由から、GitLabは、`exists`パターンまたはファイルパスとの比較チェックを最大50,000回実行します。50,000回のチェック後、パターンglobが含まれるルールは常に一致するようになります。つまり、`exists`ルールは、ファイル数が50,000個を超えるプロジェクト、またはファイル数が50,000未満だが`exists`ルールのチェック回数が50,000回を超えるプロジェクトでは、常に一致することが想定されています。
   - パターンglobが複数ある場合、制限は50,000をglob数で除算した数になります。たとえば、パターンglobが5個あるルールには、ファイル数10,000個という制限があります。
 - `rules:exists`セクションごとに最大50個のパターンまたはファイルパスを定義できます。
 - リストに含まれるファイルのいずれかが見つかった場合、`exists`の解決結果は`true`になります（`OR`演算）。
@@ -4529,7 +4530,7 @@ job:
         var1: 'value 1'
 ```
 
-この例のジョブには、次の 2 つのステップがあります。
+この例のジョブには、次の2つのステップがあります。
 
 - `hello_steps`がShellコマンド`echo`を実行します。
 - `bye_steps`が、環境変数とインプットパラメーターにより事前定義済みのステップを使用します。
@@ -4548,7 +4549,7 @@ job:
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
-**サポートされている値**: 次の内容を含む配列
+**サポートされている値**: 次の内容を含む配列。
 
 - 単一行コマンド。
 - [複数行に分割された](script.md#split-long-commands)長いコマンド。
@@ -4587,7 +4588,7 @@ job2:
 
 {{< /details >}}
 
-`secrets`は、次の[CI/CDシークレット](../secrets/_index.md)を指定するために使用します
+`secrets`は、次の[CI/CDシークレット](../secrets/_index.md)を指定するために使用します。
 
 - 外部シークレットプロバイダーから取得する対象。
 - ジョブの中で[CI/CD変数](../variables/_index.md)として使用できるようにする対象（デフォルトでは[`file`タイプ](../variables/_index.md#use-file-type-cicd-variables)）。
@@ -4636,7 +4637,7 @@ job:
       vault: production/db/password  # Translates to secret: `kv-v2/data/production/db`, field: `password`
 ```
 
-短い構文でカスタムシークレットエンジンのパスを指定するには、`@`で始まるサフィックスを追加します:
+短い構文でカスタムシークレットエンジンのパスを指定するには、`@`で始まるサフィックスを追加します。
 
 ```yaml
 job:
@@ -4711,7 +4712,7 @@ job:
 
 #### `secrets:file`
 
-`secrets:file`は、[`file`または`variable`のタイプのCI/CD変数](../variables/_index.md#use-file-type-cicd-variables)として格納されるシークレットを設定するために使用します
+`secrets:file`は、[`file`または`variable`のタイプのCI/CD変数](../variables/_index.md#use-file-type-cicd-variables)として格納されるシークレットを設定するために使用します。
 
 デフォルトの場合、シークレットは`file`タイプのCI/CD変数としてジョブに渡されます。シークレットの値がファイルに保存され、変数にはファイルへのパスが格納されます。
 
@@ -4746,13 +4747,13 @@ job:
 
 {{< /history >}}
 
-`secrets:token`は、トークンのCI/CD変数を参照することにより、Vaultでの認証時に使用するトークンを明示的に選択するために使用します。
+`secrets:token`を使用して、トークンのCI/CD変数を参照することにより、外部シークレットプロバイダーで認証する際に使用するトークンを明示的に選択します。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
 **サポートされている値**: 
 
-- IDトークンの名前
+- IDトークンの名前。
 
 **`secrets:token`の例**
 
@@ -4771,7 +4772,8 @@ job:
 
 **追加の詳細情報**
 
-- `token`キーワードが設定されていない場合は、最初のIDトークンが認証に使用されます。
+- `token`キーワードが設定されておらず、トークンが1つしか定義されていない場合、定義されたトークンが自動的に使用されます。
+- 複数のトークンが定義されている場合は、`token`キーワードを設定して、使用するトークンを指定する必要があります。使用するトークンを指定しない場合、ジョブの実行ごとにどのトークンが使用されるかを予測することはできません。
 
 ### `services`
 
@@ -4950,7 +4952,7 @@ job4:
 
 - ステージ名は255文字以下でなければなりません。
 - ジョブが異なる複数のrunnerで実行される場合、並列実行が可能です。
-- runnerが1 つしかない場合、そのrunnerの[`concurrent`設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)が`1`より大きいなら、ジョブを並列実行できます。
+- runnerが1つしかない場合、そのrunnerの[`concurrent`設定](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)が`1`より大きいなら、ジョブを並列実行できます。
 
 #### `stage: .pre`
 
@@ -5119,7 +5121,7 @@ test:
 
 **サポートされている値**: 
 
-- マルチプロジェクトパイプラインの場合、ダウンストリームプロジェクトのパス。CI/CD変数[がサポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)（GitLab 15.3 以降）。ただし、[ジョブ専用変数](../variables/predefined_variables.md#variable-availability)はサポートされていません。代替手段として[`trigger:project`](#triggerproject)を使用してください。
+- マルチプロジェクトパイプラインの場合、ダウンストリームプロジェクトのパス。CI/CD変数[がサポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)（GitLab 15.3以降）。ただし、[ジョブ専用変数](../variables/predefined_variables.md#variable-availability)はサポートされていません。代替手段として[`trigger:project`](#triggerproject)を使用してください。
 - 子パイプラインの場合は、[`trigger:include`](#triggerinclude)を使用します。
 
 **`trigger`の例**
@@ -5151,7 +5153,7 @@ trigger-multi-project-pipeline:
 さらに
 
 - [動的子パイプライン](../pipelines/downstream_pipelines.md#dynamic-child-pipelines)をトリガーするには、`trigger:include:artifact`を使います。
-- ダウンストリームパイプライン設定で[`spec:inputs`](#specinputs)を使用する際に[インプット](inputs.md)を設定するには、`trigger:include:inputs`を使用します。
+- ダウンストリームパイプライン設定で[`spec:inputs`](#specinputs)を使用する際に[インプット](../inputs/_index.md)を設定するには、`trigger:include:inputs`を使用します。
 
 **キーワードのタイプ**: ジョブキーワード。ジョブの一部としてのみ使用できます。
 
@@ -5181,7 +5183,7 @@ trigger-child-pipeline:
 
 **サポートされている値**: 
 
-- ダウンストリームプロジェクトへのパス。CI/CD変数[がサポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)（GitLab 15.3 以降）。ただし、[ジョブ専用変数](../variables/predefined_variables.md#variable-availability)はサポートされていません。
+- ダウンストリームプロジェクトへのパス。CI/CD変数[がサポートされています](../variables/where_variables_can_be_used.md#gitlab-ciyml-file)（GitLab 15.3以降）。ただし、[ジョブ専用変数](../variables/predefined_variables.md#variable-availability)はサポートされていません。
 
 **`trigger:project`の例**
 
@@ -5238,7 +5240,7 @@ trigger_job:
 
 {{</history >}}
 
-`trigger:inputs`は、ダウンストリームパイプライン設定で[`spec:inputs`](#specinputs)を使用する場合に[インプット](inputs.md)を設定するために使用します。
+`trigger:inputs`は、ダウンストリームパイプライン設定で[`spec:inputs`](#specinputs)を使用する場合に[インプット](../inputs/_index.md)を設定するために使用します。
 
 **`trigger:inputs`の例**
 
@@ -5427,7 +5429,7 @@ delete_job:
 
 ジョブ変数を、[`include`](includes.md#use-variables-with-include)などの[グローバルキーワード](#global-keywords)の値として使用することはできません。
 
-**サポートされている値**: 変数名と値のペア
+**サポートされている値**: 変数名と値のペア。
 
 - 名前には数字、文字、アンダースコア（`_`）のみを使用できます。一部のShellでは、最初の文字が英字でなければなりません。
 - 値は文字列でなければなりません。
@@ -5457,7 +5459,7 @@ review_job:
 
 ジョブ変数と同じように、[`include`](includes.md#use-variables-with-include)など、他のグローバルキーワードの値としてデフォルト変数を使用することはできません。
 
-**サポートされている値**: 変数名と値のペア
+**サポートされている値**: 変数名と値のペア。
 
 - 名前には数字、文字、アンダースコア（`_`）のみを使用できます。一部のShellでは、最初の文字が英字でなければなりません。
 - 値は文字列でなければなりません。
@@ -5669,7 +5671,7 @@ default:
 
 - ブランチ名（`main`や`my-feature-branch`など）。
 - ブランチ名にマッチする正規表現（`/^feature-.*/`など）。
-- 次のキーワード
+- 次のキーワード。
 
   | **値**                | **説明** |
   | -------------------------|-----------------|

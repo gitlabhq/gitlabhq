@@ -14,16 +14,15 @@ title: Push event activities limit and bulk push events
 
 {{< /details >}}
 
-Set the number of branches or tags to limit the number of single push events
-allowed at once. If the number of events is greater than this value, GitLab creates a
-bulk push event instead.
+To maintain good system performance and prevent spam on the activity feed, set a **Push event activities limit**.
+By default, GitLab sets this limit to `3`. When you push changes that affect more than 3 branches and tags,
+GitLab creates a bulk push event instead of individual push events.
 
-For example, if the limit is three push events, but you push to four branches simultaneously,
-the activity feed displays a single {{< icon name="commit">}} `Pushed to 4 branches at (project name)`
-event instead of four separate push events. The single push event helps maintain good
-system performance, and prevents spam on the activity feed.
+For example, if you push to four branches simultaneously, the activity feed displays a single
+{{< icon name="commit">}} `Pushed to 4 branches at (project name)` event instead of four separate
+push events.
 
-To modify this setting from its default value of `3`, either:
+To set a different **Push event activities limit**, either:
 
 - In the [Application settings API](../../api/settings.md#available-settings), set the
   `push_event_activities_limit`.

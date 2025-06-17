@@ -103,10 +103,10 @@ RSpec.shared_examples 'pauses, resumes and deletes a runner' do
     end
 
     it 'confirms runner deletion' do
-      expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
-      expect(page).to have_text "Are you sure you want to continue?"
-
       within_modal do
+        expect(page).to have_text "Delete runner ##{runner.id} (#{runner.short_sha})?"
+        expect(page).to have_text "Are you sure you want to continue?"
+
         click_on 'Permanently delete runner'
       end
 

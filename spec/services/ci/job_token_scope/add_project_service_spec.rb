@@ -8,12 +8,9 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
   let_it_be(:target_project) { create(:project) }
   let_it_be(:current_user) { create(:user) }
   let_it_be(:policies) { %w[read_deployments read_packages] }
+  let_it_be(:event) { 'action_on_job_token_allowlist_entry' }
 
   shared_examples 'adds project' do |context|
-    before do
-      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
-    end
-
     it 'adds the project to the scope', :aggregate_failures do
       expect { result }.to change { Ci::JobToken::ProjectScopeLink.count }.by(1)
 
@@ -49,10 +46,43 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
     end
   end
 
+  shared_examples 'event tracking' do
+    it 'logs to Snowplow, Redis, and product analytics tooling', :clean_gitlab_redis_shared_state do
+      self_referential = target_project == project
+
+      expected_attributes = {
+        project: project,
+        category: 'InternalEventTracking',
+        additional_properties: {
+          label: anything,
+          property: 'project_scope_link',
+          action_name: 'created',
+          default_permissions: default_permissions.to_s,
+          self_referential: self_referential.to_s
+        }
+      }
+
+      all_metrics = [
+        'count_distinct_job_token_allowlist_entries_for_projects',
+        'count_distinct_projects_with_job_token_allowlist_entries',
+        ('count_distinct_projects_with_job_token_allowlist_entries_for_itself' if self_referential)
+      ].compact.flat_map { |metric| ["redis_hll_counters.#{metric}_weekly", "redis_hll_counters.#{metric}_monthly"] }
+
+      expect { subject }
+        .to trigger_internal_events(event)
+        .with(expected_attributes)
+        .and increment_usage_metrics(all_metrics)
+    end
+  end
+
   describe '#execute' do
     subject(:result) { service.execute(target_project, default_permissions: default_permissions, policies: policies) }
 
     let(:default_permissions) { false }
+
+    before do
+      allow(project).to receive(:job_token_policies_enabled?).and_return(true)
+    end
 
     it_behaves_like 'editable job token scope' do
       context 'when user has permissions on source and target projects' do
@@ -64,11 +94,13 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
         end
 
         it_behaves_like 'adds project'
+        it_behaves_like 'event tracking'
 
         context 'when default_permissions is set to true' do
           let(:default_permissions) { true }
 
           it_behaves_like 'adds project'
+          it_behaves_like 'event tracking'
         end
 
         context 'when token scope is disabled' do
@@ -77,6 +109,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
           end
 
           it_behaves_like 'adds project'
+          it_behaves_like 'event tracking'
 
           it 'creates an inbound link by default' do
             expect(resulting_direction).to eq('inbound')
@@ -111,6 +144,7 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
         end
 
         it_behaves_like 'returns error', 'This project is already in the job token allowlist.'
+        it_behaves_like 'internal event not tracked'
       end
 
       context 'when target project is same as the source project' do
@@ -120,7 +154,8 @@ RSpec.describe Ci::JobTokenScope::AddProjectService, feature_category: :continuo
 
         let(:target_project) { project }
 
-        it_behaves_like 'returns error', "Validation failed: Target project can't be the same as the source project"
+        it_behaves_like 'adds project'
+        it_behaves_like 'event tracking'
       end
     end
   end

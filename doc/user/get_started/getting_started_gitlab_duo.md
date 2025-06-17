@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: AI-native features and functionality.
+description: Learn how to use the AI-native assistant.
 title: Get started with GitLab Duo
 ---
 
@@ -28,7 +28,7 @@ can check the health of the installation.
 
 For more information, see:
 
-- [GitLab Duo features by add-on](../gitlab_duo/_index.md#summary-of-gitlab-duo-features).
+- [GitLab Duo features by add-on](../gitlab_duo/feature_summary.md).
 - [How to purchase an add-on](../../subscriptions/subscription-add-ons.md).
 - [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
 - [Health check details](../gitlab_duo/setup.md#run-a-health-check-for-gitlab-duo).

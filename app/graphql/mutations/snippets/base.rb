@@ -17,7 +17,7 @@ module Mutations
       end
 
       def ability_for(snippet)
-        "#{ability_name}_#{snippet.to_ability_name}".to_sym
+        :"#{ability_name}_#{snippet.to_ability_name}"
       end
 
       def ability_name

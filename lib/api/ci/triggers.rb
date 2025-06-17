@@ -69,17 +69,14 @@ module API
         params do
           use :pagination
         end
-        # rubocop: disable CodeReuse/ActiveRecord
         get ':id/triggers' do
           authenticate!
           authorize! :admin_build, user_project
 
-          triggers = user_project.triggers.includes(:pipelines)
+          triggers = user_project.triggers.with_last_used
 
           present paginate(triggers), with: Entities::Trigger, current_user: current_user
         end
-        # rubocop: enable CodeReuse/ActiveRecord
-
         desc 'Get specific trigger token of a project' do
           success code: 200, model: Entities::Trigger
           failure [

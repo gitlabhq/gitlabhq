@@ -11,7 +11,7 @@ RSpec.shared_examples 'a finder with external authorization service' do
   end
 
   it 'finds the subject' do
-    expect(described_class.new(user).execute).to include(subject)
+    expect(execute).to include(subject)
   end
 
   context 'with an external authorization service' do
@@ -20,11 +20,13 @@ RSpec.shared_examples 'a finder with external authorization service' do
     end
 
     it 'does not include the subject when no project was given' do
-      expect(described_class.new(user).execute).not_to include(subject)
+      expect(execute).not_to include(subject)
     end
 
-    it 'includes the subject when a project id was given' do
-      expect(described_class.new(user, project_params).execute).to include(subject)
+    context 'with a project param' do
+      it 'includes the subject when a project id was given' do
+        expect(project_execute).to include(subject)
+      end
     end
   end
 end

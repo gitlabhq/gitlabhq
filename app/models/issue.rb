@@ -70,7 +70,6 @@ class Issue < ApplicationRecord
   ignore_column :project_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :promoted_to_epic_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
   ignore_column :updated_by_id_convert_to_bigint, remove_with: '17.8', remove_after: '2024-12-13'
-  ignore_column :correct_work_item_type_id, remove_with: '18.0', remove_after: '2025-04-17'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues
@@ -126,7 +125,7 @@ class Issue < ApplicationRecord
     inverse_of: :work_item,
     autosave: true
 
-  alias_attribute :escalation_status, :incident_management_issuable_escalation_status
+  alias_method :escalation_status, :incident_management_issuable_escalation_status
 
   accepts_nested_attributes_for :issuable_severity, update_only: true
   accepts_nested_attributes_for :sentry_issue
@@ -337,6 +336,13 @@ class Issue < ApplicationRecord
       where('issues.namespace_id IN (SELECT id FROM namespace_ids)').with(cte.to_arel)
     end
 
+    def with_accessible_sub_namespace_ids_cte(namespace_ids)
+      # Using materialized: true to ensure the CTE is computed once and reused, which significantly improves performance
+      # for complex queries. See: https://gitlab.com/gitlab-org/gitlab/-/issues/548094
+      accessible_sub_namespace_ids = Gitlab::SQL::CTE.new(:accessible_sub_namespace_ids, namespace_ids, materialized: true)
+      with(accessible_sub_namespace_ids.to_arel)
+    end
+
     override :order_upvotes_desc
     def order_upvotes_desc
       reorder(upvotes_count: :desc)
@@ -408,20 +414,44 @@ class Issue < ApplicationRecord
   # Alternative prefix for situations where the standard prefix would be
   # interpreted as a comment, most notably to begin commit messages with
   # (e.g. "GL-123: My commit")
-  def self.alternative_reference_prefix
+  def self.alternative_reference_prefix_without_postfix
     'GL-'
   end
 
-  # Pattern used to extract `#123` issue references from text
-  #
+  def self.alternative_reference_prefix_with_postfix
+    if Feature.enabled?(:extensible_reference_filters, Feature.current_request)
+      '[issue:'
+    else
+      ''
+    end
+  end
+
+  def self.reference_postfix
+    ']'
+  end
+
+  # Pattern used to extract issue references from text
   # This pattern supports cross-project references.
   def self.reference_pattern
-    @reference_pattern ||= %r{
+    prefix_with_postfix = alternative_reference_prefix_with_postfix
+    if prefix_with_postfix.empty?
+      @reference_pattern ||= %r{
       (?:
         (#{Project.reference_pattern})?#{Regexp.escape(reference_prefix)} |
-        #{Regexp.escape(alternative_reference_prefix)}
+        #{Regexp.escape(alternative_reference_prefix_without_postfix)}
       )#{Gitlab::Regex.issue}
     }x
+    else
+      %r{
+    ((?:
+      (#{Project.reference_pattern})?#{Regexp.escape(reference_prefix)} |
+      #{alternative_reference_prefix_without_postfix}
+    )#{Gitlab::Regex.issue}) |
+    ((?:
+      #{Regexp.escape(prefix_with_postfix)}(#{Project.reference_pattern}/)?
+    )#{Gitlab::Regex.issue(reference_postfix)})
+  }x
+    end
   end
 
   def self.link_reference_pattern

@@ -92,7 +92,7 @@ pipeline configuration or directly in the Git repository in a `Jenksinfile`.
 
 ## Convert Jenkins configuration to GitLab CI/CD
 
-While the examples above are all slightly different, they can all be migrated to GitLab CI/CD
+While the previous examples are all slightly different, they can all be migrated to GitLab CI/CD
 with the same pipeline configuration.
 
 Prerequisites:
@@ -137,7 +137,7 @@ install-JAR:
 
 In this example:
 
-- `stages` defines three stages that run in order. Like the Jenkins examples above,
+- `stages` defines three stages that run in order. Like the previous Jenkins examples,
   the test job runs first, followed by the build job, and finally the install job.
 - `variables` defines [CI/CD variables](../../variables/_index.md) that can be used by all jobs:
   - `MAVEN_OPTS` are Maven environment variables needed whenever Maven is executed:
@@ -169,7 +169,7 @@ Prerequisites:
 
 This migrated pipeline configuration consists of three global keywords (`stages`, `default`, and `variables`)
 followed by 3 jobs. This configuration makes use of additional GitLab CI/CD features
-for an improved pipeline compared to the [example above](#convert-jenkins-configuration-to-gitlab-cicd):
+for an improved pipeline compared to the [previous example](#convert-jenkins-configuration-to-gitlab-cicd):
 
 ```yaml
 stages:
@@ -209,7 +209,7 @@ install-JAR:
 
 In this example:
 
-- `stages` defines three stages that run in order. Like the Jenkins examples above,
+- `stages` defines three stages that run in order. Like the previous Jenkins examples,
   the test job runs first, followed by the build job, and finally the install job.
 - `default` defines standard configuration to reuse in all jobs by default:
   - `image` defines the Docker image container to use and execute commands in. In this example,

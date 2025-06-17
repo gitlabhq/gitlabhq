@@ -185,67 +185,79 @@ RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
   end
 
   describe 'version information' do
-    it 'has valid version_infos' do
-      expect(described_class.version_info).to be_valid
+    it 'returns valid version info' do
       expect(described_class.display_version_info).to be_valid
       expect(described_class.install_version_info).to be_valid
     end
 
-    it 'has a version based on the version_info' do
-      expect(described_class.version).to eq described_class.version_info.to_s
+    context 'when getServerInfo is available' do
+      before do
+        allow_next_instance_of(Gitlab::Kas::ServerInfo) do |instance|
+          allow(instance).to receive(:version_info).and_return(Gitlab::VersionInfo.new(17, 11, 1, "-rc1"))
+        end
+      end
+
+      it 'uses fetched kas version info for display' do
+        expect(described_class.display_version_info).to be_valid
+        expect(described_class.display_version_info.to_s).to eq("17.11.1-rc1")
+      end
+
+      it 'uses fetched kas version with 0 patch and without suffix for agentk installation recommandation' do
+        expect(described_class.install_version_info).to be_valid
+        expect(described_class.install_version_info.to_s).to eq("17.11.0")
+      end
     end
 
-    describe 'versioning according to the KAS version file content' do
+    context 'when getServerInfo is unavailable' do
       before do
-        kas_version_file_double = instance_double(File, read: version_file_content)
-        allow(Rails.root).to receive(:join).with(Gitlab::Kas::VERSION_FILE).and_return(kas_version_file_double)
+        allow_next_instance_of(Gitlab::Kas::ServerInfo) do |instance|
+          allow(instance).to receive(:version_info).and_return(nil)
+        end
+        # Skip the error tracking to avoid interference with the 'Rails.root.join' mock below
+        allow(Gitlab::ErrorTracking).to receive(:track_exception)
       end
 
-      let(:version_file_content) { 'v16.10.1' }
+      describe 'versioning according to the KAS version file content' do
+        before do
+          kas_version_file_double = instance_double(File, read: version_file_content)
+          allow(Rails.root).to receive(:join).with(Gitlab::Kas::VERSION_FILE).and_return(kas_version_file_double)
+        end
 
-      it 'has a version and version_infos based on the KAS version file' do
-        expected_version_string = version_file_content.sub('v', '')
+        let(:version_file_content) { 'v16.10.1' }
 
-        expect(described_class.version).to eq expected_version_string
-        expect(described_class.version_info.to_s).to eq expected_version_string
-        expect(described_class.display_version_info.to_s).to eq expected_version_string
-        expect(described_class.install_version_info.to_s).to eq expected_version_string
-      end
-
-      context 'when the KAS version file content is a release candidate version' do
-        let(:version_file_content) { 'v16.10.1-rc42' }
-
-        it 'has a version and version_infos based on the KAS version file' do
+        it 'uses the KAS version file for both display and agentk insallation recommandationon' do
           expected_version_string = version_file_content.sub('v', '')
 
-          expect(described_class.version).to eq expected_version_string
-          expect(described_class.version_info.to_s).to eq expected_version_string
           expect(described_class.display_version_info.to_s).to eq expected_version_string
           expect(described_class.install_version_info.to_s).to eq expected_version_string
         end
-      end
 
-      context 'when the KAS version file content is a SHA' do
-        before do
-          allow(Gitlab).to receive(:version_info).and_return(gitlab_version_info)
+        context 'when the KAS version file content is a release candidate version' do
+          let(:version_file_content) { 'v16.10.1-rc42' }
+
+          it 'uses the KAS version file for both display and agentk installation recommandation' do
+            expected_version_string = version_file_content.sub('v', '')
+
+            expect(described_class.display_version_info.to_s).to eq expected_version_string
+            expect(described_class.install_version_info.to_s).to eq expected_version_string
+          end
         end
 
-        let(:gitlab_version_info) { Gitlab::VersionInfo.parse('16.11.2') }
-        let(:version_file_content) { '5bbaac6e3d907fba9568a2e36aa1e521f589c897' }
+        context 'when the KAS version file content is a SHA' do
+          before do
+            allow(Gitlab).to receive(:version_info).and_return(gitlab_version_info)
+          end
 
-        it 'uses the Gitlab version with the SHA as suffix' do
-          expected_kas_version = '16.11.2+5bbaac6e3d907fba9568a2e36aa1e521f589c897'
+          let(:gitlab_version_info) { Gitlab::VersionInfo.parse('16.11.2') }
+          let(:version_file_content) { '5bbaac6e3d907fba9568a2e36aa1e521f589c897' }
 
-          expect(described_class.version_info.to_s).to eq expected_kas_version
-          expect(described_class.version).to eq expected_kas_version
-        end
+          it 'uses the Gitlab version without suffix for display' do
+            expect(described_class.display_version_info.to_s).to eq '16.11.2'
+          end
 
-        it 'uses the Gitlab version without suffix as the display_version_info' do
-          expect(described_class.display_version_info.to_s).to eq '16.11.2'
-        end
-
-        it 'uses the Gitlab version with 0 patch version as the install_version_info' do
-          expect(described_class.install_version_info.to_s).to eq '16.11.0'
+          it 'uses the Gitlab version with 0 patch version for agentk installation recommandation' do
+            expect(described_class.install_version_info.to_s).to eq '16.11.0'
+          end
         end
       end
     end

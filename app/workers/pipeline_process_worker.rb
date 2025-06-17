@@ -5,7 +5,6 @@ class PipelineProcessWorker
 
   data_consistency :always, overrides: { main: :sticky }
 
-  sidekiq_options retry: 3
   include PipelineQueue
 
   queue_namespace :pipeline_processing

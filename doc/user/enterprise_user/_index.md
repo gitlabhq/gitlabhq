@@ -3,6 +3,7 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Enterprise users
+description: Domain verification, two-factor authentication, enterprise user management, and SAML response.
 ---
 
 {{< details >}}
@@ -15,19 +16,21 @@ title: Enterprise users
 Enterprise users have user accounts that are administered by an organization that
 has [verified their email domain](#verified-domains-for-groups) and purchased a [GitLab subscription](../../subscriptions/_index.md).
 
-Enterprise users are identified by the **Enterprise** badge
+Enterprise users are identified by the `Enterprise` badge
 next to their names on the [Members list](../group/_index.md#filter-and-sort-members-in-a-group).
+
+You can also [use the API](../../api/group_enterprise_users.md) to interact with enterprise users.
 
 ## Automatic claims of enterprise users
 
-A user is automatically claimed as an enterprise user of a group when **both** of the following conditions are met:
+A user is automatically claimed as an enterprise user of a group when both of the following conditions are met:
 
-1. The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
-1. The user account meets at least **one** of the following conditions:
-   - It was created February 1, 2021 or later.
-   - It has a SAML or SCIM identity tied to the organization's group.
-   - It has a `provisioned_by_group_id` value that is the same as the organization's group's ID.
-   - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
+- The user's primary email has a domain that has been [verified](#verified-domains-for-groups) by the paid group.
+- The user account meets at least one of the following conditions:
+  - It was created February 1, 2021 or later.
+  - It has a SAML or SCIM identity tied to the organization's group.
+  - It has a `provisioned_by_group_id` value that is the same as the group ID of the organization.
+  - It is a member of the organization's group, where the subscription was purchased or renewed February 1, 2021 or later.
 
 After the user is claimed as an enterprise user:
 
@@ -37,31 +40,31 @@ After the user is claimed as an enterprise user:
 If a group's purchased subscription expires or is canceled:
 
 - Users claimed as enterprise users remain enterprise users of that group.
-- The group is not able to [manage their enterprise users](#manage-enterprise-users-in-a-namespace).
-- [Enterprise user restrictions](#enterprise-user-restrictions) apply to those user accounts.
+- The group is not able to [manage their enterprise users](#manage-enterprise-users).
+- Primary emails for user accounts must be from a verified domain.
 - No new users can be [automatically associated with the group](#automatic-claims-of-enterprise-users) until the paid subscription is renewed.
 
 If a group's verified domains are removed:
 
 - Users claimed as enterprise users remain enterprise users of that group.
-- [Enterprise user restrictions](#enterprise-user-restrictions) apply to those user accounts.
+- Primary emails for user accounts must be from a verified domain.
 - No new users can be [automatically associated with the group](#automatic-claims-of-enterprise-users) until domains are verified.
 
 If the organization moves its verified domains to another paid group, its enterprise users are [automatically claimed](#automatic-claims-of-enterprise-users) as enterprise users of that group.
 
 ### Identifying unclaimed users
 
-If a user is not automatically claimed as an Enterprise User, their existing access will not be revoked.
+If a user is not automatically claimed as an enterprise user, their existing access will not be revoked.
 A group with domain verification enabled can have both claimed and unclaimed users as members.
 
-The only difference between a member claimed as an Enterprise User and one that isn't is that a Group Owner cannot [manage unclaimed users](#manage-enterprise-users-in-a-namespace).
+The only difference between a member claimed as an enterprise user and a member that is not is that a Group Owner cannot [manage unclaimed users](#manage-enterprise-users).
 
-### Identifying group members that have not been claimed as Enterprise users
+### Identifying group members that have not been claimed as enterprise users
 
 Groups that enable domain verification can have both claimed and unclaimed users as members.
 Unclaimed users retain their existing access, but are not managed by group Owners.
 
-See [Manage enterprise users in a namespace](#manage-enterprise-users-in-a-namespace).
+See [Manage enterprise users in a namespace](#manage-enterprise-users).
 
 You can discover any unclaimed users in your group by accessing and analyzing your list of billable
 users at: `https://gitlab.com/groups/<group_id>/-/usage_quotas#seats-quota-tab`.
@@ -73,17 +76,6 @@ From this list, unclaimed users one of the following:
 
 To claim these users, they must update their primary email address to match the verified domain.
 These users are automatically claimed when the next scheduled claim worker runs.
-
-## Enterprise user restrictions
-
-### Primary email change
-
-An enterprise user can only change their primary email to an email their organization owns as per its verified domains.
-If an organization removes all its verified domains, its enterprise users are not able to change their primary email address.
-
-Only GitLab administrators can change enterprise users' primary email address to an email with a non-verified domain.
-
-Providing the ability to group Owners to change their enterprise users' primary email to an email with a non-verified domain is proposed in [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
 
 ## Verified domains for groups
 
@@ -158,7 +150,7 @@ A valid certificate is not required for domain verification. You can ignore erro
 After you create a new domain, the verification code prompts you. Copy the values from GitLab
 and paste them in your domain's control panel as a `TXT` record.
 
-![Get the verification code](../img/get_domain_verification_code_v16_0.png)
+![Get the verification code](img/get_domain_verification_code_v16_0.png)
 
 #### 3. Verify the domain's ownership
 
@@ -168,7 +160,7 @@ After you have added all the DNS records:
 1. Select **Settings > Domain Verification**.
 1. On the domain table row, Select **Retry verification** ({{< icon name="retry" >}}).
 
-![Verify your domain](../img/retry_domain_verification_v16_0.png)
+![Verify your domain](img/retry_domain_verification_v16_0.png)
 
 {{< alert type="warning" >}}
 
@@ -209,56 +201,84 @@ To edit or remove a domain:
 1. When viewing **Domain Verification**, select the project listed next to the relevant domain.
 1. Edit or remove a domain following the relevant [GitLab Pages custom domains](../project/pages/custom_domains_ssl_tls_certification/_index.md) instructions.
 
-## Manage enterprise users in a namespace
+## Manage enterprise users
 
-A top-level Owner of a namespace on a paid plan can retrieve information about and
-manage enterprise user accounts in that namespace.
+In addition to the standard [group member permissions](../permissions.md#group-members-permissions),
+Owners of a top-level group can also manage enterprise users in their group.
 
-These enterprise user-specific actions are in addition to the standard
-[group member permissions](../permissions.md#group-members-permissions).
+### Restrict authentication methods
 
-### Disable two-factor authentication
+You can restrict the specific authentication methods available to enterprise users, which can help
+reduce the security footprint of your users.
 
-{{< history >}}
+- [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
+- [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
+- [Disable two-factor authentication](../../security/two_factor_authentication.md#enterprise-users).
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
+### Restrict group and project creation
 
-{{< /history >}}
+You can restrict group and project creation for enterprise users, which helps you define:
 
-Top-level group Owners can disable two-factor authentication (2FA) for enterprise users.
+- If enterprise users can create top-level groups.
+- The maximum number of personal projects each enterprise user can create.
 
-To disable 2FA:
+These restrcitions are defined in the SAML response. For more information, see [configure enterprise user settings from the SAML response](../group/saml_sso/_index.md#configure-enterprise-user-settings-from-saml-response).
 
-1. On the left sidebar, select **Search or go to** and find your group.
+### Bypass email confirmation for provisioned users
+
+By default, users provisioned with SAML or SCIM are sent a verification email to verify their identity. Instead, you can configure GitLab with a custom domain and GitLab automatically confirms user accounts. Users still receive an enterprise user welcome email.
+
+For more information, see [bypass user email confirmation with verified domains](../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
+
+### View the email addresses for an enterprise user
+
+A top-level group Owner can use the UI to access enterprise users' email addresses:
+
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Manage > Members**.
-1. Find a user with the **Enterprise** and **2FA** badges.
-1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
+1. In the group or project members page, hover over the enterprise user's name to
+   see their email address.
+
+A group Owner can also use the [group and project members API](../../api/members.md)
+to access users' information. For enterprise users of the group, this information
+includes users' email addresses.
+
+### Change the email addresses for an enterprise user
+
+Enterprise users can follow the same process as other GitLab users to [change their primary email address](../../user/profile/_index.md#change-your-primary-email). The new email address must be from a verified domain. If your organization has no verified domains, your enterprise users cannot change their primary email address.
+
+Only GitLab support can change the primary email address to an email address from a non-verified domain. Doing this [releases the enterprise user](#release-an-enterprise-user).
+
+### Release an enterprise user
+
+It's possible to remove enterprise management features from a user account. This might be required if, for
+example, a user wants to keep their GitLab account after leaving their company. Releasing a user
+does not alter their account roles or permissions, but does remove the management options
+for the group Owner.
+
+To release the user, GitLab support must update the user's primary email address to an email address from a non-verified domain. This action automatically releases the account.
+
+Allowing group Owners to change primary emails is proposed in [issue 412966](https://gitlab.com/gitlab-org/gitlab/-/issues/412966).
 
 ### Enable the extension marketplace for the Web IDE and workspaces
 
 {{< details >}}
 
-- Status: Beta
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.0 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161819) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 17.4 [with flags](../../administration/feature_flags.md) named `web_ide_oauth` and `web_ide_extensions_marketplace`. Disabled by default.
 - `web_ide_oauth` [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163181) in GitLab 17.4.
 - `web_ide_extensions_marketplace` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.4.
 - `web_ide_oauth` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167464) in GitLab 17.5.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/508996) the `vscode_extension_marketplace_settings` [feature flag](../../administration/feature_flags.md) in GitLab 17.10. Disabled by default.
-- `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/459028) in GitLab 17.11.
+- `web_ide_extensions_marketplace` [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184662), and `vscode_extension_marketplace_settings` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184662) in GitLab 17.11.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192659) in GitLab 18.1. Feature flags `web_ide_extensions_marketplace` and `vscode_extension_marketplace_settings` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-
-{{< /alert >}}
 
 Prerequisites:
 
@@ -277,51 +297,10 @@ To enable the extension marketplace for the
 1. Under **Web IDE and workspaces**, select the **Enable extension marketplace** checkbox.
 1. Select **Save changes**.
 
-### Prevent enterprise users from creating groups and projects outside the corporate group
-
-A SAML identity administrator can configure the SAML response to set:
-
-- Whether enterprise users can create new top-level groups.
-- The maximum number of personal projects enterprise users can create.
-
-For more information, see how to [configure enterprise user settings from the SAML response](../group/saml_sso/_index.md#configure-enterprise-user-settings-from-saml-response).
-
-### Bypass email confirmation for provisioned users
-
-A top-level group Owner can [set up verified domains to bypass confirmation emails](../group/saml_sso/_index.md#bypass-user-email-confirmation-with-verified-domains).
-
-### Get users' email addresses
-
-A top-level group Owner can use the UI to access enterprise users' email addresses:
-
-1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Manage > Members**.
-1. In the group or project members page, hover over the enterprise user's name to
-   see their email address.
-
-A group Owner can also use the [group and project members API](../../api/members.md)
-to access users' information. For enterprise users of the group, this information
-includes users' email addresses.
-
-### Remove enterprise management features from an account
-
-Changing an enterprise user's primary email to an email from a non-verified domain automatically removes the enterprise badge from the account. This does not alter any account roles or permissions for the user, but does limit the group Owner's ability to manage this account.
-
-### Disable authentication methods
-
-A top-level group Owner can disable specific authentication methods to reduce the security footprint.
-
-Within the top-level group, the Owner can:
-
-- [Disable password authentication](../group/saml_sso/_index.md#disable-password-authentication-for-enterprise-users).
-- [Disable personal access tokens](../../user/profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).
-
-## Related topics
-
-- [Group enterprise users API](../../api/group_enterprise_users.md)
-
 ## Troubleshooting
 
 ### Cannot disable two-factor authentication for an enterprise user
 
-If an enterprise user does not have an **Enterprise** badge, a top-level group Owner cannot [disable or reset 2FA](#disable-two-factor-authentication) for that user. Instead, the Owner should tell the enterprise user to consider available [recovery options](../profile/account/two_factor_authentication_troubleshooting.md#recovery-options-and-2fa-reset).
+If a user does not have an **Enterprise** badge, a group Owner cannot disable or reset 2FA for their
+account. Instead, the Owner should tell the enterprise user to consider available
+[recovery options](../profile/account/two_factor_authentication_troubleshooting.md#recovery-options-and-2fa-reset).

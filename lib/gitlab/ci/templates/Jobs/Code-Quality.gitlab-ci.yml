@@ -58,6 +58,7 @@ code_quality:
     access: 'developer'
     reports:
       codequality: gl-code-quality-report.json
+    paths: [gl-code-quality-report.json]
     expire_in: 1 week
   dependencies: []
   rules:

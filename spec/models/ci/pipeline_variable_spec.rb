@@ -63,4 +63,12 @@ RSpec.describe Ci::PipelineVariable, feature_category: :continuous_integration d
       end.not_to change { variable.project_id }.from(another_project.id)
     end
   end
+
+  describe 'projects_with_pipeline_variables_query concern' do
+    def create_variable(project)
+      create(:ci_pipeline_variable, pipeline: create(:ci_pipeline, project: project))
+    end
+
+    it_behaves_like 'projects_with_variables_query'
+  end
 end

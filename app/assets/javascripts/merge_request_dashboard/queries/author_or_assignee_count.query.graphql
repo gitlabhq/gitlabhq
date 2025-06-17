@@ -6,6 +6,7 @@ query requestingReviewAuthorOrAssigneeCount(
   $mergedAfter: Time
   $or: UnionedMergeRequestFilterInput
   $not: MergeRequestsResolverNegatedParams
+  $ignoredReviewerUsername: String
 ) {
   currentUser {
     id
@@ -18,6 +19,7 @@ query requestingReviewAuthorOrAssigneeCount(
       mergedAfter: $mergedAfter
       or: $or
       not: $not
+      ignoredReviewerUsername: $ignoredReviewerUsername
     ) {
       count
     }

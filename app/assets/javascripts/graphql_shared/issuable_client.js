@@ -1,5 +1,6 @@
 import produce from 'immer';
 import VueApollo from 'vue-apollo';
+import { unionBy } from 'lodash';
 import { concatPagination } from '@apollo/client/utilities';
 import { makeVar } from '@apollo/client/core';
 import errorQuery from '~/boards/graphql/client/error.query.graphql';
@@ -151,11 +152,15 @@ export const config = {
           },
           // widgets policy because otherwise the subscriptions invalidate the cache
           widgets: {
+            keyArgs: false,
             merge(existing = [], incoming, context) {
               if (existing.length === 0) {
                 return incoming;
               }
-              return existing.map((existingWidget) => {
+
+              const mergedWidgets = unionBy(existing, incoming, '__typename');
+
+              return mergedWidgets.map((existingWidget) => {
                 const incomingWidget = incoming.find(
                   (w) => w.type && w.type === existingWidget.type,
                 );

@@ -56,7 +56,7 @@ If your AI gateway URL points to a local network or private IP address (for exam
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
+- You must have a Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
 To configure a self-hosted model:
@@ -112,7 +112,7 @@ For more information about:
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
+- You must have an Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
 To enable self-hosted [beta](../../policy/development_stages_support.md#beta) models and features:
@@ -136,7 +136,7 @@ For more information, see the [list of available beta models](supported_models_a
 Prerequisites:
 
 - You must be an administrator.
-- You must have an Ultimate license.
+- You must have an Premium or Ultimate license.
 - You must have a GitLab Duo Enterprise license add-on.
 
 ### View configured features
@@ -149,7 +149,7 @@ Prerequisites:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription ({{< icon name="retry" >}}).
-1. Select the **AI-powered features** tab.
+1. Select the **AI-native features** tab.
 
 ### Configure the feature to use a self-hosted model
 
@@ -158,12 +158,12 @@ Configure the GitLab Duo feature and sub-feature to send queries to the configur
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
-1. Select the **AI-powered features** tab.
+1. Select the **AI-native features** tab.
 1. For the feature and sub-feature you want to configure, from the dropdown list, choose the self-hosted model you want to use.
 
    For example, for the code generation sub-feature under GitLab Duo Code Suggestions, you can select **Claude-3 on Bedrock deployment (Claude 3)**.
 
-   ![GitLab Duo Self-Hosted Feature Configuration](../img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
+   ![GitLab Duo Self-Hosted Feature Configuration](img/gitlab_duo_self_hosted_feature_configuration_v17_11.png)
 
 #### GitLab Duo Chat sub-feature fall back configuration
 
@@ -185,9 +185,9 @@ To disable a GitLab Duo feature or sub-feature:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **GitLab Duo**.
 1. Select **Configure GitLab Duo Self-Hosted**.
-1. Select the **AI-powered features** tab.
+1. Select the **AI-native features** tab.
 1. For the feature or sub-feature you want to disable, from the dropdown list, select **Disabled**.
 
    For example, to specifically disable the `Write Test` and `Refactor Code` features, select **Disabled**:
 
-   ![Disabling GitLab Duo Feature](../img/gitlab_duo_self_hosted_disable_feature_v17_11.png)
+   ![Disabling GitLab Duo Feature](img/gitlab_duo_self_hosted_disable_feature_v17_11.png)

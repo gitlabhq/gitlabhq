@@ -96,7 +96,7 @@ module API
 
           schedule_params = declared_params(include_missing: false).except(:inputs)
 
-          if params[:inputs] && Feature.enabled?(:ci_inputs_for_pipelines, user_project)
+          if params[:inputs]
             schedule_params[:inputs_attributes] = params[:inputs]
           end
 
@@ -142,7 +142,7 @@ module API
 
           schedule_params = declared_params(include_missing: false).except(:inputs)
 
-          if params[:inputs] && Feature.enabled?(:ci_inputs_for_pipelines, user_project)
+          if params[:inputs]
             schedule_params[:inputs_attributes] = params[:inputs]
           end
 

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Conan::PackageReference, type: :model, feature_category: :package_registry do
+  it { is_expected.to be_a(Packages::Conan::PackageFileable) }
+
   describe 'associations' do
     it 'belongs to package' do
       is_expected.to belong_to(:package).class_name('Packages::Conan::Package').inverse_of(:conan_package_references)

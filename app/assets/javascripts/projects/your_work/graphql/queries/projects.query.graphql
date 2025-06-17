@@ -33,5 +33,6 @@ query getYourWorkProjects(
     pageInfo {
       ...PageInfo
     }
+    count
   }
 }

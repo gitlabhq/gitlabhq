@@ -49,6 +49,14 @@ module ResolvesPipelines
   end
 
   def resolve_pipelines(project, params = {})
-    Ci::PipelinesFinder.new(project, context[:current_user], params).execute
+    pipelines = Ci::PipelinesFinder.new(project, context[:current_user], params).execute
+
+    if %w[branches tags].include?(params[:scope])
+      # `branches` and `tags` scopes are ordered in a complex way that is not supported by the keyset pagination.
+      # We offset pagination here so we return the correct connection.
+      offset_pagination(pipelines)
+    else
+      pipelines
+    end
   end
 end

@@ -93,7 +93,10 @@ export default {
   apollo: {
     runners: {
       query: groupRunnersQuery,
-      fetchPolicy: fetchPolicies.NETWORK_ONLY,
+      // Runners can be updated by users directly in this list.
+      // A "cache and network" policy prevents outdated filtered
+      // results.
+      fetchPolicy: fetchPolicies.CACHE_AND_NETWORK,
       variables() {
         return this.variables;
       },
@@ -264,6 +267,7 @@ export default {
         :checkable="true"
         :loading="runnersLoading"
         @deleted="onDeleted"
+        @toggledPaused="onToggledPaused"
       >
         <template #runner-job-status-badge="{ runner }">
           <runner-job-status-badge

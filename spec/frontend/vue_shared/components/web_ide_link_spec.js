@@ -16,7 +16,7 @@ import {
   extendedWrapper,
 } from 'helpers/vue_test_utils_helper';
 
-import { visitUrl } from '~/lib/utils/url_utility';
+import { visitUrl, appendLineRangeHashToUrl } from '~/lib/utils/url_utility';
 import getWritableForksQuery from '~/vue_shared/components/web_ide/get_writable_forks.query.graphql';
 
 jest.mock('~/lib/utils/url_utility');
@@ -299,9 +299,12 @@ describe('vue_shared/components/web_ide_link', () => {
     });
 
     it('when web ide button is clicked it opens in a new tab', async () => {
+      const transformation = 'foo';
+      appendLineRangeHashToUrl.mockReturnValueOnce(transformation);
       findDisclosureDropdownItems().at(1).props().item.handle();
       await nextTick();
-      expect(visitUrl).toHaveBeenCalledWith(TEST_WEB_IDE_URL, true);
+      expect(appendLineRangeHashToUrl).toHaveBeenCalledWith(TEST_WEB_IDE_URL);
+      expect(visitUrl).toHaveBeenCalledWith(transformation, true);
     });
   });
 

@@ -46,6 +46,8 @@ module WebHooks
     # Perform this operation within an `Gitlab::ExclusiveLease` lock to make it
     # safe to be called concurrently from different workers.
     def update_hook_failure_state
+      return unless hook.auto_disabling_enabled?
+
       in_lock(lock_name, ttl: LOCK_TTL, sleep_sec: LOCK_SLEEP, retries: LOCK_RETRY) do |_retried|
         hook.reset # Reload within the lock so properties are guaranteed to be current.
 

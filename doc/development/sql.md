@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: SQL Query Guidelines
 ---
 
@@ -69,7 +69,7 @@ WHERE title ILIKE '%Draft:%';
 Because the value for `ILIKE` starts with a wildcard the database is not able to
 use an index as it doesn't know where to start scanning the indexes.
 
-Luckily, PostgreSQL _does_ provide a solution: trigram Generalized Inverted Index (GIN) indexes. These
+Luckily, PostgreSQL does provide a solution: trigram Generalized Inverted Index (GIN) indexes. These
 indexes can be created as follows:
 
 ```sql
@@ -97,7 +97,7 @@ For example, a GIN/trigram index for `issues.title` would be called
 
 Due to these indexes taking quite some time to be built they should be built
 concurrently. This can be done by using `CREATE INDEX CONCURRENTLY` instead of
-just `CREATE INDEX`. Concurrent indexes can _not_ be created inside a
+just `CREATE INDEX`. Concurrent indexes can not be created inside a
 transaction. Transactions for migrations can be disabled using the following
 pattern:
 
@@ -229,7 +229,7 @@ use them as an argument for another query. In general, moving query logic out of
 and into Ruby is detrimental because PostgreSQL has a query optimizer that performs better
 when it has relatively more context about the desired operation.
 
-If, for some reason, you need to `pluck` and use the results in a *single* query then,
+If, for some reason, you need to `pluck` and use the results in a single query then,
 most likely, a materialized CTE will be a better choice:
 
 ```sql
@@ -295,7 +295,7 @@ get related data or data based on certain criteria, but `JOIN` performance can
 quickly deteriorate as the data involved grows.
 
 For example, if you want to get a list of projects where the name contains a
-value _or_ the name of the namespace contains a value most people would write
+value or the name of the namespace contains a value most people would write
 the following query:
 
 ```sql
@@ -638,7 +638,7 @@ Using transactions does not solve this problem.
 To solve this we've added the `ApplicationRecord.safe_find_or_create_by`.
 
 This method can be used the same way as
-`find_or_create_by`, but it wraps the call in a *new* transaction (or a subtransaction) and
+`find_or_create_by`, but it wraps the call in a new transaction (or a subtransaction) and
 retries if it were to fail because of an
 `ActiveRecord::RecordNotUnique` error.
 

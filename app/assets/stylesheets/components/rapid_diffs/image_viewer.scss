@@ -1,0 +1,9 @@
+.rd-image-diff {
+  margin: 0;
+  overflow: hidden;
+}
+
+.rd-image-diff-fallback {
+  @apply gl-p-5;
+  text-align: center;
+}

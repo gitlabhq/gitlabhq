@@ -33,7 +33,7 @@ If you try to execute a restricted action, you might get a `404` error.
 | Merge requests | Create and update a merge request. |
 | Package registry | Publish a package. |
 | CI/CD | Create, edit, administer, and run pipelines. <br>  Create, edit, administer, and run builds. <br>  Create and edit admin environments. <br> Create and edit admin deployments. <br>  Create and edit admin clusters. <br> Create and edit admin releases. |
-| Namespaces | **For exceeded free user limits:** Invite new users. |
+| Namespaces | **For exceeded free user limits**: Invite new users. |
 
 ## Read-only projects
 

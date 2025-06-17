@@ -637,7 +637,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['token']).not_to eq(token.token)
-          expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+          expect(json_response['expires_at']).to eq(1.week.from_now.to_date.iso8601)
         end
       end
 
@@ -676,7 +676,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             if source_type == 'project'
               expect(response).to have_gitlab_http_status(:ok)
               expect(json_response['token']).not_to eq(token.token)
-              expect(json_response['expires_at']).to eq((Date.today + 1.week).to_s)
+              expect(json_response['expires_at']).to eq(1.week.from_now.to_date.iso8601)
             else
               expect(response).to have_gitlab_http_status(:unauthorized)
             end
@@ -685,7 +685,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       end
 
       context 'when expiry is defined' do
-        let(:expiry_date) { Date.today + 1.month }
+        let(:expiry_date) { 1.month.from_now }
         let(:params) { { expires_at: expiry_date } }
 
         before do
@@ -698,7 +698,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(json_response['token']).not_to eq(token.token)
-          expect(json_response['expires_at']).to eq(expiry_date.to_s)
+          expect(json_response['expires_at']).to eq(expiry_date.to_date.iso8601)
         end
       end
 

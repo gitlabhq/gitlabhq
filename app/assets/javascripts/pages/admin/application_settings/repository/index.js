@@ -1,3 +1,3 @@
-import initInactiveProjectDeletion from '~/admin/application_settings/inactive_project_deletion';
+import initDormantProjectDeletion from '~/admin/application_settings/dormant_project_deletion';
 
-initInactiveProjectDeletion();
+initDormantProjectDeletion();

@@ -4,7 +4,7 @@ module ClickHouse
   module Client
     class Query < QueryLike
       SUBQUERY_PLACEHOLDER_REGEX = /{\w+:Subquery}/ # example: {var:Subquery}, special "internal" type for subqueries
-      PLACEHOLDER_REGEX = /{\w+:\w+}/ # example: {var:UInt8}
+      PLACEHOLDER_REGEX = /{\w+:(\w|[()])+}/ # example: {var:UInt8} or {var:Array(UInt8)}
       PLACEHOLDER_NAME_REGEX = /{(\w+):/ # example: {var:UInt8} => var
 
       def self.build(query)
@@ -22,12 +22,14 @@ module ClickHouse
 
       # List of placeholders to be sent to ClickHouse for replacement.
       # If there are subqueries, merge their placeholders as well.
-      def placeholders
-        all_placeholders = @placeholders.select { |_, v| !v.is_a?(QueryLike) }
-        @placeholders.each_value do |value|
+      def prepared_placeholders
+        all_placeholders = placeholders.select { |_, v| !v.is_a?(QueryLike) }
+        all_placeholders.transform_values! { |v| prepared_placeholder_value(v) }
+
+        placeholders.each_value do |value|
           next unless value.is_a?(QueryLike)
 
-          all_placeholders.merge!(value.placeholders) do |key, a, b|
+          all_placeholders.merge!(value.prepared_placeholders) do |key, a, b|
             raise QueryError, "mismatching values for the '#{key}' placeholder: #{a} vs #{b}"
           end
         end
@@ -63,11 +65,17 @@ module ClickHouse
 
       private
 
-      attr_reader :raw_query
+      attr_reader :raw_query, :placeholders
 
       def placeholder_value(placeholder_in_query)
         placeholder = placeholder_in_query[PLACEHOLDER_NAME_REGEX, 1]
-        @placeholders.fetch(placeholder.to_sym)
+        placeholders.fetch(placeholder.to_sym)
+      end
+
+      def prepared_placeholder_value(value)
+        return value unless value.is_a?(Array)
+
+        Quoting.quote(value)
       end
     end
   end

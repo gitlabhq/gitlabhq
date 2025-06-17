@@ -1,7 +1,7 @@
 ---
 key_path: redis_hll_counters.importer.github_import_project_partially_completed_weekly
 description: The number of github projects that were partially completed weekly
-product_group: import_and_integrate
+product_group: import
 product_categories:
 - importers
 value_type: number

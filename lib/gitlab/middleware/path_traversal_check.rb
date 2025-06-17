@@ -40,6 +40,10 @@ module Gitlab
         return @app.call(env) unless path_traversal_attempt?(request, log_params)
 
         log_params[:request_rejected] = true
+
+        # TODO Remove this when https://gitlab.com/gitlab-org/ruby/gems/labkit-ruby/-/issues/41 is implemented
+        log_params[:remote_ip] = request.remote_ip
+
         log(log_params)
 
         REJECT_RESPONSE

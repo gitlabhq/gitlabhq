@@ -1,0 +1,27 @@
+---
+description: Job token allowlist entry created or updated.
+internal_events: true
+action: action_on_job_token_allowlist_entry
+identifiers:
+  - project
+  - namespace
+additional_properties:
+  label:
+    description: id of the allowlist entry
+  property:
+    description: type of the allowlist entry (`project_scope_link` or `group_scope_link`)
+  action_name:
+    description: the action taken on the allowlist entry (`created` or `updated`)
+  default_permissions:
+    description: the allowlist entry has default permissions enabled (`true` or `false`)
+  self_referential:
+    description: the allowlist entry is for the project itself (`true` or `false`)
+product_group: authorization
+product_categories:
+  - permissions
+milestone: "18.1"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192810
+tiers:
+  - free
+  - premium
+  - ultimate

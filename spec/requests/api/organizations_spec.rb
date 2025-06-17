@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Organizations, feature_category: :cell do
+RSpec.describe API::Organizations, feature_category: :organization do
   include WorkhorseHelpers
 
   let(:user) { create(:user) }

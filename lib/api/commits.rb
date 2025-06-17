@@ -3,10 +3,14 @@ require 'mime/types'
 
 module API
   class Commits < ::API::Base
+    include ::API::Concerns::AiWorkflowsAccess
+    include APIGuard
     include PaginationParams
     include Helpers::Unidiff
 
     helpers ::API::Helpers::NotesHelpers
+
+    allow_ai_workflows_access
 
     feature_category :source_code_management
 
@@ -547,6 +551,7 @@ module API
       end
       params do
         requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
+        optional :state, type: String, desc: 'Filter merge-requests by state', documentation: { example: 'merged' }
         use :pagination
       end
       get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS, urgency: :low do
@@ -558,7 +563,8 @@ module API
         commit_merge_requests = MergeRequestsFinder.new(
           current_user,
           project_id: user_project.id,
-          commit_sha: commit.sha
+          commit_sha: commit.sha,
+          state: params[:state]
         ).execute.with_api_entity_associations
 
         present paginate(commit_merge_requests), with: Entities::MergeRequestBasic

@@ -305,5 +305,25 @@ RSpec.describe Gitlab::Pagination::Keyset::SimpleOrderBuilder,
 
       it { is_expected.to eq(true) }
     end
+
+    context 'when columns that are not in the model are given' do
+      let(:scope) { Project.where(id: [1, 2, 3]).order(Project.arel_table[:foo].desc) }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when order expression does not respond to `name`' do
+      let(:scope) { Project.where(id: [1, 2, 3]) }
+
+      before do
+        allow_next_instance_of(Arel::Attributes::Attribute) do |node|
+          allow(node).to receive(:try).with(:name).and_return(nil)
+        end
+      end
+
+      it 'uses expression as a string and orders by primary key' do
+        expect(sql_with_order).to end_with('ORDER BY "projects"."id" DESC')
+      end
+    end
   end
 end

@@ -47,6 +47,7 @@ resources :merge_requests, concerns: :awardable, except: [:new, :create, :show],
     get :diffs_stream, to: 'merge_requests/diffs_stream#diffs'
     get :diff_files_metadata
     get :diffs_stats
+    get :diff_file
 
     # NOTE: Fallback to `merge_requests/diffs#diff_for_path` to handle `collapsed_diff_url` from the collapsed partial
     scope controller: 'merge_requests/diffs_stream' do
@@ -99,5 +100,6 @@ scope path: 'merge_requests', controller: 'merge_requests/creations' do
     get :diffs_stream, to: 'merge_requests/creations_diffs_stream#diffs'
     get :diff_files_metadata
     get :diffs_stats
+    get :diff_file
   end
 end

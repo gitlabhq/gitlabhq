@@ -88,6 +88,9 @@ module Types
     field :group_count,
       resolver: Resolvers::Users::GroupCountResolver,
       description: 'Group count for the user.'
+    field :project_count,
+      resolver: Resolvers::Users::ProjectCountResolver,
+      description: 'Project count for the user.'
     field :status,
       type: Types::UserStatusType,
       null: true,
@@ -206,6 +209,11 @@ module Types
       type: ::GraphQL::Types::String,
       null: true,
       description: 'Discord ID of the user.'
+
+    field :github,
+      type: ::GraphQL::Types::String,
+      null: true,
+      description: 'GitHub profile name of the user.'
 
     field :organization,
       type: ::GraphQL::Types::String,

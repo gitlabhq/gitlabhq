@@ -35,6 +35,7 @@ describe('Work items root component', () => {
       },
       propsData: {
         iid: '1',
+        rootPageFullPath: 'full-path',
       },
       mocks: {
         $toast: {
@@ -52,7 +53,7 @@ describe('Work items root component', () => {
       newCommentTemplatePaths: [],
       workItemId: null,
       workItemIid: '1',
-      modalWorkItemFullPath: '',
+      workItemFullPath: 'full-path',
       isDrawer: false,
       modalIsGroup: null,
       isBoard: false,

@@ -8,7 +8,7 @@ module Gitlab
       SEARCH_CHAR_LIMIT = 4096
       SEARCH_TERM_LIMIT = 64
       MIN_TERM_LENGTH = 2
-      BOOLEAN_PARAMS = %i[confidential exclude_forks include_archived include_forked].freeze
+      BOOLEAN_PARAMS = %i[confidential exclude_forks include_archived].freeze
 
       # Generic validation
       validates :query_string, length: { maximum: SEARCH_CHAR_LIMIT }

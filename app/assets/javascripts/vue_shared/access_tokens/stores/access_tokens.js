@@ -16,6 +16,7 @@ import { serializeParams, update2WeekFromNow, updateUrlWithQueryParams } from '.
 /**
  * @typedef {{type: string, value: {data: string, operator: string}}} Filter
  * @typedef {Array<string|Filter>} Filters
+ * @typedef {{isAsc: boolean, value: string}} Sorting
  */
 
 /**
@@ -23,13 +24,12 @@ import { serializeParams, update2WeekFromNow, updateUrlWithQueryParams } from '.
  *
  * @param {Object} options
  * @param {string} options.url
- * @param {string|number} options.id
  * @param {Object<string, string|number>} options.params
  * @param {string} options.sort
  */
-const fetchTokens = async ({ url, id, params, sort }) => {
+const fetchTokens = async ({ url, params, sort }) => {
   const { data, headers } = await axios.get(url, {
-    params: { user_id: id, sort, ...params },
+    params: { sort, ...params },
   });
   const { perPage, total } = parseIntPagination(normalizeHeaders(headers));
 
@@ -105,7 +105,6 @@ export const useAccessTokens = defineStore('accessTokens', {
             const url = Api.buildUrl(this.urlShow.replace(':id', this.id));
             const { total } = await fetchTokens({
               url,
-              id: this.id,
               params,
               sort: this.sort,
             });
@@ -136,7 +135,6 @@ export const useAccessTokens = defineStore('accessTokens', {
         updateUrlWithQueryParams({ params: this.params, sort: this.sort });
         const { data, perPage, total } = await fetchTokens({
           url,
-          id: this.id,
           params: this.params,
           sort: this.sort,
         });
@@ -239,7 +237,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.token = token;
     },
     /**
-     * @param {{isAsc: boolean, value: string}} sorting
+     * @param {Sorting} sorting
      */
     setSorting(sorting) {
       this.sorting = sorting;
@@ -248,15 +246,29 @@ export const useAccessTokens = defineStore('accessTokens', {
      * @param {Object} options
      *    @param {Filters} options.filters
      *    @param {number} options.id
+     *    @param {number} options.page
+     *    @param {boolean} options.showCreateForm
+     *    @param {Sorting} options.sorting
      *    @param {string} options.urlCreate
      *    @param {string} options.urlRevoke
      *    @param {string} options.urlRotate
      *    @param {string} options.urlShow
      */
-    setup({ filters, id, page, sorting, urlCreate, urlRevoke, urlRotate, urlShow }) {
+    setup({
+      filters,
+      id,
+      page,
+      showCreateForm,
+      sorting,
+      urlCreate,
+      urlRevoke,
+      urlRotate,
+      urlShow,
+    }) {
       this.filters = filters;
       this.id = id;
       this.page = page;
+      this.showCreateForm = showCreateForm;
       this.sorting = sorting;
       this.urlCreate = urlCreate;
       this.urlRevoke = urlRevoke;

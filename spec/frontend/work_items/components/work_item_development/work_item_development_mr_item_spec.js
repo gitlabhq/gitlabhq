@@ -1,4 +1,4 @@
-import { GlLink, GlAvatarsInline, GlAvatarLink, GlAvatar, GlIcon } from '@gitlab/ui';
+import { GlLink, GlAvatarsInline, GlAvatarLink, GlAvatar, GlIcon, GlBadge } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
 import { workItemDevelopmentMRNodes } from 'jest/work_items/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
@@ -6,6 +6,14 @@ import WorkItemDevelopmentMRItem from '~/work_items/components/work_item_develop
 import toast from '~/vue_shared/plugins/global_toast';
 
 jest.mock('~/vue_shared/plugins/global_toast', () => jest.fn());
+jest.mock('~/lib/utils/datetime_utility', () => ({
+  localeDateFormat: {
+    asDateTimeFull: {
+      format: jest.fn().mockReturnValue('February 6, 2025 at 9:43:01 PM GMT'),
+    },
+  },
+  newDate: jest.fn((date) => new Date(date)),
+}));
 
 describe('WorkItemDevelopmentMRItem', () => {
   let wrapper;
@@ -39,6 +47,7 @@ describe('WorkItemDevelopmentMRItem', () => {
   const findAvatarLink = () => wrapper.findComponent(GlAvatarLink);
   const findAvatar = () => wrapper.findComponent(GlAvatar);
   const findCopyReferenceDropdownItem = () => wrapper.find('[data-testid="mr-copy-reference"]');
+  const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe('MR title', () => {
     it('should render the title as a link', () => {
@@ -79,6 +88,25 @@ describe('WorkItemDevelopmentMRItem', () => {
     createComponent();
 
     expect(findMRIcon().attributes('title')).toBe('Merge request');
+  });
+
+  describe('Badge', () => {
+    it('shows a badge when closed', () => {
+      createComponent({ mergeRequest: closedMergeRequest });
+
+      expect(findBadge().exists()).toBe(true);
+      expect(findBadge().props('variant')).toBe('danger');
+      expect(findBadge().attributes('title')).toBe('February 6, 2025 at 9:43:01 PM GMT');
+      expect(findBadge().text()).toBe('Closed');
+    });
+    it('shows a badge when merged', () => {
+      createComponent({ mergeRequest: mergeRequestWithNoAssignees });
+
+      expect(findBadge().exists()).toBe(true);
+      expect(findBadge().props('variant')).toBe('info');
+      expect(findBadge().attributes('title')).toBe('February 6, 2025 at 9:43:01 PM GMT');
+      expect(findBadge().text()).toBe('Merged');
+    });
   });
 
   describe('MR references', () => {

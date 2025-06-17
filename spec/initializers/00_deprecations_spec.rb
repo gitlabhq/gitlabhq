@@ -20,7 +20,7 @@ RSpec.describe '00_deprecations', feature_category: :shared do
 
     setup_other_deprecations
 
-    ActiveSupport::Deprecation.disallowed_warnings = nil
+    Rails.application.deprecators.disallowed_warnings = []
     ActiveSupport::Notifications.unsubscribe('deprecation.rails')
 
     load_initializer
@@ -94,7 +94,7 @@ RSpec.describe '00_deprecations', feature_category: :shared do
 
   describe 'Rails deprecations' do
     context 'when catching deprecation warnings' do
-      subject { ActiveSupport::Deprecation.warn('ABC will be removed') }
+      subject { Rails.application.deprecators[:active_record].warn('ABC will be removed') }
 
       include_examples 'logs to Gitlab::DeprecationJsonLogger', 'DEPRECATION WARNING: ABC will be removed', 'rails'
       include_examples 'logs to stderr', 'DEPRECATION WARNING: ABC will be removed'
@@ -115,11 +115,11 @@ RSpec.describe '00_deprecations', feature_category: :shared do
     end
 
     context 'when catching disallowed warnings' do
-      before do
-        ActiveSupport::Deprecation.disallowed_warnings << /disallowed warning 1/
-      end
+      subject { Rails.application.deprecators[:active_record].warn('This is disallowed warning 1.') }
 
-      subject { ActiveSupport::Deprecation.warn('This is disallowed warning 1.') }
+      before do
+        Rails.application.deprecators.disallowed_warnings = [/disallowed warning 1/]
+      end
 
       it 'raises Exception and warns on stderr' do
         expect { subject }
@@ -144,24 +144,6 @@ RSpec.describe '00_deprecations', feature_category: :shared do
           it 'does not raise' do
             expect { subject }.not_to raise_error
           end
-        end
-      end
-    end
-
-    describe 'configuring ActiveSupport::Deprecation.disallowed_warnings' do
-      subject(:disallowed_warnings) { ActiveSupport::Deprecation.disallowed_warnings }
-
-      it { is_expected.to be_empty }
-
-      context 'when in production environment' do
-        let(:rails_env) { 'production' }
-
-        it { is_expected.to be_empty }
-
-        context 'when GITLAB_LOG_DEPRECATIONS is set' do
-          let(:gitlab_log_deprecations) { '1' }
-
-          it { is_expected.to be_empty }
         end
       end
     end

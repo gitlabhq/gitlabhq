@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Environment Setup | Users
 ---
 
@@ -40,6 +40,7 @@ This method also ensures that on environments that allow for user fabrication, t
 
 ## Disable email verification
 
-If [email verification](../../../../security/email_verification.md) is enabled on the test environment (via the `require_email_verification` feature flag), a user cannot log in under certain conditions (for example, logging in the first time from a new location) unless they enter a verification code that is sent to their email address.
+[Account email verification](../../../../security/email_verification.md) locks a user account if suspicious activity is detected. After an account is locked, the user must verify their identity or reset their password to sign in to GitLab.
+This feature is disabled by default, you can use the [Application settings API](../../../../api/settings.md) to enable the `require_email_verification_on_account_locked` attribute.
 
-To disable email verification you can disable the `require_email_verification` feature flag, which will disable email verification for all users on the instance. Alternatively, you can skip verification for individual users by enabling the `skip_require_email_verification` feature flag for that user.
+Disabling email verification turns off email verification for all users in the instance.

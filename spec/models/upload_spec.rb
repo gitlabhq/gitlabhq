@@ -335,4 +335,26 @@ RSpec.describe Upload do
       subject.destroy!
     end
   end
+
+  it_behaves_like 'object storable' do
+    let(:locally_stored) do
+      upload = create(:upload)
+
+      if upload.store == ObjectStorage::Store::REMOTE
+        upload.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::LOCAL)
+      end
+
+      upload
+    end
+
+    let(:remotely_stored) do
+      upload = create(:upload)
+
+      if upload.store == ObjectStorage::Store::LOCAL
+        upload.update_column(described_class::STORE_COLUMN, ObjectStorage::Store::REMOTE)
+      end
+
+      upload
+    end
+  end
 end

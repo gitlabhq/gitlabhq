@@ -14,6 +14,15 @@ title: Account and limit settings
 
 {{< /details >}}
 
+GitLab administrators can configure project and account limits on their instance, like:
+
+- The number of projects a user can create.
+- Size limits on attachments, pushes, and repositories.
+- Session duration and expiration.
+- Access token settings, such as expiration and prefixes.
+- User privacy and deletion settings.
+- Creation rules for organizations and top-level groups.
+
 ## Default projects limit
 
 You can configure the default maximum number of projects new users can create in their
@@ -44,12 +53,6 @@ can create in their personal namespace:
 
 ## Max attachment size
 
-{{< history >}}
-
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/20061) from 10 MB to 100 MB in GitLab 15.7.
-
-{{< /history >}}
-
 The maximum file size for attachments in GitLab comments and replies is 100 MB.
 To change the maximum attachment size:
 
@@ -77,7 +80,7 @@ For GitLab.com push size limits, see [accounts and limit settings](../../user/gi
 {{< alert type="note" >}}
 
 When you [add files to a repository](../../user/project/repository/web_editor.md#create-a-file)
-through the web UI, the maximum **attachment** size is the limiting factor. This happens
+through the web UI, the maximum attachment size is the limiting factor. This happens
 because the web server
 must receive the file before GitLab can generate the commit.
 Use [Git LFS](../../topics/git/lfs/_index.md) to add large files to a repository.
@@ -171,7 +174,7 @@ You can change how long users can remain signed in without activity.
 
    {{< /alert >}}
 
-If [Remember me](#turn-remember-me-on-or-off) is enabled, users' sessions can remain active for an indefinite period of time.
+If [Remember me](#configure-the-remember-me-option) is enabled, users' sessions can remain active for an indefinite period of time.
 
 For details, see [cookies used for sign-in](../../user/profile/_index.md#cookies-used-for-sign-in).
 
@@ -195,7 +198,7 @@ By default, sessions expire a set amount of time after the session becomes inact
 When the session duration is met, the session ends and the user is signed out even if:
 
 - The user is still actively using the session.
-- The user selected [remember me](#turn-remember-me-on-or-off) during sign in.
+- The user selected [remember me](#configure-the-remember-me-option) during sign in.
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
@@ -204,7 +207,7 @@ When the session duration is met, the session ends and the user is signed out ev
 
 After a session ends, a window prompts the user to sign in again.
 
-### Turn **Remember me** on or off
+### Configure the Remember me option
 
 {{< history >}}
 
@@ -230,6 +233,8 @@ number of minutes of inactivity set when you [customize your session duration](#
 - Offering: GitLab Self-Managed
 
 {{< /details >}}
+
+<!-- The history line is too old, but must remain until `feature_flags/development/two_factor_for_cli.yml` is removed -->
 
 {{< history >}}
 
@@ -371,14 +376,14 @@ This feature is available for testing, but not ready for production use.
 
 {{< /alert >}}
 
-You can set a custom prefix for all tokens generated on your instance.
-By default, GitLab uses `gl` as the instance prefix.
+You can set a custom prefix that is prepended to all tokens generated on your instance.
 
 Custom token prefixes apply only to the following tokens:
 
 - [Feed tokens](../../security/tokens/_index.md#feed-token)
 - [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
+- [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
 
 Prerequisites:
 
@@ -638,18 +643,10 @@ By default, users can create organizations. GitLab administrators can prevent us
 
 ## Prevent new users from creating top-level groups
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367754) in GitLab 15.5.
-
-{{< /history >}}
-
 By default, new users can create top-level groups. GitLab administrators can prevent new users from creating top-level groups:
 
-- In GitLab 15.5 and later, use either:
-  - The GitLab UI with the steps in this section.
-  - The [Application settings API](../../api/settings.md#update-application-settings).
-- In GitLab 15.4 and earlier, modify a [configuration file](../user_settings.md#prevent-users-from-creating-top-level-groups).
+- In the GitLab UI, with the steps in this section.
+- With the [Application settings API](../../api/settings.md#update-application-settings).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -660,7 +657,7 @@ By default, new users can create top-level groups. GitLab administrators can pre
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426279) in GitLab 16.8
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/426279) in GitLab 16.8.
 
 {{< /history >}}
 
@@ -711,12 +708,6 @@ When you re-enable this setting, the user's
 [previously set profile visibility](../../user/profile/_index.md#make-your-user-profile-page-private) is selected.
 
 ## Set profiles of new users to private by default
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/231301) in GitLab 15.8.
-
-{{< /history >}}
 
 By default, newly created users have a public profile. GitLab administrators can set new users to have a private profile by default:
 

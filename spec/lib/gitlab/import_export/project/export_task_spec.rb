@@ -73,8 +73,8 @@ RSpec.describe Gitlab::ImportExport::Project::ExportTask, :silence_stdout, featu
 
   context 'when after export strategy fails' do
     before do
-      allow_next_instance_of(Gitlab::ImportExport::AfterExportStrategies::MoveFileStrategy) do |after_export_strategy|
-        allow(after_export_strategy).to receive(:strategy_execute).and_raise(Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy::StrategyError)
+      allow_next_instance_of(Import::AfterExportStrategies::MoveFileStrategy) do |after_export_strategy|
+        allow(after_export_strategy).to receive(:strategy_execute).and_raise(Import::AfterExportStrategies::BaseAfterExportStrategy::StrategyError)
       end
     end
 

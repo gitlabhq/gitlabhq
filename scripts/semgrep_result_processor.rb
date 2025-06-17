@@ -15,9 +15,22 @@ class SemgrepResultProcessor
   UNIQUE_COMMENT_RULES_IDS = %w[builds.sast-custom-rules.appsec-pings.glappsec_ci-job-token builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_insecure-regex].freeze
   APPSEC_HANDLE = "@gitlab-com/gl-security/appsec"
 
-  MESSAGE_SCG_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding, which is a potential violation of [GitLab's secure coding guidelines](https://docs.gitlab.com/development/secure_coding_guidelines/).".freeze
-  MESSAGE_S1_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding. This MR potentially reintroduces code from a past S1 issue.".freeze
-  MESSAGE_PING_APPSEC = "#{APPSEC_HANDLE} please review this finding.".freeze
+  LABEL_INSTRUCTION = 'Apply the ~"appsec-sast-ping::resolved" label after reviewing.'
+
+  MESSAGE_SCG_PING_APPSEC =
+    "#{APPSEC_HANDLE} please review this finding, which is a potential " \
+      'violation of [GitLab\'s secure coding guidelines]' \
+      '(https://docs.gitlab.com/development/secure_coding_guidelines/). ' \
+      "#{LABEL_INSTRUCTION}".freeze
+
+  MESSAGE_S1_PING_APPSEC =
+    "#{APPSEC_HANDLE} please review this finding. This MR potentially " \
+      'reintroduces code from a past S1 issue. ' \
+      "#{LABEL_INSTRUCTION}".freeze
+
+  MESSAGE_PING_APPSEC =
+    "#{APPSEC_HANDLE} please review this finding. " \
+      "#{LABEL_INSTRUCTION}".freeze
 
   MESSAGE_FOOTER = <<~FOOTER
 

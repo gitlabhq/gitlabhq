@@ -6,9 +6,6 @@ module API
 
     MAXIMUM_TRACKED_EVENTS = 50
 
-    # Insert fields that shouldn't  saved on internal telemetry
-    FIELDS_BLOCKED_FOR_INTERNAL_EVENTS = %i[branch_name].freeze
-
     before { authenticate_non_get! }
 
     feature_category :service_ping
@@ -34,18 +31,13 @@ module API
         additional_properties = params.fetch(:additional_properties, {}).symbolize_keys
         send_snowplow_event = !!params[:send_to_snowplow]
 
-        if Gitlab::Tracking::AiTracking::EVENTS_MIGRATED_TO_INSTRUMENTATION_LAYER.exclude?(event_name)
-          Gitlab::Tracking::AiTracking.track_event(event_name,
-**additional_properties.merge(user: current_user, project_id: project_id, namespace_id: namespace_id))
-        end
-
         track_event(
           event_name,
           send_snowplow_event: send_snowplow_event,
           user: current_user,
           namespace_id: namespace_id,
           project_id: project_id,
-          additional_properties: additional_properties.except(*FIELDS_BLOCKED_FOR_INTERNAL_EVENTS)
+          additional_properties: additional_properties
         )
       end
     end

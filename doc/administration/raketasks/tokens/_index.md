@@ -288,3 +288,12 @@ a given expiration date:
    tokens with the selected expiration date.
 
    If you enter `N`, the tool aborts the update task and returns to the first menu.
+
+## Validate custom issuer URL configuration for CI/CD ID Tokens
+
+If you configure a non-public GitLab instance with [OpenID Connect in AWS to retrieve temporary credentials](../../../ci/cloud_services/aws/_index.md#configure-a-non-public-gitlab-instance),
+use the `ci:validate_id_token_configuration` Rake task to validate the token configuration:
+
+```shell
+bundle exec rake ci:validate_id_token_configuration
+```

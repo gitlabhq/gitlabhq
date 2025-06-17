@@ -8,6 +8,7 @@ module RuboCop
         '`destroy_all` will load the rows into memory, then execute a ' \
         '`DELETE` for every individual row.'
 
+      # @!method destroy_all?(node)
       def_node_matcher :destroy_all?, <<~PATTERN
         (send {send ivar lvar const} :destroy_all ...)
       PATTERN

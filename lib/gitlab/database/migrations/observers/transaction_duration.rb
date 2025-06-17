@@ -29,23 +29,13 @@ module Gitlab
           private
 
           def record_event(_name, started, finished, _unique_id, payload)
-            if ::Gitlab.next_rails?
-              stack_count = payload[:connection].open_transactions
+            stack_count = payload[:connection].open_transactions
 
-              @writer.push_value({
-                start_time: started.iso8601(6),
-                end_time: finished.iso8601(6),
-                transaction_type: stack_count == 0 ? :real_transaction : :sub_transaction
-              })
-            else
-              return if payload[:transaction_type] == :fake_transaction
-
-              @writer.push_value({
-                start_time: started.iso8601(6),
-                end_time: finished.iso8601(6),
-                transaction_type: payload[:transaction_type]
-              })
-            end
+            @writer.push_value({
+              start_time: started.iso8601(6),
+              end_time: finished.iso8601(6),
+              transaction_type: stack_count == 0 ? :real_transaction : :sub_transaction
+            })
           end
         end
       end

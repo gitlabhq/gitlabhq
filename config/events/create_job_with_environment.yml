@@ -1,0 +1,24 @@
+---
+description: Job created that references an environment
+internal_events: true
+action: create_job_with_environment
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: Environment action
+  property:
+    description: Environment tier
+  value:
+    description: Environment ID
+product_group: environments
+product_categories:
+- environment_management
+milestone: '18.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192323
+tiers:
+- free
+- premium
+- ultimate

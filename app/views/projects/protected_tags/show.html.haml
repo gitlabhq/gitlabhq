@@ -1,0 +1,26 @@
+- page_title @protected_ref.name, _("Protected Tags")
+
+.row.gl-mt-3.gl-mb-3
+  .col-lg-3
+    %h4.gl-mt-0.ref-name
+      = @protected_ref.name
+
+  .col-lg-9
+    %h5= s_("ProtectedTag|Matching Tags")
+    - if @matching_refs.present?
+      .table-responsive
+        %table.table.protected-tags-list
+          %colgroup
+            %col{ width: "30%" }
+            %col{ width: "30%" }
+          %thead
+            %tr
+              %th= s_("ProtectedTag|Tag")
+              %th= s_("ProtectedTag|Last commit")
+          %tbody
+            - @matching_refs.each do |matching_tag|
+              = render partial: "projects/protected_tags/shared/matching_tag", object: matching_tag
+    - else
+      = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
+        - c.with_body do
+          = s_("ProtectedTag|Couldn't find any matching tags.")

@@ -32,17 +32,6 @@
     - !reference [.default-utils-before_script, before_script]
     - source scripts/prepare_build.sh
 
-# Requirements for this after_script:
-#
-#   - Ruby
-#   - From the gitlab-org/gitlab project:
-#     - scripts/utils.sh
-#     - tooling/lib/tooling/glci/failure_analyzer.rb
-.failure_category_after_script:
-  after_script:
-    - source scripts/utils.sh
-    - execute_failure_analyzer
-
 .repo-from-artifacts:
   variables:
     GIT_STRATEGY: "${CI_FETCH_REPO_GIT_STRATEGY}"
@@ -459,6 +448,24 @@
     - !reference [.db-services-with-auto-explain, services]
     - !reference [.es8-services, services]
 
+.es9-services:
+  services:
+    - name: elasticsearch:9.0.1
+
+.es9-variables:
+  variables:
+    ES_SETTING_DISCOVERY_TYPE: "single-node"
+    ES_SETTING_XPACK_SECURITY_ENABLED: "false"
+    ES_SETTING_CLUSTER_ROUTING_ALLOCATION_DISK_THRESHOLD__ENABLED: "false"
+
+.use-pg16-es9-ee:
+  extends:
+    - .use-pg16
+    - .es9-variables
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - !reference [.es9-services, services]
+
 .opensearch-latest-services:
   services:
     - name: opensearchproject/opensearch:latest
@@ -545,6 +552,28 @@
   services:
     - !reference [.db-services-with-auto-explain, services]
     - name: clickhouse/clickhouse-server:23.11.3.23-alpine
+      alias: clickhouse
+  variables:
+    CLICKHOUSE_USER: default
+    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    CLICKHOUSE_DB: gitlab_clickhouse_test
+
+.use-pg16-clickhouse24:
+  extends: .use-pg16
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - name: clickhouse/clickhouse-server:24.9.1.3278-alpine
+      alias: clickhouse
+  variables:
+    CLICKHOUSE_USER: default
+    CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: 1
+    CLICKHOUSE_DB: gitlab_clickhouse_test
+
+.use-pg16-clickhouse25:
+  extends: .use-pg16
+  services:
+    - !reference [.db-services-with-auto-explain, services]
+    - name: clickhouse/clickhouse-server:25.4-alpine
       alias: clickhouse
   variables:
     CLICKHOUSE_USER: default

@@ -4,7 +4,7 @@ module Organizations
   class GroupsController < ApplicationController
     include ::Groups::Params
 
-    feature_category :cell
+    feature_category :organization
     urgency :low, [:create, :new, :destroy]
 
     before_action :authorize_create_group!, only: [:new]
@@ -28,8 +28,6 @@ module Organizations
     end
 
     def destroy
-      return destroy_immediately unless group.adjourned_deletion?
-
       if group.marked_for_deletion? &&
           ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
         return destroy_immediately
@@ -38,7 +36,7 @@ module Organizations
       result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
       if result[:status] == :success
-        removal_time = helpers.permanent_deletion_date_formatted(Date.current)
+        removal_time = helpers.permanent_deletion_date_formatted
         message = _("'%{group_name}' has been scheduled for removal on %{removal_time}.")
 
         render json: { message: format(message, group_name: group.name, removal_time: removal_time) }

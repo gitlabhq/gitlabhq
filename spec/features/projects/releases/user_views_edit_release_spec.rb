@@ -12,8 +12,6 @@ RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery
   let(:release_link) { create(:release_link, release: release) }
 
   before do
-    resize_window(1920, 1080)
-
     project.add_developer(user)
 
     sign_in(user)
@@ -21,10 +19,6 @@ RSpec.describe 'User edits Release', :js, feature_category: :continuous_delivery
     visit edit_project_release_path(project, release)
 
     wait_for_requests
-  end
-
-  after do
-    restore_window_size
   end
 
   def fill_out_form_and_click(button_to_click)

@@ -35,9 +35,8 @@ Event data does not include source code or other customer-created content stored
 
 For more information, see also:
 
-- Internal events payload samples
 - [Metrics dictionary](https://metrics.gitlab.com/?status=active) for a list of events and metrics
-- [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/) for data privacy policy
+- [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/)
 
 ### Benefits of event data
 
@@ -82,7 +81,3 @@ The log file is located at:
 - `/home/git/gitlab/log/product_usage_data.log` on self-compiled installations
 
 While these logs provide thorough visibility into data transmission, they're designed specifically for inspection by security teams rather than feature usage analysis. For more detailed information about logging system, see the [Log system documentation](../logs/_index.md#product-usage-data-log).
-
-### Frequently asked questions on event data 
-
-You can access frequently asked questions on event data [here](https://handbook.gitlab.com/handbook/legal/privacy/product-usage-events-faq/).

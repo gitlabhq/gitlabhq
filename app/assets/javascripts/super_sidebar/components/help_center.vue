@@ -22,7 +22,7 @@ export default {
     support: __('Support'),
     docs: __('GitLab documentation'),
     plans: __('Compare GitLab plans'),
-    forum: __('Community forum'),
+    forum: __('GitLab community forum'),
     contribute: __('Contribute to GitLab'),
     feedback: __('Provide feedback'),
     shortcuts: __('Keyboard shortcuts'),

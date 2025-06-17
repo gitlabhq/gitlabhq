@@ -9,6 +9,7 @@ import ProfileEditApp from '~/profile/edit/components/profile_edit_app.vue';
 import UserAvatar from '~/profile/edit/components/user_avatar.vue';
 import SetStatusForm from '~/set_status_modal/set_status_form.vue';
 import TimezoneDropdown from '~/vue_shared/components/timezone_dropdown/timezone_dropdown.vue';
+import UserMainSetting from '~/profile/edit/components/user_main_settings.vue';
 import { VARIANT_DANGER, VARIANT_INFO, createAlert } from '~/alert';
 import { AVAILABILITY_STATUS } from '~/set_status_modal/constants';
 import { timeRanges } from '~/vue_shared/constants';
@@ -20,6 +21,22 @@ jest.mock('~/lib/utils/file_utility', () => ({
 }));
 
 const [oneMinute, oneHour] = timeRanges;
+
+const userMainSettings = {
+  id: 'user123',
+  name: 'Test User',
+  pronouns: 'they/them',
+  pronunciation: 'test-user',
+  websiteUrl: 'https://example.com',
+  location: 'Remote',
+  jobTitle: 'Developer',
+  organization: 'GitLab',
+  bio: 'Test bio',
+  privateProfile: false,
+  includePrivateContributions: false,
+  achievementsEnabled: true,
+};
+
 const defaultProvide = {
   currentEmoji: 'basketball',
   currentMessage: 'Foo bar',
@@ -28,6 +45,7 @@ const defaultProvide = {
   currentClearStatusAfter: oneMinute.shortcut,
   timezones: mockTimezones,
   userTimezone: '',
+  userMainSettings,
 };
 
 describe('Profile Edit App', () => {
@@ -63,6 +81,7 @@ describe('Profile Edit App', () => {
   const findAvatar = () => wrapper.findComponent(UserAvatar);
   const findSetStatusForm = () => wrapper.findComponent(SetStatusForm);
   const findTimezoneDropdown = () => wrapper.findComponent(TimezoneDropdown);
+  const findMainSetting = () => wrapper.findComponent(UserMainSetting);
   const submitForm = () => findForm().vm.$emit('submit', new Event('submit'));
   const setAvatar = () => findAvatar().vm.$emit('blob-change', mockAvatarFile);
   const setStatus = () => {
@@ -105,6 +124,10 @@ describe('Profile Edit App', () => {
       timezoneData: mockTimezones,
       value: '',
     });
+  });
+
+  it('renders `UserMainSetting` component and passes correct props', () => {
+    expect(findMainSetting().props('userSettings')).toEqual(userMainSettings);
   });
 
   describe('when form submit request is successful', () => {
@@ -202,6 +225,45 @@ describe('Profile Edit App', () => {
       expect(createAlert).toHaveBeenCalledWith(
         expect.objectContaining({ variant: VARIANT_DANGER }),
       );
+    });
+  });
+
+  describe('when user changes main settings', () => {
+    it.each`
+      field              | value                      | formField
+      ${'name'}          | ${'Updated name'}          | ${'user[name]'}
+      ${'pronouns'}      | ${'Updated pronouns'}      | ${'user[pronouns]'}
+      ${'pronunciation'} | ${'Updated pronunciation'} | ${'user[pronunciation]'}
+      ${'websiteUrl'}    | ${'https://example.org'}   | ${'user[website_url]'}
+      ${'location'}      | ${'New Location'}          | ${'user[location]'}
+      ${'bio'}           | ${'Updated bio text'}      | ${'user[bio]'}
+      ${'jobTitle'}      | ${'Senior Developer'}      | ${'user[job_title]'}
+      ${'organization'}  | ${'New Organization'}      | ${'user[organization]'}
+    `('submits form with updated $field field', async ({ field, value, formField }) => {
+      const updatedMainSettings = { ...userMainSettings, [field]: value };
+      findMainSetting().vm.$emit('change', updatedMainSettings);
+
+      submitForm();
+      await waitForPromises();
+
+      const axiosRequestData = mockAxios.history.put[0].data;
+      expect(axiosRequestData.get(formField)).toEqual(value);
+    });
+
+    it.each`
+      field                            | value    | formField
+      ${'privateProfile'}              | ${true}  | ${'user[private_profile]'}
+      ${'includePrivateContributions'} | ${true}  | ${'user[include_private_contributions]'}
+      ${'achievementsEnabled'}         | ${false} | ${'user[achievements_enabled]'}
+    `('submits form with $field toggled', async ({ field, value, formField }) => {
+      const updatedMainSettings = { ...userMainSettings, [field]: value };
+      findMainSetting().vm.$emit('change', updatedMainSettings);
+
+      submitForm();
+      await waitForPromises();
+
+      const axiosRequestData = mockAxios.history.put[0].data;
+      expect(axiosRequestData.get(formField)).toEqual(String(value));
     });
   });
 

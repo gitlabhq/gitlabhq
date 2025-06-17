@@ -376,7 +376,8 @@ module API
     end
 
     def authorize_read_application_statistics!
-      authenticated_as_admin!
+      authenticate!
+      forbidden! unless current_user.can?(:read_application_statistics)
     end
 
     def authorize!(action, subject = :global, reason = nil)

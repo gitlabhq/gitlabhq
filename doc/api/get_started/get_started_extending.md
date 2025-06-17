@@ -2,6 +2,7 @@
 stage: none
 group: none
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+description: Learn how to interact programmatically with GitLab.
 title: Get started extending GitLab
 ---
 
@@ -17,10 +18,10 @@ GitLab has several major integrations that can help streamline your development 
 
 These integrations cover a variety of areas, including:
 
-- **Authentication:** OAuth, SAML, LDAP
-- **Planning:** Jira, Bugzilla, Redmine, Pivotal Tracker
-- **Communication:** Slack, Microsoft Teams, Mattermost
-- **Security:** Checkmarx, Veracode, Fortify
+- **Authentication**: OAuth, SAML, LDAP
+- **Planning**: Jira, Bugzilla, Redmine, Pivotal Tracker
+- **Communication**: Slack, Microsoft Teams, Mattermost
+- **Security**: Checkmarx, Veracode, Fortify
 
 For more information, see:
 

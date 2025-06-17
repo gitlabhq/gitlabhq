@@ -7,11 +7,10 @@ feature_categories:
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9ba1224867665844b117fa037e1465bb706b3685
 milestone: "<6.0"
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main_user
+sharding_key:
+  id: users
 schema_inconsistencies:
-- type: missing_indexes
-  object_name: index_users_for_auditors
-  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138110
 - type: missing_indexes
   object_name: index_users_on_id_and_last_activity_on_for_active_human_service
   introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139230

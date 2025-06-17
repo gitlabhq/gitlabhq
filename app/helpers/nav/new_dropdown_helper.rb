@@ -150,7 +150,7 @@ module Nav
         )
       end
 
-      if can_admin_project_member?(project)
+      if can?(current_user, :invite_member, project)
         menu_items.push(invite_members_menu_item(partial: 'projects/invite_members_top_nav_link'))
       end
 

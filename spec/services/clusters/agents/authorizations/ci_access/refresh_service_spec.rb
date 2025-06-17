@@ -14,6 +14,9 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
     let_it_be(:modified_project) { create(:project, namespace: root_ancestor) }
     let_it_be(:added_project) { create(:project, path: 'project-path-with-UPPERCASE', namespace: root_ancestor) }
 
+    let_it_be(:user_project_outside_of_hierarchy) { create(:project) }
+    let_it_be(:group_project_outside_of_hierarchy) { create(:project, :in_group) }
+
     let(:project) { create(:project, namespace: root_ancestor) }
     let(:agent) { create(:cluster_agent, project: project) }
 
@@ -61,7 +64,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
       end
 
       context 'config contains groups outside of the configuration project hierarchy' do
-        let(:project) { create(:project, namespace: create(:group)) }
+        let(:project) { group_project_outside_of_hierarchy }
 
         it 'removes all authorizations' do
           expect(subject).to be_truthy
@@ -70,7 +73,7 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
       end
 
       context 'configuration project does not belong to a group' do
-        let(:project) { create(:project) }
+        let(:project) { user_project_outside_of_hierarchy }
 
         it 'removes all authorizations' do
           expect(subject).to be_truthy
@@ -90,6 +93,19 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
         modified_authorization = agent.ci_access_group_authorizations.find_by(group: modified_group)
         expect(modified_authorization.config).to eq({ 'default_namespace' => 'new-namespace',
                                                       'protected_branches_only' => 'true' })
+      end
+
+      context 'when the organization authorization application setting is enabled' do
+        let(:project) { group_project_outside_of_hierarchy }
+
+        before do
+          stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+        end
+
+        it 'allows authorizing groups outside of the configuration project hierarchy' do
+          expect(subject).to be_truthy
+          expect(agent.ci_access_authorized_groups).to contain_exactly(added_group, modified_group)
+        end
       end
 
       context 'config contains too many groups' do
@@ -128,6 +144,19 @@ RSpec.describe Clusters::Agents::Authorizations::CiAccess::RefreshService, featu
         it 'creates an authorization record for the project' do
           expect(subject).to be_truthy
           expect(agent.ci_access_authorized_projects).to contain_exactly(added_project)
+        end
+      end
+
+      context 'when the organization authorization application setting is enabled' do
+        let(:project) { group_project_outside_of_hierarchy }
+
+        before do
+          stub_application_setting(organization_cluster_agent_authorization_enabled: true)
+        end
+
+        it 'allows authorizing groups outside of the configuration project hierarchy' do
+          expect(subject).to be_truthy
+          expect(agent.ci_access_authorized_groups).to contain_exactly(added_group, modified_group)
         end
       end
 

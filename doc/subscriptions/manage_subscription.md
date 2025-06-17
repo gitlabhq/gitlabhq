@@ -147,6 +147,200 @@ On GitLab Self-Managed, the new tier takes effect on the next subscription sync.
 You can also [synchronize your subscription manually](#subscription-data-synchronization)
 to upgrade right away.
 
+## Renew subscription
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+Before your subscription renewal date, you should review your account to check
+your current seat usage and billable users.
+
+You can renew your subscription automatically or manually.
+You should renew your subscription manually if you want to either:
+
+- Renew for fewer seats.
+- Increase or decrease the quantities of products being renewed.
+- Remove add-on products no longer needed for the renewed subscription term.
+- Upgrade the subscription tier.
+
+The renewal period start date is displayed on the group Billing page under **Next subscription term start date**.
+
+Contact the:
+
+- [Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293)
+if you need help accessing the Customers Portal or changing the contact person who manages your subscription.
+- [Sales team](https://customers.gitlab.com/contact_us) if you need help renewing your subscription.
+
+### Check when subscription expires
+
+15 days before a subscription expires, a banner with the subscription expiry date displays for
+administrators in the GitLab user interface.
+
+You cannot manually renew your subscription more than 15 days before the subscription
+expires. To check when you can renew:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Select **Subscription actions** ({{< icon name="ellipsis_v" >}}), then select **Renew subscription**
+   to view the date you can renew.
+
+### Renew automatically
+
+Prerequisites:
+
+- For GitLab Self-Managed, you must [synchronize subscription data](#subscription-data-synchronization) and [review your account](self_managed/_index.md#review-your-account) at least two days before renewal to ensure your changes are synchronized.
+
+When a subscription is set to auto-renew, it renews automatically at midnight UTC on the expiration date without a gap in available service.
+You receive [email notifications](#renewal-notifications) before a subscription automatically renews.
+
+Subscriptions purchased through the Customers Portal are set to auto-renew by default,
+but you can [turn off automatic subscription renewal](#turn-on-or-turn-off-automatic-subscription-renewal).
+
+The number of user seats is adjusted to fit the number of billable users in your
+[group](gitlab_com/_index.md#view-seat-usage) or [instance](self_managed/_index.md#view-users)
+at the time of renewal, if that number is higher than the current subscription quantity.
+
+#### Turn on or turn off automatic subscription renewal
+
+You can use the Customers Portal to turn on or turn off automatic subscription renewal:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+   You are taken to the **Subscriptions & purchases** page.
+1. Check the subscription card:
+   - If the card displays **Expires on DATE**, your subscription is not
+     set to automatically renew. To enable automatic renewal, in
+     **Subscription actions** ({{< icon name="ellipsis_v" >}}), select **Turn on auto-renew**.
+   - If the card displays **Auto-renews on DATE**, your subscription is set to
+     automatically renew. To disable automatic renewal:
+     1. In **Subscription actions** ({{< icon name="ellipsis_v" >}}), select **Cancel subscription**.
+     1. Select a reason for canceling.
+     1. Optional: In **Would you like to add anything?**, enter any relevant information.
+     1. Select **Cancel subscription**.
+
+### Renew manually
+
+To manually renew your subscription:
+
+1. Determine the number of users you need in the next subscription period.
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. Under your existing subscription, select **Renew**. This button does not display
+   until 15 days before the subscription expires.
+1. If renewing Premium or Ultimate products, in the **Seats** text box, enter the
+   total number of user seats you need for the upcoming year.
+
+   {{< alert type="note" >}}
+
+   Make sure this number is equal to, or greater than
+   the number of [billable users](self_managed/_index.md#billable-users) in the system at the time of renewal.
+
+   {{< /alert >}}
+
+1. Optional. For GitLab Self-Managed, if the maximum number of users in your instance exceeded the number
+   you were licensed for in the previous subscription term, the
+   [overage](quarterly_reconciliation.md) is due when you renew.
+
+   In the **Users over license** text box, enter the number of
+   [users over subscription](self_managed/_index.md#users-over-subscription) for the user overage incurred.
+1. Optional. If renewing add-on products, review and update the desired quantity. You can also remove products.
+1. Optional. If upgrading the subscription tier, select the desired option.
+1. Review your renewal details and select **Renew subscription** to complete the
+   payment process.
+1. For GitLab Self-Managed, on the [Subscriptions & purchases](https://customers.gitlab.com/subscriptions)
+   page on the relevant subscription card, select **Copy activation code** to get
+   a copy of the renewal term activation code, and [add the activation code](../administration/license.md) to your instance.
+
+To add products to your subscription, [contact the sales team](https://customers.gitlab.com/contact_us).
+
+### Renew for fewer seats
+
+Subscription renewals with fewer seats must have or exceed the current number of billable users.
+
+Before you renew your subscription:
+
+- For GitLab.com,
+[reduce the number of billable users](gitlab_com/_index.md#remove-users-from-subscription)
+if it exceeds the number of seats you want to renew for.
+- For GitLab Self-Managed, [block inactive or unwanted users](../administration/moderate_users.md#block-a-user).
+
+To manually renew your subscription for fewer seats, you can either:
+
+- [Manually renew](#renew-manually) within 15 days of the
+  subscription renewal date. Ensure that you specify the seat quantity when you renew.
+- [Turn off automatic renewal of your subscription](#turn-on-or-turn-off-automatic-subscription-renewal),
+  and contact the [sales team](https://customers.gitlab.com/contact_us) to renew it for the number of seats you want.
+
+### Renewal notifications
+
+15 days before a subscription automatically renews, an email is sent with information
+about the renewal.
+
+- If your credit card is expired, the email tells you how to update it.
+- If you have any outstanding overages or your subscription is not able to automatically
+  renew for any other reason, the email tells you to contact our Sales team or
+  manually renew in the Customers Portal.
+- If there are no issues, the email specifies the:
+  - Names and quantity of the products being renewed.
+  - Total amount you owe. If your usage increases before renewal, this amount changes.
+
+### Manage renewal invoice
+
+An invoice is generated for your renewal. To view or download this renewal invoice,
+go to the [Customers Portal invoices page](https://customers.gitlab.com/invoices).
+
+If your account has a [saved credit card](customers_portal.md#change-your-payment-method),
+the card is charged for the invoice amount.
+
+If we are unable to process a payment or the auto-renewal fails for any other reason,
+you have 14 days to renew your subscription, after which your GitLab tier is downgraded.
+
+## Expired subscription
+
+Subscriptions expire at the start of the expiration date, 00:00 server time.
+
+For example, if a subscription is valid from January 1, 2024 until January 1, 2025:
+
+- It expires at 11:59:59 PM UTC December 31, 2024.
+- It is considered expired from 12:00:00 AM UTC January 1, 2025.
+- The grace period of 14 days starts at 12:00:00 AM UTC January 1, 2025 and ends at 11:59:59 PM UTC January 14, 2025.
+
+### For GitLab.com
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com
+
+{{< /details >}}
+
+When your subscription expires, you can continue to use paid features of GitLab for 14 days.
+After 14 days, paid features are no longer available, but you can continue to use free features.
+To resume paid feature functionality, purchase a new subscription.
+
+### For GitLab Self-Managed
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+When your license expires, after a 14 day grace period:
+
+- Your instance becomes read-only.
+- GitLab locks features, such as Git pushes and issue creation.
+- An expiration message is displayed to all instance administrators.
+
+After your license has expired:
+
+- To resume functionality,
+  [activate a new subscription](../administration/license_file.md#activate-subscription-during-installation).
+- To keep using Free tier features only,
+  [remove the expired license](../administration/license_file.md#remove-a-license).
+
 ## Subscription data synchronization
 
 {{< details >}}
@@ -193,6 +387,12 @@ details are updated.
 
 ### Subscription data
 
+{{< history >}}
+
+- Unique instance ID [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/189399) in GitLab 18.1.
+
+{{< /history >}}
+
 The daily synchronization job sends the following information to the
 Customers Portal:
 
@@ -207,6 +407,7 @@ Customers Portal:
 - GitLab version
 - Hostname
 - Instance ID
+- Unique instance ID
 
 Additionally, we also send add-on metrics such as:
 
@@ -226,6 +427,7 @@ Example of a license sync request:
   "billable_users_count": 75,
   "hostname": "gitlab.example.com",
   "instance_id": "9367590b-82ad-48cb-9da7-938134c29088",
+  "unique_instance_id": "a98bab6e-73e3-5689-a487-1e7b89a56901",
   "add_on_metrics": [
     {
       "add_on_type": "duo_enterprise",

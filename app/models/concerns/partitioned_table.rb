@@ -30,9 +30,7 @@ module PartitionedTable
     #
     # https://github.com/rails/rails/blob/v7.2.0.rc1/activerecord/lib/active_record/model_schema.rb#L444
     def _returning_columns_for_insert
-      auto_populated_columns = []
-      auto_populated_columns = super if Gitlab.next_rails?
-      (auto_populated_columns + Array(primary_key)).uniq
+      (super + Array(primary_key)).uniq
     end
   end
 end

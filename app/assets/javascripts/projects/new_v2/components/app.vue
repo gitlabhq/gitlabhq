@@ -178,9 +178,10 @@ export default {
         this.currentStep = 1;
       }
     },
-    onSelectNamespace({ id, fullPath }) {
+    onSelectNamespace({ id, fullPath, visibility }) {
       this.namespace.id = id;
       this.namespace.fullPath = fullPath;
+      this.namespace.visibility = visibility;
       this.showValidation = false;
     },
   },
@@ -296,6 +297,6 @@ export default {
       @next="onNext"
     />
 
-    <import-by-url-form v-if="currentStep === 3" @back="onBack" />
+    <import-by-url-form v-if="currentStep === 3" :namespace="namespace" @back="onBack" />
   </div>
 </template>

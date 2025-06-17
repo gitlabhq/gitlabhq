@@ -502,7 +502,7 @@ curl --request DELETE \
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
 and is planned for removal in v5 of the API.
 In GitLab 17.4 or later, if [the new look for epics](../user/group/epics/epic_work_items.md) is enabled, use the
-[Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
+Work Items API instead. For more information, see the [guide how to migrate your existing APIs](graphql/epic_work_items_api_migration_guide.md).
 This change is a breaking change.
 
 {{< /alert >}}
@@ -887,7 +887,18 @@ Diff comments also contain position:
         },
         "resolved": false,
         "resolvable": true,
-        "resolved_by": null
+        "resolved_by": null,
+        "suggestions": [
+          {
+            "id": 1,
+            "from_line": 27,
+            "to_line": 27,
+            "appliable": true,
+            "applied": false,
+            "from_content": "x",
+            "to_content": "b"
+          }
+        ]
       }
     ]
   }
@@ -1050,7 +1061,7 @@ A line code is of the form `<SHA>_<old>_<new>`, like this: `adc83b19e793491b1c6e
 - `<new>` is the line number after the change.
 
 For example, if a commit (`<COMMIT_ID>`) deletes line 463 in the README, you can comment
-on the deletion by referencing line 463 in the *old* file:
+on the deletion by referencing line 463 in the old file:
 
 ```shell
 curl --request POST \
@@ -1063,7 +1074,7 @@ curl --request POST \
 ```
 
 If a commit (`<COMMIT_ID>`) adds line 157 to `hello.rb`, you can comment on the
-addition by referencing line 157 in the *new* file:
+addition by referencing line 157 in the new file:
 
 ```shell
 curl --request POST \

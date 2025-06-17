@@ -296,6 +296,7 @@ Pros:
 
 Cons:
 
+- Query performance degrades in subsequent loops due to [negative side effects](https://gitlab.com/gitlab-org/gitlab/-/issues/544662) from repeated scans of stale index entries and visibility checks. As such, this strategy is only suitable for short-lived operations affecting a relatively small volume of data. The safe limit is generally at most 10k rows, but this can vary based on factors such as table size and index structure.
 - Thorough testing and manual verification of the underlying `DELETE` or `UPDATE` query is a must. There are some issues with [CTEs](../sql.md#when-to-use-common-table-expressions) when updating or deleting records.
 - If the `break` logic has a bug we might end up in an infinite loop.
 

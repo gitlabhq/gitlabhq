@@ -3,6 +3,7 @@ stage: Foundations
 group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Import and migrate groups and projects
+description: Repository migration, third-party repositories, and user contribution mapping.
 ---
 
 {{< details >}}
@@ -159,6 +160,11 @@ When the user accepts the reassignment:
 - In subsequent imports from the same source instance to the same top-level group or subgroup
   on the destination instance, contributions are mapped automatically to the user.
 
+[In GitLab 18.0 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/510673), if your top-level group
+has at least one [enterprise user](../../enterprise_user/_index.md), you can reassign contributions
+only to enterprise users in your organization in the UI or by using a CSV file.
+This feature is meant to prevent accidental reassignment to users outside your organization.
+
 {{< alert type="note" >}}
 
 User contribution mapping is not supported when you import projects to a [personal namespace](../../namespace/_index.md#types-of-namespaces).
@@ -294,6 +300,12 @@ Instead, contributions are mapped automatically to the user.
 
 #### Placeholder user deletion
 
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/473256) in GitLab 18.0.
+
+{{< /history >}}
+
 When you delete a top-level group that contains placeholder users, those placeholder users are
 automatically removed. However, placeholder users remain in the system if they are also associated
 with projects or groups outside the deleted top-level group.
@@ -358,7 +370,7 @@ Every change creates a system note, which is not affected by the placeholder use
 ### Reassign contributions and memberships
 
 Users with the Owner role for a top-level group can reassign contributions and memberships
-from placeholder users to existing active (non-bot) users.
+from placeholder users to existing active non-bot users.
 On the destination instance, users with the Owner role for a top-level group can:
 
 - Request users to review reassignment of contributions and memberships [in the UI](#request-reassignment-in-ui)
@@ -368,6 +380,10 @@ On the destination instance, users with the Owner role for a top-level group can
   The reassignment starts only after the selected user
   [accepts the reassignment request](#accept-contribution-reassignment).
 - Choose not to reassign contributions and memberships and [keep them assigned to placeholder users](#keep-as-placeholder).
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
 
 #### Reassigning contributions from multiple placeholder users
 
@@ -396,6 +412,10 @@ Users that receive a reassignment request can:
 
 In subsequent imports to the same top-level group, contributions and memberships that belong to the same source user
 are mapped automatically to the user who previously accepted reassignments for that source user.
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
 
 #### Completing the reassignment
 
@@ -456,6 +476,10 @@ Contributions of only one placeholder user can be reassigned to an active non-bo
 
 Before a user accepts the reassignment, you can [cancel the request](#cancel-reassignment-request).
 
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
+
 #### Request reassignment by using a CSV file
 
 {{< history >}}
@@ -505,6 +529,10 @@ You can assign only contributions from a single placeholder user
 to each active non-bot user on the destination instance.
 Users receive an email to review and [accept any contributions](#accept-contribution-reassignment) you've reassigned to them.
 You can [cancel the reassignment request](#cancel-reassignment-request) before the user reviews it.
+
+On GitLab Self-Managed and GitLab Dedicated, administrators can reassign
+contributions and memberships to active and inactive non-bot users immediately without their confirmation.
+For more information, see [skip confirmation when administrators reassign placeholder users](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users).
 
 After you reassign contributions, GitLab sends you an email with the number of:
 
@@ -609,7 +637,18 @@ In the **Reassigned** tab, possible statuses are:
 By default, the table is sorted alphabetically by placeholder user name.
 You can also sort the table by reassignment status.
 
-### Accept contribution reassignment
+### Confirm contribution reassignment
+
+When [**Skip confirmation when administrators reassign placeholder users**](../../../administration/settings/import_and_export_settings.md#skip-confirmation-when-administrators-reassign-placeholder-users) is enabled:
+
+- Administrators can reassign contributions immediately without user confirmation.
+- Administrators can reassign contributions to active and inactive non-bot users.
+- You receive an email informing you that you've been reassigned contributions.
+
+If this setting is not enabled, you can [accept](#accept-contribution-reassignment)
+or [reject](#reject-contribution-reassignment) the reassignment.
+
+#### Accept contribution reassignment
 
 You might receive an email informing you that an import process took place and asking you to confirm reassignment of
 contributions to yourself.

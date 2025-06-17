@@ -2,6 +2,7 @@
 stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: no
 title: LDAP synchronization
 ---
 
@@ -345,6 +346,11 @@ If you frequently experience connection issues between your LDAP server and GitL
 
 For information on adding group links by using CNs and filters, refer to the
 [GitLab groups documentation](../../../user/group/access_and_permissions.md#manage-group-memberships-with-ldap).
+
+### Link a custom admin role with an LDAP group
+
+For information on adding custom admin role links by using CNs and filters, refer to the
+[manage users using LDAP documentation](../../../user/custom_roles/_index.md#sync-ldap-groups-to-admin-roles).
 
 ### Administrator sync
 

@@ -1,4 +1,0 @@
----
-Lint/DuplicateCaseCondition:
-  Exclude:
-    - 'app/helpers/icons_helper.rb'

@@ -18,7 +18,7 @@ RSpec.shared_examples 'policies list' do
 
     # Scan Execution Policy from ee/spec/fixtures/security_orchestration.yml
     expect(page).to have_content 'Run DAST in every pipeline'
-    # Scan Result Policy from ee/spec/fixtures/security_orchestration.yml
+    # Approval Policy from ee/spec/fixtures/security_orchestration.yml
     expect(page).to have_content 'critical vulnerability CS approvals'
   end
 end

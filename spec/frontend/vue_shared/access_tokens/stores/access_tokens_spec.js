@@ -64,7 +64,7 @@ describe('useAccessTokens store', () => {
     const urlCreate = '/api/v4/groups/1/service_accounts/:id/personal_access_tokens';
     const urlRevoke = '/api/v4/groups/2/service_accounts/:id/personal_access_tokens';
     const urlRotate = '/api/v4/groups/3/service_accounts/:id/personal_access_tokens';
-    const urlShow = '/api/v4/groups/4/service_accounts/:id/personal_access_token';
+    const urlShow = '/api/v4/personal_access_tokens?user_id=:id';
 
     const headers = {
       'X-Page': 1,
@@ -173,7 +173,6 @@ describe('useAccessTokens store', () => {
               page: 1,
               sort: 'expires_asc',
               search: 'my token',
-              user_id: 235,
             },
           }),
         );
@@ -194,12 +193,11 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0]).toEqual(
           expect.objectContaining({
-            url: '/api/v4/groups/4/service_accounts/235/personal_access_token',
+            url: '/api/v4/personal_access_tokens?user_id=235',
             params: {
               page: 1,
               sort: 'expires_asc',
               search: 'dummy',
-              user_id: 235,
             },
           }),
         );
@@ -286,13 +284,12 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0]).toEqual(
           expect.objectContaining({
-            url: '/api/v4/groups/4/service_accounts/235/personal_access_token',
+            url: '/api/v4/personal_access_tokens?user_id=235',
             params: {
               page: 1,
               sort: 'expires_asc',
               state: 'inactive',
               search: 'my token',
-              user_id: 235,
             },
           }),
         );
@@ -405,7 +402,6 @@ describe('useAccessTokens store', () => {
               page: 1,
               sort: 'expires_asc',
               search: 'my token',
-              user_id: 235,
             },
           }),
         );
@@ -510,7 +506,6 @@ describe('useAccessTokens store', () => {
               page: 1,
               sort: 'expires_asc',
               search: 'my token',
-              user_id: 235,
             },
           }),
         );
@@ -565,11 +560,22 @@ describe('useAccessTokens store', () => {
 
     describe('setup', () => {
       it('sets up the store', () => {
-        store.setup({ filters, id, page, sorting, urlCreate, urlRevoke, urlRotate, urlShow });
+        store.setup({
+          filters,
+          id,
+          page,
+          showCreateForm: true,
+          sorting,
+          urlCreate,
+          urlRevoke,
+          urlRotate,
+          urlShow,
+        });
 
         expect(store.filters).toEqual(filters);
         expect(store.id).toBe(id);
         expect(store.page).toBe(page);
+        expect(store.showCreateForm).toBe(true);
         expect(store.sorting).toEqual(sorting);
         expect(store.urlCreate).toBe(urlCreate);
         expect(store.urlRevoke).toBe(urlRevoke);

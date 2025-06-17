@@ -39,6 +39,7 @@ RSpec.describe 'projects/project_members/index', :aggregate_failures, feature_ca
           render
 
           expect(rendered).not_to have_selector('.js-invite-group-trigger')
+          expect(response).not_to render_template(partial: 'projects/_invite_groups_modal')
         end
       end
     end

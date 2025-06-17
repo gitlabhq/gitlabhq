@@ -2,6 +2,7 @@
 stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+ignore_in_report: true
 title: Cloud Seed
 ---
 
@@ -28,7 +29,7 @@ services on a hyper-cloud based on a foundation of Terraform and infrastructure-
 
 ## Purpose
 
-We believe that it should be **trivial** to deploy web applications (and other workloads) from GitLab to major cloud
+We believe that it should be trivial to deploy web applications (and other workloads) from GitLab to major cloud
 providers.
 
 To support this effort, Cloud Seed makes it straightforward and intuitive to consume appropriate Google Cloud services

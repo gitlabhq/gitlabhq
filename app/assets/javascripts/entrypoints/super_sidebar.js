@@ -5,7 +5,6 @@ import {
   initSuperSidebarToggle,
   initPageBreadcrumbs,
   getSuperSidebarData,
-  initAdvancedSearchModal,
 } from '~/super_sidebar/super_sidebar_bundle';
 
 const superSidebarData = getSuperSidebarData();
@@ -13,4 +12,3 @@ const superSidebarData = getSuperSidebarData();
 initSuperSidebar(superSidebarData);
 initSuperSidebarToggle();
 initPageBreadcrumbs();
-initAdvancedSearchModal(superSidebarData);

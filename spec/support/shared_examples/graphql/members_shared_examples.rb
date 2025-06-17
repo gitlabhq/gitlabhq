@@ -63,6 +63,14 @@ RSpec.shared_examples 'querying members with a group' do
       end
     end
 
+    context 'with access_levels options' do
+      let(:args) { { access_levels: [Gitlab::Access::OWNER] } }
+
+      it 'returns members by access level' do
+        expect(group_members.items).to contain_exactly(resource_member, group_1_member, root_group_member)
+      end
+    end
+
     context 'with search' do
       context 'when the search term matches a user' do
         let(:args) { { search: 'test' } }

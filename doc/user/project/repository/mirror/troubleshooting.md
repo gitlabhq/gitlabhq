@@ -13,7 +13,7 @@ title: Troubleshooting repository mirroring
 
 {{< /details >}}
 
-When mirroring fails, project maintainers can see a link similar to {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago.**
+When mirroring fails, project maintainers can see a link similar to {{< icon name="warning-solid" >}} **Pull mirroring failed 1 hour ago**.
 on the project details page. Select this link to go directly to the mirroring settings,
 where GitLab displays an **Error** badge for the mirrored repository. You can hover your mouse cursor
 over the badge to display the text of the error:
@@ -94,14 +94,27 @@ Check if the repository owner is specified in the URL of your mirrored repositor
 
 When connecting to the Cloud or self-hosted Bitbucket repository for mirroring, the repository owner is required in the string.
 
+## Push mirror: `LFS objects are missing`
+
+You might get an error that states:
+
+```plaintext
+GitLab: GitLab: LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".
+```
+
+This issue occurs when you use an SSH repository URL for push mirroring.
+Push mirroring to transfer LFS files over SSH is not supported.
+
+The workaround is to use an HTTPS repository URL instead of SSH for your push mirror.
+
+An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/249587) to fix this problem.
+
 ## Pull mirror is missing LFS files
 
-In some cases, pull mirroring does not transfer LFS files. This issue occurs when:
+In some cases, pull mirroring does not transfer LFS files.
+This issue occurs when you use an SSH repository URL.
 
-- You use an SSH repository URL. The workaround is to use an HTTPS repository URL instead.
-  An issue exists [to fix this problem for SSH URLs](https://gitlab.com/gitlab-org/gitlab/-/issues/11997).
-- You mirror an external repository using object storage.
-  An issue exists [to fix this problem](https://gitlab.com/gitlab-org/gitlab/-/issues/335495).
+The workaround is to use an HTTPS repository URL instead.
 
 ## Pull mirroring is not triggering pipelines
 
@@ -333,3 +346,22 @@ To delete and remove all tags from the mirror repository:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand **Mirroring repositories**.
 1. Select **Update now** ({{< icon name="retry" >}}).
+
+## Push mirroring stuck with large LFS files
+
+You might encounter timeout issues when push mirroring a project that contains large LFS objects.
+This issue occurs when Git LFS operations exceed the default activity timeout.
+This error appears in the mirroring logs:
+
+```plaintext
+push to mirror: git push: exit status 1, stderr: "remote: GitLab: LFS objects are missing. Ensure LFS is properly set up or try a manual \"git lfs push --all\""
+```
+
+To resolve this issue, increase the LFS activity timeout value before configuring the mirror:
+
+```shell
+git config lfs.activitytimeout 240
+```
+
+This command sets the timeout to `240` seconds. You can adjust this value based on your
+file sizes and network conditions.

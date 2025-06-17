@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: End-to-end test pipelines
 ---
 
@@ -152,7 +152,7 @@ This stage is responsible for [allure test report](_index.md#allure-report) gene
 
 ## Test Licenses
 
-Please see the [Test Licenses runbook](https://gitlab-org.gitlab.io/quality/runbooks/test_licenses/) for more information on the licenses used by these pipelines.
+For more information on the licenses these pipelines use, see [test licenses](https://gitlab-org.gitlab.io/quality/runbooks/test_licenses/).
 
 ## Adding new jobs to E2E test pipelines
 

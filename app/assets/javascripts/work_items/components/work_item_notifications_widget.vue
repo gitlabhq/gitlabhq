@@ -89,6 +89,7 @@ export default {
     v-gl-tooltip.hover
     category="secondary"
     data-testid="subscribe-button"
+    :data-subscribed="subscribedToNotifications ? 'true' : 'false'"
     :title="notificationTooltip"
     class="btn-icon"
     @click="toggleNotifications(!subscribedToNotifications)"

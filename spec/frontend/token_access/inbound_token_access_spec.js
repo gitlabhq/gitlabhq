@@ -39,6 +39,7 @@ import {
   inboundRemoveNamespaceSuccess,
   inboundUpdateScopeSuccessResponse,
   mockAuthLogsCountResponse,
+  mockCiJobTokenScopeAllowlistResponse,
   mockAutopopulateAllowlistResponse,
   mockRemoveAutopopulatedEntriesResponse,
 } from './mock_data';
@@ -55,6 +56,9 @@ describe('TokenAccess component', () => {
   let wrapper;
 
   const authLogCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(4));
+  const ciJobTokenScopeAllowlistResponseHandler = jest
+    .fn()
+    .mockResolvedValue(mockCiJobTokenScopeAllowlistResponse);
   const authLogZeroCountResponseHandler = jest.fn().mockResolvedValue(mockAuthLogsCountResponse(0));
   const autopopulateAllowlistResponseHandler = jest
     .fn()
@@ -264,6 +268,18 @@ describe('TokenAccess component', () => {
       expect(createAlert).toHaveBeenCalledWith({
         message: 'There was a problem fetching the job token scope value',
       });
+    });
+
+    it('adds the current project at the top of the list', async () => {
+      await createComponent(
+        [[getCiJobTokenScopeAllowlistQuery, ciJobTokenScopeAllowlistResponseHandler]],
+        { isJobTokenPoliciesEnabled: true },
+      );
+
+      expect(findTokenAccessTable().props('items')[0].fullPath).toBe('root/my-repo');
+      expect(findTokenAccessTable().props('items')[1].fullPath).toBe('abc/123');
+      expect(findTokenAccessTable().props('items')[2].fullPath).toBe('root/your-repo');
+      expect(findTokenAccessTable().props('items')[3].fullPath).toBe('zed');
     });
   });
 

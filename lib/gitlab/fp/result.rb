@@ -51,6 +51,7 @@ module Gitlab
         @ok = err_value.nil?
         @value = ok? ? ok_value : err_value
       end
+
       private :initialize
 
       # "#unwrap" corresponds to "unwrap" in Rust.
@@ -110,7 +111,7 @@ module Gitlab
       # @return [Result]
       # @raise [TypeError]
       def and_then(lambda_or_singleton_method)
-        validate_lambda_or_singleton_method(lambda_or_singleton_method)
+        validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
 
         # Return/passthough the Result itself if it is an err
         return self if err?
@@ -119,7 +120,7 @@ module Gitlab
         result = lambda_or_singleton_method.call(value)
 
         unless result.is_a?(Result)
-          err_msg = "'Result##{__method__}' expects a lambda or singleton method object which returns a 'Result' " \
+          err_msg = "Result##{__method__} expects a lambda or singleton method object which returns a 'Result' " \
             "type, but instead received '#{lambda_or_singleton_method.inspect}' which returned '#{result.class}'. " \
             "Check that the previous method calls in the '#and_then' chain are correct."
           raise(TypeError, err_msg)
@@ -145,7 +146,7 @@ module Gitlab
       # @return [Result]
       # @raise [TypeError]
       def map(lambda_or_singleton_method)
-        validate_lambda_or_singleton_method(lambda_or_singleton_method)
+        validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
 
         # Return/passthrough the Result itself if it is an err
         return self if err?
@@ -154,7 +155,7 @@ module Gitlab
         mapped_value = lambda_or_singleton_method.call(value)
 
         if mapped_value.is_a?(Result)
-          err_msg = "'Result##{__method__}' expects a lambda or singleton method object which returns an unwrapped " \
+          err_msg = "Result##{__method__} expects a lambda or singleton method object which returns an unwrapped " \
             "value, not a 'Result', but instead received '#{lambda_or_singleton_method.inspect}' which returned " \
             "a 'Result'."
           raise(TypeError, err_msg)
@@ -162,6 +163,107 @@ module Gitlab
 
         # wrap the returned mapped_value in an "ok" Result.
         Result.ok(mapped_value)
+      end
+
+      # `map_err` is the inverse of `map`. It behaves identically, but it only processes `err` values
+      # instead of `ok` values.
+      #
+      # "#map_err" corresponds to "map_err" in Rust: https://doc.rust-lang.org/std/result/enum.Result.html#method.map_err
+      #
+      # @param [Proc, Method] lambda_or_singleton_method
+      # @return [Result]
+      # @raise [TypeError]
+      def map_err(lambda_or_singleton_method)
+        validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
+
+        # Return/passthrough the Result itself if it is an ok
+        return self if ok?
+
+        # If the Result is err, call the lambda or singleton method with the contained value
+        mapped_value = lambda_or_singleton_method.call(value)
+
+        if mapped_value.is_a?(Result)
+          err_msg = "Result##{__method__} expects a lambda or singleton method object which returns an unwrapped " \
+            "value, not a 'Result', but instead received '#{lambda_or_singleton_method.inspect}' which returned " \
+            "a 'Result'."
+          raise(TypeError, err_msg)
+        end
+
+        # wrap the returned mapped_value in an "err" Result.
+        Result.err(mapped_value)
+      end
+
+      # `inspect_ok` is similar to `map`, becuase it receives the wrapped `ok` value, but it does not allow modification
+      # of the value like `map`. The original result is always returned from `inspect_ok`.
+      #
+      # The passed lambda or singleton method must return, `nil`, to enforce the fact that the return value is ignored,
+      # and the original Result is always returned. This corresponds to the `void` type in YARD/RBS type annotations,
+      # and the `unit` type in Rust (https://doc.rust-lang.org/std/primitive.unit.html).
+      #
+      # If the passed method does not return `nil`, an error will be raised.
+      #
+      # "#inspect_ok" corresponds to "inspect" in Rust: https://doc.rust-lang.org/std/result/enum.Result.html#method.inspect
+      #
+      # If enforce_immutability is true, the passed method will not be allowed to mutate the value passed to it.
+      #
+      # Note that we could not call this method `inspect` to match the Rust Result.inspect function, because that
+      # would conflict with the Kernel#inspect method in Ruby.
+      #
+      # @param [Proc, Method] lambda_or_singleton_method
+      # @param [Boolean] enforce_immutability enforces immutability of the value passed to lambda_or_singleton_method
+      # @return [Result]
+      # @raise [TypeError]
+      def inspect_ok(lambda_or_singleton_method, enforce_immutability: true)
+        validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
+
+        # Return/passthrough the Result itself if it is an err
+        return self if err?
+
+        # If the Result is ok, call the lambda or singleton method with the contained value
+        call_and_optionally_enforce_value_is_not_mutated(
+          callee: lambda_or_singleton_method,
+          value: value,
+          invoking_method: __method__,
+          enforce_immutability: enforce_immutability
+        )
+
+        # Return/passthrough the original Result
+        self
+      end
+
+      # `inspect_err` is the inverse of `inspect_ok`. It behaves identically, but it only processes `err` values
+      # instead of `ok` values.
+      #
+      # The passed lambda or singleton method must return, `nil`, to enforce the fact that the return value is ignored,
+      # and the original Result is always returned. This corresponds to the `void` type in YARD/RBS type annotations,
+      # and the `unit` type in Rust (https://doc.rust-lang.org/std/primitive.unit.html).
+      #
+      # If the passed method does not return `nil`, an error will be raised.
+      #
+      # If enforce_immutablity is true, the passed method will not be allowed to mutate the value passed to it.
+      #
+      # "#inspect_err" corresponds to "inspect_err" in Rust: https://doc.rust-lang.org/std/result/enum.Result.html#method.inspect_err
+      #
+      # @param [Proc, Method] lambda_or_singleton_method
+      # @param [Boolean] enforce_immutability enforces immutability of the value passed to lambda_or_singleton_method
+      # @return [Result]
+      # @raise [TypeError]
+      def inspect_err(lambda_or_singleton_method, enforce_immutability: true)
+        validate_lambda_or_singleton_method(callee: lambda_or_singleton_method, invoking_method: __method__)
+
+        # Return/passthrough the Result itself if it is an ok
+        return self if ok?
+
+        # If the Result is err, call the lambda or singleton method with the contained value
+        call_and_optionally_enforce_value_is_not_mutated(
+          callee: lambda_or_singleton_method,
+          value: value,
+          invoking_method: __method__,
+          enforce_immutability: enforce_immutability
+        )
+
+        # Return/passthrough the original Result
+        self
       end
 
       # `to_h` supports destructuring of a result object, for example: `result => { ok: }; puts ok`
@@ -205,28 +307,82 @@ module Gitlab
         @value
       end
 
-      # @param [Proc, Method] lambda_or_singleton_method
+      # @param [Proc, Method] callee
+      # @param [Symbol] invoking_method
       # @return [void]
       # @raise [TypeError]
-      def validate_lambda_or_singleton_method(lambda_or_singleton_method)
-        is_lambda = lambda_or_singleton_method.is_a?(Proc) && lambda_or_singleton_method.lambda?
+      def validate_lambda_or_singleton_method(callee:, invoking_method:)
+        is_lambda = callee.is_a?(Proc) && callee.lambda?
         is_singleton_method =
-          lambda_or_singleton_method.is_a?(Method) && lambda_or_singleton_method.owner.singleton_class?
+          callee.is_a?(Method) && callee.owner.singleton_class?
 
         unless is_lambda || is_singleton_method
-          err_msg = "'Result##{__method__}' expects a lambda or singleton method object, " \
-            "but instead received '#{lambda_or_singleton_method.inspect}'."
+          err_msg = "Result##{invoking_method} expects a lambda or singleton method object, " \
+            "but instead received '#{callee.inspect}'."
           raise(TypeError, err_msg)
         end
 
-        arity = lambda_or_singleton_method.arity
+        arity = callee.arity
 
         return if arity == 1
-        return if arity == -1 && lambda_or_singleton_method.source_location[0].include?('rspec')
+        return if arity == -1 && callee.source_location[0].include?('rspec')
 
-        err_msg = "'Result##{__method__}' expects a lambda or singleton method object with a single argument " \
-          "(arity of 1), but instead received '#{lambda_or_singleton_method.inspect}' with an arity of #{arity}."
+        err_msg = "Result##{invoking_method} expects a lambda or singleton method object with a single argument " \
+          "(arity of 1), but instead received '#{callee.inspect}' with an arity of #{arity}."
         raise(ArgumentError, err_msg)
+      end
+
+      # @param [Proc, Method] callee
+      # @param [Object] value
+      # @param [Symbol] invoking_method
+      # @param [Boolean] enforce_immutability enforces immutability of the value passed to lambda_or_singleton_method
+      # @return [void]
+      # @raise [RuntimeError]
+      def call_and_optionally_enforce_value_is_not_mutated(callee:, value:, invoking_method:, enforce_immutability:)
+        return_value_from_call =
+          if enforce_immutability
+            # If enforce_immutability is true, deep clone and freeze the value before passing it,
+            # so that the callee can't mutate the original value
+            begin
+              callee.call(deep_clone_and_freeze(value))
+            rescue FrozenError => e
+              err_msg = "ERROR: #{callee} must not modify the passed value argument, because it was invoked via " \
+                "Result##{invoking_method}. Ensure that no side effects are being performed which modify any " \
+                "properties of nested objects, such as lazy memoization. " \
+                "Alternately, you can pass 'enforce_immutability: false' to Result##{invoking_method}."
+              raise e.exception("#{e.message}. #{err_msg}")
+            end
+          else
+            callee.call(value)
+          end
+
+        validate_return_value_is_void(return_value: return_value_from_call, invoking_method: invoking_method)
+      end
+
+      # @param [Object] object
+      # @return [Object]
+      def deep_clone_and_freeze(object)
+        case object
+        when Array
+          object.map { |entry| deep_clone_and_freeze(entry) }.freeze
+        when Hash
+          object.transform_values { |entry| deep_clone_and_freeze(entry) }.freeze
+        else
+          object.clone(freeze: true)
+        end
+      end
+
+      # @param [Proc, Method] return_value
+      # @param [Symbol] invoking_method
+      # @return [void]
+      # @raise [TypeError]
+      def validate_return_value_is_void(return_value:, invoking_method:)
+        return if return_value.nil?
+
+        err_msg = "The method passed to Result##{invoking_method} must always return 'nil' (void). This enforces " \
+          "that the return value is never used or modified. The existing 'Result' object is always passed along the " \
+          "chain unchanged. The return value received was '#{return_value.inspect}' instead of 'nil'."
+        raise(TypeError, err_msg)
       end
     end
   end

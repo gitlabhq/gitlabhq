@@ -6,7 +6,7 @@ module Resolvers
       include Gitlab::Graphql::Authorize::AuthorizeResource
       include ResolvesProject
 
-      type Types::Ci::Config::ConfigType, null: true
+      type Types::Ci::LegacyConfig::ConfigType, null: true
       description <<~MD
         Linted and processed contents of a CI config.
         Should not be requested more than once per request.
@@ -44,7 +44,7 @@ module Resolvers
         result = ::Gitlab::Ci::Lint
           .new(project: project, current_user: context[:current_user], sha: sha,
             verify_project_sha: !skip_verify_project_sha)
-          .validate(content, dry_run: dry_run)
+          .legacy_validate(content, dry_run: dry_run)
 
         response(result)
       rescue GRPC::InvalidArgument => e

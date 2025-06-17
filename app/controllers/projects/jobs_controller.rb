@@ -33,7 +33,11 @@ class Projects::JobsController < Projects::ApplicationController
 
   def show
     if @build.instance_of?(::Ci::Bridge)
-      redirect_to project_pipeline_path(@build.downstream_pipeline.project, @build.downstream_pipeline.id)
+      if @build.downstream_pipeline&.project
+        redirect_to project_pipeline_path(@build.downstream_pipeline&.project, @build.downstream_pipeline&.id)
+      else
+        redirect_to project_pipeline_path(@build.project, @build.pipeline.id)
+      end
     end
 
     respond_to do |format|

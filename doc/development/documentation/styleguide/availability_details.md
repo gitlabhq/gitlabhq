@@ -6,8 +6,12 @@ description: Writing styles, markup, formatting, and other standards for GitLab 
 title: Product availability details
 ---
 
-Product availability details provide information about a feature. If the details apply to the whole page, place them at the top
-of the page, but after the front matter. If they apply to a specific section, place the details under the applicable section titles.
+Product availability details provide information about a feature.
+
+- If the details apply to the whole page, place them at the top
+  of the page, but after the front matter.
+- If they apply to a specific section, place the details under the applicable
+  section titles.
 
 Availability details include the tier, offering, status, and history.
 
@@ -96,10 +100,22 @@ Generally available features should not have a status.
 
 ### History
 
-The documentation site uses [shortcodes](../hugo_migration.md#shortcodes) to render the version history.
+The documentation site uses [shortcodes](../hugo_migration.md#shortcodes) to render the version history,
+for example:
+
+```markdown
+{{</* history */>}}
+
+- [Introduced](https://issue-link) in GitLab 16.3.
+- [Changed](https://issue-link) in GitLab 16.4.
+
+{{</* /history */>}}
+```
 
 In addition:
 
+- Ensure that history notes are listed after the details (if any), and immediately
+  after the heading.
 - Ensure that the output generates properly.
 - Ensure the version history begins with `-`.
 - If possible, include a link to the related issue. If there is no related issue, link to a merge request, or epic.
@@ -174,8 +190,8 @@ For features introduced behind feature flags, add details about the feature flag
 Remove history items and inline text that refer to unsupported versions.
 
 GitLab supports the current major version and two previous major versions.
-For example, if 17.0 is the current major version, all major and minor releases of
-GitLab 17.0, 16.0, and 15.0 are supported.
+For example, if 18.0 is the current major version, all major and minor releases of
+GitLab 18.0, 17.0, and 16.0 are supported.
 
 For the list of current supported versions, see [Version support](https://about.gitlab.com/support/statement-of-support/#version-support).
 
@@ -189,13 +205,13 @@ When a new major version is about to be released, create merge
 requests to remove mentions of the last unsupported version. Only merge
 them during the milestone of the new major release.
 
-For example, if GitLab 17.0 is the next major upcoming release:
+For example, if GitLab 19.0 is the next major upcoming release:
 
-- The supported versions are 16, 15, and 14.
-- When GitLab 17.0 is released, GitLab 14 is no longer supported.
+- The supported versions are 18, 17, and 16.
+- When GitLab 19.0 is released, GitLab 16 is no longer supported.
 
-Create merge requests to remove mentions of GitLab 14, but only
-merge them during the 17.0 milestone, after 16.11 is released.
+Create merge requests to remove mentions of GitLab 16, but only
+merge them during the 19.0 milestone, after 18.11 is released.
 
 ## When to add availability details
 

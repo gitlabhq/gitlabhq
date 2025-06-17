@@ -116,12 +116,14 @@ export default {
           :board="board"
           :is-swimlanes-on="isSwimlanesOn"
           :filters="filters"
+          class="gl-min-w-0"
           @setFilters="$emit('setFilters', $event)"
         />
         <epic-board-filtered-search
           v-else
           :board="board"
           :filters="filters"
+          class="gl-min-w-0"
           @setFilters="$emit('setFilters', $event)"
         />
       </div>

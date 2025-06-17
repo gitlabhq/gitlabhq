@@ -126,12 +126,7 @@ describe('Repository table row component', () => {
     expect(hoverLoadDirective.value).toBeInstanceOf(Function);
   });
 
-  it.each`
-    type        | component         | componentName
-    ${'tree'}   | ${RouterLinkStub} | ${'RouterLink'}
-    ${'blob'}   | ${RouterLinkStub} | ${'RouterLink'}
-    ${'commit'} | ${'a'}            | ${'hyperlink'}
-  `('renders a $componentName for type $type', ({ type, component }) => {
+  it.each(['tree', 'blob'])('renders a RouterLink for type $type', (type) => {
     factory({
       propsData: {
         id: '1',
@@ -142,7 +137,21 @@ describe('Repository table row component', () => {
       },
     });
 
-    expect(wrapper.findComponent(component).exists()).toBe(true);
+    expect(wrapper.findComponent(RouterLinkStub).exists()).toBe(true);
+  });
+
+  it('renders a hyperlink for type commit', () => {
+    factory({
+      propsData: {
+        id: '1',
+        sha: '123',
+        path: 'test',
+        type: 'commit',
+        currentPath: '/',
+      },
+    });
+
+    expect(wrapper.find('a').exists()).toBe(true);
   });
 
   it.each`

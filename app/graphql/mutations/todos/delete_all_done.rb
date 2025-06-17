@@ -5,10 +5,15 @@ module Mutations
     class DeleteAllDone < ::Mutations::BaseMutation
       graphql_name 'TodoDeleteAllDone'
 
-      def resolve
+      argument :updated_before,
+        ::Types::TimeType,
+        required: false,
+        description: 'To-do items marked as done before the timestamp will be deleted.'
+
+      def resolve(updated_before: nil)
         verify_rate_limit!
 
-        delete_until = Time.now.utc.to_datetime.to_s
+        delete_until = (updated_before || Time.now).utc.to_datetime.to_s
 
         ::Todos::DeleteAllDoneWorker.perform_async(current_user.id, delete_until) # rubocop:disable CodeReuse/Worker -- we need to do this asynchronously
 

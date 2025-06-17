@@ -51,6 +51,29 @@ RSpec.describe QA::Tools::Ci::CodePathsMapping do
     end
   end
 
+  context "with bucket and file name prefix passed as arguments" do
+    let(:new_bucket) { "new_bucket" }
+    let(:upload_file_name) { "new_name_prefix" }
+    let(:expected_file_path) { "#{commit_ref}/#{run_type}/#{upload_file_name}-#{ENV['CI_PIPELINE_ID']}.json" }
+
+    it "exports mapping json with correct file name prefix" do
+      expect(logger).to receive(:info).with("Number of mapping files found: #{file_paths.size}")
+      expect(gcs_client).to receive(:put_object).with(new_bucket, expected_file_path, pretty_generated_mapping_json)
+      described_class.export(glob, bucket: new_bucket, file_name: upload_file_name)
+    end
+  end
+
+  context "with bucket and file name prefix not passed as arguments" do
+    let(:default_bucket) { QA::Tools::Ci::CodePathsMapping::DEFAULT_BUCKET }
+    let(:default_filename) { QA::Tools::Ci::CodePathsMapping::DEFAULT_FILE_NAME }
+    let(:expected_file_path) { "#{commit_ref}/#{run_type}/#{default_filename}-#{ENV['CI_PIPELINE_ID']}.json" }
+
+    it "exports mapping json with default file name prefix to default bucket" do
+      expect(gcs_client).to receive(:put_object).with(default_bucket, expected_file_path, pretty_generated_mapping_json)
+      described_class.export(glob)
+    end
+  end
+
   context "with no mapping files present" do
     let(:file_paths) { [] }
 

@@ -31,7 +31,7 @@
         .form-text.gl-text-subtle
           = _('Number of Git pushes after which Gitaly is asked to optimize a repository.')
     .sub-section
-      %h4= s_("AdminSettings|Inactive project deletion")
-      .js-inactive-project-deletion-form{ data: inactive_projects_deletion_data(@application_setting) }
+      %h4= s_("AdminSettings|Dormant project deletion")
+      .js-dormant-project-deletion-form{ data: dormant_projects_deletion_data(@application_setting) }
 
   = f.submit _('Save changes'), pajamas_button: true

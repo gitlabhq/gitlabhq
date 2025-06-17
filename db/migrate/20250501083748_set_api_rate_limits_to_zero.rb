@@ -1,15 +1,15 @@
 # frozen_string_literal: true
 
 class SetApiRateLimitsToZero < Gitlab::Database::Migration[2.3]
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_clusterwide_setting
+  restrict_gitlab_migration gitlab_schema: :gitlab_main_cell_setting
 
   milestone '18.0'
 
   def up
     return if Gitlab.com?
 
-    set_groups_and_projects_api_rate_limits_to_zero unless feature_flag_enabled?(:rate_limit_groups_and_projects_api)
-    set_users_api_rate_limits_to_zero unless feature_flag_enabled?(:rate_limiting_user_endpoints)
+    set_groups_and_projects_api_rate_limits_to_zero
+    set_users_api_rate_limits_to_zero
   end
 
   def down

@@ -776,7 +776,8 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
       end
 
       context 'when scoped user is specified' do
-        let(:scopes) { "user:#{user.id}" }
+        let(:scoped_user) { create(:user) }
+        let(:scopes) { "user:#{scoped_user.id}" }
 
         context 'when linking composite identitiy succeeds' do
           it 'returns the oauth token' do

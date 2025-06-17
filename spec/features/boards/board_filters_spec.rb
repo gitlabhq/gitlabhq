@@ -179,7 +179,10 @@ RSpec.describe 'Issue board filters', :js, feature_category: :team_planning do
 
         expect_filtered_search_dropdown_results(filter_dropdown, 3)
 
-        click_on 'Incident'
+        within_testid('filtered-search-input') do
+          click_on 'Incident'
+        end
+
         filter_submit.click
 
         expect(find('[data-testid="board-list"]:nth-child(1)')).to have_selector('.board-card', count: 1)

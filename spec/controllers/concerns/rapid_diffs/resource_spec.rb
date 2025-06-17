@@ -26,6 +26,18 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
       def call_email_format_path
         email_format_path
       end
+
+      def call_diff_file_component(args)
+        diff_file_component(args)
+      end
+
+      def call_find_diff_file(extra_options, old_path, new_path)
+        find_diff_file(extra_options, old_path, new_path)
+      end
+
+      def with_custom_diff_options
+        yield({})
+      end
     end
   end
 
@@ -70,6 +82,36 @@ RSpec.describe RapidDiffs::Resource, type: :controller, feature_category: :sourc
   describe '#email_format_path' do
     it 'returns nil' do
       expect(controller.new.call_email_format_path).to be_nil
+    end
+  end
+
+  describe '#diff_file_component' do
+    it 'initializes a DiffFileComponent with the given arguments' do
+      args = { parallel_view: :parallel }
+
+      expect(RapidDiffs::DiffFileComponent).to receive(:new).with(**args)
+
+      controller.new.call_diff_file_component(args)
+    end
+  end
+
+  describe '#find_diff_file' do
+    let(:controller_instance) { controller.new }
+    let(:diff_file) { instance_double(Gitlab::Git::Diff) }
+    let(:diff_files) { [diff_file] }
+    let(:diffs_resource) { instance_double(Gitlab::Diff::FileCollection::Base, diff_files: diff_files) }
+    let(:extra_options) { { expanded: true } }
+    let(:old_path) { 'old_path.rb' }
+    let(:new_path) { 'new_path.rb' }
+
+    before do
+      allow(controller_instance).to receive(:diffs_resource).with(
+        hash_including(paths: [old_path, new_path], expanded: true)
+      ).and_return(diffs_resource)
+    end
+
+    it 'calls diffs_resource with merged options and returns the first diff file' do
+      expect(controller_instance.call_find_diff_file(extra_options, old_path, new_path)).to eq(diff_file)
     end
   end
 end

@@ -21,8 +21,7 @@ describe('ProjectSelect component', () => {
     findGlCollapsibleListBox()
       .find("[data-testid='base-dropdown-toggle'")
       .findComponent(GlLoadingIcon);
-  const findGlListboxSearchInput = () =>
-    wrapper.find("[data-testid='listbox-search-input'] > .gl-listbox-search-input");
+  const findGlListboxSearchInput = () => wrapper.find("[data-testid='listbox-search-input']");
   const findGlListboxItem = () => wrapper.findAllComponents(GlListboxItem);
   const findFirstGlDropdownItem = () => findGlListboxItem().at(0);
   const findInMenuLoadingIcon = () => wrapper.find("[data-testid='listbox-search-loader']");

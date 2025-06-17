@@ -190,7 +190,7 @@ Each object in that array must have at least the following properties:
 
 The format is different from the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) in the following ways:
 
-- Although the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) supports more properties, Code Quality only processes the fields listed above.
+- Although the [CodeClimate report format](https://github.com/codeclimate/platform/blob/master/spec/analyzers/SPEC.md#data-types) supports more properties, Code Quality only processes the fields listed previously.
 - The GitLab parser does not allow a [byte order mark](https://en.wikipedia.org/wiki/Byte_order_mark) at the beginning of the file.
 
 For example, this is a compliant report:
@@ -310,7 +310,12 @@ You can also use or adapt the [documented Ruff GitLab CI/CD integration](https:/
 If you already have a [`golangci-lint`](https://golangci-lint.run/) job in your CI/CD pipelines, you should add a report to send its output to Code Quality.
 To integrate its output:
 
-1. Add the arguments `--out-format code-climate:gl-code-quality-report.json,line-number` to the command you use to run golangci-lint.
+1. Add the arguments to the command you use to run `golangci-lint`.
+
+   For v1 add  `--out-format code-climate:gl-code-quality-report.json,line-number`.
+
+   For v2 add  `--output.code-climate.path=gl-code-quality-report.json`.
+
 1. Declare a [`codequality` report artifact](../yaml/artifacts_reports.md#artifactsreportscodequality) that points to the location of the report file.
 
 You can also use or adapt the [golangci-lint CI/CD component](https://gitlab.com/explore/catalog/components/code-quality-oss/codequality-os-scanners-integration) to run the scan and integrate its output with Code Quality.

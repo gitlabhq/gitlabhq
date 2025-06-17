@@ -1,0 +1,11 @@
+---
+table_name: security_policy_settings
+classes:
+- Security::PolicySetting
+feature_categories:
+- security_policy_management
+description: Stores instance-wide security policies related settings
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191298
+milestone: '18.1'
+gitlab_schema: gitlab_main_cell_setting
+table_size: small

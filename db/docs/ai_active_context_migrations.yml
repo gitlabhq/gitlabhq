@@ -8,6 +8,5 @@ description: Tracks the state and progress of AI active context migrations.
   Each migration is identified by a unique version timestamp and is used for computing or updating collections in ai context abstraction layer.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181238
 milestone: '17.10'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_cell_local
 table_size: small

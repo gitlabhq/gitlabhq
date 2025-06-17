@@ -29,7 +29,7 @@ Each commit shows:
 - If the [commit is signed](../signed_commits/_index.md), a **Verified** badge.
 - The commit SHA. GitLab shows the first 8 characters.
   Select **Copy commit SHA** ({{< icon name="copy-to-clipboard" >}}) to copy the entire SHA.
-- A link to **browse** ({{< icon name="folder-open" >}}) the file as it appeared at the time of
+- A link to browse ({{< icon name="folder-open" >}}) the file as it appeared at the time of
   this commit.
 
 GitLab retrieves the user name and email information from the

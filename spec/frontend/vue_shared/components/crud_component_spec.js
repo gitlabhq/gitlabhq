@@ -1,8 +1,9 @@
 import { nextTick } from 'vue';
-import { GlButton, GlIcon } from '@gitlab/ui';
+import { GlButton, GlIcon, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 describe('CRUD Component', () => {
   useLocalStorageSpy();
@@ -35,6 +36,7 @@ describe('CRUD Component', () => {
   const findFooter = () => wrapper.findByTestId('crud-footer');
   const findPagination = () => wrapper.findByTestId('crud-pagination');
   const findCollapseToggle = () => wrapper.findByTestId('crud-collapse-toggle');
+  const findChevronIcon = () => wrapper.findComponent(GlAnimatedChevronLgDownUpIcon);
 
   afterEach(() => {
     localStorage.clear();
@@ -203,6 +205,10 @@ describe('CRUD Component', () => {
       createComponent({ isCollapsible: true }, { default: '<p>Body slot</p>' });
 
       expect(findCollapseToggle().exists()).toBe(true);
+      // Vue compat doesn't know about component props if it extends other component
+      expect(
+        findChevronIcon().props('isOn') ?? parseBoolean(findChevronIcon().attributes('is-on')),
+      ).toBe(true);
     });
 
     it('click on toggle hides content', async () => {
@@ -213,6 +219,10 @@ describe('CRUD Component', () => {
       await findCollapseToggle().vm.$emit('click');
 
       expect(findBody().exists()).toBe(false);
+      // Vue compat doesn't know about component props if it extends other component
+      expect(
+        findChevronIcon().props('isOn') ?? parseBoolean(findChevronIcon().attributes('is-on')),
+      ).toBe(false);
     });
 
     it('`collapsed` hides content by default', () => {

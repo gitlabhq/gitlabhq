@@ -1,4 +1,4 @@
-import { GlButton, GlToggle, GlTableLite } from '@gitlab/ui';
+import { GlIcon, GlToggle, GlTableLite } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -144,17 +144,16 @@ describe('Feature flag table', () => {
       expect(
         wrapper
           .findByTestId(`feature-flag-description-${featureFlag.id}`)
-          .findComponent(GlButton)
+          .findComponent(GlIcon)
           .exists(),
       ).toBe(haveInfoIcon);
     });
 
     if (haveInfoIcon) {
       it('includes a tooltip', () => {
-        const icon = wrapper
-          .findByTestId(`feature-flag-description-${featureFlag.id}`)
-          .findComponent(GlButton);
-        const tooltip = getBinding(icon.element, 'gl-tooltip');
+        const iconContainer = wrapper.findByTestId(`feature-flag-description-${featureFlag.id}`);
+        const button = iconContainer.find('button');
+        const tooltip = getBinding(button.element, 'gl-tooltip');
 
         expect(tooltip).toBeDefined();
         expect(tooltip.value).toBe(featureFlag.description);

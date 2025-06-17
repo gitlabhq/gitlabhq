@@ -98,7 +98,7 @@ This [problem is usually encountered when upgrading to GitLab 15.1](../../../upd
 
 ## Recovering from a partial failover
 
-The partial failover to a secondary Geo *site* may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
+The partial failover to a secondary Geo site may be the result of a temporary/transient issue. Therefore, first attempt to run the promote command again.
 
 1. SSH into every Sidekiq, PostgreSQL, Gitaly, and Rails node in the **secondary** site and run one of the following commands:
 
@@ -117,7 +117,7 @@ The partial failover to a secondary Geo *site* may be the result of a temporary/
 1. Verify you can connect to the newly-promoted **primary** site using the URL used previously for the **secondary** site.
 1. If **successful**, the **secondary** site is now promoted to the **primary** site.
 
-If the above steps are **not successful**, proceed through the next steps:
+If the previous steps are **not successful**, proceed through the next steps:
 
 1. SSH to every Sidekiq, PostgreSQL, Gitaly and Rails node in the **secondary** site and perform the following operations:
 

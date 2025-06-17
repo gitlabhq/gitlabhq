@@ -17,24 +17,25 @@ title: Fine-grained permissions for CI/CD job tokens
 
 {{< details >}}
 
-Tier: Free, Premium, Ultimate
-Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
-Status: Experiment
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15234) in GitLab 17.10. This feature is an [experiment](../../policy/development_stages_support.md#experiment).
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15234) as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.10.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/16199) from experiment to beta in GitLab 18.0.
 
 {{< /history >}}
 
 You can use fine-grained permissions to explicitly allow access to a limited set of API endpoints.
 These permissions are applied to the CI/CD job tokens in a specified project.
 
-This feature is an [experiment](../../policy/development_stages_support.md#experiment) and subject to change without notice. This feature is not ready for production use. If you want to use this feature, you should test outside of production first.
+This feature is in [beta](../../policy/development_stages_support.md#beta).
 
-## Enable use of fine-grained permissions
+## Enable fine-grained permissions
 
 Prerequisites:
 

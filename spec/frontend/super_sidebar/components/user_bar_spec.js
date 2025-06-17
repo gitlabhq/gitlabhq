@@ -252,20 +252,6 @@ describe('UserBar component', () => {
         expect(tooltip.value).toBe(`Type <kbd>/</kbd> to search`);
       });
     });
-
-    describe('when feature flag is on', () => {
-      beforeEach(() => {
-        createWrapper({ provideOverrides: { glFeatures: { searchButtonTopRight: true } } });
-      });
-
-      it('should not render search button', () => {
-        expect(findSearchButton().exists()).toBe(false);
-      });
-
-      it('should not render search modal', () => {
-        expect(findSearchModal().exists()).toBe(false);
-      });
-    });
   });
 
   describe('While impersonating a user', () => {

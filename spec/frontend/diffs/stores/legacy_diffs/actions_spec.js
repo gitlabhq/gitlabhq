@@ -2523,6 +2523,46 @@ describe('legacyDiffs actions', () => {
         });
       });
 
+      it('expands lines upwards when the match line is after the target line', async () => {
+        const linkedFile = {
+          file_hash: 'abc123',
+          context_lines_path: `${TEST_HOST}/linked-file`,
+          highlighted_diff_lines: [
+            { old_line: 250, new_line: 250 },
+            { meta_data: { old_pos: 300, new_pos: 300 } },
+            { old_line: 300, new_line: 300 },
+          ],
+        };
+
+        store.$patch({
+          diffFiles: [linkedFile],
+          linkedFileHash: linkedFile.file_hash,
+        });
+
+        await store.fetchLinkedExpandedLine({
+          fileHash: linkedFile.file_hash,
+          oldLine: 286,
+          newLine: 286,
+        });
+
+        expect(store.loadMoreLines).toHaveBeenCalledWith({
+          endpoint: linkedFile.context_lines_path,
+          fileHash: linkedFile.file_hash,
+          isExpandDown: false,
+          lineNumbers: {
+            oldLineNumber: 300,
+            newLineNumber: 300,
+          },
+          params: {
+            bottom: false,
+            offset: 0,
+            since: 286,
+            to: 299,
+            unfold: true,
+          },
+        });
+      });
+
       it('expands lines at the very bottom', async () => {
         const linkedFile = {
           file_hash: 'abc123',

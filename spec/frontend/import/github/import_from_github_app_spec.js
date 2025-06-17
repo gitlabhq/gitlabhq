@@ -45,6 +45,13 @@ describe('Import from GitHub app', () => {
       expect(findGithubAuthButton().exists()).toBe(false);
       expect(findAlert().exists()).toBe(true);
     });
+
+    it('does not add a ci_cd_only hidden input', () => {
+      createComponent({ isCiCdOnly: false });
+
+      const hiddenInput = wrapper.find('input[name="ci_cd_only"]');
+      expect(hiddenInput.exists()).toBe(false);
+    });
   });
 
   describe('is a ci/cd project', () => {
@@ -53,6 +60,20 @@ describe('Import from GitHub app', () => {
 
       expect(findGithubAuthButton().exists()).toBe(false);
       expect(findAlert().exists()).toBe(false);
+    });
+
+    it('adds a ci_cd_only hidden input', () => {
+      createComponent({ isCiCdOnly: true });
+
+      const hiddenInput = wrapper.find('input[name="ci_cd_only"]');
+      expect(hiddenInput.exists()).toBe(true);
+      expect(hiddenInput.attributes()).toEqual(
+        expect.objectContaining({
+          type: 'hidden',
+          value: 'true',
+          id: 'ci_cd_only',
+        }),
+      );
     });
   });
 });

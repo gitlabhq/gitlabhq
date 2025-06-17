@@ -36,6 +36,9 @@ module Gitlab
       desc "log [SUBCOMMAND]", "Manage deployment related logs"
       subcommand "log", Commands::Log
 
+      desc "metrics [SUBCOMMAND]", "Manage deployment metrics collection"
+      subcommand "metrics", Commands::Metrics
+
       desc "destroy [SUBCOMMAND]", "Manage deployment related object cleanup"
       subcommand "destroy", Commands::Destroy
     end

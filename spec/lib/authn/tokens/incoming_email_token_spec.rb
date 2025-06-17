@@ -3,15 +3,18 @@
 require 'spec_helper'
 
 RSpec.describe Authn::Tokens::IncomingEmailToken, :aggregate_failures, feature_category: :system_access do
-  let_it_be(:user) { create(:user) }
+  let(:user) { create(:user) }
 
   subject(:token) { described_class.new(plaintext, :api_admin_token) }
 
   context 'with valid incoming email token' do
     let(:plaintext) { user.incoming_email_token }
     let(:valid_revocable) { user }
+    let_it_be(:default_prefix) { ::User::INCOMING_MAIL_TOKEN_PREFIX }
 
     it_behaves_like 'finding the valid revocable'
+
+    it_behaves_like 'contains instance prefix when enabled'
 
     describe '#revoke!' do
       subject(:revoke) { token.revoke!(user) }

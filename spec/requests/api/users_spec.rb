@@ -1080,26 +1080,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:path) { "/users/#{user.username}/status" }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_status do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -1232,27 +1226,21 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_followers do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_followers do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it 'returns 403' do
-            request
+        it 'returns 403' do
+          request
 
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -1305,27 +1293,21 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_following do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_following do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it 'returns 403' do
-            request
+        it 'returns 403' do
+          request
 
-            expect(response).to have_gitlab_http_status(:forbidden)
-          end
+          expect(response).to have_gitlab_http_status(:forbidden)
         end
       end
     end
@@ -1567,7 +1549,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
               password: User.random_password,
               username: 'foo'
             }
-        end.to change { User.count }.by(0)
+        end.not_to change { User.count }
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']).to eq('Email has already been taken')
       end
@@ -1581,7 +1563,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
               password: User.random_password,
               username: 'test'
             }
-        end.to change { User.count }.by(0)
+        end.not_to change { User.count }
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']).to eq('Username has already been taken')
       end
@@ -1595,7 +1577,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
               password: User.random_password,
               username: 'TEST'
             }
-        end.to change { User.count }.by(0)
+        end.not_to change { User.count }
         expect(response).to have_gitlab_http_status(:conflict)
         expect(json_response['message']).to eq('Username has already been taken')
       end
@@ -1631,7 +1613,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
               password: User.random_password,
               username: 'unique-domain'
             }
-        end.to change { User.count }.by(0)
+        end.not_to change { User.count }
         expect(response).to have_gitlab_http_status(:bad_request)
         expect(json_response['message']).to eq({ "username" => ["has already been taken"] })
       end
@@ -1650,7 +1632,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
                 password: 'password',
                 username: 'TEST'
               }
-          end.to change { User.count }.by(0)
+          end.not_to change { User.count }
           expect(response).to have_gitlab_http_status(:conflict)
           expect(json_response['message']).to eq('Email has already been taken')
         end
@@ -1668,7 +1650,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
                 password: 'password',
                 username: 'TEST'
               }
-          end.to change { User.count }.by(0)
+          end.not_to change { User.count }
           expect(response).to have_gitlab_http_status(:conflict)
           expect(json_response['message']).to eq('Email has already been taken')
         end
@@ -1688,7 +1670,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
                 password: 'password',
                 username: 'TEST'
               }
-          end.to change { User.count }.by(0)
+          end.not_to change { User.count }
           expect(response).to have_gitlab_http_status(:conflict)
           expect(json_response['message']).to eq('Email has already been taken')
         end
@@ -1706,7 +1688,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
                 password: 'password',
                 username: 'TEST'
               }
-          end.to change { User.count }.by(0)
+          end.not_to change { User.count }
           expect(response).to have_gitlab_http_status(:bad_request)
         end
       end
@@ -2589,26 +2571,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_keys do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -2684,26 +2660,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_ssh_key do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -2809,26 +2779,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_keys do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -2865,26 +2829,20 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       let(:current_user) { create(:user) }
       let(:request) { get api(path, current_user) }
 
-      context 'when the :rate_limiting_user_endpoints feature flag is enabled' do
-        before do
-          stub_feature_flags(rate_limiting_user_endpoints: true)
-        end
-
-        context 'when user is authenticated' do
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
-            def request
-              get api(path, current_user)
-            end
+      context 'when user is authenticated' do
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
+          def request
+            get api(path, current_user)
           end
         end
+      end
 
-        context 'when user is unauthenticated' do
-          let(:current_user) { nil }
+      context 'when user is unauthenticated' do
+        let(:current_user) { nil }
 
-          it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
-            def request
-              get api(path, current_user)
-            end
+        it_behaves_like 'rate limited endpoint', rate_limit_key: :user_gpg_key do
+          def request
+            get api(path, current_user)
           end
         end
       end
@@ -5007,7 +4965,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
   describe 'POST /users/:user_id/personal_access_tokens', :with_current_organization do
     let(:name) { 'new pat' }
     let(:description) { 'new pat description' }
-    let(:expires_at) { 3.days.from_now.to_date.to_s }
+    let(:expires_at) { 3.days.from_now }
     let(:scopes) { %w[api read_user] }
     let(:path) { "/users/#{user.id}/personal_access_tokens" }
     let(:params) { { name: name, scopes: scopes, expires_at: expires_at, description: description } }
@@ -5049,7 +5007,7 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
       expect(json_response['name']).to eq(name)
       expect(json_response['description']).to eq(description)
       expect(json_response['scopes']).to eq(scopes)
-      expect(json_response['expires_at']).to eq(expires_at)
+      expect(json_response['expires_at']).to eq(expires_at.to_date.iso8601)
       expect(json_response['id']).to be_present
       expect(json_response['created_at']).to be_present
       expect(json_response['active']).to be_truthy
@@ -5648,6 +5606,58 @@ RSpec.describe API::Users, :with_current_organization, :aggregate_failures, feat
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
+    end
+  end
+end
+
+RSpec.describe API::Users, '(API behavior when Current.organization is nil)', feature_category: :user_management do
+  # This block intentionally does NOT use :with_current_organization
+
+  let_it_be(:admin_no_org_context) { create(:admin) }
+  let_it_be(:user_no_org_context) { create(:user, username: 'user_no_org_test') }
+  let_it_be(:pat_target_user_no_org_context) { create(:user, username: 'pattarget_no_org_test') }
+
+  before do
+    allow(Current).to receive(:organization).and_return(nil)
+  end
+
+  describe 'POST /users (when Current.organization is nil)' do
+    let(:user_creation_params) { attributes_for(:user, username: 'newly_created_user_no_org', email: 'newly_created_user_no_org@example.com', name: 'Newly Created User No Org') }
+
+    it 'returns 500 Internal Server Error and does not call Users::CreateService.new' do
+      expect(::Users::CreateService).not_to receive(:new)
+
+      post api("/users", admin_no_org_context, admin_mode: true), params: user_creation_params
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil/)
+    end
+  end
+
+  describe 'POST /users/:id/personal_access_tokens (when Current.organization is nil)' do
+    it 'returns 500 Internal Server Error and does not create PersonalAccessTokens::CreateService' do
+      expect(::PersonalAccessTokens::CreateService).not_to receive(:new)
+
+      post api("/users/#{pat_target_user_no_org_context.id}/personal_access_tokens", admin_no_org_context, admin_mode: true),
+        params: { name: 'Test Token For Target No Org', scopes: ['api'] }
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil/)
+    end
+  end
+
+  describe 'POST /user/personal_access_tokens (when Current.organization is nil)' do
+    it 'returns 500 Internal Server Error and does not create PersonalAccessTokens::CreateService' do
+      expect(::PersonalAccessTokens::CreateService).not_to receive(:new)
+
+      post api("/user/personal_access_tokens", user_no_org_context),
+        params: {
+          name: 'My Test Token No Org',
+          scopes: [::Gitlab::Auth::K8S_PROXY_SCOPE.to_s]
+        }
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+      expect(json_response['message']).to match(/NoMethodError \(undefined method `id' for nil/)
     end
   end
 end

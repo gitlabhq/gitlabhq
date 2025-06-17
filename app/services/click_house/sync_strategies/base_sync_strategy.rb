@@ -26,8 +26,7 @@ module ClickHouse
               reached_end_of_table: context.no_more_records?)
 
             if context.last_processed_id
-              ClickHouse::SyncCursor.update_cursor_for(model_class.table_name,
-                context.last_processed_id)
+              ClickHouse::SyncCursor.update_cursor_for(sync_cursor_identifier, context.last_processed_id)
             end
           end
         rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
@@ -46,7 +45,7 @@ module ClickHouse
 
       def context
         @context ||= ClickHouse::RecordSyncContext.new(
-          last_record_id: ClickHouse::SyncCursor.cursor_for(model_class.table_name),
+          last_record_id: ClickHouse::SyncCursor.cursor_for(sync_cursor_identifier),
           max_records_per_batch: INSERT_BATCH_SIZE,
           runtime_limiter: Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
         )
@@ -116,6 +115,10 @@ module ClickHouse
       # override if necessary.
       def primary_key
         :id
+      end
+
+      def sync_cursor_identifier
+        model_class.table_name
       end
 
       def csv_mapping

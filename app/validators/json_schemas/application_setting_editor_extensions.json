@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Instance-wide Editor Extension settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "enable_language_server_restrictions": {
+      "type": "boolean",
+      "default": false,
+      "description": "Enforce restrictions on Language Server"
+    },
+    "minimum_language_server_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "maxLength": 64,
+      "description": "Minimum required Language Server version"
+    }
+  }
+}

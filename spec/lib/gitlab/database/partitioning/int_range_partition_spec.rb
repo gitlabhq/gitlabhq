@@ -86,17 +86,32 @@ RSpec.describe Gitlab::Database::Partitioning::IntRangePartition, feature_catego
     end
   end
 
-  describe '#to_sql' do
-    subject(:to_sql) { described_class.new(table, from, to).to_sql }
+  describe '#to_create_sql' do
+    subject(:to_create_sql) { described_class.new(table, from, to).to_create_sql }
 
     let(:table) { 'foo' }
     let(:from) { '1' }
     let(:to) { '10' }
 
-    it 'transforms to a CREATE TABLE statement' do
-      expect(to_sql).to eq(<<~SQL)
+    it 'creates a table with LIKE statement' do
+      expect(to_create_sql).to eq(<<~SQL)
         CREATE TABLE IF NOT EXISTS "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_1"
-        PARTITION OF "foo"
+        (LIKE "foo" INCLUDING ALL)
+      SQL
+    end
+  end
+
+  describe '#to_attach_sql' do
+    subject(:to_attach_sql) { described_class.new(table, from, to).to_attach_sql }
+
+    let(:table) { 'foo' }
+    let(:from) { '1' }
+    let(:to) { '10' }
+
+    it 'creates an ALTER TABLE ATTACH PARTITION statement' do
+      expect(to_attach_sql).to eq(<<~SQL)
+        ALTER TABLE "foo"
+        ATTACH PARTITION "#{Gitlab::Database::DYNAMIC_PARTITIONS_SCHEMA}"."foo_1"
         FOR VALUES FROM ('1') TO ('10')
       SQL
     end

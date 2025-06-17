@@ -1,8 +1,7 @@
 - if @diff_hunk.header
   %tr.rd-hunk-header.rd-hunk-header-parallel
-    - 2.times do |index|
-      %td.rd-hunk-header-buttons= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.header.expand_directions)
-      %td.rd-hunk-header-content{ data: { position: index == 0 ? :old : :new }, tabindex: '-1' }= @diff_hunk.header.text
+    %td.rd-hunk-header-buttons= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.header.expand_directions)
+    %td.rd-hunk-header-content{ colspan: '3' }= @diff_hunk.header.text
 
 - @diff_hunk.parallel_lines.each do |pair|
   %tr.rd-hunk-lines.rd-hunk-lines-parallel{ data: { testid: 'hunk-lines-parallel', hunk_lines: true } }

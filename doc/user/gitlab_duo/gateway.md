@@ -1,11 +1,11 @@
 ---
 stage: AI-powered
-group: AI Model Validation
+group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: AI gateway
 ---
 
-The [AI gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) is a standalone service that gives access to AI-native GitLab Duo features.
+The AI gateway is a standalone service that gives access to AI-native GitLab Duo features.
 
 GitLab operates an instance of AI gateway that is used by GitLab Self-Managed, GitLab Dedicated, and GitLab.com through the Cloud Connector.
 
@@ -28,7 +28,7 @@ The IDE communicates directly with the AI gateway by default, bypassing the GitL
 
 ### Automatic routing
 
-GitLab leverages Cloudflare and *Google Cloud Platform* (GCP) load balancers to route AI
+GitLab leverages Cloudflare and Google Cloud Platform (GCP) load balancers to route AI
 gateway requests to the nearest available deployment automatically. This routing
 mechanism prioritizes low latency and efficient processing of user requests.
 
@@ -50,9 +50,9 @@ It's important to acknowledge the current limitations regarding strict data sove
 
 The following factors influence where data is routed.
 
-- **Network latency:** The primary routing mechanism focuses on minimizing latency, meaning data might be processed in a region other than the nearest one if network conditions dictate.
-- **Service availability:** In case of regional outages or service disruptions, requests might be automatically rerouted to ensure uninterrupted service.
-- **Third-Party dependencies:** The GitLab AI infrastructure relies on third-party model providers, like Google Vertex AI, which have their own data handling practices.
+- **Network latency**: The primary routing mechanism focuses on minimizing latency, meaning data might be processed in a region other than the nearest one if network conditions dictate.
+- **Service availability**: In case of regional outages or service disruptions, requests might be automatically rerouted to ensure uninterrupted service.
+- **Third-Party dependencies**: The GitLab AI infrastructure relies on third-party model providers, like Google Vertex AI, which have their own data handling practices.
 
 ### AI gateway deployment regions
 
@@ -64,13 +64,15 @@ As of the last update (2023-11-21), GitLab deploys the AI gateway in the followi
 - Europe (`europe-west2`, `europe-west3`, `europe-west9`)
 - Asia Pacific (`asia-northeast1`, `asia-northeast3`)
 
-Deployment regions may change frequently. For the most current information, always check the configuration file linked above.
+Deployment regions may change frequently. For the most current information, always check the
+previously linked configuration file.
 
 The exact location of the LLM models used by the AI gateway is determined by the third-party model providers. Currently, there is no guarantee that the models reside in the same geographical regions as the AI gateway deployments. This implies that data may flow back to the US or other regions where the model provider operates, even if the AI gateway processes the initial request in a different region.
 
 ### Data Flow and LLM model locations
 
-GitLab is working closely with LLM providers to understand their regional data handling practices fully. Currently, there might be instances where data is transmitted to regions outside the one closest to the user due to the factors mentioned above.
+GitLab is working closely with LLM providers to understand their regional data handling practices fully.
+Currently, there might be instances where data is transmitted to regions outside the one closest to the user due to the factors mentioned in the previous section.
 
 ### Future enhancements
 

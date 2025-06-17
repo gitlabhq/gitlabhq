@@ -72,7 +72,7 @@ module LooseForeignKeys
       query = Arel::DeleteManager.new
       query.from(quoted_table_name)
 
-      add_in_query_with_limit(query, DELETE_LIMIT)
+      add_in_query_with_limit(query, loose_foreign_key_definition.options[:delete_limit] || DELETE_LIMIT)
     end
 
     def update_query

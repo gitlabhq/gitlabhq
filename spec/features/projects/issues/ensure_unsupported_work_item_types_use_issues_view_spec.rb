@@ -30,9 +30,6 @@ RSpec.describe 'unsupported work item types use legacy issue views', :js, featur
       expect(page).not_to have_selector('.work-item-view')
       # Legacy issue app rendered
       expect(page).to have_selector('.issuable-details')
-      # Ensure the work item feedback badge is not rendered for unsupported types
-      expect(page).not_to have_selector('[data-testid="work-item-feedback"]')
-      expect(page).not_to have_content(/New issue look:/)
     end
   end
 

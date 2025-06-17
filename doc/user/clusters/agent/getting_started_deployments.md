@@ -105,40 +105,40 @@ In this section, you'll build a simple Kubernetes manifest as an OCI artifact, t
 1. We'll deploy NGINX as an example. Add the following YAML to `clusters/applications/nginx/nginx.yaml`:
 
    ```yaml
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-       name: nginx-example
-       namespace: default
-   spec:
-       replicas: 1
-       selector:
-           matchLabels:
-               app: nginx-example
-       template:
-           metadata:
-               labels:
-               app: nginx-example
-           spec:
-               containers:
-                   - name: nginx
-                   image: nginx:1.25
-                   ports:
-                       - containerPort: 80
-                       protocol: TCP
-   ---
-   apiVersion: v1
-   kind: Service
-   metadata:
-       name: nginx-example
-       namespace: default
-   spec:
-       ports:
-       - port: 80
-       targetPort: 80
-       protocol: TCP
-       selector:
-           app: nginx-example
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: nginx-example
+      namespace: default
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          app: nginx-example
+      template:
+        metadata:
+          labels:
+            app: nginx-example
+        spec:
+          containers:
+            - name: nginx
+              image: nginx:1.25
+              ports:
+                - containerPort: 80
+                  protocol: TCP
+    ---
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: nginx-example
+      namespace: default
+    spec:
+      ports:
+        - port: 80
+          targetPort: 80
+          protocol: TCP
+      selector:
+        app: nginx-example
    ```
 
 1. Now, let's package the previous YAML into an OCI image.

@@ -22,7 +22,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
 
     respond_to do |format|
       format.html do
-        render
+        render 'dashboard/projects/index'
       end
       format.atom do
         load_events

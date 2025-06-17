@@ -360,7 +360,7 @@ List projects.
 {{< /history >}}
 
 Get a list of all visible projects across GitLab for the authenticated user.
-When accessed without authentication, only public projects with _simple_ fields
+When accessed without authentication, only public projects with simple fields
 are returned.
 
 ```plaintext
@@ -2642,7 +2642,7 @@ Supported attributes:
 {{< /history >}}
 
 If you have at least the Developer role, the following requests could also return the `secret_push_protection_enabled` value.
-Note that some of these requests have stricter requirements about roles. Refer to the endpoints above for clarification.
+Some of these requests have stricter requirements about roles. Refer to the endpoints previously mentioned for clarification.
 Use this information to determine whether secret push protection is enabled for a project.
 To modify the `secret_push_protection_enabled` value, use the [Project Security Settings API](project_security_settings.md).
 

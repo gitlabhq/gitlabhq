@@ -117,6 +117,7 @@ export async function mountIssuesListApp() {
     hasLinkedItemsEpicsFeature,
     timeTrackingLimitToHours,
     hasSubepicsFeature,
+    hasStatusFeature,
   } = el.dataset;
 
   return new Vue({
@@ -205,6 +206,7 @@ export async function mountIssuesListApp() {
       hasLinkedItemsEpicsFeature: parseBoolean(hasLinkedItemsEpicsFeature),
       commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
       timeTrackingLimitToHours: parseBoolean(timeTrackingLimitToHours),
+      hasStatusFeature: parseBoolean(hasStatusFeature),
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

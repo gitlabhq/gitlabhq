@@ -26,6 +26,13 @@ import CommentTemplatesModal from './comment_templates_modal.vue';
 import HeaderDivider from './header_divider.vue';
 
 export default {
+  findAndReplace: {
+    highlightColor: '#fdf1dd',
+    highlightColorActive: '#e6e4f2',
+    highlightClass: 'js-highlight',
+    highlightClassActive: 'js-highlight-active',
+  },
+
   components: {
     ToolbarButton,
     ToolbarTableButton,
@@ -122,6 +129,8 @@ export default {
         find: '',
         replace: '',
         shouldShowBar: false,
+        totalMatchCount: 0,
+        highlightedMatchIndex: 0,
       },
       modifierKey,
       shiftKey: modifierKey === '⌘' ? '⇧' : 'Shift+',
@@ -161,10 +170,40 @@ export default {
         this.glFeatures.findAndReplace && !this.restrictedToolBarItems.includes('find-and-replace')
       );
     },
+    findAndReplace_MatchCountText() {
+      if (!this.findAndReplace.totalMatchCount) {
+        return s__('MarkdownEditor|No records');
+      }
+
+      return sprintf(s__('MarkdownEditor|%{currentHighlight} of %{totalHighlights}'), {
+        currentHighlight: this.findAndReplace.highlightedMatchIndex,
+        totalHighlights: this.findAndReplace.totalMatchCount,
+      });
+    },
   },
   watch: {
     showSuggestPopover() {
       this.updateSuggestPopoverVisibility();
+    },
+    'findAndReplace.highlightedMatchIndex': {
+      handler(newValue) {
+        const options = this.$options.findAndReplace;
+        const previousActive = this.cloneDiv.querySelector(`.${options.highlightClassActive}`);
+
+        if (previousActive) {
+          previousActive.classList.remove(options.highlightClassActive);
+          previousActive.style.backgroundColor = options.highlightColor;
+        }
+
+        const newActive = this.cloneDiv
+          .querySelectorAll(`.${options.highlightClass}`)
+          .item(newValue - 1);
+
+        if (newActive) {
+          newActive.classList.add(options.highlightClassActive);
+          newActive.style.backgroundColor = options.highlightColorActive;
+        }
+      },
     },
   },
   mounted() {
@@ -298,34 +337,60 @@ export default {
       }
     },
     findAndReplace_handleKeyUp(e) {
-      this.findAndReplace_highlightMatchingText(e.target.value);
+      if (e.key === 'Enter') {
+        this.findAndReplace_handleNext();
+      } else {
+        this.findAndReplace_highlightMatchingText(e.target.value);
+      }
     },
     findAndReplace_syncScroll() {
       const textArea = this.getCurrentTextArea();
       this.cloneDiv.scrollTop = textArea.scrollTop;
     },
     findAndReplace_safeReplace(textArea, textToFind) {
+      this.findAndReplace.totalMatchCount = 0;
+      this.findAndReplace.highlightedMatchIndex = 0;
+
+      if (!textToFind) {
+        return;
+      }
+
       const regex = new RegExp(`(${textToFind})`, 'g');
       const segments = textArea.value.split(regex);
+      const options = this.$options.findAndReplace;
 
       // Clear previous contents
       this.cloneDiv.innerHTML = '';
+      let counter = 0;
 
       segments.forEach((segment) => {
         // If the segment matches the text we're highlighting
         if (segment === textToFind) {
           const span = document.createElement('span');
-          span.classList.add('js-highlight');
-          span.style.backgroundColor = 'orange';
+          span.classList.add(options.highlightClass);
+          span.style.backgroundColor = options.highlightColor;
           span.style.display = 'inline-block';
           span.textContent = segment; // Use textContent for safe text insertion
+
+          // Highlight first match
+          if (counter === 0) {
+            span.classList.add(options.highlightClassActive);
+            span.style.backgroundColor = options.highlightColorActive;
+          }
+
           this.cloneDiv.appendChild(span);
+          this.findAndReplace.totalMatchCount += 1;
+          counter += 1;
         } else {
           // Otherwise, just append the plain text
           const textNode = document.createTextNode(segment);
           this.cloneDiv.appendChild(textNode);
         }
       });
+
+      if (this.findAndReplace.totalMatchCount > 0) {
+        this.findAndReplace.highlightedMatchIndex = 1;
+      }
     },
     async findAndReplace_highlightMatchingText(text) {
       const textArea = this.getCurrentTextArea();
@@ -388,6 +453,20 @@ export default {
 
       // Required to align the clone div
       this.cloneDiv.scrollTop = textArea.scrollTop;
+    },
+    findAndReplace_handlePrev() {
+      this.findAndReplace.highlightedMatchIndex -= 1;
+
+      if (this.findAndReplace.highlightedMatchIndex <= 0) {
+        this.findAndReplace.highlightedMatchIndex = this.findAndReplace.totalMatchCount;
+      }
+    },
+    findAndReplace_handleNext() {
+      this.findAndReplace.highlightedMatchIndex += 1;
+
+      if (this.findAndReplace.highlightedMatchIndex > this.findAndReplace.totalMatchCount) {
+        this.findAndReplace.highlightedMatchIndex = 1;
+      }
     },
   },
   shortcuts: {
@@ -705,7 +784,7 @@ export default {
     </div>
     <div
       v-if="findAndReplace.shouldShowBar"
-      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-w-34 gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
+      class="gl-border gl-absolute gl-right-0 gl-z-3 gl-flex gl-w-34 gl-items-center gl-rounded-bl-base gl-border-r-0 gl-bg-section gl-p-3 gl-shadow-sm"
       data-testid="find-and-replace"
     >
       <gl-form-input
@@ -716,6 +795,27 @@ export default {
         @keydown="findAndReplace_handleKeyDown"
         @keyup="findAndReplace_handleKeyUp"
       />
+      <div class="gl-ml-4 gl-min-w-12 gl-whitespace-nowrap">
+        {{ findAndReplace_MatchCountText }}
+      </div>
+      <div class="gl-ml-2 gl-flex gl-items-center">
+        <gl-button
+          category="tertiary"
+          icon="arrow-up"
+          size="small"
+          data-testid="find-prev"
+          :aria-label="s__('MarkdownEditor|Find previous')"
+          @click="findAndReplace_handlePrev"
+        />
+        <gl-button
+          category="tertiary"
+          icon="arrow-down"
+          size="small"
+          data-testid="find-next"
+          :aria-label="s__('MarkdownEditor|Find next')"
+          @click="findAndReplace_handleNext"
+        />
+      </div>
     </div>
   </div>
 </template>

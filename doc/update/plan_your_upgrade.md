@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Create an upgrade plan
 ---
@@ -28,7 +28,7 @@ If you are [working with Support](https://about.gitlab.com/support/scheduling-up
 upgrade plan, document and share it with the answers to the following questions:
 
 - How is GitLab installed?
-- What is the operating system of the node? Check [OS versions that are no longer supported](../administration/package_information/supported_os.md#os-versions-that-are-no-longer-supported)
+- What is the operating system of the node? Check [OS versions that are no longer supported](../install/package/_index.md#supported-platforms)
   to confirm that later updates are available.
 - Is it a single-node or a multi-node setup? If multi-node, document and share any architectural details about each node.
   Which external components are used? For example, Gitaly, PostgreSQL, or Redis?
@@ -57,7 +57,7 @@ to roll back GitLab to a working state if there's a problem with the upgrade:
   Don't forget to back up the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files).
 - Alternatively, create a snapshot of your instance. If this is a multi-node
   installation, you must snapshot every node.
-  **This process is out of scope for GitLab Support.**
+  **This process is out of scope for GitLab Support**.
 
 ### Restore GitLab
 
@@ -72,4 +72,4 @@ To restore your GitLab backup:
   Make sure to follow the instructions based on your installation method.
   Confirm that the [secrets and configuration files](../administration/backup_restore/backup_gitlab.md#storing-configuration-files) are also restored.
 - If restoring from a snapshot, know the steps to do this.
-  **This process is out of scope for GitLab Support.**
+  **This process is out of scope for GitLab Support**.

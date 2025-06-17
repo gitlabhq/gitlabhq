@@ -84,8 +84,8 @@ describe('WorkItemNotes component', () => {
   const findNotesLoading = () => wrapper.findComponent(WorkItemNotesLoading);
   const findActivityHeader = () => wrapper.findComponent(WorkItemNotesActivityHeader);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
-  const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
-  const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
+  const findAllWorkItemDiscussions = () => wrapper.findAllComponents(WorkItemDiscussion);
+  const findWorkItemDiscussionAtIndex = (index) => findAllWorkItemDiscussions().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
 
@@ -276,8 +276,8 @@ describe('WorkItemNotes component', () => {
 
       await waitForPromises();
 
-      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toEqual(
-        mockWorkItemNoteResponse.data.note.discussion.notes.nodes,
+      expect(findWorkItemDiscussionAtIndex(0).props('discussion')).toEqual(
+        mockWorkItemNoteResponse.data.note.discussion,
       );
     });
   });
@@ -380,15 +380,15 @@ describe('WorkItemNotes component', () => {
 
     it('should have work item notes', () => {
       expect(workItemNotesWithCommentsQueryHandler).toHaveBeenCalled();
-      expect(findAllWorkItemCommentNotes()).toHaveLength(mockDiscussions.length);
+      expect(findAllWorkItemDiscussions()).toHaveLength(mockDiscussions.length);
     });
 
     it('should pass all the correct props to work item comment note', () => {
       const commentIndex = 0;
-      const firstCommentNote = findWorkItemCommentNoteAtIndex(commentIndex);
+      const firstDiscussion = findWorkItemDiscussionAtIndex(commentIndex);
 
-      expect(firstCommentNote.props()).toMatchObject({
-        discussion: mockDiscussions[commentIndex].notes.nodes,
+      expect(firstDiscussion.props()).toMatchObject({
+        discussion: mockDiscussions[commentIndex],
         autocompleteDataSources: autocompleteDataSources({
           fullPath: 'test-path',
           iid: mockWorkItemIid,
@@ -407,7 +407,7 @@ describe('WorkItemNotes component', () => {
     });
     await waitForPromises();
 
-    findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', { id: '1', isLastNote: false });
+    findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', { id: '1', isLastNote: false });
     expect(showModal).toHaveBeenCalled();
   });
 
@@ -422,7 +422,7 @@ describe('WorkItemNotes component', () => {
     it('sends the mutation with correct variables', () => {
       const noteId = 'some-test-id';
 
-      findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', { id: noteId });
+      findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', { id: noteId });
       findDeleteNoteModal().vm.$emit('primary');
 
       expect(deleteWorkItemNoteMutationSuccessHandler).toHaveBeenCalledWith({
@@ -433,22 +433,22 @@ describe('WorkItemNotes component', () => {
     });
 
     it('successfully removes the note from the discussion', async () => {
-      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toHaveLength(2);
+      expect(findWorkItemDiscussionAtIndex(0).props('discussion').notes.nodes).toHaveLength(2);
 
-      findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', {
+      findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', {
         id: mockDiscussions[0].notes.nodes[0].id,
       });
       findDeleteNoteModal().vm.$emit('primary');
 
       await waitForPromises();
-      expect(findWorkItemCommentNoteAtIndex(0).props('discussion')).toHaveLength(1);
+      expect(findWorkItemDiscussionAtIndex(0).props('discussion').notes.nodes).toHaveLength(1);
     });
 
     it('successfully removes the discussion from work item if discussion only had one note', async () => {
-      const secondDiscussion = findWorkItemCommentNoteAtIndex(1);
+      const secondDiscussion = findWorkItemDiscussionAtIndex(1);
 
-      expect(findAllWorkItemCommentNotes()).toHaveLength(2);
-      expect(secondDiscussion.props('discussion')).toHaveLength(1);
+      expect(findAllWorkItemDiscussions()).toHaveLength(2);
+      expect(secondDiscussion.props('discussion').notes.nodes).toHaveLength(1);
 
       secondDiscussion.vm.$emit('deleteNote', {
         id: mockDiscussions[1].notes.nodes[0].id,
@@ -457,7 +457,7 @@ describe('WorkItemNotes component', () => {
       findDeleteNoteModal().vm.$emit('primary');
 
       await waitForPromises();
-      expect(findAllWorkItemCommentNotes()).toHaveLength(1);
+      expect(findAllWorkItemDiscussions()).toHaveLength(1);
     });
   });
 
@@ -468,7 +468,7 @@ describe('WorkItemNotes component', () => {
     });
     await waitForPromises();
 
-    findWorkItemCommentNoteAtIndex(0).vm.$emit('deleteNote', {
+    findWorkItemDiscussionAtIndex(0).vm.$emit('deleteNote', {
       id: mockDiscussions[0].notes.nodes[0].id,
     });
     findDeleteNoteModal().vm.$emit('primary');
@@ -514,7 +514,7 @@ describe('WorkItemNotes component', () => {
     });
     await waitForPromises();
 
-    expect(findWorkItemCommentNoteAtIndex(0).props('isWorkItemConfidential')).toBe(true);
+    expect(findWorkItemDiscussionAtIndex(0).props('isWorkItemConfidential')).toBe(true);
   });
 
   describe('when project context', () => {
@@ -532,7 +532,7 @@ describe('WorkItemNotes component', () => {
         defaultWorkItemNotesQueryHandler: workItemNotesWithCommentsQueryHandler,
       });
       await waitForPromises();
-      expect(findAllWorkItemCommentNotes().at(0).props('isExpandedOnLoad')).toBe(true);
+      expect(findAllWorkItemDiscussions().at(0).props('isExpandedOnLoad')).toBe(true);
     });
 
     it('should be collapsed when the discussion is resolved', async () => {
@@ -543,7 +543,7 @@ describe('WorkItemNotes component', () => {
       });
 
       await waitForPromises();
-      expect(findAllWorkItemCommentNotes().at(0).props('isExpandedOnLoad')).toBe(false);
+      expect(findAllWorkItemDiscussions().at(0).props('isExpandedOnLoad')).toBe(false);
     });
 
     it('should be expanded when the notes are resolved but the target note hash has note id', async () => {
@@ -558,7 +558,7 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
       await nextTick();
 
-      expect(findAllWorkItemCommentNotes().at(0).props('isExpandedOnLoad')).toBe(true);
+      expect(findAllWorkItemDiscussions().at(0).props('isExpandedOnLoad')).toBe(true);
     });
   });
 
@@ -614,7 +614,7 @@ describe('WorkItemNotes component', () => {
       expect(findWorkItemAddNote().props('hideFullscreenMarkdownButton')).toBe(true);
     });
     it('passes prop to work-item-discussion', () => {
-      expect(findAllWorkItemCommentNotes().at(0).props('hideFullscreenMarkdownButton')).toBe(true);
+      expect(findAllWorkItemDiscussions().at(0).props('hideFullscreenMarkdownButton')).toBe(true);
     });
   });
 
@@ -717,10 +717,6 @@ describe('WorkItemNotes component', () => {
       expect(gfmEventHub.$emit).toHaveBeenCalledWith('edit-note', {
         note: {
           ...mockLastNote,
-          discussion: {
-            ...mockLastNote.discussion,
-            resolvable: false,
-          },
         },
       });
     });
@@ -742,5 +738,23 @@ describe('WorkItemNotes component', () => {
 
       expect(gfmEventHub.$emit).not.toHaveBeenCalledWith('edit-note');
     });
+  });
+
+  it('emits `focus` event when WorkItemAddNote emits `focus`', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findWorkItemAddNote().vm.$emit('focus');
+
+    expect(wrapper.emitted('focus')).toHaveLength(1);
+  });
+
+  it('emits `blur` event when WorkItemAddNote emits `blur`', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findWorkItemAddNote().vm.$emit('blur');
+
+    expect(wrapper.emitted('blur')).toHaveLength(1);
   });
 });

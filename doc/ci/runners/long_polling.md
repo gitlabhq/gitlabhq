@@ -205,7 +205,7 @@ configurations, the runner doesn't pick up jobs in a timely manner.
 See [issue 27709](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/27709).
 
 This can happen if the `concurrent` setting in the runner `config.toml`
-is set to a value _lower_ than the number of runners defined. To resolve
+is set to a value lower than the number of runners defined. To resolve
 this issue, ensure the value of `concurrent` is at equal or greater than the
 number of runners.
 

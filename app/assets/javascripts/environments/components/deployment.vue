@@ -12,6 +12,7 @@ import { __, s__ } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import { isFinished } from '~/deployments/utils';
 import DeploymentStatusLink from './deployment_status_link.vue';
 import Commit from './commit.vue';
 
@@ -99,7 +100,8 @@ export default {
       return this.ref?.refPath;
     },
     needsApproval() {
-      return this.deployment.pendingApprovalCount > 0;
+      const deploymentStatus = this.status ? this.status.toUpperCase() : '';
+      return !isFinished({ status: deploymentStatus }) && this.deployment.pendingApprovalCount > 0;
     },
   },
   i18n: {

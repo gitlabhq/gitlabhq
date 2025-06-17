@@ -72,6 +72,7 @@ describe('AdminUserAvatar component', () => {
       findAllBadges().wrappers.forEach((badge, idx) => {
         expect(badge.text()).toBe(user.badges[idx].text);
         expect(badge.props('variant')).toBe(user.badges[idx].variant);
+        expect(badge.props('icon')).toBe(user.badges[idx].icon || null);
       });
     });
 

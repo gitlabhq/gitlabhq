@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, product_group: :respond do
+  RSpec.describe 'Monitor', :orchestrated, :smtp, :requires_admin, product_group: :respond, feature_flag: {
+    name: :hide_incident_management_features
+  } do
     describe 'Alert' do
       shared_examples 'notification on new alert' do
         it 'sends email to user', :aggregate_failures do
@@ -48,6 +50,7 @@ module QA
       end
 
       before do
+        Runtime::Feature.disable(:hide_incident_management_features, project: project)
         Flow::Login.sign_in
         project.visit!
         Flow::AlertSettings.go_to_monitor_settings

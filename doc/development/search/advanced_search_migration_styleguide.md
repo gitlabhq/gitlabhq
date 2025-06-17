@@ -1,7 +1,7 @@
 ---
 stage: Foundations
 group: Global Search
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Advanced search migration style guide
 ---
 
@@ -196,9 +196,16 @@ The following migration helpers are available in `ee/app/workers/concerns/elasti
 
 #### `Search::Elastic::MigrationBackfillHelper`
 
-Backfills a specific field in an index. In most cases, the mapping for the field should already be added.
+Backfills a specific field in an index. 
 
-Requires the `field_name` method and `DOCUMENT_TYPE` constant to backfill a single field.
+Requirements:
+
+- The mapping for the field should already be added
+- The field must always have a value. If the field can be null, use `Search::Elastic::MigrationReindexBasedOnSchemaVersion`
+- For single fields, define `field_name` method and `DOCUMENT_TYPE` constant
+- For multiple fields, define`field_names` method and `DOCUMENT_TYPE` constant
+
+Single field example:
 
 ```ruby
 class MigrationName < Elastic::Migration
@@ -214,7 +221,7 @@ class MigrationName < Elastic::Migration
 end
 ```
 
-Requires the `field_names` method and `DOCUMENT_TYPE` constant to backfill multiple fields if any field is null.
+Multiple fields example:
 
 ```ruby
 class MigrationName < Elastic::Migration

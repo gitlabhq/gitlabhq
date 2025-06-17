@@ -1,7 +1,7 @@
 ---
 stage: none
 group: Engineering Productivity
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Pipelines for the GitLab project
 ---
 
@@ -85,7 +85,7 @@ To identify the RSpec tests that are likely to fail in a merge request, we use *
 
 ##### Dynamic mappings
 
-First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://github.com/toptal/crystalball))
+First, we use the [`test_file_finder` gem](https://gitlab.com/gitlab-org/ruby/gems/test_file_finder), with dynamic mapping strategies coming from the [`Crystalball` gem](https://gitlab.com/gitlab-org/ruby/gems/crystalball))
   ([see where it's used](https://gitlab.com/gitlab-org/gitlab/-/blob/2348d57cf4710f89b96b25de0cf33a455d38325e/tooling/lib/tooling/find_tests.rb#L20), and [the mapping strategies we use in Crystalball](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/crystalball_env.rb)).
 
 In addition to `test_file_finder`, we have added several advanced mappings to detect even more tests to run:
@@ -725,7 +725,7 @@ Exceptions to this general guideline should be motivated and documented.
 
 We're running Ruby 3.2 on GitLab.com, as well as for the default branch.
 To prepare for the next Ruby version, we run merge requests in Ruby 3.3.
-Please see the roadmap at
+See the roadmap at
 [Ruby 3.3 epic](https://gitlab.com/groups/gitlab-org/-/epics/12350)
 for more details.
 
@@ -812,7 +812,7 @@ test suites use PostgreSQL 16 because there is no dependency between the databas
 |-------------------------------------------------------------------------------------------------|-----------------------|----------------------|----------------------|
 | Merge requests with label `~group::global search` or `~pipeline:run-search-tests`               | 8.X (production)      |                      | 16 (default version) |
 | `nightly` scheduled pipelines for the `master` branch                                           | 7.X, 8.X (production) | 1.X, 2.X             | 16 (default version) |
-| `weekly` scheduled pipelines for the `master` branch                                            |                       | latest               | 16 (default version) |
+| `weekly` scheduled pipelines for the `master` branch                                            | 9.X                   | latest               | 16 (default version) |
 
 ## Monitoring
 

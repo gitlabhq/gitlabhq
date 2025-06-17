@@ -6,14 +6,14 @@ RSpec.describe Gitlab::BackgroundMigration::RecalculateShardingKeyIdForOrphanedP
   let(:connection) { Ci::ApplicationRecord.connection }
   let(:runners) { table(:ci_runners, database: :ci, primary_key: :id) }
   let(:runner_projects) { table(:ci_runner_projects, database: :ci, primary_key: :id) }
-  let!(:project_runner1) { runners.create!(id: 1, runner_type: 3, sharding_key_id: 10) }
-  let!(:project_runner2) { runners.create!(id: 2, runner_type: 3, sharding_key_id: 10) }
-  let!(:project_runner3) { runners.create!(id: 3, runner_type: 3, sharding_key_id: 11) }
-  let!(:group_runner1) { runners.create!(id: 4, runner_type: 2, sharding_key_id: 10) }
+  let!(:project_runner1) { runners.create!(runner_type: 3, sharding_key_id: 10) }
+  let!(:project_runner2) { runners.create!(runner_type: 3, sharding_key_id: 10) }
+  let!(:project_runner3) { runners.create!(runner_type: 3, sharding_key_id: 11) }
+  let!(:group_runner1) { runners.create!(runner_type: 2, sharding_key_id: 10) }
 
   before do
-    runner_projects.create!(id: 3, project_id: 11, runner_id: project_runner2.id)
-    runner_projects.create!(id: 4, project_id: project_runner3.sharding_key_id, runner_id: project_runner3.id)
+    runner_projects.create!(project_id: 11, runner_id: project_runner2.id)
+    runner_projects.create!(project_id: project_runner3.sharding_key_id, runner_id: project_runner3.id)
   end
 
   describe '#perform' do

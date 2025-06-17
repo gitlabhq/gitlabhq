@@ -212,6 +212,34 @@ To set up job archiving:
 
 ### Pipelines
 
+#### Allow pipeline variables by default
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190833) in GitLab 18.1.
+
+{{< /history >}}
+
+Control whether pipeline variables are allowed by default in new projects in new groups.
+
+When disabled, the [default role to use pipeline variables](../../user/group/access_and_permissions.md#set-the-default-role-that-can-use-pipeline-variables)
+setting is set to **No one allowed** for new groups, which cascades to new projects in the new groups.
+When enabled, the setting defaults to **Developer** instead.
+
+{{< alert type="warning" >}}
+
+To keep the most secure defaults for new groups and projects, the recommendation is
+to set this setting to disabled.
+
+{{< /alert >}}
+
+To allow pipeline variables by default in all new projects in new groups:
+
+1. Select the **Allow pipeline variables by default in new groups** checkbox.
+1. Select **Save changes**.
+
+After group or project creation, maintainers can choose a different setting.
+
 #### Protect CI/CD variables by default
 
 Set all new CI/CD variables in projects and groups to be protected by default.

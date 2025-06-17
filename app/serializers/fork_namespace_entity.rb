@@ -41,6 +41,6 @@ class ForkNamespaceEntity < Grape::Entity
   end
 
   def markdown_description(namespace)
-    markdown_field(namespace, :description)
+    markdown_field(namespace.namespace_details, :description)
   end
 end

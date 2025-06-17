@@ -32,11 +32,6 @@ export default {
         return value === PIPELINE_IID_KEY || value === PIPELINE_ID_KEY;
       },
     },
-    refClass: {
-      type: String,
-      required: false,
-      default: '',
-    },
   },
   computed: {
     mergeRequestRef() {
@@ -209,7 +204,6 @@ export default {
             v-if="mergeRequestRef"
             :href="mergeRequestRef.path"
             class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
-            :class="refClass"
             data-testid="merge-request-ref"
             @click="trackClick('click_mr_ref')"
             >{{ mergeRequestRef.iid }}</gl-link
@@ -218,7 +212,6 @@ export default {
             v-else
             :href="refUrl"
             class="gl-text-sm gl-text-subtle gl-font-monospace hover:gl-text-subtle"
-            :class="refClass"
             data-testid="commit-ref-name"
             @click="trackClick('click_commit_name')"
             >{{ commitRef.name }}</gl-link

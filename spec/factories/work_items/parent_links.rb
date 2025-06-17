@@ -7,6 +7,19 @@ FactoryBot.define do
       work_item_parent { nil }
     end
 
+    trait :with_epic_issue do
+      after(:create) do |link, _evaluator|
+        issue = Issue.find(link.work_item_id)
+
+        create(:epic_issue,
+          epic: link.work_item_parent.synced_epic,
+          issue: issue,
+          work_item_parent_link: link,
+          relative_position: link.relative_position
+        )
+      end
+    end
+
     after(:build) do |link, evaluator|
       link.work_item = evaluator.work_item if evaluator.work_item
       link.work_item_parent = evaluator.work_item_parent if evaluator.work_item_parent

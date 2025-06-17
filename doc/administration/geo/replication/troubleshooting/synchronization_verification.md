@@ -28,10 +28,7 @@ secondary Geo site, you can:
 
 ### Resync and reverify individual components
 
-[You can force a resync and reverify individual items](https://gitlab.com/gitlab-org/gitlab/-/issues/364727)
-for all component types managed by the
-self-service framework using the UI. On the secondary
-site, visit **Admin > Geo > Replication**.
+On the secondary site, visit **Admin > Geo > Replication** to force a resync or reverify of individual items. 
 
 However, if this doesn't work, you can perform the same action using the Rails console. The
 following sections describe how to use internal application commands in the
@@ -76,7 +73,7 @@ replicator = model_record.replicator
 
 ##### Given a registry record's ID
 
-- Replace `432` with the actual ID. Note that a Registry record may or may not have the same ID
+- Replace `432` with the actual ID. A Registry record may or may not have the same ID
   value as the Model record that it tracks.
 - Replace `Geo::PackageFileRegistry` with any of the [Geo Registry classes](#geo-registry-classes).
 
@@ -189,7 +186,7 @@ replicator.registry
 A Geo data type is a specific class of data that is required by one or more GitLab features to store
 relevant data and is replicated by Geo to secondary sites.
 
-- **Blob types:**
+- **Blob types**:
   - `Ci::JobArtifact`
   - `Ci::PipelineArtifact`
   - `Ci::SecureFile`
@@ -201,13 +198,13 @@ relevant data and is replicated by Geo to secondary sites.
   - `Upload`
   - `DependencyProxy::Manifest`
   - `DependencyProxy::Blob`
-- **Git Repository types:**
+- **Git Repository types**:
   - `DesignManagement::Repository`
   - `ProjectRepository`
   - `ProjectWikiRepository`
   - `SnippetRepository`
   - `GroupWikiRepository`
-- **Other types:**
+- **Other types**:
   - `ContainerRepository`
 
 The main kinds of classes are Registry, Model, and Replicator. If you have an instance of one of
@@ -222,7 +219,7 @@ the Geo tracking database. Each record tracks a single replicable in the main
 GitLab database, such as an LFS file, or a project Git repository. The Rails
 models that correspond to Geo registry tables that can be queried are:
 
-- **Blob types:**
+- **Blob types**:
   - `Geo::CiSecureFileRegistry`
   - `Geo::DependencyProxyBlobRegistry`
   - `Geo::DependencyProxyManifestRegistry`
@@ -236,13 +233,13 @@ models that correspond to Geo registry tables that can be queried are:
   - `Geo::SnippetRepositoryRegistry`
   - `Geo::TerraformStateVersionRegistry`
   - `Geo::UploadRegistry`
-- **Git Repository types:**
+- **Git Repository types**:
   - `Geo::DesignManagementRepositoryRegistry`
   - `Geo::ProjectRepositoryRegistry`
   - `Geo::ProjectWikiRepositoryRegistry`
   - `Geo::SnippetRepositoryRegistry`
   - `Geo::GroupWikiRepositoryRegistry`
-- **Other types:**
+- **Other types**:
   - `Geo::ContainerRepositoryRegistry`
 
 ### Resync and reverify multiple components
@@ -315,7 +312,7 @@ end; nil
 
 If the **primary** site's checksums are in question, then you need to make the **primary** site recalculate checksums. A "full re-verification" is then achieved, because after each checksum is recalculated on a **primary** site, events are generated which propagate to all **secondary** sites, causing them to recalculate their checksums and compare values. Any mismatch marks the registry as `sync failed`, which causes sync retries to be scheduled.
 
-The UI does not provide a button to do a "full re-verification". You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin > Geo > Nodes > Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
+The UI does not provide a button to do a full re-verification. You can simulate this by setting your **primary** site's `Re-verification interval` to 1 (day) in **Admin > Geo > Nodes > Edit**. The **primary** site will then recalculate the checksum of any resource that has been checksummed more than 1 day ago.
 
 Optionally, you can do this manually:
 
@@ -407,11 +404,11 @@ When missing files or inconsistencies are present, you can encounter entries in 
 }
 ```
 
-The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific *upload* is missing:
+The same errors are also reflected in the UI under **Admin > Geo > Sites** when reviewing the synchronization status of specific replicables. In this scenario, a specific upload is missing:
 
-![The Geo Uploads replicable dashboard displaying all failed errors.](../img/geo_uploads_file_missing_v17_11.png)
+![The Geo Uploads replicable dashboard displaying all failed errors.](img/geo_uploads_file_missing_v17_11.png)
 
-![The Geo Uploads replicable dashboard displaying missing file error.](../img/geo_uploads_file_missing_details_v17_11.png)
+![The Geo Uploads replicable dashboard displaying missing file error.](img/geo_uploads_file_missing_details_v17_11.png)
 
 #### Clean up inconsistencies
 
@@ -423,7 +420,7 @@ Ensure you have a recent and working backup at hand before issuing any deletion 
 
 To remove those errors, first identify which particular resources are affected. Then, run the appropriate `destroy` commands to ensure the deletion is propagated across all Geo sites and their databases. Based on the previous scenario, an **upload** is causing those errors which is used as an example below.
 
-1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for *uploads* it corresponds to `Upload`.
+1. Map the identified inconsistencies to their respective [Geo Model class](#geo-data-type-model-classes) name. The class name is needed in the following steps. In this scenario, for uploads it corresponds to `Upload`.
 1. Start a [Rails console](../../../operations/rails_console.md#starting-a-rails-console-session) on the **Geo primary site**.
 1. Query all resources where verification failed due to missing files based on the *Geo Model class* of the previous step. Adjust or remove the `limit(20)` to display more results. Observe how the listed resources should match the failed ones shown in the UI:
 
@@ -558,7 +555,7 @@ def delete_orphaned_uploads(dry_run: true)
 end
 ```
 
-The above script defines a method named `delete_orphaned_uploads` which you can call like this to do a dry run:
+The previous script defines a method named `delete_orphaned_uploads` which you can call like this to do a dry run:
 
 ```ruby
 delete_orphaned_uploads(dry_run: true)
@@ -613,7 +610,7 @@ To validate if you are experiencing this issue:
    ```
 
 1. If `last_sync_failure` no longer includes the error `fatal: could not read Username`, then you are
-   affected by this issue. The state should now be `2`, meaning "synced". If so, then you should upgrade to
+   affected by this issue. The state should now be `2`, which means that it's synced. If so, then you should upgrade to
    a GitLab version with the fix. You may also wish to upvote or comment on
    [issue 466681](https://gitlab.com/gitlab-org/gitlab/-/issues/466681) which would have reduced the severity of this
    issue.
@@ -662,7 +659,7 @@ Failed to open TCP connection to localhost:5000 (Connection refused - connect(2)
 ```
 
 It happens if the container registry is not enabled on the secondary site. To fix it, check that the container registry
-is [enabled on the secondary site](../../../packages/container_registry.md#enable-the-container-registry). Note that if [Let’s Encrypt integration is disabled](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually), container registry is disabled as well, and you must [configure it manually](../../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
+is [enabled on the secondary site](../../../packages/container_registry.md#enable-the-container-registry). If the [Let's Encrypt integration is disabled](https://docs.gitlab.com/omnibus/settings/ssl/#configure-https-manually), container registry is disabled as well, and you must [configure it manually](../../../packages/container_registry.md#configure-container-registry-under-its-own-domain).
 
 ### Message: `Synchronization failed - Error syncing repository`
 

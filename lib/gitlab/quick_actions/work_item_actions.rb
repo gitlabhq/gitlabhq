@@ -240,11 +240,14 @@ module Gitlab
             parent_reference: parent.to_reference)
         end
 
-        # If the parent is confidential, but the child is not
-        if parent.confidential? && !child.confidential?
+        # If the parent is confidential, but the child is not, or won't be
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables -- @updates is already defined and part of
+        # Gitlab::QuickActions::Dsl implementation
+        if parent.confidential? && !child.confidential? && !@updates[:confidential]
           return _("Cannot assign a confidential parent item to a non-confidential child item. Make the child item " \
             "confidential and try again.")
         end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
         # Check hierarchy restriction
         return unless child_work_item && !hierarchy_relationship_allowed?(parent, child_work_item)

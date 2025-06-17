@@ -3,6 +3,7 @@ stage: Application Security Testing
 group: Static Analysis
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Offline environments
+description: Offline security scanning and resolving vulnerabilities.
 ---
 
 {{< details >}}
@@ -39,11 +40,11 @@ can also be followed in these other use cases.
 
 In an offline environment, the GitLab instance can be one or more servers and services that can
 communicate on a local network, but with no or very restricted access to the internet. Assume
-anything within the GitLab instance and supporting infrastructure (for example, a private Maven
+anything in the GitLab instance and supporting infrastructure (for example, a private Maven
 repository) can be accessed through a local network connection. Assume any files from the internet
 must come in through physical media (USB drive, hard drive, writeable DVD, etc.).
 
-## Overview
+## Use offline scanners
 
 GitLab scanners usually connect to the internet to download the
 latest sets of signatures, rules, and patches. A few extra steps are necessary
@@ -93,8 +94,8 @@ hosted within your network.
 
 ## Specific scanner instructions
 
-Each individual scanner may be slightly different than the steps described
-above. You can find more information at each of the pages below:
+Each individual scanner may be slightly different than the steps previously described.
+You can find more information at each of the pages below:
 
 - [Container scanning offline directions](../container_scanning/_index.md#running-container-scanning-in-an-offline-environment)
 - [SAST offline directions](../sast/_index.md#running-sast-in-an-offline-environment)
@@ -183,7 +184,7 @@ template:
 
 ### Alternate way without the official template
 
-If it's not possible to follow the above method, the images can be transferred manually instead:
+If it's not possible to follow the previous method, the images can be transferred manually instead:
 
 #### Example image packager script
 
@@ -234,12 +235,12 @@ these steps:
 
 1. Load the container images into the local registry. GitLab Secure leverages analyzer container
    images to do the various scans. These images must be available as part of running AutoDevOps.
-   Before running AutoDevOps, follow the [above steps](#using-the-official-gitlab-template)
+   Before running AutoDevOps, follow the steps in the [official GitLab template](#using-the-official-gitlab-template)
    to load those container images into the local container registry.
 
 1. Set the CI/CD variable to ensure that AutoDevOps looks in the right place for those images.
    The AutoDevOps templates leverage the `SECURE_ANALYZERS_PREFIX` variable to identify the location
-   of analyzer images. This variable is discussed above in [Using the secure bundle created](#using-the-secure-bundle-created).
+   of analyzer images. For more information about this see [Using the secure bundle created](#using-the-secure-bundle-created).
    Ensure that you set this variable to the correct value for where you loaded the analyzer images.
    You could consider doing this with a project CI/CD variable or by [modifying](../../../topics/autodevops/customize.md#customize-gitlab-ciyml)
    the `.gitlab-ci.yml` file directly.

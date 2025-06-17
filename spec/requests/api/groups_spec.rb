@@ -137,18 +137,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api("/groups")
-      end
-    end
-
     context "when unauthenticated" do
       it "returns public groups", :aggregate_failures do
         get api("/groups")
@@ -654,18 +642,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api("/groups/#{group2.id}")
-      end
-    end
-
     context 'when unauthenticated' do
       it 'returns 404 for a private group' do
         get api("/groups/#{group2.id}")
@@ -708,6 +684,9 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     context "when authenticated as user" do
       it "returns one of user1's groups", :aggregate_failures do
+        # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+
         project = create(:project, namespace: group2, path: 'Foo')
         create(:project_group_link, project: project, group: group1)
         group = create(:group)
@@ -1411,18 +1390,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
       end
     end
 
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
-      def request
-        get api("/groups/#{group1.id}/projects")
-      end
-    end
-
     context "when authenticated as user" do
       context 'with min access level' do
         it 'returns projects with min access level or higher' do
@@ -2033,18 +2000,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_shared_groups_api do
-      def request
-        get api(path)
-      end
-    end
-
-    context 'when rate_limit_groups_and_projects_api feature flag is disabled' do
-      before do
-        stub_feature_flags(rate_limit_groups_and_projects_api: false)
-      end
-
-      it_behaves_like 'unthrottled endpoint'
-
       def request
         get api(path)
       end
@@ -3296,27 +3251,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     it_behaves_like 'marks group for delayed deletion'
 
-    context 'when deletion adjourned period is 0' do
-      before do
-        stub_application_setting(deletion_adjourned_period: 0)
-      end
-
-      it_behaves_like 'immediately enqueues the job to delete the group'
-    end
-
-    context 'when delayed group deletion is disabled' do
-      before do
-        stub_application_setting(delayed_group_deletion: false)
-      end
-
-      it_behaves_like 'marks group for delayed deletion'
-    end
-
     context 'when permanently_remove param is sent' do
-      before do
-        stub_application_setting(delayed_group_deletion: true)
-      end
-
       context 'if permanently_remove is true' do
         let(:params) { { permanently_remove: true } }
 

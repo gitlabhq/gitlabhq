@@ -251,6 +251,18 @@ RSpec.describe Environments::StopService, feature_category: :continuous_delivery
         end
       end
 
+      context 'and merge request has legacy associated environments' do
+        before do
+          review_job.persisted_environment.update_column(:merge_request_id, nil)
+
+          subject
+        end
+
+        it 'stops the associated environments' do
+          expect(review_job.persisted_environment.reload).to be_stopping
+        end
+      end
+
       it 'stops the active environment' do
         subject
         expect(pipeline.environments_in_self_and_project_descendants.first).to be_stopping

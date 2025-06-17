@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Recommended deployments at scale.
 title: Reference architectures
@@ -174,7 +174,7 @@ To determine which architecture to pick for the expected load, see the following
 
 {{< alert type="note" >}}
 
-Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos, as they may impact the choice beyond just RPS or user count.
+Before you select an initial architecture, review this section thoroughly. Consider other factors such as High Availability (HA) or use of large monorepos because they may impact the choice beyond just RPS or user count.
 
 {{< /alert >}}
 
@@ -263,7 +263,7 @@ For more information, see the [recommended cloud providers and services](#recomm
 
 ### Decision Tree
 
-Read through the above guidance in full first before you refer to the following decision tree.
+Read through the guidance documented previously in full first before you refer to the following decision tree.
 
 ```mermaid
 %%{init: { 'theme': 'base' } }%%
@@ -361,7 +361,7 @@ See [Recommended cloud providers and services](#recommended-cloud-providers-and-
 
 The architectures were tested with repositories of varying sizes that follow best practices.
 
-**However, [large monorepos](../../user/project/repository/monorepos/_index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself.**
+**However, [large monorepos](../../user/project/repository/monorepos/_index.md) (several gigabytes or more) can significantly impact the performance of Git and in turn the environment itself**.
 Their presence and how they are used can put a significant strain on the entire system from Gitaly to the underlying infrastructure.
 
 The performance implications are largely software in nature. Additional hardware resources lead to diminishing returns.
@@ -375,8 +375,8 @@ If this applies to you, we strongly recommend you follow the linked documentatio
 Large monorepos come with notable cost. If you have such a repository,
 follow these guidance to ensure good performance and to keep costs in check:
 
-- [Optimize the large monorepo](../../user/project/repository/monorepos/_index.md#optimize-gitlab-settings). Using features such as
-  [LFS](../../user/project/repository/monorepos/_index.md#use-lfs-for-large-blobs) to not store binaries, and other approaches for reducing repository size, can
+- [Optimize the large monorepo](../../user/project/repository/monorepos/_index.md). Using features such as
+  [LFS](../../user/project/repository/monorepos/_index.md#use-git-lfs-for-large-binary-files) to not store binaries, and other approaches for reducing repository size, can
   dramatically improve performance and reduce costs.
 - Depending on the monorepo, increased environment specifications may be required to compensate. Gitaly might require additional resources along with Praefect, GitLab Rails, and Load Balancers. This depends on the monorepo itself and its usage.
 - When the monorepo is significantly large (20 gigabytes or more), further additional strategies may be required such as even further increased specifications or in some cases, a separate Gitaly backend for the monorepo alone.
@@ -388,7 +388,7 @@ These architectures have been [designed and tested](#validation-and-test-results
 setups based on real data.
 
 However, additional workloads can multiply the impact of operations by triggering follow-up actions.
-You may need to adjust the suggested specifications to compensate if you use:
+You might have to adjust the suggested specifications to compensate if you use:
 
 - Security software on the nodes.
 - Hundreds of concurrent CI jobs for [large repositories](../../user/project/repository/monorepos/_index.md).
@@ -425,7 +425,7 @@ We don't recommend the use of round-robin algorithms as they are known to not sp
 
 The total network bandwidth available to a load balancer when deployed on a machine can vary notably across cloud providers. Some cloud providers, like [AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-network-bandwidth.html), may operate on a burst system with credits to determine the bandwidth at any time.
 
-The required network bandwidth for your load balancers depends on factors such as data shape and workload. The recommended base sizes for each architecture class have been selected based on real data. However, in some scenarios such as consistent clones of [large monorepos](#large-monorepos), the sizes may need to be adjusted accordingly.
+The required network bandwidth for your load balancers depends on factors such as data shape and workload. The recommended base sizes for each architecture class have been selected based on real data. However, in some scenarios such as consistent clones of [large monorepos](#large-monorepos), you might have to adjust the sizes accordingly.
 
 ### No swap
 
@@ -449,7 +449,7 @@ can be set up using the Linux package as the specifications reflect. For more de
 The following lists are non-exhaustive. Other cloud providers not listed
 here may work with the same specifications, but they have not been validated.
 For the cloud provider services not listed here,
-use caution, as each implementation can be notably different.
+use caution because each implementation can be notably different.
 Test thoroughly before using them in production.
 
 {{< /alert >}}
@@ -523,7 +523,7 @@ Additionally, the following cloud provider services are recommended for use as p
 
 <!-- Disable ordered list rule https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md#md029---ordered-list-item-prefix -->
 <!-- markdownlint-disable MD029 -->
-1. For optimal performance, especially in larger environments (500 RPS / 25k users or higher), use the [Enterprise Plus edition](https://cloud.google.com/sql/docs/editions-intro) for GCP Cloud SQL. You might need to adjust the maximum connections higher than the service's defaults, depending on your workload.
+1. For optimal performance, especially in larger environments (500 RPS / 25k users or higher), use the [Enterprise Plus edition](https://cloud.google.com/sql/docs/editions-intro) for GCP Cloud SQL. You might have to adjust the maximum connections higher than the service's defaults, depending on your workload.
 2. To ensure good performance, deploy the [Premium tier of Azure Cache for Redis](https://learn.microsoft.com/en-us/azure/azure-cache-for-redis/cache-overview#service-tiers).
 <!-- markdownlint-enable MD029 -->
 
@@ -533,7 +533,7 @@ If you choose to use a third-party external service, use an [external database s
 
 1. The HA Linux package PostgreSQL setup encompasses PostgreSQL, PgBouncer, and Consul. All of these components are no longer required when using a third party external service.
 1. For optimal performance, enable [Database Load Balancing](../postgresql/database_load_balancing.md) with Read Replicas. Match the node counts to those used in standard Linux package deployments. This approach is particularly important for larger environments (more than 200 requests per second or 10,000+ users).
-1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, connection count configuration may need to be adjusted depending on the environment size. If Pooling is desired, a third party option needs to be explored as the GitLab Linux Package bundled PgBouncer is only compatible with the package bundled Postgres. [Database Load Balancing](../postgresql/database_load_balancing.md) can also be used to spread the load accordingly.
+1. Database Connection Poolers are not required for this setup as the options vary per service. As a result, you might have to adjust the connection count configuration, depending on the environment size. If Pooling is desired, a third party option must be explored as the GitLab Linux Package bundled PgBouncer is only compatible with the package bundled Postgres. [Database Load Balancing](../postgresql/database_load_balancing.md) can also be used to spread the load accordingly.
    - Ensure that if a pooler is included in a Cloud Provider service, it can handle the total load without bottlenecks. For example, Azure Database for PostgreSQL flexible server can optionally deploy a PgBouncer pooler in front of the database. However, PgBouncer is single threaded, which may cause bottlenecks under heavy load. To mitigate this issue, you can use database load balancing to distribute the pooler across multiple nodes.
 1. The number of nodes required for HA may vary depending on the service. The requirements for one deployment may vary from those for Linux package installations.
 
@@ -602,7 +602,7 @@ This applies to stateful components such as Postgres and Redis. You can use othe
 
 #### Autoscaling of stateful nodes
 
-As a general guidance, only _stateless_ components of GitLab can be run in autoscaling groups, namely GitLab Rails
+As a general guidance, only stateless components of GitLab can be run in autoscaling groups, namely GitLab Rails
 and Sidekiq. Other components that have state, such as Gitaly, are not supported in this fashion. For more information, see [issue 2997](https://gitlab.com/gitlab-org/gitaly/-/issues/2997).
 
 This applies to stateful components such as Postgres and Redis. You can use other supported cloud provider services, unless specifically called out as unsupported.
@@ -626,7 +626,7 @@ For deploying GitLab over multiple data centers or regions, we offer [GitLab Geo
 
 ## Validation and test results
 
-The [GitLab Delivery: Framework](https://handbook.gitlab.com/handbook/engineering/infrastructure-platforms/gitlab-delivery/framework/) team
+GitLab
 does regular smoke and performance tests for these architectures to ensure they
 remain compliant.
 
@@ -645,7 +645,7 @@ Each reference architecture is tested against specific throughput targets based 
 - Git (Pull): 2 RPS
 - Git (Push): 0.4 RPS (rounded to the nearest integer)
 
-The above RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
+The listed RPS targets were selected based on real customer data of total environmental loads corresponding to the user count, including CI and other workloads.
 
 {{< alert type="note" >}}
 
@@ -661,79 +661,6 @@ Testing is designed to be effective and provide good coverage for all reference 
 - Cloud Native environments: Weekly testing of select configurations on GCP and AWS.
 
 Our testing also includes prototype variations of these architectures being explored for potential future inclusion. Test results are publicly available on the [Reference Architecture wiki](https://gitlab.com/gitlab-org/reference-architectures/-/wikis/Benchmarks/Latest).
-
-## Cost calculator templates
-
-The following table lists initial cost templates for the different architectures across GCP, AWS, and Azure. These costs were calculated using each cloud provider's official calculator.
-
-However, be aware of the following caveats:
-
-- The table list only a rough estimate compute templates for Linux package architectures.
-- They do not take into account dynamic elements such as disk, network, or object storage, which can notably impact costs.
-- Due to the nature of Cloud Native Hybrid, it's not possible to give a static cost calculation for that deployment.
-- Committed use discounts apply if they are set as default in the cloud provider calculator.
-- Bare metal costs are also not included here as they vary depending on each configuration.
-
-For accurate estimate of costs for your environment, take the closest template and adjust it to match your specifications and expected usage.
-
-<table class="ra-table">
-  <col>
-  <colgroup span="2"></colgroup>
-  <colgroup span="2"></colgroup>
-  <tr>
-    <th rowspan="2"><br/>Reference Architecture</th>
-    <th style="text-align: center" scope="colgroup">GCP</th>
-    <th style="text-align: center" scope="colgroup">AWS</th>
-    <th style="text-align: center" scope="colgroup">Azure</th>
-  </tr>
-  <tr>
-    <th scope="col">Linux package</th>
-    <th scope="col">Linux package</th>
-    <th scope="col">Linux package</th>
-  </tr>
-    <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/1k_users.html">Up to 20 RPS or 1,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/02846ea4-635b-422f-a636-a5eff9bf9a2f?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=b51f178f4403b69a63f6eb33ea425f82de3bf249">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=1adf30bef7e34ceba9efa97c4470417b">Calculated cost</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/2k_users.html">Up to 40 RPS or 2,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/017fa74b-7b2c-4334-b537-5201d4fc2de4?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=3b3e3b81953737132789591d3a5179521943f1c0">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=25f66c35ba454bb98fb4034a8a50bb8c">Calculated cost</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/3k_users.html">Up to 60 RPS or 3,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/bc5c06ca-6d6b-423f-a923-27bafa8ac3da?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=7e94eb8712f6845fdeb05e61f459598a91dac3cb">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=24ac11fd947a4985ae9c9a5142649ad3">Calculated cost</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/5k_users.html">Up to 100 RPS or 5,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/ec788d9c-1377-4d03-b0e3-0f7950391a27?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=ad4c9db623a214c92d780cd9dff33f444d62cf02">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=bcf23017ddfd40649fdc885cacd08d0c">Calculated cost</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/10k_users.html">Up to 200 RPS or 10,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/9ef6f849-833b-4f2f-911e-979f5a491366?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=3e2970f919915a6337acea76a9f07655a1ecda4a">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=5748068be4864af6a34efb1cde685fa1">Calculated cost</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/25k_users.html">Up to 500 RPS or 25,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/6655e1d7-42ae-4f01-98cb-f3a29cf62a15?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=32acaeaa93366110cd5fbf98a66a8a141db7adcb">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=24f878f20ee64b5cb64de459d34c8128">Calculate cost</a></td>
-  </tr>
-  <tr>
-    <th scope="row"><a href="https://docs.gitlab.com/ee/administration/reference_architectures/50k_users.html">Up to 1000 RPS or 50,000 users</a></th>
-    <td><a href="https://cloud.google.com/products/calculator/estimate-preview/9128a9e9-25a2-459e-9480-edc0264d4b18?hl=en">Calculated cost</a></td>
-    <td><a href="https://calculator.aws/#/estimate?id=5a0bba1338e3577d627ec97833dbc80ac9615562">Calculated cost</a></td>
-    <td><a href="https://azure.microsoft.com/en-us/pricing/calculator/?shared-estimate=4dd065eea2194d70b44d6d897e81f460">Calculated cost</a></td>
-  </tr>
-</table>
 
 ## Maintaining a reference architecture environment
 
@@ -754,7 +681,7 @@ If a component is continuously exhausting its given resources, reach out to our 
 For most components, vertical and horizontal scaling can be applied as usual. However, before doing so, be aware of the following caveats:
 
 - When scaling Puma or Sidekiq vertically, the amount of workers must be adjusted to use the additional specifications. Puma is scaled automatically on the next reconfigure. However, you might have to [change Sidekiq configuration beforehand](../sidekiq/extra_sidekiq_processes.md#start-multiple-processes).
-- Redis and PgBouncer are primarily single threaded. If these components are seeing CPU exhaustion, they may need to be scaled out horizontally.
+- Redis and PgBouncer are primarily single threaded. If these components are seeing CPU exhaustion, they might have to be scaled out horizontally.
 - The Consul, Redis Sentinel, and Praefect components require an odd number of nodes for a voting quorum when deployed in HA form.
 - Scaling certain components significantly can result in notable knock on effects that affect the performance of the environment. For more guidance, see [Scaling knock on effects](#scaling-knock-on-effects).
 
@@ -763,7 +690,7 @@ You should take an iterative approach when scaling downwards, to ensure there ar
 
 #### Scaling knock on effects
 
-In some cases, scaling a component significantly may result in knock on effects for downstream components, impacting performance. The architectures are designed with balance in mind to ensure components that depend on each other are congruent in terms of specifications. Notably scaling a component may result in additional throughput being passed to the other components it depends on. As a result, they may need to be scaled as well.
+In some cases, scaling a component significantly may result in knock on effects for downstream components, impacting performance. The architectures are designed with balance in mind to ensure components that depend on each other are congruent in terms of specifications. Notably scaling a component may result in additional throughput being passed to the other components it depends on. As a result, you could have to scale these other dependent components as well.
 
 {{< alert type="note" >}}
 
@@ -774,7 +701,7 @@ The architectures have been designed to have elasticity to accommodate an upstre
 The following components can impact others when they have been significantly scaled:
 
 - Puma and Sidekiq - Notable scale ups of either Puma or Sidekiq workers will result in higher concurrent connections to the internal load balancer, PostgreSQL (via PgBouncer if present), Gitaly (via Praefect if present) and Redis.
-  - Redis is primarily single-threaded. In some cases, you may need to split Redis into separate instances (for example, cache and persistent) if the increased throughput causes CPU exhaustion in a combined cluster.
+  - Redis is primarily single-threaded. In some cases, you might have to split Redis into separate instances (for example, cache and persistent) if the increased throughput causes CPU exhaustion in a combined cluster.
   - PgBouncer is also single threaded but a scale out might result in a new pool being added that in turn might increase the total connections to Postgres. It's strongly recommended to only do this if you have experience in managing Postgres connections and to seek assistance if in doubt.
 - Gitaly Cluster / PostgreSQL - A notable scale out of additional nodes can have a detrimental effect on the HA system and performance due to increased replication calls to the primary node.
 
@@ -817,11 +744,11 @@ The following is a history of notable updates for reference architectures (2021-
 
 You can find a full history of changes [on the GitLab project](https://gitlab.com/gitlab-org/gitlab/-/merge_requests?scope=all&state=merged&label_name%5B%5D=Reference%20Architecture&label_name%5B%5D=documentation).
 
-**2025:**
+**2025**:
 
 - [2025-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181145): Added further clarity around supported machine types and that the listed examples are not intended as prescriptive defaults.
 
-**2024:**
+**2024**:
 
 - [2024-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175854): Added _Start Large_ section as further guidance for choosing initial sizing.
 - [2024-08](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/164181): Updated Expected Load section with some more examples on how to calculate RPS.
@@ -838,7 +765,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2024-02](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143539): Adjusted the Sidekiq recommendations on 2k to disable Sidekiq on Rails nodes and updated architecture diagram.
 - [2024-01](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140465): Updated recommendations for Azure for all Reference Architecture sizes and latest cloud services.
 
-**2023:**
+**2023**:
 
 - [2023-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139557): Updated notes on Load Balancers to be more reflective that any reputable offering is expected to work.
 - [2023-11-03](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133457): Expanded details on what each Reference Architecture is designed for, the testing methodology used and added details on how to scale environments.
@@ -870,10 +797,10 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2023-01-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110328): Expanded and centralized the requirements section on the main page.
 - [2023-01-26](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110183): Added notes on migrating Git data from NFS, that object data is still supported on NFS and handling SSH keys correctly across multiple Rails nodes.
 
-**2022:**
+**2022**:
 
 - [2022-12-14](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105451): Removed guidance for using NFS for Git data as support for this is now ended with `15.6` or later.
-- [2022-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106826): Added a note to clarify the difference between Amazon RDS Multi-AZ DB _cluster_ and _instance_, with the latter being supported. Also, increase PostgreSQL maximum connections setting to new default of `500`.
+- [2022-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106826): Added a note to clarify the difference between Amazon RDS Multi-AZ DB cluster and instance, with the latter being supported. Also, increase PostgreSQL maximum connections setting to new default of `500`.
 - [2022-12-12](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106695): Updated Sidekiq maximum concurrency configuration to match new default of `20`.
 - [2022-11-16](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104236): Corrected guidance for Praefect and Gitaly in reduced 3k architecture section that an odd number quorum is required.
 - [2022-11-15](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103623): Added guidance on how to handle GitLab Secrets in Cloud Native Hybrids and further links to the GitLab Charts documentation.
@@ -910,7 +837,7 @@ You can find a full history of changes [on the GitLab project](https://gitlab.co
 - [2022-01-26](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78705): Merged testing process and cost estimates into one section with expanded details.
 - [2022-01-13](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77968): Expanded guidance on recommended Kubernetes platforms.
 
-**2021:**
+**2021**:
 
 - [2021-12-31](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77437): Fix typo for 25k Redis AWS machine size.
 - [2021-12-28](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77243): Add Cloud Provider breakdowns to testing process & results section.

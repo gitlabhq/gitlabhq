@@ -89,6 +89,11 @@ export default {
       required: false,
       default: '',
     },
+    contextualViewEnabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -286,7 +291,8 @@ export default {
           :show-labels="showLabels"
           :work-item-full-path="workItemFullPath"
           :show-weight="shouldShowWeight"
-          @click="$emit('click', $event)"
+          :contextual-view-enabled="contextualViewEnabled"
+          @click="$emit('toggleDrawer', $event)"
           @removeChild="$emit('removeChild', childItem)"
         />
       </div>
@@ -309,11 +315,12 @@ export default {
         :allowed-children-by-type="allowedChildrenByType"
         :active-child-item-id="activeChildItemId"
         :parent-id="parentId"
+        :contextual-view-enabled="contextualViewEnabled"
         @drag="$emit('drag', $event)"
         @drop="$emit('drop')"
         @removeChild="$emit('removeChild', childItem)"
         @error="$emit('error', $event)"
-        @click="$emit('click', $event)"
+        @click="$emit('toggleDrawer', $event)"
       />
       <work-item-children-load-more
         v-if="hasNextPage && isExpanded"

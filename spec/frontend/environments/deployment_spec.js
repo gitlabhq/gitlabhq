@@ -67,10 +67,18 @@ describe('~/environments/components/deployment.vue', () => {
   describe('approval badge', () => {
     it('should show a badge if the deployment needs approval', () => {
       wrapper = createWrapper({
-        propsData: { deployment: { ...deployment, pendingApprovalCount: 5 } },
+        propsData: { deployment: { ...deployment, pendingApprovalCount: 5, status: 'running' } },
       });
 
       expect(findApprovalBadge().exists()).toBe(true);
+    });
+
+    it('should not show a badge if the deployment status is failed', () => {
+      wrapper = createWrapper({
+        propsData: { deployment: { ...deployment, pendingApprovalCount: 5, status: 'failed' } },
+      });
+
+      expect(findApprovalBadge().exists()).toBe(false);
     });
 
     it('should not show a badge if the deployment does not need approval', () => {

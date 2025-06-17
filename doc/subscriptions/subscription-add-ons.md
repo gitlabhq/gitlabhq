@@ -2,7 +2,7 @@
 stage: Fulfillment
 group: Provision
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Seat assignment, GitLab Duo add-on
+description: Seat assignment, GitLab Duo subscription add-on.
 title: GitLab Duo add-ons
 ---
 
@@ -26,7 +26,7 @@ and gain deeper insights across your projects.
 Three add-ons are available: GitLab Duo Core, Pro, and Enterprise.
 
 Each add-on provides access to
-[a set of GitLab Duo features](../user/gitlab_duo/_index.md#summary-of-gitlab-duo-features).
+[a set of GitLab Duo features](../user/gitlab_duo/feature_summary.md).
 
 ## GitLab Duo Core
 
@@ -35,11 +35,16 @@ GitLab Duo Core is included automatically if you have:
 - GitLab 18.0 or later.
 - A Premium or Ultimate subscription.
 
-You only need to [turn on IDE features](../user/gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability)
-to start using GitLab Duo in your IDEs. No further action is needed.
+If you are a new customer in GitLab 18.0 or later, IDE features are automatically turned on and no further action is needed.
 
-Users assigned the [Guest role](../administration/guest_users.md) do not have
-access to GitLab Duo Core.
+If you are a pre-existing customer from GitLab 17.11 or earlier, you must [turn on IDE features](../user/gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability) to start using GitLab Duo in your IDEs. No further action is needed.
+
+Users assigned the following roles have access to GitLab Duo Core:
+
+- Reporter
+- Developer
+- Maintainer
+- Owner
 
 ### GitLab Duo Core limits
 
@@ -163,10 +168,8 @@ Prerequisites:
 
 The user is sent a confirmation email.
 
-#### Configure network and proxy settings
-
-For GitLab Self-Managed instances, to enable GitLab Duo features,
-you must [enable network connectivity](../user/ai_features_enable.md).
+After you assign seats,
+[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md). 
 
 ## Assign and remove GitLab Duo seats in bulk
 

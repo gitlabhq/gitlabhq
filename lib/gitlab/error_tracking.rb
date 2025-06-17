@@ -50,7 +50,7 @@ module Gitlab
       end
 
       # This should be used when you want to passthrough exception handling:
-      # rescue and raise to be catched in upper layers of the application.
+      # rescue and raise to be caught in upper layers of the application.
       #
       # If the exception implements the method `sentry_extra_data` and that method
       # returns a Hash, then the return value of that method will be merged into

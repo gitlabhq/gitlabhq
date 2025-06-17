@@ -177,6 +177,7 @@ describe('WorkItemDetail component', () => {
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
+        workItemFullPath: 'group/project',
         workItemId,
         isModal,
         workItemIid,
@@ -195,7 +196,6 @@ describe('WorkItemDetail component', () => {
           workItemsAlpha: workItemsAlphaEnabled,
         },
         hasSubepicsFeature,
-        fullPath: 'group/project',
         groupPath: 'group',
         hasLinkedItemsEpicsFeature,
       },
@@ -275,7 +275,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('updates the document title', () => {
-      expect(document.title).toEqual('Updated title (#1) · Task · test-project-path');
+      expect(document.title).toEqual('Updated _title_ (#1) · Task · test-project-path');
     });
 
     it('renders todos widget if logged in', () => {
@@ -1373,5 +1373,32 @@ describe('WorkItemDetail component', () => {
         expect(findWorkItemDescription().props('uploadsPath')).toBe(uploadsPath);
       },
     );
+  });
+
+  it('sets `canPasteDesign` to true on work item notes focus event', async () => {
+    createComponent();
+    await waitForPromises();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+
+    findNotesWidget().vm.$emit('focus');
+    await nextTick();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
+  });
+
+  it('sets `canPasteDesign` to false on work item notes blur event', async () => {
+    createComponent();
+    await waitForPromises();
+
+    findNotesWidget().vm.$emit('focus');
+    await nextTick();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(false);
+
+    findNotesWidget().vm.$emit('blur');
+    await nextTick();
+
+    expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
   });
 });

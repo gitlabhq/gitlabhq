@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlIntersectionObserver } from '@gitlab/ui';
+import { GlLoadingIcon, GlIntersectionObserver, GlIcon } from '@gitlab/ui';
 import Draggable from 'vuedraggable';
 import { STATUS_CLOSED } from '~/issues/constants';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -19,6 +19,7 @@ import {
   listIssuablesQueries,
   ListType,
   WIP_WEIGHT,
+  INCIDENT,
 } from 'ee_else_ce/boards/constants';
 import { DETAIL_VIEW_QUERY_PARAM_NAME } from '~/work_items/constants';
 import {
@@ -49,6 +50,7 @@ export default {
     GlLoadingIcon,
     GlIntersectionObserver,
     BoardCardMoveToPosition,
+    GlIcon,
   },
   mixins: [Tracking.mixin(), glFeatureFlagsMixin()],
   inject: [
@@ -81,6 +83,11 @@ export default {
     columnIndex: {
       type: Number,
       required: true,
+    },
+    draggedType: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -288,6 +295,7 @@ export default {
         value: this.boardListItems,
         delay: DRAG_DELAY,
         delayOnTouchOnly: true,
+        disabled: this.isInapplicable,
       };
 
       return this.canMoveIssue ? options : {};
@@ -306,6 +314,12 @@ export default {
       return Boolean(
         this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
       );
+    },
+    isInapplicable() {
+      if (!this.draggedType) {
+        return false;
+      }
+      return this.draggedType === INCIDENT && this.list.listType === ListType.status;
     },
   },
   watch: {
@@ -351,12 +365,14 @@ export default {
     },
     handleDragOnStart({
       item: {
-        dataset: { draggableItemType },
+        dataset: { draggableItemType, itemId },
       },
     }) {
       if (draggableItemType !== DraggableItemTypes.card) {
         return;
       }
+      const draggedItem = this.boardListItems.find((item) => item.id === itemId);
+      this.$emit('dragStart', { itemType: draggedItem?.type || null });
 
       // Reset dragCancelled flag
       this.dragCancelled = false;
@@ -378,6 +394,7 @@ export default {
       if (draggableItemType !== DraggableItemTypes.card) {
         return;
       }
+      this.$emit('dragStop');
 
       // Detach listener as soon as drag ends.
       document.removeEventListener('keyup', this.handleKeyUp.bind(this));
@@ -713,8 +730,21 @@ export default {
   <div
     v-show="!list.collapsed"
     class="board-list-component gl-relative gl-flex gl-h-full gl-min-h-0 gl-flex-col"
+    :class="{ 'board-column-not-applicable': isInapplicable }"
     data-testid="board-list-cards-area"
   >
+    <div
+      v-if="isInapplicable"
+      class="board-column-not-applicable-content gl-flex gl-items-center gl-text-center"
+    >
+      <div class="gl-w-full">
+        <strong
+          ><gl-icon name="cancel" class="gl-mr-2" />{{ __('Not available for this item') }}</strong
+        >
+        <div>{{ __('This status cannot be applied to the selected item.') }}</div>
+      </div>
+    </div>
+
     <div
       v-if="loading"
       class="gl-mt-4 gl-text-center"
@@ -811,22 +841,20 @@ export default {
           @appear="onReachingListBottom"
         />
       </board-card>
-      <div>
-        <!-- for supporting previous structure with intersection observer -->
-        <li
-          v-if="showCount"
-          class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
-          data-issue-id="-1"
-        >
-          <gl-loading-icon
-            v-if="isLoadingMore"
-            size="sm"
-            :label="$options.i18n.loadingMoreBoardItems"
-          />
-          <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
-          <span v-else>{{ paginatedIssueText }}</span>
-        </li>
-      </div>
+      <!-- for supporting previous structure with intersection observer -->
+      <li
+        v-if="showCount"
+        class="board-list-count gl-py-4 gl-text-center gl-text-subtle"
+        data-issue-id="-1"
+      >
+        <gl-loading-icon
+          v-if="isLoadingMore"
+          size="sm"
+          :label="$options.i18n.loadingMoreBoardItems"
+        />
+        <span v-if="showingAllItems">{{ showingAllItemsText }}</span>
+        <span v-else>{{ paginatedIssueText }}</span>
+      </li>
     </component>
   </div>
 </template>

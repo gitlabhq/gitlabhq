@@ -64,6 +64,9 @@ To edit an issue:
 
 Generate a detailed description for an issue based on a short summary you provide.
 
+<i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=-BWBQat7p5M)
+<!-- Video published on 2024-12-18 -->
+
 Prerequisites:
 
 - You must belong to at least one group with the [experiment and beta features setting](../../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
@@ -401,7 +404,7 @@ to close. Users can include issue closing patterns in the merge request descript
 of a commit message. Closing messages in commit messages are easy to miss. In both cases, the merge request widget
 shows information about the issue to close on merge:
 
-![This merge request closes issue #2754.](../merge_requests/img/closing_pattern_v17_4.png)
+![This merge request closes issue #2754.](img/closing_pattern_v17_4.png)
 
 When you merge a merge request, GitLab checks that you have permission to close the targeted issues.
 In public repositories, this check is important, because external users can create both merge requests
@@ -514,8 +517,6 @@ of your installation.
 
 {{< /history >}}
 
-<!-- When issues as work items are GA and feature flag `work_items_view_preference` is removed, remove the prerequisite below. -->
-
 If an issue description is long, GitLab displays only part of it.
 To see the whole description, you must select **Read more**.
 This truncation makes it easier to find other elements on the page without scrolling through lengthy text.
@@ -538,8 +539,6 @@ This setting is remembered and affects all issues, tasks, epics, objectives, and
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181184) in GitLab 17.10.
 
 {{< /history >}}
-
-<!-- When issues as work items are GA and feature flag `work_items_view_preference` is removed, remove the prerequisite below. -->
 
 Issue attributes are shown in a sidebar to the right of the description when space allows.
 
@@ -810,7 +809,7 @@ You can use the OR operator (**is one of: `||`**) when you [filter the list of i
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags.md) named `issues_list_drawer`. Disabled by default.
-- In GitLab 17.11, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
+- In GitLab 17.11 and later, if [the new look for issues](issue_work_items.md) is enabled, this feature is also enabled.
 
 {{< /history >}}
 

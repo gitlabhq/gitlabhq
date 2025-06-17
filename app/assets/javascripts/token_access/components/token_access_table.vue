@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlButton,
   GlIcon,
   GlLink,
@@ -8,13 +9,14 @@ import {
   GlSprintf,
   GlTooltipDirective,
 } from '@gitlab/ui';
-import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import { TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP } from '~/graphql_shared/constants';
 import ProjectAvatar from '~/vue_shared/components/project_avatar.vue';
 import { s__, __ } from '~/locale';
 import { JOB_TOKEN_POLICIES } from '../constants';
 
 export default {
   components: {
+    GlBadge,
     GlButton,
     GlIcon,
     GlLink,
@@ -78,7 +80,7 @@ export default {
   methods: {
     itemType(item) {
       // eslint-disable-next-line no-underscore-dangle
-      return item.__typename === TYPENAME_GROUP ? 'group' : 'project';
+      return item.__typename === TYPENAME_CI_JOB_TOKEN_ACCESSIBLE_GROUP ? 'group' : 'project';
     },
     getPolicies(policyKeys) {
       return policyKeys?.map((key) => JOB_TOKEN_POLICIES[key]);
@@ -88,9 +90,6 @@ export default {
     },
     isCurrentProject(item) {
       return item.fullPath === this.fullPath;
-    },
-    shouldShowEditButton(item) {
-      return this.showPolicies && !this.isCurrentProject(item);
     },
   },
 };
@@ -136,6 +135,9 @@ export default {
           class="gl-ml-3 gl-shrink-0"
           data-testid="autopopulated-icon"
         />
+        <gl-badge v-if="isCurrentProject(item)" class="gl-ml-3">{{
+          __('Current project')
+        }}</gl-badge>
       </div>
     </template>
 
@@ -159,7 +161,7 @@ export default {
     <template #cell(actions)="{ item }">
       <div class="gl-flex gl-gap-2">
         <gl-button
-          v-if="shouldShowEditButton(item)"
+          v-if="showPolicies"
           icon="pencil"
           :aria-label="__('Edit')"
           data-testid="token-access-table-edit-button"

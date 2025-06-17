@@ -16,7 +16,7 @@ class Projects::Ci::LintsController < Projects::ApplicationController
 
     result = Gitlab::Ci::Lint
       .new(project: @project, current_user: current_user)
-      .validate(content, dry_run: dry_run)
+      .legacy_validate(content, dry_run: dry_run)
 
     render json: ::Ci::Lint::ResultSerializer.new.represent(result)
   end

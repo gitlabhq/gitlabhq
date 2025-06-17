@@ -320,6 +320,38 @@ RSpec.describe Gitlab::Help::HugoTransformer do
       end
     end
 
+    it 'converts maintained-versions shortcodes to maintenance policy message' do
+      content = <<~MARKDOWN
+        # Documentation
+
+        Current maintained versions:
+
+        {{< maintained-versions >}}
+
+        More content here.
+      MARKDOWN
+
+      expected_content = <<~MARKDOWN
+        # Documentation
+
+        Current maintained versions:
+
+        https://docs.gitlab.com/policy/maintenance/#maintained-versions
+
+        More content here.
+      MARKDOWN
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
+    it 'handles maintained-versions shortcode with self-closing syntax' do
+      content = '{{< maintained-versions />}}'
+
+      expected_content = 'https://docs.gitlab.com/policy/maintenance/#maintained-versions'
+
+      expect(transformer.transform(content).strip).to eq(expected_content.strip)
+    end
+
     describe '#find_next_heading_level' do
       it 'returns level 2 when no previous headings exist' do
         content = "Some content without headings"

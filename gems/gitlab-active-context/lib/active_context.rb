@@ -10,6 +10,10 @@ loader = Zeitwerk::Loader.for_gem
 loader.setup
 
 module ActiveContext
+  def self.indexing?
+    ActiveContext::Config.indexing_enabled? && !adapter.nil?
+  end
+
   def self.configure(...)
     ActiveContext::Config.configure(...)
   end

@@ -1,0 +1,15 @@
+---
+table_name: ci_job_artifacts
+classes:
+- Ci::JobArtifact
+feature_categories:
+- job_artifacts
+description: Stores artifacts produced by a build.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/61864a5a5bb523953589c9398a431c4369fbfc76
+milestone: '10.3'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects
+table_size: over_limit
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191330
+removed_in_milestone: '18.1'

@@ -2,6 +2,7 @@
 
 class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
+  include Members::InviteModalActions
   include MembersPresentation
   include SortingHelper
   include Gitlab::Utils::StrongMemoize
@@ -18,7 +19,6 @@ class Groups::GroupMembersController < Groups::ApplicationController
 
   before_action only: [:index] do
     push_frontend_feature_flag(:importer_user_mapping, current_user)
-    push_frontend_feature_flag(:importer_user_mapping_allow_bypass_of_confirmation, @group)
   end
 
   skip_before_action :check_two_factor_requirement, only: :leave

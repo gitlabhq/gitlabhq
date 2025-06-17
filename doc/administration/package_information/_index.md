@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Package information
 ---
@@ -95,13 +95,13 @@ Depending on the init system, this `WARNING` can be one of:
 /sbin/init: unrecognized option '--version'
 ```
 
-when the underlying init system *is not* upstart.
+when the underlying init system is not upstart.
 
 ```plaintext
   -.mount loaded active mounted   /
 ```
 
-when the underlying init system *IS* systemd.
+when the underlying init system is systemd.
 
-These warnings _can be safely ignored_. They are not suppressed because this
+These warnings can be safely ignored. They are not suppressed because this
 allows everyone to debug possible detection issues faster.

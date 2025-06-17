@@ -15,7 +15,7 @@ title: GitLab Dedicated users and notifications
 
 ## Add Switchboard users
 
-Administrators can add Switchboard users to their GitLab Dedicated instance. There are two types of users:
+Administrators can add two types of Switchboard users to their GitLab Dedicated instance:
 
 - **Read only**: Users can only view instance data.
 - **Admin**: Users can edit the instance configuration and manage users.
@@ -107,7 +107,7 @@ When requesting OIDC configuration, you must provide:
 | Issuer URL | The base URL that uniquely identifies your OIDC provider. This URL typically points to your provider's discovery document located at `https://[your-idp-domain]/.well-known/openid-configuration`. |
 | Token endpoints | The specific URLs from your identity provider used for obtaining and validating authentication tokens. These endpoints are usually listed in your provider's OpenID Connect configuration documentation. |
 | Scopes | The permission levels requested during authentication that determine what user information is shared. Standard scopes include `openid`, `email`, and `profile`. |
-| Client ID | The unique identifier assigned to Switchboard when you register it as an application in your identity provider. You'll need to create this registration in your identity provider's dashboard first. |
+| Client ID | The unique identifier assigned to Switchboard when you register it as an application in your identity provider. You must create this registration in your identity provider's dashboard first. |
 | Client secret | The confidential security key generated when you register Switchboard in your identity provider. This secret authenticates Switchboard to your IdP and should be kept secure. |
 
 GitLab provides you with the following information to configure in your identity provider:
@@ -117,4 +117,4 @@ GitLab provides you with the following information to configure in your identity
 | Redirect/callback URLs | The URLs where your identity provider should redirect users after successful authentication. These must be added to your identity provider's allowed redirect URLs list. |
 | Required claims | The specific user information that must be included in the authentication token payload. At minimum, a claim mapped to the user's email address is required. |
 
-Additional configuration details may be required depending on your specific OIDC provider.
+Additional configuration details might be required depending on your specific OIDC provider.

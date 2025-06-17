@@ -33,7 +33,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         status_event: :execute,
         max_batch_size: nil,
         gitlab_schema: gitlab_schema,
-        pause_ms: 0
+        pause_ms: 100
       )
     end
   end
@@ -60,7 +60,7 @@ RSpec.describe Gitlab::Database::Migrations::TestBatchedBackgroundRunner, :freez
         batch_class_name: batching_strategy,
         batch_size: batch_size,
         sub_batch_size: sub_batch_size,
-        pause_ms: 0,
+        pause_ms: 100,
         interval: 5.minutes,
         status_event: :execute
       )

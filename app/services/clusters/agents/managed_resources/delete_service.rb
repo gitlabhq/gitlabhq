@@ -33,7 +33,9 @@ module Clusters
             return
           end
 
-          managed_resource.update!(tracked_objects: response.in_progress.map(&:to_h))
+          track_event(managed_resource, response)
+
+          managed_resource.update!(tracked_objects: response.in_progress.map { |obj| obj.to_h.stringify_keys })
 
           if managed_resource.tracked_objects.any?
             requeue!
@@ -86,6 +88,24 @@ module Clusters
 
         def logger
           @logger ||= Gitlab::Kubernetes::Logger.build
+        end
+
+        def track_event(managed_resource, response)
+          in_progress_objects = response.in_progress.map { |obj| obj.to_h.stringify_keys }
+          deleted_objects = managed_resource.tracked_objects - in_progress_objects
+
+          deleted_objects.each do |object|
+            group = object['group'].presence || CORE_GROUP
+            Gitlab::InternalEvents.track_event(
+              'delete_gvk_resource_for_managed_resource',
+              project: managed_resource.environment.project,
+              additional_properties: {
+                label: "#{group}/#{object['version']}/#{object['kind']}",
+                property: managed_resource.environment.tier,
+                value: managed_resource.environment_id
+              }
+            )
+          end
         end
       end
     end

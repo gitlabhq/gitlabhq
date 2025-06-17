@@ -36,7 +36,7 @@ module ActiveContext
       #   query = ActiveContext::Query.filter(status: 'active').knn(
       #     target: 'embedding',
       #     vector: [0.1, 0.2],
-      #     limit: 5
+      #     k: 5
       #   )
       #   processor = Processor.new
       #   processor.process(query)
@@ -248,7 +248,7 @@ module ActiveContext
           node_values = node.value
           preset_values = collection.current_search_embedding_version
 
-          k = node_values[:limit]
+          k = node_values[:k]
           field = node_values[:target] || preset_values[:field]
           vector = node_values[:vector] || get_embeddings(node_values[:content], preset_values[:model])
 

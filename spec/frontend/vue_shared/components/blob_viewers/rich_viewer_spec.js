@@ -17,12 +17,19 @@ describe('Blob Rich Viewer component', () => {
   const dummyContent = '<h1 id="markdown">Foo Bar</h1>';
   const defaultType = 'markdown';
 
-  function createComponent(type = defaultType, richViewer, content = dummyContent) {
+  // eslint-disable-next-line max-params
+  function createComponent(
+    type = defaultType,
+    richViewer,
+    content = dummyContent,
+    isSnippet = false,
+  ) {
     wrapper = shallowMount(RichViewer, {
       propsData: {
         richViewer,
         content,
         type,
+        isSnippet,
       },
     });
   }
@@ -66,6 +73,7 @@ describe('Blob Rich Viewer component', () => {
       });
 
       it('sanitizes the content', () => {
+        createComponent(MARKUP_FILE_TYPE, null, content, true);
         jest.runAllTimers();
 
         expect(wrapper.html()).toContain('<img src="x">');
@@ -83,6 +91,7 @@ describe('Blob Rich Viewer component', () => {
       });
 
       it('sanitizes the content', () => {
+        createComponent(MARKUP_FILE_TYPE, null, content, true);
         expect(wrapper.html()).toContain('<img src="x">');
       });
     });

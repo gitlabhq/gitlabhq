@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Organization
+description: Namespace hierarchy.
 ---
 
 {{< history >}}
@@ -46,7 +47,7 @@ To view the organizations you have access to:
 
 {{< alert type="note" >}}
 
-In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/) organizations can be only private.
+Support for only private organizations is proposed for [cells 1.0](https://gitlab.com/groups/gitlab-org/-/epics/12383).
 
 {{< /alert >}}
 
@@ -80,7 +81,7 @@ In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/des
 
 {{< alert type="note" >}}
 
-In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/) organizations can be only private.
+Support for only private organizations is proposed for [cells 1.0](https://gitlab.com/groups/gitlab-org/-/epics/12383).
 
 {{< /alert >}}
 
@@ -92,8 +93,8 @@ In [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/des
 
 {{< alert type="note" >}}
 
-Switching between organizations is not supported in [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/),
-but is supported in [Cells 1.5](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.5/).
+Switching between organizations is not supported in cells 1.0.
+Support for switching organizations is proposed for [cells 1.5](https://gitlab.com/groups/gitlab-org/-/epics/12505).
 
 {{< /alert >}}
 
@@ -152,7 +153,3 @@ The Organization description field supports a limited subset of [GitLab Flavored
 - [Emphasis](../markdown.md#emphasis)
 - [Links](../markdown.md#links)
 - [Superscripts / Subscripts](../markdown.md#superscripts-and-subscripts)
-
-## Related topics
-
-- [Organization design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/)

@@ -6,7 +6,7 @@ module Gitlab
       module Chain
         class EnsureEnvironments < Chain::Base
           def perform!
-            pipeline.stages.map(&:statuses).flatten.each(&method(:ensure_environment))
+            pipeline.stages.flat_map(&:statuses).each(&method(:ensure_environment))
           end
 
           def break?

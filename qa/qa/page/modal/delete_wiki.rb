@@ -4,7 +4,7 @@ module QA
   module Page
     module Modal
       class DeleteWiki < Base
-        view 'app/assets/javascripts/pages/shared/wikis/components/delete_wiki_modal.vue' do
+        view 'app/assets/javascripts/wikis/components/delete_wiki_modal.vue' do
           element 'confirm-deletion-button', required: true
         end
 

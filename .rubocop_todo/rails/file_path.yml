@@ -21,7 +21,6 @@ Rails/FilePath:
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/factories/spdx_catalogue.rb'
     - 'ee/spec/factories/vulnerabilities/findings.rb'
-    - 'ee/spec/features/epics/update_epic_spec.rb'
     - 'ee/spec/lib/gitlab/code_owners/file_spec.rb'
     - 'ee/spec/lib/gitlab/spdx/catalogue_spec.rb'
     - 'ee/spec/models/geo/every_geo_event_spec.rb'

@@ -4,6 +4,12 @@ mutation toggleWorkItemNoteResolveDiscussion($id: DiscussionID!, $resolve: Boole
   discussionToggleResolve(input: { id: $id, resolve: $resolve }) {
     discussion {
       id
+      resolved
+      resolvable
+      resolvedBy {
+        id
+        name
+      }
       notes {
         nodes {
           ...WorkItemNote

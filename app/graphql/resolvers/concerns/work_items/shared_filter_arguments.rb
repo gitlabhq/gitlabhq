@@ -98,8 +98,36 @@ module WorkItems
           value.to_h
         }
 
+      argument :parent_ids, [::Types::GlobalIDType[::WorkItem]],
+        description: 'Filter work items by global IDs of their parent items (maximum is 100 items).',
+        required: false,
+        prepare: ->(global_ids, _ctx) { GitlabSchema.parse_gids(global_ids, expected_type: ::WorkItem).map(&:model_id) }
+
+      argument :release_tag, [GraphQL::Types::String],
+        required: false,
+        description: "Release tag associated with the work item's milestone. Ignored when parent is a group."
+      argument :release_tag_wildcard_id, ::Types::ReleaseTagWildcardIdEnum,
+        required: false,
+        description: 'Filter by release tag wildcard.'
+      argument :crm_contact_id, GraphQL::Types::String,
+        required: false,
+        description: 'Filter by ID of CRM contact.'
+      argument :crm_organization_id, GraphQL::Types::String,
+        required: false,
+        description: 'Filter by ID of CRM contact organization.'
+
       validates mutually_exclusive: [:assignee_usernames, :assignee_wildcard_id]
       validates mutually_exclusive: [:milestone_title, :milestone_wildcard_id]
+      validates mutually_exclusive: [:release_tag, :release_tag_wildcard_id]
+    end
+
+    MAX_IDS_LIMIT = 100
+
+    def resolve(**args)
+      validate_field_limits(args, :parent_ids, :release_tag)
+      validate_field_limits(args[:not], :release_tag) if args[:not].present?
+
+      super
     end
 
     private
@@ -116,11 +144,25 @@ module WorkItems
       rewrite_param_name(params[:or], :author_usernames, :author_username)
       rewrite_param_name(params[:or], :label_names, :label_name)
 
+      rewrite_param_name(params, :parent_ids, :work_item_parent_ids)
+      rewrite_param_name(params, :release_tag_wildcard_id, :release_tag)
+
       params
     end
 
     def rewrite_param_name(params, old_name, new_name)
       params[new_name] = params.delete(old_name) if params && params[old_name].present?
+    end
+
+    def validate_field_limits(params, *fields)
+      return unless params
+
+      fields.each do |field|
+        if Array(params[field]).size > MAX_IDS_LIMIT
+          raise GraphQL::ExecutionError,
+            "You can only provide up to #{MAX_IDS_LIMIT} #{field.to_s.camelize(:lower)} at once."
+        end
+      end
     end
   end
 end

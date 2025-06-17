@@ -141,6 +141,8 @@ export default {
       containerRepositoriesCount: 0,
       itemToDelete: {},
       deleteAlertType: null,
+      deleteAlertMessage: null,
+      deleteImageErrorMessages: [],
       sorting: null,
       name: null,
       mutationLoading: false,
@@ -197,11 +199,6 @@ export default {
     showConnectionError() {
       return this.config.connectionError || this.config.invalidPathError;
     },
-    deleteImageAlertMessage() {
-      return this.deleteAlertType === 'success'
-        ? DELETE_IMAGE_SUCCESS_MESSAGE
-        : DELETE_IMAGE_ERROR_MESSAGE;
-    },
   },
   methods: {
     deleteImage(item) {
@@ -210,7 +207,8 @@ export default {
       this.$refs.deleteModal.show();
     },
     dismissDeleteAlert() {
-      this.deleteAlertType = null;
+      this.setDeleteAlert(null, null);
+
       this.itemToDelete = {};
     },
     fetchNextPage() {
@@ -239,6 +237,20 @@ export default {
         }, 200);
       }
     },
+    setDeleteAlert(alertType, alertMessage) {
+      this.deleteAlertType = alertType;
+      this.deleteAlertMessage = alertMessage;
+    },
+    setDeleteErrorMessages(deleteErrorMessages = []) {
+      this.deleteImageErrorMessages = deleteErrorMessages ?? [];
+    },
+    handleDeleteImageSuccess() {
+      this.setDeleteAlert('success', DELETE_IMAGE_SUCCESS_MESSAGE);
+    },
+    handleDeleteImageError(errors = []) {
+      this.setDeleteAlert('danger', DELETE_IMAGE_ERROR_MESSAGE);
+      this.setDeleteErrorMessages(errors?.map(({ message }) => message));
+    },
   },
   containerRegistryHelpUrl: helpPagePath('user/packages/container_registry/_index'),
   dockerConnectionErrorHelpUrl: helpPagePath(
@@ -260,11 +272,19 @@ export default {
       dismissible
       @dismiss="dismissDeleteAlert"
     >
-      <gl-sprintf :message="deleteImageAlertMessage">
+      <gl-sprintf :message="deleteAlertMessage">
         <template #title>
           {{ itemToDelete.path }}
         </template>
       </gl-sprintf>
+
+      <div v-if="deleteImageErrorMessages.length">
+        <ul>
+          <li v-for="(deleteImageErrorMessage, index) in deleteImageErrorMessages" :key="index">
+            {{ deleteImageErrorMessage }}
+          </li>
+        </ul>
+      </div>
     </gl-alert>
 
     <gl-empty-state
@@ -297,13 +317,6 @@ export default {
         :show-cleanup-policy-link="config.showCleanupPolicyLink"
       >
         <template #commands>
-          <cli-commands
-            v-if="showCommands"
-            :docker-build-command="dockerBuildCommand"
-            :docker-push-command="dockerPushCommand"
-            :docker-login-command="dockerLoginCommand"
-            class="!gl-w-auto"
-          />
           <gl-button
             v-if="config.showContainerRegistrySettings"
             v-gl-tooltip="$options.i18n.SETTINGS_TEXT"
@@ -311,6 +324,13 @@ export default {
             class="!gl-w-auto"
             :href="config.settingsPath"
             :aria-label="$options.i18n.SETTINGS_TEXT"
+          />
+          <cli-commands
+            v-if="showCommands"
+            :docker-build-command="dockerBuildCommand"
+            :docker-push-command="dockerPushCommand"
+            :docker-login-command="dockerLoginCommand"
+            class="!gl-w-auto"
           />
         </template>
       </registry-header>
@@ -374,8 +394,8 @@ export default {
       <delete-image
         :id="itemToDelete.id"
         @start="startDelete"
-        @error="deleteAlertType = 'danger'"
-        @success="deleteAlertType = 'success'"
+        @error="handleDeleteImageError"
+        @success="handleDeleteImageSuccess"
         @end="mutationLoading = false"
       >
         <template #default="{ doDelete }">

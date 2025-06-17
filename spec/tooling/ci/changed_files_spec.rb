@@ -72,7 +72,8 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
 
   describe '#run_eslint_for_changed_files' do
     let(:eslint_command) do
-      ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab', 'file1.js', 'file2.vue']
+      ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--no-error-on-unmatched-pattern', '--format', 'gitlab',
+        'file1.js', 'file2.vue']
     end
 
     let(:console_message) { /Running ESLint for changed files.../i }
@@ -120,7 +121,7 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
 
     context 'when a single todo file has been changed' do
       let(:eslint_command) do
-        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--no-error-on-unmatched-pattern', '--format', 'gitlab',
           '.eslint_todo/vue-no-unused-properties.mjs',
           'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
           'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
@@ -174,7 +175,7 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
 
     context 'when several todo files have been changed' do
       let(:eslint_command) do
-        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--no-error-on-unmatched-pattern', '--format', 'gitlab',
           '.eslint_todo/vue-no-unused-properties.mjs',
           'app/assets/javascripts/projects/project_new.js',
           'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
@@ -240,7 +241,7 @@ RSpec.describe CI::ChangedFiles, feature_category: :tooling do
 
     context 'when todo files have been changed but no ignored file was removed from them' do
       let(:eslint_command) do
-        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--format', 'gitlab',
+        ['yarn', 'run', 'lint:eslint', '--no-warn-ignored', '--no-error-on-unmatched-pattern', '--format', 'gitlab',
           '.eslint_todo/vue-no-unused-properties.mjs']
       end
 

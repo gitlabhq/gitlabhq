@@ -60,6 +60,10 @@
     "MergeRequest",
     "WorkItemWidgetCurrentUserTodos"
   ],
+  "CustomRoleInterface": [
+    "AdminMemberRole",
+    "MemberRole"
+  ],
   "DependencyInterface": [
     "Dependency",
     "DependencyAggregation"
@@ -133,15 +137,29 @@
     "AbuseReportLabel",
     "Label"
   ],
+  "MarkdownPaths": [
+    "GroupNamespaceMarkdownPaths",
+    "ProjectNamespaceMarkdownPaths",
+    "UserNamespaceMarkdownPaths"
+  ],
   "MemberInterface": [
     "GroupMember",
     "PendingGroupMember",
     "PendingProjectMember",
     "ProjectMember"
   ],
+  "MemberRoleInterface": [
+    "MemberRole",
+    "StandardRole"
+  ],
   "NamespaceUnion": [
     "CiDeletedNamespace",
     "Namespace"
+  ],
+  "NamespacesLinkPaths": [
+    "GroupNamespaceLinks",
+    "ProjectNamespaceLinks",
+    "UserNamespaceLinks"
   ],
   "NoteableInterface": [
     "AlertManagementAlert",
@@ -167,6 +185,7 @@
     "PipelineExecutionSchedulePolicy",
     "ScanExecutionPolicy",
     "ScanResultPolicy",
+    "SecurityPolicyType",
     "VulnerabilityManagementPolicy"
   ],
   "PackageFileMetadata": [
@@ -188,6 +207,13 @@
   "PipelineInterface": [
     "Pipeline",
     "PipelineMinimalAccess"
+  ],
+  "PolicyAttributesUnion": [
+    "ApprovalPolicyAttributesType",
+    "PipelineExecutionPolicyAttributesType",
+    "PipelineExecutionScheduledPolicyAttributesType",
+    "ScanExecutionPolicyAttributesType",
+    "VulnerabilityManagementPolicyAttributesType"
   ],
   "ProjectInterface": [
     "Project",

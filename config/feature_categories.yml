@@ -37,6 +37,7 @@
 - code_testing
 - compliance_management
 - component_catalog
+- configuration
 - consumables_cost_management
 - container_registry
 - container_scanning
@@ -57,6 +58,7 @@
 - disaster_recovery
 - dora_metrics
 - duo_chat
+- duo_setting
 - duo_workflow
 - dynamic_application_security_testing
 - editor_extensions
@@ -65,7 +67,6 @@
 - feature_flags
 - fleet_visibility
 - fulfillment_infradev
-- fulfillment_internal_admin_tooling
 - fuzz_testing
 - geo_replication
 - git
@@ -84,6 +85,7 @@
 - integrations
 - internationalization
 - job_artifacts
+- knowledge_graph
 - markdown
 - merge_trains
 - mlops
@@ -130,7 +132,6 @@
 - sidekiq
 - software_composition_analysis
 - source_code_management
-- sscs
 - static_application_security_testing
 - subscription_management
 - switchboard

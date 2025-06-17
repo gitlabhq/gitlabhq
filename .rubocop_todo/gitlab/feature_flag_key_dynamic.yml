@@ -30,7 +30,6 @@ Gitlab/FeatureFlagKeyDynamic:
     - 'lib/gitlab/redis/multi_store.rb'
     - 'lib/gitlab/sidekiq_middleware/skip_jobs.rb'
     - 'lib/gitlab/sidekiq_sharding/router.rb'
-    - 'lib/web_ide/extension_marketplace.rb'
     - 'spec/lib/feature_spec.rb'
     - 'spec/requests/api/features_spec.rb'
     - 'spec/support_specs/helpers/stub_feature_flags_spec.rb'

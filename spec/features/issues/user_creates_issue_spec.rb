@@ -4,6 +4,7 @@ require "spec_helper"
 
 RSpec.describe "User creates issue", feature_category: :team_planning do
   include DropzoneHelper
+  include ListboxHelpers
 
   let_it_be(:project) { create(:project_empty_repo, :public) }
   let_it_be(:user) { create(:user) }
@@ -13,6 +14,8 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     # we won't need the tests for the issues listing page, since we'll be using
     # the work items listing page.
     stub_feature_flags(work_item_planning_view: false)
+    stub_feature_flags(work_item_view_for_issues: true)
+    stub_feature_flags(work_items_alpha: false)
   end
 
   context "when unauthenticated" do
@@ -43,50 +46,43 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     before do
       project.add_guest(user)
       sign_in(user)
-
-      visit(new_project_issue_path(project))
     end
 
     context 'available metadata' do
       it 'allows guest to set issue metadata' do
-        page.within(".issue-form") do
-          expect(page).to have_content("Title")
-            .and have_content("Description")
-            .and have_content("Type")
-            .and have_content("Assignee")
-            .and have_content("Milestone")
-            .and have_content("Labels")
-            .and have_content("Due date")
-            .and have_content("This issue is confidential and should only be visible to team members with at least the Planner role.")
-        end
+        visit(new_project_issue_path(project))
+
+        expect(page).to have_content("Title")
+          .and have_content("Description")
+          .and have_content("Type")
+          .and have_content("Assignee")
+          .and have_content("Labels")
+          .and have_content("Milestone")
+          .and have_content("Dates")
+          .and have_unchecked_field("This issue is confidential and should only be visible to users having at least the Planner role")
       end
     end
 
     context "when previewing" do
       it "previews content" do
-        form = first(".gfm-form")
-        textarea = first(".gfm-form textarea")
+        visit(new_project_issue_path(project))
 
-        page.within(form) do
-          click_button("Preview")
+        click_button("Preview")
 
-          preview = find(".js-vue-md-preview") # this element is findable only when the "Preview" link is clicked.
+        expect(page).to have_text("Nothing to preview.")
 
-          expect(preview).to have_content("Nothing to preview.")
+        click_button("Continue editing")
+        fill_in("Description", with: "Bug fixed :smile:")
+        click_button("Preview")
 
-          click_button("Continue editing")
-          fill_in("Description", with: "Bug fixed :smile:")
-          click_button("Preview")
+        expect(page).to have_text("Bug fixed 😄")
+        expect(page).not_to have_field("Description")
 
-          expect(preview).to have_css("gl-emoji")
-          expect(textarea).not_to be_visible
+        click_button("Continue editing")
+        fill_in("Description", with: "/confidential")
+        click_button("Preview")
 
-          click_button("Continue editing")
-          fill_in("Description", with: "/confidential")
-          click_button("Preview")
-
-          expect(form).to have_content('Makes this issue confidential.')
-        end
+        expect(page).to have_content('Makes this item confidential.')
       end
     end
 
@@ -97,24 +93,18 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
         label_titles.each do |title|
           create(:label, project: project, title: title)
         end
+        visit(new_project_issue_path(project))
       end
 
       it "creates issue" do
         issue_title = "500 error on profile"
 
         fill_in("Title", with: issue_title)
-
-        click_button _('Select label')
-
-        wait_for_all_requests
-
-        within_testid('sidebar-labels') do
-          click_button label_titles.first
-          click_button _('Close')
-
-          wait_for_requests
+        within_testid('work-item-labels') do
+          click_button _('Edit')
+          select_listbox_item label_titles.first
+          send_keys(:escape)
         end
-
         click_button("Create issue")
 
         expect(page).to have_content(issue_title)
@@ -126,23 +116,21 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
 
     context 'with due date', :js do
       it 'saves with due date' do
+        visit(new_project_issue_path(project))
+
         date = Date.today.at_beginning_of_month
 
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
-        find('#issuable-due-date').click
-
-        page.within '.pika-single' do
-          click_button date.day
+        fill_in 'Title', with: 'bug 345'
+        fill_in 'Description', with: 'bug description'
+        within_testid 'work-item-due-dates' do
+          click_button 'Edit'
+          find_field('Due').click
         end
-
-        expect(find('#issuable-due-date').value).to eq date.to_s
-
+        click_button date.day
+        click_button 'Apply'
         click_button 'Create issue'
 
-        page.within '.issuable-sidebar' do
-          expect(page).to have_content date.to_fs(:medium)
-        end
+        expect(page).to have_text date.to_fs(:medium)
       end
     end
 
@@ -154,25 +142,26 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       it 'uploads file when dragging into textarea' do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-        expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+        expect(page).to have_field("Description"), with: 'banana_sample'
       end
 
       it "doesn't add double newline to end of a single attachment markdown" do
         dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
 
-        expect(page.find_field("issue_description").value).not_to match(/\n\n$/)
+        expect(page.find_field("Description").value).not_to match(/\n\n$/)
       end
 
       it "cancels a file upload correctly", :capybara_ignore_server_errors do
         slow_requests do
           dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
-
-          click_button 'Cancel'
         end
+        within_testid 'markdown-field' do
+          click_button 'Cancel'
 
-        expect(page).to have_selector('[data-testid="button-attach-file"]')
-        expect(page).not_to have_button('Cancel')
-        expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+          expect(page).to have_button('Attach a file or image')
+          expect(page).not_to have_button('Cancel')
+          expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+        end
       end
     end
 
@@ -191,7 +180,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'fills in template' do
-        expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
+        expect(page).to have_button('bug')
       end
     end
 
@@ -203,11 +192,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with issue type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Issue')
-      end
-
-      it 'does not hide the milestone select' do
-        expect(page).to have_button 'Select milestone'
+        expect(page).to have_select 'Type', selected: 'Issue'
       end
     end
 
@@ -219,41 +204,35 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'does not pre-fill the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).not_to have_content('Incident')
-      end
-
-      it 'shows the milestone select' do
-        expect(page).to have_button 'Select milestone'
-      end
-
-      it 'hides the incident help text' do
-        expect(page).not_to have_text('A modified issue to guide the resolution of incidents.')
+        expect(page).to have_select 'Type', selected: 'Issue'
       end
     end
 
     context 'suggestions', :js do
       it 'displays list of related issues' do
+        visit(new_project_issue_path(project))
+
         issue = create(:issue, project: project)
         create(:issue, project: project, title: 'test issue')
 
         visit new_project_issue_path(project)
 
-        fill_in 'issue_title', with: issue.title
+        fill_in 'Title', with: issue.title
 
-        expect(page).to have_selector('.suggestion-item', count: 1)
+        expect(page).to have_text('Similar items')
+        expect(page).to have_css('.suggestion-item', text: issue.title, count: 1)
       end
     end
 
     it 'clears local storage after creating a new issue', :js do
       2.times do
         visit new_project_issue_path(project)
-        wait_for_requests
 
         expect(page).to have_field('Title', with: '')
         expect(page).to have_field('Description', with: '')
 
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
+        fill_in 'Title', with: 'bug 345'
+        fill_in 'Description', with: 'bug description'
 
         click_button 'Create issue'
       end
@@ -262,15 +241,15 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     it 'clears local storage after cancelling a new issue creation', :js do
       2.times do
         visit new_project_issue_path(project)
-        wait_for_requests
 
         expect(page).to have_field('Title', with: '')
         expect(page).to have_field('Description', with: '')
 
-        fill_in 'issue_title', with: 'bug 345'
-        fill_in 'issue_description', with: 'bug description'
+        fill_in 'Title', with: 'bug 345'
+        fill_in 'Description', with: 'bug description'
 
-        click_link 'Cancel'
+        click_button 'Cancel'
+        click_button 'Discard changes'
       end
     end
   end
@@ -292,23 +271,10 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
 
       it 'pre-fills the issue type dropdown with incident type' do
-        expect(find('.js-issuable-type-filter-dropdown-wrap .gl-button-text')).to have_content('Incident')
-      end
-
-      it 'hides the epic select' do
-        expect(page).not_to have_selector('.epic-dropdown-container')
-      end
-
-      it 'shows the milestone select' do
-        expect(page).to have_button 'Select milestone'
-      end
-
-      it 'hides the weight input' do
-        expect(page).not_to have_selector('[data-testid="issuable-weight-input"]')
-      end
-
-      it 'shows the incident help text' do
-        expect(page).to have_text('A modified issue to guide the resolution of incidents.')
+        expect(page).to have_select 'Type', selected: 'Incident'
+        expect(page).to have_css('[data-testid="work-item-milestone"]')
+        expect(page).not_to have_css('[data-testid="work-item-parent"]')
+        expect(page).not_to have_css('[data-testid="work-item-weight"]')
       end
     end
   end
@@ -345,10 +311,9 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     end
 
     it "will correctly escape user names with an apostrophe when clicking 'Assign to me'", :js do
-      first('.assign-to-me-link').click
+      click_button 'assign yourself'
 
       expect(page).to have_content(user_special.name)
-      expect(page.find('input[name="issue[assignee_ids][]"]', visible: false)['data-meta']).to eq(user_special.name)
     end
   end
 end

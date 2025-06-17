@@ -357,6 +357,15 @@ describe('WorkItemDescription', () => {
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
     });
 
+    it('does not emit the `updateDraft` event when the description is updated from mounted hook of markdown-editor', () => {
+      createComponent({ editMode: true, isCreateFlow: true });
+      const updatedDesc = 'updated desc with inline editing disabled';
+
+      findMarkdownEditor().vm.$emit('input', updatedDesc, true);
+
+      expect(wrapper.emitted('updateDraft')).toBeUndefined();
+    });
+
     it('emits the `updateWorkItem` event when submitting the description', async () => {
       await createComponent({ isEditing: true });
       editDescription('updated description');
@@ -400,6 +409,28 @@ describe('WorkItemDescription', () => {
           expect(findDescriptionTemplateWarning().exists()).toBe(true);
           expect(findCancelApplyTemplate().exists()).toBe(true);
           expect(findApplyTemplate().exists()).toBe(true);
+        });
+
+        it('does not display a warning when a description is pre-populated in create mode', async () => {
+          // Mimic component mount with a pre-populated description
+          await createComponent({
+            editMode: true,
+            workItemResponseHandler: jest
+              .fn()
+              .mockResolvedValue(
+                workItemByIidResponseFactory({ description: 'Pre-filled description' }),
+              ),
+            workItemId: newWorkItemId(workItemQueryResponse.data.workItem.workItemType.name),
+          });
+          await nextTick();
+          await waitForPromises();
+
+          expect(findDescriptionTemplateWarning().exists()).toBe(false);
+          expect(findCancelApplyTemplate().exists()).toBe(false);
+          expect(findApplyTemplate().exists()).toBe(false);
+
+          // No template is selected when description is pre-filled
+          expect(findDescriptionTemplateListbox().props('template')).toBeNull();
         });
 
         it('hides the warning when the cancel button is clicked', async () => {

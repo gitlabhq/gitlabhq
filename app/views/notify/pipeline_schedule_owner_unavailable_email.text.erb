@@ -1,0 +1,7 @@
+<%= s_('PipelineSchedules|The owner of the pipeline schedule "%{schedule_description}" no longer has permission. Without an owner, the pipeline will not run. Take ownership so the pipeline runs on schedule.'
+  ) % [schedule_description: @schedule.description] %>
+
+<%= s_('PipelineSchedules|View pipeline schedule') %>: <%= project_pipeline_schedule_url(@schedule.project, @schedule) %>
+
+<%= s_('PipelineSchedules|Learn how to take ownership') %>: <%= help_page_url('ci/pipelines/schedules.md', anchor: 'take-ownership') %>
+

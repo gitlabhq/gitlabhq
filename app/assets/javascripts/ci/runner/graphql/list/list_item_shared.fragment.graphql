@@ -21,6 +21,10 @@ fragment ListItemShared on CiRunner {
   }
   managers(first: 1) {
     count
+    # @graphql-eslint/eslint-plugin@4.0.0 reports missing IDs in `FragmentDefinition`. For now, we are
+    # ignoring the newly uncovered error on this fragment. Please consider addressing the violation
+    # if you are modifying this file and it turns out selecting the ID makes sense here.
+    # eslint-disable-next-line @graphql-eslint/require-selections
     nodes {
       version
       ipAddress
@@ -37,6 +41,7 @@ fragment ListItemShared on CiRunner {
   ownerProject {
     id
     name
+    fullPath
     nameWithNamespace
     webUrl
   }

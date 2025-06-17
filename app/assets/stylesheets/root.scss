@@ -19,7 +19,7 @@
 
   /**
    * CI icon styles
-   * Discussion: #issue
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/177222
    * Owner: Verify: Pipeline execution
    */
   --ci-icon-success-background-color: var(--gl-color-green-100);
@@ -76,8 +76,8 @@
 
   /**
    * Diff styles
-   * Discussion: #issue
-   * Owner: TBD
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171514
+   * Owner: Create: Code review
    */
   --diff-warning-text-color: var(--gl-feedback-warning-text-color);
   --diff-warning-background-color: var(--gl-feedback-warning-background-color);
@@ -87,23 +87,40 @@
   }
 
   /**
-   * Timeline entry note styles
-   * Discussion: #issue
-   * Owner: TBD
+   * Review note styles
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167708
+   * Owner: Create: Code review
    */
   --timeline-entry-draft-note-background-color: var(--gl-color-orange-50);
-  --timeline-entry-internal-note-background-color: var(--gl-color-orange-50);
-  --timeline-entry-target-background-color : var(--gl-color-blue-50);
 
   &.gl-dark {
     --timeline-entry-draft-note-background-color: #453522;
-    --timeline-entry-internal-note-background-color: #453522;
-    --timeline-entry-target-background-color : #2A394E;
   }
 
   /**
+   * Work item note styles
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167708
+   * Owner: Plan: Project Management
+   */
+  --timeline-entry-internal-note-background-color: var(--gl-color-orange-50);
+
+  &.gl-dark {
+    --timeline-entry-internal-note-background-color: #453522;
+  }
+
+  /**
+   * Target note styles
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167708
+   * Owner: TBD
+   */
+  --timeline-entry-target-background-color : var(--gl-color-blue-50);
+
+  &.gl-dark {
+    --timeline-entry-target-background-color : #2A394E;
+  }
+  /**
    * Contribution graph styles on user profile
-   * Discussion: #issue
+   * Discussion: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180664
    * Owner: Organizations
    */
   --user-contribution-graph-cell-level-0: var(--gl-color-neutral-50);

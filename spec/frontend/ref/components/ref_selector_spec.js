@@ -17,6 +17,7 @@ import {
 } from '~/lib/utils/http_status';
 import { sprintf } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import {
   X_TOTAL_HEADER,
   DEFAULT_I18N,
@@ -29,12 +30,13 @@ import {
 import createStore from '~/ref/stores/';
 
 Vue.use(Vuex);
+jest.mock('~/vue_shared/plugins/global_toast');
 
 describe('Ref selector component', () => {
   const branchRefTypeMock = { name: 'refs/heads/test_branch' };
   const tagRefTypeMock = { name: 'refs/tags/test_tag' };
   const protectedBranchMock = { name: 'protected_mock_branch', protected: true };
-  const protectedTagMock = { name: 'protected_tag_mock', protected: true };
+  const protectedTagMock = { name: 'refs/tags/protected_tag_mock', protected: true };
   const fixtures = {
     branches: [branchRefTypeMock, tagRefTypeMock, protectedBranchMock, ...branches],
     tags: [protectedTagMock, ...tags],
@@ -131,6 +133,8 @@ describe('Ref selector component', () => {
   const findCommitsSection = () => findListBoxSection('Commits');
 
   const findHiddenInputField = () => wrapper.findByTestId('selected-ref-form-field');
+
+  const findCountBadges = () => wrapper.findAllByTestId('count');
 
   //
   // Expecters
@@ -304,13 +308,14 @@ describe('Ref selector component', () => {
         commitApiCallSpy = jest.fn().mockReturnValue([HTTP_STATUS_NOT_FOUND]);
 
         createComponent();
+        updateQuery('*no results*');
 
         return waitForRequests();
       });
 
       describe('when the search query is empty', () => {
         it('renders a "no results" message', () => {
-          expect(findNoResults().text()).toBe(DEFAULT_I18N.noResults);
+          expect(findNoResults().text()).toContain(DEFAULT_I18N.noResults);
         });
       });
 
@@ -347,23 +352,18 @@ describe('Ref selector component', () => {
 
         it('renders the default branch as a selectable item with a "default" badge', () => {
           const dropdownItems = findBranchDropdownItems();
-
           const defaultBranch = fixtures.branches.find((b) => b.default);
-          const defaultBranchIndex = fixtures.branches.indexOf(defaultBranch);
+          const defaultBranchItem = dropdownItems.at(0);
 
-          expect(trimText(dropdownItems.at(defaultBranchIndex).text())).toBe(
-            `${defaultBranch.name} default`,
-          );
+          expect(trimText(defaultBranchItem.text())).toBe(`${defaultBranch.name} default`);
         });
 
         it('renders the protected branch as a selectable item with a "protected" badge', () => {
           const dropdownItems = findBranchDropdownItems();
           const protectedBranch = fixtures.branches.find((b) => b.protected);
-          const protectedBranchIndex = fixtures.branches.indexOf(protectedBranch);
+          const protectedBranchItem = dropdownItems.at(3);
 
-          expect(trimText(dropdownItems.at(protectedBranchIndex).text())).toBe(
-            `${protectedBranch.name} protected`,
-          );
+          expect(trimText(protectedBranchItem.text())).toBe(`${protectedBranch.name} protected`);
         });
       });
 
@@ -427,11 +427,11 @@ describe('Ref selector component', () => {
         it('renders the protected tag as a selectable item with a "protected" badge', () => {
           const dropdownItems = findBranchDropdownItems();
           const protectedTag = fixtures.tags.find((b) => b.protected);
-          const protectedTagIndex = fixtures.tags.indexOf(protectedTag) + fixtures.branches.length;
+          const protectedTagItem = dropdownItems
+            .filter((item) => item.text().includes(protectedTag.name))
+            .at(0);
 
-          expect(trimText(dropdownItems.at(protectedTagIndex).text())).toBe(
-            `${protectedTag.name} protected`,
-          );
+          expect(trimText(protectedTagItem.text())).toBe(`${protectedTag.name} protected`);
         });
       });
 
@@ -811,6 +811,78 @@ describe('Ref selector component', () => {
         expect(tagsApiCallSpy).toHaveBeenCalledWith(
           expect.objectContaining({ params: { per_page: 20, search: '' } }),
         );
+      });
+    });
+  });
+
+  describe('badges', () => {
+    beforeEach(async () => {
+      const formatRefsModule = await import('~/ref/format_refs');
+      jest.spyOn(formatRefsModule, 'formatListBoxItems').mockReturnValue([
+        { text: DEFAULT_I18N.selected, options: [{ text: 'feature' }] },
+        { text: DEFAULT_I18N.branches, options: [{ text: 'main' }, { text: 'dev' }] },
+        { text: DEFAULT_I18N.tags, options: [{ text: 'v1' }, { text: 'v2' }, { text: 'v3' }] },
+      ]);
+
+      createComponent();
+      return waitForRequests();
+    });
+
+    it('hides badge for selected group, shows badge for other groups', async () => {
+      selectFirstBranch();
+      await nextTick();
+
+      expect(findCountBadges().length).toBe(2);
+      expect(findCountBadges().at(0).text()).toBe('2');
+      expect(findCountBadges().at(1).text()).toBe('3');
+    });
+  });
+
+  describe('copy button in selected group', () => {
+    const findCopyButton = () => wrapper.findByTestId('clipboard');
+
+    beforeEach(() => {
+      createComponent();
+      return waitForRequests();
+    });
+
+    it('does not show copy button when no ref is selected', () => {
+      // Don't select anything, just check that no copy button exists
+      expect(findCopyButton().exists()).toBe(false);
+    });
+
+    it('shows copy button in selected group when a ref is selected', async () => {
+      await selectFirstBranch();
+
+      expect(findCopyButton().exists()).toBe(true);
+      expect(findCopyButton().attributes('data-clipboard-text')).toBe(fixtures.branches[0].name);
+      expect(findCopyButton().attributes('title')).toBe('Copy selected ref');
+    });
+
+    it('shows a toast message when copy button is clicked', async () => {
+      await selectFirstBranch();
+      findCopyButton().trigger('click');
+      expect(toast).toHaveBeenCalledWith('Branch name copied to clipboard.');
+
+      await selectFirstTag();
+      findCopyButton().trigger('click');
+      expect(toast).toHaveBeenCalledWith('Tag name copied to clipboard.');
+    });
+  });
+
+  describe('selectedRefFallback', () => {
+    describe('when selectedRef is not found in branches or tags', () => {
+      const defaultRef = 'missing-ref';
+
+      beforeEach(() => {
+        createComponent({ propsData: { value: defaultRef } });
+        return waitForRequests();
+      });
+
+      it('shows the fallback (default) ref as selected in the dropdown', () => {
+        const selectedSection = findListBoxSection('Selected');
+        expect(selectedSection.exists()).toBe(true);
+        expect(selectedSection.text()).toContain(defaultRef);
       });
     });
   });

@@ -38,11 +38,11 @@ export default {
     },
   },
   methods: {
-    onToggledPaused() {
-      this.$emit('toggledPaused');
+    onToggledPaused(event) {
+      this.$emit('toggledPaused', event);
     },
-    onDeleted(value) {
-      this.$emit('deleted', value);
+    onDeleted(event) {
+      this.$emit('deleted', event);
     },
   },
 };

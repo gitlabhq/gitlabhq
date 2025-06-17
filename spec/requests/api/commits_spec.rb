@@ -554,6 +554,20 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           end
         end
       end
+
+      context 'when authenticated with a token that has the ai_workflows scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+        let(:commits) { project.repository.commits("master", limit: 2) }
+
+        before do
+          get api("/projects/#{project_id}/repository/commits", oauth_access_token: oauth_token)
+        end
+
+        it 'is successful' do
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response.first["id"]).to eq(commits.first.id)
+        end
+      end
     end
   end
 
@@ -1010,6 +1024,16 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
             end
           end
         end
+      end
+
+      context 'when authenticated with a token that has the ai_workflows scope' do
+        let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+
+        before do
+          post api(url, user, oauth_access_token: oauth_token), params: valid_c_params
+        end
+
+        it_behaves_like 'successfully creates the commit'
       end
     end
 
@@ -1670,6 +1694,21 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         it_behaves_like 'ref with unaccessible pipeline'
       end
     end
+
+    context 'when authenticated', 'with a token that has the ai_workflows scope' do
+      let(:oauth_token) { create(:oauth_access_token, user: user, scopes: [:ai_workflows]) }
+      let(:commit) { project.repository.commit }
+      let(:commit_id) { commit.id }
+
+      before do
+        get api(route, oauth_access_token: oauth_token)
+      end
+
+      it 'is successful' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['id']).to eq(commit.id)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/diff' do
@@ -1891,14 +1930,24 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         let(:commit) { note.commit }
         let(:commit_id) { note.commit_id }
 
-        it 'are returned without N + 1', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448459' do
+        it 'are returned without N + 1' do
           get api(route, current_user) # warm up the cache
 
           control = ActiveRecord::QueryRecorder.new { get api(route, current_user) }
 
           create(:diff_note_on_commit, project: project, author: create(:user))
 
-          expect { get api(route, current_user) }.not_to exceed_query_limit(control)
+          result = ActiveRecord::QueryRecorder.new { get api(route, current_user) }
+
+          notes_query = /SELECT "note_diff_files".*/
+          authors_query = /SELECT "users".*/
+
+          aggregate_failures "preloads authors and notes_diff_files" do
+            expect(result.occurrences_starting_with(authors_query).count)
+              .to eq(control.occurrences_starting_with(authors_query).count)
+            expect(result.occurrences_starting_with(notes_query).count)
+              .to eq(control.occurrences_starting_with(notes_query).count)
+          end
         end
       end
     end
@@ -2493,9 +2542,34 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
 
       control = ActiveRecord::QueryRecorder.new { perform_request(user) }
 
-      create(:merge_request, :closed, source_project: project, source_branch: 'master', target_branch: 'feature')
+      # 5 queries are intermittently seen to update user_preferences, and select scan_result_policy_violations
+      query_buffer = 5
 
-      expect { perform_request(user) }.not_to exceed_query_limit(control)
+      # Make query_buffer + 1 new merge requests to ensure an n + 1 introduces more than query_buffer queries
+      (query_buffer + 1).times do
+        create(:merge_request, :closed, source_project: project, source_branch: 'master', target_branch: 'feature')
+      end
+
+      expect { perform_request(user) }.not_to exceed_query_limit(control).with_threshold(query_buffer)
+    end
+
+    context 'merge-requests filtered by state' do
+      it 'returns the correct opened merge-request' do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests?state=opened", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_limited_pagination_headers
+        expect(json_response.length).to eq(1)
+        expect(json_response[0]['id']).to eq(merged_mr.id)
+      end
+
+      it 'does not found closed merge-request' do
+        get api("/projects/#{project.id}/repository/commits/#{commit.id}/merge_requests?state=closed", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_limited_pagination_headers
+        expect(json_response.length).to eq(0)
+      end
     end
   end
 

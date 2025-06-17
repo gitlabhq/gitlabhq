@@ -139,6 +139,18 @@ module RapidDiffs
       render(::RapidDiffs::DiffFileComponent.new(diff_file: file))
     end
 
+    def submodule_changed
+      hunk = "
+        --- a/text_file
+        +++ b/text_file
+        old mode 0
+        new mode 160000
+      "
+      diff = raw_diff(diff_content(hunk), new_file: false, a_mode: '0', b_mode: '160000')
+      file = diff_file(diff)
+      render(::RapidDiffs::DiffFileComponent.new(diff_file: file))
+    end
+
     def added_big_file
       hunk = "
         --- a/text_file
@@ -186,8 +198,8 @@ module RapidDiffs
       ::Gitlab::Git::Diff.new(
         {
           diff: hunk,
-          new_path: new_path(hunk),
-          old_path: old_path(hunk),
+          new_path: new_path(hunk) || old_path(hunk),
+          old_path: old_path(hunk) || new_path(hunk),
           a_mode: '0',
           b_mode: '100644',
           new_file: true,
@@ -227,7 +239,25 @@ module RapidDiffs
         {}
       end
 
+      def submodule_links
+        FakeSubmoduleLinks.new
+      end
+
       attr_reader :project
+    end
+
+    class FakeSubmoduleLinks
+      def for(_, _, _)
+        self.class.new
+      end
+
+      def web
+        '/'
+      end
+
+      def tree
+        '/'
+      end
     end
   end
 end

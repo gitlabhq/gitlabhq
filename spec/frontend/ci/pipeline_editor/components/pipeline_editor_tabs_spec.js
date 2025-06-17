@@ -139,14 +139,9 @@ describe('Pipeline editor tabs component', () => {
       expect(findEditorTab().exists()).toBe(true);
     });
 
-    it('displays the inputs announcement banner when ciInputsForPipelines is enabled', () => {
-      createComponent({ provide: { glFeatures: { ciInputsForPipelines: true } } });
-      expect(findInputsAnnouncementBanner().exists()).toBe(true);
-    });
-
-    it('does not display the inputs announcement banner when ciInputsForPipelines is disabled', () => {
+    it('displays the inputs announcement banner', () => {
       createComponent();
-      expect(findInputsAnnouncementBanner().exists()).toBe(false);
+      expect(findInputsAnnouncementBanner().exists()).toBe(true);
     });
   });
 

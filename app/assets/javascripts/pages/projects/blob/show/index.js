@@ -31,9 +31,16 @@ import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
 
+import PerformancePlugin from '~/performance/vue_performance_plugin';
+
 Vue.use(Vuex);
 Vue.use(VueApollo);
 Vue.use(VueRouter);
+
+Vue.use(PerformancePlugin, {
+  // eslint-disable-next-line @gitlab/require-i18n-strings
+  components: ['SourceViewer', 'Chunk'],
+});
 
 const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
@@ -84,12 +91,10 @@ if (viewBlobEl) {
     explainCodeAvailable,
     refType,
     canDownloadCode,
-    showDuoWorkflowAction,
-    duoWorkflowInvokePath,
     ...dataset
   } = viewBlobEl.dataset;
   const router = createRouter(projectPath, originalBranch);
-  initFileTreeBrowser(router);
+  initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType });
 
   initHeaderApp({ router, isBlobView: true });
 
@@ -107,8 +112,6 @@ if (viewBlobEl) {
       userId,
       explainCodeAvailable: parseBoolean(explainCodeAvailable),
       canDownloadCode: parseBoolean(canDownloadCode),
-      duoWorkflowInvokePath,
-      showDuoWorkflowAction: parseBoolean(showDuoWorkflowAction),
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {

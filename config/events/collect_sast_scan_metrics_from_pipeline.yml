@@ -21,11 +21,11 @@ additional_properties:
   property:
     description: "a UUID that identifies a scan"
   value:
-    description: "exit status of the analyer where 0 indicates success and 1 indicates error"
+    description: "exit status of the analyzer where 0 indicates success and 1 indicates error"
   version:
     description: "version of the analyzer"
   exit_code:
-    description: "exit code of the analyer"
+    description: "exit code of the analyzer"
   override_count:
     description: "number of configured overrides"
   passthrough_count:
@@ -36,3 +36,5 @@ additional_properties:
     description: "scan time duration in seconds"
   file_count:
     description: "project size in terms of number of files"
+  language_feature_usage:
+    description: "counts of programming language features used in the project"

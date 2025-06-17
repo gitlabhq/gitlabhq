@@ -158,9 +158,13 @@ describe('TabsWithList', () => {
 
   describe('template', () => {
     describe('when tab counts are loading', () => {
-      it('does not show count badges', async () => {
+      it('shows badges with -', async () => {
         await createComponent();
-        expect(findBadge().exists()).toBe(false);
+        expect(getTabCount('Contributed')).toBe('-');
+        expect(getTabCount('Starred')).toBe('-');
+        expect(getTabCount('Personal')).toBe('-');
+        expect(getTabCount('Member')).toBe('-');
+        expect(getTabCount('Inactive')).toBe('-');
       });
     });
 
@@ -170,12 +174,22 @@ describe('TabsWithList', () => {
         await waitForPromises();
       });
 
-      it('shows count badges', () => {
-        expect(getTabCount('Contributed')).toBe('2');
+      it('skips active tab count but shows count for other tabs', () => {
+        expect(getTabCount('Contributed')).toBe('-');
         expect(getTabCount('Starred')).toBe('0');
         expect(getTabCount('Personal')).toBe('0');
         expect(getTabCount('Member')).toBe('2');
         expect(getTabCount('Inactive')).toBe('0');
+      });
+
+      describe('when TabView component emits update-count event', () => {
+        beforeEach(() => {
+          findTabView().vm.$emit('update-count', CONTRIBUTED_TAB, 5);
+        });
+
+        it('updates count of active tab', () => {
+          expect(getTabCount('Contributed')).toBe('5');
+        });
       });
     });
 
@@ -214,13 +228,6 @@ describe('TabsWithList', () => {
           });
         });
       });
-
-      it('does not show tab count badges', async () => {
-        await createComponent({ projectsCountHandler: jest.fn().mockRejectedValue(error) });
-        await waitForPromises();
-
-        expect(findBadge().exists()).toBe(false);
-      });
     });
 
     describe('when tabCountsQuery prop is not passed', () => {
@@ -231,6 +238,65 @@ describe('TabsWithList', () => {
 
       it('does not make GraphQL query or show tab count badges', () => {
         expect(findBadge().exists()).toBe(false);
+      });
+    });
+
+    describe('when shouldUpdateActiveTabCountFromTabQuery prop is false', () => {
+      beforeEach(async () => {
+        await createComponent({ propsData: { shouldUpdateActiveTabCountFromTabQuery: false } });
+        await waitForPromises();
+      });
+
+      it('fetches count for all tabs', () => {
+        expect(successHandler).toHaveBeenCalledWith(
+          expect.objectContaining({
+            skipContributed: false,
+            skipStarred: false,
+            skipPersonal: false,
+            skipMember: false,
+            skipInactive: false,
+          }),
+        );
+        expect(getTabCount('Contributed')).toBe('2');
+        expect(getTabCount('Starred')).toBe('0');
+        expect(getTabCount('Personal')).toBe('0');
+        expect(getTabCount('Member')).toBe('2');
+        expect(getTabCount('Inactive')).toBe('0');
+      });
+
+      describe('when filtering', () => {
+        beforeEach(async () => {
+          await mockApollo.defaultClient.clearStore();
+          findFilteredSearchAndSort().vm.$emit('filter', {
+            [defaultPropsData.filteredSearchTermKey]: searchTerm,
+            [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
+            [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
+          });
+          await waitForPromises();
+        });
+
+        it('only fetches the active tab with filters applied', () => {
+          expect(successHandler).toHaveBeenCalledWith({
+            minAccessLevel: 'OWNER',
+            programmingLanguageName: 'CSS',
+            search: searchTerm,
+            skipContributed: false,
+            skipStarred: true,
+            skipPersonal: true,
+            skipMember: true,
+            skipInactive: true,
+          });
+        });
+      });
+
+      describe('when TabView component emits update-count event', () => {
+        beforeEach(() => {
+          findTabView().vm.$emit('update-count', CONTRIBUTED_TAB, 5);
+        });
+
+        it('does not update tab count', () => {
+          expect(getTabCount('Contributed')).toBe('2');
+        });
       });
     });
 
@@ -265,6 +331,7 @@ describe('TabsWithList', () => {
         filteredSearchNamespace: defaultPropsData.filteredSearchNamespace,
         filteredSearchRecentSearchesStorageKey:
           defaultPropsData.filteredSearchRecentSearchesStorageKey,
+        searchInputPlaceholder: 'Filter or search (3 character minimum)',
         sortOptions: defaultPropsData.sortOptions,
         activeSortOption: SORT_OPTION_CREATED,
         isAscending: false,
@@ -471,6 +538,11 @@ describe('TabsWithList', () => {
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
         },
+        filtersAsQueryVariables: {
+          programmingLanguageName: 'CoffeeScript',
+          minAccessLevel: 'OWNER',
+        },
+        search: 'foo',
         filteredSearchTermKey: defaultPropsData.filteredSearchTermKey,
         endCursor: mockEndCursor,
         startCursor: mockStartCursor,
@@ -511,9 +583,9 @@ describe('TabsWithList', () => {
       });
     });
 
-    it('falls back to defaultSortOption prop ascending order', () => {
+    it('falls back to defaultSortOption prop descending order', () => {
       expect(findTabView().props()).toMatchObject({
-        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_ASC}`,
+        sort: `${defaultPropsData.defaultSortOption.value}_${SORT_DIRECTION_DESC}`,
       });
     });
   });
@@ -659,6 +731,7 @@ describe('TabsWithList', () => {
           startCursor: mockStartCursor,
           hasPreviousPage: true,
         });
+        await waitForPromises();
       });
 
       it('sets `start_cursor` query string', () => {

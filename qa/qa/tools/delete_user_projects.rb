@@ -111,7 +111,13 @@ module QA
 
       def fetch_qa_username(user_id)
         response = get Runtime::API::Request.new(@api_client, "/users/#{user_id}").url
-        exit 1 if response.code == HTTP_STATUS_UNAUTHORIZED
+
+        unless response.code == HTTP_STATUS_OK
+          logger.error("Request for #{user_id} returned (#{response.code}): `#{response}` ")
+          exit 1 if fatal_response?(response.code)
+          return
+        end
+
         parsed_response = parse_body(response)
         parsed_response[:username]
       end

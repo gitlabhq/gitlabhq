@@ -1,6 +1,7 @@
 ---
 description: Engineer uses Internal Event CLI to define a new event
 internal_events: true
+status: active
 action: internal_events_cli_used
 identifiers:
 - project
@@ -8,8 +9,8 @@ identifiers:
 - user
 product_group: analytics_instrumentation
 product_categories:
+- service_desk
 - service_ping
-- settings
 milestone: '16.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143433
 tiers:

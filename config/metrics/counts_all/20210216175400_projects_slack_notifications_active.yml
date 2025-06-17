@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage.configure.projects_slack_notifications_active
 description: Unique projects with Slack webhook enabled
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 time_frame: all

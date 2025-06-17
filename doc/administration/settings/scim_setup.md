@@ -151,7 +151,7 @@ Under the **Mappings** section, first provision the groups:
 
    {{< alert type="note" >}}
 
-   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section may display "Enabled: Yes". This behavior is a display bug that you can safely ignore.
+   Even when **Provision Microsoft Entra ID Groups** is disabled, the mappings section might display **Enabled: Yes**. This behavior is a display bug that you can safely ignore.
 
    {{< /alert >}}
 
@@ -201,7 +201,7 @@ The following table provides attribute mappings that are required for GitLab.
 | `displayName` OR `Join(" ", [givenName], [surname])` <sup>2</sup>          | `name.formatted`               |                     |
 | `Switch([IsSoftDeleted], , "False", "True", "True", "False")` <sup>3</sup> | `active`                       |                     |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Use `mail` as a source attribute when the `userPrincipalName` is not an email address or is not deliverable.
 1. Use the `Join` expression if your `displayName` does not match the format of `Firstname Lastname`.
@@ -266,6 +266,42 @@ adding them to the SCIM identity provider.
 
 After the identity provider performs a sync based on its configured schedule,
 the user's SCIM identity is reactivated and their GitLab instance access is restored.
+
+## Group synchronization with SCIM
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0 [with a flag](../../administration/feature_flags.md) named `self_managed_scim_group_sync`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+In addition to user provisioning, you can use SCIM to synchronize group memberships between your identity provider and GitLab.
+With this method you can automatically add and remove users from GitLab groups based on their group memberships in your identity provider.
+
+Prerequisites:
+
+- [SAML group links](../../user/group/saml_sso/group_sync.md#configure-saml-group-links) must be configured first.
+- The SAML group names in your identity provider must match the SAML group names configured in GitLab.
+
+### Configure group synchronization in your identity provider
+
+For detailed instructions on configuring group synchronization in your identity provider, refer to the provider's documentation. Examples below:
+
+- [Okta Groups API](https://developer.okta.com/docs/reference/api/groups/)
+- [Microsoft Entra ID (Azure AD) SCIM Groups](https://learn.microsoft.com/en-us/entra/identity/app-provisioning/use-scim-to-provision-users-and-groups)
+
+{{< alert type="warning" >}}
+
+When multiple SAML group links map to the same GitLab group, users are assigned the highest role across all mapping group links. Users removed from an IdP group stay in a GitLab group if they belong to another SAML group linked to it.
+
+{{< /alert >}}
 
 ## Troubleshooting
 

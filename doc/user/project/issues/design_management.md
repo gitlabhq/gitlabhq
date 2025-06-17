@@ -163,7 +163,7 @@ It's shown as either **Showing latest version** or **Showing version #N**.
 
 ### Skipped designs
 
-When you upload an image with the same filename as an existing uploaded design _and_ that is the
+When you upload an image with the same filename as an existing uploaded design and that is the
 same, it's skipped. This means that no new version of the design is created.
 When designs are skipped, a warning message is displayed.
 
@@ -304,7 +304,7 @@ GitLab automatically renders raw URLs as an abbreviated [reference](../../markdo
 
 > See [#13195[Group_view.png]](https://gitlab.com/gitlab-org/gitlab/-/issues/13195/designs/Group_view.png).
 
-Note that linking to an image differs from [embedding the image](../../markdown.md#images) in a comment or description.
+Linking to an image differs from [embedding the image](../../markdown.md#images) in a comment or description.
 It's not possible to embed a design this way.
 
 ## Design activity records

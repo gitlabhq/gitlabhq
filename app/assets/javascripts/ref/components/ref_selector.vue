@@ -1,10 +1,11 @@
 <script>
-import { GlBadge, GlIcon, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlBadge, GlIcon, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import { debounce, isArray } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions, mapGetters, mapState } from 'vuex';
-import { sprintf } from '~/locale';
+import { sprintf, __ } from '~/locale';
 import ProtectedBadge from '~/vue_shared/components/badges/protected_badge.vue';
+import toast from '~/vue_shared/plugins/global_toast';
 import {
   ALL_REF_TYPES,
   SEARCH_DEBOUNCE_MS,
@@ -28,6 +29,7 @@ export default {
     GlCollapsibleListbox,
     ProtectedBadge,
   },
+  directives: { GlTooltip: GlTooltipDirective },
   inheritAttrs: false,
   props: {
     disabled: {
@@ -115,7 +117,21 @@ export default {
       };
     },
     listBoxItems() {
-      return formatListBoxItems(this.branches, this.tags, this.commits);
+      const { branches, tags, commits } = this;
+      let selectedRef;
+      if (this.selectedRef) {
+        const selectedRefFallback = !this.query && {
+          name: this.selectedRefForDisplay,
+          value: this.selectedRef,
+        };
+        selectedRef =
+          this.branches.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
+          this.tags.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
+          this.commits.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
+          selectedRefFallback;
+      }
+
+      return formatListBoxItems({ branches, tags, commits, selectedRef });
     },
     branches() {
       return this.enabledRefTypes.includes(REF_TYPE_BRANCHES) ? this.matches.branches.list : [];
@@ -254,6 +270,16 @@ export default {
     totalCountText(count) {
       return count > 999 ? this.i18n.totalCountLabel : `${count}`;
     },
+    isSelectedGroup(text) {
+      return text === this.i18n.selected;
+    },
+    onCopyToClipboard() {
+      if (this.selectedRef.startsWith(`refs/${TAG_REF_TYPE}`)) {
+        toast(__('Tag name copied to clipboard.'));
+        return;
+      }
+      toast(__('Branch name copied to clipboard.'));
+    },
   },
 };
 </script>
@@ -281,7 +307,29 @@ export default {
       @select="selectRef"
     >
       <template #group-label="{ group }">
-        {{ group.text }} <gl-badge>{{ totalCountText(group.options.length) }}</gl-badge>
+        <div class="gl-flex gl-items-center gl-justify-between gl-pb-1">
+          <div>
+            {{ group.text }}
+            <gl-badge v-if="!isSelectedGroup(group.text)" data-testid="count">{{
+              totalCountText(group.options.length)
+            }}</gl-badge>
+          </div>
+
+          <div
+            v-if="isSelectedGroup(group.text) && selectedRef"
+            v-gl-tooltip.hover.focus.click.html="{
+              placement: 'left',
+              boundary: 'scrollParent',
+            }"
+            :title="__('Copy selected ref')"
+            data-testid="clipboard"
+            :data-clipboard-text="selectedRefForDisplay"
+            class="gl-mr-3 gl-cursor-pointer"
+            @click="onCopyToClipboard"
+          >
+            <gl-icon name="copy-to-clipboard" />
+          </div>
+        </div>
       </template>
       <template #list-item="{ item }">
         {{ item.text }}

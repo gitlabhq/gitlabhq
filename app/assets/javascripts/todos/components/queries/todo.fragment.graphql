@@ -4,6 +4,7 @@ fragment Todo on Todo {
   snoozedUntil
   createdAt
   action
+  body
   targetType
   targetUrl
   memberAccessType

@@ -115,6 +115,11 @@ The token should have the scope set to one of the following:
 - `read_virtual_registry`: Grants read-only access (pull) to container images through the dependency proxy.
 - `write_virtual_registry`: Grants read (pull), write (push), and delete access to container images through the dependency proxy.
 
+When authenticating with the dependency proxy for container images:
+
+- Tokens with the `read_virtual_registry` scope must also include the `read_registry` scope.
+- Tokens with the `write_virtual_registry` scope must also include the `write_registry` scope.
+
 Users accessing the dependency proxy for container images with a personal access token or username and password must
 have at least the Guest role for the group they pull images from.
 

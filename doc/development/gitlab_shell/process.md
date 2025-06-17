@@ -13,19 +13,18 @@ application is stored in
 
 For each version, there is a raw version and a tag version:
 
-- The **raw version** is the version number. For instance, `15.2.8`.
-- The **tag version** is the raw version prefixed with `v`. For instance, `v15.2.8`.
+- The raw version is the version number. For instance, `15.2.8`.
+- The tag version is the raw version prefixed with `v`. For instance, `v15.2.8`.
 
 To release a new version of GitLab Shell and have that version available to the
 Rails application:
 
 1. Create a merge request to update the [`CHANGELOG`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/CHANGELOG.md) with the
-   **tag version** and the [`VERSION`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/VERSION) file with the **raw version**.
+   tag version and the [`VERSION`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/VERSION) file with the raw version.
 1. Ask a maintainer to review and merge the merge request. If you're already a
    maintainer, second maintainer review is not required.
-1. Add a new Git tag with the **tag version**.
-1. Update `GITLAB_SHELL_VERSION` in the Rails application to the **raw
-   version**.
+1. Add a new Git tag with the tag version.
+1. Update `GITLAB_SHELL_VERSION` in the Rails application to the raw version.
 
    {{< alert type="note" >}}
 

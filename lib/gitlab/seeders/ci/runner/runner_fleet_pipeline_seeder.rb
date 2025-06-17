@@ -6,6 +6,7 @@ module Gitlab
       module Runner
         class RunnerFleetPipelineSeeder
           DEFAULT_JOB_COUNT = 400
+          DEFAULT_USERNAME = 'root'
 
           MAX_QUEUE_TIME_IN_SECONDS = 5.minutes.to_i
           PIPELINE_CREATION_RANGE_MIN_IN_SECONDS = 2.hours.to_i
@@ -27,8 +28,10 @@ module Gitlab
           # @param [Gitlab::Logger] logger
           # @param [Integer] job_count the number of jobs to create across the runners
           # @param [Array<Hash>] projects_to_runners list of project IDs to respective runner IDs
-          def initialize(logger = Gitlab::AppLogger, projects_to_runners:, job_count:)
+          # @param [String] username the user that will create the pipelines
+          def initialize(logger = Gitlab::AppLogger, projects_to_runners:, job_count:, username:)
             @logger = logger
+            @user = User.find_by_username!(username.presence || DEFAULT_USERNAME)
             @projects_to_runners = projects_to_runners.map do |v|
               { project_id: v[:project_id], runners: ::Ci::Runner.id_in(v[:runner_ids]).to_a }
             end
@@ -47,7 +50,8 @@ module Gitlab
               remaining_job_count -= create_pipeline(
                 job_count: remaining_job_count,
                 **@projects_to_runners[PROJECT_JOB_DISTRIBUTION.length],
-                status: random_pipeline_status
+                status: random_pipeline_status,
+                name: "Mock pipeline #{@job_count - remaining_job_count}"
               )
             end
 
@@ -78,20 +82,21 @@ module Gitlab
 
             pipeline_count = [1, total_jobs / pipeline_job_count].max
 
-            (1..pipeline_count).each do
+            (1..pipeline_count).each do |pipeline_index|
               remaining_job_count -= create_pipeline(
                 job_count: pipeline_job_count,
                 project_id: project_id,
                 runners: runners,
-                status: random_pipeline_status
+                status: random_pipeline_status,
+                name: "Mock pipeline #{pipeline_index}"
               )
             end
 
             remaining_job_count
           end
 
-          def create_pipeline(job_count:, runners:, project_id:, status: 'success', **attrs)
-            logger.info(message: 'Creating pipeline with builds on project',
+          def create_pipeline(job_count:, runners:, project_id:, name:, status: 'success', **attrs)
+            logger.info(message: 'Creating pipeline with builds on project', name: name,
               status: status, job_count: job_count, project_id: project_id, **attrs)
 
             raise ArgumentError('runners') unless runners
@@ -124,6 +129,10 @@ module Gitlab
             )
             pipeline.ensure_project_iid! # allocate an internal_id outside of pipeline creation transaction
             pipeline.save!
+
+            ::Ci::Pipelines::UpdateMetadataService.new(pipeline, current_user: @user, params: { name: name }).execute
+            # it seeds ci_finished_pipeline_ch_sync_events which is used to sync finished pipelines to Ch.
+            ::Ci::PipelineFinishedWorker.perform_async(pipeline.id) if pipeline.complete?
 
             if created_at.present?
               (1..job_count).each do |index|

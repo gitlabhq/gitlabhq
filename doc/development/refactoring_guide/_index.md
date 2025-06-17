@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Refactoring guide
 ---
 
@@ -9,7 +9,7 @@ This document is a collection of techniques and best practices to consider while
 
 ## Pinning tests
 
-Pinning tests help you ensure that you don't unintentionally change the output or behavior of the entity you're refactoring. This even includes preserving any existing *buggy* behavior, since consumers may rely on those bugs implicitly.
+Pinning tests help you ensure that you don't unintentionally change the output or behavior of the entity you're refactoring. This even includes preserving any existing buggy behavior, since consumers may rely on those bugs implicitly.
 
 ### Example steps
 

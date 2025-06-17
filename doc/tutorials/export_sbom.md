@@ -78,7 +78,7 @@ Set up Dependency Scanning. For detailed instructions, follow [the Dependency Sc
    export_sbom
    ```
 
-   The above script works in the following steps:
+   This `export.sh` script works in the following steps:
 
    1. Create a CycloneDX SBOM export for the current pipeline.
    1. Check the status of that export, and stop when it's ready.

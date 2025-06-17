@@ -170,7 +170,6 @@ export default {
         fullPath: namespace.fullPath,
         isPersonal: namespace.fullPath === this.userNamespaceFullPath,
       });
-
       this.setNamespace(namespace);
     },
     handleSelectTemplate(id, fullPath) {

@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Labels
 ---
 
@@ -31,7 +31,7 @@ All labels, their meaning and priority are defined on the
 [labels page](https://gitlab.com/gitlab-org/gitlab/-/labels).
 
 If you come across an issue that has none of these, and you're allowed to set
-labels, you can _always_ add the type, stage, group, and often the category/feature labels.
+labels, you can always add the type, stage, group, and often the category/feature labels.
 
 ## Type labels
 

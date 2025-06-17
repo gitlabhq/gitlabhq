@@ -62,7 +62,8 @@ export default {
       required: false,
       default: () => [],
     },
-    visibleReviewers: {
+    // Any user eligible to be a reviewer for this list (based on approval rule, etc.)
+    eligibleReviewers: {
       type: Array,
       required: false,
       default: () => [],
@@ -103,10 +104,10 @@ export default {
       const items = [];
       const users = this.usersForList;
 
-      if (this.selectedReviewersToShow.length && !this.search) {
+      if (this.visibleReviewers.length && !this.search) {
         items.push({
           text: __('Reviewers'),
-          options: this.selectedReviewersToShow.map((user) => this.mapUser(user)),
+          options: this.visibleReviewers.map((user) => this.mapUser(user)),
         });
       }
 
@@ -122,9 +123,10 @@ export default {
 
       return items;
     },
-    selectedReviewersToShow() {
+    visibleReviewers() {
+      // Eligible users filtered to only show the previously selected users
       return this.selectedReviewers.filter((user) =>
-        this.visibleReviewers.map((gqlUser) => gqlUser.id).includes(user.id),
+        this.eligibleReviewers.map((gqlUser) => gqlUser.id).includes(user.id),
       );
     },
   },
@@ -226,7 +228,7 @@ export default {
   },
   i18n: {
     selectReviewer: __('Select reviewer'),
-    unassign: __('Unassign'),
+    unassign: __('Unassign all'),
   },
 };
 </script>

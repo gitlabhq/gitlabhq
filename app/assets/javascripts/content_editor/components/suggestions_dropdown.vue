@@ -394,7 +394,7 @@ export default {
     <div v-if="loading" class="gl-new-dropdown-panel gl-absolute !gl-block">
       <div class="gl-new-dropdown-inner">
         <div class="gl-px-4 gl-py-3">
-          <gl-loading-icon size="sm" class="gl-inline-block" /> {{ __('Loading...') }}
+          <gl-loading-icon size="sm" class="gl-inline-block" /> {{ __('Loading…') }}
         </div>
       </div>
     </div>

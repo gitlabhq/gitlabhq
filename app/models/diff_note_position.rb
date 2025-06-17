@@ -14,7 +14,7 @@ class DiffNotePosition < ApplicationRecord
   }
 
   def position
-    Gitlab::Diff::Position.new(
+    ::Gitlab::Diff::Position.new(
       old_path: old_path,
       new_path: new_path,
       old_line: old_line,

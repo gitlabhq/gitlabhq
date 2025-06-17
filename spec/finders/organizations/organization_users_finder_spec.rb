@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Organizations::OrganizationUsersFinder, feature_category: :cell do
+RSpec.describe Organizations::OrganizationUsersFinder, feature_category: :organization do
   let_it_be(:organization) { create(:organization) }
   let_it_be(:organization_owner) { create(:organization_owner, organization: organization) }
   let_it_be(:organization_user) { create(:organization_user, organization: organization) }

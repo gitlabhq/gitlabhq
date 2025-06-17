@@ -177,61 +177,6 @@ module Gitlab
           Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
       end
 
-      def diff_lines_by_hunk
-        [].tap do |a|
-          lines = { added: [], removed: [] }
-
-          diff_lines.each do |line|
-            lines[:added] << line if line.added? && !line.meta?
-            lines[:removed] << line if line.removed? && !line.meta?
-
-            next unless line.type == 'match'
-
-            # If diff hunk is first line on diff file, skip it and continue iterating
-            # without resetting lines.
-            next if lines[:added].empty? && lines[:removed].empty?
-
-            a << lines
-
-            # Reset lines since we'll be creating a new hunk when a new diff
-            # hunk is seen.
-            lines = { added: [], removed: [] }
-          end
-
-          a << lines
-        end
-      end
-
-      def diff_hunks
-        [].tap do |hunks|
-          lines_text = []
-          hunk = {}
-
-          diff_lines.each do |line|
-            if line.type == 'match'
-              unless lines_text.empty?
-                # Ending previous hunk
-                hunk[:text] = lines_text.join("\n")
-                hunks << hunk
-
-                # Starting a new hunk
-                lines_text = []
-                hunk = {}
-              end
-            elsif !line.meta?
-              # Add new line
-              hunk[:last_removed_line_pos] = line.old_pos if line.removed?
-              hunk[:last_added_line_pos] = line.new_pos if line.added?
-              lines_text << line.text
-            end
-          end
-
-          # Handle the last diff_line
-          hunk[:text] = lines_text.join("\n")
-          hunks << hunk
-        end
-      end
-
       def viewer_hunks
         ViewerHunk.init_from_diff_lines(diff_lines_with_match_tail)
       end
@@ -447,11 +392,15 @@ module Gitlab
       end
 
       def ai_reviewable?
-        diffable? && !deleted_file?
+        diffable? && text?
       end
 
       def modified_file?
         new_file? || deleted_file? || content_changed?
+      end
+
+      def no_preview?
+        collapsed? || !modified_file?
       end
 
       def diffable_text?
@@ -460,6 +409,12 @@ module Gitlab
 
       def whitespace_only?
         !collapsed? && diff_lines_for_serializer.nil? && (added_lines != 0 || removed_lines != 0)
+      end
+
+      def image_diff?
+        return false if different_type? || external_storage_error?
+
+        DiffViewer::Image.can_render?(self, verify_binary: !stored_externally?)
       end
 
       private

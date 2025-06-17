@@ -6,7 +6,7 @@ query getBlobSearchQuery(
   $chunkCount: Int
   $regex: Boolean
   $includeArchived: Boolean
-  $includeForked: Boolean
+  $excludeForks: Boolean
 ) {
   blobSearch(
     search: $search
@@ -16,7 +16,7 @@ query getBlobSearchQuery(
     chunkCount: $chunkCount
     regex: $regex
     includeArchived: $includeArchived
-    includeForked: $includeForked
+    excludeForks: $excludeForks
   ) {
     fileCount
     files {

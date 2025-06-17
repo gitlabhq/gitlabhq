@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Configure GDK-in-a-box
 ---
 
@@ -15,7 +15,7 @@ sample projects, and administrator access with which you can test functionality.
 
 It requires 30 GB of disk space.
 
-![Home page of GitLab running in local development environment on port 3000](../img/gdk_home_v15_11.png)
+![Home page of GitLab running in local development environment on port 3000](img/gdk_home_v15_11.png)
 
 If you prefer to use GDK locally without a VM, use the steps in [Install the GDK development environment](configure-dev-env-gdk.md)
 

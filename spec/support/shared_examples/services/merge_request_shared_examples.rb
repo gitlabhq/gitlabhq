@@ -147,3 +147,26 @@ RSpec.shared_examples 'with an existing branch but no open MR' do |count|
 
   it_behaves_like 'when coupled with the `create` push option', count
 end
+
+RSpec.shared_examples 'it does not publish the AutoMerge::TitleDescriptionUpdateEvent' do
+  it 'does not publish a AutoMerge::TitleDescriptionUpdateEvent' do
+    expect do
+      update_merge_request(update_params)
+    end.to not_publish_event(MergeRequests::AutoMerge::TitleDescriptionUpdateEvent)
+  end
+end
+
+RSpec.shared_examples 'it publishes the AutoMerge::TitleDescriptionUpdateEvent once' do
+  it 'publishes a AutoMerge::TitleDescriptionUpdateEvent' do
+    expect(::MergeRequests::AutoMerge::TitleDescriptionUpdateEvent).to receive(:new).once.and_call_original
+
+    expected_data = {
+      current_user_id: user.id,
+      merge_request_id: merge_request.id
+    }
+
+    expect do
+      update_merge_request(update_params)
+    end.to publish_event(MergeRequests::AutoMerge::TitleDescriptionUpdateEvent).with(expected_data)
+  end
+end

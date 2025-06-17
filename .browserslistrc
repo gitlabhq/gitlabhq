@@ -1,12 +1,10 @@
 #
 # This list of browsers is a conservative definition, based on
 # https://docs.gitlab.com/ee/install/requirements.html#supported-web-browsers.
-# 
+#
 # To see what browsers this targets, go here:
-# https://browsersl.ist/#q=%3E+0.5%25%2C+last+2+versions%2C+Firefox+ESR%2C+not+dead
-# 
+# https://browsersl.ist/#q=%3E0.25%25%2C+not+dead
+#
 
-> 0.5%
-last 2 versions
-Firefox ESR
+> 0.25%
 not dead

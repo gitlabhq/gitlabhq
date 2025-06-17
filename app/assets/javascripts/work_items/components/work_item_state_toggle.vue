@@ -9,7 +9,7 @@ import {
 } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import Tracking from '~/tracking';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_UPDATING,
@@ -20,6 +20,7 @@ import {
   LINKED_CATEGORIES_MAP,
   i18n,
   STATE_CLOSED,
+  NAME_TO_TEXT_LOWERCASE_MAP,
 } from '../constants';
 import { findHierarchyWidget, findLinkedItemsWidget } from '../utils';
 import { updateCountsForParent } from '../graphql/cache_utils';
@@ -282,7 +283,9 @@ export default {
           throw new Error(errors[0]);
         }
       } catch (error) {
-        const msg = sprintfWorkItem(I18N_WORK_ITEM_ERROR_UPDATING, this.workItemType);
+        const msg = sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
+          workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
+        });
         this.$emit('error', msg);
         Sentry.captureException(error);
       }

@@ -18,7 +18,9 @@ module Analytics
         foreign_key: :group_value_stream_id, inverse_of: :stages
       has_one :stage_aggregation, class_name: 'Analytics::CycleAnalytics::StageAggregation', inverse_of: :stage
 
-      alias_attribute :parent, :namespace
+      alias_method :parent, :namespace
+      alias_method :parent=, :namespace=
+
       alias_attribute :parent_id, :group_id
       alias_attribute :value_stream_id, :group_value_stream_id
 

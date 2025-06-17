@@ -24,7 +24,57 @@ RSpec.describe ContainerRepositoryPolicy, feature_category: :container_registry 
       allow(container_repository).to receive(:has_tags?).and_return(has_tags)
     end
 
-    context 'when the project has tag protection rules' do
+    context 'when the project has an immutable tag protection rule' do
+      before_all do
+        create(
+          :container_registry_protection_tag_rule,
+          :immutable,
+          project: project
+        )
+      end
+
+      context 'when the container repository has tags' do
+        let(:has_tags) { true }
+
+        [:owner, :maintainer, :developer].each do |user_role|
+          context "when the user is #{user_role}" do
+            before do
+              project.send(:"add_#{user_role}", user)
+            end
+
+            it { expect_allowed(:destroy_container_image) }
+          end
+        end
+
+        context 'when the current user is an admin', :enable_admin_mode do
+          let(:user) { build_stubbed(:admin) }
+
+          it { expect_allowed(:destroy_container_image) }
+        end
+      end
+
+      context 'when the container repository does not have tags' do
+        let(:has_tags) { false }
+
+        [:owner, :maintainer, :developer].each do |user_role|
+          context "when the user is #{user_role}" do
+            before do
+              project.send(:"add_#{user_role}", user)
+            end
+
+            it { expect_allowed(:destroy_container_image) }
+          end
+        end
+
+        context 'when the current user is an admin', :enable_admin_mode do
+          let(:user) { build_stubbed(:admin) }
+
+          it { expect_allowed(:destroy_container_image) }
+        end
+      end
+    end
+
+    context 'when the project has a mutable tag protection rule' do
       before_all do
         create(
           :container_registry_protection_tag_rule,

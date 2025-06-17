@@ -27,7 +27,7 @@ module Packages
         # package file is in mode REMOTE: don't pass the `file` to the update
         # instead, pass the new file path. This will move the file
         # in object storage.
-        @package_file.new_file_path = File.join(file.store_dir, @package_file.file_name)
+        @package_file.new_file_path = file.store_path
       end
 
       @package_file.save!

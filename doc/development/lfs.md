@@ -1,7 +1,7 @@
 ---
 stage: Create
 group: Source Code
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Git LFS development guidelines
 ---
 
@@ -175,17 +175,6 @@ sequenceDiagram
 1. Workhorse makes a request to `gitlab` with information on the uploaded file so
    that `gitlab` can create an `LfsObject`. See
    [LfsStorageController#upload_finalize](https://gitlab.com/gitlab-org/gitlab/-/blob/96250de93a410e278ef659a3d38b056f12024636/app/controllers/repositories/lfs_storage_controller.rb#L51).
-
-## Deep Dive
-
-In April 2019, Francisco Javier López hosted a Deep Dive (GitLab team members only: `https://gitlab.com/gitlab-org/create-stage/-/issues/1`)
-on the GitLab [Git LFS](../topics/git/lfs/_index.md) implementation to share domain-specific
-knowledge with anyone who may work in this part of the codebase in the future.
-You can find the <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [recording on YouTube](https://www.youtube.com/watch?v=Yyxwcksr0Qc),
-and the slides on [Google Slides](https://docs.google.com/presentation/d/1E-aw6-z0rYd0346YhIWE7E9A65zISL9iIMAOq2zaw9E/edit)
-and in [PDF](https://gitlab.com/gitlab-org/create-stage/uploads/07a89257a140db067bdfb484aecd35e1/Git_LFS_Deep_Dive__Create_.pdf).
-This deep dive was accurate as of GitLab 11.10, and while specific
-details may have changed, it should still serve as a good introduction.
 
 ## Including LFS blobs in project archives
 

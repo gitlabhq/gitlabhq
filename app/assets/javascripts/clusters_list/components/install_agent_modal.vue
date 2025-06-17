@@ -247,7 +247,8 @@ export default {
         <p class="gl-mb-0">
           {{ $options.i18n.modalBody }}
 
-          <gl-link :href="$options.registerAgentPath"> {{ $options.i18n.learMore }}</gl-link>
+          <gl-link :href="$options.registerAgentPath">{{ $options.i18n.learnMore }}</gl-link
+          >.
         </p>
 
         <gl-form @submit.prevent="submit">

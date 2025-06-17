@@ -9,8 +9,8 @@ module Ci
     let_it_be_with_reload(:pipeline) { create(:ci_pipeline, project: project) }
 
     let_it_be(:shared_runner) { create(:ci_runner, :instance) }
-    let!(:project_runner) { create(:ci_runner, :project, projects: [project]) }
-    let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+    let_it_be_with_reload(:project_runner) { create(:ci_runner, :project, projects: [project]) }
+    let_it_be_with_reload(:group_runner) { create(:ci_runner, :group, groups: [group]) }
     let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
     describe '#execute' do
@@ -18,7 +18,7 @@ module Ci
 
       let(:runner_manager) { nil }
 
-      context 'checks database loadbalancing stickiness' do
+      context 'when checking database loadbalancing stickiness' do
         let(:runner) { shared_runner }
 
         before do
@@ -48,7 +48,7 @@ module Ci
       end
 
       shared_examples 'handles runner assignment' do
-        context 'runner follows tag list' do
+        context 'when runner follows tag list' do
           subject(:build) { build_on(project_runner, runner_manager: project_runner_manager) }
 
           let(:project_runner_manager) { nil }
@@ -151,7 +151,7 @@ module Ci
           end
         end
 
-        context 'deleted projects' do
+        context 'with deleted projects' do
           before do
             project.update!(pending_delete: true)
           end
@@ -193,7 +193,7 @@ module Ci
           end
         end
 
-        context 'allow shared runners' do
+        context 'when shared runners are allowed' do
           before do
             project.update!(shared_runners_enabled: true)
             pipeline.reload
@@ -312,7 +312,7 @@ module Ci
             end
           end
 
-          context 'shared runner' do
+          context 'for shared runner' do
             let(:response) { described_class.new(shared_runner, nil).execute }
             let(:build) { response.build }
 
@@ -323,7 +323,7 @@ module Ci
             it { expect(Gitlab::Json.parse(response.build_json)['id']).to eq(build.id) }
           end
 
-          context 'project runner' do
+          context 'for project runner' do
             let(:build) { build_on(project_runner) }
 
             it { expect(build).to be_kind_of(Build) }
@@ -333,18 +333,18 @@ module Ci
           end
         end
 
-        context 'disallow shared runners' do
+        context 'when shared runners are disallowed' do
           before do
             project.update!(shared_runners_enabled: false)
           end
 
-          context 'shared runner' do
+          context 'for shared runner' do
             let(:build) { build_on(shared_runner) }
 
             it { expect(build).to be_nil }
           end
 
-          context 'project runner' do
+          context 'for project runner' do
             let(:build) { build_on(project_runner) }
 
             it { expect(build).to be_kind_of(Build) }
@@ -354,7 +354,7 @@ module Ci
           end
         end
 
-        context 'disallow when builds are disabled' do
+        context 'when builds are disabled' do
           before do
             project.update!(shared_runners_enabled: true, group_runners_enabled: true)
             project.project_feature.update_attribute(:builds_access_level, ProjectFeature::DISABLED)
@@ -385,7 +385,7 @@ module Ci
           end
         end
 
-        context 'allow group runners' do
+        context 'when group runners are allowed' do
           before do
             project.update!(group_runners_enabled: true)
             pending_job.reload.create_queuing_entry!
@@ -437,7 +437,7 @@ module Ci
             end
           end
 
-          context 'group runner' do
+          context 'for group runner' do
             let(:build) { build_on(group_runner) }
 
             it { expect(build).to be_kind_of(Build) }
@@ -447,25 +447,27 @@ module Ci
           end
         end
 
-        context 'disallow group runners' do
+        context 'when group runners are disallowed' do
           before do
             project.update!(group_runners_enabled: false)
 
             pending_job.reload.create_queuing_entry!
           end
 
-          context 'group runner' do
+          context 'for group runner' do
             let(:build) { build_on(group_runner) }
 
             it { expect(build).to be_nil }
           end
         end
 
-        context 'when first build is stalled' do
+        context 'when first build is stale' do
           before do
-            allow_any_instance_of(described_class).to receive(:assign_runner!).and_call_original
-            allow_any_instance_of(described_class).to receive(:assign_runner!)
-              .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
+            allow_next_instance_of(described_class) do |instance|
+              allow(instance).to receive(:assign_runner!).and_call_original
+              allow(instance).to receive(:assign_runner!)
+                .with(pending_job, anything).and_raise(ActiveRecord::StaleObjectError)
+            end
           end
 
           subject { described_class.new(project_runner, nil).execute }
@@ -474,9 +476,10 @@ module Ci
             let!(:other_build) { create(:ci_build, :pending, :queued, pipeline: pipeline) }
 
             before do
-              allow_any_instance_of(::Ci::Queue::BuildQueueService)
-                .to receive(:execute)
-                .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id, :partition_id))
+              allow_next_instance_of(::Ci::Queue::BuildQueueService) do |instance|
+                allow(instance).to receive(:execute)
+                  .and_return(Ci::Build.where(id: [pending_job, other_build]).pluck(:id, :partition_id))
+              end
             end
 
             it "receives second build from the queue" do
@@ -487,9 +490,10 @@ module Ci
 
           context 'when single build is in queue' do
             before do
-              allow_any_instance_of(::Ci::Queue::BuildQueueService)
-                .to receive(:execute)
-                .and_return(Ci::Build.where(id: pending_job).pluck(:id, :partition_id))
+              allow_next_instance_of(::Ci::Queue::BuildQueueService) do |instance|
+                allow(instance).to receive(:execute)
+                  .and_return(Ci::Build.where(id: pending_job).pluck(:id, :partition_id))
+              end
             end
 
             it "does not receive any valid result" do
@@ -499,9 +503,10 @@ module Ci
 
           context 'when there is no build in queue' do
             before do
-              allow_any_instance_of(::Ci::Queue::BuildQueueService)
-                .to receive(:execute)
-                .and_return([])
+              allow_next_instance_of(::Ci::Queue::BuildQueueService) do |instance|
+                allow(instance).to receive(:execute)
+                  .and_return([])
+              end
             end
 
             it "does not receive builds but result is valid" do
@@ -575,7 +580,7 @@ module Ci
           end
         end
 
-        context 'runner feature set is verified' do
+        context 'when runner feature set is verified' do
           let(:options) { { artifacts: { reports: { junit: "junit.xml" } } } }
           let!(:pending_job) { create(:ci_build, :pending, :queued, pipeline: pipeline, options: options) }
 
@@ -645,7 +650,7 @@ module Ci
             end
           end
 
-          shared_examples 'not pick' do
+          shared_examples 'when not picking build' do
             it 'does not pick the build and drops the build' do
               expect(subject).to be_nil
               expect(pending_job.reload).to be_failed
@@ -680,33 +685,35 @@ module Ci
                   pipeline.unlocked!
                 end
 
-                it_behaves_like 'not pick'
+                it_behaves_like 'when not picking build'
               end
             end
 
-            context 'when artifacts of depended job has been erased' do
+            context 'when artifacts of dependant job has been erased' do
               let!(:pre_stage_job) do
                 create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago)
               end
 
-              it_behaves_like 'not pick'
+              it_behaves_like 'when not picking build'
             end
 
-            context 'when job object is staled' do
+            context 'when job object is stale' do
               let!(:pre_stage_job) do
                 create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0)
               end
 
               before do
                 pipeline.unlocked!
-
-                allow_next_instance_of(Ci::Build) do |build|
-                  expect(build).to receive(:drop!)
-                    .and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
-                end
+                allow(pending_job).to receive(:drop!).and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
+                allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
               end
 
               it 'does not drop nor pick' do
+                expect_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
+                  allow(metric).to receive(:increment_queue_operation).and_call_original
+                  expect(metric).to receive(:increment_queue_operation).with(:build_conflict_lock)
+                end
+
                 expect(subject).to be_nil
               end
             end
@@ -785,14 +792,12 @@ module Ci
             create(:ci_build, :pending, :queued, pipeline: pipeline)
           end
 
-          before do
-            expect_any_instance_of(Ci::Build).to receive(:run!)
-              .and_raise(RuntimeError, 'scheduler error')
-          end
-
           subject { build_on(project_runner) }
 
-          it 'does drop the build and logs failure' do
+          it 'drops the build and logs the failure' do
+            allow(pending_job).to receive(:run!).and_raise(RuntimeError, 'scheduler error')
+            allow(Ci::Build).to receive(:find_by!).and_return(pending_job)
+
             expect(Gitlab::ErrorTracking).to receive(:track_exception)
               .with(anything, a_hash_including(build_id: pending_job.id))
               .once
@@ -808,8 +813,10 @@ module Ci
 
         context 'when an exception is raised during a persistent ref creation' do
           before do
-            allow_any_instance_of(Ci::PersistentRef).to receive(:exist?) { false }
-            allow_any_instance_of(Ci::PersistentRef).to receive(:create_ref) { raise ArgumentError }
+            allow_next_instance_of(Ci::PersistentRef) do |instance|
+              allow(instance).to receive(:exist?).and_return(false)
+              allow(instance).to receive(:create_ref).and_raise(ArgumentError)
+            end
           end
 
           subject { build_on(project_runner) }
@@ -893,6 +900,67 @@ module Ci
             end
           end
         end
+
+        context 'when metrics recording fails' do
+          before do
+            project.update!(shared_runners_enabled: true)
+            pending_job.reload.create_queuing_entry!
+
+            allow_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
+              allow(metric).to receive(:register_success)
+                .and_raise(StandardError, 'metrics failure')
+            end
+          end
+
+          it 'continues assignment when register_success fails' do
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+              .with(
+                instance_of(StandardError),
+                hash_including(
+                  build_id: pending_job.id,
+                  build_name: pending_job.name,
+                  build_stage: pending_job.stage_name,
+                  pipeline_id: pending_job.pipeline_id,
+                  project_id: pending_job.project_id
+                )
+              )
+
+            result = described_class.new(shared_runner, nil).execute
+
+            expect(result).to be_valid
+            expect(result.build).to eq(pending_job)
+            expect(result.build_json).to be_present
+            expect(pending_job.reload).to be_running
+          end
+
+          it 'continues assignment when observe_queue_depth fails' do
+            allow_next_instance_of(::Gitlab::Ci::Queue::Metrics) do |metric|
+              allow(metric).to receive(:register_success).and_call_original
+              allow(metric).to receive(:observe_queue_depth)
+                .with(:found, anything)
+                .and_raise(StandardError, 'queue depth metrics failure')
+            end
+
+            expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+              .with(
+                instance_of(StandardError),
+                hash_including(
+                  build_id: pending_job.id,
+                  build_name: pending_job.name,
+                  build_stage: pending_job.stage_name,
+                  pipeline_id: pending_job.pipeline_id,
+                  project_id: pending_job.project_id
+                )
+              )
+
+            result = described_class.new(shared_runner, nil).execute
+
+            expect(result).to be_valid
+            expect(result.build).to eq(pending_job)
+            expect(result.build_json).to be_present
+            expect(pending_job.reload).to be_running
+          end
+        end
       end
 
       context 'when using pending builds table' do
@@ -946,6 +1014,10 @@ module Ci
       let!(:attempt_counter) { double('Gitlab::Metrics::NullMetric') }
       let!(:job_queue_duration_seconds) { double('Gitlab::Metrics::NullMetric') }
 
+      let!(:pending_job_2) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline, tag_list: %w[tag2]) }
+
+      let(:expected_time_in_queue_seconds) { 1800 }
+
       before do
         allow(Time).to receive(:now).and_return(current_time)
         # Stub tested metrics
@@ -958,7 +1030,7 @@ module Ci
                 .and_return(job_queue_duration_seconds)
 
         project.update!(shared_runners_enabled: true)
-        pending_job.update!(created_at: current_time - 3600, queued_at: current_time - 1800)
+        pending_job_2.update!(created_at: current_time - 3600, queued_at: current_time - 1800)
       end
 
       shared_examples 'attempt counter collector' do
@@ -1008,32 +1080,55 @@ module Ci
         it_behaves_like 'jobs queueing time histogram collector'
       end
 
-      context 'when shared runner is used' do
+      shared_examples 'queue metrics presenter' do
+        let!(:pending_job_3) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline, tag_list: %w[tag3]) }
+        let!(:pending_job_4) { create(:ci_build, :pending, :queued, :protected, pipeline: pipeline, tag_list: %w[tag2]) }
+
+        subject(:execute) { described_class.new(runner, nil).execute }
+
         before do
-          pending_job.reload
-          pending_job.create_queuing_entry!
+          allow(job_queue_duration_seconds).to receive(:observe)
+          allow(attempt_counter).to receive(:increment)
         end
 
-        let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 tag2]) }
+        it 'presents queue metrics' do
+          expect(execute.build_presented.queue_size).to eq(2)
+          expect(execute.build_presented.queue_depth).to eq(1)
+          expect(execute.build_presented.time_in_queue_seconds).to eq(expected_time_in_queue_seconds)
+          expect(execute.build_presented.project_jobs_running_on_instance_runners_count).to eq(expected_project_jobs_running_on_instance_runners_count)
+        end
+      end
+
+      context 'when shared runner is used' do
+        before do
+          pending_job_2.reload
+          pending_job_2.create_queuing_entry!
+        end
+
+        let(:runner) { create(:ci_runner, :instance, :ref_protected, tag_list: %w[tag1 tag2]) }
         let(:expected_shared_runner) { true }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '0' }
         let(:expected_jobs_running_for_project_third_job) { '2' }
+        let(:expected_project_jobs_running_on_instance_runners_count) { '0' }
 
         it_behaves_like 'metrics collector'
+        it_behaves_like 'queue metrics presenter'
 
         context 'when metrics_shard tag is defined' do
-          let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
+          let(:runner) { create(:ci_runner, :instance, :ref_protected, tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
           let(:expected_shard) { 'shard_tag' }
 
           it_behaves_like 'metrics collector'
+          it_behaves_like 'queue metrics presenter'
         end
 
         context 'when multiple metrics_shard tag is defined' do
-          let(:runner) { create(:ci_runner, :instance, tag_list: %w[tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2]) }
+          let(:runner) { create(:ci_runner, :instance, :ref_protected, tag_list: %w[tag1 metrics_shard::shard_tag metrics_shard::shard_tag_2 tag2]) }
           let(:expected_shard) { 'shard_tag' }
 
           it_behaves_like 'metrics collector'
+          it_behaves_like 'queue metrics presenter'
         end
 
         context 'when max running jobs bucket size is exceeded' do
@@ -1044,14 +1139,18 @@ module Ci
           let(:expected_jobs_running_for_project_third_job) { '1+' }
 
           it_behaves_like 'metrics collector'
+          it_behaves_like 'queue metrics presenter'
         end
 
         context 'when pending job with queued_at=nil is used' do
+          let(:expected_time_in_queue_seconds) { nil }
+
           before do
-            pending_job.update!(queued_at: nil)
+            pending_job_2.update!(queued_at: nil)
           end
 
           it_behaves_like 'attempt counter collector'
+          it_behaves_like 'queue metrics presenter'
 
           it "doesn't count job queuing time histogram" do
             allow(attempt_counter).to receive(:increment)
@@ -1063,17 +1162,19 @@ module Ci
       end
 
       context 'when project runner is used' do
-        let(:runner) { create(:ci_runner, :project, projects: [project], tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
+        let(:runner) { create(:ci_runner, :project, :ref_protected, projects: [project], tag_list: %w[tag1 metrics_shard::shard_tag tag2]) }
         let(:expected_shared_runner) { false }
         let(:expected_shard) { ::Gitlab::Ci::Queue::Metrics::DEFAULT_METRICS_SHARD }
         let(:expected_jobs_running_for_project_first_job) { '+Inf' }
         let(:expected_jobs_running_for_project_third_job) { '+Inf' }
+        let(:expected_project_jobs_running_on_instance_runners_count) { '+Inf' }
 
         it_behaves_like 'metrics collector'
+        it_behaves_like 'queue metrics presenter'
       end
     end
 
-    context 'when runner_session params are' do
+    context 'when runner_session params are present' do
       it 'present sets runner session configuration in the build' do
         runner_session_params = { session: { 'url' => 'https://example.com' } }
 
@@ -1103,6 +1204,25 @@ module Ci
         expect(result).not_to be_valid
         expect(result.build).to be_nil
         expect(result.build_json).to be_nil
+      end
+
+      context 'when metrics tracking raises an error during conflict' do
+        let(:error) { StandardError.new('Metrics tracking failed') }
+
+        before do
+          allow_next_instance_of(Gitlab::Ci::Queue::Metrics) do |metric|
+            allow(metric).to receive(:observe_queue_depth).with(:conflict, any_args).and_raise(error)
+          end
+        end
+
+        it 'tracks and raises the exception for dev without affecting the result' do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(error)
+
+          result = described_class.new(project_runner, nil).execute
+
+          expect(result).not_to be_valid
+          expect(result.build).to be_nil
+        end
       end
     end
 

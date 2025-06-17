@@ -72,7 +72,7 @@ module NotificationRecipients
                         target.class.model_name.name.underscore
                       end
 
-        @custom_action = "#{action}_#{target_name}".to_sym
+        @custom_action = :"#{action}_#{target_name}"
       end
 
       def self.mention_type_actions

@@ -112,6 +112,11 @@ export default {
       required: false,
       default: false,
     },
+    resolvedBy: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     hideFullscreenMarkdownButton: {
       type: Boolean,
       required: false,
@@ -212,9 +217,6 @@ export default {
     },
     isWorkItemConfidential() {
       return this.workItem.confidential;
-    },
-    discussionResolvedBy() {
-      return this.note.discussion.resolvedBy;
     },
   },
   mounted() {
@@ -413,7 +415,7 @@ export default {
               :can-resolve="canResolve"
               :is-resolved="isDiscussionResolved"
               :is-resolving="isResolving"
-              :resolved-by="discussionResolvedBy"
+              :resolved-by="resolvedBy"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
               @resolve="$emit('resolve')"

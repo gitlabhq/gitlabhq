@@ -18,7 +18,6 @@ title: Explain code in a file
 
 {{< history >}}
 
-- Introduced in GitLab 15.11 as an [experiment](../../../policy/development_stages_support.md#experiment) on GitLab.com.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) in GitLab 16.8.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 

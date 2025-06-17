@@ -92,7 +92,8 @@ class DropCiRunnersArchived < Gitlab::Database::Migration[2.2]
 
     # rubocop:disable Migration/WithLockRetriesDisallowedMethod -- these are just helpers over allowed methods
     with_lock_retries do
-      drop_nonpartitioned_archive_table(TABLE_NAME)
+      # The archive table will be deleted, not TABLE_NAME
+      drop_nonpartitioned_archive_table(TABLE_NAME) if table_exists?(ARCHIVED_TABLE_NAME)
       rename_indexes_for_table(TABLE_NAME, indexes)
     end
     # rubocop:enable Migration/WithLockRetriesDisallowedMethod

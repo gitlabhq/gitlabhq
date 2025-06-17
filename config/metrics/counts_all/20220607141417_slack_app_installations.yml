@@ -1,7 +1,7 @@
 ---
 key_path: counts.slack_app_installations
 description: Count of Slack app installations
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 milestone: "15.1"

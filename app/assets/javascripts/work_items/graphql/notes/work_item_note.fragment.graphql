@@ -19,15 +19,6 @@ fragment WorkItemNote on Note {
     ...User
     webPath
   }
-  discussion {
-    id
-    resolved
-    resolvable
-    resolvedBy {
-      id
-      name
-    }
-  }
   author {
     ...User
   }

@@ -170,6 +170,14 @@ type ListenerConfig struct {
 	TLS     *TLSConfig `toml:"tls" json:"tls"`
 }
 
+// CircuitBreakerConfig holds circuit breaker settings
+type CircuitBreakerConfig struct {
+	Timeout             uint32 `toml:"timeout" json:"timeout"`
+	Interval            uint32 `toml:"interval" json:"interval"`
+	MaxRequests         uint32 `toml:"max_requests" json:"max_requests"`
+	ConsecutiveFailures uint32 `toml:"consecutive_failures" json:"consecutive_failures"`
+}
+
 // Config holds the overall application configuration
 type Config struct {
 	ConfigCommand                string                   `toml:"config_command,omitempty" json:"config_command"`
@@ -198,6 +206,7 @@ type Config struct {
 	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
 	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
 	Sentinel                     *SentinelConfig          `toml:"Sentinel" json:"Sentinel"`
+	CircuitBreakerConfig         CircuitBreakerConfig     `toml:"circuit_breaker" json:"circuit_breaker"`
 }
 
 // DefaultImageResizerConfig contains default settings for the image resizer
@@ -211,11 +220,20 @@ var DefaultMetadataConfig = MetadataConfig{
 	ZipReaderLimitBytes: 100 * Megabyte,
 }
 
+// DefaultCircuitBreakerConfig contains default settings for the circuit breaker
+var DefaultCircuitBreakerConfig = CircuitBreakerConfig{
+	Timeout:             60,
+	Interval:            180,
+	MaxRequests:         1,
+	ConsecutiveFailures: 5,
+}
+
 // NewDefaultConfig creates a new configuration with default values
 func NewDefaultConfig() *Config {
 	return &Config{
-		ImageResizerConfig: DefaultImageResizerConfig,
-		MetadataConfig:     DefaultMetadataConfig,
+		ImageResizerConfig:   DefaultImageResizerConfig,
+		MetadataConfig:       DefaultMetadataConfig,
+		CircuitBreakerConfig: DefaultCircuitBreakerConfig,
 	}
 }
 

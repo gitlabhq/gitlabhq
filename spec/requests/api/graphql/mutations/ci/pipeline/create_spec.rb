@@ -123,20 +123,6 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
           end
         end
 
-        context 'when the FF ci_inputs_for_pipelines is disabled' do
-          before do
-            stub_feature_flags(ci_inputs_for_pipelines: false)
-          end
-
-          it 'behaves like the inputs are never passed and returns errors' do
-            post_graphql_mutation(mutation, current_user: user)
-
-            expect(mutation_response['errors'].first).to include(
-              '`deploy_strategy` input: required value has not been provided'
-            )
-          end
-        end
-
         context 'when there are errors in the inputs' do
           let(:inputs) do
             [{ name: 'deploy_strategy', value: 'invalid' }]
@@ -154,20 +140,6 @@ RSpec.describe 'PipelineCreate', feature_category: :pipeline_composition do
             expect(mutation_response['errors'].first).to include(
               '`test_script` input: required value has not been provided'
             )
-          end
-
-          context 'when the FF ci_inputs_for_pipelines is disabled' do
-            before do
-              stub_feature_flags(ci_inputs_for_pipelines: false)
-            end
-
-            it 'behaves like the inputs are never passed and returns errors' do
-              post_graphql_mutation(mutation, current_user: user)
-
-              expect(mutation_response['errors'].first).to include(
-                '`deploy_strategy` input: required value has not been provided'
-              )
-            end
           end
         end
       end

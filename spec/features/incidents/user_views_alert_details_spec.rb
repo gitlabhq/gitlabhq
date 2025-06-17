@@ -7,6 +7,10 @@ RSpec.describe 'User uploads alerts to incident', :js, feature_category: :incide
   let_it_be(:project) { incident.project }
   let_it_be(:user) { create(:user, developer_of: project) }
 
+  before do
+    stub_feature_flags(hide_incident_management_features: false)
+  end
+
   context 'with alert' do
     let_it_be(:alert) { create(:alert_management_alert, issue_id: incident.id, project: project) }
 

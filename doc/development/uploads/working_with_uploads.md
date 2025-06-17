@@ -1,7 +1,7 @@
 ---
 stage: SaaS Platforms
 group: Scalability
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: 'Uploads guide: Adding new uploads'
 ---
 
@@ -133,14 +133,14 @@ For Rails endpoints you can use the
 
 Some features require us to process uploads, for example to extract
 metadata from the uploaded file. There are a couple of different ways
-you can implement this. The main choice is _where_ to implement the
+you can implement this. The main choice is where to implement the
 processing, or "who is the processor".
 
-|Processor|Direct Upload possible?|Can reject HTTP request?|Implementation|
-|---|---|---|---|
-|Sidekiq|yes|no|Straightforward|
-|Workhorse|yes|yes|Complex|
-|Rails|no|yes|Easy|
+| Processor | Direct Upload possible? | Can reject HTTP request? | Implementation |
+|-----------|-------------------------|--------------------------|----------------|
+| Sidekiq   | yes                     | no                       | Straightforward |
+| Workhorse | yes                     | yes                      | Complex        |
+| Rails     | no                      | yes                      | Easy           |
 
 Processing in Rails looks appealing but it tends to lead to scaling
 problems down the road because you cannot use direct upload. You are
@@ -202,7 +202,7 @@ CarrierWave. Things you can do include:
 CarrierWave pre-processing behaviors such as image resizing
 or encryption require local access to the uploaded file. This forces
 you to upload the processed file from Ruby. This flies against direct
-upload, which is all about _not_ doing the upload in Ruby. If you use
+upload, which is all about not doing the upload in Ruby. If you use
 direct upload with an Uploader with pre-processing behaviors then the
 pre-processing behaviors are skipped silently.
 
@@ -210,10 +210,10 @@ pre-processing behaviors are skipped silently.
 
 CarrierWave has 2 storage engines:
 
-|CarrierWave class|GitLab name|Description|
-|---|---|---|
-|`CarrierWave::Storage::File`|`ObjectStorage::Store::LOCAL` |Local files, accessed through the Ruby `stdlib` |
-| `CarrierWave::Storage::Fog`|`ObjectStorage::Store::REMOTE`|Cloud files, accessed through the [Fog gem](https://github.com/fog/fog)|
+| CarrierWave class            | GitLab name                    | Description |
+|------------------------------|--------------------------------|-------------|
+| `CarrierWave::Storage::File` | `ObjectStorage::Store::LOCAL`  | Local files, accessed through the Ruby `stdlib` |
+| `CarrierWave::Storage::Fog`  | `ObjectStorage::Store::REMOTE` | Cloud files, accessed through the [Fog gem](https://github.com/fog/fog) |
 
 GitLab uses both of these engines, depending on configuration.
 

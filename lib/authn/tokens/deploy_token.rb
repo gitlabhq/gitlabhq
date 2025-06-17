@@ -5,7 +5,7 @@ module Authn
     class DeployToken
       def self.prefix?(plaintext)
         deploy_token_prefixes = [::DeployToken.prefix_for_deploy_token,
-          Authn::TokenField::PrefixHelper.default_instance_prefix(::DeployToken.prefix_for_deploy_token)]
+          ::DeployToken::DEPLOY_TOKEN_PREFIX].uniq
 
         plaintext.start_with?(*deploy_token_prefixes)
       end

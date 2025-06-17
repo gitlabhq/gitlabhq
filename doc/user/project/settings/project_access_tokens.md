@@ -3,7 +3,15 @@ stage: Software Supply Chain Security
 group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Project access tokens
+description: Authentication, create, revoke, and token expiration.
 ---
+
+{{< details >}}
+
+Tier: Premium, Ultimate
+Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -27,17 +35,21 @@ Use a project access token to authenticate:
   - Any non-blank value as a username.
   - The project access token as the password.
 
+{{< alert type="note" >}}
+
+On GitLab SaaS, you can use project access tokens with a Premium or Ultimate subscription. With a
+[trial license](https://about.gitlab.com/free-trial/) you can also create one project access token.
+
+On GitLab Self-Managed instances, you can use project access tokens with any subscription. If
+you have the Free tier, you can [restrict the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to limit potential abuse.
+
+{{< /alert >}}
+
 Project access tokens are similar to [group access tokens](../../group/settings/group_access_tokens.md)
 and [personal access tokens](../../profile/personal_access_tokens.md), but are scoped only to the associated project.
 You cannot use project access tokens to access resources that belong to other projects.
 
 On GitLab Self-Managed instances, project access tokens are subject to the same [maximum lifetime limits](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) as personal access tokens if the limit is set.
-
-You can use project access tokens:
-
-- On GitLab SaaS: If you have the Premium or Ultimate license tier, only one project access token is available with a [trial license](https://about.gitlab.com/free-trial/).
-- On GitLab Self-Managed instances: With any license tier. If you have the Free tier,
-  consider [restricting the creation of project access tokens](#restrict-the-creation-of-project-access-tokens) to lower potential abuse.
 
 You cannot use project access tokens to create other group, project, or personal access tokens.
 

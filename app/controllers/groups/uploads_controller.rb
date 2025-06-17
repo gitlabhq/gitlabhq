@@ -11,7 +11,6 @@ class Groups::UploadsController < Groups::ApplicationController
   before_action :disallow_new_uploads!, only: :show
 
   feature_category :portfolio_management
-  urgency :low, [:show]
 
   private
 

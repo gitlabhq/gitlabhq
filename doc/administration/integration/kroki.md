@@ -2,13 +2,14 @@
 stage: Plan
 group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+gitlab_dedicated: yes
 title: Kroki
 ---
 
 {{< details >}}
 
 - Tier: Free, Premium, Ultimate
-- Offering: GitLab Self-Managed
+- Offering: GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
 
@@ -117,11 +118,11 @@ your AsciiDoc or Markdown documentation using delimited blocks:
   Alice -> Bob : hi
   ```
 
-The above blocks are converted to an HTML image tag with source pointing to the
+The delimited blocks are converted to an HTML image tag with source pointing to the
 Kroki instance. If the Kroki server is correctly configured, this should
 render a nice diagram instead of the block:
 
-![A PlantUML diagram rendered from example code.](../img/kroki_plantuml_diagram_v13_7.png)
+![A PlantUML diagram rendered from example code.](img/kroki_plantuml_diagram_v13_7.png)
 
 Kroki supports more than a dozen diagram libraries. Here's a few examples for AsciiDoc:
 
@@ -152,7 +153,7 @@ digraph finite_state_machine {
 ....
 ```
 
-![A GraphViz diagram generated from example code.](../img/kroki_graphviz_diagram_v13_7.png)
+![A GraphViz diagram generated from example code.](img/kroki_graphviz_diagram_v13_7.png)
 
 **C4 (based on PlantUML)**
 
@@ -178,7 +179,7 @@ Rel(banking_system, mainframe, "Uses")
 ....
 ```
 
-![A C4 PlantUML diagram generated from example code.](../img/kroki_c4_diagram_v13_7.png)
+![A C4 PlantUML diagram generated from example code.](img/kroki_c4_diagram_v13_7.png)
 
 <!-- vale gitlab_base.Spelling = NO -->
 
@@ -205,4 +206,4 @@ Rel(banking_system, mainframe, "Uses")
 ....
 ```
 
-![A Nomnoml diagram generated from example code.](../img/kroki_nomnoml_diagram_v13_7.png)
+![A Nomnoml diagram generated from example code.](img/kroki_nomnoml_diagram_v13_7.png)

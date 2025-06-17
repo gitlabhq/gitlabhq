@@ -161,6 +161,8 @@ function mountBoardApp(el) {
       hasOkrsFeature: parseBoolean(el.dataset.hasOkrsFeature),
       hasCustomFieldsFeature: parseBoolean(hasCustomFieldsFeature),
       commentTemplatePaths: JSON.parse(wiNewCommentTemplatePaths),
+      statusListsAvailable: parseBoolean(el.dataset.statusListsAvailable),
+      workItemStatusAvailable: parseBoolean(el.dataset.workItemStatusAvailable),
     },
     render: (createComponent) => createComponent(BoardApp),
   });

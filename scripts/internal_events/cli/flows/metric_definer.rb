@@ -324,11 +324,28 @@ module InternalEventsCli
         @metrics.map.with_index do |metric, idx|
           new_page!(on_step: 'Save files', steps: STEPS) # Repeat the same step but increment metric counter
 
+          cli.say show_all_metric_paths(metric)
+          cli.say "\n"
+
           cli.say format_prompt(format_subheader('SAVING FILE', metric.description, idx, @metrics.length))
           cli.say "\n"
 
           prompt_to_save_file(metric.file_path, metric.formatted_output)
         end
+      end
+
+      def show_all_metric_paths(metric)
+        time_frames = metric.time_frame.value
+
+        return unless time_frames.is_a?(Array) && time_frames.length > 1
+
+        cli.say <<~TEXT
+          #{format_info "This would create #{time_frames.length} metrics with the following key paths:"}
+
+          #{time_frames.map do |time_frame|
+            "#{TimeFramedKeyPath::METRIC_TIME_FRAME_DESC[time_frame]}: #{format_info(TimeFramedKeyPath.build(metric.key_path, time_frame))}" # {' '}
+          end.join("\n")}
+        TEXT
       end
 
       def prompt_for_next_steps(outcomes = [])

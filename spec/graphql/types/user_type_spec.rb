@@ -39,6 +39,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       reviewRequestedMergeRequests
       groupMemberships
       groupCount
+      projectCount
       projectMemberships
       starredProjects
       contributedProjects
@@ -56,6 +57,7 @@ RSpec.describe GitlabSchema.types['User'], feature_category: :user_profile do
       linkedin
       twitter
       discord
+      github
       organization
       jobTitle
       createdAt

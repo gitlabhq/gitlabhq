@@ -3,6 +3,7 @@ stage: Tenant Scale
 group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Members of a project
+description: User management, roles, permissions, and access levels.
 ---
 
 {{< details >}}
@@ -70,13 +71,38 @@ flowchart RL
 
 ![Project members page](img/project_members_v17_4.png)
 
-In the above example:
+In the previous example:
 
 - **Administrator** is an inherited member from the **demo** group.
 - **User 0** is an inherited member from the **demo** group.
 - **User 1** is a shared member from the **Acme** group that is invited to this project.
 - **User 2** is an inherited shared member from the **Toolbox** group that is invited to the **demo** group.
 - **User 3** is a direct member added to this project.
+
+## Security considerations
+
+Git is a distributed version control system (DVCS).
+Everyone who works with the source code has a local copy of the complete repository.
+
+In GitLab, every project member with the Reporter role or higher can clone the repository to create
+a local copy.
+Users can upload the full repository anywhere after they obtain a local copy, including:
+
+- Another project under their control.
+- A different server.
+- External hosting services.
+
+Access controls cannot prevent the intentional sharing of source code by users who already have
+access to the repository.
+All Git management platforms have this inherent characteristic of distributed version control
+systems.
+
+While you cannot prevent intentional sharing by authorized users, you can take the following steps
+to prevent unintentional sharing and information destruction:
+
+- Control who can [add users to a project](#add-users-to-a-project).
+- Use [protected branches](../repository/branches/protected.md) to prevent unauthorized force pushes.
+- Regularly review project membership and remove users who no longer require access.
 
 ## Add users to a project
 
@@ -95,8 +121,8 @@ Prerequisites:
 - You must have the Owner or Maintainer role.
 - [Group membership lock](../../group/access_and_permissions.md#prevent-members-from-being-added-to-projects-in-a-group) must be disabled.
 - For GitLab Self-Managed instances:
-  - If [user sign-ups are disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
-  - If [user invitations are disabled](../../../administration/settings/visibility_and_access_controls.md#disable-user-invitations), an administrator must add the user.
+  - If [new sign-ups are disabled](../../../administration/settings/sign_up_restrictions.md#disable-new-sign-ups), an administrator must add the user.
+  - If [user invitations are not allowed](../../../administration/settings/visibility_and_access_controls.md#prevent-invitations-to-groups-and-projects), an administrator must add the user.
   - If [administrator approval is enabled](../../../administration/settings/sign_up_restrictions.md#turn-on-administrator-approval-for-role-promotions), an administrator must approve the invitation.
 
 To add a user to a project:
@@ -337,7 +363,7 @@ The following table lists the membership and visibility rights of project member
 | Be imported into other projects | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No |
 | Share the project with other members | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes |
 
-**Footnotes:**
+**Footnotes**:
 
 1. Users can view only issues of projects they have access to.
 

@@ -266,9 +266,10 @@ RSpec.describe Packages::Maven::FindOrCreatePackageService, feature_category: :p
       let(:params) { super().merge(path: '/') }
 
       it_behaves_like 'returning an error',
-        with_message: "Validation failed: Name can't be blank, Name is invalid, " \
+        with_message: "Validation failed: Name can't be blank, " \
                       "Maven metadatum app group can't be blank, Maven metadatum app group is invalid, " \
-                      "Maven metadatum app name can't be blank, Maven metadatum app name is invalid"
+                      "Maven metadatum app name can't be blank, Maven metadatum app name is invalid, " \
+                      "Name is invalid"
     end
 
     context 'with parallel execution' do

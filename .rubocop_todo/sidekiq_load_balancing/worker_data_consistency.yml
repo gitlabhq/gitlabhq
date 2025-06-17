@@ -295,7 +295,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/gitlab_subscriptions/schedule_refresh_seats_worker.rb'
     - 'ee/app/workers/gitlab_subscriptions/trials/apply_trial_worker.rb'
     - 'ee/app/workers/group_saml_group_sync_worker.rb'
-    - 'ee/app/workers/groups/enterprise_users/associate_worker.rb'
     - 'ee/app/workers/groups/enterprise_users/disassociate_worker.rb'
     - 'ee/app/workers/groups/schedule_bulk_repository_shard_moves_worker.rb'
     - 'ee/app/workers/historical_data_worker.rb'

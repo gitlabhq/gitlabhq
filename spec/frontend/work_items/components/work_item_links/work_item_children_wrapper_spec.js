@@ -123,26 +123,26 @@ describe('WorkItemChildrenWrapper', () => {
     expect(workItemLinkChildren).toHaveLength(3);
   });
 
-  it('emits `show-modal` on `click` event', () => {
+  it('emits `show-modal` on `toggleDrawer` event', () => {
     createComponent();
     const event = {
       childItem: 'gid://gitlab/WorkItem/2',
       stopPropagation: jest.fn(),
     };
 
-    findFirstWorkItemLinkChildItem().vm.$emit('click', event);
+    findFirstWorkItemLinkChildItem().vm.$emit('toggleDrawer', event);
 
     expect(wrapper.emitted('show-modal')).toEqual([[{ event, child: event.childItem }]]);
   });
 
-  it('emits `click` event when clicking on nested child', () => {
+  it('emits `toggleDrawer` event when clicking on nested child', () => {
     createComponent({ isTopLevel: false });
     const event = {
       childItem: 'gid://gitlab/WorkItem/2',
       stopPropagation: jest.fn(),
     };
 
-    findFirstWorkItemLinkChildItem().vm.$emit('click', event);
+    findFirstWorkItemLinkChildItem().vm.$emit('toggleDrawer', event);
 
     expect(wrapper.emitted('click')).toEqual([[event]]);
   });

@@ -18,8 +18,6 @@ module Groups # rubocop:disable Gitlab/BoundedContexts -- existing top-level mod
     private
 
     def send_group_deletion_notification
-      return unless group.adjourned_deletion?
-
       ::NotificationService.new.group_scheduled_for_deletion(group)
     end
 

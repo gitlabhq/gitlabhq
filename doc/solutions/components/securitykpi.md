@@ -12,7 +12,7 @@ title: Security Metrics and KPIs
 
 {{< /details >}}
 
-The document describes the installation, configuration and user guide of GitLab Security Metrics and KPIs Solution Component. This security solution component provides metrics and KPIs that can be viewed by business units, time range, vulnerability severity and security types. It can provide snapshot of the seucrity posture on the monthly and quarterly basis with pdf documents. The dashboard and visualization of data are displayed as Dashboard in Splunk.
+The document describes the installation, configuration and user guide of the GitLab Security Metrics and KPIs Solution Component. This security solution component provides metrics and KPIs that can be viewed by business units, time range, vulnerability severity and security types. It can provide a snapshot of the security posture on a monthly or quarterly basis with PDF documents. The data is visualized using a dashboard in Splunk.
 
 ![Security Metrics and KPIs](img/security_metrics_kpi_v17_9.png)
 
@@ -52,7 +52,7 @@ The pipeline runs in two stages:
 
 ## Configuration
 
-### Required CI & CD Variables
+### Required CI/CD Variables
 
 | Variable | Description | Example Value |
 |----------|-------------|---------------|
@@ -62,7 +62,7 @@ The pipeline runs in two stages:
 | `SPLUNK_HEC_TOKEN` | Splunk HTTP Event Collector token | `11111111-2222-3333-4444-555555555555` |
 | `SPLUNK_HEC_URL` | Splunk HEC endpoint URL | `https://splunk.company.com:8088/services/collector` |
 
-### Optional CI & CD Variables
+### Optional CI/CD Variables
 
 | Variable | Description | Example Value | Default |
 |----------|-------------|---------------|---------|

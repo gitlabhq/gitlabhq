@@ -32,7 +32,7 @@ Additional features and improvements may be available when Gitaly runs with cgro
 ## Before you begin
 
 Enabling limits on your environment should be done with caution and only in select circumstances, such as to protect
-against unexpected traffic. When reached, limits _do_ result in disconnects that negatively impact users. For consistent
+against unexpected traffic. When reached, limits do result in disconnects that negatively impact users. For consistent
 and stable performance, you should first explore other options such as adjusting node specifications, and
 [reviewing large repositories](../../user/project/repository/monorepos/_index.md) or workloads.
 
@@ -109,7 +109,7 @@ You can use oversubscription to maintain a baseline level of performance during 
 small number of high-workload repositories to "burst" when necessary, without impacting unrelated requests.
 Oversubscription refers to assigning more resources than what is technically available on the system.
 
-Using the example above, we can oversubscribe our repository cgroups by allocating 10GiB of memory each, despite the system
+Using the previous example, we can oversubscribe our repository cgroups by allocating 10GiB of memory each, despite the system
 not having 10GiB * 100 of system memory. These values assume that 10GiB is sufficient for normal operations against any
 one repository, but also allows two repositories to burst to 10GiB each while leaving a third bucket of resources to
 maintain baseline performance.

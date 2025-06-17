@@ -5,6 +5,14 @@ import { isObject } from 'lodash';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
 import { PANEL_POPOVER_DELAY } from './constants';
 
+/**
+ * This component provides a standardized layout and functionality for dashboard panels.
+ *
+ * It extends [`GlDashboardPanel`](https://design.gitlab.com/storybook/?path=/story/dashboards-dashboards-panel--default) by adding support for various states including loading, error states with different alert variants,
+ * and editing mode with configurable actions.
+ *
+ */
+
 export default {
   name: 'PanelsBase',
   components: {
@@ -110,7 +118,7 @@ export default {
     :title-popover="tooltip"
     :loading="loading"
     :loading-delayed="loadingDelayed"
-    :loading-delayed-text="__('Still loading...')"
+    :loading-delayed-text="__('Still loading…')"
     :actions="editingActions"
     :actions-toggle-text="__('Actions')"
     :border-color-class="borderColor"

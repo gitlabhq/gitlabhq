@@ -1,7 +1,7 @@
 ---
 stage: Verify
 group: Pipeline Authoring
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Development guide for GitLab CI/CD templates (Deprecated)
 ---
 
@@ -260,11 +260,11 @@ job1:
 ### Backward compatibility
 
 A template might be dynamically included with the `include:template:` keyword. If
-you make a change to an *existing* template, you **must** make sure that it doesn't break
+you make a change to an existing template, you **must** make sure that it doesn't break
 CI/CD in existing projects.
 
 For example, changing a job name in a template could break pipelines in an existing project.
-Let's say there is a template named `Performance.gitlab-ci.yml` with the following content:
+In this example, a template named `Performance.gitlab-ci.yml` has the following content:
 
 ```yaml
 performance:

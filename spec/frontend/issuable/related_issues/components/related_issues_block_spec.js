@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import {
@@ -16,6 +16,7 @@ import {
   PathIdSeparator,
 } from '~/related_issues/constants';
 import RelatedIssuesList from '~/related_issues/components/related_issues_list.vue';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 describe('RelatedIssuesBlock', () => {
   let wrapper;
@@ -241,8 +242,10 @@ describe('RelatedIssuesBlock', () => {
 
     it('is expanded by default', () => {
       const toggleButton = findToggleButton();
+      const chevronIcon = toggleButton.findComponent(GlAnimatedChevronLgDownUpIcon);
 
-      expect(toggleButton.props('icon')).toBe('chevron-lg-up');
+      // Vue compat doesn't know about component props if it extends other component
+      expect(chevronIcon.props('isOn') ?? parseBoolean(chevronIcon.attributes('is-on'))).toBe(true);
       expect(toggleButton.props('disabled')).toBe(false);
       expect(toggleButton.attributes('aria-expanded')).toBe('true');
       expect(findRelatedIssuesBody().exists()).toBe(true);
@@ -253,8 +256,12 @@ describe('RelatedIssuesBlock', () => {
       await nextTick();
 
       const toggleButton = findToggleButton();
+      const chevronIcon = toggleButton.findComponent(GlAnimatedChevronLgDownUpIcon);
 
-      expect(toggleButton.props('icon')).toBe('chevron-lg-down');
+      // Vue compat doesn't know about component props if it extends other component
+      expect(chevronIcon.props('isOn') ?? parseBoolean(chevronIcon.attributes('is-on'))).toBe(
+        false,
+      );
       expect(toggleButton.attributes('aria-expanded')).toBe('false');
       expect(findRelatedIssuesBody().exists()).toBe(false);
     });

@@ -2,7 +2,8 @@
 import { GlAvatar, GlIcon } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import highlight from '~/lib/utils/highlight';
-import { AVATAR_SHAPE_OPTION_RECT } from '~/vue_shared/constants';
+import { AVATAR_SHAPE_OPTION_RECT, AVATAR_SHAPE_OPTION_CIRCLE } from '~/vue_shared/constants';
+import { USER_CATEGORY_VALUE } from './constants';
 
 export default {
   name: 'CommandPaletteSearchItem',
@@ -27,8 +28,14 @@ export default {
     highlightedName() {
       return highlight(this.item.text, this.searchQuery);
     },
+    avatarShape() {
+      return this.item.category === USER_CATEGORY_VALUE
+        ? this.$options.AVATAR_SHAPE_OPTION_CIRCLE
+        : this.$options.AVATAR_SHAPE_OPTION_RECT;
+    },
   },
   AVATAR_SHAPE_OPTION_RECT,
+  AVATAR_SHAPE_OPTION_CIRCLE,
 };
 </script>
 
@@ -40,13 +47,14 @@ export default {
       :src="item.avatar_url"
       :entity-id="item.entity_id"
       :entity-name="item.entity_name"
-      :size="item.avatar_size"
-      :shape="$options.AVATAR_SHAPE_OPTION_RECT"
+      :size="16"
+      :shape="avatarShape"
       aria-hidden="true"
     />
     <gl-icon v-if="item.icon" class="gl-mr-3 gl-shrink-0" :name="item.icon" />
-    <span class="gl-flex gl-w-full gl-min-w-0 gl-flex-col">
+    <span class="gl-flex gl-min-w-0 gl-items-center gl-gap-2">
       <span v-safe-html="highlightedName" class="gl-truncate gl-text-strong"></span>
+      <span class="gl-text-subtle" aria-hidden="true">·</span>
       <span
         v-if="item.namespace"
         v-safe-html="item.namespace"

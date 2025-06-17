@@ -105,19 +105,6 @@ RSpec.describe 'PipelineSchedulecreate', feature_category: :continuous_integrati
         expect(inputs_names).to contain_exactly('array_input', 'boolean_input', 'number_input', 'string_input')
         expect(inputs_values).to contain_exactly([1, 2], true, 666, 'testing inputs')
       end
-
-      context 'when ci_inputs_for_pipelines is disabled' do
-        before do
-          stub_feature_flags(ci_inputs_for_pipelines: false)
-        end
-
-        it 'does not persist inputs' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          inputs = mutation_response['pipelineSchedule']['inputs']['nodes']
-          expect(inputs).to be_empty
-        end
-      end
     end
 
     context 'when failure' do

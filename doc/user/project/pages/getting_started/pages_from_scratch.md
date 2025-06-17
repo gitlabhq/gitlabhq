@@ -42,7 +42,7 @@ Create three files in the root (top-level) directory:
 - `.gitlab-ci.yml`: A YAML file that contains the commands you want to run.
   For now, leave the file's contents blank.
 
-- `index.html`: An HTML file you can populate with whatever HTML content
+- `index.html`: A non-empty HTML file you can populate with whatever HTML content
   you'd like, for example:
 
   ```html

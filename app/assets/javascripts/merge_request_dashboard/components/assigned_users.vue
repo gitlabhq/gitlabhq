@@ -112,7 +112,14 @@ export default {
           class="js-user-link gl-relative"
           data-testid="assigned-user"
         >
-          <gl-avatar :src="user.avatarUrl" :size="32" class="!gl-bg-subtle" />
+          <gl-avatar
+            :src="user.avatarUrl"
+            :size="32"
+            width="32"
+            height="32"
+            class="!gl-bg-subtle"
+            loading="lazy"
+          />
           <span
             v-if="reviewStateIcon(user)"
             class="gl-absolute -gl-bottom-2 -gl-left-2 gl-flex gl-h-5 gl-w-5 gl-items-center gl-justify-center gl-rounded-full gl-p-1"

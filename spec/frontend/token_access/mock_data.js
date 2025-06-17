@@ -79,7 +79,7 @@ export const mockGroups = [
     defaultPermissions: false,
     jobTokenPolicies: ['READ_JOBS', 'ADMIN_DEPLOYMENTS'],
     autopopulated: true,
-    __typename: 'Group',
+    __typename: 'CiJobTokenAccessibleGroup',
   },
   {
     id: 2,
@@ -89,7 +89,7 @@ export const mockGroups = [
     defaultPermissions: true,
     jobTokenPolicies: [],
     autopopulated: true,
-    __typename: 'Group',
+    __typename: 'CiJobTokenAccessibleGroup',
   },
   {
     id: 3,
@@ -99,7 +99,7 @@ export const mockGroups = [
     defaultPermissions: false,
     jobTokenPolicies: [],
     autopopulated: false,
-    __typename: 'Group',
+    __typename: 'CiJobTokenAccessibleGroup',
   },
 ];
 
@@ -270,6 +270,70 @@ export const mockAuthLogsCountResponse = (count) => ({
     },
   },
 });
+
+export const mockCiJobTokenScopeAllowlistResponse = {
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/26',
+      name: 'my-repo',
+      fullPath: 'root/my-repo',
+      avatarUrl: '',
+      webUrl: 'http://localhost/root/my-repo',
+      ciJobTokenScopeAllowlist: {
+        groupsAllowlist: {
+          nodes: [
+            {
+              defaultPermissions: true,
+              jobTokenPolicies: [],
+              autopopulated: true,
+              target: {
+                id: 'gid://gitlab/Group/4',
+                name: 'zed',
+                fullPath: 'zed',
+                avatarUrl: '',
+                webUrl: 'http://localhost/zed',
+                __typename: 'CiJobTokenAccessibleGroup',
+              },
+              __typename: 'CiJobTokenScopeAllowlistEntry',
+            },
+          ],
+        },
+        projectsAllowlist: {
+          nodes: [
+            {
+              defaultPermissions: true,
+              jobTokenPolicies: [],
+              autopopulated: true,
+              target: {
+                id: 'gid://gitlab/Project/23',
+                name: 'your-repo',
+                fullPath: 'root/your-repo',
+                avatarUrl: '',
+                webUrl: 'http://localhost/root/your-repo',
+                __typename: 'CiJobTokenAccessibleProject',
+              },
+              __typename: 'CiJobTokenScopeAllowlistEntry',
+            },
+            {
+              defaultPermissions: true,
+              jobTokenPolicies: [],
+              autopopulated: true,
+              target: {
+                id: 'gid://gitlab/Project/14',
+                name: 'abc123',
+                fullPath: 'abc/123',
+                avatarUrl: '',
+                webUrl: 'http://localhost/abc/123',
+                __typename: 'CiJobTokenAccessibleProject',
+              },
+              __typename: 'CiJobTokenScopeAllowlistEntry',
+            },
+          ],
+        },
+      },
+    },
+  },
+};
 
 export const mockAuthLogsResponse = (hasNextPage = false) => ({
   data: {

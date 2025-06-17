@@ -77,14 +77,14 @@ You can either:
 
 To determine the external Ingress IP address, or external Ingress hostname:
 
-- *If the cluster is on GKE*:
+- If the cluster is on GKE:
   1. Select the **Google Kubernetes Engine** link in the **Advanced settings**,
      or go directly to the [Google Kubernetes Engine dashboard](https://console.cloud.google.com/kubernetes/).
   1. Select the proper project and cluster.
   1. Select **Connect**.
   1. Execute the `gcloud` command in a local terminal or using the **Cloud Shell**.
 
-- *If the cluster is not on GKE*: Follow the specific instructions for your
+- If the cluster is not on GKE: Follow the specific instructions for your
   Kubernetes provider to configure `kubectl` with the right credentials.
   The output of the following examples show the external endpoint of your
   cluster. This information can then be used to set up DNS entries and forwarding

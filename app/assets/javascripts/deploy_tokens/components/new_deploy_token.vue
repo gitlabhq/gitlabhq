@@ -57,6 +57,11 @@ export default {
       type: String,
       required: true,
     },
+    readVirtualRegistryHelpText: {
+      type: String,
+      required: false,
+      default: translations.readVirtualRegistryHelp,
+    },
   },
 
   data() {
@@ -118,7 +123,7 @@ export default {
             id: 'deploy_token_read_virtual_registry',
             isShown: this.$props.dependencyProxyEnabled,
             value: false,
-            helpText: this.$options.translations.readVirtualRegistryHelp,
+            helpText: this.readVirtualRegistryHelpText,
             scopeName: 'read_virtual_registry',
           },
           {

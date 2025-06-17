@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.slack_app_installations
 description: This is a metric created to test using time_frame as an array for a database metric
-product_group: import_and_integrate
+product_group: import
 value_type: number
 status: active
 time_frame: [28d, 7d]

@@ -77,40 +77,4 @@ describe QA::Support::Formatters::AllureMetadataFormatter do
       end
     end
   end
-
-  context 'with flaky test data', :aggregate_failures do
-    let(:influx_client) { instance_double(InfluxDB2::Client, create_query_api: influx_query_api) }
-    let(:influx_query_api) { instance_double(InfluxDB2::QueryApi, query: data) }
-    let(:data) do
-      [
-        instance_double(
-          InfluxDB2::FluxTable,
-          records: [
-            instance_double(InfluxDB2::FluxRecord, values: { 'status' => 'failed', 'testcase' => 'testcase' }),
-            instance_double(InfluxDB2::FluxRecord, values: { 'status' => 'passed', 'testcase' => 'testcase' })
-          ]
-        )
-      ]
-    end
-
-    before do
-      stub_env('QA_RUN_TYPE', 'test-on-omnibus')
-      stub_env('QA_INFLUXDB_URL', 'url')
-      stub_env('QA_INFLUXDB_TOKEN', 'token')
-
-      allow(InfluxDB2::Client).to receive(:new) { influx_client }
-    end
-
-    context 'with skipped spec' do
-      let(:status) { :pending }
-
-      it 'skips adding flaky test data' do
-        formatter.start(nil)
-        formatter.example_finished(rspec_example_notification)
-
-        expect(rspec_example).not_to have_received(:set_flaky)
-        expect(rspec_example).not_to have_received(:parameter)
-      end
-    end
-  end
 end

@@ -5,12 +5,12 @@ import {
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { getLocationHash, doesHashExistInUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import Tracking from '~/tracking';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import { useNotes } from '~/notes/store/legacy_notes';
 import {
   DISCUSSION_FILTERS_DEFAULT_VALUE,
   HISTORY_ONLY_FILTER_VALUE,
@@ -59,7 +59,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useNotes, [
       'getNotesDataByProp',
       'timelineEnabled',
       'isLoading',
@@ -97,7 +97,7 @@ export default {
     window.removeEventListener('hashchange', this.handleLocationHash);
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useNotes, [
       'filterDiscussion',
       'setCommentsDisabled',
       'setTargetNoteHash',

@@ -1,7 +1,7 @@
 ---
 stage: Data Access
 group: Database Frameworks
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Strings and the Text data type
 ---
 
@@ -187,7 +187,7 @@ to update the `title_html` with a title that has more than 1024 characters, the 
 a database error.
 
 Adding or removing a constraint to an existing attribute requires that any application changes are
-deployed _first_,
+deployed first,
 otherwise servers still in the old version of the application
 [may try to update the attribute with invalid values](../multi_version_compatibility.md#ci-artifact-uploads-were-failing).
 For these reasons, `add_text_limit` should run in a post-deployment migration.

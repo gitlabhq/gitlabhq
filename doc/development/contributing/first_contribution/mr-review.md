@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Create a merge request
 ---
 
@@ -12,7 +12,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 1. Go to [the community fork on GitLab.com](https://gitlab.com/gitlab-community/gitlab).
    You should see a message like this one:
 
-   ![A banner prompting the user to create a merge request in response to recently pushed changes](../img/mr_button_v15_11.png)
+   ![A banner prompting the user to create a merge request in response to recently pushed changes](img/mr_button_v15_11.png)
 
    Select **Create merge request**.
    If you don't see this message, on the left sidebar, select **Code > Merge requests > New merge request**.
@@ -20,7 +20,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 1. Take a look at the branch names. You should be merging from your branch
    in the community fork to the `master` branch in the GitLab repository.
 
-   ![The user interface for creating a new merge request that highlights the source and destination branches](../img/new_merge_request_v15_11.png)
+   ![The user interface for creating a new merge request that highlights the source and destination branches](img/new_merge_request_v15_11.png)
 
 1. Fill out the information and then select **Save changes**.
    Don't worry if your merge request is not complete.
@@ -30,7 +30,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 
 1. Select the **Changes** tab. It should look something like this:
 
-   ![A snapshot of the changes made in the merge request, with differences highlighted in red and green](../img/changes_tab_v15_11.png)
+   ![A snapshot of the changes made in the merge request, with differences highlighted in red and green](img/changes_tab_v15_11.png)
 
    The red text shows the code before you made changes. The green shows what
    the code looks like now.
@@ -38,7 +38,7 @@ Now you're ready to push changes from the community fork to the main GitLab repo
 1. If you're happy with this merge request and want to start the review process, type
    `@gitlab-bot ready` in a comment and then select **Comment**.
 
-   ![A draft comment with the "GitLab bot ready" command to initiate the review process](../img/bot_ready_v16_6.png)
+   ![A draft comment with the "GitLab bot ready" command to initiate the review process](img/bot_ready_v16_6.png)
 
 Someone from GitLab will look at your request and let you know what the next steps are.
 

@@ -217,7 +217,7 @@ module API
           redirect_url += "?#{query_parameters_except_order_by.compact.to_param}"
         end
 
-        redirect redirect_url
+        redirect expose_path(redirect_url)
       end
 
       desc 'Create a release' do
@@ -373,6 +373,7 @@ module API
       end
     end
 
+    helpers ::API::Helpers::RelatedResourcesHelpers
     helpers do
       def authorize_read_group_releases!
         authorize! :read_release, user_group

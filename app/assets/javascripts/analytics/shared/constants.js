@@ -90,8 +90,6 @@ export const NUMBER_OF_DAYS_SELECTED = (numDays) => {
   return n__('1 day selected', '%d days selected', numDays);
 };
 
-export const METRIC_POPOVER_LABEL = s__('ValueStreamAnalytics|View details');
-
 export const ISSUES_COMPLETED_TYPE = 'issues_completed';
 
 export const ALL_METRICS_QUERY_TYPE = 'ALL_METRICS_QUERY_TYPE';
@@ -185,6 +183,7 @@ export const AI_METRICS = {
   CODE_SUGGESTIONS_ACCEPTANCE_RATE: 'code_suggestions_acceptance_rate',
   DUO_CHAT_USAGE_RATE: 'duo_chat_usage_rate',
   DUO_USAGE_RATE: 'duo_usage_rate',
+  DUO_RCA_USAGE_RATE: 'duo_rca_usage_rate',
 };
 
 export const VALUE_STREAM_METRIC_DISPLAY_UNITS = {
@@ -356,6 +355,16 @@ export const VALUE_STREAM_METRIC_METADATA = {
     groupLink: '',
     projectLink: '',
     docsLink: helpPagePath('user/gitlab_duo_chat/_index'),
+  },
+  [AI_METRICS.DUO_RCA_USAGE_RATE]: {
+    description: s__(
+      'AiImpactAnalytics|Monthly user engagement with Duo Root Cause Analysis. Percentage ratio calculated as total monthly unique Duo Root Cause Analysis users / monthly unique Duo Chat users.',
+    ),
+    groupLink: '',
+    projectLink: '',
+    docsLink: helpPagePath('user/gitlab_duo/use_cases', {
+      anchor: 'root-cause-analysis-use-cases',
+    }),
   },
 };
 

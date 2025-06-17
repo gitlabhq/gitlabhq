@@ -19,24 +19,23 @@ control system similar to [SVN](https://subversion.apache.org/).
 
 The following list illustrates the main differences between CVS and Git:
 
-- **Git is distributed.** On the other hand, CVS is centralized using a client-server
-  architecture. This translates to Git having a more flexible workflow since
+- **Git is distributed**. On the other hand, CVS is centralized and uses a client-server
+  architecture. This translates to Git having a more flexible workflow because
   your working area is a copy of the entire repository. This decreases the
-  overhead when switching branches or merging for example, since you don't have
-  to communicate with a remote server.
-- **Atomic operations.** In Git all operations are
+  overhead when switching branches or merging, for example, because you don't need to communicate with a remote server.
+- **Atomic operations**. In Git all operations are
   [atomic](https://en.wikipedia.org/wiki/Atomic_commit), either they succeed as
   whole, or they fail without any changes. In CVS, commits (and other operations)
   are not atomic. If an operation on the repository is interrupted in the middle,
   the repository can be left in an inconsistent state.
-- **Storage method.** Changes in CVS are per file (changeset), while in Git,
+- **Storage method**. Changes in CVS are per file (changeset), while in Git,
   committed files are stored in their entirety (snapshot). This means it is
   very easy in Git to revert or undo a whole change.
-- **Revision IDs.** The fact that in CVS changes are per files, the revision ID
+- **Revision IDs**. The fact that in CVS changes are per files, the revision ID
   is depicted by version numbers, for example `1.4` reflects how many times a
   given file has been changed. In Git, each version of a project as a whole
   (each commit) has its unique name given by SHA-1.
-- **Merge tracking.** Git uses a commit-before-merge approach rather than
+- **Merge tracking**. Git uses a commit-before-merge approach rather than
   merge-before-commit (or update-then-commit) like CVS. If while you were
   preparing to create a new commit (new revision) somebody created a
   new commit on the same branch and pushed to the central repository, CVS would
@@ -45,15 +44,15 @@ The following list illustrates the main differences between CVS and Git:
   your state in version control, then you merge the other developer's changes.
   You can also ask the other developer to do the merge and resolve any conflicts
   themselves.
-- **Signed commits.** Git supports
+- **Signed commits**. Git supports
   [signing your commits](../repository/signed_commits/_index.md) for additional
   security and verification that the commit indeed came from its original author.
   GitLab shows whether a signed commit is correctly verified.
 
-_Some of the items above were taken from this great
+Some of the previous items were taken from this great
 [Stack Overflow post](https://stackoverflow.com/a/824241/974710). For a more
 complete list of differences, consult the
-Wikipedia article on [comparing the different version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software)._
+Wikipedia article on [comparing the different version control software](https://en.wikipedia.org/wiki/Comparison_of_version_control_software).
 
 ## Why migrate
 

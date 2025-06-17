@@ -319,9 +319,10 @@ RSpec.describe SentNotificationsController, feature_category: :shared do
 
         context 'when unsubscribing from design' do
           let(:design) do
+            # reload necessary as namespace_id is set in a DB trigger
             create(:design, issue: issue) do |design|
               design.subscriptions.create!(user: user, project: project, subscribed: true)
-            end
+            end.reload
           end
 
           let(:sent_notification) do

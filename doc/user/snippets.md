@@ -30,10 +30,10 @@ You can create and manage your snippets with:
 
 GitLab provides two types of snippets:
 
-- **Personal snippets**: Created independent of any project.
+- Personal snippets: Created independent of any project.
   You can set a [visibility level](public_access.md)
   for your snippet: public or private.
-- **Project snippets**: Always related to a specific project.
+- Project snippets: Always related to a specific project.
   Project snippets can be visible publicly, or to only project members.
 
 {{< alert type="note" >}}
@@ -50,9 +50,8 @@ visibility setting keep this setting. You can read more about the change in the
 You can create snippets in multiple ways, depending on whether you want to create a personal or project snippet:
 
 1. Select the kind of snippet you want to create:
-   - **To create a personal snippet**, do one of the following:
-     - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select
-       **New snippet**.
+   - To create a personal snippet, do one of the following:
+     - On the [Snippets dashboard](https://gitlab.com/dashboard/snippets), select **New snippet**.
      - From a project: On the left sidebar, select **Create new** ({{< icon name="plus" >}}). Below **In GitLab**, select **New snippet**.
      - From any other page: On the left sidebar, select **Create new** ({{< icon name="plus" >}}) and then **New snippet**.
      - From the `glab` CLI, using the
@@ -60,7 +59,7 @@ You can create snippets in multiple ways, depending on whether you want to creat
        For full instructions, see the command's documentation.
      - If you installed the [GitLab Workflow extension for VS Code](../editor_extensions/visual_studio_code/_index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
-   - **To create a project snippet**: Go to your project's page. Select
+   - To create a project snippet: Go to your project's page. Select
      **Create new** ({{< icon name="plus" >}}). Below **In this project**, select **New snippet**.
 1. In **Title**, add a title.
 1. Optional. In **Description**, describe the snippet.
@@ -79,17 +78,17 @@ Snippets are [versioned by default](#versioned-snippets).
 
 To discover all snippets visible to you in GitLab, you can:
 
-- **View a project's snippets**:
+- View a project's snippets:
   1. On the left sidebar, select **Search or go to** and find your project.
   1. Select **Code > Snippets**.
-- **View all the snippets you created**:
+- View all the snippets you created:
   1. On the left sidebar, select **Search or go to**.
   1. Select **Your work**.
   1. Select **Snippets**.
 
   On GitLab.com, you can also visit your [snippets directly](https://gitlab.com/dashboard/snippets).
 
-- **Explore all public snippets**:
+- Explore all public snippets:
   1. On the left sidebar, select **Search or go to**.
   1. Select **Explore**.
   1. Select **Snippets**.
@@ -192,7 +191,7 @@ is reflected in the embedded snippets. When embedded, users can download it, or 
 To embed a snippet:
 
 1. Confirm your snippet is publicly visible:
-   - *If it's a project snippet*, the project must be public.
+   - If it's a project snippet, the project must be public.
    - The snippet is publicly visible.
    - In your project, go to **Settings > General**. Expand the **Visibility, project features, permissions**
      section, and scroll to **Snippets**. Set the snippet permission to **Everyone with access**.

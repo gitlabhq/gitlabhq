@@ -16,7 +16,6 @@ export function initNewProjectCreation() {
 
   const {
     pushToCreateProjectCommand,
-    projectHelpPath,
     newProjectGuidelines,
     hasErrors,
     isCiCdAvailable,
@@ -39,7 +38,6 @@ export function initNewProjectCreation() {
   };
 
   const provide = {
-    projectHelpPath,
     pushToCreateProjectCommand,
   };
 

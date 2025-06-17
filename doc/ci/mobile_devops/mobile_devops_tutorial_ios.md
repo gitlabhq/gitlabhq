@@ -178,12 +178,12 @@ beta_ios:
 Congratulations! Your app is now set up for automated building, signing, and distribution. Try creating
 a merge request to trigger your first pipeline.
 
-## Related topics
+## Sample projects
 
-See the sample reference projects below for complete build, sign, and release pipeline examples for various platforms.
-A list of all available projects can be found in [the Mobile DevOps Demo Projects group](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/).
+Sample Mobile DevOps projects with pipelines configured to build, sign, and release mobile apps are available for:
 
-- [iOS Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/ios-demo)
-- [Flutter Demo](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/flutter-demo)
+- Android
+- Flutter
+- iOS
 
-For additional reference materials, see the [DevOps section](https://about.gitlab.com/blog/categories/devops/) of the GitLab blog.
+View all projects in the [Mobile DevOps Demo Projects](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/demo-projects/) group.

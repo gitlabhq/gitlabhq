@@ -324,7 +324,7 @@ Additionally, you can configure GitLab to send pipeline status updates back to G
 [GitHub Project Integration](../integrations/github.md).
 
 If you import your project using [CI/CD for external repository](../../../ci/ci_cd_for_external_repos/_index.md), then both
-of the above are automatically configured.
+features are automatically configured.
 
 {{< alert type="note" >}}
 
@@ -345,12 +345,12 @@ Sidekiq workers that process the following queues:
 - `github_importer_advance_stage`
 
 For an optimal experience, it's recommended having at least 4 Sidekiq processes (each running a number of threads equal
-to the number of CPU cores) that *only* process these queues. It's also recommended that these processes run on separate
+to the number of CPU cores) that only process these queues. It's also recommended that these processes run on separate
 servers. For 4 servers with 8 cores this means you can import up to 32 objects (for example, issues) in parallel.
 
 Reducing the time spent in cloning a repository can be done by increasing network throughput, CPU capacity, and disk
 performance (by using high performance SSDs, for example) of the disks that store the Git repositories (for your GitLab instance).
-Increasing the number of Sidekiq workers does *not* reduce the time spent cloning repositories.
+Increasing the number of Sidekiq workers does not reduce the time spent cloning repositories.
 
 ### Enable GitHub OAuth using a GitHub Enterprise Cloud OAuth App
 

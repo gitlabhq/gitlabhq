@@ -4,6 +4,8 @@ module Types
   class WorkItemType < BaseObject
     graphql_name 'WorkItem'
 
+    include ::IssuablesHelper
+
     implements Types::TodoableInterface
     connection_type_class Types::CountableConnectionType
 
@@ -27,6 +29,9 @@ module Types
       description: 'Global ID of the work item.'
     field :iid, GraphQL::Types::String, null: false,
       description: 'Internal ID of the work item.'
+    field :imported, GraphQL::Types::Boolean, null: false,
+      method: :imported?,
+      description: 'Indicates whether the work item was imported.'
     field :lock_version,
       GraphQL::Types::Int,
       null: false,
@@ -81,6 +86,8 @@ module Types
       description: 'Whether the work item belongs to an archived project. Always false for group level work items.',
       experiment: { milestone: '16.5' }
 
+    field :comment_templates_paths, [Types::WorkItems::CommentTemplatePathType], null: false,
+      description: 'Paths of the comment templates.'
     field :duplicated_to_work_item_url, GraphQL::Types::String, null: true,
       description: 'URL of the work item that the work item is marked as a duplicate of.'
     field :moved_to_work_item_url, GraphQL::Types::String, null: true,
@@ -100,6 +107,11 @@ module Types
       context.scoped_set!(:resource_parent, object.resource_parent)
 
       object.work_item_type
+    end
+
+    def comment_templates_paths
+      new_comment_template_paths(object.namespace.group_namespace? ? object.namespace : object.project.group,
+        object.project)
     end
 
     def create_note_email

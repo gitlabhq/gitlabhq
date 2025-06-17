@@ -45,7 +45,7 @@ module Database
         Thread.current[:has_cross_join_exception] = true
         raise CrossJoinAcrossUnsupportedTablesError,
           "Unsupported cross-join across '#{tables.join(', ')}' querying '#{schemas.to_a.join(', ')}' discovered " \
-          "when executing query '#{sql}'. Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-joins-between-main_-and-non-main_-tables for details on how to resolve this exception."
+          "when executing query '#{sql}'. Please refer to https://docs.gitlab.com/ee/development/database/multiple_databases.html#removing-joins-between-main-and-non-main-tables for details on how to resolve this exception."
       end
     end
 

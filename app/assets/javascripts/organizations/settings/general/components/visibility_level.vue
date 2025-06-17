@@ -32,6 +32,16 @@ export default {
     learnMore: s__('Organization|Learn more about visibility levels'),
   },
   ORGANIZATION_VISIBILITY_LEVEL_DESCRIPTIONS,
+  props: {
+    id: {
+      type: String,
+      required: true,
+    },
+    expanded: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       formValues: {
@@ -48,7 +58,12 @@ export default {
 </script>
 
 <template>
-  <settings-block id="organization-settings-visibility" :title="$options.i18n.settingsBlock.title">
+  <settings-block
+    :id="id"
+    :expanded="expanded"
+    :title="$options.i18n.settingsBlock.title"
+    @toggle-expand="$emit('toggle-expand', $event)"
+  >
     <template #description>{{ $options.i18n.settingsBlock.description }}</template>
     <template #default>
       <gl-form :id="$options.formId">

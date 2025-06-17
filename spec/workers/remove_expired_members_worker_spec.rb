@@ -76,7 +76,7 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
         end
 
         it 'does not remove expired project bot that expires in the future' do
-          expect { worker.perform }.to change { Member.count }.by(0)
+          expect { worker.perform }.to not_change { Member.count }
           expect(other_project_bot.reload).to be_present
         end
 

@@ -35,6 +35,14 @@ module Gitlab
                   }
                 }
               },
+              postgresql: {
+                metrics: { enabled: false },
+                primary: {
+                  extraEnvVars: [
+                    { name: "POSTGRESQL_MAX_CONNECTIONS", value: "200" }
+                  ]
+                }
+              },
               gitlab: { "gitlab-exporter": { enabled: false } },
               redis: { metrics: { enabled: false } },
               prometheus: { install: false },

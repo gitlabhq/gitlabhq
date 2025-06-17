@@ -119,7 +119,7 @@ To use the script:
 {{< tab title="Rails console session" >}}
 
 1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `extend_expiring_tokens.rb` script below.
+1. Paste in the entire `extend_expiring_tokens.rb` script from the following section.
    If desired, change the `expiring_date` to a different date.
 1. Press <kbd>Enter</kbd>.
 
@@ -128,12 +128,12 @@ To use the script:
 {{< tab title="Rails Runner" >}}
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire `extend_expiring_tokens.rb` script below, and save it as a file on your instance:
+1. Copy the entire `extend_expiring_tokens.rb` script from the following section, and save it as a file on your instance:
    - Name it `extend_expiring_tokens.rb`.
    - If desired, change the `expiring_date` to a different date.
    - The file must be accessible to `git:git`.
 1. Run this command, changing `/path/to/extend_expiring_tokens.rb`
-   to the _full_ path to your `extend_expiring_tokens.rb` file:
+   to the full path to your `extend_expiring_tokens.rb` file:
 
    ```shell
    sudo gitlab-rails runner /path/to/extend_expiring_tokens.rb
@@ -230,8 +230,8 @@ To use it:
 
 1. In your terminal window, connect to your instance.
 1. Start a Rails console session with `sudo gitlab-rails console`.
-1. Depending on your needs, copy either the entire `expired_tokens.rb`
-   or `expired_tokens_date_range.rb` script below, and paste it into the console.
+1. Depending on your needs, copy either the entire `expired_tokens.rb` from the following section
+   or `expired_tokens_date_range.rb` script from the section after that, and paste it into the console.
    Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
 1. Press <kbd>Enter</kbd>.
 
@@ -240,13 +240,13 @@ To use it:
 {{< tab title="Rails Runner" >}}
 
 1. In your terminal window, connect to your instance.
-1. Depending on your needs, copy either the entire `expired_tokens.rb`
-   or `expired_tokens_date_range.rb` script below, and save it
+1. Depending on your needs, copy either the entire `expired_tokens.rb` from the following section
+   or `expired_tokens_date_range.rb` script from the section after that, and save it
    as a file on your instance:
    - Name it `expired_tokens.rb`.
    - Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
    - The file must be accessible to `git:git`.
-1. Run this command, changing the path to the _full_ path to your `expired_tokens.rb` file:
+1. Run this command, changing the path to the full path to your `expired_tokens.rb` file:
 
    ```shell
    sudo gitlab-rails runner /path/to/expired_tokens.rb
@@ -290,7 +290,7 @@ end
 
 {{< alert type="note" >}}
 
-To not only hide, but also remove, tokens belonging to blocked users, add `token.destroy!` directly below
+To hide and also remove tokens belonging to blocked users, add `token.destroy!` directly below
 `if token.user.blocked?`. However, this action does not leave an audit event,
 unlike the [API method](../../api/personal_access_tokens.md#revoke-a-personal-access-token).
 
@@ -306,7 +306,7 @@ the exact date your instance was upgraded to GitLab 16.0. To use it:
 {{< tab title="Rails console session" >}}
 
 1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `tokens_with_no_expiry.rb` script below.
+1. Paste in the entire `expired_tokens_date_range.rb` script from the next section.
    If desired, change the `date_range` to a different range.
 1. Press <kbd>Enter</kbd>.
 
@@ -315,12 +315,12 @@ the exact date your instance was upgraded to GitLab 16.0. To use it:
 {{< tab title="Rails Runner" >}}
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire `tokens_with_no_expiry.rb` script below, and save it as a file on your instance:
+1. Copy the entire `expired_tokens_date_range.rb` script from the next section, and save it as a file on your instance:
    - Name it `expired_tokens_date_range.rb`.
    - If desired, change the `date_range` to a different range.
    - The file must be accessible to `git:git`.
 1. Run this command, changing `/path/to/expired_tokens_date_range.rb`
-   to the _full_ path to your `expired_tokens_date_range.rb` file:
+   to the full path to your `expired_tokens_date_range.rb` file:
 
    ```shell
    sudo gitlab-rails runner /path/to/expired_tokens_date_range.rb
@@ -388,7 +388,7 @@ To use it:
    - Name it `dates_when_most_of_tokens_expire.rb`.
    - The file must be accessible to `git:git`.
 1. Run this command, changing `/path/to/dates_when_most_of_tokens_expire.rb`
-   to the _full_ path to your `dates_when_most_of_tokens_expire.rb` file:
+   to the full path to your `dates_when_most_of_tokens_expire.rb` file:
 
    ```shell
    sudo gitlab-rails runner /path/to/dates_when_most_of_tokens_expire.rb
@@ -429,7 +429,7 @@ or the [Rails Runner](../../administration/operations/rails_console.md#using-the
 
 1. In your terminal window, connect to your instance.
 1. Start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire `tokens_with_no_expiry.rb` script below.
+1. Paste in the entire `tokens_with_no_expiry.rb` script from the following section.
 1. Press <kbd>Enter</kbd>.
 
 {{< /tab >}}
@@ -437,10 +437,10 @@ or the [Rails Runner](../../administration/operations/rails_console.md#using-the
 {{< tab title="Rails Runner" >}}
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire `tokens_with_no_expiry.rb` script below, and save it as a file on your instance:
+1. Copy this entire `tokens_with_no_expiry.rb` script from the following section, and save it as a file on your instance:
    - Name it `tokens_with_no_expiry.rb`.
    - The file must be accessible to `git:git`.
-1. Run this command, changing the path to the _full_ path to your `tokens_with_no_expiry.rb` file:
+1. Run this command, changing the path to the full path to your `tokens_with_no_expiry.rb` file:
 
    ```shell
    sudo gitlab-rails runner /path/to/tokens_with_no_expiry.rb

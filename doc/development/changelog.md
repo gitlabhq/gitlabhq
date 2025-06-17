@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Changelog entries
 ---
 
@@ -163,8 +163,8 @@ git push -f origin your-branch-name
 ```
 
 To edit older (or multiple commits), use `git rebase -i HEAD~N` where `N` is the
-last N number of commits to rebase. Let's say you have 3 commits on your branch:
-A, B, and C. If you want to update commit B, you need to run:
+last N number of commits to rebase. For example, if you have three commits on your branch,
+and only want to update the second commit, you need to run:
 
 ```shell
 git rebase -i HEAD~2

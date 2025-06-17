@@ -39,7 +39,7 @@ system's Kerberos settings.
    If your GitLab server is `gitlab.example.com` and your Kerberos realm
    `EXAMPLE.COM`, create a Service Principal `HTTP/gitlab.example.com@EXAMPLE.COM`
    in your Kerberos database.
-1. Create a keytab on the GitLab server for the above Service Principal. For example,
+1. Create a keytab on the GitLab server for the Service Principal. For example,
    `/etc/http.keytab`.
 
 The keytab is a sensitive file and must be readable by the GitLab user. Set

@@ -42,7 +42,7 @@ module Gitlab
         def url
           return unless source == :repository_source
 
-          File.join(Settings.build_ci_server_fqdn, project.full_path, '//', ci_config_path)
+          File.join(Settings.build_server_fqdn, project.full_path, '//', ci_config_path)
         end
 
         private

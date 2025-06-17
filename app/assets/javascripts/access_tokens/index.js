@@ -138,6 +138,10 @@ export const initSharedAccessTokenApp = () => {
   const {
     accessTokenMaxDate,
     accessTokenMinDate,
+    accessTokenAvailableScopes,
+    accessTokenName,
+    accessTokenDescription,
+    accessTokenScopes,
     accessTokenCreate,
     accessTokenRevoke,
     accessTokenRotate,
@@ -149,6 +153,7 @@ export const initSharedAccessTokenApp = () => {
     name: 'AccessTokensRoot',
     pinia,
     provide: {
+      accessTokenAvailableScopes: JSON.parse(accessTokenAvailableScopes),
       accessTokenMaxDate,
       accessTokenMinDate,
       accessTokenCreate,
@@ -160,6 +165,9 @@ export const initSharedAccessTokenApp = () => {
       return createElement(AccessTokens, {
         props: {
           id: gon.current_user_id,
+          tokenName: accessTokenName,
+          tokenDescription: accessTokenDescription,
+          tokenScopes: accessTokenScopes && JSON.parse(accessTokenScopes),
         },
       });
     },

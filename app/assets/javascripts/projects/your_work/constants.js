@@ -26,6 +26,7 @@ const baseTab = {
     type: TYPES.filter,
   },
   formatter: formatProjects,
+  queryErrorMessage: __("Your projects couldn't be loaded. Refresh the page to try again."),
 };
 
 export const CONTRIBUTED_TAB = {

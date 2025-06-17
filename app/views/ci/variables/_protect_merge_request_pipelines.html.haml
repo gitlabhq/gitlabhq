@@ -1,0 +1,12 @@
+= gitlab_ui_form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-cicd-variables-settings'), authenticity_token: true do |form|
+  .form-group
+    %b= _('Access protected resources in merge request pipelines')
+    %p.gl-text-subtle
+      = s_('Make protected CI/CD variables and runners available in merge request pipelines. Protected resources will only be available in merge request pipelines if both the source and target branches of the merge request are protected.')
+      = link_to s_('Learn more.'), help_page_url('ci/pipelines/merge_request_pipelines.md', anchor: 'control-access-to-protected-variables-and-runners'), target: '_blank'
+
+    = form.gitlab_ui_checkbox_component :protect_merge_request_pipelines,
+      s_('MergeRequest|Allow merge request pipelines to access protected variables and runners')
+
+    .gl-mt-5
+      = form.submit _('Save changes'), pajamas_button: true

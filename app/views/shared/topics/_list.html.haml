@@ -5,6 +5,11 @@
 - if show_empty_search
   = render ::Layouts::EmptyResultComponent.new(type: :search)
 - else
-  %ul.content-list
-    = render partial: 'shared/topics/topic', collection: @topics
-    = paginate_collection @topics, remote: remote
+  = render ::Layouts::CrudComponent.new(_('Topics'),
+    icon: 'overview',
+    count: @topics.count,
+    options: { class: 'gl-mt-5' }) do |c|
+    - c.with_body do
+      %ul.content-list
+        = render partial: 'shared/topics/topic', collection: @topics
+      = paginate_collection @topics, remote: remote

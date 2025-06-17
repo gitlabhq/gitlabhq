@@ -42,6 +42,6 @@
     .group-home-desc.gl-mt-2
       .home-panel-description.gl-text-subtle.gl-break-words
         .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
-          = markdown_field(@group, :description)
+          = markdown_field(@group.namespace_details, :description)
         = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-read-more-trigger lg:gl-hidden' }) do
           = _("Read more")

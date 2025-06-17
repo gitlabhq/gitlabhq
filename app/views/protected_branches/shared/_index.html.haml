@@ -11,7 +11,7 @@
 
     - if @project.present?
       - branch_rules_docs_link_url = help_page_path('user/project/repository/branches/branch_rules.md')
-      - branch_rules_link_url = project_settings_repository_path(@project, anchor: 'js-branch-rules')
+      - branch_rules_link_url = project_settings_repository_path(@project, anchor: 'branch-rules')
       - branch_rules_link_start = '<a href="%{url}" rel="noopener noreferrer">'.html_safe % { url: branch_rules_link_url }
 
       = render Pajamas::AlertComponent.new( alert_options: { class: 'gl-mr-7 gl-mt-5' },
@@ -29,6 +29,10 @@
       - c.with_body do
         = s_("ProtectedBranch|Giving merge rights to a protected branch also gives elevated permissions for certain CI/CD features.")
         = link_to s_("ProtectedBranch|What are the security implications?"), help_page_path('ci/pipelines/_index.md', anchor: 'pipeline-security-on-protected-branches'), target: '_blank', rel: 'noopener noreferrer'
+        %br
+        = s_("MergeRequest|Control access to protected variables and runners in merge request pipelines")
+        = link_to s_('Learn more.'), help_page_url('ci/pipelines/merge_request_pipelines.md', anchor: 'control-access-to-protected-variables-and-runners'), target: '_blank'
+
 
     = render ::Layouts::CrudComponent.new(s_("ProtectedBranch|Protected branches"),
       icon: 'branch',

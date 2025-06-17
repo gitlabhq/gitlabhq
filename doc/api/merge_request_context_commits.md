@@ -14,8 +14,8 @@ title: Merge request context commits API
 {{< /details >}}
 
 If your merge request builds upon a previous merge request, you might
-need to [include previously-merged commits for context](../user/project/merge_requests/commits.md#show-commits-from-previous-merge-requests).
-Use this API to add commits to a merge request for more context.
+need to [include previously-merged commits for context](../user/project/merge_requests/commits.md#show-commits-from-previous-merge-requests)
+in your merge request. Use this API to add commits to a merge request for more context.
 
 ## List MR context commits
 

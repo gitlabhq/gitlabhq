@@ -59,7 +59,9 @@ class Gitlab::Seeder::Timelogs
   end
 
   def self.find_or_create_reporter_user(username, password)
+    organization = User.admins.first.organizations.first
     user = User.find_by_username(username)
+
     if user.nil?
       print "\nCreating user '#{username}' with password: '#{password}'"
 
@@ -70,7 +72,7 @@ class Gitlab::Seeder::Timelogs
         confirmed_at: DateTime.now,
         password: password
       ) do |user|
-        user.assign_personal_namespace(Organizations::Organization.default_organization)
+        user.assign_personal_namespace(organization)
       end
     end
 

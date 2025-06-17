@@ -110,6 +110,7 @@ module Ci
 
     belongs_to :creator, class_name: 'User', optional: true
 
+    before_validation :ensure_organization_id, on: :update
     before_save :ensure_token
     after_destroy :cleanup_runner_queue
 
@@ -236,6 +237,12 @@ module Ci
 
     scope :with_tags, -> { preload(:tags) }
     scope :with_creator, -> { preload(:creator) }
+
+    scope :with_encrypted_tokens, ->(token_values) do
+      where(token_encrypted: Array.wrap(token_values))
+    end
+
+    scope :with_api_entity_associations, -> { preload(:creator) }
 
     validate :tag_constraints
     validates :sharding_key_id, presence: true, unless: :instance_type?
@@ -545,6 +552,7 @@ module Ci
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
+        m.organization_id = organization_id
       end
       # rubocop: enable Performance/ActiveRecordSubtransactionMethods
     end
@@ -615,6 +623,12 @@ module Ci
       Project.id_in(runner_projects.map(&:project_id))
         .filter_map(&:effective_runner_token_expiration_interval)
         .min&.from_now
+    end
+
+    def ensure_organization_id
+      return unless instance_type? || owner.present?
+
+      self.organization_id = instance_type? ? nil : owner.organization_id
     end
 
     def cleanup_runner_queue

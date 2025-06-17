@@ -5,7 +5,8 @@ require 'spec_helper'
 NULL_LOGGER = Gitlab::JsonLogger.new('/dev/null')
 
 RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_category: :fleet_visibility do
-  let_it_be(:user) { create(:user, :admin, username: 'test-admin') }
+  let_it_be(:user_organization) { create(:organization) }
+  let_it_be(:user) { create(:user, :admin, username: 'test-admin', organizations: [user_organization]) }
 
   subject(:seeder) do
     described_class.new(NULL_LOGGER,
@@ -92,29 +93,46 @@ RSpec.describe ::Gitlab::Seeders::Ci::Runner::RunnerFleetSeeder, feature_categor
       end
     end
 
-    context 'when organization cannot be created' do
-      before do
-        allow_next_instance_of(::Organizations::CreateService, current_user: user, params: anything) do |service|
-          allow(service).to receive(:execute).and_return(ServiceResponse.error(message: 'test error'))
-        end
+    context 'when organization is passed to the initializer' do
+      let(:other_organization) { create(:organization) }
+
+      subject(:seed_with_organization) do
+        described_class.new(NULL_LOGGER,
+          username: user.username,
+          registration_prefix: registration_prefix,
+          runner_count: runner_count,
+          organization_id: other_organization.id
+        ).seed
       end
 
-      it 'raises RuntimeError' do
-        expect { seed }.to raise_error(RuntimeError)
+      it 'assigns organization_id to created entities' do
+        expect { seed_with_organization }.not_to raise_error
+        expect(Group.search(registration_prefix).pluck(:organization_id)).to all(eq(other_organization.id))
       end
     end
 
-    context 'when feature flag allow_organization_creation is disabled' do
-      let_it_be(:default_organization) { create(:organization, :default) }
+    context 'when organization is not passed to the initializer' do
+      it 'assigns organization_id of the user to created entities' do
+        expect { seed }.not_to raise_error
+        expect(Group.search(registration_prefix).pluck(:organization_id)).to all(eq(user.organizations.first.id))
+      end
+    end
 
-      before do
-        stub_feature_flags(allow_organization_creation: false)
+    context 'when no organization can be used' do
+      let(:user_without_org) { create(:user, organizations: []) }
+
+      subject(:seed_without_organization) do
+        described_class.new(NULL_LOGGER,
+          username: user_without_org.username,
+          registration_prefix: registration_prefix,
+          runner_count: runner_count
+        ).seed
       end
 
-      it 'uses the default organization ID' do
-        expect(::Organizations::Organization).not_to receive(:default_organization)
-        expect { seed }.not_to raise_error
-        expect(Group.search(registration_prefix).pluck(:organization_id)).to all(eq(default_organization.id))
+      it 'fails with error' do
+        expect { seed_without_organization }.to raise_error(
+          "No organization found. Ensure user has an organization or pass an organization_id"
+        )
       end
     end
   end

@@ -15,6 +15,7 @@ module RuboCop
           COMMIT;
         TEXT
 
+        # @!method disable_referential_integrity?(node)
         def_node_matcher :disable_referential_integrity?, <<~PATTERN
           (send _ :disable_referential_integrity)
         PATTERN

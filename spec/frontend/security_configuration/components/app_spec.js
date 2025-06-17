@@ -11,9 +11,15 @@ import AutoDevopsAlert from '~/security_configuration/components/auto_dev_ops_al
 import AutoDevopsEnabledAlert from '~/security_configuration/components/auto_dev_ops_enabled_alert.vue';
 import { AUTO_DEVOPS_ENABLED_ALERT_DISMISSED_STORAGE_KEY } from '~/security_configuration/constants';
 import FeatureCard from '~/security_configuration/components/feature_card.vue';
+import PipelineSecretDetectionFeatureCard from '~/security_configuration/components/pipeline_secret_detection_feature_card.vue';
 import SecretPushProtectionFeatureCard from '~/security_configuration/components/secret_push_protection_feature_card.vue';
 import TrainingProviderList from '~/security_configuration/components/training_provider_list.vue';
-import { securityFeaturesMock, provideMock, secretPushProtectionMock } from '../mock_data';
+import {
+  securityFeaturesMock,
+  provideMock,
+  secretPushProtectionMock,
+  pipelineSecretDetectionMock,
+} from '../mock_data';
 
 const gitlabCiHistoryPath = 'test/historyPath';
 const { vulnerabilityTrainingDocsPath, projectFullPath } = provideMock;
@@ -59,6 +65,8 @@ describe('~/security_configuration/components/app', () => {
   const findByTestId = (id) => wrapper.findByTestId(id);
   const findFeatureCards = () => wrapper.findAllComponents(FeatureCard);
   const findSecretPushProtection = () => wrapper.findComponent(SecretPushProtectionFeatureCard);
+  const findPipelineSecretDetectionCard = () =>
+    wrapper.findComponent(PipelineSecretDetectionFeatureCard);
   const findTrainingProviderList = () => wrapper.findComponent(TrainingProviderList);
   const findManageViaMRErrorAlert = () => wrapper.findByTestId('manage-via-mr-error-alert');
   const findLink = ({ href, text, container = wrapper }) => {
@@ -297,6 +305,37 @@ describe('~/security_configuration/components/app', () => {
     it('renders component with correct props', () => {
       expect(findSecretPushProtection().exists()).toBe(true);
       expect(findSecretPushProtection().props('feature')).toEqual(secretPushProtectionMock);
+    });
+  });
+
+  describe('With pipeline secret detection', () => {
+    beforeEach(() => {
+      createComponent({
+        augmentedSecurityFeatures: [pipelineSecretDetectionMock],
+      });
+    });
+
+    it('does not render regular feature card component', () => {
+      expect(findFeatureCards().length).toBe(0);
+    });
+
+    it('renders PipelineSecretDetectionFeatureCard with correct props', () => {
+      expect(findPipelineSecretDetectionCard().props('feature')).toEqual(
+        pipelineSecretDetectionMock,
+      );
+    });
+
+    it('handles error events from PipelineSecretDetectionFeatureCard', async () => {
+      const errorMessage = 'Pipeline secret detection error';
+
+      expect(findManageViaMRErrorAlert().exists()).toBe(false);
+
+      const pipelineCard = findPipelineSecretDetectionCard();
+
+      pipelineCard.vm.$emit('error', errorMessage);
+      await nextTick();
+
+      expect(findManageViaMRErrorAlert().text()).toBe(errorMessage);
     });
   });
 

@@ -22,6 +22,10 @@
         %li
           %span.light= _('X (formerly Twitter):')
           %strong= link_to user.twitter, "https://twitter.com/#{user.twitter}"
+      - unless user.github.blank?
+        %li
+          %span.light= _('GitHub:')
+          %strong= link_to user.github, "https://github.com/#{user.github}"
       - unless user.website_url.blank?
         %li
           %span.light= _('Website:')

@@ -159,5 +159,15 @@ RSpec.describe UserSettings::ProfilesController, :request_store, feature_categor
         expect(response).to have_gitlab_http_status(:found)
       end
     end
+
+    it 'allows updating user specified ORCID ID', :aggregate_failures do
+      orcid_id = '1234-1234-1234-1234'
+      sign_in(user)
+
+      put :update, params: { user: { orcid: orcid_id } }
+
+      expect(user.reload.orcid).to eq(orcid_id)
+      expect(response).to have_gitlab_http_status(:found)
+    end
   end
 end

@@ -13,7 +13,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'ee/spec/requests/groups/security/credentials_controller_spec.rb'
     - 'ee/spec/services/app_sec/dast/profiles/create_associations_service_spec.rb'
     - 'spec/controllers/groups/registry/repositories_controller_spec.rb'
-    - 'spec/controllers/projects/blob_controller_spec.rb'
     - 'spec/controllers/projects/graphs_controller_spec.rb'
     - 'spec/controllers/projects/registry/repositories_controller_spec.rb'
     - 'spec/features/issues/spam_akismet_issue_creation_spec.rb'

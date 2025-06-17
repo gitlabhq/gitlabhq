@@ -9,13 +9,15 @@ title: Maven virtual registry
 
 - Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14137) in GitLab 18.0 [with a flag](../../../../administration/feature_flags.md) named `virtual_registry_maven`. Disabled by default.
+- Feature flag [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) to `maven_virtual_registry` in GitLab 18.1.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/540276) from experiment to beta in GitLab 18.1.
 
 {{< /history >}}
 
@@ -23,7 +25,7 @@ title: Maven virtual registry
 
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available in [experiment](../../../../policy/development_stages_support.md#experiment).
+This feature is available in [beta](../../../../policy/development_stages_support.md#beta).
 Review the documentation carefully before you use this feature.
 
 {{< /alert >}}
@@ -49,25 +51,25 @@ Before you can use the Maven virtual registry:
 
 When using the Maven virtual registry, remember the following restrictions:
 
-- You can create only one Maven virtual registry per top-level group.
+- You can create up to `20` Maven virtual registries per top-level group.
 - You can set only `20` upstreams to a given Maven virtual registry.
 - For technical reasons, the `proxy_download` setting is force enabled, no matter what the value in the [object storage configuration](../../../../administration/object_storage.md#proxy-download) is configured to.
 - Geo support is not implemented. You can follow its development in [issue 473033](https://gitlab.com/gitlab-org/gitlab/-/issues/473033).
 
 ## Manage the virtual registry
 
-Manage the virtual registry with the dedicated virtual registry API.
+Manage the virtual registry with the [Maven virtual registry API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
 
-You cannot configure the virtual registry in the UI, but this [epic 15090](https://gitlab.com/groups/gitlab-org/-/epics/15090) proposes the implementation of a virtual registry UI.
+You cannot configure the virtual registry in the UI, but [epic 15090](https://gitlab.com/groups/gitlab-org/-/epics/15090) proposes the implementation of a virtual registry UI.
 
 ### Authenticate to the virtual registry API
 
 The virtual registry API uses [REST API authentication](../../../../api/rest/authentication.md) methods. You must authenticate to the API to manage virtual registry objects.
 
-Read operations are open to users that can [use the virtual registry](#use-the-virtual-registry).
+Read operations are available to users that can [use the virtual registry](#use-the-virtual-registry).
 
-Write operations, such as [creating a new registry](#create-and-manage-a-virtual-registry) or [adding upstreams](#manage-upstream-registries) are restricted to
-direct maintainers of the top-level group that hosts the virtual registry.
+Write operations, such as [creating a new registry](#create-and-manage-a-virtual-registry) or [adding upstreams](#manage-upstream-registries), are restricted to
+direct maintainers of the top-level group of the virtual registry.
 
 ### Create and manage a virtual registry
 
@@ -81,11 +83,11 @@ curl --fail-with-body \
      --url "https://gitlab.example.com/api/v4/groups/<group_id>/-/virtual_registries/packages/maven/registries"
 ```
 
-- `<header>` is the [authentication header](../../../../api/rest/authentication.md).
-- `<group_id>` is the top-level group ID.
-- `<registry_name>` is the registry name. Required.
+- `<header>`: The [authentication header](../../../../api/rest/authentication.md).
+- `<group_id>`: The top-level group ID.
+- `<registry_name>`: The registry name.
 
-To see other endpoints and examples related to managing a virtual registry, see the [API documentation](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
+For more information about other endpoints and examples related to Maven virtual registries, see the [API](../../../../api/maven_virtual_registries.md#manage-virtual-registries).
 
 ### Manage upstream registries
 
@@ -105,24 +107,20 @@ curl --fail-with-body \
      --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/registries/<registry_id>/upstreams"
 ```
 
-- `<header>` is the [authentication header](../../../../api/rest/authentication.md).
-- `<registry_id>` is the Maven virtual registry ID.
-- `<upstream_name>` is the upstream registry name. Required.
-- `<upstream_url>` is the Maven upstream URL. Required.
-- `<upstream_username>` is the username to use with the Maven upstream. Required if an `<upstream_password>` is set.
-- `<upstream_password>` is the password to use with the Maven upstream. Required if an `<upstream_username>` is set.
-- `<upstream_cache_validity_hours>` is the [cache validity period](../_index.md#cache-validity-period) in hours. Optional. The default value is `24`. `0` disables the cache entry checks.
-  - if the `<upstream_url>` is set to [Maven central](#use-maven-central-as-an-upstream), the validity period is set to `0`.
+- `<header>`: The [authentication header](../../../../api/rest/authentication.md).
+- `<registry_id>`: The Maven virtual registry ID.
+- `<upstream_name>`: The upstream registry name.
+- `<upstream_url>`: The Maven upstream URL.
+- `<upstream_username>`: The username to use with the Maven upstream. Required if an `<upstream_password>` is set.
+- `<upstream_password>`: The password to use with the Maven upstream. Required if an `<upstream_username>` is set.
+- `<upstream_cache_validity_hours>`: (optional) The [cache validity period](../_index.md#cache-validity-period) in hours. The default value is `24`. To turn off cache entry checks, set to `0`.
+  - if the `<upstream_url>` is set to Maven central:
+    - You must use the following URL: `https://repo1.maven.org/maven2`
+    - The validity period is set to `0` by default. All files on Maven central are immutable.
 
 `<upstream_username>` and `<upstream_password>` are optional. If not set, a public (anonymous) request is used to access the upstream.
 
-To see other endpoints and examples related to managing an upstream registry, including updating the upstream registry position in the list, see the [API documentation](../../../../api/maven_virtual_registries.md#manage-upstream-registries).
-
-#### Use Maven central as an upstream
-
-To configure an upstream to Maven central, use the following URL: `https://repo1.maven.org/maven2`.
-
-On Maven central, all files are immutable. You should set the [cache validity period](../_index.md#cache-validity-period) to `0` to disable cache checks with Maven central.
+For more information about other endpoints and examples, like updating the upstream registry position in the list, see the [API](../../../../api/maven_virtual_registries.md#manage-upstream-registries).
 
 ### Manage cache entries
 
@@ -130,7 +128,7 @@ If necessary, cache entries can be inspected or destroyed.
 
 The next time the virtual registry receives a request for the file that was referenced by the destroyed cache entry, the list of upstreams is [walked again](../_index.md#caching-system) to find an upstream that can fulfill this request.
 
-To see the endpoints and examples related to managing cache entries, see the [API documentation](../../../../api/maven_virtual_registries.md#manage-cache-entries).
+To learn more about managing cache entries, see the [API](../../../../api/maven_virtual_registries.md#manage-cache-entries).
 
 ## Use the virtual registry
 
@@ -166,7 +164,8 @@ The Maven virtual registry supports the following Maven clients:
 
 You must declare virtual registries in the Maven client configuration.
 
-All clients must be authenticated. For the client authentication, you can use a custom HTTP header or Basic Auth. You should use one of the configurations below for each client.
+All clients must be authenticated. For the client authentication, you can use a custom HTTP header or Basic Auth.
+You should use one of the configurations below for each client.
 
 {{< tabs >}}
 
@@ -216,10 +215,8 @@ To configure a Maven virtual registry as an additional registry, in the `pom.xml
 </repositories>
 ```
 
-Where:
-
-- `<registry_id>` is the ID of the Maven virtual registry.
-- `<id>` contains the same ID of the `<server>` used in the `settings.xml`.
+- `<id>`: The same ID of the `<server>` used in the `settings.xml`.
+- `<registry_id>`: The ID of the Maven virtual registry.
 
 To configure a Maven virtual registry as a replacement of the default registry, in the `settings.xml`, add a `mirrors` element:
 
@@ -239,9 +236,7 @@ To configure a Maven virtual registry as a replacement of the default registry, 
 </settings>
 ```
 
-Where:
-
-- `<registry_id>` is the ID of the Maven virtual registry.
+- `<registry_id>`: The ID of the Maven virtual registry.
 
 {{< /tab >}}
 
@@ -300,9 +295,7 @@ Add a `repositories` section to your
   }
   ```
 
-Where:
-
-- `<registry_id>` is the ID of the Maven virtual registry.
+- `<registry_id>`: The ID of the Maven virtual registry.
 
 {{< /tab >}}
 
@@ -317,7 +310,7 @@ Where:
 
 Authentication for [SBT](https://www.scala-sbt.org/index.html) is based on
 [basic HTTP Authentication](https://developer.mozilla.org/en-US/docs/Web/HTTP/Authentication).
-You must to provide a name and a password.
+You must provide a name and a password.
 
 In your [`build.sbt`](https://www.scala-sbt.org/1.x/docs/Directories.html#sbt+build+definition+files), add the following lines:
 
@@ -327,14 +320,13 @@ resolvers += ("gitlab" at "<endpoint_url>")
 credentials += Credentials("GitLab Virtual Registry", "<host>", "<username>", "<token>")
 ```
 
-Where:
+- `<endpoint_url>`: The Maven virtual registry URL.
+  For example, `https://gitlab.example.com/api/v4/virtual_registries/packages/maven/<registry_id>`, where `<registry_id>` is the ID of the Maven virtual registry.
+- `<host>`: The host present in the `<endpoint_url>` without the protocol scheme or the port. For example, `gitlab.example.com`.
+- `<username>`: The username.
+- `<token>`: The configured token.
 
-- `<endpoint_url>` is the Maven virtual registry URL.
-  For example, `https://gitlab.example.com/api/v4/virtual_registries/packages/maven/<registry_id>`. `<registry_id>` is the ID of the Maven virtual registry.
-- `<host>` is the host present in the `<endpoint_url>` without the protocol scheme or the port. For example, `gitlab.example.com`.
-- `<username>` is the username.
-- `<token>` is the configured token.
-- Make sure that the first argument of `Credentials` is `"GitLab Virtual Registry"`. This realm name must _exactly match_ the [basic auth realm](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Authentication#www-authenticate_and_proxy-authenticate_headers) sent by the Maven virtual registry.
+Make sure that the first argument of `Credentials` is `"GitLab Virtual Registry"`. This realm name must exactly match the [Basic Auth realm](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Authentication#www-authenticate_and_proxy-authenticate_headers) sent by the Maven virtual registry.
 
 {{< /tab >}}
 

@@ -6,6 +6,7 @@ module Users
 
     self.table_name = 'user_callouts'
 
+    # NOTE: to avoid false-positive dismissals, use new consecutive enum values for new callout IDs
     enum :feature_name, {
       gke_cluster_integration: 1,
       gcp_signup_offer: 2,
@@ -108,7 +109,8 @@ module Users
       dora_dashboard_migration_project: 105,
       enable_duo_banner_admin_duo_settings_page: 106, # EE-only
       enable_duo_banner_admin_dashboard: 107, # EE-only
-      explore_duo_core_banner: 108 # EE-only
+      explore_duo_core_banner: 108, # EE-only
+      merge_request_dashboard_display_preferences_popover: 109
     }
 
     validates :feature_name,

@@ -1,6 +1,6 @@
 ---
-stage: Systems
-group: Distribution
+stage: GitLab Delivery
+group: Self Managed
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: GitLab 16 changes
 ---
@@ -56,7 +56,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   [Read more in the issue](https://gitlab.com/gitlab-org/gitlab/-/issues/416646).
   The [bug is fixed in GitLab 16.5 and later](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131122).
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -289,7 +289,7 @@ planned for release in 16.9.1.
   directly to 16.8.2, which [restores compatibility with Redis 6.0](https://gitlab.com/gitlab-org/gitlab/-/issues/439418).
 - NOTE: You should upgrade to Redis 6.2 or later as [Redis 6.0 is no longer supported](https://endoflife.date/redis).
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -367,7 +367,7 @@ planned for release in 16.9.1.
     when your instance processes a background database migration from the GitLab 16.6 release.
     Read more about the `ci_builds` migration in the [16.6.0 upgrade notes](#1660).
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -477,7 +477,7 @@ Specific information applies to Linux package installations:
     ```
 
 - Old [CI Environment destroy jobs may be spawned](https://gitlab.com/gitlab-org/gitlab/-/issues/433264#) after upgrading to GitLab 16.6.
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -554,7 +554,7 @@ Specific information applies to Linux package installations:
   DETAIL:  Key (queued_migration_version)=(20230721095222) already exists.
   ```
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -760,7 +760,7 @@ Specific information applies to installations using Geo:
   If you have too many affected push rules, and you can't update them through the GitLab UI,
   contact [GitLab support](https://about.gitlab.com/support/).
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -875,7 +875,7 @@ Specific information applies to installations using Geo:
   - Workhorse
 
   You should check the size of your RSA keys (`openssl rsa -in <your-key-file> -text -noout | grep "Key:"`)
-  for any of the applications above before
+  for any of the previous applications before
   upgrading.
 
 - A `BackfillCiPipelineVariablesForPipelineIdBigintConversion` background migration is finalized with
@@ -891,7 +891,7 @@ Specific information applies to installations using Geo:
   select count(*) from ci_pipeline_variables;
   ```
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
      **Affected releases**:
 
@@ -1034,7 +1034,7 @@ Specific information applies to installations using Geo:
 
   Sidekiq and Puma processes must be restarted to resolve this issue.
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -1107,7 +1107,7 @@ You are not impacted:
 |-------------------------|-------------------------|----------|
 | 15.1 - 16.2             | All                     | 16.3 and later    |
 
-Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/_index.md#disable-secondary-site-http-proxying). Note that the secondary site fails to serve LFS files that have not been replicated at the time of cloning.
+Workaround: A possible workaround is to [disable proxying](../../administration/geo/secondary_proxy/_index.md#disable-secondary-site-http-proxying). The secondary site fail to serve LFS files that have not been replicated at the time of cloning.
 
 ## 16.1.0
 
@@ -1137,7 +1137,7 @@ Workaround: A possible workaround is to [disable proxying](../../administration/
   [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/118645). For more information, see the
   [`puma.rb.example`](https://gitlab.com/gitlab-org/gitlab/-/blob/16-0-stable-ee/config/puma.rb.example) file.
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -1209,7 +1209,7 @@ by this issue.
   [throw errors on startup](../../install/docker/troubleshooting.md#threaderror-cant-create-thread-operation-not-permitted).
 - Container registry using Azure storage might be empty with zero tags. You can fix this by following the [breaking change instructions](../deprecations.md#azure-storage-driver-defaults-to-the-correct-root-prefix).
 
-- Normally, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
+- Usually, backups in environments that have PgBouncer must [bypass PgBouncer by setting variables that are prefixed with `GITLAB_BACKUP_`](../../administration/backup_restore/backup_gitlab.md#bypassing-pgbouncer). However, due to an [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/422163), `gitlab-backup` uses the regular database connection through PgBouncer instead of the direct connection defined in the override, and the database backup fails. The workaround is to use `pg_dump` directly.
 
     **Affected releases**:
 
@@ -1323,7 +1323,7 @@ To protect against configuration mistakes, temporarily disable repository verifi
    Configure `verification_interval: 0`, and apply with `gitlab-ctl reconfigure`.
 1. To apply the new structure to your configuration:
    1. Replace the `...` with the value from the old key.
-   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented below. If
+   1. When configuring `storage` to replace `git_data_dirs`, **append `/repositories` to value of `path`** as documented in the following script. If
       you don't complete this step, your Git repositories are inaccessible until the configuration is fixed. This
       misconfiguration can cause metadata deletion.
    1. Skip any keys you haven't configured a value for previously.
@@ -1334,7 +1334,7 @@ To protect against configuration mistakes, temporarily disable repository verifi
 1. Recommended, if you're running Gitaly Cluster. Reinstate Praefect [repository verification](../../administration/gitaly/praefect.md#repository-verification)
    by removing `verification_interval: 0`.
 
-The new structure is documented below with the old keys described in a comment above the new keys.
+The new structure is documented in the following script with the old keys described in a comment above the new keys.
 
 {{< alert type="warning" >}}
 
@@ -1408,9 +1408,9 @@ gitaly['configuration'] = {
       },
     ],
   },
-  # Storage could previously be configured through either gitaly['storage'] or 'git_data_dirs'. Migrate
-  # the relevant configuration according to the instructions below.
-  # For 'git_data_dirs', migrate only the 'path' to the gitaly['configuration'] and leave the rest of it untouched.
+  # Storage was previously configured with the gitaly['storage'] or 'git_data_dirs' parameters. Use
+  # the following instructions to migrate. For 'git_data_dirs', migrate only the 'path' to the
+  # gitaly['configuration'] and leave the rest untouched.
   storage: [
     {
       # gitaly['storage'][<index>]['name']
@@ -1513,14 +1513,14 @@ To protect against configuration mistakes, temporarily disable repository verifi
 
 1. When applying the new structure to your configuration:
    - Replace the `...` with the value from the old key.
-   - Disable repository verification using `verification_interval: 0`, as shown below.
+   - Disable repository verification using `verification_interval: 0`, as shown in the following script.
    - Skip any keys you haven't configured a value for previously.
    - Recommended. Include a trailing comma for all hash keys so the hash remains valid when keys are re-ordered or additional keys are added.
 1. Apply the change with `gitlab-ctl reconfigure`.
 1. Test Git repository functionality in GitLab.
 1. Remove the old keys from the configuration once migrated, and then re-run `gitlab-ctl reconfigure`.
 
-The new structure is documented below with the old keys described in a comment above the new keys.
+The new structure is documented in the following script with the old keys described in a comment above the new keys.
 
 ```ruby
 praefect['configuration'] = {
@@ -1557,7 +1557,7 @@ praefect['configuration'] = {
     #
     # IMPORTANT:
     # As part of reconfiguring Praefect, disable this feature.
-    # Read about this above.
+    # Read about this as described previously.
     #
     verification_interval: 0,
   },

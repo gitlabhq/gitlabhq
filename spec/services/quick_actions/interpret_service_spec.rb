@@ -433,6 +433,12 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
     end
 
     shared_examples 'spend command with valid date' do
+      let(:timezone) { 'Europe/Athens' }
+
+      before do
+        allow(developer).to receive(:timezone).and_return(timezone)
+      end
+
       it 'populates spend time: 1800 with date in date type format' do
         _, updates, _ = service.execute(content, issuable)
 
@@ -440,7 +446,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
           category: nil,
           duration: 1800,
           user_id: developer.id,
-          spent_at: Date.parse(date).midday
+          spent_at: Date.parse(date).in_time_zone(timezone).midday
         })
       end
     end
@@ -3409,6 +3415,17 @@ RSpec.describe QuickActions::InterpretService, feature_category: :text_editors d
               expect(message).to eq("Cannot assign a confidential parent item to a non-confidential child item. Make " \
                 "the child item confidential and try again.")
               expect(task_work_item.reload.work_item_parent).to be_nil
+            end
+          end
+
+          context 'when the child will become confidential, and the parent is confidential' do
+            let_it_be(:confidential_parent) { create(:work_item, :issue, :confidential, project: project) }
+            let(:content) { "/confidential\n/set_parent #{confidential_parent.to_reference(project)}" }
+
+            it 'sets correct update params' do
+              _, updates, _ = service.execute(content, task_work_item)
+
+              expect(updates).to eq({ set_parent: confidential_parent, confidential: true })
             end
           end
 

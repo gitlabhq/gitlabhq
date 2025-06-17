@@ -21,7 +21,7 @@ module WorkItems
           callback_params.reverse_merge!(params.slice(*callback_class::ALLOWED_PARAMS))
         end
 
-        next if callback_params.blank?
+        next if callback_params.blank? && !execute_without_params(callback_class)
 
         callback_class.new(issuable: work_item, current_user: current_user, params: callback_params)
       end
@@ -40,6 +40,10 @@ module WorkItems
 
       # Handle quick actions from description widget depending on the available widgets for the type
       handle_widget_quick_actions!(work_item)
+    end
+
+    def params_include_state_and_status_changes?
+      params.include?(:state_event) && widget_params.dig(:status_widget, :status)
     end
 
     private

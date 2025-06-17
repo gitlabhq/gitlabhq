@@ -53,7 +53,7 @@ For a full list of supported fields, supported operators, and value types, see [
 
 ### Operators
 
-**Comparison operators:**
+**Comparison operators**:
 
 | GLQL operator | Description                             | Equivalent in search   |
 |---------------|-----------------------------------------|------------------------|
@@ -81,7 +81,7 @@ Values can include:
 - Booleans (`true` or `false`)
 - Nullable values (like `null`, `none`, or `any`)
 - GitLab references (like `~label` for a label, `%Backlog` for a milestone, or `@username` for a user)
-- Lists containing any of the above (surrounded by parenthesis: `()` and delimited by commas: `,`)
+- Lists containing any of the previous values (surrounded by parenthesis: `()` and delimited by commas: `,`)
 
 ## GLQL views
 

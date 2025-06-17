@@ -86,6 +86,16 @@ RSpec.shared_context 'project navbar structure' do
         nav_item: _('Analyze'),
         nav_sub_items: project_analytics_sub_nav_item
       },
+
+      if Gitlab.ee?
+        {
+          nav_item: _('Agents'),
+          nav_sub_items: [
+            _('Runs')
+          ]
+        }
+      end,
+
       {
         nav_item: _('Settings'),
         nav_sub_items: [
@@ -178,6 +188,26 @@ RSpec.shared_context 'group navbar structure' do
     }
   end
 
+  let(:observability_nav_item) do
+    {
+      nav_item: _("Observability"),
+      nav_sub_items: [
+        _("Services"),
+        _("Traces Explorer"),
+        _("Logs Explorer"),
+        _("Metrics Explorer"),
+        _("Infrastructure Monitoring"),
+        _("Dashboard"),
+        _("Messaging Queues"),
+        _("API Monitoring"),
+        _("Alerts"),
+        _("Exceptions"),
+        _("Service Map"),
+        _("Settings")
+      ]
+    }
+  end
+
   let(:structure) do
     [
       {
@@ -201,7 +231,8 @@ RSpec.shared_context 'group navbar structure' do
         nav_item: _("Operate"),
         nav_sub_items: [_("Kubernetes")]
       },
-      (analyze_nav_item if Gitlab.ee?)
+      (analyze_nav_item if Gitlab.ee?),
+      observability_nav_item
     ]
   end
 end
@@ -269,6 +300,10 @@ RSpec.shared_context '"Explore" navbar structure' do
       },
       {
         nav_item: _("CI/CD Catalog"),
+        nav_sub_items: []
+      },
+      {
+        nav_item: s_("AI|AI Catalog"),
         nav_sub_items: []
       },
       {

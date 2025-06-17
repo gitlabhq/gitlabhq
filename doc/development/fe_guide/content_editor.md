@@ -1,7 +1,7 @@
 ---
 stage: Plan
 group: Knowledge
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Rich text editor development guidelines
 ---
 
@@ -49,7 +49,7 @@ The rich text editor requires two properties:
 - `uploadsPath` is a URL that points to a [GitLab upload service](../uploads/_index.md)
   with `multipart/form-data` support.
 
-See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/pages/shared/wikis/components/wiki_form.vue#L207)
+See the [`WikiForm.vue`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/assets/javascripts/wikis/components/wiki_form.vue#L207)
 component for a production example of these two properties.
 
 ### Set and get Markdown

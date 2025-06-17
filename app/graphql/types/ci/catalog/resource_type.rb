@@ -59,6 +59,9 @@ module Types
             '`include:component`, in the last 30 days.',
           experiment: { milestone: '17.0' }
 
+        field :archived, GraphQL::Types::Boolean, null: true,
+          description: 'Indicates the archived status of the project.'
+
         def web_path
           ::Gitlab::Routing.url_helpers.project_path(object.project)
         end

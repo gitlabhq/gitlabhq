@@ -2,7 +2,7 @@
 
 module Emails
   module Projects
-    include NamespacesHelper
+    include Namespaces::DeletableHelper
 
     def project_was_moved_email(project_id, user_id, old_path_with_namespace)
       @current_user = @user = User.find user_id
@@ -36,7 +36,7 @@ module Emails
       @project = ::Project.find(project_id)
       @user = ::User.find(recipient_id)
       @deletion_due_in_days = ::Gitlab::CurrentSettings.deletion_adjourned_period.days
-      @deletion_date = permanent_deletion_date_formatted(@project.marked_for_deletion_on, format: '%B %-d, %Y')
+      @deletion_date = permanent_deletion_date_formatted(@project, format: '%B %-d, %Y')
 
       email_with_layout(
         to: @user.email,

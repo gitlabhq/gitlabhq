@@ -20,6 +20,7 @@ module API
 
       use AdminModeMiddleware
       use ResponseCoercerMiddleware
+      use TrackAPIRequestFromRunnerMiddleware
 
       helpers HelperMethods
 
@@ -63,6 +64,7 @@ module API
           forbidden!(api_access_denied_message(user))
         end
 
+        check_language_server_client!(user)
         check_dpop!(user)
 
         user
@@ -136,6 +138,17 @@ module API
             group_id: params[:id])
       end
 
+      def check_language_server_client!(user)
+        return unless api_request? && user.is_a?(User)
+
+        response = Gitlab::Auth::EditorExtensions::LanguageServerClientVerifier.new(
+          current_user: user,
+          request: current_request
+        ).execute
+
+        raise Gitlab::Auth::RestrictedLanguageServerClientError, response.message if response.error?
+      end
+
       def user_allowed_or_deploy_token?(user)
         Gitlab::UserAccess.new(user).allowed? || user.is_a?(DeployToken)
       end
@@ -170,6 +183,7 @@ module API
                          Gitlab::Auth::RevokedError,
                          Gitlab::Auth::ImpersonationDisabled,
                          Gitlab::Auth::InsufficientScopeError,
+                         Gitlab::Auth::RestrictedLanguageServerClientError,
                          Gitlab::Auth::DpopValidationError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
@@ -213,6 +227,11 @@ module API
             when Gitlab::Auth::DpopValidationError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :dpop_error,
+                e)
+
+            when Gitlab::Auth::RestrictedLanguageServerClientError
+              Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
+                :restricted_language_server_client_error,
                 e)
             end
 
@@ -274,6 +293,63 @@ module API
 
         # Explicit nil is needed or the api call return value will be overwritten
         nil
+      end
+    end
+
+    class TrackAPIRequestFromRunnerMiddleware < ::Grape::Middleware::Base
+      delegate :request, :endpoint_id, :current_user, :current_token, to: :context
+
+      def after
+        return unless success? && current_project && current_token
+        return unless Feature.enabled?(:track_api_request_from_runner, current_project)
+        return unless request_from_runner?
+
+        ::Gitlab::InternalEvents.track_event(
+          'api_request_from_runner',
+          project: current_project,
+          additional_properties: {
+            label: endpoint_id,
+            property: token_type,
+            cross_project_request: cross_project_request?.to_s
+          }
+        )
+
+        # Explicit nil is needed or the api call return value will be overwritten
+        nil
+      end
+
+      private
+
+      def current_project
+        project = context.instance_variable_get(:@project)
+        return unless project.is_a?(Project)
+
+        project
+      end
+
+      def success?
+        return unless @app_response
+
+        (200..299).cover?(@app_response[0])
+      end
+
+      def request_from_runner?
+        return unless request
+
+        ::Ci::RunnerManager.ip_address_exists?(request.ip)
+      end
+
+      def token_type
+        return unless current_token
+
+        ::Authn::AgnosticTokenIdentifier.name(current_token.to_s)
+      end
+
+      def cross_project_request?
+        return unless current_project
+        return unless current_user&.from_ci_job_token?
+
+        !current_user.ci_job_token_scope.self_referential?(current_project)
       end
     end
   end

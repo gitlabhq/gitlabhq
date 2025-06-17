@@ -69,13 +69,19 @@ If the case of `404.html`, there are different scenarios. For example:
 You can configure redirects for your site using a `_redirects` file. For more information, see
 [Create redirects for GitLab Pages](redirects.md).
 
-## Remove your pages
+## Delete a Pages site
 
-To remove your pages:
+Permanently delete all Pages deployments for a project.
+This is permanent and cannot be undone.
+
+To delete your pages:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Deploy > Pages**.
-1. Select **Remove pages**.
+1. Select **Delete pages**.
+
+Your Pages site is no longer deployed.
+To deploy this Pages site again, run a new pipeline.
 
 ## Subdomains of subdomains
 
@@ -245,8 +251,8 @@ public/
 Pages supports reaching each of these files through several different URLs. In
 particular, it always looks for an `index.html` file if the URL only
 specifies the directory. If the URL references a file that doesn't exist, but
-adding `.html` to the URL leads to a file that *does* exist, it's served
-instead. Here are some examples of what happens given the above Pages site:
+adding `.html` to the URL leads to a file that does exist, it's served
+instead. Here are some examples of what happens given the previous Pages site:
 
 | URL path             | HTTP response |
 | -------------------- | ------------- |
@@ -299,7 +305,7 @@ To use variables in the `pages.publish` field, see [`pages.publish`](../../../ci
 
 Pages uses artifacts to store the files of your site, so the value from
 `pages.publish` is automatically appended to [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths).
-The above example is equivalent to:
+The previous example is equivalent to:
 
 ```yaml
 create-pages:
@@ -402,3 +408,11 @@ However, in the Pages session, only the most recent `state` value is stored for 
 As a result, after submitting credentials, one of the tabs returns a `401 Unauthorized` error.
 
 To resolve the `401` error, refresh the page.
+
+### Failing `pages:deploy` job
+
+To deploy with GitLab Pages, the root content directory must contain a non-empty `index.html` file,
+or the `pages:deploy` job fails.
+
+The content directory is `public/` by default, or a directory specified with the
+`pages.publish` keyword in your `.gitlab-ci.yml` file.

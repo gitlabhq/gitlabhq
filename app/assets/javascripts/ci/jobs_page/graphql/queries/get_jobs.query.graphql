@@ -27,7 +27,7 @@ query getJobs(
       }
       nodes {
         artifacts {
-          # eslint-disable-next-line @graphql-eslint/require-id-when-available
+          # eslint-disable-next-line @graphql-eslint/require-selections
           nodes {
             downloadPath
             fileType

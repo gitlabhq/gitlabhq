@@ -29,7 +29,7 @@
 
       .timeline-content {
         margin-left: $note-spacing-left;
-        @apply gl-bg-section gl-border gl-border-section gl-rounded-base;
+        @apply gl-bg-section gl-border gl-border-section gl-rounded-lg;
         padding: $gl-padding-4 $gl-padding-8;
       }
 
@@ -59,7 +59,7 @@
 
             .timeline-content {
               margin-left: $note-spacing-left;
-              @apply gl-bg-section gl-border gl-border-b-subtle dark:gl-border-section gl-rounded-t-base;
+              @apply gl-bg-section gl-border gl-border-b-subtle dark:gl-border-section gl-rounded-t-lg;
               padding: $gl-padding-4 $gl-padding-8;
             }
           }
@@ -82,7 +82,7 @@
           }
 
           &:last-of-type .timeline-entry-inner {
-            @apply gl-border-b gl-rounded-b-base;
+            @apply gl-border-b gl-rounded-b-lg;
           }
         }
       }
@@ -278,7 +278,7 @@
 
   .timeline-content {
     padding: $gl-padding-8 !important;
-    @apply gl-bg-section gl-border gl-border-section gl-rounded-base;
+    @apply gl-bg-section gl-border gl-border-section gl-rounded-lg;
 
     &.expanded {
       @apply gl-border-b-0;
@@ -385,16 +385,3 @@
     }
   }
 }
-
-// Safari-specific override to avoid container stacking context problems
-  @supports (-webkit-appearance:none) and (stroke-color:transparent) {
-    .work-item-notes .note-container-query-wrapper {
-      container-type: unset;
-
-      @media (max-width: $breakpoint-sm) {
-        .note-hidden-xs {
-          @apply gl-hidden
-        }
-      }
-    }
-  }

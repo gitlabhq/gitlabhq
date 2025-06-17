@@ -41,7 +41,7 @@ A common strategy for keeping this period as short as possible for data stored
 in files is to use `rsync` to transfer the data. An initial `rsync` can be
 performed ahead of the maintenance window; subsequent `rsync`s (including a
 final transfer inside the maintenance window) then transfers only the
-*changes* between the **primary** site and the **secondary** sites.
+changes between the **primary** site and the **secondary** sites.
 
 Git repository-centric strategies for using `rsync` effectively can be found in the
 [moving repositories](../../operations/moving_repositories.md) documentation; these strategies can
@@ -133,7 +133,7 @@ identical on all nodes. Check this by running the following on all nodes and
 comparing the output:
 
 ```shell
-sudo sha256sum /etc/ssh/ssh_host* /etc/gitlab/gitlab-secrets.json
+sudo sha256sum /etc/ssh/sshhost /etc/gitlab/gitlab-secrets.json
 ```
 
 If any files differ, [manually replicate GitLab secrets](../replication/configuration.md#step-1-manually-replicate-secret-gitlab-values) and [replicate SSH host keys](../replication/configuration.md#step-2-manually-replicate-the-primary-sites-ssh-host-keys)
@@ -160,7 +160,7 @@ On the **secondary** site:
    objects aren't yet replicated (shown in gray), consider giving the site more
    time to complete
 
-   ![Geo admin dashboard showing the synchronization status of a secondary site](../replication/img/geo_dashboard_v14_0.png)
+   ![Geo admin dashboard showing the synchronization status of a secondary site](img/geo_dashboard_v14_0.png)
 
 If any objects are failing to replicate, this should be investigated before
 scheduling the maintenance window. Following a planned failover, anything that

@@ -254,7 +254,7 @@
   font-size: 0.875rem;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
-  @apply gl-bg-dropdown gl-border gl-border-dropdown gl-rounded-base gl-shadow-md;
+  @apply gl-bg-dropdown gl-border gl-border-dropdown gl-rounded-base gl-shadow-md gl-text-default;
 
   &.dropdown-open-top {
     margin-bottom: $dropdown-vertical-offset;

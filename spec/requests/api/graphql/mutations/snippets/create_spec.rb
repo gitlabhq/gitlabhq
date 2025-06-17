@@ -166,7 +166,11 @@ RSpec.describe 'Creating a Snippet', :with_current_organization, feature_categor
     context 'when there non ActiveRecord errors' do
       let(:file_1) { { filePath: 'invalid://file/path', content: 'foobar' } }
 
-      it_behaves_like 'a mutation that returns errors in the response', errors: ['Repository Error creating the snippet - Invalid file name']
+      it_behaves_like(
+        'a mutation that returns errors in the response',
+        errors: ['Repository Error creating the snippet - Invalid file name']
+      )
+
       it_behaves_like 'does not create snippet'
     end
 

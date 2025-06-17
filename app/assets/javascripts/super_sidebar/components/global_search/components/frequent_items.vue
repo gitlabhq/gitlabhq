@@ -1,6 +1,5 @@
 <script>
 import { GlDisclosureDropdownGroup, GlDisclosureDropdownItem, GlIcon } from '@gitlab/ui';
-import { truncateNamespace } from '~/lib/utils/text_utility';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { TRACKING_UNKNOWN_PANEL } from '~/super_sidebar/constants';
 import { TRACKING_CLICK_COMMAND_PALETTE_ITEM, OVERLAY_GOTO } from '../command_palette/constants';
@@ -77,7 +76,7 @@ export default {
         forRenderer: {
           id: item.id,
           title: item.name,
-          subtitle: truncateNamespace(item.namespace),
+          subtitle: item.namespace,
           avatar: item.avatarUrl,
         },
       }));
@@ -121,7 +120,7 @@ export default {
     <gl-disclosure-dropdown-item key="all" :item="viewAllItem" class="show-focus-layover">
       <template #list-item>
         <search-result-focus-layover :text-message="$options.i18n.OVERLAY_GOTO">
-          <gl-icon :name="viewAllItemsIcon" class="!gl-w-6" />
+          <gl-icon :name="viewAllItemsIcon" class="!gl-w-5 gl-text-subtle" />
           {{ viewAllItemsText }}
         </search-result-focus-layover>
       </template>

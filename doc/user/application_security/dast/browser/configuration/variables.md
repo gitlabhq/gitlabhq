@@ -72,10 +72,10 @@ These variables tell the scanner where to look for certain elements, which actio
 | `DAST_SCOPE_IGNORE_HOSTS` | List of strings | `site.com,another.com` | Hostnames included in this variable are accessed, not attacked, and not reported against. |
 | `DAST_TARGET_CHECK_SKIP` | boolean | `true` | Set to `true` to prevent DAST from checking that the target is available before scanning. Default: `false`. |
 | `DAST_TARGET_CHECK_TIMEOUT` | number | `60` | Time limit in seconds to wait for target availability. Default: `60s`. |
-| `DAST_TARGET_PATHS_FILE` | string | `/builds/project/urls.txt` | Ensures that the provided paths are always scanned. Set to a file path containing a list of URL paths relative to `DAST_TARGET_URL`. The file must be plain text with one path per line. |
-| `DAST_TARGET_PATHS` | string | `/page1.html,/category1/page3.html` | Ensures that the provided paths are always scanned. Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`. |
+| `DAST_TARGET_PATHS_FILE` | string | `/builds/project/urls.txt` | Ensures that the provided paths are always scanned. Set to a file path containing a list of URL paths relative to `DAST_TARGET_URL`. The file must be plain text with one path per line. When this is set, `DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`. |
+| `DAST_TARGET_PATHS` | string | `/page1.html,/category1/page3.html` | Ensures that the provided paths are always scanned. Set to a comma-separated list of URL paths relative to `DAST_TARGET_URL`. When this is set, `DAST_CRAWL_MAX_DEPTH` defaults to 1. To prevent this, set `DAST_OVERRIDE_MAX_DEPTH: false`. |
 | `DAST_TARGET_URL` | URL | `https://site.com` | The URL of the website to scan. |
-| `DAST_USE_CACHE` | boolean | `true` | Set to `false` to disable caching. Default: `true`. **Note:** Disabling cache can cause OOM events or DAST job timeouts. |
+| `DAST_USE_CACHE` | boolean | `true` | Set to `false` to disable caching. Default: `true`. **Note**: Disabling cache can cause OOM events or DAST job timeouts. |
 
 ### Authentication
 
@@ -83,7 +83,7 @@ These variables tell the scanner how to authenticate with your application.
 
 | CI/CD variable | Type | Example | Description |
 | :------------- | :--- | ------- | :---------- |
-| `DAST_AUTH_AFTER_LOGIN_ACTIONS` | string | `click(on=id:remember-me),click(on=css:.continue)` | A comma-separated list of actions to be run after login but before login verification. Currently supports `click` actions. |
+| `DAST_AUTH_AFTER_LOGIN_ACTIONS` | string | `select(option=id:accept-yes),click(on=css:.continue)` | A comma-separated list of actions to take after login but before login verification. Supports `click` and `select` actions. See [Taking additional actions after submitting the login form](authentication.md#taking-additional-actions-after-submitting-the-login-form). |
 | `DAST_AUTH_BEFORE_LOGIN_ACTIONS` | [selector](authentication.md#finding-an-elements-selector) | `css:.user,id:show-login-form` | A comma-separated list of selectors representing elements to click on prior to entering the DAST_AUTH_USERNAME and DAST_AUTH_PASSWORD into the login form. |
 | `DAST_AUTH_CLEAR_INPUT_FIELDS` | boolean | `true` | Disables clearing of username and password fields before attempting manual login. Set to false by default. |
 | `DAST_AUTH_COOKIE_NAMES` | string | `sessionID,groupName` | Set to a comma-separated list of cookie names to specify which cookies are used for authentication. |

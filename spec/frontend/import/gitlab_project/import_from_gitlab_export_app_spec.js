@@ -103,7 +103,7 @@ describe('Import from GitLab export file app', () => {
 
       const formGroup = wrapper.findByTestId('project-name-form-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
-        'Name must start with a letter, digit, emoji, or underscore.',
+        'Project name must start with a letter, digit, emoji, or underscore.',
       );
     });
 
@@ -112,7 +112,7 @@ describe('Import from GitLab export file app', () => {
 
       const formGroup = wrapper.findByTestId('project-name-form-group');
       expect(formGroup.vm.$attrs['invalid-feedback']).toBe(
-        'Name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.',
+        'Project name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses.',
       );
     });
 

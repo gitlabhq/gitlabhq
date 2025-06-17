@@ -114,7 +114,7 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
       expect(page).to have_content("ID: #{group.id}")
     end
 
-    it 'shows an info text' do
+    it 'shows the info text' do
       group = create(:group, :private)
 
       visit admin_group_path(group)
@@ -126,15 +126,15 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
     end
 
     context 'with a subgroup' do
-      it 'does not show an info text' do
+      it 'shows the info text' do
         group = create(:group)
         subgroup = create(:group, parent: group)
 
         visit admin_group_path(subgroup)
 
-        expect(page).not_to have_content("The number of direct members in the current group. Members in subgroups " \
-          "are not included. What is a direct member?")
-        expect(page).not_to have_content("Calculations are made based on projects in the current group. " \
+        expect(page).to have_content("The number of direct members in the current group. Members in subgroups are " \
+          "not included. What is a direct member?")
+        expect(page).to have_content("Calculations are made based on projects in the current group. " \
           "Projects in subgroups are not included.")
       end
     end

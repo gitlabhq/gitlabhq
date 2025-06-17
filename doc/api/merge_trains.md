@@ -12,18 +12,11 @@ title: Merge Trains API
 
 {{< /details >}}
 
-Every API call for [merge train](../ci/pipelines/merge_trains.md) must be authenticated with at least the Developer [role](../user/permissions.md).
+Use this API to interact with [merge trains](../ci/pipelines/merge_trains.md).
 
-If a user is not a member of a project and the project is private, a `GET` request on that project returns a `404` status code.
+Prerequisites:
 
-If Merge Trains is not available for the project, a `403` status code is returned.
-
-## Merge Trains API pagination
-
-By default, `GET` requests return 20 results at a time because the API results
-are paginated.
-
-For more information, see [pagination](rest/_index.md#pagination).
+- You must have at least the Developer role.
 
 ## List Merge Trains for a project
 
@@ -34,6 +27,9 @@ GET /projects/:id/merge_trains
 GET /projects/:id/merge_trains?scope=complete
 ```
 
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
 | Attribute | Type           | Required | Description |
 |-----------|----------------|----------|-------------|
 | `id`      | integer/string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths). |
@@ -43,6 +39,11 @@ GET /projects/:id/merge_trains?scope=complete
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/merge_trains"
 ```
+
+Returns:
+
+- `403: Forbidden` if Merge Trains are not available for the project
+- `404: Not Found` if the user is not a member of a private project
 
 Example response:
 
@@ -96,6 +97,9 @@ Get all merge requests added to a merge train for the requested target branch.
 GET /projects/:id/merge_trains/:target_branch
 ```
 
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
 Supported attributes:
 
 | Attribute       | Type           | Required | Description |
@@ -110,6 +114,11 @@ Example request:
 ```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/597/merge_trains/main"
 ```
+
+Returns:
+
+- `403: Forbidden` if Merge Trains are not available for the project
+- `404: Not Found` if the user is not a member of a private project
 
 Example response:
 
@@ -166,6 +175,9 @@ Get merge train information for the requested merge request.
 GET /projects/:id/merge_trains/merge_requests/:merge_request_iid
 ```
 
+Use the `page` and `per_page` [pagination](rest/_index.md#offset-based-pagination) parameters to
+control the pagination of results.
+
 Supported attributes:
 
 | Attribute           | Type           | Required | Description |
@@ -178,6 +190,11 @@ Example request:
 ```shell
 curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
+
+Returns:
+
+- `403: Forbidden` if Merge Trains are not available for the project
+- `404: Not Found` if the user is not a member of a private project
 
 Example response:
 
@@ -248,6 +265,10 @@ Example request:
 ```shell
 curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/597/merge_trains/merge_requests/1"
 ```
+
+Returns:
+
+- `403: Forbidden` if Merge Trains are not available for the project
 
 Example response:
 

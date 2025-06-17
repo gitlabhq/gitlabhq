@@ -402,11 +402,12 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     it 'returns correctly checked checkboxes' do
       helper.gitlab_ui_form_for(application_setting, url: search_admin_application_settings_path) do |form|
         result = helper.global_search_settings_checkboxes(form)
-        expect(result[0]).to have_checked_field('Restrict global search to authenticated users only', with: 1)
-        expect(result[1]).to have_checked_field('Show issues in global search results', with: 1)
-        expect(result[2]).not_to have_checked_field('Show merge requests in global search results', with: 1)
-        expect(result[3]).to have_checked_field('Show snippets in global search results', with: 1)
-        expect(result[4]).not_to have_checked_field('Show users in global search results', with: 1)
+        expect(result[0]).to have_checked_field('Allow unauthenticated users to use search', with: 1)
+        expect(result[1]).to have_checked_field('Restrict global search to authenticated users only', with: 1)
+        expect(result[2]).to have_checked_field('Show issues in global search results', with: 1)
+        expect(result[3]).not_to have_checked_field('Show merge requests in global search results', with: 1)
+        expect(result[4]).to have_checked_field('Show snippets in global search results', with: 1)
+        expect(result[5]).not_to have_checked_field('Show users in global search results', with: 1)
       end
     end
   end
@@ -479,33 +480,21 @@ RSpec.describe ApplicationSettingsHelper, feature_category: :shared do
     let(:vscode_extension_marketplace) { { "enabled" => false } }
 
     before do
-      stub_feature_flags(vscode_extension_marketplace_settings: feature_flag)
-
       application_setting.vscode_extension_marketplace = vscode_extension_marketplace
       helper.instance_variable_set(:@application_setting, application_setting)
     end
 
-    context 'with flag on' do
-      it 'returns hash of view properties' do
-        expect(helper.vscode_extension_marketplace_settings_view).to match({
-          title: _('VS Code Extension Marketplace'),
-          description: _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.'),
-          view_model: {
-            initialSettings: vscode_extension_marketplace,
-            presets: [
-              hash_including("key" => "open_vsx")
-            ]
-          }
-        })
-      end
-    end
-
-    context 'with flag off' do
-      let(:feature_flag) { false }
-
-      it 'returns nil' do
-        expect(helper.vscode_extension_marketplace_settings_view).to be_nil
-      end
+    it 'returns hash of view properties' do
+      expect(helper.vscode_extension_marketplace_settings_view).to match({
+        title: _('VS Code Extension Marketplace'),
+        description: _('Enable VS Code Extension Marketplace and configure the extensions registry for Web IDE.'),
+        view_model: {
+          initialSettings: vscode_extension_marketplace,
+          presets: [
+            hash_including("key" => "open_vsx")
+          ]
+        }
+      })
     end
   end
 end

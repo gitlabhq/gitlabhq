@@ -6,17 +6,21 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
   let(:url) { 'https://demo.host/repo' }
 
   describe '#execute' do
+    let(:repository_exists) { true }
+
+    subject { described_class.new(url: url) }
+
+    before do
+      allow(Gitlab::GitalyClient::RemoteService)
+        .to receive(:exists?)
+        .with(url)
+        .and_return(repository_exists)
+    end
+
     context 'when uri is using git:// protocol' do
       let(:url) { 'git://demo.host/repo' }
 
-      subject { described_class.new(url: url) }
-
       it 'returns success' do
-        allow(Gitlab::GitalyClient::RemoteService)
-          .to receive(:exists?)
-          .with(url)
-          .and_return(true)
-
         result = subject.execute
 
         expect(result).to be_a(ServiceResponse)
@@ -24,25 +28,24 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
       end
     end
 
-    context 'when uri is invalid' do
-      shared_examples 'error response' do
-        subject { described_class.new(url: url) }
+    shared_examples 'error response' do
+      it 'reports an error' do
+        result = subject.execute
 
-        it 'reports error when invalid URL is provided' do
-          allow(Gitlab::GitalyClient::RemoteService)
-            .to receive(:exists?)
-            .with(url)
-            .and_return(false)
-
-          result = subject.execute
-
-          expect(result).to be_a(ServiceResponse)
-          expect(result.error?).to be(true)
-          expect(result.message).to eq('Unable to access repository with the URL and credentials provided')
-          expect(result.reason).to eq(400)
-        end
+        expect(result).to be_a(ServiceResponse)
+        expect(result.error?).to be(true)
+        expect(result.message).to eq('Unable to access repository with the URL and credentials provided')
+        expect(result.reason).to eq(400)
       end
+    end
 
+    context 'when remote repository does not exist' do
+      let(:repository_exists) { false }
+
+      include_examples 'error response'
+    end
+
+    context 'when uri is invalid' do
       context 'when uri is nil' do
         let(:url) { nil }
 
@@ -66,6 +69,14 @@ RSpec.describe Import::ValidateRemoteGitEndpointService, feature_category: :impo
 
         include_examples 'error response'
       end
+    end
+
+    context 'when remote times out' do
+      before do
+        allow(Gitlab::GitalyClient::RemoteService).to receive(:exists?).and_raise(GRPC::DeadlineExceeded)
+      end
+
+      include_examples 'error response'
     end
 
     context 'with auth credentials' do

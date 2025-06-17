@@ -21,6 +21,19 @@ module ClickHouseSchemaHelpers
     ClickHouse::Client.select(query, database, configuration).first['count']
   end
 
+  def main_database_exists?(database = :main, configuration = ClickHouse::Client.configuration)
+    db = ClickHouse::Client.configuration.databases[database]
+    ClickHouse::Client.configuration.databases[:default] = db.with_default_database
+
+    query = <<~SQL
+      SELECT COUNT() as count FROM system.databases WHERE name = '#{db.database}';
+    SQL
+
+    result = ClickHouse::Client.select(query, :default, configuration).dig(0, "count")
+
+    !result.zero?
+  end
+
   def describe_table(table_name, database = :main, configuration = ClickHouse::Client.configuration)
     ClickHouse::Client
       .select("DESCRIBE TABLE #{table_name} FORMAT JSON", database, configuration)

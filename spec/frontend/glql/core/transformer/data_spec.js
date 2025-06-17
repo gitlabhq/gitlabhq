@@ -14,6 +14,15 @@ const MOCK_ISSUES = {
   },
 };
 
+const MOCK_EPICS = {
+  epics: {
+    nodes: [
+      { id: '1', title: 'Lorem ipsum', labels: MOCK_LABELS1 },
+      { id: '2', title: 'Dolor sit amet', labels: MOCK_LABELS2 },
+    ],
+  },
+};
+
 const MOCK_ISSUES_WITH_LAST_COMMENT = {
   issues: {
     nodes: [
@@ -73,6 +82,7 @@ describe('GLQL Data Transformer', () => {
     it.each`
       sourceType         | mockQuery
       ${'issues'}        | ${MOCK_ISSUES}
+      ${'epics'}         | ${MOCK_EPICS}
       ${'mergeRequests'} | ${MOCK_MERGE_REQUESTS}
       ${'workItems'}     | ${MOCK_WORK_ITEMS}
     `('extracts data for $sourceType source', ({ mockQuery }) => {

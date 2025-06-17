@@ -5,12 +5,10 @@ module MergeRequests
     def execute(merge_request, user)
       return error("Invalid permissions") unless can?(current_user, :update_merge_request, merge_request)
 
-      reviewer = merge_request.find_reviewer(user)
-
-      if reviewer
+      with_valid_reviewer(merge_request, user) do |reviewer|
         has_unapproved = remove_approval(merge_request, user).present?
 
-        return error("Failed to update reviewer") unless reviewer.update(state: :unreviewed)
+        break error("Failed to update reviewer") unless reviewer.update(state: :unreviewed)
 
         notify_reviewer(merge_request, user)
         trigger_merge_request_merge_status_updated(merge_request)
@@ -21,11 +19,9 @@ module MergeRequests
 
         user.invalidate_merge_request_cache_counts if user.merge_request_dashboard_enabled?
         current_user.invalidate_merge_request_cache_counts if current_user.merge_request_dashboard_enabled?
-        request_duo_code_review(merge_request) if user == ::Users::Internal.duo_code_review_bot
+        request_duo_code_review(merge_request) if user == duo_code_review_bot
 
         success
-      else
-        error("Reviewer not found")
       end
     end
 
@@ -39,5 +35,17 @@ module MergeRequests
     def create_system_note(merge_request, user, has_unapproved)
       ::SystemNoteService.request_review(merge_request, merge_request.project, current_user, user, has_unapproved)
     end
+
+    def with_valid_reviewer(merge_request, user)
+      reviewer = merge_request.find_reviewer(user)
+
+      if reviewer
+        yield reviewer
+      else
+        error("Reviewer not found")
+      end
+    end
   end
 end
+
+MergeRequests::RequestReviewService.prepend_mod

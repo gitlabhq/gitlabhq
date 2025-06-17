@@ -244,7 +244,8 @@ export default {
     onShow() {
       this.initBuyCIMinsCallout();
     },
-    closeDropdown() {
+    openStatusModal() {
+      this.setStatusModalReady = true;
       this.$refs.userDropdown.close();
     },
     initBuyCIMinsCallout() {
@@ -289,6 +290,9 @@ export default {
           category="tertiary"
           class="user-bar-dropdown-toggle btn-with-notification"
           data-testid="user-menu-toggle"
+          data-track-action="click_dropdown"
+          data-track-label="user_profile_menu"
+          data-track-property="nav_core_menu"
         >
           <span class="gl-sr-only">{{ toggleText }}</span>
           <gl-avatar
@@ -314,11 +318,11 @@ export default {
 
       <gl-disclosure-dropdown-group bordered>
         <gl-disclosure-dropdown-item
-          v-if="setStatusModalReady && statusModalData"
+          v-if="statusModalData"
           v-gl-modal="$options.SET_STATUS_MODAL_ID"
           :item="statusItem"
           data-testid="status-item"
-          @action="closeDropdown"
+          @action="openStatusModal"
         />
 
         <gl-disclosure-dropdown-item
@@ -383,10 +387,9 @@ export default {
       />
     </gl-disclosure-dropdown>
     <set-status-modal
-      v-if="statusModalData"
+      v-if="setStatusModalReady"
       default-emoji="speech_balloon"
       v-bind="statusModalData"
-      @mounted="setStatusModalReady = true"
     />
   </div>
 </template>

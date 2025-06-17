@@ -21,10 +21,8 @@
 
 
 .js-blob-edit-header{ data: edit_blob_app_data(@project, @id, @blob, @ref, 'update') }
-  .gl-mb-4.gl-mt-5.gl-items-center.gl-justify-between.md:gl-flex.lg:gl-my-5
-    %h1{ class: 'md:!gl-mb-0 gl-heading-1 gl-inline-block' }
-      = _('Edit file')
-    .gl-flex.gl-gap-3
+  = render ::Layouts::PageHeadingComponent.new(_('Edit file'), options: { class: 'gl-mb-3' }) do |c|
+    - c.with_actions do
       = render Pajamas::ButtonComponent.new do
         = _('Cancel')
       = render Pajamas::ButtonComponent.new(variant: :confirm) do

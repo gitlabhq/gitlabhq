@@ -56,6 +56,22 @@ RSpec.describe LfsObjectsProject, feature_category: :source_code_management do
     end
   end
 
+  describe '#update_oid' do
+    let(:lfs_object) { create(:lfs_object) }
+
+    subject(:lfs_objects_project) do
+      build(:lfs_objects_project, project: project, lfs_object: lfs_object)
+    end
+
+    it 'populates the oid field to match that of the lfs_object' do
+      expect(lfs_objects_project.oid).to be_nil
+
+      lfs_objects_project.save!
+
+      expect(lfs_objects_project.oid).to eq(lfs_object.oid)
+    end
+  end
+
   describe '#ensure_uniqueness' do
     let(:lfs_object) { create(:lfs_object) }
 

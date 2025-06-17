@@ -57,8 +57,9 @@ RSpec.shared_examples 'logs inbound authorizations via job token' do |success_st
 
   context 'when pipeline is triggered by the same project job token' do
     let(:job_token) { create(:ci_build, :running, project: accessed_project, user: user).token }
+    let(:origin_project) { accessed_project }
 
-    it_behaves_like 'does not attempt to capture authorization', success_status
+    it_behaves_like 'successfully logs authorization'
   end
 
   context 'when pipeline is triggered by another project job token and project scope is disabled' do

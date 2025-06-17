@@ -13,11 +13,13 @@ title: Tags API
 
 {{< /details >}}
 
+Use the tags API to create, manage, and delete Git tags. This API also returns X.509 signature information
+from signed tags.
+
 ## List project repository tags
 
 {{< history >}}
 
-- `version` value for the `order_by` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95150) in GitLab 15.4.
 - `created_at` response attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451011) in GitLab 16.11.
 
 {{< /history >}}
@@ -227,12 +229,6 @@ Parameters:
 | `tag_name` | string            | yes      | The name of a tag. |
 
 ## Get X.509 signature of a tag
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106578) in GitLab 15.7.
-
-{{< /history >}}
 
 Get the [X.509 signature from a tag](../user/project/repository/signed_commits/x509.md),
 if it is signed. Unsigned tags return a `404 Not Found` response.

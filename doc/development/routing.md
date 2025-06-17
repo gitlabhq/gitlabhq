@@ -1,7 +1,7 @@
 ---
 stage: none
 group: unassigned
-info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
+info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Routing
 ---
 
@@ -85,11 +85,11 @@ make it unnoticeable for users, because we don't want them to receive `404 Not F
 if we can avoid it. This table describes the minimum required in different
 cases:
 
-| URL description | Example  | What to do  |
-|---|---|---|
-| Can be used in scripts and automation | `snippet#raw` | Support both an old and new URL for one major release. Then, support a redirect from an old URL to a new URL for another major release. |
-| Likely to be saved or shared | `issue#show` | Add a redirect from an old URL to a new URL until the next major release. |
-| Limited use, unlikely to be shared | `admin#labels` | No extra steps required. |
+| URL description                       | Example        | What to do |
+|---------------------------------------|----------------|------------|
+| Can be used in scripts and automation | `snippet#raw`  | Support both an old and new URL for one major release. Then, support a redirect from an old URL to a new URL for another major release. |
+| Likely to be saved or shared          | `issue#show`   | Add a redirect from an old URL to a new URL until the next major release. |
+| Limited use, unlikely to be shared    | `admin#labels` | No extra steps required. |
 
 In all cases, an old route should only be removed once traffic to it has
 dropped sufficiently (for instance, according to logs or BigQuery). Otherwise, more

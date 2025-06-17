@@ -45,7 +45,7 @@ module Ci
 
           safe_regex = ::Gitlab::UntrustedRegexp.new(regex)
 
-          return if safe_regex.match?(value)
+          return if safe_regex.match?(value, allow_empty_string: true)
 
           error("#{default ? 'default' : 'provided'} value does not match required RegEx pattern")
         rescue RegexpError

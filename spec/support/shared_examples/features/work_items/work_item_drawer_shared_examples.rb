@@ -64,38 +64,21 @@ RSpec.shared_examples 'work item drawer' do
   end
 
   context 'when in notifications subscription' do
-    before do
-      within_testid('work-item-drawer') do
-        find_by_testid('work-item-actions-dropdown').click
-      end
-    end
-
-    it 'displays notifications toggle', :aggregate_failures do
-      within_testid('work-item-drawer') do
-        expect(page).to have_selector('[data-testid="notifications-toggle-form"]')
-        expect(page).to have_content('Notifications')
-        expect(page).not_to have_content('Disabled by project owner')
-      end
-    end
-
     it 'shows toggle as on then as off as user toggles to subscribe and unsubscribe', :aggregate_failures do
-      within_testid('notifications-toggle-form') do
-        subscription_button = find('[data-testid="notifications-toggle"] button')
+      subscribe_button = find_by_testid('subscribe-button')
+      expect(page).to have_selector("button[data-testid='subscribe-button'][data-subscribed='false']")
 
-        expect(page).not_to have_css("button.is-checked")
+      subscribe_button.click
+      wait_for_requests
 
-        subscription_button.click
+      expect(page).to have_content("Notifications turned on.")
+      expect(page).to have_selector("button[data-testid='subscribe-button'][data-subscribed='true']")
 
-        wait_for_requests
+      subscribe_button.click
+      wait_for_requests
 
-        expect(page).to have_css("button.is-checked")
-
-        subscription_button.click
-
-        wait_for_requests
-
-        expect(page).not_to have_css("button.is-checked")
-      end
+      expect(page).to have_content("Notifications turned off.")
+      expect(page).to have_selector("button[data-testid='subscribe-button'][data-subscribed='false']")
     end
   end
 

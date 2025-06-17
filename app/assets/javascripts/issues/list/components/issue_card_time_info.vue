@@ -1,5 +1,5 @@
 <script>
-import { GlIcon } from '@gitlab/ui';
+import { GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { humanTimeframe, isInPast, localeDateFormat, newDate } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
@@ -17,11 +17,17 @@ export default {
     IssuableMilestone,
     WorkItemAttribute,
     GlIcon,
+    GlSkeletonLoader,
   },
   props: {
     issue: {
       type: Object,
       required: true,
+    },
+    detailLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -31,7 +37,7 @@ export default {
     dueDate() {
       return this.issue.dueDate || findStartAndDueDateWidget(this.issue)?.dueDate;
     },
-    dueDateText() {
+    datesText() {
       if (this.startDate) {
         return humanTimeframe(newDate(this.startDate), newDate(this.dueDate));
       }
@@ -49,8 +55,8 @@ export default {
       }
       return isInPast(newDate(this.dueDate)) && !this.isClosed;
     },
-    dueDateTitle() {
-      return this.isOverdue ? `${__('Due date')} (${__('overdue')})` : __('Due date');
+    datesTooltipTitle() {
+      return this.isOverdue ? `${__('Dates')} (${__('overdue')})` : __('Dates');
     },
     dateIcon() {
       return this.isOverdue ? 'calendar-overdue' : 'calendar';
@@ -62,7 +68,7 @@ export default {
       return (
         this.issue.humanTimeEstimate ||
         this.issue.timeStats?.humanTimeEstimate ||
-        findTimeTrackingWidget(this.issue)?.humanReadableAttributes.timeEstimate
+        findTimeTrackingWidget(this.issue)?.humanReadableAttributes?.timeEstimate
       );
     },
   },
@@ -70,23 +76,29 @@ export default {
 </script>
 
 <template>
-  <span>
+  <span class="gl-inline-flex gl-w-min gl-gap-3 gl-whitespace-nowrap">
     <slot name="weight"></slot>
     <issuable-milestone v-if="milestone" :milestone="milestone" />
+    <span v-else-if="detailLoading">
+      <gl-skeleton-loader :width="55" :lines="1" equal-width-lines />
+    </span>
     <slot name="iteration"></slot>
     <work-item-attribute
-      v-if="dueDateText"
+      v-if="datesText"
       anchor-id="issuable-due-date"
       wrapper-component-class="issuable-due-date"
-      :title="dueDateText"
+      :title="datesText"
       title-component-class="gl-mr-3"
-      :tooltip-text="dueDateTitle"
+      :tooltip-text="datesTooltipTitle"
       tooltip-placement="top"
     >
       <template #icon>
         <gl-icon :variant="isOverdue ? 'danger' : 'current'" :name="dateIcon" :size="12" />
       </template>
     </work-item-attribute>
+    <span v-else-if="detailLoading">
+      <gl-skeleton-loader :width="30" :lines="1" equal-width-lines />
+    </span>
     <work-item-attribute
       v-if="timeEstimate"
       anchor-id="time-estimate"
@@ -99,6 +111,9 @@ export default {
         <gl-icon name="timer" :size="12" />
       </template>
     </work-item-attribute>
+    <span v-else-if="detailLoading">
+      <gl-skeleton-loader :width="25" :lines="1" equal-width-lines />
+    </span>
     <slot></slot>
   </span>
 </template>

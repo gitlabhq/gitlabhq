@@ -18,6 +18,8 @@ issues, epics, and more.
 | [Use GitLab for Scrum](scrum_events/_index.md) | Learn to run core Scrum ceremonies and workflows in GitLab. | |
 | [Set up a project for idea management](idea_management/_index.md) | Use an issue board and scoped labels to manage ideas in a team. | {{< icon name="star" >}} |
 | [Set up a project for issue triage](issue_triage/_index.md) | Use labels to set up a project for issue triage. | {{< icon name="star" >}} |
+| [Set up a project for issue triage](issue_triage_group/_index.md) | Use labels to set up a group with multiple projects for issue triage. | |
+| [Set up a project for issue triage](issue_triage_complex_group/_index.md) | Use labels to set up a complex group with subgroups for issue triage. | |
 | [Set up issue boards for team hand-off](boards_for_teams/_index.md) | Use issue boards and scoped labels to set up collaboration across many teams. | {{< icon name="star" >}} |
 | [Set up an issue board for team stand-up](boards_for_standups/_index.md) | Use issue boards and workflow labels to facilitate team stand-ups. | {{< icon name="star" >}} |
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Epics and issue boards](https://www.youtube.com/watch?v=eQUnHwbKEkY) | Find out how to use epics and issue boards for project management. | |

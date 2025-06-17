@@ -1,8 +1,8 @@
 @import '../mixins_and_variables_and_functions';
 
 .geo-replicable-item-grid {
-  grid-template-columns: 8ch 1fr auto;
-  grid-gap: 1rem;
+  grid-template-columns: max-content 1fr auto;
+  grid-gap: 0.5rem;
 }
 
 .geo-replicable-filter-grid {

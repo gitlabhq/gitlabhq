@@ -74,7 +74,7 @@ your `.gitmodules` file:
   url = ../../project.git
 ```
 
-The above configuration instructs Git to automatically deduce the URL to
+The previous configuration instructs Git to automatically deduce the URL to
 use when cloning sources. You can clone with HTTPS in all your CI/CD jobs, and you
 can continue to use SSH to clone locally.
 

@@ -65,8 +65,7 @@ $(() => {
   }
 
   function crudToggleSection(section, toggleState) {
-    const collapseIcon = section.querySelector('.js-crud-collapsible-collapse');
-    const expandIcon = section.querySelector('.js-crud-collapsible-expand');
+    const chevronIcon = section.querySelector('.js-crud-collapsible-icon');
     const crudBody = section.querySelector('.crud-body');
     const crudHeader = section.querySelector('.crud-header');
     const crudFooter = section.querySelector('[data-testid="crud-footer"]');
@@ -76,20 +75,20 @@ $(() => {
 
     if (isExpanded && !toggleState) {
       toggleButton.ariaExpanded = 'false';
-      collapseIcon?.classList.add('gl-hidden');
-      expandIcon?.classList.remove('gl-hidden');
+      chevronIcon?.classList.remove('gl-animated-icon-on');
+      chevronIcon?.classList.add('gl-animated-icon-off');
       crudBody?.classList.add('!gl-hidden');
       crudFooter?.classList.add('!gl-hidden');
       crudForm?.classList.add('!gl-hidden');
-      crudHeader?.classList.add('gl-rounded-base', 'gl-border-b-transparent');
+      crudHeader?.classList.add('gl-rounded-lg', 'gl-border-b-transparent');
     } else {
       toggleButton.ariaExpanded = 'true';
-      expandIcon?.classList.add('gl-hidden');
-      collapseIcon?.classList.remove('gl-hidden');
+      chevronIcon?.classList.add('gl-animated-icon-on');
+      chevronIcon?.classList.remove('gl-animated-icon-off');
       crudBody?.classList.remove('!gl-hidden');
       crudFooter?.classList.remove('!gl-hidden');
       crudForm?.classList.remove('!gl-hidden');
-      crudHeader?.classList.remove('gl-rounded-base', 'gl-border-b-transparent');
+      crudHeader?.classList.remove('gl-rounded-lg', 'gl-border-b-transparent');
     }
 
     toggleButton.setAttribute(

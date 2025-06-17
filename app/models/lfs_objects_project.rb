@@ -7,9 +7,12 @@ class LfsObjectsProject < ApplicationRecord
   belongs_to :lfs_object
 
   before_validation :ensure_uniqueness
+
   validates :lfs_object_id, presence: true
   validates :lfs_object_id, uniqueness: { scope: [:project_id, :repository_type], message: "already exists in repository" }
   validates :project_id, presence: true
+
+  after_validation :update_oid
 
   after_commit :update_project_statistics, on: [:create, :destroy]
 
@@ -28,6 +31,12 @@ class LfsObjectsProject < ApplicationRecord
   end
 
   private
+
+  def update_oid
+    return unless respond_to?(:oid) && lfs_object
+
+    self.oid = lfs_object.oid if oid != lfs_object.oid
+  end
 
   def ensure_uniqueness
     return if project_id.nil? || lfs_object_id.nil?
