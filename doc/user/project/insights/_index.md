@@ -312,7 +312,7 @@ Use `query.params.filter_labels` to filter by labels applied to the queried issu
 By default, no label filter is applied. All defined labels must
 be applied to the issuable for it to be selected.
 
-**Example:**:
+**Example**:
 
 ```yaml
 monthlyBugsCreated:

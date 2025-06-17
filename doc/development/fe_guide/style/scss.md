@@ -56,14 +56,14 @@ We have configured Tailwind CSS to use a
 [prefix](https://tailwindcss.com/docs/configuration#prefix) so all utility classes are prefixed with `gl-`.
 When using responsive utilities or state modifiers the prefix goes after the colon.
 
-**Examples:** `gl-mt-5`, `lg:gl-mt-5`.
+**Examples**: `gl-mt-5`, `lg:gl-mt-5`.
 
 ##### Responsive CSS utility classes
 
 [Responsive CSS utility classes](https://tailwindcss.com/docs/responsive-design) are prefixed with the breakpoint name, followed by the `:` character.
 The available breakpoints are configured in [tailwind.defaults.js#L44](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/tailwind.defaults.js#L482)
 
-**Example:** `lg:gl-mt-5`
+**Example**: `lg:gl-mt-5`
 
 ##### Hover, focus, and other state modifiers
 
@@ -71,20 +71,20 @@ The available breakpoints are configured in [tailwind.defaults.js#L44](https://g
 can be used to conditionally apply any Tailwind CSS class. Prefix the CSS utility class
 with the name of the modifier, followed by the `:` character.
 
-**Example:** `hover:gl-underline`
+**Example**: `hover:gl-underline`
 
 ##### `!important` modifier
 
 You can use the [important modifier](https://tailwindcss.com/docs/configuration#important-modifier) by adding `!` to the beginning of the CSS utility class. When using in conjunction with responsive utility classes or state modifiers the `!` goes after the `:` character.
 
-**Examples:** `!gl-mt-5`, `lg:!gl-mt-5`, `hover:!gl-underline`
+**Examples**: `!gl-mt-5`, `lg:!gl-mt-5`, `hover:!gl-underline`
 
 ##### Spacing and sizing CSS utility classes
 
 Spacing and sizing CSS utility classes (for example, `margin`, `padding`, `width`, `height`) use our spacing scale defined in
 [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/src/tokens/build/tailwind/tokens.cjs). See [https://gitlab-org.gitlab.io/frontend/tailwind-documentation/margin](https://gitlab-org.gitlab.io/frontend/tailwind-documentation/margin) for available CSS utility classes.
 
-**Example:** `gl-mt-5` is `margin-top: 1rem;`
+**Example**: `gl-mt-5` is `margin-top: 1rem;`
 
 ##### Color CSS utility classes
 
@@ -92,7 +92,7 @@ Color CSS utility classes (e.g. `color` and `background-color`) use colors defin
 [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/7c0fb4b07a0f0d0a58dd0137831412dbf53ea498/src/tokens/build/tailwind/tokens.cjs).
 See [https://gitlab-org.gitlab.io/frontend/tailwind-documentation/text-color](https://gitlab-org.gitlab.io/frontend/tailwind-documentation/text-color) for available CSS utility classes.
 
-**Example:** `gl-text-subtle` is `color: var(--gl-text-color-subtle, #626168);`
+**Example**: `gl-text-subtle` is `color: var(--gl-text-color-subtle, #626168);`
 
 #### Building the Tailwind CSS bundle
 
@@ -179,22 +179,22 @@ Inspiration:
 When writing component classes, it's important to effectively integrate Tailwind CSS's utility classes to
 maintain consistency with the design system and keeping the CSS bundles small.
 
-**Utility CSS Classes in HTML vs. in stylesheets:**
+**Utility CSS Classes in HTML vs. in stylesheets**:
 
 By using the utility classes directly in the HTML, we can keep the CSS file size smaller and adhere
 to the utility-first philosophy. By avoiding to combine utility classes with custom styles in one components class
 unless absolutely necessary, we can prevent confusion and potential conflicts.
 
-- **Reasons for the Preference:**
-  - **Smaller CSS File Size:** Utilizing utility classes directly can lead to more compact CSS files and
+- **Reasons for the Preference**:
+  - **Smaller CSS File Size**: Utilizing utility classes directly can lead to more compact CSS files and
   promote a more consistent design system.
-  - **Clarity and Maintainability:** When utility classes are used in HTML, it's clearer how styles are
+  - **Clarity and Maintainability**: When utility classes are used in HTML, it's clearer how styles are
   applied, reducing the risk of conflicts and regressions.
 
-- **Potential Issues with Combining Styles:**
-  - **Conflicts:** If utility classes and custom styles are combined in a single class, conflicts can arise,
+- **Potential Issues with Combining Styles**:
+  - **Conflicts**: If utility classes and custom styles are combined in a single class, conflicts can arise,
   especially when the styles have interdependencies.
-  - **Regressions:** It becomes less obvious how styles should resolve, leading to possible regressions
+  - **Regressions**: It becomes less obvious how styles should resolve, leading to possible regressions
   or unexpected behavior.
 
 By following these guidelines, we can create clean, maintainable stylesheets that leverage Tailwind CSS effectively.

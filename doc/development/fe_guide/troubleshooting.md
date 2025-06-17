@@ -98,7 +98,7 @@ VueApollo will skip manually running `provide()` if it sees that an `apolloProvi
 
 If you see errors like `Missing field 'descriptionHtml' while writing result` , it means we are not adhering to the GraphQL response structure while writing to the Apollo client cache. It seems you're encountering a GraphQL error ("Missing field 'description'") within your web application, likely related to how you're handling Apollo Client's cache and data updates. The error stack trace provides clues about the specific parts of the Apollo Client code where the problem occurs.
 
-**The Core Issue:**
+**The Core Issue**:
 
 The error "Missing field 'description'" indicates that your GraphQL query expects a field named "description" in the response, but the data you're receiving from your backend (or how it's being processed by Apollo Client) is missing that field. This is causing Apollo Client's cache to fail when it tries to update the store with the incomplete data.
 

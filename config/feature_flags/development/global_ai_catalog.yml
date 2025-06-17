@@ -1,7 +1,7 @@
 ---
 name: global_ai_catalog
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193705
-rollout_issue_url:
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549914
 milestone: '18.2'
 type: development
 group: group::workflow catalog

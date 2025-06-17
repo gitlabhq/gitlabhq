@@ -59,7 +59,7 @@ module RuboCop
 
           return unless in_migration?(node)
           return unless block_body
-          return unless node.method_name == :with_lock_retries
+          return unless node.method?(:with_lock_retries)
 
           if send_node?(block_body)
             check_node(block_body)

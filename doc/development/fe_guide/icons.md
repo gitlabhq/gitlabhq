@@ -101,7 +101,7 @@ by the examples that follow:
 - `size` (optional): either `sm` (default), `md`, `lg`, or `xl`.
 - `css_class` (optional): defaults to nothing, but can be used for utility classes to fine-tune alignment or spacing.
 
-**Example 1:**
+**Example 1**:
 
 The following HAML expression generates a loading icon's markup and
 centers the icon.
@@ -110,7 +110,7 @@ centers the icon.
 = gl_loading_icon
 ```
 
-**Example 2:**
+**Example 2**:
 
 The following HAML expression generates an inline loading icon's markup
 with a custom size. It also appends a margin utility class.
@@ -126,7 +126,7 @@ The [GitLab UI](https://gitlab-org.gitlab.io/gitlab-ui/) components library prov
 [storybook](https://gitlab-org.gitlab.io/gitlab-ui/?path=/story/base-loading-icon--default)
 for more information about its usage.
 
-**Example:**
+**Example**:
 
 The following code snippet demonstrates how to use `GlLoadingIcon` in
 a Vue component.

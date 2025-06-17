@@ -215,7 +215,7 @@ This configuration string uses the Jaeger driver `opentracing://jaeger` with the
 | `sampler` | `const` | Configures Jaeger to use the constant sampler (either on or off). |
 | `sampler_param` | `1` | Configures the `const` sampler to sample all traces. Using `0` would sample no traces. |
 
-**Other parameter values are also possible:**
+**Other parameter values are also possible**:
 
 | Name | Example | Description |
 |------|-------|-------------|

@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Single Table Inheritance
 ---
 
-**Summary:** Don't design new tables using Single Table Inheritance (STI). For existing tables that use STI as a pattern, avoid adding new types, and consider splitting them into separate tables.
+**Summary**: Don't design new tables using Single Table Inheritance (STI). For existing tables that use STI as a pattern, avoid adding new types, and consider splitting them into separate tables.
 
 STI is a database design pattern where a single table stores
 different types of records. These records have a subset of shared columns and another column

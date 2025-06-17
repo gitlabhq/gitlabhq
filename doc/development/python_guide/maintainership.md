@@ -11,8 +11,8 @@ GitLab standard [code review guidelines](../code_review.md#approval-guidelines) 
 
 There are two main approaches to set up a Python code review process at GitLab:
 
-1. **Established Projects:** Larger Python projects typically have their own dedicated pool of reviewers through reviewer-roulette. To set this up, see [Setting Up Reviewer Roulette](#setting-up-reviewer-roulette).
-1. **Smaller Projects:** For projects with fewer contributors, we maintain a shared pool of Python reviewers across GitLab.
+1. **Established Projects**: Larger Python projects typically have their own dedicated pool of reviewers through reviewer-roulette. To set this up, see [Setting Up Reviewer Roulette](#setting-up-reviewer-roulette).
+1. **Smaller Projects**: For projects with fewer contributors, we maintain a shared pool of Python reviewers across GitLab.
 
 ### Setting Up Reviewer Roulette
 
@@ -26,12 +26,12 @@ For both large and small projects, Reviewer Roulette can automate the reviewer a
 
 Then, depending on your project size:
 
-- **For large projects with sufficient contributors:**
+- **For large projects with sufficient contributors**:
 
   - Eligible team members should add the Python project to the `projects` field in their individual entry in [team_members](https://gitlab.com/gitlab-com/www-gitlab-com/-/tree/master/data/team_members/person) or [team_database](https://gitlab.com/gitlab-com/www-gitlab-com/-/blob/master/doc/team_database.md), specifying appropriate roles such as reviewer or maintainer.
   - Add the [individual roulette configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/individual_roulette?ref_type=heads) to your project.
 
-- **For smaller projects (for example, fewer than 10 contributors):**
+- **For smaller projects (for example, fewer than 10 contributors)**:
 
   - Leverage the company wide pool of Python experts by adding the [shared pool configuration](https://gitlab.com/gitlab-org/python/code-review-templates/-/tree/main/shared_pull/danger?ref_type=heads) to your project.
   - You can also encourage contributors or other non-domain reviewers to reach out in your team's Slack channel for domain expertise where needed.
@@ -68,13 +68,13 @@ Each project can establish their own review process. Review the maintainership g
 
 In addition to code reviews, maintainers are responsible for guiding architectural decisions and monitoring and adopting relevant engineering practices introduced in GitLab.com into their Python projects. This helps to ensure Python projects are consistent and aligned with company standards. Maintaining consistency simplifies transitions between GitLab.com and Python projects while reducing context switching overhead.
 
-**Technical prerequisites for Maintainers:**
+**Technical prerequisites for Maintainers**:
 
 - Strong experience with the Python frameworks used in the specific project. Commonly used frameworks include: [FastAPI](https://fastapi.tiangolo.com/) and [Pydantic](https://docs.pydantic.dev/latest/), etc.
 - Proficiency with Python testing frameworks such as `pytest`, including advanced testing strategies (for example, mocking, integration tests, and test-driven development).
 - Understanding of backwards compatibility considerations ([Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/514689)).
 
-**Code review objectives:**
+**Code review objectives**:
 
 - Verify and confirm changes adheres to style guide ([Work item](https://gitlab.com/gitlab-org/gitlab/-/issues/506689)) and existing patterns in the project.
 - Where applicable, ensure test coverage is added for the changes introduced in the MR.
@@ -83,7 +83,7 @@ In addition to code reviews, maintainers are responsible for guiding architectur
 - Assess code change impact on existing systems.
 - Verify that the MR has the correct [MR type label](../labels/_index.md#type-labels) and is assigned to the current milestone.
 
-**Additional responsibilities:**
+**Additional responsibilities**:
 
 - Maintain accurate and complete documentation.
 - Monitor and update package dependencies as necessary.

@@ -840,7 +840,7 @@ be treated as opaque tokens, and any structure in them is incidental and not to 
 
 {{< /alert >}}
 
-**Example scenario:**
+**Example scenario**:
 
 This example scenario is based on this [merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62645).
 

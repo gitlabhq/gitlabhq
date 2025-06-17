@@ -21,7 +21,7 @@ end
 
 ## All of the key/value pairs should be defined in FOSS
 
-**Summary:** All enums needs to be defined in FOSS, if a model is also part of the FOSS.
+**Summary**: All enums needs to be defined in FOSS, if a model is also part of the FOSS.
 
 ```ruby
 class Model < ApplicationRecord

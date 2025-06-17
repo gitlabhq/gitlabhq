@@ -105,7 +105,7 @@ Commit messages should follow the guidelines below, for reasons explained by Chr
 - The merge request should not contain more than 10 commit messages.
 - The commit subject should contain at least 3 words.
 
-**Important notes:**
+**Important notes**:
 
 - If the guidelines are not met, the MR may not pass the [Danger checks](https://gitlab.com/gitlab-org/ruby/gems/gitlab-dangerfiles/-/blob/master/lib/danger/rules/commit_messages/Dangerfile).
 - Consider enabling [Squash and merge](../../user/project/merge_requests/squash_and_merge.md)

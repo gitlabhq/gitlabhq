@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 title: Internal Events Payload Samples
 ---
 
-> **Important:** Internal Event Tracking collects data solely for GitLab internal analytics purposes. This data is not shared with any third-party services or tools. GitLab uses components like Snowplow for implementation, but all data is collected, processed, and stored within GitLab infrastructure. User IDs are pseudonymized to protect privacy, and GitLab does not undertake any processes to re-identify users. For more information about data privacy, see [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
+> **Important**: Internal Event Tracking collects data solely for GitLab internal analytics purposes. This data is not shared with any third-party services or tools. GitLab uses components like Snowplow for implementation, but all data is collected, processed, and stored within GitLab infrastructure. User IDs are pseudonymized to protect privacy, and GitLab does not undertake any processes to re-identify users. For more information about data privacy, see [Customer product usage information](https://handbook.gitlab.com/handbook/legal/privacy/customer-product-usage-information/).
 
 ## Internal Events Payload
 
@@ -57,7 +57,7 @@ There are three categories of events:
 | ttm           | true_tstamp           | int      | User-set exact timestamp | 1361553733371 |
 | tz            | os_timezone           | text     | Time zone of client devices OS | Europe%2FLondon |
 
-> **Note:** The Internal Events Collector will also capture `collector_tstamp` which is the time the event arrived at the collector.
+> **Note**: The Internal Events Collector will also capture `collector_tstamp` which is the time the event arrived at the collector.
 
 ### User-Related Parameters
 

@@ -126,6 +126,6 @@ publish:
 
 Manual workflows should be avoided to ensure that:
 
-- **Secrets remain secure:** Tokens and other sensitive information should only exist in secure CI/CD environments.
-- **Workflows are consistent and auditable:** CI/CD pipelines ensure that all publishing steps are repeatable and documented.
-- **Complexity is reduced:** Centralized CI/CD pipelines simplify project handovers and minimize risks.
+- **Secrets remain secure**: Tokens and other sensitive information should only exist in secure CI/CD environments.
+- **Workflows are consistent and auditable**: CI/CD pipelines ensure that all publishing steps are repeatable and documented.
+- **Complexity is reduced**: Centralized CI/CD pipelines simplify project handovers and minimize risks.

@@ -95,14 +95,14 @@ new Foo();
 When enabling a new ESLint rule that uncovers many offenses across the codebase, it might be easier
 to generate a todo file to temporarily ignore those offenses. This approach has some pros and cons:
 
-**Pros:**
+**Pros**:
 
 - A single source of truth for all the files that violate a specific rule. This can make it easier
   to track the work necessary to pay the incurred technical debt.
 - A smaller changeset when initially enabling the rule as you don't need to modify every offending
   file.
 
-**Cons:**
+**Cons**:
 
 - Disabling the rule for entire files means that more offenses of the same type can be introduced in
   those files.

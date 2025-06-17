@@ -378,7 +378,7 @@ To requeue a batched background migration, you must:
 
 #### Example
 
-**Original Migration:**
+**Original Migration**:
 
 ```ruby
 # frozen_string_literal: true
@@ -400,7 +400,7 @@ class QueueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migrati
 end
 ```
 
-**Requeued migration:**
+**Requeued migration**:
 
 ```ruby
 # frozen_string_literal: true
@@ -433,7 +433,7 @@ class RequeueResolveVulnerabilitiesForRemovedAnalyzers < Gitlab::Database::Migra
 end
 ```
 
-**Batched migration dictionary:**
+**Batched migration dictionary**:
 
 The `milestone` and `queued_migration_version` should be the ones of requeued migration (in this example: RequeueResolveVulnerabilitiesForRemovedAnalyzers).
 
@@ -1006,14 +1006,14 @@ Output example:
 
 Definitions of the batched background migration states:
 
-- **Active:** Either:
+- **Active**: Either:
   - Ready to be picked by the runner.
   - Running batched jobs.
-- **Finalizing:** Running batched jobs.
-- **Failed:** Failed batched background migration.
-- **Finished:** All jobs were executed successfully and the batched background migration is complete.
-- **Paused:** Not visible to the runner.
-- **Finalized:** Batched migration was verified with
+- **Finalizing**: Running batched jobs.
+- **Failed**: Failed batched background migration.
+- **Finished**: All jobs were executed successfully and the batched background migration is complete.
+- **Paused**: Not visible to the runner.
+- **Finalized**: Batched migration was verified with
   [`ensure_batched_background_migration_is_finished`](#finalize-a-batched-background-migration) and is complete.
 
 ### Pause a batched background migration

@@ -376,7 +376,7 @@ This applies to the parent sections the job extends from as well.
 
 You can just extend the `.fast-no-clone-job`:
 
-**Before:**
+**Before**:
 
 ```yaml
   # Note: No `extends:` is present in the job
@@ -386,7 +386,7 @@ You can just extend the `.fast-no-clone-job`:
       - echo "No need for a git clone!"
 ```
 
-**After:**
+**After**:
 
 ```yaml
   # Note: No `extends:` is present in the job
@@ -409,7 +409,7 @@ For this scenario, you have to:
 1. Extend the `.fast-no-clone-job` as in the first scenario (this will merge the `FILES_TO_DOWNLOAD` variable with the other variables)
 1. Make sure the `before_script` section from `.fast-no-clone-job` is referenced in the `before_script` we use for this job.
 
-**Before:**
+**Before**:
 
 ```yaml
   .base-job:
@@ -424,7 +424,7 @@ For this scenario, you have to:
       - echo "No need for a git clone!"
 ```
 
-**After:**
+**After**:
 
 ```yaml
   .base-job:

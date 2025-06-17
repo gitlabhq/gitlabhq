@@ -55,7 +55,7 @@ To prevent regressions, we also have CI jobs to make sure our tools are working 
 
 Monitor the following during migration:
 
-- **Performance Metrics:**
+- **Performance Metrics**:
   - Error ratio and response latency apdex for each AI action on [Sidekiq Service dashboard](https://dashboards.gitlab.net/d/sidekiq-main/sidekiq-overview)
   - Spent tokens, usage of each AI feature and other statistics on [periscope dashboard](https://app.periscopedata.com/app/gitlab/1137231/Ai-Features)
   - [AI gateway logs](https://log.gprd.gitlab.net/app/r/s/zKEel)

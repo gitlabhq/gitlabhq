@@ -21,7 +21,7 @@ module RuboCop
           return unless name == :add_concurrent_index
 
           node.each_ancestor(:def) do |def_node|
-            next unless def_node.method_name == :change
+            next unless def_node.method?(:change)
 
             add_offense(def_node.loc.name)
           end

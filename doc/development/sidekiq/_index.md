@@ -224,7 +224,7 @@ Sidekiq workers are deferred by two ways,
 
    To use the automatic deferring mechanism, worker has to opt-in by calling `defer_on_database_health_signal` with `gitlab_schema`, `delay_by` (time to delay) and tables (which is used by autovacuum db indicator) as it's parameters.
 
-   **Example:**
+   **Example**:
 
    ```ruby
     module Chaos

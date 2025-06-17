@@ -32,7 +32,7 @@ to original issue and epic.
 
 ## Impact Analysis
 
-**Summary:** think about the impact your merge request may have on performance
+**Summary**: think about the impact your merge request may have on performance
 and those maintaining a GitLab setup.
 
 Any change submitted can have an impact not only on the application itself but
@@ -54,7 +54,7 @@ section below for more information.
 
 ## Performance Review
 
-**Summary:** ask performance specialists to review your code if you're not sure
+**Summary**: ask performance specialists to review your code if you're not sure
 about the impact.
 
 Sometimes it's hard to assess the impact of a merge request. In this case you
@@ -122,7 +122,7 @@ read this section on [how to prepare the merge request for a database review](..
 
 ## Query Counts
 
-**Summary:** a merge request **should not** increase the total number of executed SQL
+**Summary**: a merge request **should not** increase the total number of executed SQL
 queries unless absolutely necessary.
 
 The total number of queries executed by the code modified or added by a merge request
@@ -219,7 +219,7 @@ Upgrading to GitLab 14.0 requires PostgreSQL 12 or later.
 
 ## Cached Queries
 
-**Summary:** a merge request **should not** execute duplicated cached queries.
+**Summary**: a merge request **should not** execute duplicated cached queries.
 
 Rails provides an [SQL Query Cache](../cached_queries.md),
 used to cache the results of database queries for the duration of the request.
@@ -276,7 +276,7 @@ This avoids the cached SQL query and also avoids re-instantiation of the project
 
 ## Executing Queries in Loops
 
-**Summary:** SQL queries **must not** be executed in a loop unless absolutely
+**Summary**: SQL queries **must not** be executed in a loop unless absolutely
 necessary.
 
 Executing SQL queries in a loop can result in many queries being executed
@@ -289,7 +289,7 @@ be clearly mentioned in the merge request description.
 
 ## Batch process
 
-**Summary:** Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
+**Summary**: Iterating a single process to external services (for example, PostgreSQL, Redis, Object Storage)
 should be executed in a **batch-style** to reduce connection overheads.
 
 For fetching rows from various tables in a batch-style, see [Eager Loading](#eager-loading) section.
@@ -308,7 +308,7 @@ in a batch style.
 
 ## Timeout
 
-**Summary:** You should set a reasonable timeout when the system invokes HTTP calls
+**Summary**: You should set a reasonable timeout when the system invokes HTTP calls
 to external services (such as Kubernetes), and it should be executed in Sidekiq, not
 in Puma threads.
 
@@ -325,7 +325,7 @@ Using [`ReactiveCaching`](../utilities.md#reactivecaching) is one of the best so
 
 ## Keep database transaction minimal
 
-**Summary:** You should avoid accessing to external services like Gitaly during database
+**Summary**: You should avoid accessing to external services like Gitaly during database
 transactions, otherwise it leads to severe contention problems
 as an open transaction basically blocks the release of a PostgreSQL backend connection.
 
@@ -337,7 +337,7 @@ that one request to Gitaly instance during transaction triggered a ~"priority::1
 
 ## Eager Loading
 
-**Summary:** always eager load associations when retrieving more than one row.
+**Summary**: always eager load associations when retrieving more than one row.
 
 When retrieving multiple database records for which you need to use any
 associations you **must** eager load these associations. For example, if you're
@@ -364,7 +364,7 @@ Also consider using [QueryRecoder tests](../database/query_recorder.md) to preve
 
 ## Memory Usage
 
-**Summary:** merge requests **must not** increase memory usage unless absolutely
+**Summary**: merge requests **must not** increase memory usage unless absolutely
 necessary.
 
 A merge request must not increase the memory usage of GitLab by more than the
@@ -376,7 +376,7 @@ request.
 
 ## Lazy Rendering of UI Elements
 
-**Summary:** only render UI elements when they are actually needed.
+**Summary**: only render UI elements when they are actually needed.
 
 Certain UI elements may not always be needed. For example, when hovering over a
 diff line there's a small icon displayed that can be used to create a new
@@ -386,7 +386,7 @@ Haml/HTML when it's not used.
 
 ## Use of Caching
 
-**Summary:** cache data in memory or in Redis when it's needed multiple times in
+**Summary**: cache data in memory or in Redis when it's needed multiple times in
 a transaction or has to be kept around for a certain time period.
 
 Sometimes certain bits of data have to be re-used in different places during a

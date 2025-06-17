@@ -43,13 +43,13 @@ In addition, it needs to cover the following:
 - Features provided by the component have been accepted into the [GitLab Product Direction](https://about.gitlab.com/direction/).
 - Documentation is available and the support team has been made aware of the new component.
 
-**For services that can operate completely separate from GitLab:**
+**For services that can operate completely separate from GitLab**:
 
 The first iteration should be to add the ability to connect and use the service as an externally installed component. Often this involves providing settings in GitLab to connect to the service, or allow connections from it. And then shipping documentation on how to install and configure the service with GitLab.
 
 [Elasticsearch](../integration/advanced_search/elasticsearch.md#install-an-elasticsearch-or-aws-opensearch-cluster) is an example of a service that has been integrated this way. Many of the other services, including internal projects like Gitaly, started off as separately installed alternatives.
 
-**For services that depend on the existing GitLab codebase:**
+**For services that depend on the existing GitLab codebase**:
 
 The first iteration should be opt-in, either through the `gitlab.yml` configuration or through [feature flags](feature_flags/_index.md). For these types of services it is often necessary to [bundle the service and its dependencies with GitLab](#bundling-a-service-with-gitlab) as part of the initial integration.
 

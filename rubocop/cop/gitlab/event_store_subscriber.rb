@@ -49,11 +49,11 @@ module RuboCop
         end
 
         def on_def(node)
-          if is_subscriber && node.method_name == :perform
+          if is_subscriber && node.method?(:perform)
             add_offense(node, message: FORBID_PERFORM_OVERRIDE)
           end
 
-          self.implements_handle_event ||= true if node.method_name == :handle_event
+          self.implements_handle_event ||= true if node.method?(:handle_event)
         end
 
         def on_investigation_end

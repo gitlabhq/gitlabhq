@@ -1422,7 +1422,7 @@ Use the helper [`each_batch_range`](https://gitlab.com/gitlab-org/gitlab/blob/d4
 
 See the following example to get an idea.
 
-**Purging data in batch:**
+**Purging data in batch**:
 
 ```ruby
 disable_ddl_transaction!

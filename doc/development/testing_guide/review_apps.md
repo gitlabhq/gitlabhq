@@ -167,7 +167,7 @@ subgraph "CNG-mirror pipeline"
    use your review app thanks to the direct link to it from the MR widget. To log
    into the review app, see "Sign in to my review app?" below.
 
-**Additional notes:**
+**Additional notes**:
 
 - If the `review-deploy` job keeps failing (and a manual retry didn't help),
   post a message in the `#g_qe_engineering_productivity` channel and/or create a `~"Engineering Productivity"` `~"dx::review apps"` `~"type::bug"`

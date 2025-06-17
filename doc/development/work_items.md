@@ -239,7 +239,7 @@ First, write a database migration that creates the new record in the `work_item_
 
 Keep the following in mind when you write your migration:
 
-- **Important:** Exclude new type from existing APIs.
+- **Important**: Exclude new type from existing APIs.
   - We probably want to exclude newly created work items of this type from showing
     up in existing features (like issue lists) until we fully release a feature. For this reason,
     we have to add a new type to
@@ -254,7 +254,7 @@ Keep the following in mind when you write your migration:
     This way, follow-up MRs that depend on the type being created can assume it exists right away,
     instead of having to wait for the next release.
 
-    **Important:** Because we use a regular migration, we need to make sure it does two things:
+    **Important**: Because we use a regular migration, we need to make sure it does two things:
 
     1. Don't exceed the [time guidelines](migration_style_guide.md#how-long-a-migration-should-take) of regular migrations.
     1. Make sure the migration is [backwards-compatible](multi_version_compatibility.md).
@@ -402,7 +402,7 @@ reflect what we change with migrations.
 
 Similarly, the single sources of truth for hierarchy and linked item restrictions are defined in [HierarchyRestrictionsImporter](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database_importers/work_items/hierarchy_restrictions_importer.rb) and [RelatedLinksRestrictionsImporter](https://gitlab.com/gitlab-org/gitlab/-/tree/master/lib/gitlab/database_importers/work_items/related_links_restrictions_importer.rb), respectively. 
 
-**Important:** These importers should be updated whenever the corresponding database tables are modified.
+**Important**: These importers should be updated whenever the corresponding database tables are modified.
 
 ## Custom work item types
 

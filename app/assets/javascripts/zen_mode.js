@@ -48,9 +48,13 @@ export default class ZenMode {
       return $(e.currentTarget).trigger('zen_mode:leave');
     });
     $(document).on('zen_mode:enter', (e) => {
+      // Ensure the top bar is not fixed when entering zen mode so it doesn't cover the textarea
+      $('.top-bar-fixed').css('position', 'static');
       this.enter($(e.target).closest('.md-area').find('.zen-backdrop'));
     });
     $(document).on('zen_mode:leave', () => {
+      // Restore the top bar to its original position
+      $('.top-bar-fixed').css('position', '');
       this.exit();
     });
     // eslint-disable-next-line consistent-return

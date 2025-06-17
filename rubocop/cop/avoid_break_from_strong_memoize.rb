@@ -27,7 +27,7 @@ module RuboCop
         block_body = node.body
 
         return unless block_body
-        return unless node.method_name == :strong_memoize
+        return unless node.method?(:strong_memoize)
 
         block_body.each_node(:break) do |break_node|
           next if container_block_for(break_node) != node
@@ -39,7 +39,7 @@ module RuboCop
       private
 
       def container_block_for(current_node)
-        current_node = current_node.parent until current_node.type == :block && current_node.method_name == :strong_memoize
+        current_node = current_node.parent until current_node.type == :block && current_node.method?(:strong_memoize)
 
         current_node
       end

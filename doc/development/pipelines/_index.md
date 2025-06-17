@@ -21,7 +21,7 @@ on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Pipeline tiers
 
-**under active development:** For more information, see [epic 58](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/58).
+**Under active development**: For more information, see [epic 58](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/58).
 
 A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
 

@@ -31,7 +31,7 @@ To add new feature to the existing backend service (**Ai Gateway**):
 1. [Implement permission checks in GitLab Rails](#implement-permission-checks-in-gitlab-rails).
 1. [Implement authorization checks in backend service](#implement-authorization-checks-in-backend-service).
 
-**Optional:** If the backend service the token is used for requires additional claims to be embedded in the
+**Optional**: If the backend service the token is used for requires additional claims to be embedded in the
 service access token, contact [#g_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
 because we do not currently have interfaces in place to self-service this.
 

@@ -9,9 +9,9 @@ Callouts are a mechanism for presenting notifications to users. Users can dismis
 
 ## Callout contexts
 
-**Global context:** Callouts can be displayed to a user regardless of where they are in the application. For example, we can show a notification that reminds the user to have two-factor authentication recovery codes stored in a safe place. Dismissing this type of callout is effective for the particular user across the whole GitLab instance, no matter where they encountered the callout.
+**Global context**: Callouts can be displayed to a user regardless of where they are in the application. For example, we can show a notification that reminds the user to have two-factor authentication recovery codes stored in a safe place. Dismissing this type of callout is effective for the particular user across the whole GitLab instance, no matter where they encountered the callout.
 
-**Group and project contexts:** Callouts can also be displayed to a specific user and have a particular context binding, like a group or a project context. For example, group owners can be notified that their group is running out of available seats. Dismissing that callout would be effective for the particular user only in this particular group, while they would still see the same callout in other groups, if applicable.
+**Group and project contexts**: Callouts can also be displayed to a specific user and have a particular context binding, like a group or a project context. For example, group owners can be notified that their group is running out of available seats. Dismissing that callout would be effective for the particular user only in this particular group, while they would still see the same callout in other groups, if applicable.
 
 Regardless of the context, dismissing a callout is only effective for the given user. Other users still see their relevant callouts.
 
@@ -39,7 +39,7 @@ To create a new callout ID, add a new key to the `feature_name` enum in the rele
 
 - Project context: `app/models/users/project_callout.rb`. Callouts dismissed by a user in a given project. Related notifications are still shown to the user in other projects.
 
-**NOTE:** do not reuse old enum values, as it may lead to false-positive dismissals. Instead, create a new sequential number.
+**NOTE**: do not reuse old enum values, as it may lead to false-positive dismissals. Instead, create a new sequential number.
 
 ### Deprecating a callout
 
@@ -95,7 +95,7 @@ Usually before rendering the callout, we check if it has been dismissed. `User` 
 
 - Project context: `user.dismissed_callout_for_project?(feature_name:, project:, ignore_dismissal_earlier_than: nil)`
 
-**NOTE:** `feature_name` is the Callout ID, described above. In our example, it would be `amazing_alert`
+**NOTE**: `feature_name` is the Callout ID, described above. In our example, it would be `amazing_alert`
 
 #### Setting expiration for dismissals using `ignore_dismissal_earlier_than` parameter
 
@@ -105,7 +105,7 @@ Without the `ignore_dismissal_earlier_than` parameter callout dismissals will st
 
 If we pass `ignore_dismissal_earlier_than` a value, for example, `30.days.ago`, the dismissed callout would re-appear after this duration.
 
-**NOTE:** expired or deprecated dismissals are not automatically removed from the database. This parameter only checks if the callout has been dismissed within the defined period.
+**NOTE**: expired or deprecated dismissals are not automatically removed from the database. This parameter only checks if the callout has been dismissed within the defined period.
 
 ### Example usage
 

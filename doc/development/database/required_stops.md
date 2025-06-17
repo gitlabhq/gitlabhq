@@ -19,8 +19,8 @@ during upgrades. The increased support volume may cause us to introduce a requir
 background migration may cause these issues with particularly large customers, we typically only
 introduce stops when the impact is widespread.
 
-- **Cause:** When an upgrade takes more than an hour, omnibus times out.
-- **Mitigation:** Schedule finalization for the first minor version after the next required stop. By waiting for the
+- **Cause**: When an upgrade takes more than an hour, omnibus times out.
+- **Mitigation**: Schedule finalization for the first minor version after the next required stop. By waiting for the
   next required stop, we ensure the customers jumping between required stops will have an opportunity to run the
   migrations in the background ensuring their services remain operational. Otherwise, finalizing migrations in the
   required stop would force synchronous execution during upgrade from previous required stop, causing downtime if the
@@ -33,17 +33,17 @@ You may need to introduce a required stop for mitigation when:
 - A background migration is not finalized, and
 - A migration is written that depends on that background migration.
 
-- **Cause:** The dependent migration may fail if the background migration is incomplete.
-- **Mitigation:** Ensure that all background migrations are finalized before authoring dependent migrations.
+- **Cause**: The dependent migration may fail if the background migration is incomplete.
+- **Mitigation**: Ensure that all background migrations are finalized before authoring dependent migrations.
 
 ### Remove a migration
 
 If a migration is removed, you may need to introduce a required stop to ensure customers
 don't miss the required change.
 
-- **Cause:** Dependent migrations may fail, or the application may not function, because a required
+- **Cause**: Dependent migrations may fail, or the application may not function, because a required
   migration was removed.
-- **Mitigation:** Ensure migrations are only removed after they've been a part of a planned
+- **Mitigation**: Ensure migrations are only removed after they've been a part of a planned
   required stop.
 
 ### A migration timestamp is very old
@@ -57,9 +57,9 @@ these scenarios may cause issues:
 - If the migration timestamp ID is before the last, it may be inadvertently squashed when the
   team squashes other migrations from the required stop.
 
-- **Cause:** The migration may fail if it depends on a migration with a later timestamp introduced
+- **Cause**: The migration may fail if it depends on a migration with a later timestamp introduced
   in an earlier version. Or, the migration may be inadvertently squashed after a required stop.
-- **Mitigation:** Aim for migration timestamps to fall inside the release dates and be sure that
+- **Mitigation**: Aim for migration timestamps to fall inside the release dates and be sure that
   they are not dated prior to the last required stop.
 
 ### Bugs in migration related tooling
@@ -67,8 +67,8 @@ these scenarios may cause issues:
 In a few circumstances, bugs in migration related tooling has required us to introduce stops. While we aim
 to prevent these in testing, sometimes they happen.
 
-- **Cause:** There have been a few different causes where we recognized these too late.
-- **Mitigation:** Typically we try to backport fixes for migrations, but in some cases this is not possible.
+- **Cause**: There have been a few different causes where we recognized these too late.
+- **Mitigation**: Typically we try to backport fixes for migrations, but in some cases this is not possible.
 
 ## Adding a required stop
 

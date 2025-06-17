@@ -17,7 +17,7 @@ and `GITLAB_ADMIN_PASSWORD`.
 
 Be sure to include the `feature_flag` tag so that the test can be skipped on the appropriate environments.
 
-**Required metadata:**
+**Required metadata**:
 
 `name`
 
@@ -25,7 +25,7 @@ Be sure to include the `feature_flag` tag so that the test can be skipped on the
 - Used for informational purposes. It shall be included to determine which
   feature flag is under test.
 
-**Optional metadata:**
+**Optional metadata**:
 
 `scope`
 
@@ -46,7 +46,7 @@ or [feature group](../../../feature_flags/_index.md#feature-groups).
     In such a scenario, it would be riskier to skip running the test. For cases like this, `scope` can be left out of the metadata so that it can still run in live environments
     with administrator access, such as staging.
 
-**Note on `requires_admin`:** This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
+**Note on `requires_admin`**: This tag should still be applied if there are other actions within the test that require administrator access that are unrelated to updating a
 feature flag (like creating a user via the API).
 
 The code below would enable a feature flag named `:feature_flag_name` for the project

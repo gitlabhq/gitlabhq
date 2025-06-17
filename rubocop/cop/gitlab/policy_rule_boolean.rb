@@ -36,7 +36,7 @@ module RuboCop
         PATTERN
 
         def on_block(node)
-          return unless node.method_name == :rule
+          return unless node.method?(:rule)
 
           if has_and_operator?(node)
             add_offense(node, message: '&& is not allowed within a rule block. Did you mean to use `&`?')

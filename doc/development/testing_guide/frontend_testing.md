@@ -392,7 +392,7 @@ const doSomethingLater = () => {
 };
 ```
 
-**in Jest:**
+**In Jest**:
 
 ```javascript
 it('does something', () => {
@@ -524,7 +524,7 @@ const askTheServer = () => {
 };
 ```
 
-**in Jest:**
+**In Jest**:
 
 ```javascript
 it('waits for an Ajax call', async () => {
@@ -535,7 +535,7 @@ it('waits for an Ajax call', async () => {
 
 If you cannot register handlers to the `Promise`, for example because it is executed in a synchronous Vue lifecycle hook, take a look at the [`waitFor`](#wait-until-axios-requests-finish) helpers or flush all pending `Promise`s with:
 
-**in Jest:**
+**In Jest**:
 
 ```javascript
 it('waits for an Ajax call', async () => {
@@ -552,7 +552,7 @@ it('waits for an Ajax call', async () => {
 Use [`nextTick()`](https://v2.vuejs.org/v2/api/#Vue-nextTick) to wait until a Vue component is
 re-rendered.
 
-**in Jest:**
+**In Jest**:
 
 ```javascript
 import { nextTick } from 'vue';
@@ -784,7 +784,7 @@ the I/O completes. And it's not part of the Web API, hence, we target NodeJS env
 unit tests.
 
 Instead of `setImmediate`, use `jest.runAllTimers` or `jest.runOnlyPendingTimers` to run pending timers.
-The latter is useful when you have `setInterval` in the code. **Remember:** our Jest configuration uses fake timers.
+The latter is useful when you have `setInterval` in the code. **Remember**: our Jest configuration uses fake timers.
 
 ## Avoid non-deterministic specs
 
