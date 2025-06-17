@@ -398,4 +398,25 @@ describe('vue_shared/components/web_ide_link', () => {
       });
     });
   });
+
+  describe('disabled state', () => {
+    it('renders default tooltip', () => {
+      createComponent({ disabled: true });
+
+      expect(findDisclosureDropdown().props('disabled')).toBe(true);
+      expect(findDisclosureDropdown().attributes('aria-label')).toBe('You cannot edit this file');
+    });
+
+    it('renders custom tooltip', () => {
+      createComponent({
+        disabled: true,
+        customTooltipText: 'You cannot edit files in read-only repositories',
+      });
+
+      expect(findDisclosureDropdown().props('disabled')).toBe(true);
+      expect(findDisclosureDropdown().attributes('aria-label')).toBe(
+        'You cannot edit files in read-only repositories',
+      );
+    });
+  });
 });

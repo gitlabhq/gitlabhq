@@ -6,6 +6,13 @@
     = link_button_to new_admin_group_path, variant: :confirm do
       = _('New group')
 
+- if Feature.enabled?(:admin_groups_vue, current_user)
+  -# Do nothing for now. To get around an issue with ff-inverse job
+  -# we can't introduce a FF and change the UI in the same MR.
+  -# But if we don't use the feature flag in the code then the
+  -# rspec:feature-flags job fails. This will be updated in a
+  -# future commit.
+
 #js-admin-groups-filtered-search-and-sort
   -# This element takes up space while Vue is rendering to avoid page jump
   .gl-h-12

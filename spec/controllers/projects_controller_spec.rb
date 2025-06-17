@@ -536,7 +536,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       subject { get :show, params: { namespace_id: public_project.namespace.path, id: public_project.path } }
 
       let(:ancestor_notice_regex) do
-        /The parent group of this project is pending deletion, so this project will also be deleted on .*./
+        /This project will be deleted on .* because its parent group is scheduled for deletion\./
       end
 
       context 'when the parent group has not been scheduled for deletion' do

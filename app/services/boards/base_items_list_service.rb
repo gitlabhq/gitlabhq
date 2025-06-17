@@ -108,6 +108,7 @@ module Boards
 
     def set_state
       return if params[:all_lists]
+      return if list&.list_type == 'status'
 
       params[:state] = list && list.closed? ? 'closed' : 'opened'
     end

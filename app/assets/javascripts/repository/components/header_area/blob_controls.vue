@@ -35,7 +35,9 @@ export default {
   i18n: {
     findFile: __('Find file'),
     blame: __('Blame'),
-    errorMessage: __('An error occurred while loading the blob controls.'),
+    errorMessage: __('An error occurred while loading file controls. Refresh the page.'),
+    archivedProjectTooltip: __('You cannot edit files in archived projects'),
+    lfsFileTooltip: __('You cannot edit files stored in LFS'),
   },
   buttonClassList: 'sm:gl-w-auto gl-w-full sm:gl-mt-0 gl-mt-3',
   components: {
@@ -175,9 +177,6 @@ export default {
 
       return this.formatTooltipWithShortcut(description, shortcutKey);
     },
-    showWebIdeLink() {
-      return !this.blobInfo.archived && this.blobInfo.editBlobPath;
-    },
     shouldShowSingleFileEditorForkSuggestion() {
       return showSingleFileEditorForkSuggestion(
         this.userPermissions,
@@ -191,6 +190,34 @@ export default {
         this.isUsingLfs,
         this.blobInfo.canModifyBlobWithWebIde,
       );
+    },
+    isWebIdeDisabled() {
+      return Object.values(this.webIdeDisabledReasons).some(
+        ({ condition }) => condition() === true,
+      );
+    },
+    webIdeDisabledTooltip() {
+      const disabledReason = Object.values(this.webIdeDisabledReasons).find((reason) =>
+        reason.condition(),
+      );
+
+      return disabledReason?.message ?? '';
+    },
+    webIdeDisabledReasons() {
+      return {
+        queryErrors: {
+          condition: () => this.hasProjectQueryErrors,
+          message: this.$options.i18n.errorMessage,
+        },
+        archived: {
+          condition: () => this.blobInfo.archived,
+          message: this.$options.i18n.archivedProjectTooltip,
+        },
+        lfs: {
+          condition: () => this.isUsingLfs,
+          message: this.$options.i18n.lfsFileTooltip,
+        },
+      };
     },
   },
   watch: {
@@ -267,9 +294,8 @@ export default {
     </gl-button>
 
     <web-ide-link
-      v-if="showWebIdeLink && !hasProjectQueryErrors"
-      :show-edit-button="!isBinaryFileType"
       class="!gl-m-0"
+      :show-edit-button="!isBinaryFileType"
       :edit-url="blobInfo.editBlobPath"
       :web-ide-url="blobInfo.ideEditPath"
       :needs-to-fork="shouldShowSingleFileEditorForkSuggestion"
@@ -285,7 +311,8 @@ export default {
       :user-profile-enable-gitpod-path="currentUser && currentUser.profileEnableGitpodPath"
       is-blob
       disable-fork-modal
-      :disabled="isUsingLfs"
+      :disabled="isWebIdeDisabled"
+      :custom-tooltip-text="webIdeDisabledTooltip"
       @edit="onEdit"
     />
     <fork-suggestion-modal

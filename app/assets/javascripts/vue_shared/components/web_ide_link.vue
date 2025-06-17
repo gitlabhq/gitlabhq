@@ -144,6 +144,11 @@ export default {
       required: false,
       default: false,
     },
+    customTooltipText: {
+      type: String,
+      required: false,
+      default: __('You cannot edit this file'),
+    },
   },
   data() {
     return {
@@ -304,7 +309,7 @@ export default {
       return showWebIdeButton || showEditButton;
     },
     tooltipText() {
-      return this.disabled ? __('Editing this file is not supported') : '';
+      return this.disabled ? this.customTooltipText : '';
     },
   },
   methods: {

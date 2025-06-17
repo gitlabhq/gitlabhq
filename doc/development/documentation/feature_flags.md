@@ -47,11 +47,15 @@ When the state of a flag changes (for example, from disabled by default to enabl
 Possible history entries are:
 
 ```markdown
+{{</* history */>}}
+
 - [Introduced](https://issue-link) in GitLab X.X [with a flag](../../administration/feature_flags.md) named `flag_name`. Disabled by default.
 - [Enabled on GitLab.com](https://issue-link) in GitLab X.X.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://issue-link) in GitLab X.X.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://issue-link) in GitLab X.X.
 - [Generally available](https://issue-link) in GitLab X.Y. Feature flag `flag_name` removed.
+
+{{</* /history */>}}
 ```
 
 These entries might not fit every scenario. You can adjust to suit your needs.

@@ -118,7 +118,7 @@ export default {
     },
   },
   provide() {
-    return { blobHash: uniqueId() };
+    return { blobHash: uniqueId(), currentRef: this.currentRef };
   },
   props: {
     path: {

@@ -3176,6 +3176,14 @@
       changes:
         - "scripts/flaky_examples/prune-old-flaky-examples"
 
+############################
+# Predictive testing rules #
+############################
+.predictive:rules:default:
+  rules:
+    - <<: *if-merge-request-tier-3
+      when: always
+
 ###################
 # workhorse rules #
 ###################

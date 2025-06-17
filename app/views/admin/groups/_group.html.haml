@@ -17,7 +17,7 @@
     = gl_badge_tag storage_counter(group.storage_size)
 
     = render_if_exists 'admin/namespace_plan_badge', namespace: group, css_class: 'gl-ml-5 gl-mr-0'
-    = render 'admin/groups/marked_for_deletion_badge', group: group, css_class: 'gl-ml-5'
+    = render 'shared/groups/badges', group: group, css_class: 'gl-ml-5'
 
     %span.gl-ml-5.has-tooltip{ title: _('Projects') }
       = sprite_icon('project', css_class: 'gl-align-text-bottom')

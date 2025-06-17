@@ -307,6 +307,10 @@ With the Extensions Marketplace, you can add Vim keybindings to the Web IDE.
 To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
 extension. For more information, see [install an extension](#install-an-extension).
 
+#### ASCIIDoc Support
+
+The [ASCIIDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) extension provides live preview, syntax highlighting, and snippets for ASCIIDoc files in the Web IDE. To use ASCIIDoc markup preview in the Web IDE, you must install the ASCIIDoc extension. For more information, see [install an extension](#install-an-extension).
+
 ## Related topics
 
 - [GitLab Duo Chat in the Web IDE](../../gitlab_duo_chat/_index.md#use-gitlab-duo-chat-in-the-web-ide)

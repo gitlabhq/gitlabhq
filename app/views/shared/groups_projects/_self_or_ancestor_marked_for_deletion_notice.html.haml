@@ -1,20 +1,6 @@
-- return unless context.is_a?(Group) || context.is_a?(Project)
-- return unless context.scheduled_for_deletion_in_hierarchy_chain?
-
-- context_pending_deletion = context.first_scheduled_for_deletion_in_hierarchy_chain
-- date = permanent_deletion_date_formatted(context_pending_deletion)
-- context_name = context.is_a?(Group) ? _('group') : _('project')
-
-- group_marked_for_deletion = _("This group and its subgroups and projects are pending deletion, and will be deleted on %{date}.").html_safe % { date: tag.strong(date) }
-- project_marked_for_deletion = _("This project is pending deletion, and will be deleted on %{date}. Repository and other project resources are read-only.").html_safe % { date: tag.strong(date) }
-
-- self_marked_for_deletion = context.is_a?(Group) ? group_marked_for_deletion : project_marked_for_deletion
-- ancestor_marked_for_deletion = _("The parent group of this %{context} is pending deletion, so this %{context} will also be deleted on %{date}.").html_safe % { date: tag.strong(date), context: context_name }
-
-- marked_for_deletion_message = context.marked_for_deletion? ? self_marked_for_deletion : ancestor_marked_for_deletion
+- return unless deletion_in_progress_or_scheduled_in_hierarchy_chain?(context)
 
 = render Pajamas::AlertComponent.new(variant: :warning,
   dismissible: false) do |c|
   = c.with_body do
-    = marked_for_deletion_message
-
+    = self_or_ancestors_deletion_in_progress_or_scheduled_message(context)

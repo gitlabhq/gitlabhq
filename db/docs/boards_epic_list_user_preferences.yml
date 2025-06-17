@@ -9,14 +9,6 @@ description: Epic board list preferences on a per-user basis, specifically wheth
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/54541
 milestone: '13.10'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: epic_list_id
-        table: boards_epic_lists
-        sharding_key: group_id
-        belongs_to: epic_list
+sharding_key:
+  group_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name: BackfillBoardsEpicListUserPreferencesGroupId

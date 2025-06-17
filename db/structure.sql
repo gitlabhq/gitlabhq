@@ -10525,7 +10525,8 @@ CREATE TABLE boards_epic_list_user_preferences (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     collapsed boolean DEFAULT false NOT NULL,
-    group_id bigint
+    group_id bigint,
+    CONSTRAINT check_c18068ad9c CHECK ((group_id IS NOT NULL))
 );
 
 CREATE SEQUENCE boards_epic_list_user_preferences_id_seq

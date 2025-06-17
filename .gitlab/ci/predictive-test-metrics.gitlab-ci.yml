@@ -1,0 +1,42 @@
+predictive-test-metrics:
+  stage: post-test
+  allow_failure: true
+  dependencies: []
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-slim
+  variables:
+    GLCI_RSPEC_FAILED_TESTS_DIR: tmp/latest_failed_tests/
+    GLCI_PREDICTIVE_TESTS_GENERATE_METRICS: true
+    GLCI_PREDICTIVE_TESTS_METRICS_PATH: tmp/predictive_test_metrics.json
+    GLCI_PREDICTIVE_TESTS_TRACK_EVENTS: true
+    RSPEC_TESTS_MAPPING_ENABLED: "true"
+    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_PATH
+  before_script:
+    - apt update && apt install -y curl
+    - source ./scripts/utils.sh
+    - source ./scripts/rspec_helpers.sh
+    - install_gitlab_gem
+    - install_tff_gem
+    - retrieve_tests_mapping "$MAPPING_ARCHIVE"
+    - retrieve_failed_tests "${GLCI_RSPEC_FAILED_TESTS_DIR}" "oneline" "latest" "single_output"
+  script:
+    - mkdir -p $(dirname "$RSPEC_CHANGED_FILES_PATH")
+    - tooling/bin/predictive_tests
+    - |
+      echoinfo 'Changed files:'
+      echoinfo "$(tr ' ' '\n' < $RSPEC_CHANGED_FILES_PATH)"
+      echo ""
+      echoinfo 'Predicted test files:'
+      echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TEST_FILES_PATH)"
+  artifacts:
+    expire_in: 7d
+    paths:
+      - "${GLCI_RSPEC_FAILED_TESTS_DIR}"
+      - "${GLCI_PREDICTIVE_TESTS_METRICS_PATH}"
+  rules:
+    - !reference [".predictive:rules:default", rules]
+
+predictive-test-metrics-alt:
+  extends: predictive-test-metrics
+  variables:
+    MAPPING_ARCHIVE: $RSPEC_PACKED_TESTS_MAPPING_ALT_PATH
+    PREDICTIVE_TESTS_STRATEGY: coverage

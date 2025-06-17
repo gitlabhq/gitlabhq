@@ -112,7 +112,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       let_it_be(:subgroup) { create(:group, :private, parent: group) }
       let(:ancestor_notice_regex) do
-        /The parent group of this group is pending deletion, so this group will also be deleted on .*./
+        /This group will be deleted on .* because its parent group is scheduled for deletion\./
       end
 
       subject(:get_show) { get :show, params: { id: subgroup.to_param } }
