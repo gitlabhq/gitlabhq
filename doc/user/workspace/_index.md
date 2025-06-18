@@ -293,7 +293,7 @@ For more information, see [GitLab Workflow extension for VS Code](https://gitlab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) as a [beta](../../policy/development_stages_support.md#beta) in GitLab 16.9 [with a flag](../../administration/feature_flags/_index.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
 - Feature flag `allow_extensions_marketplace_in_workspace` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454669) in GitLab 17.6.
 
 {{< /history >}}

@@ -197,7 +197,7 @@ This endpoint has been requested too many times. Try again later.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](feature_flags.md) named `autocomplete_users_rate_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368926) in GitLab 17.10 [with a flag](feature_flags/_index.md) named `autocomplete_users_rate_limit`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523595) in GitLab 18.1. Feature flag `autocomplete_users_rate_limit` removed.
 
 {{< /history >}}
@@ -1161,7 +1161,7 @@ read the GitLab development documentation about working with diffs.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](feature_flags.md) named `merge_requests_diffs_limit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10 [with a flag](feature_flags/_index.md) named `merge_requests_diffs_limit`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/521970) in GitLab 17.10.
 
 {{< /history >}}
@@ -1390,7 +1390,7 @@ The [secure files API](../api/secure_files.md) enforces the following limits:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](feature_flags.md) named `changelog_commits_limitation`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89032) in GitLab 15.1 [with a flag](feature_flags/_index.md) named `changelog_commits_limitation`. Disabled by default.
 - [Enabled on GitLab.com and by default on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/33893) in GitLab 15.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364101) in GitLab 17.3. Feature flag `changelog_commits_limitation` removed.
 

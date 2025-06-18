@@ -64,12 +64,12 @@ RSpec.describe BulkImports::Common::Pipelines::LfsObjectsPipeline, feature_categ
       expect(BulkImports::FileDownloadService)
         .to receive(:new)
         .with(
-          configuration: context.configuration,
+          context: context,
           relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}/export_relations/download?relation=lfs_objects",
           tmpdir: tmpdir,
           filename: 'lfs_objects.tar.gz')
         .and_return(download_service)
-      expect(BulkImports::FileDecompressionService).to receive(:new).with(tmpdir: tmpdir, filename: 'lfs_objects.tar.gz').and_return(decompression_service)
+      expect(BulkImports::FileDecompressionService).to receive(:new).with(tmpdir: tmpdir, filename: 'lfs_objects.tar.gz', context: context).and_return(decompression_service)
       expect(BulkImports::ArchiveExtractionService).to receive(:new).with(tmpdir: tmpdir, filename: 'lfs_objects.tar').and_return(extraction_service)
 
       expect(download_service).to receive(:execute)

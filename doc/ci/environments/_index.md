@@ -54,7 +54,7 @@ There are a few ways to view a list of environments for a given project:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags.md) named `soft_validation_on_external_url`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) to persist arbitrary URLs in GitLab 15.2 [with a flag](../../administration/feature_flags/_index.md) named `soft_validation_on_external_url`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/337417) in GitLab 15.3. [Feature flag `soft_validation_on_external_url`](https://gitlab.com/gitlab-org/gitlab/-/issues/367206) removed.
 
 {{< /history >}}
@@ -598,7 +598,7 @@ manually.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags.md) named `stop_stale_environments`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108616) in GitLab 15.8 [with a flag](../../administration/feature_flags/_index.md) named `stop_stale_environments`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112098) in GitLab 15.10. Feature flag `stop_stale_environments` removed.
 
 {{< /history >}}

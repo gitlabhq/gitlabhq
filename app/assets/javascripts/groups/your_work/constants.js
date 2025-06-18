@@ -19,6 +19,7 @@ const baseTab = {
     description: s__(
       'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
     ),
+    'data-testid': 'groups-empty-state',
   },
   query: groupsQuery,
   queryPath: 'groups',

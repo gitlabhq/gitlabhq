@@ -44,7 +44,7 @@ Prerequisites:
 
 To enable a namespace to use a reduced cost factor:
 
-1. [Enable the feature flag](../feature_flags.md#how-to-enable-and-disable-features-behind-flags) `ci_minimal_cost_factor_for_gitlab_namespaces` for the namespace ID you want to include.
+1. [Enable the feature flag](../feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags) `ci_minimal_cost_factor_for_gitlab_namespaces` for the namespace ID you want to include.
 
 This feature is recommended for use on GitLab.com only. Community contributors should use
 community forks for contributions to avoid accumulating minutes when running pipelines

@@ -10,7 +10,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   let(:group) { create(:group, :public) }
   let!(:project) { create(:project, :private, namespace: group) }
   let(:more_actions_dropdown) do
-    find('[data-testid="groups-projects-more-actions-dropdown"] .gl-new-dropdown-custom-toggle')
+    find_by_testid('groups-projects-more-actions-dropdown')
   end
 
   before do
@@ -30,7 +30,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   it 'user can request access to a group', :js do
     perform_enqueued_jobs do
       more_actions_dropdown.click
-      click_link 'Request Access'
+      find_by_testid('request-access-link').click
     end
 
     expect(ActionMailer::Base.deliveries.last.to).to eq [owner.notification_email_or_default]
@@ -48,7 +48,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   it 'user does not see private projects', :js do
     perform_enqueued_jobs do
       more_actions_dropdown.click
-      click_link 'Request Access'
+      find_by_testid('request-access-link').click
     end
 
     expect(page).not_to have_content project.name
@@ -57,7 +57,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
   it 'user does not see group in the Dashboard > Groups page', :js do
     perform_enqueued_jobs do
       more_actions_dropdown.click
-      click_link 'Request Access'
+      find_by_testid('request-access-link').click
     end
 
     visit dashboard_groups_path
@@ -67,7 +67,7 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
 
   it 'user is not listed in the group members page', :js do
     more_actions_dropdown.click
-    click_link 'Request Access'
+    find_by_testid('request-access-link').click
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
 
@@ -83,12 +83,12 @@ RSpec.describe 'Groups > Members > Request access', feature_category: :groups_an
 
   it 'user can withdraw its request for access', :js do
     more_actions_dropdown.click
-    click_link 'Request Access'
+    find_by_testid('request-access-link').click
 
     expect(group.requesters.exists?(user_id: user)).to be_truthy
 
     more_actions_dropdown.click
-    click_link 'Withdraw Access Request'
+    find_by_testid('withdraw-access-link').click
     accept_gl_confirm
 
     expect(page).to have_content 'Your access request to the group has been withdrawn.'

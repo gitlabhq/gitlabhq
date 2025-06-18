@@ -67,6 +67,8 @@ class Projects::CommitController < Projects::ApplicationController
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
     @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
+    # Capture total count before pagination to ensure accurate count regardless of current page
+    @pipelines_count = @pipelines.count
     @pipelines = @pipelines.page(params[:page])
 
     respond_to do |format|
@@ -80,7 +82,7 @@ class Projects::CommitController < Projects::ApplicationController
             .with_pagination(request, response)
             .represent(@pipelines),
           count: {
-            all: @pipelines.count
+            all: @pipelines_count
           }
         }
       end

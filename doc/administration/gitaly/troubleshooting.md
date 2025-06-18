@@ -521,13 +521,13 @@ go tool trace heap.bin
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a flag](../feature_flags.md) named `log_git_traces`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5700) in GitLab 16.9 [with a flag](../feature_flags/_index.md) named `log_git_traces`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md)
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md)
 named `log_git_traces`. On GitLab.com, this feature is available but can be configured by GitLab.com administrators only. On GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}

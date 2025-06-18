@@ -15,7 +15,7 @@ title: Cloud Seed
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371332) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `google_cloud`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371332) in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `google_cloud`. Disabled by default.
 - [Enabled on GitLab Self-Managed and GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/100545) in GitLab 15.5.
 
 {{< /history >}}

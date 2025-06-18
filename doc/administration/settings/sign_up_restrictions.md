@@ -289,7 +289,7 @@ See the [documentation on setting up an LDAP user filter](../auth/ldap/_index.md
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags.md) named `member_promotion_management`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433166) in GitLab 16.9 [with a flag](../feature_flags/_index.md) named `member_promotion_management`.
 - Feature flag `member_promotion_management` [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167757/) from `wip` to `beta` and enabled by default in GitLab 17.5.
 - Feature flag `member_promotion_management` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187888) in GitLab 18.0.
 

@@ -74,7 +74,7 @@ using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-ke
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425042) in GitLab 17.5 [with a flag](../../../../administration/feature_flags/_index.md) named `check_for_mailmapped_commit_emails`. Disabled by default.
 
 {{< /history >}}
 

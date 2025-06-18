@@ -722,7 +722,7 @@ toolbox:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) in GitLab 14.10 [with a flag](../feature_flags.md) named `incremental_repository_backup`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351383) in GitLab 14.10 [with a flag](../feature_flags/_index.md) named `incremental_repository_backup`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355945) in GitLab 15.3. Feature flag `incremental_repository_backup` removed.
 - Server-side support for creating incremental backups [introduced](https://gitlab.com/gitlab-org/gitaly/-/issues/5461) in GitLab 16.6.
 

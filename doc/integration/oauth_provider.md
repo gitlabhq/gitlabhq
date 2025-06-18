@@ -84,7 +84,7 @@ The user authorization step is automatically skipped for this application.
 
 {{< history >}}
 
-- `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
+- `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../administration/feature_flags/_index.md) named `k8s_proxy_pat`. Enabled by default.
 - Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
 
 {{< /history >}}
@@ -152,7 +152,7 @@ application are also deleted.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `hash_oauth_secrets`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `hash_oauth_secrets`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.8.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/374588) in GitLab 15.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/113892) in GitLab 15.10. Feature flag `hash_oauth_secrets` removed.

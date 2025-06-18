@@ -35,7 +35,7 @@ You can report a user through their:
 
 {{< history >}}
 
-- Report abuse from overflow menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `user_profile_overflow_menu_vue`. Disabled by default.
+- Report abuse from overflow menu [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4 [with a flag](../administration/feature_flags/_index.md) named `user_profile_overflow_menu_vue`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.4.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/414773) in GitLab 16.6. Feature flag `user_profile_overflow_menu_vue` removed.
 

@@ -25805,7 +25805,7 @@ Represents a custom field select option.
 
 ### `CustomizableDashboard`
 
-Represents a product analytics dashboard.
+Represents a customizable dashboard.
 
 #### Fields
 
@@ -25824,7 +25824,7 @@ Represents a product analytics dashboard.
 
 ### `CustomizableDashboardPanel`
 
-Represents a product analytics dashboard panel.
+Represents a customizable dashboard panel.
 
 #### Fields
 
@@ -25837,7 +25837,7 @@ Represents a product analytics dashboard panel.
 
 ### `CustomizableDashboardVisualization`
 
-Represents a product analytics dashboard visualization.
+Represents a customizable dashboard visualization.
 
 #### Fields
 
@@ -43901,16 +43901,20 @@ Enum for types of analyzers.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="analyzertypeenumapi_fuzzing"></a>`API_FUZZING` | API FUZZING analyzer. |
-| <a id="analyzertypeenumcluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | CLUSTER IMAGE SCANNING analyzer. |
-| <a id="analyzertypeenumcontainer_scanning"></a>`CONTAINER_SCANNING` | CONTAINER SCANNING analyzer. |
-| <a id="analyzertypeenumcoverage_fuzzing"></a>`COVERAGE_FUZZING` | COVERAGE FUZZING analyzer. |
-| <a id="analyzertypeenumdast"></a>`DAST` | DAST analyzer. |
-| <a id="analyzertypeenumdependency_scanning"></a>`DEPENDENCY_SCANNING` | DEPENDENCY SCANNING analyzer. |
-| <a id="analyzertypeenumsast"></a>`SAST` | SAST analyzer. |
-| <a id="analyzertypeenumsast_advanced"></a>`SAST_ADVANCED` | SAST ADVANCED analyzer. |
-| <a id="analyzertypeenumsast_iac"></a>`SAST_IAC` | SAST IAC analyzer. |
-| <a id="analyzertypeenumsecret_detection"></a>`SECRET_DETECTION` | SECRET DETECTION analyzer. |
+| <a id="analyzertypeenumapi_fuzzing"></a>`API_FUZZING` | Api fuzzing analyzer. |
+| <a id="analyzertypeenumcluster_image_scanning"></a>`CLUSTER_IMAGE_SCANNING` | Cluster image scanning analyzer. |
+| <a id="analyzertypeenumcontainer_scanning"></a>`CONTAINER_SCANNING` | Any kind of container scanning. |
+| <a id="analyzertypeenumcontainer_scanning_for_registry"></a>`CONTAINER_SCANNING_FOR_REGISTRY` | Container scanning for registry. Managed via project security settings. |
+| <a id="analyzertypeenumcontainer_scanning_pipeline_based"></a>`CONTAINER_SCANNING_PIPELINE_BASED` | Container scanning analyzer. |
+| <a id="analyzertypeenumcoverage_fuzzing"></a>`COVERAGE_FUZZING` | Coverage fuzzing analyzer. |
+| <a id="analyzertypeenumdast"></a>`DAST` | Dast analyzer. |
+| <a id="analyzertypeenumdependency_scanning"></a>`DEPENDENCY_SCANNING` | Dependency scanning analyzer. |
+| <a id="analyzertypeenumsast"></a>`SAST` | Sast analyzer. |
+| <a id="analyzertypeenumsast_advanced"></a>`SAST_ADVANCED` | Sast advanced analyzer. |
+| <a id="analyzertypeenumsast_iac"></a>`SAST_IAC` | Sast iac analyzer. |
+| <a id="analyzertypeenumsecret_detection"></a>`SECRET_DETECTION` | Any kind of secret detection. |
+| <a id="analyzertypeenumsecret_detection_pipeline_based"></a>`SECRET_DETECTION_PIPELINE_BASED` | Secret detection analyzer. |
+| <a id="analyzertypeenumsecret_detection_secret_push_protection"></a>`SECRET_DETECTION_SECRET_PUSH_PROTECTION` | Secret push protection. Managed via project security settings. |
 
 ### `ApiFuzzingScanMode`
 

@@ -9,7 +9,7 @@ title: Feature flags in the development of GitLab
 This page explains how developers contribute to the development and operations of the GitLab product
 through feature flags. To create custom feature flags to show and hide features in your own applications,
 see [Create a feature flag](../../operations/feature_flags.md#create-a-feature-flag).
-A [complete list of feature flags](../../user/feature_flags.md) in GitLab is also available.
+A [complete list of feature flags](../../administration/feature_flags/list.md) in GitLab is also available.
 
 {{< alert type="warning" >}}
 
@@ -118,7 +118,7 @@ GitLab are of the `gitlab_com_derisk` type.
 - `default_enabled`: **Must not** be set to true. This kind of feature flag is meant to lower the risk on GitLab.com, thus there's no need to keep the flag in the codebase after it's been enabled on GitLab.com. `default_enabled: true` will not have any effect for this type of feature flag.
 - Maximum Lifespan: 2 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
-  [All feature flags in GitLab](../../user/feature_flags.md) page given they're short-lived and deployment-related
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're short-lived and deployment-related
 - Rollout issue: **Must** have a rollout issue created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
 
@@ -166,7 +166,7 @@ Once the feature is complete, the feature flag type can be changed to the `gitla
 - `default_enabled`: **Must not** be set to true. If needed, this type can be changed to beta once the feature is complete.
 - Maximum Lifespan: 4 months after it's merged into the default branch
 - Documentation: This type of feature flag doesn't need to be documented in the
-  [All feature flags in GitLab](../../user/feature_flags.md) page given they're mostly hiding unfinished code
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page given they're mostly hiding unfinished code
 - Rollout issue: Likely no need for a rollout issues, as `wip` feature flags should be transitioned to
   another type before being enabled
 
@@ -196,7 +196,7 @@ Providing a flag in this case allows engineers and customers to disable the new 
   reason on specific on-premise installations)
 - Maximum Lifespan: 6 months after it's merged into the default branch
 - Documentation: This type of feature flag **must** be documented in the
-  [All feature flags in GitLab](../../user/feature_flags.md) page
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page
 - Rollout issue: **Must** have a rollout issue
   created from the
   [Feature flag Roll Out template](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/issue_templates/Feature%20Flag%20Roll%20Out.md)
@@ -232,7 +232,7 @@ they are still necessary.
   issues or help debug production issues.
 - Maximum Lifespan: Unlimited, but must be evaluated every 12 months
 - Documentation: This type of feature flag **must** be documented in the
-  [All feature flags in GitLab](../../user/feature_flags.md) page as well as be associated with an operational
+  [All feature flags in GitLab](../../administration/feature_flags/list.md) page as well as be associated with an operational
   runbook describing the circumstances when it can be used.
 - Rollout issue: Likely no need for a rollout issues, as it is hard to predict when they are enabled or disabled
 

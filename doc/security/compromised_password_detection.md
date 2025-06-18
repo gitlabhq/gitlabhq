@@ -14,7 +14,7 @@ title: Compromised password detection
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188723) in GitLab 18.0 [with a flag](../administration/feature_flags.md) named `notify_compromised_passwords`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/188723) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `notify_compromised_passwords`. Disabled by default.
 
 {{< /history >}}
 

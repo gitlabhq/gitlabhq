@@ -8,17 +8,13 @@ describe('ThResizable', () => {
 
   const findResizeHandle = () => wrapper.findByTestId('resize-handle');
 
-  const createComponent = (props = {}) => {
+  const createComponent = () => {
     table = document.createElement('table');
     table.innerHTML = '<thead><tr><th></th></tr></thead>';
 
     document.body.appendChild(table);
 
     wrapper = mountExtended(ThResizable, {
-      propsData: {
-        table,
-        ...props,
-      },
       attachTo: table.querySelector('th'),
     });
 

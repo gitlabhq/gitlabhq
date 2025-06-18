@@ -72,7 +72,7 @@ A deploy token's scope determines the actions it can perform.
 
 {{< history >}}
 
-- Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
+- Support for `gitlab-deploy-token` at the group level [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/214014) in GitLab 15.1 [with a flag](../../../administration/feature_flags/_index.md) named `ci_variable_for_group_gitlab_deploy_token`. Enabled by default.
 - [Feature flag `ci_variable_for_group_gitlab_deploy_token`](https://gitlab.com/gitlab-org/gitlab/-/issues/363621) removed in GitLab 15.4.
 
 {{< /history >}}

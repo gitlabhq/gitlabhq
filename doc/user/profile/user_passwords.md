@@ -93,7 +93,7 @@ GitLab Self-Managed instances can configure the following additional password re
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23610) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `block_weak_passwords`, weak passwords aren't accepted. Disabled by default on GitLab Self-Managed.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23610) in GitLab 15.4 [with a flag](../../administration/feature_flags/_index.md) named `block_weak_passwords`, weak passwords aren't accepted. Disabled by default on GitLab Self-Managed.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/363445) on GitLab.com in GitLab 15.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363445) and enabled on GitLab Self-Managed in GitLab 15.7. Feature flag `block_weak_passwords` removed.
 

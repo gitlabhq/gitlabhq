@@ -420,7 +420,7 @@ The GitLab Conan repository supports the following Conan CLI commands:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178728) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `parse_conan_metadata_on_upload`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/178728) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `parse_conan_metadata_on_upload`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186292) in GitLab 17.11. Feature flag `parse_conan_metadata_on_upload` removed.
 
 {{< /history >}}
@@ -441,7 +441,7 @@ Packages uploaded before this feature was enabled (GitLab 17.10) do not have the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 18.1 [with a flag](../../../administration/feature_flags.md) named `conan_package_revisions_support`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `conan_package_revisions_support`. Disabled by default.
 
 {{< /history >}}
 

@@ -49,7 +49,7 @@ scheduled yet.
 Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 for updates.
 
-If you need more time to migrate to GitLab agent, you can [enable the feature flag](../../../administration/feature_flags.md)
+If you need more time to migrate to GitLab agent, you can [enable the feature flag](../../../administration/feature_flags/_index.md)
 named `certificate_based_clusters`, which was [introduced in GitLab 15.0](../../../update/deprecations.md#gitlab-self-managed-certificate-based-integration-with-kubernetes).
 This feature flag re-enables the certificate-based Kubernetes integration.
 

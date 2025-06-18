@@ -2,10 +2,9 @@
 
 # File Download Service allows remote file download into tmp directory.
 #
-# @param configuration [BulkImports::Configuration] Config object containing url and access token
+# @param context [BulkImports::Context] Context object containing url and access token
 # @param relative_url [String] Relative URL to download the file from
 # @param tmpdir [String] Temp directory to store downloaded file to. Must be located under `Dir.tmpdir`.
-# @param file_size_limit [Integer] Maximum allowed file size. If 0, no limit will apply.
 # @param allowed_content_types [Array<String>] Allowed file content types
 # @param filename [String] Name of the file to download, if known. Use remote filename if none given.
 module BulkImports
@@ -19,17 +18,15 @@ module BulkImports
     LAST_CHUNK_CONTEXT_CHAR_LIMIT = 200
 
     def initialize(
-      configuration:,
+      context:,
       relative_url:,
       tmpdir:,
-      file_size_limit: default_file_size_limit,
       allowed_content_types: DEFAULT_ALLOWED_CONTENT_TYPES,
       filename: nil)
-      @configuration = configuration
+      @context = context
       @relative_url = relative_url
       @filename = filename
       @tmpdir = tmpdir
-      @file_size_limit = file_size_limit
       @allowed_content_types = allowed_content_types
       @remote_content_validated = false
     end
@@ -48,13 +45,12 @@ module BulkImports
 
     private
 
-    attr_reader :configuration, :relative_url, :tmpdir, :file_size_limit, :allowed_content_types,
-      :response_headers, :response_code
+    attr_reader :context, :relative_url, :tmpdir, :allowed_content_types, :response_headers, :response_code
 
     def download_file
-      File.open(filepath, 'wb') do |file|
-        bytes_downloaded = 0
+      bytes_downloaded = 0
 
+      File.open(filepath, 'wb') do |file|
         http_client.stream(relative_url) do |chunk|
           next if bytes_downloaded == 0 && [301, 302, 303, 307, 308].include?(chunk.code)
 
@@ -83,6 +79,8 @@ module BulkImports
 
           file.write(chunk)
         end
+
+        log_oversized_file(bytes_downloaded)
       end
     rescue StandardError => e
       FileUtils.rm_f(filepath)
@@ -101,10 +99,22 @@ module BulkImports
       raise ServiceError, message
     end
 
+    def log_oversized_file(size)
+      return unless application_file_size_limit > 0 && size.to_i > application_file_size_limit
+
+      logger.info(
+        message: 'File size allowed to exceed download file size limit',
+        filename: filename,
+        bulk_import_id: context.bulk_import_id,
+        download_file_size: size,
+        download_file_size_limit: application_file_size_limit
+      )
+    end
+
     def http_client
       @http_client ||= BulkImports::Clients::HTTP.new(
-        url: configuration.url,
-        token: configuration.access_token
+        url: context.configuration.url,
+        token: context.configuration.access_token
       )
     end
 
@@ -138,8 +148,12 @@ module BulkImports
         outbound_local_requests_allowlist: ::Gitlab::CurrentSettings.outbound_local_requests_whitelist) # rubocop:disable Naming/InclusiveLanguage -- existing setting
     end
 
-    def default_file_size_limit
-      Gitlab::CurrentSettings.current_application_settings.bulk_import_max_download_file_size.megabytes
+    def file_size_limit
+      @limit ||= context.override_file_size_limit? ? 0 : application_file_size_limit
+    end
+
+    def application_file_size_limit
+      @app_limit ||= Gitlab::CurrentSettings.current_application_settings.bulk_import_max_download_file_size.megabytes
     end
 
     # Before logging, we truncate the context to a reasonable length and scrub

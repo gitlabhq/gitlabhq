@@ -100,7 +100,7 @@ sequenceDiagram
 
 1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
 
-   > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag](../../../user/feature_flags.md), enabled by default.
+   > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37911) in GitLab 15.0 [with a flag](../../../administration/feature_flags/_index.md), enabled by default.
    > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/295289) in GitLab 15.2. [Feature flag `measure_service_ping_metric_collection`](https://gitlab.com/gitlab-org/gitlab/-/issues/358128) removed.
 
 ```ruby

@@ -17,10 +17,10 @@ title: Comment templates
 
 - Feature flag `saved_replies` [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119468) in GitLab 16.0.
 - [Feature flag `saved_replies` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123363) in GitLab 16.6.
-- Saved replies for groups [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `group_saved_replies_flag`. Disabled by default.
+- Saved replies for groups [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `group_saved_replies_flag`. Disabled by default.
 - Saved replies for groups [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/440817) on GitLab.com and GitLab Self-Managed in GitLab 16.11.
 - Saved replies for groups [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/504028) in GitLab 17.8. Feature flag `group_saved_replies_flag` removed.
-- Saved replies for projects [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `project_saved_replies_flag`. Enabled by default.
+- Saved replies for projects [introduced](https://gitlab.com/groups/gitlab-org/-/epics/12669) in GitLab 17.0 [with a flag](../../administration/feature_flags/_index.md) named `project_saved_replies_flag`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/504028) in GitLab 17.8. Feature flag `project_saved_replies_flag` removed.
 
 {{< /history >}}

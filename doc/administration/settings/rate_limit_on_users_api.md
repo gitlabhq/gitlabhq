@@ -14,7 +14,7 @@ title: Rate limits on Users API
 
 {{< history >}}
 
-- Rate limits for Users API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 with a [flag](../feature_flags.md) named `rate_limiting_user_endpoints`. Disabled by default.
+- Rate limits for Users API [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/452349) in GitLab 17.1 with a [flag](../feature_flags/_index.md) named `rate_limiting_user_endpoints`. Disabled by default.
 - [Added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181054) customizable rate limits in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/524831) in GitLab 18.1. Feature flag `rate_limiting_user_endpoints` removed.
 

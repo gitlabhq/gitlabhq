@@ -47,7 +47,7 @@ For additional information see [External participants](external_participants.md)
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags/_index.md) named `convert_to_ticket_quick_action`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
 
 {{< /history >}}
@@ -94,7 +94,7 @@ To view Service Desk issues:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags.md) named `service_desk_vue_list`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/413092) in GitLab 16.1 [with a flag](../../../administration/feature_flags/_index.md) named `service_desk_vue_list`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/415385) in GitLab 16.10. Feature flag `service_desk_vue_list` removed.
 
 {{< /history >}}
@@ -148,7 +148,7 @@ when you [filter the list of issues](#filter-the-list-of-issues) by:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811) in GitLab 15.9 [with a flag](../../../administration/feature_flags.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109811) in GitLab 15.9 [with a flag](../../../administration/feature_flags/_index.md) named `service_desk_html_to_text_email_handler`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116809) in GitLab 15.11. Feature flag `service_desk_html_to_text_email_handler` removed.
 
 {{< /history >}}
@@ -164,7 +164,7 @@ HTML emails show HTML formatting, such as:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../../administration/feature_flags.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 15.8 [with a flag](../../../administration/feature_flags/_index.md) named `service_desk_new_note_email_native_attachments`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/386860) in GitLab 15.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/11733) in GitLab 16.6. Feature flag `service_desk_new_note_email_native_attachments` removed.
 
@@ -179,7 +179,7 @@ In GitLab 15.9 and earlier, uploads to a comment are sent as links in the email.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `convert_to_ticket_quick_action`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.9 [with a flag](../../../administration/feature_flags/_index.md) named `convert_to_ticket_quick_action`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433376) in GitLab 16.10. Feature flag `convert_to_ticket_quick_action` removed.
 
 {{< /history >}}

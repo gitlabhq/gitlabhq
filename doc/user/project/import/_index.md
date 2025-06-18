@@ -102,9 +102,9 @@ difficult, but several tools exist including:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
-- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with flags](../../../administration/feature_flags.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443557) in GitLab 17.4 for direct transfer [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bulk_import_importer_user_mapping`. Disabled by default.
+- Introduced in GitLab 17.6 for [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/467084) [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `gitea_user_mapping`, and for [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/466355) with flags named `importer_user_mapping` and `github_user_mapping`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466356) in GitLab 17.7 for Bitbucket Server [with flags](../../../administration/feature_flags/_index.md) named `importer_user_mapping` and `bitbucket_server_user_mapping`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/472735) in GitLab 17.7 for direct transfer.
 - Enabled on GitLab.com in GitLab 17.7 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
 - Enabled on GitLab Self-Managed in GitLab 17.8 for [Bitbucket Server](https://gitlab.com/gitlab-org/gitlab/-/issues/509897), [Gitea](https://gitlab.com/gitlab-org/gitlab/-/issues/498390), and [GitHub](https://gitlab.com/gitlab-org/gitlab/-/issues/499993).
@@ -484,7 +484,7 @@ For more information, see [skip confirmation when administrators reassign placeh
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455901) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `importer_user_mapping_reassignment_csv`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/478022) in GitLab 18.0. Feature flag `importer_user_mapping_reassignment_csv` removed.
 
 {{< /history >}}

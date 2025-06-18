@@ -89,10 +89,10 @@ same manner as the standard repositories, and is more prone to the refs issue.
 {{< alert type="flag" >}}
 
 On GitLab Self-Managed, by default this feature is not available. To make it available,
-an administrator can [enable the feature flag](../../administration/feature_flags.md) named `parallel_push_checks`.
+an administrator can [enable the feature flag](../../administration/feature_flags/_index.md) named `parallel_push_checks`.
 On GitLab.com, by default this feature is not available. To make it available
 per project, ask GitLab.com administrator to
-[enable the feature flag](../../administration/feature_flags.md) named `parallel_push_checks`.
+[enable the feature flag](../../administration/feature_flags/_index.md) named `parallel_push_checks`.
 You should not use this feature for production environments. On GitLab Dedicated, this feature is
 not available.
 

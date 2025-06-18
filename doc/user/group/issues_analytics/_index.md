@@ -60,7 +60,7 @@ You can also access issue analytics from the [Value Streams Dashboard](../../ana
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233905/) in GitLab 16.3 [with a flag](../../../administration/feature_flags.md) named `issues_completed_analytics_feature_flag`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/233905/) in GitLab 16.3 [with a flag](../../../administration/feature_flags/_index.md) named `issues_completed_analytics_feature_flag`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/437542) in GitLab 16.8.
 - [Feature flag `issues_completed_analytics_feature_flag`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146766) removed in GitLab 16.10.
 

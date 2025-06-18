@@ -44,7 +44,6 @@ export default {
       items,
       fields: this.config.fields,
       sorter: new Sorter(items),
-      table: null,
       isCollapsed: false,
     };
   },
@@ -61,8 +60,6 @@ export default {
   },
   async mounted() {
     await this.$nextTick();
-
-    this.table = this.$refs.table;
   },
 };
 </script>
@@ -75,7 +72,7 @@ export default {
     is-collapsible
     persist-collapsed-state
     class="!gl-mt-5"
-    :body-class="{ '!gl-my-[-1px] !gl-mx-0 !gl-p-0': items.length || isPreview }"
+    :body-class="{ '!gl-m-0 !gl-p-0': items.length || isPreview }"
     @collapsed="isCollapsed = true"
     @expanded="isCollapsed = false"
   >
@@ -83,10 +80,14 @@ export default {
       <glql-actions :show-copy-contents="showCopyContentsAction" :modal-title="title" />
     </template>
     <div class="gl-table-shadow">
-      <table ref="table" class="!gl-my-0 gl-overflow-y-hidden">
+      <table class="!gl-my-0 gl-overflow-y-hidden">
         <thead class="gl-text-sm">
-          <tr v-if="table">
-            <th-resizable v-for="(field, fieldIndex) in fields" :key="field.key" :table="table">
+          <tr>
+            <th-resizable
+              v-for="(field, fieldIndex) in fields"
+              :key="field.key"
+              class="gl-whitespace-nowrap !gl-border-default !gl-bg-subtle !gl-px-5 !gl-py-3 !gl-text-subtle dark:!gl-bg-strong"
+            >
               <div
                 :data-testid="`column-${fieldIndex}`"
                 class="gl-cursor-pointer"
@@ -101,10 +102,18 @@ export default {
             </th-resizable>
           </tr>
         </thead>
-        <tbody class="!gl-bg-subtle">
+        <tbody>
           <template v-if="isPreview">
             <tr v-for="i in 5" :key="i">
-              <td v-for="field in fields" :key="field.key">
+              <td
+                v-for="field in fields"
+                :key="field.key"
+                class="!gl-border-default !gl-px-5 !gl-py-3 gl-transition-colors"
+                :class="{
+                  'gl-bg-subtle dark:gl-bg-strong': i % 2 === 1,
+                  'dark:gl-bg-subtle': i % 2 === 0,
+                }"
+              >
                 <gl-skeleton-loader :width="120" :lines="1" />
               </td>
             </tr>
@@ -115,7 +124,15 @@ export default {
               :key="item.id"
               :data-testid="`table-row-${itemIndex}`"
             >
-              <td v-for="field in fields" :key="field.key">
+              <td
+                v-for="field in fields"
+                :key="field.key"
+                class="!gl-border-default !gl-px-5 !gl-py-3 gl-transition-colors"
+                :class="{
+                  'gl-bg-subtle dark:gl-bg-strong': itemIndex % 2 === 1,
+                  'dark:gl-bg-subtle': itemIndex % 2 === 0,
+                }"
+              >
                 <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
                 <component :is="presenter.forField(item, field.key, { displayAsLink: true })" />
               </td>

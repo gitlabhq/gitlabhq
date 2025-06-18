@@ -246,7 +246,7 @@ The following operational features are not available:
 
 ### Feature flags
 
-GitLab uses [feature flags](../../user/feature_flags.md) to support the development and rollout of new or experimental features.
+GitLab uses [feature flags](../../administration/feature_flags/_index.md) to support the development and rollout of new or experimental features.
 In GitLab Dedicated:
 
 - Features behind feature flags that are **enabled by default** are available.

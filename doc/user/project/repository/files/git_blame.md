@@ -21,7 +21,7 @@ commit hash.
 
 {{< history >}}
 
-- Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flag](../../../../administration/feature_flags.md) named `inline_blame`. Disabled by default.
+- Viewing blame directly in the file view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430950) in GitLab 16.7 [with flag](../../../../administration/feature_flags/_index.md) named `inline_blame`. Disabled by default.
 
 {{< /history >}}
 
@@ -64,7 +64,7 @@ To see earlier revisions of a specific line:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514684) in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `blame_ignore_revs`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514684) in GitLab 17.10 [with a flag](../../../../administration/feature_flags/_index.md) named `blame_ignore_revs`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514325) in GitLab 17.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/525095) in GitLab 17.11. Feature flag `blame_ignore_revs` removed.
 {{< /history >}}

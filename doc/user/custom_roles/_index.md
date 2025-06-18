@@ -14,14 +14,14 @@ title: Custom roles
 
 {{< history >}}
 
-- [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../../administration/feature_flags.md) named `customizable_roles`.
+- [Custom roles feature introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106256) in GitLab 15.7 [with a flag](../../administration/feature_flags/_index.md) named `customizable_roles`.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110810) in GitLab 15.9.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114524) in GitLab 15.10.
 - Ability to create and remove a custom role with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393235) in GitLab 16.4.
 - Ability to use the UI to add a user to your group with a custom role, change a user's custom role, or remove a custom role from a group member [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393239) in GitLab 16.7.
 - Ability to create and remove an instance-wide custom role on GitLab Self-Managed [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/141562) in GitLab 16.9.
-- Custom admin roles [introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `custom_ability_read_admin_dashboard`.
-- Ability to manage custom admin roles with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `custom_admin_roles`. Disabled by default.
+- Custom admin roles [introduced](https://gitlab.com/groups/gitlab-org/-/epics/15854) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `custom_ability_read_admin_dashboard`.
+- Ability to manage custom admin roles with the UI [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181346) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `custom_admin_roles`. Disabled by default.
 
 {{< /history >}}
 

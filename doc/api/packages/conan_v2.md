@@ -14,7 +14,7 @@ title: Conan v2 API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `conan_package_revisions_support`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519741) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `conan_package_revisions_support`. Disabled by default.
 
 {{< /history >}}
 

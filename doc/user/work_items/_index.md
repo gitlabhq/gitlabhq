@@ -43,7 +43,7 @@ GitLab supports the following work item types:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `work_item_planning_view`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513092) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `work_item_planning_view`. Disabled by default.
 
 {{< /history >}}
 
@@ -67,8 +67,8 @@ When you enable this feature, it:
 
 Prerequisites:
 
-- In the Free tier, your administrator must enable the [flag](../../administration/feature_flags.md) named `namespace_level_work_items`.
-- In the Premium and Ultimate tiers, your administrator must enable the [flag](../../administration/feature_flags.md) named `work_item_epics`.
+- In the Free tier, your administrator must enable the [flag](../../administration/feature_flags/_index.md) named `namespace_level_work_items`.
+- In the Premium and Ultimate tiers, your administrator must enable the [flag](../../administration/feature_flags/_index.md) named `work_item_epics`.
 
 To view work items for a project or group:
 

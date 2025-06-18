@@ -16,7 +16,7 @@ title: Set up GitLab Duo with Amazon Q
 
 {{< history >}}
 
-- Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `amazon_q_integration`. Disabled by default.
+- Introduced as an [experiment](../../policy/development_stages_support.md#experiment) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `amazon_q_integration`. Disabled by default.
 - Feature flag `amazon_q_integration` removed in GitLab 17.8.
 - Generally available in GitLab 17.11.
 

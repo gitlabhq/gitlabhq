@@ -693,7 +693,7 @@ GET /groups/:id/integrations/external-wiki
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `git_guardian_integration`.
+On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `git_guardian_integration`.
 On GitLab.com, this feature is not available. On GitLab Dedicated, this feature is available.
 
 {{< /alert >}}

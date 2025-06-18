@@ -15,7 +15,7 @@ title: Merge request dependencies
 
 {{< history >}}
 
-- Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `remove_mr_blocking_constraints`. Disabled by default.
+- Support for complex merge dependencies [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/11393) in GitLab 16.6 [with a flag](../../../administration/feature_flags/_index.md) named `remove_mr_blocking_constraints`. Disabled by default.
 - Support for complex merge dependencies [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136775) in GitLab 16.7. Feature flag `remove_mr_blocking_constraints` removed.
 
 {{< /history >}}

@@ -446,14 +446,14 @@ Threads on lines that don't change and top-level resolvable threads are not reso
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132678) in GitLab 16.5 [with a flag](../../../administration/feature_flags/_index.md) named `notifications_todos_buttons`. Disabled by default.
 - [Issues, incidents](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133474), and [epics](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133881) also updated.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `notifications_todos_buttons`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags/_index.md) named `notifications_todos_buttons`.
 On GitLab.com and GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}

@@ -185,7 +185,7 @@ The first step is to benchmark the quality and stability, between groups and pro
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags.md) named `dora_configuration`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96561) in GitLab 15.4 [with a flag](../../administration/feature_flags/_index.md) named `dora_configuration`. Disabled by default. This feature is an [experiment](../../policy/development_stages_support.md).
 
 {{< /history >}}
 

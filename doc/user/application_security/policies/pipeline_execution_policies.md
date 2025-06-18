@@ -14,7 +14,7 @@ title: Pipeline execution policies
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags/_index.md) named `pipeline_execution_policy_type`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/454278) in GitLab 17.3. Feature flag `pipeline_execution_policy_type` removed.
 
 {{< /history >}}
@@ -605,7 +605,7 @@ the only jobs that run are the pipeline execution policy jobs.
 
 {{< history >}}
 
-- Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags.md) named `policies_always_override_project_ci`. Enabled by default.
+- Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `policies_always_override_project_ci`. Enabled by default.
 - Updated handling of workflow rules [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512877) in GitLab 17.10. Feature flag `policies_always_override_project_ci` removed.
 
 {{< /history >}}

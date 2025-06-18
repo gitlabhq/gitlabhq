@@ -47,7 +47,7 @@ to store the token, like HashiCorp Vault or the Keeper Secrets Manager Terraform
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 {{< /history >}}
 
@@ -73,7 +73,7 @@ For more information, see the history.
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags.md) named `buffered_token_expiration_limit`. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461901) the maximum allowable lifetime limit to an increased value of 400 days in GitLab 17.6 [with a flag](../../administration/feature_flags/_index.md) named `buffered_token_expiration_limit`. Disabled by default.
 
 {{< /history >}}
 

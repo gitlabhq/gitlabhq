@@ -582,7 +582,7 @@ You can use some [predefined CI/CD variables](../variables/predefined_variables.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412473) in GitLab 16.8 [with a flag](../../administration/feature_flags/_index.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
 
@@ -622,7 +622,7 @@ In this example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
 
 {{< /history >}}
@@ -669,7 +669,7 @@ In this example, if `job2` fails, `job1` is canceled if it is still running and 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `pipeline_name`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372538) in GitLab 15.5 [with a flag](../../administration/feature_flags/_index.md) named `pipeline_name`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376095) in GitLab 15.8. Feature flag `pipeline_name` removed.
 
@@ -849,10 +849,10 @@ When the branch is something else:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436467) in GitLab 16.8 [with a flag](../../administration/feature_flags/_index.md) named `ci_workflow_auto_cancel_on_new_commit`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/434676) in GitLab 16.10. Feature flag `ci_workflow_auto_cancel_on_new_commit` removed.
-- `on_job_failure` option for `workflow:rules` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
+- `on_job_failure` option for `workflow:rules` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/23605) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `auto_cancel_pipeline_on_job_failure`. Disabled by default.
 - `on_job_failure` option for `workflow:rules` [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/433163) in GitLab 16.11. Feature flag `auto_cancel_pipeline_on_job_failure` removed.
 
 {{< /history >}}
@@ -2663,7 +2663,7 @@ rubocop:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 {{< /history >}}
@@ -2682,7 +2682,7 @@ at certain stages of job execution, like before retrieving the Git repository.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/356850) in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_hooks_pre_get_sources_script`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/381840) in GitLab 15.10. Feature flag `ci_hooks_pre_get_sources_script` removed.
 
 {{< /history >}}
@@ -2728,7 +2728,7 @@ job1:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/development_stages_support.md).
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142054) in GitLab 16.9 [with a flag](../../administration/feature_flags/_index.md) named `google_cloud_support_feature_flag`. This feature is in [beta](../../policy/development_stages_support.md).
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150472) in GitLab 17.1. Feature flag `google_cloud_support_feature_flag` removed.
 
 {{< /history >}}
@@ -2982,7 +2982,7 @@ arm-sql-job:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags/_index.md) named `ci_docker_image_pull_policy`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
 - Requires GitLab Runner 15.1 or later.
@@ -3807,7 +3807,7 @@ The publish path specified must be relative to the build root.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../user/feature_flags.md) named `pages_multiple_versions_setting`, disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129534) in GitLab 16.7 as an [experiment](../../policy/development_stages_support.md) [with a flag](../../administration/feature_flags/_index.md) named `pages_multiple_versions_setting`, disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/422145) in GitLab 17.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/507423) to allow periods in GitLab 17.8.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/487161) in GitLab 17.9. Feature flag `pages_multiple_versions_setting` removed.
@@ -4409,7 +4409,7 @@ test:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags.md) named `ci_retry_on_exit_codes`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.10 [with a flag](../../administration/feature_flags/_index.md) named `ci_retry_on_exit_codes`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/430037) in GitLab 16.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/452412) in GitLab 17.5. Feature flag `ci_retry_on_exit_codes` removed.
 
@@ -4670,7 +4670,7 @@ In this example, both jobs have the same behavior.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags/_index.md) named `ci_rules_changes_compare`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366412) in GitLab 15.5. Feature flag `ci_rules_changes_compare` removed.
 - Support for CI/CD variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369916) in GitLab 17.2.
 
@@ -4783,7 +4783,7 @@ In this example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 17.0. Feature flag `ci_support_rules_exists_paths_and_project` removed.
 
 {{< /history >}}
@@ -4827,7 +4827,7 @@ In this example, both jobs have the same behavior.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 16.11 [with a flag](../../administration/feature_flags/_index.md) named `ci_support_rules_exists_paths_and_project`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/386040) in GitLab 17.0. Feature flag `ci_support_rules_exists_paths_and_project` removed.
 
 {{< /history >}}
@@ -4948,7 +4948,7 @@ If the rule matches, then the job is a manual job with `allow_failure: true`.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../user/feature_flags.md) named `introduce_rules_with_needs`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31581) in GitLab 16.0 [with a flag](../../administration/feature_flags/_index.md) named `introduce_rules_with_needs`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/408871) in GitLab 16.2. Feature flag `introduce_rules_with_needs` removed.
 
 {{< /history >}}
@@ -5069,7 +5069,7 @@ job:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440487) in GitLab 17.3 [with a flag](../../administration/feature_flags/_index.md) named `pipeline_run_keyword`. Disabled by default. Requires GitLab Runner 17.1.
 - Feature flag `pipeline_run_keyword` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/471925) in GitLab 17.5.
 
 {{< /history >}}
@@ -5506,7 +5506,7 @@ arm-sql-job:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags.md) named `ci_docker_image_pull_policy`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21619) in GitLab 15.1 [with a flag](../../administration/feature_flags/_index.md) named `ci_docker_image_pull_policy`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) in GitLab 15.4. [Feature flag `ci_docker_image_pull_policy`](https://gitlab.com/gitlab-org/gitlab/-/issues/363186) removed.
 
@@ -6330,7 +6330,7 @@ variables:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/353991) in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `ci_raw_variables_in_yaml_config`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.6.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/375034) in GitLab 15.8. Feature flag `ci_raw_variables_in_yaml_config` removed.

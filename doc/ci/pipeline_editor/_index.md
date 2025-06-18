@@ -74,7 +74,7 @@ simulations in the [CI Lint tool](../yaml/lint.md#simulate-a-pipeline).
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `pipeline_editor_file_tree`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7064) in GitLab 15.0 [with a flag](../../administration/feature_flags/_index.md) named `pipeline_editor_file_tree`. Disabled by default.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357219) in GitLab 15.1.
 
 {{< /history >}}

@@ -1,3 +1,16 @@
+CREATE TABLE ai_usage_events
+(
+    `user_id` UInt64,
+    `event` UInt16,
+    `timestamp` DateTime64(6, 'UTC'),
+    `namespace_path` String DEFAULT '0/',
+    `extras` String DEFAULT '{}'
+)
+ENGINE = ReplacingMergeTree
+PARTITION BY toYYYYMM(timestamp)
+ORDER BY (namespace_path, event, timestamp, user_id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE ci_finished_builds
 (
     `id` UInt64 DEFAULT 0,

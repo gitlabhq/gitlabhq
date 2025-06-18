@@ -50,6 +50,30 @@ export default {
       },
       deep: true,
     },
+    /**
+     * Data flow:
+     * 1. Initial: created/mounted → mountedWithCss becomes true → initGridStack() → grid.load(gridConfig) →
+     *    grid.getGridItems() → initGridPanelSlots → gridPanels populated with DOM references
+     * 2. Updates: value.panels changes → two parallel paths:
+     *    a. gridConfig changes → grid.load() updates grid layout (but not gridPanels)
+     *    b. this watcher updates gridPanels with new panel properties
+     */
+    'value.panels': {
+      handler(newPanels) {
+        if (this.gridPanels.length === 0) return;
+
+        // Only update panels that have changed to improve performance
+        newPanels.forEach((updatedPanel) => {
+          const panel = this.gridPanels.find((p) => p.id === updatedPanel.id);
+          if (panel) {
+            // Exclude `gridAttributes` from being updated
+            const { gridAttributes, ...panelPropsWithoutGridAttributes } = updatedPanel;
+            panel.props = { ...panelPropsWithoutGridAttributes };
+          }
+        });
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.mounted = true;

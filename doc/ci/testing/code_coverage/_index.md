@@ -188,7 +188,7 @@ For language-specific configuration details see:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags.md) named `ci_child_pipeline_coverage_reports`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363301) in GitLab 15.1 [with a flag](../../../administration/feature_flags/_index.md) named `ci_child_pipeline_coverage_reports`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/363557) in GitLab 15.2. Feature flag `ci_child_pipeline_coverage_reports` removed.
 
 {{< /history >}}

@@ -40,7 +40,7 @@ that are coded across multiple repositories.
 
 | Page | Details | Owner |
 |------|---------|-------|
-| [All feature flags in GitLab](../../../user/feature_flags.md) | [Generated during docs build](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#generate-the-feature-flag-tables) | [Technical Writing](https://handbook.gitlab.com/handbook/product/ux/technical-writing/) |
+| [All feature flags in GitLab](../../../administration/feature_flags/list.md) | [Generated during docs build](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/doc/raketasks.md#generate-the-feature-flag-tables) | [Technical Writing](https://handbook.gitlab.com/handbook/product/ux/technical-writing/) |
 | [GitLab Runner feature flags](https://docs.gitlab.com/runner/configuration/feature-flags.html) | [Page source](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/ec6e1797d2173a95c8ac7f726bd62f6f110b7211/docs/configuration/feature-flags.md?plain=1#L39) | [Runner](https://handbook.gitlab.com/handbook/engineering/development/ops/verify/runner/) |
 | [GitLab Runner Kubernetes API settings](https://docs.gitlab.com/runner/executors/kubernetes/) | Generated with [mage](https://gitlab.com/gitlab-org/gitlab-runner/-/blob/main/.gitlab/ci/qa.gitlab-ci.yml#L133) | [Runner](https://handbook.gitlab.com/handbook/engineering/development/ops/verify/runner/) |
 | [Deprecations and removals by version](../../../update/deprecations.md) | [Update the deprecations and removals documentation](../../deprecation_guidelines/_index.md#update-the-deprecations-and-removals-documentation) |  |

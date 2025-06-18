@@ -75,8 +75,8 @@ For more information, see [issue 477333](https://gitlab.com/gitlab-org/gitlab/-/
 
 {{< history >}}
 
-- Restricting global search to authenticated users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a flag](../../administration/feature_flags.md) named `block_anonymous_global_searches`. Disabled by default.
-- Allowing search for unauthenticated users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138975) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `allow_anonymous_searches`. Enabled by default.
+- Restricting global search to authenticated users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41041) in GitLab 13.4 [with a flag](../../administration/feature_flags/_index.md) named `block_anonymous_global_searches`. Disabled by default.
+- Allowing search for unauthenticated users [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138975) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `allow_anonymous_searches`. Enabled by default.
 - Restricting global search to authenticated users [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186727) in GitLab 17.11. Feature flag `block_anonymous_global_searches` removed.
 - Allowing search for unauthenticated users [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190090) in GitLab 18.0. Feature flag `allow_anonymous_searches` removed.
 
@@ -143,7 +143,7 @@ To disable one or more global search scopes:
 
 {{< history >}}
 
-- Support for partial matches in issue search [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `issues_full_text_search`. Disabled by default.
+- Support for partial matches in issue search [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/71913) in GitLab 14.9 [with a flag](../../administration/feature_flags/_index.md) named `issues_full_text_search`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124703) in GitLab 16.2. Feature flag `issues_full_text_search` removed.
 
 {{< /history >}}
@@ -170,7 +170,7 @@ However, the query matches all possible variations of the string (for example, `
 
 {{< history >}}
 
-- Showing only users from authorized projects and groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442091) in GitLab 17.10 [with flags](../../administration/feature_flags.md) named `users_search_scoped_to_authorized_namespaces_advanced_search`, `users_search_scoped_to_authorized_namespaces_basic_search`, and `users_search_scoped_to_authorized_namespaces_basic_search_by_ids`. Disabled by default.
+- Showing only users from authorized projects and groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442091) in GitLab 17.10 [with flags](../../administration/feature_flags/_index.md) named `users_search_scoped_to_authorized_namespaces_advanced_search`, `users_search_scoped_to_authorized_namespaces_basic_search`, and `users_search_scoped_to_authorized_namespaces_basic_search_by_ids`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/185577) in GitLab 17.11. Feature flags `users_search_scoped_to_authorized_namespaces_advanced_search`, `users_search_scoped_to_authorized_namespaces_basic_search`, and `users_search_scoped_to_authorized_namespaces_basic_search_by_ids` removed.
 
 {{< /history >}}
@@ -217,7 +217,7 @@ The results are displayed. To filter the results, on the left sidebar, select a 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) named `full_path_project_search`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108906) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `full_path_project_search`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114932) in GitLab 15.11. Feature flag `full_path_project_search` removed.
 
 {{< /history >}}
@@ -234,7 +234,7 @@ For example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `search_projects_hide_archived` for project search. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121981) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `search_projects_hide_archived` for project search. Disabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10957) in GitLab 16.6 for all search scopes.
 
 {{< /history >}}

@@ -11,7 +11,7 @@ Learn how to administer GitLab Self-Managed.
 {{< cards >}}
 
 - [Get started](get_started.md)
-- [All feature flags](../user/feature_flags.md)
+- [All feature flags](feature_flags/list.md)
 - [Authentication and authorization](auth/_index.md)
 - [Configure GitLab](configure.md)
 - [Update your Admin area settings](settings/_index.md)

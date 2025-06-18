@@ -35,6 +35,7 @@ RSpec.describe 'Database schema',
       ai_code_suggestion_events: %w[user_id],
       ai_duo_chat_events: %w[user_id],
       ai_troubleshoot_job_events: %w[user_id job_id],
+      ai_usage_events: %w[user_id],
       application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id
         eks_access_key_id],
       approvals: %w[user_id project_id],
@@ -414,6 +415,7 @@ RSpec.describe 'Database schema',
     # These pre-existing enums have limits > 2 bytes
     let(:ignored_limit_enums_map) do
       {
+        'Ai::UsageEvent' => %w[event],
         'Analytics::CycleAnalytics::Stage' => %w[start_event_identifier end_event_identifier],
         'Ci::Bridge' => %w[failure_reason],
         'Ci::Build' => %w[failure_reason],

@@ -118,7 +118,7 @@ to relieve stress on the database during ongoing downtime.
 ### Disable fair scheduling on instance runners
 
 When clearing a large backlog of jobs, you can temporarily enable the `ci_queueing_disaster_recovery_disable_fair_scheduling`
-[feature flag](../feature_flags.md). This flag disables fair scheduling
+[feature flag](../feature_flags/_index.md). This flag disables fair scheduling
 on instance runners, which reduces system resource usage on the `jobs/request` endpoint.
 
 When enabled, jobs are processed in the order they were put in the system, instead of
@@ -127,7 +127,7 @@ balanced across many projects.
 ### Disable compute quota enforcement
 
 To disable the enforcement of [compute minutes quotas](compute_minutes.md) on instance runners, you can temporarily
-enable the `ci_queueing_disaster_recovery_disable_quota` [feature flag](../feature_flags.md).
+enable the `ci_queueing_disaster_recovery_disable_quota` [feature flag](../feature_flags/_index.md).
 This flag reduces system resource usage on the `jobs/request` endpoint.
 
 When enabled, jobs created in the last hour can run in projects which are out of quota.

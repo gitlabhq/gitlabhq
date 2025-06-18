@@ -61,7 +61,7 @@ This project provides you with:
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81054) in GitLab 14.9. A [flag](../../../../administration/feature_flags/_index.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. Disabled by default.
 
 {{< /history >}}
 

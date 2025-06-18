@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Security and compliance related settings",
+  "type": "object",
+  "properties": {
+    "enforce_pipl_compliance": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "additionalProperties": false
+}

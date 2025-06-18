@@ -41,7 +41,7 @@ export default {
 </script>
 
 <template>
-  <ul class="gl-m-0 gl-w-full gl-list-none gl-p-0">
+  <ul class="gl-m-0 gl-w-full gl-list-none gl-p-0" data-testid="nested-groups-projects-list">
     <!-- eslint-disable-next-line vue/no-undef-components -->
     <nested-groups-projects-list-item
       v-for="item in items"

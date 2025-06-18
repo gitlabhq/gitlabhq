@@ -184,6 +184,6 @@ On GitLab SaaS:
 
 On GitLab Self-Managed:
 
-- [Enable the feature flag](../../administration/feature_flags.md) named `ci_unlock_pipelines_extra_low`.
+- [Enable the feature flag](../../administration/feature_flags/_index.md) named `ci_unlock_pipelines_extra_low`.
 
 For more information see the comment in [merge request 140318](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140318#note_1718600424).

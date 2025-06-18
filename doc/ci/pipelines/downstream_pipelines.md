@@ -334,7 +334,7 @@ as a list of cards on the right of the graph. From this view, you can:
 
 {{< history >}}
 
-- Retry from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
+- Retry from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags/_index.md) named `downstream_retry_action`. Disabled by default.
 - Retry from graph view [generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357406) in GitLab 15.1.
 
 {{< /history >}}
@@ -348,7 +348,7 @@ To retry failed and canceled jobs, select **Retry** ({{< icon name="retry" >}}):
 
 {{< history >}}
 
-- Retry trigger job from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367547) in GitLab 15.10 [with a flag](../../administration/feature_flags.md) named `ci_recreate_downstream_pipeline`. Disabled by default.
+- Retry trigger job from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/367547) in GitLab 15.10 [with a flag](../../administration/feature_flags/_index.md) named `ci_recreate_downstream_pipeline`. Disabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/6947) in GitLab 15.11. Feature flag `ci_recreate_downstream_pipeline` removed.
 
 {{< /history >}}
@@ -363,7 +363,7 @@ To recreate a downstream pipeline:
 
 {{< history >}}
 
-- Retry from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags.md) named `downstream_retry_action`. Disabled by default.
+- Retry from graph view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/354974) in GitLab 15.0 [with a flag](../../administration/feature_flags/_index.md) named `downstream_retry_action`. Disabled by default.
 - Retry from graph view [generally available and feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/357406) in GitLab 15.1.
 
 {{< /history >}}

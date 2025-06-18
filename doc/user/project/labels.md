@@ -37,7 +37,7 @@ Use three types of labels in GitLab:
 
 {{< history >}}
 
-- Real-time updates in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags.md) named `realtime_labels`, disabled by default.
+- Real-time updates in the sidebar [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/241538) in GitLab 14.10 with a [feature flag](../../administration/feature_flags/_index.md) named `realtime_labels`, disabled by default.
 - Real-time updates in the sidebar [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/357370#note_991987201) in GitLab 15.1.
 - Real-time updates in the sidebar [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/357370) in GitLab 15.5.
 - Real-time updates in the sidebar [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/103199) in GitLab 15.6. Feature flag `realtime_labels` removed.
@@ -552,7 +552,7 @@ To learn what happens when you sort by priority or label priority, see
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/408676) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `enforce_locked_labels_on_merge`. This feature is [beta](../../policy/development_stages_support.md). Disabled by default.
 - Minimum role to lock labels [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}

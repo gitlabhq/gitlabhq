@@ -81,5 +81,10 @@ export default {
 
 <template>
   <gl-loading-icon v-if="actionsLoading" size="sm" class="gl-p-3" />
-  <list-actions v-else :actions="actions" :available-actions="availableActions" />
+  <list-actions
+    v-else
+    data-testid="groups-projects-more-actions-dropdown"
+    :actions="actions"
+    :available-actions="availableActions"
+  />
 </template>

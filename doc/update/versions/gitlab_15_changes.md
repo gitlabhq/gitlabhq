@@ -959,7 +959,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
      kubectl get pods -l app=webservice -o custom-columns=webservice-image:{.spec.containers[0].image},workhorse-image:{.spec.containers[1].image}
      ```
 
-  1. [Enable the `active_support_hash_digest_sha256` feature flag](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
+  1. [Enable the `active_support_hash_digest_sha256` feature flag](../../administration/feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags) to switch `ActiveSupport::Digest` to use SHA256:
 
      1. [Start the rails console](../../administration/operations/rails_console.md)
      1. Enable the feature flag:
@@ -1006,9 +1006,9 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   For more information, see [issue 364763](https://gitlab.com/gitlab-org/gitlab/-/issues/364763).
 
 - The use of encrypted S3 buckets with storage-specific configuration is no longer supported after [removing support for using `background_upload`](../deprecations.md#background-upload-for-object-storage).
-- The [certificate-based Kubernetes integration (DEPRECATED)](../../user/infrastructure/clusters/_index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../../administration/feature_flags.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
+- The [certificate-based Kubernetes integration (DEPRECATED)](../../user/infrastructure/clusters/_index.md#certificate-based-kubernetes-integration-deprecated) is disabled by default, but you can be re-enable it through the [`certificate_based_clusters` feature flag](../../administration/feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags) until GitLab 16.0.
 - When you use the GitLab Helm Chart project with a custom `serviceAccount`, ensure it has `get` and `list` permissions for the `serviceAccount` and `secret` resources.
-- The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../../administration/feature_flags.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
+- The `FF_GITLAB_REGISTRY_HELPER_IMAGE` [feature flag](../../administration/feature_flags/_index.md#enable-or-disable-the-feature) is removed and helper images are always pulled from GitLab Registry.
 
 ### Linux package installations
 

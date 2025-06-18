@@ -131,6 +131,25 @@ describe('your work groups resolver', () => {
     });
   });
 
+  describe('when permission_integer is undefined', () => {
+    it('returns 0 for maxAccessLevel', async () => {
+      const {
+        data: {
+          groups: { nodes },
+        },
+      } = await makeQuery(
+        dashboardGroupsWithChildrenResponse.map((group) => ({
+          ...group,
+          permission_integer: undefined,
+        })),
+      );
+
+      expect(nodes[0]).toMatchObject({
+        maxAccessLevel: { integerValue: 0 },
+      });
+    });
+  });
+
   describe('when subgroup_count is undefined', () => {
     it('returns 0 for childrenCount', async () => {
       const {

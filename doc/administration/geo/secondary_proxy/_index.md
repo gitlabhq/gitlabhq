@@ -14,7 +14,7 @@ title: Geo proxying for secondary sites
 
 {{< history >}}
 
-- HTTP proxying for secondary sites with separate URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 14.5 [with a flag](../../feature_flags.md) named `geo_secondary_proxy_separate_urls`. Disabled by default.
+- HTTP proxying for secondary sites with separate URLs [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 14.5 [with a flag](../../feature_flags/_index.md) named `geo_secondary_proxy_separate_urls`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/346112) in GitLab 15.1.
 
 {{< /history >}}

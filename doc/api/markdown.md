@@ -20,7 +20,7 @@ Available only in APIv4.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `authenticate_markdown_api`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93727) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `authenticate_markdown_api`. Enabled by default.
 
 {{< /history >}}
 

@@ -51,7 +51,7 @@ export const renderDeleteSuccessToast = (item) => {
 
 export const renderLeaveSuccessToast = (group) => {
   toast(
-    sprintf(__("Left the '%{group_name}' group successfully."), {
+    sprintf(__('You left the "%{group_name}" group.'), {
       group_name: group.fullName,
     }),
   );

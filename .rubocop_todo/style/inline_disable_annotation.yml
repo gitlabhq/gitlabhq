@@ -1083,8 +1083,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/graphql/types/incident_management/oncall_shift_type.rb'
     - 'ee/app/graphql/types/member_roles/customizable_permission_type.rb'
     - 'ee/app/graphql/types/namespaces/namespace_ban_type.rb'
-    - 'ee/app/graphql/types/product_analytics/panel_type.rb'
-    - 'ee/app/graphql/types/product_analytics/visualization_type.rb'
     - 'ee/app/graphql/types/protected_environment_type.rb'
     - 'ee/app/graphql/types/protected_environments/approval_rule_for_summary_type.rb'
     - 'ee/app/graphql/types/protected_environments/approval_rule_type.rb'

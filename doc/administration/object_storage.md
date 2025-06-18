@@ -1356,7 +1356,7 @@ does not support this and [returns a 404 error when files are copied during the 
 
 The feature can be disabled using the `:s3_multithreaded_uploads`
 feature flag. To disable the feature, ask a GitLab administrator with
-[Rails console access](feature_flags.md#how-to-enable-and-disable-features-behind-flags)
+[Rails console access](feature_flags/_index.md#how-to-enable-and-disable-features-behind-flags)
 to run the following command:
 
 ```ruby

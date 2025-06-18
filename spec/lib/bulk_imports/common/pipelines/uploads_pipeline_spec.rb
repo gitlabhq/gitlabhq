@@ -88,12 +88,12 @@ RSpec.describe BulkImports::Common::Pipelines::UploadsPipeline, feature_category
         expect(BulkImports::FileDownloadService)
           .to receive(:new)
           .with(
-            configuration: context.configuration,
+            context: context,
             relative_url: "/#{entity.pluralized_name}/#{CGI.escape(entity.source_full_path)}/export_relations/download?relation=uploads",
             tmpdir: tmpdir,
             filename: 'uploads.tar.gz')
           .and_return(download_service)
-        expect(BulkImports::FileDecompressionService).to receive(:new).with(tmpdir: tmpdir, filename: 'uploads.tar.gz').and_return(decompression_service)
+        expect(BulkImports::FileDecompressionService).to receive(:new).with(tmpdir: tmpdir, filename: 'uploads.tar.gz', context: context).and_return(decompression_service)
         expect(BulkImports::ArchiveExtractionService).to receive(:new).with(tmpdir: tmpdir, filename: 'uploads.tar').and_return(extraction_service)
 
         expect(download_service).to receive(:execute)

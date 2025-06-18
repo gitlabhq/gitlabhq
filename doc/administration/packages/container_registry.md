@@ -1755,7 +1755,7 @@ The GitLab container registry should accept the same configuration that you are 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../feature_flags.md) named `set_delete_failed_container_repository`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/480652) in GitLab 17.5 [with a flag](../feature_flags/_index.md) named `set_delete_failed_container_repository`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/490354) in GitLab 17.6. Feature flag `set_delete_failed_container_repository` removed.
 
 {{< /history >}}

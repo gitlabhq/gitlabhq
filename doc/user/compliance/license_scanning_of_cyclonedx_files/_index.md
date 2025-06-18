@@ -14,7 +14,7 @@ title: License scanning of CycloneDX files
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384932) in GitLab 15.9 for GitLab SaaS [with two flags](../../../administration/feature_flags/_index.md) named `license_scanning_sbom_scanner` and `package_metadata_synchronization`. Both flags disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385176) in GitLab 16.4. Feature flags `license_scanning_sbom_scanner` and `package_metadata_synchronization` removed.
 - The legacy License Compliance analyzer (`License-Scanning.gitlab-ci.yml`) was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/439162) in GitLab 17.0.
 - In GitLab 17.5 we introduced the ability to use a CycloneDX report artifact as a source of data for license information behind the feature flag `license_scanning_with_sbom_licenses`, disabled by default.

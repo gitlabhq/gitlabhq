@@ -49,7 +49,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+      # RSPEC
 
       it "triggers an internal event" do
         expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
@@ -58,16 +58,6 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
         ).and increment_usage_metrics(
           'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly'
         )
-      end
-
-      --------------------------------------------------
-      # RSPEC -- SHARED EXAMPLE GROUP
-
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'internal_events_cli_used' }
-        let(:category) { described_class.name }
-        let(:project) { create(:project) }
-        let(:user) { create(:user) }
       end
 
       --------------------------------------------------
@@ -165,7 +155,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+      # RSPEC
 
       it "triggers an internal event" do
         expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
@@ -175,16 +165,6 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
           'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_monthly',
           'redis_hll_counters.count_distinct_user_id_from_internal_events_cli_used_weekly'
         )
-      end
-
-      --------------------------------------------------
-      # RSPEC -- SHARED EXAMPLE GROUP
-
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'internal_events_cli_used' }
-        let(:category) { described_class.name }
-        let(:project) { create(:project) }
-        let(:user) { create(:user) }
       end
 
       --------------------------------------------------
@@ -280,18 +260,10 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+      # RSPEC
 
       it "triggers an internal event" do
         expect { subject }.to trigger_internal_events('internal_events_cli_opened')
-      end
-
-      --------------------------------------------------
-      # RSPEC -- SHARED EXAMPLE GROUP
-
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'internal_events_cli_opened' }
-        let(:category) { described_class.name }
       end
 
       --------------------------------------------------
@@ -588,7 +560,7 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
     let(:expected_rspec_example) do
       <<~TEXT.chomp
       --------------------------------------------------
-      # RSPEC -- COMPOSABLE MATCHERS (recommended)
+      # RSPEC
 
       it "triggers an internal event" do
         expect { subject }.to trigger_internal_events('internal_events_cli_used').with(
@@ -600,23 +572,6 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
             custom_key: custom_value
           }
         )
-      end
-
-      --------------------------------------------------
-      # RSPEC -- SHARED EXAMPLE GROUP
-
-      it_behaves_like 'internal event tracking' do
-        let(:event) { 'internal_events_cli_used' }
-        let(:category) { described_class.name }
-        let(:project) { create(:project) }
-        let(:user) { create(:user) }
-        let(:additional_properties) do
-          {
-            label: 'string',
-            value: 72,
-            custom_key: custom_value
-          }
-        end
       end
 
       --------------------------------------------------

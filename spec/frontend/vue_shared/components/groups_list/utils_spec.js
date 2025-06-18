@@ -76,7 +76,7 @@ describe('renderLeaveSuccessToast', () => {
   it('calls toast correctly', () => {
     renderLeaveSuccessToast(MOCK_GROUP);
 
-    expect(toast).toHaveBeenCalledWith(`Left the '${MOCK_GROUP.fullName}' group successfully.`);
+    expect(toast).toHaveBeenCalledWith(`You left the "${MOCK_GROUP.fullName}" group.`);
   });
 });
 

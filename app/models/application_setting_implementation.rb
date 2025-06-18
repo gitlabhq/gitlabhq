@@ -345,7 +345,8 @@ module ApplicationSettingImplementation
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
         git_push_pipeline_limit: 4,
-        disable_invite_members: false
+        disable_invite_members: false,
+        enforce_pipl_compliance: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

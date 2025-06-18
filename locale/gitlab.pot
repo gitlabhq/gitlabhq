@@ -4633,6 +4633,12 @@ msgstr ""
 msgid "AdminSettings|Enabled"
 msgstr ""
 
+msgid "AdminSettings|Enforce PIPL compliance"
+msgstr ""
+
+msgid "AdminSettings|Enforce PIPL compliance for all users"
+msgstr ""
+
 msgid "AdminSettings|Enforce invitation flow for groups and projects"
 msgstr ""
 
@@ -4708,6 +4714,9 @@ msgstr ""
 msgid "AdminSettings|Make new users' profiles private by default"
 msgstr ""
 
+msgid "AdminSettings|Manage PIPL compliance for all users"
+msgstr ""
+
 msgid "AdminSettings|Manage which integrations can be enabled on this instance."
 msgstr ""
 
@@ -4763,6 +4772,9 @@ msgid "AdminSettings|No required configuration"
 msgstr ""
 
 msgid "AdminSettings|Only enable search after installing the plugin, enabling indexing, and recreating the index."
+msgstr ""
+
+msgid "AdminSettings|PIPL compliance"
 msgstr ""
 
 msgid "AdminSettings|Package registry metadata to sync"
@@ -5723,9 +5735,6 @@ msgid "Agent not found for provided id."
 msgstr ""
 
 msgid "Agents"
-msgstr ""
-
-msgid "Agents Platform Index"
 msgstr ""
 
 msgid "AiAgents|Agent Name"
@@ -23331,9 +23340,6 @@ msgstr ""
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Last updated"
-msgstr ""
-
 msgid "DuoAgentsPlatform|New Agent runs will appear here."
 msgstr ""
 
@@ -23344,6 +23350,9 @@ msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Updated"
 msgstr ""
 
 msgid "DuoChat|%{linkStart}Learn how%{linkEnd} to set up Code Suggestions and Chat in your IDE. You can also use Chat in GitLab. Ask questions about:"
@@ -27817,10 +27826,10 @@ msgstr ""
 msgid "Geo|Must match with the %{codeStart}geo_node_name%{codeEnd} in %{codeStart}/etc/gitlab/gitlab.rb%{codeEnd}."
 msgstr ""
 
-msgid "Geo|No %{replicable_type} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgid "Geo|No %{itemTitle} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
-msgid "Geo|No %{replicable} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
+msgid "Geo|No %{replicable_type} were found. If you believe this may be an error, please refer to the %{linkStart}Geo Troubleshooting%{linkEnd} documentation for more information."
 msgstr ""
 
 msgid "Geo|No Geo site found"
@@ -28060,10 +28069,10 @@ msgstr ""
 msgid "Geo|The site is currently %{minutes_behind} behind the primary site."
 msgstr ""
 
-msgid "Geo|There are no %{replicable_type} to show"
+msgid "Geo|There are no %{itemTitle} to show"
 msgstr ""
 
-msgid "Geo|There are no %{replicable} to show"
+msgid "Geo|There are no %{replicable_type} to show"
 msgstr ""
 
 msgid "Geo|There was an error deleting the Geo Site"
@@ -36487,9 +36496,6 @@ msgid "Leave group"
 msgstr ""
 
 msgid "Leave project"
-msgstr ""
-
-msgid "Left the '%{group_name}' group successfully."
 msgstr ""
 
 msgid "Legacy Prometheus integrations cannot currently be removed"
@@ -55713,9 +55719,6 @@ msgstr ""
 msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{strongEnd} workflows."
 msgstr ""
 
-msgid "SecurityOrchestration|Automatically configures scans to run only where needed for MR approval policies"
-msgstr ""
-
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr ""
 
@@ -55776,7 +55779,7 @@ msgstr ""
 msgid "SecurityOrchestration|Configuration"
 msgstr ""
 
-msgid "SecurityOrchestration|Configure exactly when and where scans should run"
+msgid "SecurityOrchestration|Configuration type"
 msgstr ""
 
 msgid "SecurityOrchestration|Configure policies to control whether individual users or service accounts can use %{linkStart}skip_ci%{linkEnd} to skip pipelines."
@@ -55800,7 +55803,7 @@ msgstr ""
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
-msgid "SecurityOrchestration|Custom configuration"
+msgid "SecurityOrchestration|Custom"
 msgstr ""
 
 msgid "SecurityOrchestration|Custom roles"
@@ -56076,9 +56079,6 @@ msgstr ""
 msgid "SecurityOrchestration|Merge request pipeline"
 msgstr ""
 
-msgid "SecurityOrchestration|Merge request security"
-msgstr ""
-
 msgid "SecurityOrchestration|Never"
 msgstr ""
 
@@ -56285,6 +56285,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan execution"
 msgstr ""
 
+msgid "SecurityOrchestration|Scan execution configuration"
+msgstr ""
+
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
 msgstr ""
 
@@ -56295,9 +56298,6 @@ msgid "SecurityOrchestration|Scan execution policies using `custom` scan action 
 msgstr ""
 
 msgid "SecurityOrchestration|Scan execution policy"
-msgstr ""
-
-msgid "SecurityOrchestration|Scan execution strategy"
 msgstr ""
 
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
@@ -56448,6 +56448,9 @@ msgid "SecurityOrchestration|Summary"
 msgstr ""
 
 msgid "SecurityOrchestration|Summary of syntax changes:"
+msgstr ""
+
+msgid "SecurityOrchestration|Template"
 msgstr ""
 
 msgid "SecurityOrchestration|The compliance pipeline will continue to override the new pipeline execution policy until it is removed from the compliance framework configuration."
@@ -68093,7 +68096,7 @@ msgstr ""
 msgid "VirtualRegistry|Maven upstream has been updated."
 msgstr ""
 
-msgid "VirtualRegistry|Maven virtual registry"
+msgid "VirtualRegistry|Maven virtual registries"
 msgstr ""
 
 msgid "VirtualRegistry|Maven virtual registry was created"
@@ -71812,6 +71815,9 @@ msgid "You have unsaved changes"
 msgstr ""
 
 msgid "You have used all seats in your subscription, so you cannot add new users."
+msgstr ""
+
+msgid "You left the \"%{group_name}\" group."
 msgstr ""
 
 msgid "You left the \"%{membershipable_human_name}\" %{source_type}."

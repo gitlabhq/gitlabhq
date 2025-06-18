@@ -1,0 +1,13 @@
+---
+table_name: ai_usage_events
+classes:
+- Ai::UsageEvent
+feature_categories:
+- value_stream_management
+description: Database storage for raw AI usage events. Partitioned by month.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194699
+milestone: '18.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+table_size: small

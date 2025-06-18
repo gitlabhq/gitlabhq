@@ -587,7 +587,6 @@ lib/gitlab/checks/
 /doc/administration/_index.md @axil @eread
 /doc/administration/analytics.md @lciutacu
 /doc/administration/analytics/ @lciutacu
-/doc/administration/application_settings_cache.md @jglassman1
 /doc/administration/auditor_users.md @idurham
 /doc/administration/auth/ @idurham
 /doc/administration/backup_restore/ @axil
@@ -605,6 +604,7 @@ lib/gitlab/checks/
 /doc/administration/dedicated/hosted_runners.md @rsarangadharan
 /doc/administration/diff_limits.md @brendan777
 /doc/administration/docs_self_host.md @axil @eread
+/doc/administration/dormant_project_deletion.md @phillipwells
 /doc/administration/duo_add_on_seat_management_with_ldap.md @lciutacu
 /doc/administration/encrypted_configuration.md @axil @eread
 /doc/administration/environment_variables.md @axil @eread
@@ -619,7 +619,6 @@ lib/gitlab/checks/
 /doc/administration/gitlab_duo_self_hosted/ @jglassman1
 /doc/administration/guest_users.md @idurham
 /doc/administration/housekeeping.md @eread
-/doc/administration/inactive_project_deletion.md @phillipwells
 /doc/administration/incoming_email.md @msedlakjakubowski
 /doc/administration/instance_limits.md @axil @eread
 /doc/administration/integration/diagrams_net.md @brendan777
@@ -643,13 +642,9 @@ lib/gitlab/checks/
 /doc/administration/moderate_users.md @lciutacu
 /doc/administration/monitoring/_index.md @lciutacu
 /doc/administration/monitoring/github_imports.md @ashrafkhamis
-/doc/administration/monitoring/ip_allowlist.md @jglassman1
-/doc/administration/monitoring/performance/ @jglassman1
-/doc/administration/monitoring/performance/grafana_configuration.md @lciutacu
+/doc/administration/monitoring/performance/ @lciutacu
 /doc/administration/monitoring/prometheus/_index.md @axil @eread
-/doc/administration/monitoring/prometheus/gitlab_exporter.md @jglassman1
 /doc/administration/monitoring/prometheus/registry_exporter.md @z_painter
-/doc/administration/monitoring/prometheus/web_exporter.md @jglassman1
 /doc/administration/nfs.md @axil @eread
 /doc/administration/object_storage.md @axil @eread
 /doc/administration/operations/ @axil @eread
@@ -682,6 +677,7 @@ lib/gitlab/checks/
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
 /doc/administration/settings/deprecated_api_rate_limits.md @brendan777
+/doc/administration/settings/editor_extensions.md @aqualls
 /doc/administration/settings/email.md @msedlakjakubowski
 /doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/files_api_rate_limits.md @brendan777
@@ -964,11 +960,12 @@ lib/gitlab/checks/
 /doc/development/compromised_password_detection.md @gitlab-org/software-supply-chain-security/authentication/approvers
 /doc/development/contributing/verify/ @gitlab-org/maintainers/cicd-verify
 /doc/development/database/ @OmarQunsulGitlab @bmarjanovic
+/doc/development/database/sharding/ @abdwdd @alexpooley
 /doc/development/distributed_tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/distribution/ @gitlab-org/distribution
 /doc/development/documentation/ @fneill @sselhorn
 /doc/development/duo_workflow/ @gitlab-org/ai-powered
-/doc/development/fe_guide/analytics_dashboards.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
+/doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/fe_guide/keyboard_shortcuts.md @gitlab-org/foundations/engineering
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
@@ -1045,6 +1042,7 @@ lib/gitlab/checks/
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil @eread
 /doc/tutorials/issue_triage/ @msedlakjakubowski
+/doc/tutorials/issue_triage_complex_group/ @msedlakjakubowski
 /doc/tutorials/issue_triage_group/ @msedlakjakubowski
 /doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/left_sidebar/ @sselhorn
@@ -1098,6 +1096,7 @@ lib/gitlab/checks/
 /doc/user/get_started/get_started_projects.md @phillipwells
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn
 /doc/user/gitlab_duo/ @sselhorn
+/doc/user/gitlab_duo/model_selection.md @jglassman1
 /doc/user/gitlab_duo/tutorials/ @gl-docsteam
 /doc/user/gitlab_duo_chat/ @jglassman1
 /doc/user/glql/ @msedlakjakubowski
@@ -1868,6 +1867,8 @@ ee/app/workers/ai/repository_xray/
 /ee/config/routes/identity_verification.rb
 /ee/lib/arkose/
 /ee/lib/telesign/
+
+/.gitlab/duo/mr-review-instructions.yaml @gitlab-org/code-creation/engineers
 
 ^[DiffMatchPatch gem]
 /vendor/gems/diff_match_patch @garyh

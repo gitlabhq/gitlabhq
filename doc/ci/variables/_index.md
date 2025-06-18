@@ -398,7 +398,7 @@ Different versions of [GitLab Runner](../runners/_index.md) have different maski
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags.md) named `ci_hidden_variables`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29674) in GitLab 17.4 [with a flag](../../administration/feature_flags/_index.md) named `ci_hidden_variables`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165843) in GitLab 17.6. Feature flag `ci_hidden_variables` removed.
 
 {{< /history >}}
@@ -533,7 +533,7 @@ To disable variable expansion for the variable:
 
 {{< history >}}
 
-- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
+- Scan Execution Policies variable precedence was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/424028) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `security_policies_variables_precedence`. Enabled by default. [Feature flag removed in GitLab 16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/435727).
 
 {{< /history >}}
 

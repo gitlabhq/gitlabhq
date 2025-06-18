@@ -34,6 +34,7 @@ RSpec.describe GroupChildEntity do
        can_edit
        visibility
        permission
+       permission_integer
        relative_path
        web_url].each do |attribute|
       it "includes #{attribute}" do
@@ -67,6 +68,10 @@ RSpec.describe GroupChildEntity do
       expect(json[:last_activity_at]).to be_present
     end
 
+    it 'includes permission as integer' do
+      expect(json[:permission_integer]).to be(40)
+    end
+
     it_behaves_like 'group child json'
   end
 
@@ -82,6 +87,10 @@ RSpec.describe GroupChildEntity do
 
     it 'has the correct type' do
       expect(json[:type]).to eq('group')
+    end
+
+    it 'includes permission as integer' do
+      expect(json[:permission_integer]).to be(50)
     end
 
     it 'counts projects and subgroups as children' do

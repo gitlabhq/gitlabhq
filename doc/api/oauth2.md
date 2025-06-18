@@ -276,7 +276,7 @@ You can now make requests to the API with the access token returned.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `oauth2_device_grant_flow`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `oauth2_device_grant_flow`.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/468479) by default in 17.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/505557) in GitLab 17.9. Feature flag `oauth2_device_grant_flow` removed.
 

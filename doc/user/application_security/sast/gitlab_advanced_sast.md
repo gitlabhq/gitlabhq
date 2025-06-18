@@ -219,7 +219,7 @@ You can set this variable anywhere you can configure CI/CD variables, including 
 
 {{< history >}}
 
-- Introduced in GitLab 17.3 [with several flags](../../../administration/feature_flags.md). Enabled by default.
+- Introduced in GitLab 17.3 [with several flags](../../../administration/feature_flags/_index.md). Enabled by default.
 - Enabled on GitLab Self-Managed and GitLab Dedicated in GitLab 17.7.
 - Generally available in GitLab 17.7. All feature flags removed.
 

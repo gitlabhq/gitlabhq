@@ -35,6 +35,10 @@ class GroupChildEntity < Grape::Entity
     membership&.human_access
   end
 
+  expose :permission_integer do |instance|
+    membership&.access_level
+  end
+
   expose :marked_for_deletion_on
 
   # It is always enabled since 18.0

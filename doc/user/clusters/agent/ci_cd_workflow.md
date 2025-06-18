@@ -435,7 +435,7 @@ In this example:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `kubernetes_agent_protected_branches`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.3 [with a flag](../../../administration/feature_flags/_index.md) named `kubernetes_agent_protected_branches`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/467936) in GitLab 17.10. Feature flag `kubernetes_agent_protected_branches` removed.
 
 {{< /history >}}

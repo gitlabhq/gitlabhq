@@ -215,7 +215,7 @@ Selecting an individual job shows you its [job log](job_logs.md), and allows you
 
 {{< history >}}
 
-- Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
+- Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) as an [experiment](../../policy/development_stages_support.md) on GitLab.com and GitLab Self-Managed in GitLab 17.3 [with flags](../../administration/feature_flags/_index.md) named `populate_and_use_build_names_table` for the API and `fe_search_build_by_name` for the UI. Disabled by default.
 
 {{< /history >}}
 
@@ -255,7 +255,7 @@ CI/CD jobs can have the following statuses:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181159) job source in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `populate_and_use_build_source_table`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181159) job source in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `populate_and_use_build_source_table`. Enabled by default.
 - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/11796) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 17.11.
 
 {{< /history >}}
@@ -472,7 +472,7 @@ You can cancel all jobs in a running pipeline at once.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467107) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.10 [with a flag](../../administration/feature_flags.md) named `force_cancel_build`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467107) as an [experiment](../../policy/development_stages_support.md) in GitLab 17.10 [with a flag](../../administration/feature_flags/_index.md) named `force_cancel_build`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/519313) in GitLab 17.11. Feature flag `force_cancel_build` removed.
 
 {{< /history >}}

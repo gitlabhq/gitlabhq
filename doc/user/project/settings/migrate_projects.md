@@ -16,7 +16,7 @@ title: Transfer projects
 
 {{< history >}}
 
-- Support for transferring projects with container images within the same top-level namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) on GitLab.com in GitLab 17.7 [with a flag](../../../administration/feature_flags.md) named `transfer_project_with_tags`. Disabled by default.
+- Support for transferring projects with container images within the same top-level namespace [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) on GitLab.com in GitLab 17.7 [with a flag](../../../administration/feature_flags/_index.md) named `transfer_project_with_tags`. Disabled by default.
 - Support for transferring projects with container images within the same top-level namespace [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/499163) in GitLab 17.7. Feature flag removed.
 
 {{< /history >}}

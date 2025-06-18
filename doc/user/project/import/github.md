@@ -398,7 +398,7 @@ The following items of a project are imported:
   - Pull Request description. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/18052) in GitLab 15.5.
 
   All attachment imports are disabled by default behind
-  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags.md). From GitLab 15.5, can
+  `github_importer_attachments_import` [feature flag](../../../administration/feature_flags/_index.md). From GitLab 15.5, can
   be imported [as an additional item](#select-additional-items-to-import). The feature flag was removed.
 - Pull request review comments.
 - Regular issue and pull request comments.
@@ -410,7 +410,7 @@ The following items of a project are imported:
   GitLab 14.5.
 - Pull request review comments suggestions. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/340624) in GitLab 14.7.
 - Issue events and pull requests events. [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/7673) in GitLab 15.4
-  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags.md) disabled by default.
+  with `github_importer_issue_events_import` [feature flag](../../../administration/feature_flags/_index.md) disabled by default.
   From GitLab 15.5, can be imported [as an additional item](#select-additional-items-to-import). The feature flag was
   removed.
 

@@ -1427,7 +1427,7 @@ To configure a custom duration for your ID tokens:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474650) in GitLab 17.11 [with a flag](../feature_flags.md) named `omniauth_step_up_auth_for_admin_mode`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/474650) in GitLab 17.11 [with a flag](../feature_flags/_index.md) named `omniauth_step_up_auth_for_admin_mode`. Disabled by default.
 
 {{< /history >}}
 

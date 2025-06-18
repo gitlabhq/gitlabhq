@@ -155,6 +155,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def pipelines
     set_pipeline_variables
+    # Capture total count before pagination to ensure accurate count regardless of current page
+    @pipelines_count = @pipelines.count
     @pipelines = @pipelines.page(params[:page])
 
     Gitlab::PollingInterval.set_header(response, interval: 10_000)
@@ -173,7 +175,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           preload_downstream_statuses: false
         ),
       count: {
-        all: @pipelines.count
+        all: @pipelines_count
       }
     }
   end

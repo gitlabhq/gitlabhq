@@ -14,7 +14,7 @@ title: Linked epics API
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352493) in GitLab 14.9 [with a flag](../administration/feature_flags.md) named `related_epics_widget`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352493) in GitLab 14.9 [with a flag](../administration/feature_flags/_index.md) named `related_epics_widget`. Enabled by default.
 - [Feature flag `related_epics_widget`](https://gitlab.com/gitlab-org/gitlab/-/issues/357089) removed in GitLab 15.0.
 
 {{< /history >}}

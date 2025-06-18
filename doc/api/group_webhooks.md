@@ -439,7 +439,7 @@ Resends a specific hook event.
 
 This endpoint has a rate limit of five requests per minute for each hook and authenticated user.
 To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
+[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_event_resend_api_endpoint_rate_limit`.
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/events/:hook_event_id/resend
@@ -675,7 +675,7 @@ On success, no message is returned.
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455589) in GitLab 17.1.
-- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
+- Special rate limit [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150486) in GitLab 17.1 [with a flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`. Enabled by default.
 
 {{< /history >}}
 
@@ -683,7 +683,7 @@ Trigger a test hook for a specified group.
 
 This endpoint has a rate limit of five requests per minute for each group and authenticated user.
 To disable this limit on GitLab Self-Managed and GitLab Dedicated, an administrator can
-[disable the feature flag](../administration/feature_flags.md) named `web_hook_test_api_endpoint_rate_limit`.
+[disable the feature flag](../administration/feature_flags/_index.md) named `web_hook_test_api_endpoint_rate_limit`.
 
 ```plaintext
 POST /groups/:id/hooks/:hook_id/test/:trigger

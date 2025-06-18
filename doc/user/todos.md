@@ -56,7 +56,7 @@ On the **Snoozed** and **Done** tabs, **Recommended** sorts items by their creat
 
 {{< history >}}
 
-- Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags.md) named `multiple_todos`. Disabled by default.
+- Multiple to-do items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 13.8 [with a flag](../administration/feature_flags/_index.md) named `multiple_todos`. Disabled by default.
 - Member access request notifications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/374725) in GitLab 15.8.
 - Multiple to-do items [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 16.2.
 - Multiple to-do items [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/28355) in GitLab 17.8. Feature flag `multiple_todos` enabled by default.

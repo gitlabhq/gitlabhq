@@ -9,7 +9,7 @@ RSpec.describe 'Projects > Members > Member leaves project', feature_category: :
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, :with_namespace_settings) }
   let(:more_actions_dropdown) do
-    find('[data-testid="groups-projects-more-actions-dropdown"] .gl-new-dropdown-custom-toggle')
+    find_by_testid('groups-projects-more-actions-dropdown')
   end
 
   before do

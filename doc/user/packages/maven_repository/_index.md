@@ -948,7 +948,7 @@ Your changes are automatically saved.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85299) in GitLab 15.4 [with a flag](../../../administration/feature_flags.md) named `maven_central_request_forwarding`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/85299) in GitLab 15.4 [with a flag](../../../administration/feature_flags/_index.md) named `maven_central_request_forwarding`. Disabled by default.
 - Required role [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/370471) from Maintainer to Owner in GitLab 17.0.
 
 {{< /history >}}

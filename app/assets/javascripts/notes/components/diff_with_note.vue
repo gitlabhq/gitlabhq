@@ -3,6 +3,7 @@ import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
 import { mapState } from 'pinia';
+import { mergeUrlParams } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import ImageDiffOverlay from '~/diffs/components/image_diff_overlay.vue';
@@ -78,6 +79,12 @@ export default {
 
       return this.positionType === FILE_DIFF_POSITION_TYPE;
     },
+    linkedFileDiscussionPath() {
+      const { discussion_path: discussionPath } = this.discussion;
+      const file = this.discussion.diff_file?.file_hash;
+
+      return discussionPath && file ? mergeUrlParams({ file }, discussionPath) : discussionPath;
+    },
     showHeader() {
       if (this.discussion.diff_file) return true;
 
@@ -131,7 +138,7 @@ export default {
   <div :class="{ 'text-file': isTextFile }" class="diff-file file-holder">
     <diff-file-header
       v-if="showHeader"
-      :discussion-path="discussion.discussion_path"
+      :discussion-path="linkedFileDiscussionPath"
       :diff-file="backfilledDiffFile"
       :can-current-user-fork="false"
       class="gl-border gl-border-section"

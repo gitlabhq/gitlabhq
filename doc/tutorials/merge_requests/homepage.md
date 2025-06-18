@@ -15,7 +15,7 @@ title: 'Tutorial: Understand your merge requests on the Merge requests homepage'
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `merge_request_dashboard`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13448) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `merge_request_dashboard`. Disabled by default.
 - Feature flag `merge_request_dashboard` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/480854) on GitLab.com in GitLab 17.9.
 - Feature flag `mr_dashboard_list_type_toggle` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/535244) for GitLab team members in GitLab 18.1.
 

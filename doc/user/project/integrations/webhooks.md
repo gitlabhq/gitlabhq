@@ -110,7 +110,7 @@ Your webhook endpoint can use this token to verify the legitimacy of the request
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `webhook_form_mask_url`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/99995) in GitLab 15.5 [with a flag](../../../administration/feature_flags/_index.md) named `webhook_form_mask_url`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/376106) in GitLab 15.7. Feature flag `webhook_form_mask_url` removed.
 
 {{< /history >}}
@@ -141,7 +141,7 @@ https://webhook.example.com/{path}?key={value}
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_headers`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146702) in GitLab 16.11 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_headers`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/448604) in GitLab 17.0. Feature flag `custom_webhook_headers` removed.
 
 {{< /history >}}
@@ -162,7 +162,7 @@ Custom headers show in [**Recent events**](#view-webhook-request-history) with m
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `custom_webhook_template`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142738) in GitLab 16.10 [with a flag](../../../administration/feature_flags/_index.md) named `custom_webhook_template`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439610) in GitLab 17.0. Feature flag `custom_webhook_template` removed.
 
 {{< /history >}}
@@ -480,7 +480,7 @@ To optimize your webhook receivers:
 
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/329849) for project webhooks in GitLab 15.7. Feature flag `web_hooks_disable_failed` removed.
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385902) for group webhooks in GitLab 15.10.
-- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) in GitLab 15.10 [with a flag](../../../administration/feature_flags.md) named `auto_disabling_web_hooks`.
+- [Disabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/390157) in GitLab 15.10 [with a flag](../../../administration/feature_flags/_index.md) named `auto_disabling_web_hooks`.
 - **Fails to connect** and **Failing to connect** [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to **Disabled** and **Temporarily disabled** in GitLab 17.11.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166329) to become permanently disabled after 40 consecutive failures in GitLab 17.11.
 
@@ -535,7 +535,7 @@ even though the UI might state they have 40 failures.
 
 {{< history >}}
 
-- Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags.md) named `webhooks_failed_callout`. Disabled by default.
+- Introduced in GitLab 15.2 [with a flag](../../../administration/feature_flags/_index.md) named `webhooks_failed_callout`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/365535) in GitLab 15.7. Feature flag `webhooks_failed_callout` removed.
 
 {{< /history >}}

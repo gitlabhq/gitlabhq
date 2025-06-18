@@ -9,7 +9,7 @@ RSpec.describe 'Projects > Members > Group requester cannot request access to pr
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:more_actions_dropdown) do
-    find('[data-testid="groups-projects-more-actions-dropdown"] .gl-new-dropdown-custom-toggle')
+    find_by_testid('groups-projects-more-actions-dropdown')
   end
 
   before do

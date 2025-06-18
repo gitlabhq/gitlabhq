@@ -71,6 +71,7 @@ describe('GroupsListItem', () => {
   const findSubgroupCount = () => wrapper.findByTestId('subgroups-count');
   const findProjectsCount = () => wrapper.findByTestId('projects-count');
   const findMembersCount = () => wrapper.findByTestId('members-count');
+  const findStorageSize = () => wrapper.findByTestId('storage-size');
 
   const findInactiveBadge = () => wrapper.findComponent(GroupListItemInactiveBadge);
 
@@ -206,6 +207,38 @@ describe('GroupsListItem', () => {
 
     it('does not render level role badge', () => {
       expect(findAccessLevelBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('when group does not have rootStorageStatistics key', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('does not render storage size', () => {
+      expect(findStorageSize().exists()).toBe(false);
+    });
+  });
+
+  describe('when group has rootStorageStatistics key', () => {
+    it('renders storage size in human size', () => {
+      createComponent({
+        propsData: { group: { ...group, rootStorageStatistics: { storageSize: 3072 } } },
+      });
+
+      expect(findStorageSize().text()).toBe('3.00 KiB');
+    });
+
+    describe('when storage size is null', () => {
+      beforeEach(() => {
+        createComponent({
+          propsData: { group: { ...group, rootStorageStatistics: { storageSize: null } } },
+        });
+      });
+
+      it('renders 0 B', () => {
+        expect(findStorageSize().text()).toBe('0 B');
+      });
     });
   });
 

@@ -1582,7 +1582,7 @@ For information on automatically managing GitLab group membership, see [SAML Gro
 
 {{< history >}}
 
-- Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags.md) named `by_pass_two_factor_current_session`.
+- Bypass 2FA enforcement [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122109) in GitLab 16.1 [with a flag](../administration/feature_flags/_index.md) named `by_pass_two_factor_current_session`.
 - [Enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/416535) in GitLab 17.8.
 
 {{< /history >}}

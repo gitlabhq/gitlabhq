@@ -83,7 +83,7 @@ and [view your pipeline status](https://marketplace.visualstudio.com/items?itemN
 {{< history >}}
 
 - **Run pipeline** name [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/482718) to **New pipeline** in GitLab 17.7.
-- **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
+- **Inputs** option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/525504) in GitLab 17.11 [with a flag](../../administration/feature_flags/_index.md) named `ci_inputs_for_pipelines`. Enabled by default.
 - **Inputs** option [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
 {{< /history >}}
@@ -165,7 +165,7 @@ when running a pipeline manually. To workaround this issue,
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags.md) named `run_pipeline_graphql`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/363660) in GitLab 15.5 [with a flag](../../administration/feature_flags/_index.md) named `run_pipeline_graphql`. Disabled by default.
 - The `options` keyword was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/105502) in GitLab 15.7.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106038) in GitLab 15.7. Feature flag `run_pipeline_graphql` removed.
 - The variables list sometimes did not populate correctly due to [a bug](https://gitlab.com/gitlab-org/gitlab/-/issues/386245), which was resolved in GitLab 15.9.
@@ -416,7 +416,7 @@ in the merge request.
 
 {{< history >}}
 
-- Pipeline detail view [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/424403) in GitLab 16.6 [with a flag](../../administration/feature_flags.md) named `new_pipeline_graph`. Disabled by default.
+- Pipeline detail view [updated](https://gitlab.com/gitlab-org/gitlab/-/issues/424403) in GitLab 16.6 [with a flag](../../administration/feature_flags/_index.md) named `new_pipeline_graph`. Disabled by default.
 - Updated pipeline detail view [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/426902) in GitLab 16.8.
 
 {{< /history >}}

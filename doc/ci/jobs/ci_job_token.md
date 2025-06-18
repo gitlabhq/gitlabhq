@@ -96,7 +96,7 @@ When the setting is enforced, the CI/CD job token is always restricted to the pr
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../user/feature_flags.md), enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.9. [Deployed behind the `:inbound_ci_scoped_job_token` feature flag](../../administration/feature_flags/_index.md), enabled by default.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.10.
 - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access to this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 - Adding groups to the job token allowlist [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.0.
@@ -340,7 +340,7 @@ You can also modify this setting with the [GraphQL](../../api/graphql/reference/
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags.md) named `allow_push_repository_for_job_token`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags/_index.md) named `allow_push_repository_for_job_token`. Disabled by default.
 - **Token Access** section renamed to **Job token permissions**, and [**Limit access to this project** setting renamed to **Authorized groups and projects**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 {{< /history >}}

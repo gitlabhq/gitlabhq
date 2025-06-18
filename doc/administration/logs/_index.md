@@ -1107,7 +1107,7 @@ The `llm.log` file logs information related to
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../feature_flags.md) named `expanded_ai_logging`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13401) in GitLab 17.2 [with a flag](../feature_flags/_index.md) named `expanded_ai_logging`. Disabled by default.
 
 {{< /history >}}
 

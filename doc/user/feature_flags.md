@@ -1,28 +1,13 @@
 ---
-stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Complete list of all feature flags in GitLab.
-title: All feature flags in GitLab
-layout: feature_flags
+redirect_to: '../administration/feature_flags/list.md'
+remove_date: '2025-09-16'
 ---
 
-GitLab provides feature flags to turn specific features on or off.
-This page contains a list of all feature flags provided by GitLab. In GitLab Self-Managed,
-GitLab administrators can [change the state of these feature flags](../administration/feature_flags.md).
+<!-- markdownlint-disable -->
 
-For help developing custom feature flags, see
-[Create a feature flag](../operations/feature_flags.md#create-a-feature-flag).
+This document was moved to [another location](../administration/feature_flags/list.md).
 
-<!-- markdownlint-disable MD044 -->
-<!-- MD044/proper-names test disabled after this line to make page compatible with markdownlint-cli 0.29.0. -->
-<!-- See https://docs.gitlab.com/ee/development/documentation/testing/markdownlint.html#disable-markdownlint-tests -->
-
-<div class="d-none">
-  <strong>If you don't see the feature flag tables below, view them at <a href="https://docs.gitlab.com/ee/user/feature_flags.html">docs.gitlab.com</a>.</strong>
-</div>
-<!-- the div tag will not display on the docs site but will display on /help -->
-
-<!-- markdownlint-enable MD044 -->
-
-{{< feature-flags >}}
+<!-- This redirect file can be deleted after <2025-09-16>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

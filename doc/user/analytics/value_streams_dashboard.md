@@ -15,8 +15,8 @@ title: Value Streams Dashboard
 
 {{< history >}}
 
-- Introduced in GitLab 15.8 as a closed [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Disabled by default.
-- Released in GitLab 15.11 as an open [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboards_page`. Enabled by default.
+- Introduced in GitLab 15.8 as a closed [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Disabled by default.
+- Released in GitLab 15.11 as an open [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
 
 {{< /history >}}
@@ -64,7 +64,7 @@ The Value Streams Dashboard panels have a default configuration, but you can als
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439699) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboard_dynamic_vsd`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/432185) in GitLab 17.0.
 - Feature flag `group_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441206) in GitLab 17.0.
 
@@ -149,7 +149,7 @@ Only labels that exactly match the specified filters are applied.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `dora_performers_score_panel`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386843) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `dora_performers_score_panel`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/439737) in GitLab 16.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/440694) in GitLab 16.11. Feature flag `dora_performers_score_panel` removed.
 
@@ -225,7 +225,7 @@ For further investigation, you can select a project name to drill down into that
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120610) in GitLab 16.1 [with a flag](../../administration/feature_flags/_index.md) named `value_stream_dashboard_on_off_setting`. Disabled by default.
 - [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/130704) in GitLab 16.4.
 - [Feature flag `value_stream_dashboard_on_off_setting` removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134619) in GitLab 16.6.
 
@@ -270,7 +270,7 @@ To view the Value Streams Dashboard for a group:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/137483) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `project_analytics_dashboard_dynamic_vsd`. Disabled by default.
 - Feature flag `project_analytics_dashboard_dynamic_vsd` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/441207) in GitLab 17.5.
 
 {{< /history >}}

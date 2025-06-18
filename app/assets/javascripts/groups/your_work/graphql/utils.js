@@ -1,6 +1,6 @@
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
-import { ACCESS_LEVELS_STRING_TO_INTEGER } from '~/access_level/constants';
+import { ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 
 export const formatGroupForGraphQLResolver = (group) => ({
   __typename: TYPENAME_GROUP,
@@ -24,9 +24,7 @@ export const formatGroupForGraphQLResolver = (group) => ({
   isLinkedToSubscription: group.is_linked_to_subscription,
   permanentDeletionDate: group.permanent_deletion_date,
   maxAccessLevel: {
-    integerValue: group.permission
-      ? ACCESS_LEVELS_STRING_TO_INTEGER[group.permission.toUpperCase()]
-      : null,
+    integerValue: group.permission_integer ?? ACCESS_LEVEL_NO_ACCESS_INTEGER,
   },
   parent: {
     id: group.parent_id,

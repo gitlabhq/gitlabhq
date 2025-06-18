@@ -122,7 +122,7 @@ authentication are supported by Admin Mode. Admin Mode status is stored in the c
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../feature_flags.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 16.10 [with a flag](../feature_flags/_index.md) named `show_admin_mode_within_active_sessions`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/444188) in GitLab 16.10.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/438674) in GitLab 17.0. Feature flag `show_admin_mode_within_active_sessions` removed.
 

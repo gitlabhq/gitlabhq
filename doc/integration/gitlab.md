@@ -134,7 +134,7 @@ signed in.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337663) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `omniauth_login_minimal_scopes`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337663) in GitLab 14.8 [with a flag](../administration/feature_flags/_index.md) named `omniauth_login_minimal_scopes`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/351331) in GitLab 14.9.
 - [Feature flag `omniauth_login_minimal_scopes`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/83453) removed in GitLab 15.2
 

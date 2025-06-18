@@ -19,8 +19,8 @@ Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 {{< history >}}
 
 - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-- `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_search`. Disabled by default.
+- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
+- `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_search`. Disabled by default.
 - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 - `name` in request [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/385864) in GitLab 16.9. Feature flag `pipeline_name_search` removed.
 - Support for returning child pipelines with `source` set to `parent_pipeline` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/39503) in GitLab 17.0.
@@ -99,7 +99,7 @@ Example of response
 {{< history >}}
 
 - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
 - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 
 {{< /history >}}
@@ -174,7 +174,7 @@ Example of response
 
 {{< history >}}
 
-- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+- `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
 - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 
 {{< /history >}}
@@ -401,7 +401,7 @@ Sample response:
 {{< history >}}
 
 - `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
-- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags.md) named `ci_inputs_for_pipelines`. Enabled by default.
+- `inputs` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519958) in GitLab 17.10 [with a flag](../administration/feature_flags/_index.md) named `ci_inputs_for_pipelines`. Enabled by default.
 - `inputs` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536548) in GitLab 18.1. Feature flag `ci_inputs_for_pipelines` removed.
 
 {{< /history >}}

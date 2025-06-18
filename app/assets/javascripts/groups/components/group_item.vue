@@ -67,7 +67,7 @@ export default {
       return `group-${this.group.id}`;
     },
     itemTestId() {
-      return `group-overview-item-${this.group.id}`;
+      return `groups-list-item-${this.group.id}`;
     },
     rowClass() {
       return {
@@ -160,7 +160,7 @@ export default {
           :aria-label="toggleAriaLabel"
           :aria-expanded="String(group.isOpen)"
           category="tertiary"
-          data-testid="group-item-toggle-button"
+          data-testid="nested-groups-project-list-item-toggle-button"
           :icon="toggleIconName"
           @click.stop="onClickRowGroup"
         />

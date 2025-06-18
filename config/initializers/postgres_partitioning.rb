@@ -52,6 +52,7 @@ if Gitlab.ee?
       Ai::CodeSuggestionEvent,
       Ai::DuoChatEvent,
       Ai::TroubleshootJobEvent,
+      Ai::UsageEvent,
       Vulnerabilities::Archive,
       Vulnerabilities::ArchivedRecord,
       Vulnerabilities::ArchiveExport,

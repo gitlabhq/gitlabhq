@@ -859,7 +859,7 @@ To update the rendered references if the assignee, milestone, or health status c
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags/_index.md) named `comment_tooltips`. Disabled by default.
 - Feature flag removed in GitLab 17.6
 
 {{< /history >}}
@@ -1533,7 +1533,7 @@ For more information, see the [Kroki integration](../administration/integration/
 
 {{< history >}}
 
-- LaTeX-compatible fencing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21757) in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
+- LaTeX-compatible fencing [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21757) in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `markdown_dollar_math`. Disabled by default. Enabled on GitLab.com.
 - LaTeX-compatible fencing [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/371180) in GitLab 15.8. Feature flag `markdown_dollar_math` removed.
 
 {{< /history >}}

@@ -645,6 +645,17 @@ RSpec.describe Projects::CommitController, feature_category: :source_code_manage
 
               expect(json_response['pipelines'].count).to eq(1)
             end
+
+            context 'while being on last page' do
+              it 'paginates the result when ref is present' do
+                allow(Ci::Pipeline).to receive(:default_per_page).and_return(1)
+
+                get_pipelines(id: commit.id, ref: project.default_branch, page: 2, format: :json)
+
+                expect(json_response['pipelines'].count).to eq(1)
+                expect(json_response['count']['all']).to eq 2
+              end
+            end
           end
         end
       end

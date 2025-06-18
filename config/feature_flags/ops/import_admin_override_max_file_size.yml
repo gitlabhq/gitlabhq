@@ -1,0 +1,10 @@
+---
+name: import_admin_override_max_file_size
+description: Allows Direct Transfer to handle files over the defined limit when migration is performed by an admin
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/519759
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193196
+rollout_issue_url:
+milestone: '18.2'
+group: group::import
+type: ops
+default_enabled: false

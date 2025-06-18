@@ -30,7 +30,6 @@ namespace :tw do
       CodeOwnerRule.new('Authorization', '@idurham'),
       CodeOwnerRule.new('Build', '@axil @eread'),
       CodeOwnerRule.new('Cells Infrastructure', '@emily.sahlani'),
-      CodeOwnerRule.new('Cloud Connector', '@jglassman1'),
       CodeOwnerRule.new('Code Creation', '@jglassman1'),
       CodeOwnerRule.new('Code Review', '@aqualls'),
       CodeOwnerRule.new('Compliance', '@eread'),

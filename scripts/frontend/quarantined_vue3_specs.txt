@@ -122,7 +122,6 @@ spec/frontend/packages_and_registries/infrastructure_registry/components/details
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/pypi_installation_spec.js
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/cleanup_image_tags_spec.js
 spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js
 spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
@@ -136,7 +135,6 @@ spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
 spec/frontend/repository/components/table/index_spec.js
 spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
-spec/frontend/sidebar/components/assignees/sidebar_assignees_widget_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
 spec/frontend/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view_spec.js

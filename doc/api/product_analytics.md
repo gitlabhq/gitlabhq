@@ -15,12 +15,12 @@ title: Product analytics API
 
 {{< history >}}
 
-- Introduced in GitLab 15.4 [with a flag](../administration/feature_flags.md) named `cube_api_proxy`. Disabled by default.
+- Introduced in GitLab 15.4 [with a flag](../administration/feature_flags/_index.md) named `cube_api_proxy`. Disabled by default.
 - `cube_api_proxy` removed and replaced with `product_analytics_internal_preview` in GitLab 15.10.
 - `product_analytics_internal_preview` replaced with `product_analytics_dashboards` in GitLab 15.11.
 - `product_analytics_dashboards` [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/398653) by default in GitLab 16.11.
 - Feature flag `product_analytics_dashboards` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/454059) in GitLab 17.1.
-- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta in GitLab 17.5 [with a flag](../administration/feature_flags.md) named `product_analytics_features`.
+- [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/167296) to beta in GitLab 17.5 [with a flag](../administration/feature_flags/_index.md) named `product_analytics_features`.
 
 {{< /history >}}
 

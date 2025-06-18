@@ -15,7 +15,7 @@ title: Immutable container tags
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 [with a flag](../../../administration/feature_flags.md) named `container_registry_immutable_tags`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `container_registry_immutable_tags`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) in GitLab 18.1.
 
 {{< /history >}}

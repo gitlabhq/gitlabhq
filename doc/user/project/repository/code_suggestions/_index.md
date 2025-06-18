@@ -178,8 +178,8 @@ C, C#, C++, Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, PHP, and TypeScrip
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `advanced_context_resolver`. Disabled by default.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_context`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464767) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `advanced_context_resolver`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462750) in GitLab 17.1 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_context`. Disabled by default.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab Workflow for VS Code 4.20.0.
 - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
 - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
@@ -263,7 +263,7 @@ that explain what you want to build:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_include_context_imports`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.9 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_include_context_imports`. Disabled by default.
 - [Enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/514124) in GitLab 17.11.
 
 {{< /history >}}
@@ -385,7 +385,7 @@ Streaming is not enabled for code completion.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags/_index.md) named `code_suggestions_direct_access`. Disabled by default.
 
 {{< /history >}}
 

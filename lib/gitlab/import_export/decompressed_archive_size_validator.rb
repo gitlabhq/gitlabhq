@@ -47,7 +47,7 @@ module Gitlab
             if max_bytes > 0 && result.to_i > max_bytes
               valid_archive = false
 
-              log_error('Decompressed archive size limit reached')
+              log_error('Decompressed archive size limit reached', decompressed_size: result.to_i)
             end
           else
             valid_archive = false
@@ -87,18 +87,27 @@ module Gitlab
         [['gzip', '-dc', @archive_path], ['wc', '-c']]
       end
 
-      def log_error(error)
+      def log_error(error, decompressed_size: nil)
         archive_size = begin
           File.size(@archive_path)
         rescue StandardError
           nil
         end
 
-        ::Import::Framework::Logger.info(
+        log_params = {
           message: error,
           import_upload_archive_path: @archive_path,
           import_upload_archive_size: archive_size
-        )
+        }
+
+        if decompressed_size
+          log_params.merge!({
+            import_upload_decompressed_size: decompressed_size,
+            decompressed_size_limit: max_bytes
+          })
+        end
+
+        ::Import::Framework::Logger.info(**log_params)
       end
 
       def timeout

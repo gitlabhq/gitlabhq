@@ -414,7 +414,7 @@ Prerequisites:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags/_index.md) named `npm_group_level_endpoints`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
 
 {{< /history >}}

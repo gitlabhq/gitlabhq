@@ -822,7 +822,7 @@ To enable EOL detection, set `CS_REPORT_OS_EOL` to `"true"`.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `enable_container_scanning_for_registry`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags/_index.md) named `enable_container_scanning_for_registry`. Disabled by default.
 - [Enabled on GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443827) in GitLab 17.2. Feature flag `enable_container_scanning_for_registry` removed.
 

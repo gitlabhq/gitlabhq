@@ -244,7 +244,7 @@ See [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitl
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504) in GitLab 15.10 [with feature flags](../feature_flags.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104504) in GitLab 15.10 [with feature flags](../feature_flags/_index.md) named `kas_user_access` and `kas_user_access_project`. Disabled by default.
 - Feature flags `kas_user_access` and `kas_user_access_project` [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123479) in GitLab 16.1.
 - Feature flags `kas_user_access` and `kas_user_access_project` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/125835) in GitLab 16.2.
 

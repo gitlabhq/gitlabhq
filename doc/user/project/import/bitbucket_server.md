@@ -109,7 +109,7 @@ The following items are changed when they are imported:
 
 {{< history >}}
 
-- User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../../administration/feature_flags.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
+- User mapping by email address or username [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/36885) in GitLab 13.4 [with a flag](../../../administration/feature_flags/_index.md) named `bitbucket_server_user_mapping_by_username`. Disabled by default.
 - Mapping user mentions to GitLab users [added](https://gitlab.com/gitlab-org/gitlab/-/issues/433008) in GitLab 16.8.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153041) to map users only by email address in GitLab 17.1.
 - [Changed on GitLab.com](https://gitlab.com/groups/gitlab-org/-/epics/14667) to [user contribution and membership mapping](_index.md#user-contribution-and-membership-mapping) in GitLab 17.8.

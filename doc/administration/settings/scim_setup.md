@@ -256,7 +256,7 @@ To update the user SCIM identity, use the
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../feature_flags.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/379149) in GitLab 16.0 [with a flag](../feature_flags/_index.md) named `skip_saml_identity_destroy_during_scim_deprovision`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121226) in GitLab 16.4. Feature flag `skip_saml_identity_destroy_during_scim_deprovision` removed.
 
 {{< /history >}}
@@ -271,7 +271,7 @@ the user's SCIM identity is reactivated and their GitLab instance access is rest
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0 [with a flag](../../administration/feature_flags.md) named `self_managed_scim_group_sync`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `self_managed_scim_group_sync`. Disabled by default.
 
 {{< /history >}}
 

@@ -14,7 +14,7 @@ title: Broadcast Messages API
 
 {{< history >}}
 
-- `target_access_levels` [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags.md) named `role_targeted_broadcast_messages`. Disabled by default.
+- `target_access_levels` [introduced](https://gitlab.com/gitlab-org/growth/team-tasks/-/issues/461) in GitLab 14.8 [with a flag](../administration/feature_flags/_index.md) named `role_targeted_broadcast_messages`. Disabled by default.
 - `color` parameter [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/95829) in GitLab 15.6.
 - `theme` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/498900) in GitLab 17.6.
 

@@ -90,7 +90,7 @@ To view service accounts for a top-level group:
 {{< history >}}
 
 - Introduced for GitLab.com in GitLab 16.3
-- Top-level group owners can create Service accounts [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../../administration/feature_flags.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
+- Top-level group owners can create Service accounts [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/163726) in GitLab 17.5 [with a feature flag](../../administration/feature_flags/_index.md) named `allow_top_level_group_owners_to_create_service_accounts` for GitLab Self-Managed. Disabled by default.
 - Top-level group owners can create Service accounts [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172502) in GitLab 17.6. Feature flag `allow_top_level_group_owners_to_create_service_accounts` removed.
 
 {{< /history >}}

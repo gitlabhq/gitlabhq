@@ -280,7 +280,7 @@ You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-a
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags/_index.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 {{< /alert >}}
 

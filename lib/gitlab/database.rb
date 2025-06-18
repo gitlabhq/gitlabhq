@@ -179,9 +179,12 @@ module Gitlab
     end
 
     def self.database_mode
-      if !has_config?(CI_DATABASE_NAME)
+      secondary_databases = Gitlab::Database.all_database_connections.select { |_, db| db.has_gitlab_shared? }.keys
+      secondary_databases -= [MAIN_DATABASE_NAME]
+
+      if secondary_databases.none? { |db| has_config?(db) }
         MODE_SINGLE_DATABASE
-      elsif has_database?(CI_DATABASE_NAME)
+      elsif secondary_databases.any? { |db| has_database?(db) }
         MODE_MULTIPLE_DATABASES
       else
         MODE_SINGLE_DATABASE_CI_CONNECTION

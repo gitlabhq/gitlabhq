@@ -18,7 +18,7 @@ Every call to this endpoint requires authentication.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags.md) named `merge_sbom_api`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/333463) in GitLab 16.4 [with a flag](../administration/feature_flags/_index.md) named `merge_sbom_api`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/425312) in GitLab 16.7. Feature flag `merge_sbom_api` removed.
 
 {{< /history >}}

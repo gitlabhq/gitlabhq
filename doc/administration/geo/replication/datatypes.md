@@ -80,7 +80,7 @@ verification methods:
 1. Redis replication can be used as part of HA with Redis sentinel. It's not used between Geo sites.
 1. Object storage replication can be performed by Geo or by your object storage provider/appliance
    native replication feature.
-1. Object Storage verification is behind a [feature flag](../../feature_flags.md), `geo_object_storage_verification`, [introduced in 16.4](https://gitlab.com/groups/gitlab-org/-/epics/8056) and enabled by default. It uses a checksum of the file size to verify the files.
+1. Object Storage verification is behind a [feature flag](../../feature_flags/_index.md), `geo_object_storage_verification`, [introduced in 16.4](https://gitlab.com/groups/gitlab-org/-/epics/8056) and enabled by default. It uses a checksum of the file size to verify the files.
 
 ### Git repositories
 
@@ -182,7 +182,7 @@ For more information, see the history.
 #### Enable or disable replication (for some data types)
 
 Replication for some data types are released behind feature flags that are **enabled by default**.
-[GitLab administrators with access to the GitLab Rails console](../../feature_flags.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.
+[GitLab administrators with access to the GitLab Rails console](../../feature_flags/_index.md) can opt to disable it for your instance. You can find feature flag names of each of those data types in the notes column of the table below.
 
 To disable, such as for package file replication:
 
@@ -240,4 +240,4 @@ successfully, you must replicate their data using some other means.
 
 1. Migrated to self-service framework in 15.5. See GitLab issue [#337436](https://gitlab.com/gitlab-org/gitlab/-/issues/337436) for more details.
 1. Migrated to self-service framework in 15.11. Behind feature flag `geo_project_wiki_repository_replication`, enabled by default. See GitLab issue [#367925](https://gitlab.com/gitlab-org/gitlab/-/issues/367925) for more details.
-1. Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a feature flag](../../feature_flags.md) named `geo_object_storage_verification`, enabled by default.
+1. Verification of files stored in object storage was [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8056) in GitLab 16.4 [with a feature flag](../../feature_flags/_index.md) named `geo_object_storage_verification`, enabled by default.

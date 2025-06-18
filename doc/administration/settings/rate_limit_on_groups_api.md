@@ -14,7 +14,7 @@ title: Rate limit on Groups API
 
 {{< history >}}
 
-- Rate limit for groups and projects API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152733) in GitLab 17.1. with a [flag](../feature_flags.md) named `rate_limit_groups_and_projects_api`. Disabled by default.
+- Rate limit for groups and projects API [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152733) in GitLab 17.1. with a [flag](../feature_flags/_index.md) named `rate_limit_groups_and_projects_api`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/461316) in GitLab 18.1. Feature flag `rate_limit_groups_and_projects_api` removed.
 
 {{< /history >}}

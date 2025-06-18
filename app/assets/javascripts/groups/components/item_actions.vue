@@ -95,7 +95,7 @@ export default {
       no-caret
       text-sr-only
       :toggle-text="__('More actions')"
-      :data-testid="`group-${group.id}-dropdown-button`"
+      data-testid="groups-projects-more-actions-dropdown"
       :data-qa-group-id="group.id"
     >
       <gl-disclosure-dropdown-item v-if="group.canEdit" :item="editItem" />

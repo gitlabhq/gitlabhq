@@ -157,7 +157,7 @@ To disable email notifications:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags.md) named `diff_preview_in_email`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/24733) in GitLab 15.6 [with a flag](../../administration/feature_flags/_index.md) named `diff_preview_in_email`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/382055) in GitLab 17.1. Feature flag `diff_preview_in_email` removed.
 
 {{< /history >}}
@@ -184,7 +184,7 @@ To disable diff previews for all projects in a group:
 
 {{< history >}}
 
-- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- Notifications to inherited group members [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` [enabled by default in GitLab 17.10](https://gitlab.com/gitlab-org/gitlab/-/issues/393772).
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
@@ -217,7 +217,7 @@ For more information, see:
 
 {{< history >}}
 
-- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../administration/feature_flags.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
+- [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/463016) 60 day and 30 days triggers to project and group access tokens webhooks in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `pat_expiry_inherited_members_notification`. Disabled by default.
 - Feature flag `pat_expiry_inherited_members_notification` removed in GitLab `17.11`
 
 {{< /history >}}
@@ -509,7 +509,7 @@ To enable group file templates:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags.md) name `support_group_level_merge_checks_setting`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/372040) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) name `support_group_level_merge_checks_setting`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142708) in GitLab 16.9. Feature flag `support_group_level_merge_checks_setting` removed.
 
 {{< /history >}}

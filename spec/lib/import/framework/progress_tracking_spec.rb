@@ -35,17 +35,6 @@ RSpec.describe ::Import::Framework::ProgressTracking, :clean_gitlab_redis_shared
         klass.with_progress_tracking(scope: { foo: :bar }, data: 'baz') { true }
       end
     end
-
-    context 'when restartable_project_import feature flag is disabled' do
-      it 'yields without saving progress' do
-        stub_feature_flags(restartable_project_import: false)
-
-        expect(klass).not_to receive(:processed_entry?)
-        expect(klass).not_to receive(:save_processed_entry)
-
-        klass.with_progress_tracking(scope: { foo: :bar }, data: 'baz') { true }
-      end
-    end
   end
 
   describe '#save_processed_entry' do

@@ -14,7 +14,7 @@ title: Linked resources in incidents
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `incident_resource_links_widget`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/230852) in GitLab 15.3 [with a flag](../../administration/feature_flags/_index.md) named `incident_resource_links_widget`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.3.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/364755) in GitLab 15.5. Feature flag `incident_resource_links_widget` removed.
 

@@ -19,13 +19,13 @@ Configure Editor Extensions settings for your GitLab instance.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541744) in GitLab 18.1 [with a flag](../feature_flags.md) named `enforce_language_server_version`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/541744) in GitLab 18.1 [with a flag](../feature_flags/_index.md) named `enforce_language_server_version`. Disabled by default.
 
 {{< /history >}}
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags.md) named `enforce_language_server_version`.
+On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../feature_flags/_index.md) named `enforce_language_server_version`.
 On GitLab.com, this feature is available but can be configured by GitLab.com administrators only.
 On GitLab Dedicated, this feature is available.
 

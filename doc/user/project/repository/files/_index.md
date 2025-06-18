@@ -115,7 +115,7 @@ To create a permalink:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags.md) named `filter_blob_path`.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/448868) in GitLab 17.10 [with a flag](../../../../administration/feature_flags/_index.md) named `filter_blob_path`.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 17.11.
 - [Enabled on GitLab Self-Managed and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/505449) in GitLab 18.0.
 

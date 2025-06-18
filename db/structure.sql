@@ -4527,6 +4527,18 @@ CREATE TABLE ai_troubleshoot_job_events (
 )
 PARTITION BY RANGE ("timestamp");
 
+CREATE TABLE ai_usage_events (
+    id bigint NOT NULL,
+    "timestamp" timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    event smallint NOT NULL,
+    extras jsonb DEFAULT '{}'::jsonb NOT NULL,
+    namespace_id bigint
+)
+PARTITION BY RANGE ("timestamp");
+
 CREATE TABLE audit_events (
     id bigint NOT NULL,
     author_id bigint NOT NULL,
@@ -4871,7 +4883,8 @@ CREATE TABLE incident_management_pending_alert_escalations (
     process_at timestamp with time zone NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_0012942e48 CHECK ((project_id IS NOT NULL))
 )
 PARTITION BY RANGE (process_at);
 
@@ -8182,6 +8195,15 @@ CREATE SEQUENCE ai_troubleshoot_job_events_id_seq
 
 ALTER SEQUENCE ai_troubleshoot_job_events_id_seq OWNED BY ai_troubleshoot_job_events.id;
 
+CREATE SEQUENCE ai_usage_events_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_usage_events_id_seq OWNED BY ai_usage_events.id;
+
 CREATE TABLE ai_user_metrics (
     user_id bigint NOT NULL,
     last_duo_activity_on date NOT NULL
@@ -9260,6 +9282,7 @@ CREATE TABLE application_settings (
     lock_web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
     tmp_asset_proxy_secret_key jsonb,
     editor_extensions jsonb DEFAULT '{}'::jsonb NOT NULL,
+    security_and_compliance_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -9341,7 +9364,8 @@ CREATE TABLE application_settings (
     CONSTRAINT check_e2dd6e290a CHECK ((char_length(jira_connect_application_key) <= 255)),
     CONSTRAINT check_e5aba18f02 CHECK ((char_length(container_registry_version) <= 255)),
     CONSTRAINT check_ef6176834f CHECK ((char_length(encrypted_cloud_license_auth_token_iv) <= 255)),
-    CONSTRAINT check_identity_verification_settings_is_hash CHECK ((jsonb_typeof(identity_verification_settings) = 'object'::text))
+    CONSTRAINT check_identity_verification_settings_is_hash CHECK ((jsonb_typeof(identity_verification_settings) = 'object'::text)),
+    CONSTRAINT check_security_and_compliance_settings_is_hash CHECK ((jsonb_typeof(security_and_compliance_settings) = 'object'::text))
 );
 
 COMMENT ON COLUMN application_settings.content_validation_endpoint_url IS 'JiHu-specific column';
@@ -13772,6 +13796,7 @@ CREATE TABLE design_management_repository_states (
     verification_checksum bytea,
     verification_failure text,
     namespace_id bigint,
+    CONSTRAINT check_380bdde342 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_bf1387c28b CHECK ((char_length(verification_failure) <= 255))
 );
 
@@ -27075,6 +27100,8 @@ ALTER TABLE ONLY ai_settings ALTER COLUMN id SET DEFAULT nextval('ai_settings_id
 
 ALTER TABLE ONLY ai_troubleshoot_job_events ALTER COLUMN id SET DEFAULT nextval('ai_troubleshoot_job_events_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_usage_events ALTER COLUMN id SET DEFAULT nextval('ai_usage_events_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_vectorizable_files ALTER COLUMN id SET DEFAULT nextval('ai_vectorizable_files_id_seq'::regclass);
 
 ALTER TABLE ONLY alert_management_alert_assignees ALTER COLUMN id SET DEFAULT nextval('alert_management_alert_assignees_id_seq'::regclass);
@@ -29120,6 +29147,9 @@ ALTER TABLE ONLY ai_testing_terms_acceptances
 
 ALTER TABLE ONLY ai_troubleshoot_job_events
     ADD CONSTRAINT ai_troubleshoot_job_events_pkey PRIMARY KEY (id, "timestamp");
+
+ALTER TABLE ONLY ai_usage_events
+    ADD CONSTRAINT ai_usage_events_pkey PRIMARY KEY (id, "timestamp");
 
 ALTER TABLE ONLY ai_user_metrics
     ADD CONSTRAINT ai_user_metrics_pkey PRIMARY KEY (user_id);
@@ -33434,6 +33464,8 @@ CREATE INDEX idx_ai_active_context_code_enabled_namespaces_namespace_id ON ONLY 
 
 CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
 
+CREATE UNIQUE INDEX idx_ai_usage_events_unique_tuple ON ONLY ai_usage_events USING btree (namespace_id, user_id, event, "timestamp");
+
 CREATE INDEX idx_alert_management_alerts_on_created_at_project_id_with_issue ON alert_management_alerts USING btree (created_at, project_id) WHERE (issue_id IS NOT NULL);
 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
@@ -34133,6 +34165,10 @@ CREATE INDEX index_ai_troubleshoot_job_events_on_job_id ON ONLY ai_troubleshoot_
 CREATE INDEX index_ai_troubleshoot_job_events_on_project_id ON ONLY ai_troubleshoot_job_events USING btree (project_id);
 
 CREATE INDEX index_ai_troubleshoot_job_events_on_user_id ON ONLY ai_troubleshoot_job_events USING btree (user_id);
+
+CREATE INDEX index_ai_usage_events_on_organization_id ON ONLY ai_usage_events USING btree (organization_id);
+
+CREATE INDEX index_ai_usage_events_on_user_id ON ONLY ai_usage_events USING btree (user_id);
 
 CREATE INDEX index_ai_vectorizable_files_on_project_id ON ai_vectorizable_files USING btree (project_id);
 
@@ -44521,6 +44557,9 @@ ALTER TABLE ONLY incident_management_oncall_schedules
 ALTER TABLE ONLY vulnerability_user_mentions
     ADD CONSTRAINT fk_rails_1a41c485cd FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
+ALTER TABLE ai_usage_events
+    ADD CONSTRAINT fk_rails_1a85bb845c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY packages_debian_file_metadata
     ADD CONSTRAINT fk_rails_1ae85be112 FOREIGN KEY (package_file_id) REFERENCES packages_package_files(id) ON DELETE CASCADE;
 
@@ -45366,6 +45405,9 @@ ALTER TABLE ONLY audit_events_amazon_s3_configurations
 
 ALTER TABLE ONLY boards_epic_user_preferences
     ADD CONSTRAINT fk_rails_851fe1510a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ai_usage_events
+    ADD CONSTRAINT fk_rails_852725a860 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY value_stream_dashboard_aggregations
     ADD CONSTRAINT fk_rails_859b4f86f3 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -214,7 +214,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/graphql/resolvers/incident_management/oncall_shifts_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/incident_management/oncall_users_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/iterations_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/product_analytics/dashboards_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/product_analytics/state_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/requirements_management/requirements_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/requirements_management/test_reports_resolver_spec.rb'

@@ -184,7 +184,7 @@ Several known issues exist when you allow anyone to pull from the package regist
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) in GitLab 17.10 [with a flag](../../../administration/feature_flags.md) named `package_registry_audit_events`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/329588) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `package_registry_audit_events`. Disabled by default.
 
 {{< /history >}}
 

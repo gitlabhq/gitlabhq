@@ -44,7 +44,7 @@ and can be deleted.
 
 #### Housekeeping disabled in GitLab 15.0 to 15.2
 
-Artifact housekeeping was significantly improved in GitLab 15.0, introduced behind [feature flags](../feature_flags.md) disabled by default. The flags were enabled by default [in GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
+Artifact housekeeping was significantly improved in GitLab 15.0, introduced behind [feature flags](../feature_flags/_index.md) disabled by default. The flags were enabled by default [in GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92931).
 
 If artifacts housekeeping does not seem to be working in GitLab 15.0 to GitLab 15.2, you should check if the feature flags are enabled.
 

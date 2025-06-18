@@ -91,7 +91,7 @@ For additional repository structure recommendations, see the [Flux documentation
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags.md) named `notify_kas_on_git_push`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/392852) in GitLab 16.1 with a [flag](../../../administration/feature_flags/_index.md) named `notify_kas_on_git_push`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/126527) in GitLab 16.2.
 - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/410429) in GitLab 16.3.
 

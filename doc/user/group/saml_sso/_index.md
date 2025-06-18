@@ -566,7 +566,7 @@ For example, to unlink the `MyOrg` account:
 
 {{< history >}}
 
-- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
+- [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/215155) in GitLab 15.5 [with a flag](../../../administration/feature_flags/_index.md) named `transparent_sso_enforcement` to include transparent enforcement even when SSO enforcement is not enabled. Disabled on GitLab.com.
 - [Improved](https://gitlab.com/gitlab-org/gitlab/-/issues/375788) in GitLab 15.8 by enabling transparent SSO by default on GitLab.com.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/389562) in GitLab 15.10. Feature flag `transparent_sso_enforcement` removed.
 

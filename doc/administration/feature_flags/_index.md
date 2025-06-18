@@ -35,7 +35,7 @@ Features behind flags can be gradually rolled out, typically:
 These features can be enabled and disabled to allow or prevent users from using
 them. It can be done by GitLab administrators with access to the
 [Rails console](#how-to-enable-and-disable-features-behind-flags) or the
-[Feature flags API](../api/features.md).
+[Feature flags API](../../api/features.md).
 
 When you disable a feature flag, the feature is hidden from users and all of the functionality is turned off.
 For example, data is not recorded and services do not run.
@@ -61,7 +61,7 @@ Features behind default-disabled feature flags are not recommended for use in a 
 and problems caused by using a default disabled features aren't covered by GitLab Support.
 
 Security issues found in features that are disabled by default are patched in regular releases
-and do not follow our regular [maintenance policy](../policy/maintenance.md#patch-releases)
+and do not follow our regular [maintenance policy](../../policy/maintenance.md#patch-releases)
 with regards to backporting the fix.
 
 ## Risks when disabling released features
@@ -92,7 +92,7 @@ For installations from the source:
 sudo -u git -H bundle exec rails console -e production
 ```
 
-For details, see [starting a Rails console session](operations/rails_console.md#starting-a-rails-console-session).
+For details, see [starting a Rails console session](../operations/rails_console.md#starting-a-rails-console-session).
 
 ### Enable or disable the feature
 

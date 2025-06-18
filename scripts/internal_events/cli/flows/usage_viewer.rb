@@ -133,14 +133,9 @@ module InternalEventsCli
       def rspec_examples
         cli.say format_warning <<~TEXT
           #{divider}
-          #{format_help('# RSPEC -- COMPOSABLE MATCHERS (recommended)')}
+          #{format_help('# RSPEC')}
 
           #{format_warning(rspec_composable_matchers)}
-
-          #{divider}
-          #{format_help('# RSPEC -- SHARED EXAMPLE GROUP')}
-
-          #{format_warning(rspec_tests_example_group)}
 
           #{divider}
         TEXT
@@ -346,35 +341,6 @@ module InternalEventsCli
           it "triggers an internal event" do
             expect { subject }.to trigger_internal_events('#{action}')#{args}#{metrics_list}
           end
-        TEXT
-      end
-
-      def rspec_tests_example_group
-        identifier_args = identifiers.map do |identifier|
-          "  let(:#{identifier}) { create(:#{identifier}) }\n"
-        end.join('')
-
-        property_args = format_additional_properties do |property, value|
-          "    #{property}: #{value}"
-        end
-
-        if property_args.any?
-          property_arg = format_prefix '  ', <<~TEXT
-            let(:additional_properties) do
-              {
-            #{property_args.join(",\n")}
-              }
-            end
-          TEXT
-        end
-
-        args = [*identifier_args, *property_arg].join('')
-
-        <<~TEXT.chomp
-          it_behaves_like 'internal event tracking' do
-            let(:event) { '#{action}' }
-            let(:category) { described_class.name }
-          #{args}end
         TEXT
       end
 

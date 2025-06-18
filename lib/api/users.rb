@@ -192,6 +192,10 @@ module API
       end
       # rubocop: disable CodeReuse/ActiveRecord
       get feature_category: :user_profile, urgency: :low do
+        # This error can be removed in/after 19.0 release.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/549951
+        error_for_saml_provider_id_param_ee
+
         index_params = declared_params(include_missing: false)
 
         authenticated_as_admin! if index_params[:extern_uid].present? && index_params[:provider].present?

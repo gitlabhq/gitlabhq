@@ -1655,7 +1655,7 @@ Parameters:
 
 {{< history >}}
 
-- `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
+- `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/365724) in GitLab 15.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
 
@@ -1876,7 +1876,7 @@ curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 {{< history >}}
 
-- Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags.md) named `immediate_delete_subgroup_api`. Disabled by default.
+- Immediately deleting subgroups was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360008) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `immediate_delete_subgroup_api`. Disabled by default.
 - Immediately deleting subgroups was [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) in GitLab 15.4.
 - Immediately deleting subgroups was [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/368276) by default in GitLab 15.4.
 - The flag `immediate_delete_subgroup_api` for immediately deleting subgroups was [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/374069) in GitLab 15.9.
@@ -1929,7 +1929,7 @@ Parameters:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags/_index.md) named `group_agnostic_token_revocation`. Disabled by default.
 - Revocation of user feed tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/468599) in GitLab 17.3.
 
 {{< /history >}}
@@ -2138,7 +2138,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.1 [with a flag](../administration/feature_flags.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/16343) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `manage_pat_by_group_owners_ready`. Disabled by default.
 
 {{< /history >}}
 

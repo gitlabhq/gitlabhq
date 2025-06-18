@@ -16,7 +16,7 @@ description: Mentions, locked discussions, internal notes, and thread resolution
 
 {{< history >}}
 
-- Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags.md) named `wiki_comments`. Disabled by default.
+- Comments and threads on Wiki pages [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14461) in GitLab 17.7 [with a flag](../../administration/feature_flags/_index.md) named `wiki_comments`. Disabled by default.
 - Comments and threads on Wiki pages [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/502847) in GitLab 17.9. Feature flag `wiki_comments` removed.
 
 {{< /history >}}
@@ -63,7 +63,7 @@ mentions for yourself (the current, authenticated user) in a different color.
 
 {{< history >}}
 
-- [Flag](../../administration/feature_flags.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
+- [Flag](../../administration/feature_flags/_index.md) named `disable_all_mention` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110586) in GitLab 16.1. Disabled by default. [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/18442).
 
 {{< /history >}}
 
@@ -326,7 +326,7 @@ To create a thread:
 
 {{< history >}}
 
-- Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags.md) named `resolvable_issue_threads`. Disabled by default.
+- Resolvable threads for issues [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.3 [with a flag](../../administration/feature_flags/_index.md) named `resolvable_issue_threads`. Disabled by default.
 - Resolvable threads for issues [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.4.
 - Resolvable threads for issues [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/31114) in GitLab 16.7. Feature flag `resolvable_issue_threads` removed.
 - Resolvable threads for tasks, objectives, and key results [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/458818) in GitLab 17.3.
@@ -371,7 +371,7 @@ such as:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/development_stages_support.md#experiment).
-- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/development_stages_support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags/_index.md) named `summarize_notes_with_duo`. Disabled by default.
 - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/162122) in GitLab 17.4.
 - Changed to require GitLab Duo add-on in GitLab 17.6 and later.
 - Changed to include Premium in GitLab 18.0.

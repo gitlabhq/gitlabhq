@@ -21,7 +21,7 @@ When upgrading GitLab, there are two types of migrations to check:
 
 {{< history >}}
 
-- Feature [flag](../user/feature_flags.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
+- Feature [flag](../administration/feature_flags/_index.md) `execute_batched_migrations_on_schedule` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/329511) in GitLab 13.12.
 - For GitLab Self-Managed, administrators can opt to disable it.
 
 {{< /history >}}
@@ -127,7 +127,7 @@ advanced users who understand the risks of doing so.
 
 {{< alert type="warning" >}}
 
-There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
+There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
 Refer to each feature's history for more details.
 
 {{< /alert >}}
@@ -185,20 +185,20 @@ Use the following database queries to see the state of the current batched backg
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags.md) named `optimize_batched_migrations`. Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60133) in GitLab 13.2 [with a flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`. Enabled by default.
 
 {{< /history >}}
 
 {{< alert type="warning" >}}
 
-There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
+There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
 Refer to this feature's history for more details.
 
 {{< /alert >}}
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags.md) named `optimize_batched_migrations`.
+On GitLab Self-Managed, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flag](../administration/feature_flags/_index.md) named `optimize_batched_migrations`.
 On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
 {{< /alert >}}
@@ -209,7 +209,7 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a flag](../administration/feature_flags.md) named `batched_migrations_parallel_execution`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104027) in GitLab 15.7 [with a flag](../administration/feature_flags/_index.md) named `batched_migrations_parallel_execution`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/372316) in GitLab 15.11.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120808) in GitLab 16.1. Feature flag `batched_migrations_parallel_execution` removed.
 
@@ -217,14 +217,14 @@ To maximize throughput of batched background migrations (in terms of the number 
 
 {{< alert type="warning" >}}
 
-There can be [risks when disabling released features](../administration/feature_flags.md#risks-when-disabling-released-features).
+There can be [risks when disabling released features](../administration/feature_flags/_index.md#risks-when-disabling-released-features).
 Refer to this feature's history for more details.
 
 {{< /alert >}}
 
 To speed up the execution of batched background migrations, two migrations are executed at the same time.
 
-[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags.md) can change
+[GitLab administrators with access to the GitLab Rails console](../administration/feature_flags/_index.md) can change
 the number of batched background migrations executed in parallel:
 
 ```ruby

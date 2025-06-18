@@ -15,7 +15,7 @@ description: Vulnerabilities, licenses, filtering, and exporting.
 
 {{< history >}}
 
-- Group-level dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) in GitLab 16.2 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies`. Disabled by default.
+- Group-level dependency list [introduced](https://gitlab.com/groups/gitlab-org/-/epics/8090) in GitLab 16.2 [with a flag](../../../administration/feature_flags/_index.md) named `group_level_dependencies`. Disabled by default.
 - Group-level dependency list [enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/411257) in GitLab 16.4.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132015) in GitLab 16.5. Feature flag `group_level_dependencies` removed.
 
@@ -53,7 +53,7 @@ GitLab CycloneDX property taxonomy to provide some properties and to enable some
 
 - In GitLab 17.2, the `location` field no longer links to the commit where the dependency was last detected when the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled. The flag is disabled by default.
 - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
-- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags.md) named `dependency_paths`. Disabled by default.
+- View dependency paths option [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/519965) in GitLab 17.11 [with a flag](../../../administration/feature_flags/_index.md) named `dependency_paths`. Disabled by default.
 
 {{< /history >}}
 
@@ -86,11 +86,11 @@ Details of each dependency are listed, sorted by decreasing severity of vulnerab
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) dependency filtering for groups in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `group_level_dependencies_filtering`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) dependency filtering for groups in GitLab 16.7 [with a flag](../../../administration/feature_flags/_index.md) named `group_level_dependencies_filtering`. Disabled by default.
 - Dependency filtering for group [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/422356) in GitLab 16.10. Feature flag `group_level_dependencies_filtering` removed.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags.md). Enabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513320) dependency filtering for projects in GitLab 17.9 with a flag named [`project_component_filter`](../../../administration/feature_flags/_index.md). Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/513321) in GitLab 17.10. Feature flag `project_component_filter` removed.
-- Dependency version filtering introduced for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.
+- Dependency version filtering introduced for [projects](https://gitlab.com/gitlab-org/gitlab/-/issues/520771) and [groups](https://gitlab.com/gitlab-org/gitlab/-/issues/523061) in GitLab 18.0 with [flags](../../../administration/feature_flags/_index.md) named `version_filtering_on_project_level_dependency_list` and `version_filtering_on_group_level_dependency_list`. Disabled by default.
 - Dependency version filtering [enabled](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192291) on GitLab.com, GitLab Self-Managed, and GitLab Dedicated in GitLab 18.1.
 
 {{< /history >}}
@@ -127,7 +127,7 @@ The dependency list shows only dependencies that match your filters.
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500551) in GitLab 17.9 [with a flag](../../../administration/feature_flags.md) named `update_sbom_occurrences_vulnerabilities_on_cvs`. Disabled by default.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/500551) in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `update_sbom_occurrences_vulnerabilities_on_cvs`. Disabled by default.
 - [Enabled on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/514223) in GitLab 17.9.
 
 {{< /history >}}
@@ -148,7 +148,7 @@ select the vulnerability's description. The [vulnerability's details](../vulnera
 
 {{< history >}}
 
-- Dependency path information from CycloneDX SBOM was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393061) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `project_level_sbom_occurrences`. Disabled by default.
+- Dependency path information from CycloneDX SBOM was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393061) in GitLab 16.9 [with a flag](../../../administration/feature_flags/_index.md) named `project_level_sbom_occurrences`. Disabled by default.
 - Dependency path information from CycloneDX SBOM was [enabled on GitLab.com, GitLab Self-Managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/434371) in GitLab 17.0.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/457633) in GitLab 17.4. Feature flag `project_level_sbom_occurrences` removed.
 

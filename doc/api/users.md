@@ -26,6 +26,7 @@ Takes [pagination parameters](rest/_index.md#offset-based-pagination) `page` and
 {{< history >}}
 
 - Keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/419556) in GitLab 16.5.
+- `saml_provider_id` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/424505) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -50,6 +51,7 @@ Supported attributes:
 | `exclude_humans`       | boolean  | no       | Filters only bot or internal users. Default is `false`. |
 | `exclude_internal`     | boolean  | no       | Filters only non internal users. Default is `false`. |
 | `without_project_bots` | boolean  | no       | Filters user without project bots. Default is `false`. |
+| `saml_provider_id`     | number   | no       | Removed in GitLab 18.2. Use [`GET /groups/:id/saml_users`](groups.md#list-all-saml-users) instead. |
 
 Example response:
 
@@ -186,7 +188,6 @@ Supported attributes:
 | `without_projects` | boolean | no       | Filter users without projects. Default is `false`, which means that all users are returned, with and without projects. |
 | `admins`           | boolean | no       | Return only administrators. Default is `false` |
 | `auditors`         | boolean | no       | Return only auditor users. Default is `false`. If not included, it returns all users. Premium and Ultimate only. |
-| `saml_provider_id` | number  | no       | Return only users created by the specified SAML provider ID. If not included, it returns all users. Premium and Ultimate only. |
 | `skip_ldap`        | boolean | no       | Skip LDAP users. Premium and Ultimate only. |
 
 Example response:

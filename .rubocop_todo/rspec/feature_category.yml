@@ -184,7 +184,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/graphql/resolvers/instance_security_dashboard_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/iterations/cadences_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/path_locks_resolver_spec.rb'
-    - 'ee/spec/graphql/resolvers/product_analytics/visualization_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/requirements_management/requirements_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/requirements_management/test_reports_resolver_spec.rb'
     - 'ee/spec/graphql/resolvers/security_report_summary_resolver_spec.rb'

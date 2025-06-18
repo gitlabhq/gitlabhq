@@ -98,6 +98,18 @@ $crud-header-min-height: px-to-rem(49px);
   th:last-of-type {
     @apply gl-border-r-0;
   }
+
+  tr:first-of-type th {
+    @apply gl-border-t-0;
+  }
+
+  tr:last-of-type td {
+    @apply gl-border-b-0;
+  }
+
+  tr:hover td {
+    @apply gl-bg-strong dark:gl-bg-neutral-700;
+  }
 }
 
 .crud-body:has(.content-list) {
