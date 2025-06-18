@@ -7,5 +7,5 @@ feature_categories:
 description: Logs users flagged by the Akismet anti-spam integration.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/2266
 milestone: '8.5'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small

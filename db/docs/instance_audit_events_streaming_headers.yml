@@ -8,5 +8,5 @@ description: Represents a HTTP header sent with streaming audit events to instan
   level destinations
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88063
 milestone: '16.1'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small

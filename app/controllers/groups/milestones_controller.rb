@@ -7,7 +7,7 @@ class Groups::MilestonesController < Groups::ApplicationController
   before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update, :destroy]
 
   before_action do
-    push_force_frontend_feature_flag(:work_item_epic_milestones, !!group&.work_item_epic_milestones_feature_flag_enabled?)
+    push_force_frontend_feature_flag(:work_item_epic_milestones, !!@group.work_item_epic_milestones_feature_flag_enabled?)
   end
 
   feature_category :team_planning

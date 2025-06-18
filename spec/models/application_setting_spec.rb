@@ -213,6 +213,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
         recaptcha_enabled: false,
         reindexing_minimum_index_size: 1.gigabyte,
         reindexing_minimum_relative_bloat_size: 0.2,
+        relation_export_batch_size: 50,
         remember_me_enabled: true,
         repository_checks_enabled: true,
         repository_storages_weighted: { 'default' => 100 },
@@ -597,6 +598,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           max_yaml_size_bytes
           namespace_aggregation_schedule_lease_duration_in_seconds
           project_jobs_api_rate_limit
+          relation_export_batch_size
           session_expire_delay
           snippet_size_limit
           throttle_authenticated_api_period_in_seconds

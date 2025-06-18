@@ -20916,7 +20916,8 @@ CREATE TABLE project_compliance_violations (
     project_id bigint NOT NULL,
     audit_event_id bigint NOT NULL,
     compliance_requirements_control_id bigint NOT NULL,
-    status smallint NOT NULL
+    status smallint NOT NULL,
+    audit_event_table_name smallint NOT NULL
 );
 
 CREATE SEQUENCE project_compliance_violations_id_seq

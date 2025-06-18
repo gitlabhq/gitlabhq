@@ -157,6 +157,7 @@ linters-settings:
           - github.com/jpillora/backoff
           - github.com/alicebob/miniredis/v2
           - github.com/sony/gobreaker/v2
+          - gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/clients/gopb
   dupl:
     # tokens count to trigger issue, 150 by default
     threshold: 100

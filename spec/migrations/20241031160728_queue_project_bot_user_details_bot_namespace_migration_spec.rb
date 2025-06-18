@@ -4,7 +4,7 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe QueueProjectBotUserDetailsBotNamespaceMigration,
-  migration: :gitlab_main_clusterwide,
+  migration: :gitlab_main,
   feature_category: :system_access do
   let!(:batched_migration) { described_class::MIGRATION }
 
@@ -16,7 +16,7 @@ RSpec.describe QueueProjectBotUserDetailsBotNamespaceMigration,
 
       migration.after -> {
         expect(batched_migration).to have_scheduled_batched_migration(
-          gitlab_schema: :gitlab_main_clusterwide,
+          gitlab_schema: :gitlab_main,
           table_name: :users,
           column_name: :id,
           interval: described_class::DELAY_INTERVAL,

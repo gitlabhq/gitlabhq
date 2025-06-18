@@ -453,3 +453,117 @@ Alternatively, you can use the `gitlab:zoekt:info` Rake task.
 
 If the number of online nodes is lower than the number of configured nodes or is zero when nodes are configured,
 you might have connectivity issues between GitLab and your Zoekt nodes.
+
+### Debug Zoekt API connectivity
+
+You can test direct connectivity to Zoekt nodes and debug API responses by querying the Zoekt API directly through the Zoekt gateway using `curl` commands.
+
+GitLab uses different search methods depending on configuration:
+
+- **Direct node search**: Queries a specific Zoekt node directly.
+- **Proxy search**: Uses the Zoekt proxy to distribute searches across multiple nodes (enabled with the [`zoekt_search_proxy` feature flag](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/171867)).
+
+To send a `curl` request to the Zoekt API:
+
+1. Run this command in the Toolbox pod:
+
+   ```shell
+   kubectl exec -it <toolbox-pod> -- bash
+   ```
+
+1. Define the variables you need for the search:
+
+   ```shell
+   # The Zoekt gateway requires auth
+   USERNAME=$(cat /etc/gitlab/zoekt/.gitlab_zoekt_username)
+   PASSWORD=$(cat /etc/gitlab/zoekt/.gitlab_zoekt_password)
+
+   # Gateway endpoint
+   ZOEKT_GATEWAY_SERVICE_ENDPOINT="gitlab-gitlab-zoekt-gateway.default.svc.cluster.local:8080"
+
+   # Search parameters
+   SEARCH_QUERY="string"
+   MAX_RESULTS=5000
+   ```
+
+1. Send a request to the Zoekt API through the gateway:
+
+   - For direct node search, test connectivity to a specific Zoekt node:
+
+      ```shell
+      # Define the specific Zoekt node to test
+      ZOEKT_POD_FQDN="gitlab-gitlab-zoekt-0.gitlab-gitlab-zoekt.default.svc.cluster.local"
+
+      # Search all projects on a specific node
+      curl \
+         http://$ZOEKT_GATEWAY_SERVICE_ENDPOINT/nodes/$ZOEKT_POD_FQDN/api/search \
+         --request POST \
+         --header "Content-Type: application/json" \
+         --user "$USERNAME:$PASSWORD" \
+         --write-out "\nGateway → Zoekt direct node: %{time_total}s | Status: %{http_code} | Size: %{size_download}B\n\n" \
+         --data "{\"Q\": \"$SEARCH_QUERY\", \"Opts\": {\"TotalMaxMatchCount\": $MAX_RESULTS, \"NumContextLines\": 1}}"
+
+      # Search specific projects only on a specific node
+      PROJECT_IDS='[1, 2, 3]'
+      curl \
+         http://$ZOEKT_GATEWAY_SERVICE_ENDPOINT/nodes/$ZOEKT_POD_FQDN/api/search \
+         --request POST \
+         --header "Content-Type: application/json" \
+         --user "$USERNAME:$PASSWORD" \
+         --write-out "\nGateway → Zoekt direct node: %{time_total}s | Status: %{http_code} | Size: %{size_download}B\n\n" \
+         --data "{\"Q\": \"$SEARCH_QUERY\", \"Opts\": {\"TotalMaxMatchCount\": $MAX_RESULTS, \"NumContextLines\": 1}, \"RepoIds\": $PROJECT_IDS}"
+      ```
+
+   - For proxy search, test multi-node search functionality when the `zoekt_search_proxy` feature flag is enabled:
+
+      ```shell
+      # Define the individual Zoekt nodes for proxy forwarding
+      ZOEKT_POD_FQDN_1="gitlab-gitlab-zoekt-0.gitlab-gitlab-zoekt.default.svc.cluster.local"
+      ZOEKT_POD_FQDN_2="gitlab-gitlab-zoekt-1.gitlab-gitlab-zoekt.default.svc.cluster.local"
+      ZOEKT_POD_FQDN_3="gitlab-gitlab-zoekt-2.gitlab-gitlab-zoekt.default.svc.cluster.local"
+
+      # Search all projects across multiple nodes using proxy
+      curl \
+         http://$ZOEKT_GATEWAY_SERVICE_ENDPOINT/indexer/proxy_search \
+         --request POST \
+         --header "Content-Type: application/json" \
+         --user "$USERNAME:$PASSWORD" \
+         --write-out "\nGateway → Zoekt proxy: %{time_total}s | Status: %{http_code} | Size: %{size_download}B\n\n" \
+         --data '{
+         "Q": "'"$SEARCH_QUERY"'",
+         "Opts": {"TotalMaxMatchCount": '"$MAX_RESULTS"', "NumContextLines": 1},
+         "ForwardTo": [
+            {"Endpoint": "http://'"$ZOEKT_POD_FQDN_1"':8080/api/search"},
+            {"Endpoint": "http://'"$ZOEKT_POD_FQDN_2"':8080/api/search"},
+            {"Endpoint": "http://'"$ZOEKT_POD_FQDN_3"':8080/api/search"}
+         ]
+         }'
+
+      # Search specific projects across multiple nodes using proxy
+      PROJECT_IDS='[1, 2, 3]'
+      curl \
+         http://$ZOEKT_GATEWAY_SERVICE_ENDPOINT/indexer/proxy_search \
+         --request POST \
+         --header "Content-Type: application/json" \
+         --user "$USERNAME:$PASSWORD" \
+         --write-out "\nGateway → Zoekt proxy: %{time_total}s | Status: %{http_code} | Size: %{size_download}B\n\n" \
+         --data '{
+         "Q": "'"$SEARCH_QUERY"'",
+         "Opts": {"TotalMaxMatchCount": '"$MAX_RESULTS"', "NumContextLines": 1},
+         "ForwardTo": [
+            {"Endpoint": "http://'"$ZOEKT_POD_FQDN_1"':8080/api/search", "RepoIds": '"$PROJECT_IDS"'},
+            {"Endpoint": "http://'"$ZOEKT_POD_FQDN_2"':8080/api/search", "RepoIds": '"$PROJECT_IDS"'},
+            {"Endpoint": "http://'"$ZOEKT_POD_FQDN_3"':8080/api/search", "RepoIds": '"$PROJECT_IDS"'}
+         ]
+         }'
+      ```
+
+#### Troubleshooting
+
+When you debug Zoekt API connectivity:
+
+- The `ZOEKT_GATEWAY_SERVICE_ENDPOINT` is the service endpoint for the Zoekt gateway and defaults to `gitlab-gitlab-zoekt-gateway.default.svc.cluster.local:8080`.
+- For `ZOEKT_POD_FQDN`, `ZOEKT_POD_FQDN_1`, `ZOEKT_POD_FQDN_2` and `ZOEKT_POD_FQDN_3`, use the specific Zoekt pod FQDN. For example: `gitlab-gitlab-zoekt-0.gitlab-gitlab-zoekt.default.svc.cluster.local`.
+- When GitLab performs Zoekt searches, it returns up to 5,000 results by default.
+- For direct node searches, there may be multiple Zoekt pods in a StatefulSet (`gitlab-gitlab-zoekt-0`, `gitlab-gitlab-zoekt-1`, etc.). Test each Zoekt pod individually by updating the `ZOEKT_POD_FQDN` variable.
+- For proxy searches, check the JSON response values for `Errors`, `Failures` and `TimedOut`.

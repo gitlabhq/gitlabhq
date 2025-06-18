@@ -2,6 +2,7 @@
 <script>
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
 import $ from 'jquery';
+import { escapeRegExp } from 'lodash';
 import {
   keysFor,
   BOLD_TEXT,
@@ -355,8 +356,14 @@ export default {
         return;
       }
 
-      const regex = new RegExp(`(${textToFind})`, 'g');
-      const segments = textArea.value.split(regex);
+      // RegExp.escape is not available in jest environment and some older browsers
+      const escapedText = (RegExp.escape || escapeRegExp).call(null, textToFind);
+
+      // Regex with global modifier maintains state between calls, causing inconsistent behaviour.
+      // So we have to test against a regexp without the global flag when matching segments.
+      const regexWithoutG = new RegExp(escapedText, 'gi');
+
+      const segments = textArea.value.split(new RegExp(`(${escapedText})`, 'gi'));
       const options = this.$options.findAndReplace;
 
       // Clear previous contents
@@ -365,7 +372,7 @@ export default {
 
       segments.forEach((segment) => {
         // If the segment matches the text we're highlighting
-        if (segment === textToFind) {
+        if (regexWithoutG.test(segment)) {
           const span = document.createElement('span');
           span.classList.add(options.highlightClass);
           span.style.backgroundColor = options.highlightColor;

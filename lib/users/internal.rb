@@ -28,6 +28,8 @@ module Users
       strong_memoize_attr :support_bot_id
     end
 
+    include Gitlab::Utils::StrongMemoize
+
     # rubocop:disable CodeReuse/ActiveRecord -- Need to instantiate a record here
     def initialize(organization: nil)
       @organization = organization
@@ -40,7 +42,7 @@ module Users
       unique_internal(User.where(user_type: :ghost), 'ghost', email) do |u|
         u.bio = _('This is a "Ghost User", created to hold all issues authored by users that have ' \
                   'since been deleted. This user cannot be removed.')
-        u.name = 'Ghost User'
+        u.name = 'Ghost'
       end
     end
 
@@ -154,12 +156,36 @@ module Users
     # NOTE: This method is patched in spec/spec_helper.rb to allow use of exclusive lease in RSpec's
     # :before_all scope to keep the specs DRY.
     def unique_internal(scope, username, email_pattern, &block)
-      if @organization
+      if @organization && organization_users_internal_enabled?
         scope = scope.joins(:organization_users).where(organization_users: { organization: @organization })
       end
 
       scope.first || create_unique_internal(scope, username, email_pattern, &block)
     end
+
+    def username_with_organization_suffix(username)
+      return username if @organization.nil? || @organization == first_organization
+      return username unless organization_users_internal_enabled?
+
+      [username, @organization.path].join('_')
+    end
+
+    def display_name_with_organization_suffix(display_name)
+      return display_name if @organization.nil? || @organization == first_organization
+      return display_name unless organization_users_internal_enabled?
+
+      "#{display_name} (#{@organization.name})"
+    end
+
+    def first_organization
+      Organizations::Organization.first
+    end
+    strong_memoize_attr :first_organization
+
+    def organization_users_internal_enabled?
+      Feature.enabled?(:organization_users_internal, @organization)
+    end
+    strong_memoize_attr :organization_users_internal_enabled?
 
     def create_unique_internal(scope, username, email_pattern, &creation_block)
       # Since we only want a single one of these in an instance, we use an
@@ -188,21 +214,39 @@ module Users
 
       uniquify = Gitlab::Utils::Uniquify.new
 
-      username = uniquify.string(username) { |s| Namespace.by_path(s) }
+      global_username = username_with_organization_suffix(username)
+      global_username = uniquify.string(global_username) { |s| Namespace.by_path(s) }
 
       email = uniquify.string(->(n) { Kernel.sprintf(email_pattern, n) }) do |s|
         User.find_by_email(s)
       end
 
       user = scope.build(
-        username: username,
+        username: global_username,
         email: email,
         &creation_block
       )
 
-      user_organization = @organization || Organizations::Organization.first
+      user_organization = if @organization && organization_users_internal_enabled?
+                            @organization
+                          else
+                            Organizations::Organization.first
+                          end
+
       user.assign_personal_namespace(user_organization)
       user.organizations << user_organization
+
+      uniquify = Gitlab::Utils::Uniquify.new
+      organization_username = uniquify.string(username) { |s| Namespace.in_organization(user_organization).by_path(s) }
+
+      if organization_users_internal_enabled?
+        org_user_details = user_organization.organization_user_details.build(
+          user: user,
+          username: organization_username,
+          display_name: display_name_with_organization_suffix(user.name)
+        )
+        user.organization_user_details << org_user_details
+      end
 
       Users::UpdateService.new(user, user: user).execute(validate: false)
       user

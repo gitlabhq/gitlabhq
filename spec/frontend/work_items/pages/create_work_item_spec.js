@@ -57,6 +57,7 @@ describe('Create work item page component', () => {
     wrapper = shallowMount(CreateWorkItemPage, {
       propsData: {
         workItemTypeEnum: WORK_ITEM_TYPE_ENUM_ISSUE,
+        rootPageFullPath: 'gitlab-org',
         ...props,
       },
       apolloProvider: createMockApollo([[workItemRelatedItemQuery, relatedItemQueryHandler]]),

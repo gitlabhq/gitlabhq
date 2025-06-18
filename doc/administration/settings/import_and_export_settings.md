@@ -319,6 +319,19 @@ To modify this setting, send an API request to `/api/v4/application/settings`
 with `concurrent_relation_batch_export_limit`.
 For more information, see [application settings API](../../api/settings.md).
 
+### Export batch size
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194607) in GitLab 18.2.
+
+{{< /history >}}
+
+To further manage memory usage and database load, use the `relation_export_batch_size` setting to control the number of records processed in each batch during export operations.
+
+The default value is `50` records per batch. To modify this setting, send an API request to `/api/v4/application/settings` with `relation_export_batch_size`.
+For more information, see [application settings API](../../api/settings.md).
+
 ## Troubleshooting
 
 ## Error: `Help page documentation base url is blocked: execution expired`

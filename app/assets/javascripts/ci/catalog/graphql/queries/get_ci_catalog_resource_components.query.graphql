@@ -10,6 +10,7 @@ query getCiCatalogResourceComponents($fullPath: ID!) {
             id
             name
             includePath
+            last30DayUsageCount
             inputs {
               name
               default

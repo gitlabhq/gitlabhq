@@ -535,5 +535,16 @@ describe('Markdown field header component', () => {
       expect(Array.from(matches[0].classList)).toEqual(['js-highlight', 'js-highlight-active']);
       expect(Array.from(matches[1].classList)).toEqual(['js-highlight']);
     });
+
+    it('is case insensitive', async () => {
+      await showFindAndReplace();
+
+      // Text that matches
+      await findFindInput().vm.$emit('keyup', { target: { value: 'LoReM' } });
+      await nextTick();
+
+      const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
+      expect(matches.length).toBe(2);
+    });
   });
 });

@@ -1,5 +1,6 @@
 - affix_offset = local_assigns.fetch(:affix_offset, "50")
 - project = local_assigns[:project]
+- milestones_on_epics_enabled = @group&.work_item_epic_milestones_feature_flag_enabled?
 
 %aside.right-sidebar.js-right-sidebar{ data: { "auto-collapse" => true, "offset-top" => affix_offset, "spy" => "affix", "always-show-toggle" => true }, class: sidebar_gutter_collapsed_class(false), 'aria-live' => 'polite', 'aria-label': _('Milestone') }
   .issuable-sidebar.milestone-sidebar
@@ -78,7 +79,7 @@
             = sprite_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
-          - if Feature.enabled?(:work_item_epic_milestones, current_user)
+          - if milestones_on_epics_enabled
             = s_('MilestoneSidebar|Work items')
             = gl_badge_tag milestone.sorted_issues(current_user).length, variant: :muted
           - else
@@ -91,14 +92,14 @@
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues) do
               = s_('MilestoneSidebar|Open:')
-              - if Feature.enabled?(:work_item_epic_milestones, current_user)
+              - if milestones_on_epics_enabled
                 = milestone.sorted_issues(current_user).opened.length
               - else
                 = milestone.issues_visible_to_user(current_user).opened.count
           %span.milestone-stat
             = link_to milestones_browse_issuables_path(milestone, type: :issues, state: 'closed') do
               = s_('MilestoneSidebar|Closed:')
-              - if Feature.enabled?(:work_item_epic_milestones, current_user)
+              - if milestones_on_epics_enabled
                 = milestone.sorted_issues(current_user).closed.length
               - else
                 = milestone.issues_visible_to_user(current_user).closed.count

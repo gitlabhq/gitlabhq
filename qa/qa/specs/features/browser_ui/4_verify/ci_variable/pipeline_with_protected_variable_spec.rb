@@ -46,6 +46,7 @@ module QA
           user_commit_to_protected_branch(user.api_client, branch: branch)
           go_to_pipeline_job_as(user, source_branch: branch)
           Page::Project::Job::Show.perform do |show|
+            show.wait_until(max_duration: 10) { show.output.present? }
             expect(show.output).to have_content(protected_value), 'Expect protected variable to be in job log.'
           end
         end
@@ -58,6 +59,7 @@ module QA
           user_create_merge_request(user.api_client, source_branch: branch)
           go_to_pipeline_job_as(user, source_branch: branch)
           Page::Project::Job::Show.perform do |show|
+            show.wait_until(max_duration: 10) { show.output.present? }
             expect(show.output).to have_no_content(protected_value), 'Expect protected variable to NOT be in job log.'
           end
         end
@@ -79,8 +81,8 @@ module QA
         # Long term solution to accessing the status of a project authorization update
         # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
         Support::Retrier.retry_until(
-          max_duration: 60,
-          sleep_interval: 1,
+          max_duration: 120,
+          sleep_interval: 2,
           message: "Commit to protected branch failed",
           retry_on_exception: true
         ) do
@@ -99,8 +101,8 @@ module QA
         # Long term solution to accessing the status of a project authorization update
         # has been proposed in https://gitlab.com/gitlab-org/gitlab/-/issues/393369
         Support::Retrier.retry_until(
-          max_duration: 60,
-          sleep_interval: 1,
+          max_duration: 120,
+          sleep_interval: 2,
           message: "MR fabrication failed after retry",
           retry_on_exception: true
         ) do
@@ -123,6 +125,7 @@ module QA
           source_branch: source_branch,
           status: 'success')
         project.visit_job('job')
+        sleep 2
       end
     end
   end

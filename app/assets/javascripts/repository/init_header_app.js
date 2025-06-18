@@ -64,6 +64,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
       projectShortPath,
       isBinary,
       newWorkspacePath,
+      fullName,
     } = headerEl.dataset;
 
     const {
@@ -133,7 +134,7 @@ export default function initHeaderApp({ router, isReadmeView = false, isBlobView
         rootRef,
       },
       apolloProvider,
-      router: router || createRouter(projectPath, escapedRef),
+      router: router || createRouter(projectPath, escapedRef, fullName),
       render(h) {
         return h(HeaderArea, {
           props: {

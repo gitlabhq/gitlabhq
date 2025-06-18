@@ -283,6 +283,35 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
       end
     end
+
+    describe '#no_conflict_with_organization_user_details' do
+      let!(:user) { create(:user, :with_namespace, in_organization: organization) }
+      let!(:organization_user_detail) do
+        create(:organization_user_detail, organization: organization, user: user, username: 'test-username')
+      end
+
+      let(:other_organization) { create(:organization) }
+
+      it 'ensures no Organizations::OrganizationUserDetail has username conflicting with path' do
+        namespace = build(:namespace, path: 'test-username', organization: organization)
+
+        expect(namespace).not_to be_valid
+        expect(namespace.errors[:path]).to include('has already been taken')
+      end
+
+      it 'allows conflicting usernames for other organizations' do
+        namespace = build(:namespace, path: 'test-username', organization: other_organization)
+
+        expect(namespace).to be_valid
+      end
+
+      it 'does not check validation unless path has changed' do
+        namespace = create(:namespace)
+
+        expect(namespace).not_to receive(:no_conflict_with_organization_user_details)
+        namespace.update!(two_factor_grace_period: 36)
+      end
+    end
   end
 
   describe "ReferencePatternValidation" do
@@ -1791,6 +1820,92 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       let(:username) { 'CaPyBaRa' }
 
       it { is_expected.to eq(true) }
+    end
+  end
+
+  describe ".username_reserved_for_organization?" do
+    subject(:username_reserved) { described_class.username_reserved_for_organization?(username, organization) }
+
+    let(:username) { 'capyabra' }
+
+    let_it_be(:user) { create(:user, name: 'capybara') }
+    let_it_be(:group) { create(:group, name: 'capybara-group') }
+    let_it_be(:subgroup) { create(:group, parent: group, name: 'capybara-subgroup') }
+    let_it_be(:project) { create(:project, group: group, name: 'capybara-project') }
+
+    let_it_be(:other_organization) { create(:organization) }
+    let_it_be(:user_other_org) do
+      create(:user, :with_namespace, username: 'other-capybara', in_organization: other_organization)
+    end
+
+    let_it_be(:group_other_org) { create(:group, path: 'other-capybara-group', organization: other_organization) }
+
+    context 'when given a project name' do
+      let(:username) { 'capyabra-project' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given a sub-group name' do
+      let(:username) { 'capybara-subgroup' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given a top-level group' do
+      let(:username) { 'capybara-group' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given a top-level group in another organization' do
+      let(:username) { 'other-capybara-group' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given an existing username' do
+      let(:username) { 'capybara' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when excluding a particular namespace from the check' do
+      subject(:username_reserved) do
+        described_class.username_reserved_for_organization?(username, organization, excluding: [user.namespace])
+      end
+
+      let(:username) { 'capybara' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when exclude parameter contains nil values' do
+      subject(:username_reserved) do
+        described_class.username_reserved_for_organization?(username, organization, excluding: [nil, nil])
+      end
+
+      let(:username) { 'capybara' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given an existing username in another organization' do
+      let(:username) { 'other-capybara' }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when given a username with varying capitalization' do
+      let(:username) { 'CaPyBaRa' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when given a username with varying capitalization in another organization' do
+      let(:username) { 'OtHeR-CaPyBaRa' }
+
+      it { is_expected.to eq(false) }
     end
   end
 

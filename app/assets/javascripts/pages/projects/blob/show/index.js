@@ -91,9 +91,10 @@ if (viewBlobEl) {
     explainCodeAvailable,
     refType,
     canDownloadCode,
+    fullName,
     ...dataset
   } = viewBlobEl.dataset;
-  const router = createRouter(projectPath, originalBranch);
+  const router = createRouter(projectPath, originalBranch, fullName);
   initFileTreeBrowser(router, { projectPath, ref: originalBranch, refType });
 
   initHeaderApp({ router, isBlobView: true });

@@ -180,6 +180,7 @@ module ApplicationSettingImplementation
         raw_blob_request_limit: 300,
         recaptcha_enabled: false,
         receptive_cluster_agents_enabled: false,
+        relation_export_batch_size: 50,
         repository_checks_enabled: true,
         repository_storages_weighted: { 'default' => 100 },
         require_admin_approval_after_user_signup: true,

@@ -95,7 +95,7 @@ func TestRequestBodyErrors(t *testing.T) {
 	}
 }
 
-func testNoProxyInvocation(t *testing.T, expectedStatus int, auth PreAuthorizer, preparer Preparer) {
+func testNoProxyInvocation(t *testing.T, expectedStatus int, auth api.PreAuthorizer, preparer Preparer) {
 	proxy := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		assert.Fail(t, "request proxied upstream")
 	})
@@ -108,7 +108,7 @@ func testNoProxyInvocation(t *testing.T, expectedStatus int, auth PreAuthorizer,
 	require.Equal(t, expectedStatus, resp.StatusCode)
 }
 
-func testUpload(ctx context.Context, auth PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader) *http.Response {
+func testUpload(ctx context.Context, auth api.PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader) *http.Response {
 	req := httptest.NewRequest("POST", "http://example.com/upload", body).WithContext(ctx)
 	w := httptest.NewRecorder()
 
@@ -117,7 +117,7 @@ func testUpload(ctx context.Context, auth PreAuthorizer, preparer Preparer, prox
 	return w.Result()
 }
 
-func testUploadWithAPIResponse(ctx context.Context, auth PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader, api *api.Response) *http.Response {
+func testUploadWithAPIResponse(ctx context.Context, auth api.PreAuthorizer, preparer Preparer, proxy http.Handler, body io.Reader, api *api.Response) *http.Response {
 	req := httptest.NewRequest("POST", "http://example.com/upload", body).WithContext(ctx)
 	w := httptest.NewRecorder()
 

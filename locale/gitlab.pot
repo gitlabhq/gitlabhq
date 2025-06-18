@@ -12804,6 +12804,9 @@ msgstr ""
 msgid "CiCatalogComponent|Name"
 msgstr ""
 
+msgid "CiCatalogComponent|The number of projects that used the component in the last 30 days."
+msgstr ""
+
 msgid "CiCatalogComponent|There was an error fetching this resource's components"
 msgstr ""
 
@@ -38141,6 +38144,9 @@ msgstr ""
 msgid "MemberRole|View permissions"
 msgstr ""
 
+msgid "MemberRole|You can't delete this admin custom role until you delete all LDAP syncs that use it."
+msgstr ""
+
 msgid "MemberRole|You must fill out all required fields."
 msgstr ""
 
@@ -52099,6 +52105,9 @@ msgid "Reset to project defaults"
 msgstr ""
 
 msgid "Reset token"
+msgstr ""
+
+msgid "Resize sidebar"
 msgstr ""
 
 msgid "Resolve"
@@ -73293,6 +73302,9 @@ msgid "does not belong to the top-level group of the namespace."
 msgstr ""
 
 msgid "does not exist"
+msgstr ""
+
+msgid "does not exist in %{table_name}"
 msgstr ""
 
 msgid "does not have a supported extension. Only %{extension_list} are supported"

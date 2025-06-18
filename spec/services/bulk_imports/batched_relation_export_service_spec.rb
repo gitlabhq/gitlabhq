@@ -45,13 +45,27 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
       end
 
       context 'when there are multiple batches' do
-        it 'creates a batch record for each batch of records' do
-          stub_const("#{described_class.name}::BATCH_SIZE", 1)
-
+        before do
+          stub_application_setting(relation_export_batch_size: 1)
           create_list(:group_label, 10, group: portable)
+        end
 
+        it 'creates a batch record for each batch of records' do
           service.execute
 
+          export = portable.bulk_import_exports.first
+
+          expect(export.batches.count).to eq(11)
+        end
+
+        it 'caches the batch size for the export' do
+          # Execute once to set the cache
+          service.execute
+
+          # Run a new instance of the export service for the same relation with
+          # a different batch size
+          stub_application_setting(relation_export_batch_size: 2)
+          described_class.new(user, portable, relation, jid).execute
           export = portable.bulk_import_exports.first
 
           expect(export.batches.count).to eq(11)
@@ -86,6 +100,12 @@ RSpec.describe BulkImports::BatchedRelationExportService, feature_category: :imp
   describe '.cache_key' do
     it 'returns cache key given export and batch ids' do
       expect(described_class.cache_key(1, 1)).to eq('bulk_imports/batched_relation_export/1/1')
+    end
+  end
+
+  describe '.batch_size_cache_key' do
+    it 'returns the cache key for the export batch size' do
+      expect(described_class.batch_size_cache_key(1)).to eq('bulk_imports/batched_relation_export/1/batch_size')
     end
   end
 end

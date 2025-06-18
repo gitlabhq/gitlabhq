@@ -570,6 +570,7 @@ module ApplicationSettingsHelper
       :can_create_organization,
       :bulk_import_concurrent_pipeline_batch_limit,
       :concurrent_relation_batch_export_limit,
+      :relation_export_batch_size,
       :bulk_import_enabled,
       :bulk_import_max_download_file_size,
       :silent_admin_exports_enabled,

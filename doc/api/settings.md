@@ -162,6 +162,7 @@ Example response:
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
+  "relation_export_batch_size": 50,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
@@ -362,6 +363,7 @@ Example response:
   "security_txt_content": null,
   "bulk_import_concurrent_pipeline_batch_limit": 25,
   "concurrent_relation_batch_export_limit": 25,
+  "relation_export_batch_size": 50,
   "downstream_pipeline_trigger_limit_per_project_user_sha": 0,
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
@@ -690,6 +692,7 @@ to configure other related settings. These requirements are
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for reCAPTCHA. |
 | `receptive_cluster_agents_enabled`       | boolean          | no                                   | Enable receptive mode for GitLab Agents for Kubernetes. |
 | `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
+| `relation_export_batch_size`             | integer          | no                                   | The size of each batch when exporting batched relations. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194607) in GitLab 18.2. |
 | `remember_me_enabled`                    | boolean          | no                                   | Enable [**Remember me** setting](../administration/settings/account_and_limit_settings.md#configure-the-remember-me-option). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0. |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab periodically runs `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
 | `repository_size_limit`                  | integer          | no                                   | Size limit per repository (MB). Premium and Ultimate only. |

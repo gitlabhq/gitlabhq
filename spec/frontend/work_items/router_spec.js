@@ -76,6 +76,9 @@ describe('Work items router', () => {
         reportAbusePath: '/report/abuse/path',
         workItemPlanningViewEnabled: false,
       },
+      propsData: {
+        rootPageFullPath: '/',
+      },
       stubs: {
         WorkItemWeight: true,
         WorkItemIteration: true,
@@ -88,6 +91,7 @@ describe('Work items router', () => {
         WorkItemDevelopment: true,
         WorkItemChangeTypeModal: true,
         WorkItemErrorTracking: true,
+        WorkItemMetadataProvider: true,
       },
     });
   };

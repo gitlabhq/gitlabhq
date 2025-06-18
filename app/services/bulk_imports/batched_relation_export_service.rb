@@ -4,12 +4,16 @@ module BulkImports
   class BatchedRelationExportService
     include Gitlab::Utils::StrongMemoize
 
-    BATCH_SIZE = 1000
     BATCH_CACHE_KEY = 'bulk_imports/batched_relation_export/%{export_id}/%{batch_id}'
+    BATCH_SIZE_CACHE_KEY = 'bulk_imports/batched_relation_export/%{export_id}/batch_size'
     CACHE_DURATION = 4.hours
 
     def self.cache_key(export_id, batch_id)
       Kernel.format(BATCH_CACHE_KEY, export_id: export_id, batch_id: batch_id)
+    end
+
+    def self.batch_size_cache_key(export_id)
+      Kernel.format(BATCH_SIZE_CACHE_KEY, export_id: export_id)
     end
 
     def initialize(user, portable, relation, jid)
@@ -34,6 +38,25 @@ module BulkImports
 
     attr_reader :user, :portable, :relation, :jid, :config, :resolved_relation
 
+    # Returns the batch size for processing relation exports.
+    #
+    # The batch size determines how many records are processed together in each batch
+    # during the export operation. We cache the batch size so that any retried workers
+    # for the same relation export use the same batch size.
+    #
+    # @return [Integer] The number of records to process per batch
+    def batch_size
+      key = self.class.batch_size_cache_key(export.id)
+
+      Gitlab::Cache::Import::Caching.read_integer(key) ||
+        Gitlab::Cache::Import::Caching.write(
+          key,
+          Gitlab::CurrentSettings.relation_export_batch_size,
+          timeout: CACHE_DURATION
+        )
+    end
+    strong_memoize_attr :batch_size
+
     def export
       # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- This is only executed from within a worker
       @export ||= portable.bulk_import_exports.safe_find_or_create_by!(relation: relation, user: user)
@@ -45,7 +68,7 @@ module BulkImports
     end
 
     def batches_count
-      objects_count.fdiv(BATCH_SIZE).ceil
+      objects_count.fdiv(batch_size).ceil
     end
 
     def start_export!
@@ -72,7 +95,7 @@ module BulkImports
     def enqueue_batch_exports
       batch_number = 0
 
-      resolved_relation.in_batches(of: BATCH_SIZE) do |batch|
+      resolved_relation.in_batches(of: batch_size) do |batch|
         batch_number += 1
 
         batch_id = find_or_create_batch(batch_number).id

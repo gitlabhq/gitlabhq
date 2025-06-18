@@ -407,6 +407,8 @@ export default {
     @submit="handleFormSubmit"
     @input="isFormDirty = true"
   >
+    <h1 class="gl-sr-only">{{ pageTitle }}</h1>
+
     <input :value="csrfToken" type="hidden" name="authenticity_token" />
     <input v-if="pageInfo.persisted" type="hidden" name="_method" value="put" />
     <input

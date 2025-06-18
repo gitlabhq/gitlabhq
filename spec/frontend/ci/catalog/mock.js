@@ -6,6 +6,7 @@ const componentsDetailsMockData = {
       name: 'Ruby gal',
       description: 'This is a pretty amazing component that does EVERYTHING ruby.',
       includePath: 'gitlab.com/gitlab-org/ruby-gal@~latest',
+      last30DayUsageCount: 12,
       inputs: [
         {
           name: 'version',
@@ -21,6 +22,7 @@ const componentsDetailsMockData = {
       name: 'Javascript madness',
       description: 'Adds some spice to your life.',
       includePath: 'gitlab.com/gitlab-org/javascript-madness@~latest',
+      last30DayUsageCount: 4,
       inputs: [
         {
           name: 'isFun',
@@ -50,6 +52,7 @@ const componentsDetailsMockData = {
       name: 'Go go go',
       description: 'When you write Go, you gotta go go go.',
       includePath: 'gitlab.com/gitlab-org/go-go-go@~latest',
+      last30DayUsageCount: 0,
       inputs: [
         {
           name: 'version',
@@ -707,6 +710,7 @@ export const mockComponents = {
       __typename: 'CiCatalogResource',
       id: `gid://gitlab/CiCatalogResource/1`,
       webPath: '/twitter/project-1',
+      last30DayUsageCount: 12,
       versions: {
         __typename: 'CiCatalogResourceVersionConnection',
         nodes: [

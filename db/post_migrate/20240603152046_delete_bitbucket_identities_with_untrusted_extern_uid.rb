@@ -3,7 +3,7 @@
 class DeleteBitbucketIdentitiesWithUntrustedExternUid < Gitlab::Database::Migration[2.2]
   disable_ddl_transaction!
 
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_clusterwide
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   milestone '17.1'
 

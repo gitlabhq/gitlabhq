@@ -1,5 +1,13 @@
 <script>
-import { GlEmptyState, GlLink, GlLoadingIcon, GlTableLite, GlTruncate } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlIcon,
+  GlLink,
+  GlLoadingIcon,
+  GlTableLite,
+  GlTruncate,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -9,11 +17,15 @@ import getCiCatalogResourceComponents from '../../graphql/queries/get_ci_catalog
 export default {
   components: {
     GlEmptyState,
+    GlIcon,
     GlLink,
     GlLoadingIcon,
     GlTableLite,
     GlTruncate,
     HelpIcon,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inputHelpLink: helpPagePath('ci/inputs/_index.md', {
     anchor: 'define-input-parameters-with-specinputs',
@@ -112,6 +124,19 @@ export default {
       >
         <h3 class="gl-mt-0 gl-text-size-h2" data-testid="component-name">
           {{ component.name }}
+          <span
+            v-gl-tooltip.top
+            data-testid="usage-count"
+            :title="
+              s__(
+                'CiCatalogComponent|The number of projects that used the component in the last 30 days.',
+              )
+            "
+            class="gl-ml-2 gl-text-sm gl-font-normal gl-text-subtle"
+          >
+            <gl-icon name="chart" />
+            <span class="gl-ml-1">{{ component.last30DayUsageCount }}</span>
+          </span>
         </h3>
         <pre
           data-testid="copy-to-clipboard"

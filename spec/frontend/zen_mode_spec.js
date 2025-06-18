@@ -135,4 +135,12 @@ describe('ZenMode', () => {
 
     expect(getTextarea()).toHaveAttr('style', style);
   });
+
+  it('restores textarea focus', () => {
+    getTextarea().trigger('focus');
+    enterZen();
+    exitZen();
+
+    expect(document.activeElement).toBe(getTextarea()[0]);
+  });
 });

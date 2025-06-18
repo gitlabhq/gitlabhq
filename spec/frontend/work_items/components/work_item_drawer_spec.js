@@ -16,6 +16,7 @@ import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
 import workspacePermissionsQuery from '~/work_items/graphql/workspace_permissions.query.graphql';
+import workItemMetadataQuery from '~/work_items/graphql/work_item_metadata.query.graphql';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import { visitUrl, updateHistory, setUrlParams, removeParams } from '~/lib/utils/url_utility';
 import { makeDrawerUrlParam } from '~/work_items/utils';
@@ -84,6 +85,7 @@ describe('WorkItemDrawer', () => {
       apolloProvider: createMockApollo([
         [deleteWorkItemMutation, deleteWorkItemMutationHandler],
         [workspacePermissionsQuery, workspacePermissionsHandler],
+        [workItemMetadataQuery, jest.fn().mockResolvedValue({ data: {} })],
       ]),
     });
   };
@@ -104,6 +106,13 @@ describe('WorkItemDrawer', () => {
           <slot name="title"></slot>
           <slot></slot>
         </div>`,
+        }),
+        WorkItemDetail: stubComponent(WorkItemDetail, {
+          template: `
+          <div>
+            <slot></slot>
+            <a ref="referenceLink" class="reference-link" href="test">gitlab#1</a>
+          </div>`,
         }),
       },
     });
@@ -383,6 +392,13 @@ describe('WorkItemDrawer', () => {
             <slot name="title"></slot>
             <slot></slot>
           </div>`,
+          }),
+          WorkItemDetail: stubComponent(WorkItemDetail, {
+            template: `
+            <div>
+              <slot></slot>
+              <a ref="referenceLink" class="reference-link" href="test">gitlab#1</a>
+            </div>`,
           }),
         },
       });

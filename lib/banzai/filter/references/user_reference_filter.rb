@@ -7,6 +7,8 @@ module Banzai
       #
       # A special `@all` reference is also supported.
       class UserReferenceFilter < ReferenceFilter
+        include Gitlab::Utils::StrongMemoize
+
         self.reference_type = :user
         self.object_class   = User
 
@@ -49,7 +51,10 @@ module Banzai
               link_to_all(link_content: link_content)
             else
               cached_call(:banzai_url_for_object, match, path: [User, username.downcase]) do
-                if namespace = namespaces[username.downcase]
+                # order is important: per-organization usernames should be checked before global namespace
+                if org_user_detail = org_user_details[username.downcase]
+                  link_to_org_user_detail(org_user_detail)
+                elsif namespace = namespaces[username.downcase]
                   link_to_namespace(namespace, link_content: link_content) || match
                 else
                   match
@@ -65,11 +70,25 @@ module Banzai
         # The keys of this Hash are the namespace paths, the values the
         # corresponding Namespace objects.
         def namespaces
-          @namespaces ||= Namespace.preload(:owner, :route)
-                          .where_full_path_in(usernames)
-                          .index_by(&:full_path)
-                          .transform_keys(&:downcase)
+          Namespace.preload(:owner, :route)
+                   .where_full_path_in(usernames)
+                   .index_by(&:full_path)
+                   .transform_keys(&:downcase)
         end
+        strong_memoize_attr :namespaces
+
+        # check for users that have an aliased name within an organization,
+        # for example the bot users created by Users::Internal
+        def org_user_details
+          return {} unless Feature.enabled?(:organization_users_internal, organization)
+
+          Organizations::OrganizationUserDetail.for_references
+                                               .for_organization(organization)
+                                               .with_usernames(usernames)
+                                               .index_by(&:username)
+                                               .transform_keys(&:downcase)
+        end
+        strong_memoize_attr :org_user_details
 
         # Returns all usernames referenced in the current document.
         def usernames
@@ -126,9 +145,25 @@ module Banzai
           link_tag(url, data, content, namespace.owner_name)
         end
 
+        def link_to_org_user_detail(org_user_detail, link_content: nil)
+          user = org_user_detail.user
+          url = urls.user_url(user, only_path: context[:only_path])
+          data = data_attribute(user: user.id)
+          content = link_content || org_user_detail.to_reference
+
+          link_tag(url, data, content, org_user_detail.username)
+        end
+
         def link_tag(url, data, link_content, title)
           %(<a href="#{url}" #{data} class="#{link_class}" title="#{escape_once(title)}">#{link_content}</a>)
         end
+
+        def organization
+          parent&.organization ||
+            context[:author]&.organizations&.first ||
+            Organizations::Organization.first
+        end
+        strong_memoize_attr :organization
 
         def parent
           context[:project] || context[:group]

@@ -3439,7 +3439,7 @@ class Project < ApplicationRecord
   end
 
   def work_item_epic_milestones_feature_flag_enabled?
-    group&.work_item_epic_milestones_feature_flag_enabled? || Feature.enabled?(:work_item_epic_milestones, type: :beta)
+    ::Feature.enabled?(:work_item_epic_milestones, root_ancestor, type: :beta)
   end
 
   def work_item_status_feature_available?

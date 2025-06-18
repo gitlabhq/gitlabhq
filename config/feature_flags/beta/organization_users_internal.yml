@@ -1,0 +1,10 @@
+---
+name: organization_users_internal
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442780
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190607
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547109
+milestone: '18.1'
+group: group::authentication
+type: beta
+default_enabled: false

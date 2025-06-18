@@ -11,6 +11,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/log"
 	"gitlab.com/gitlab-org/labkit/tracing"
 
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/ai_assist/duoworkflow"
 	apipkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/artifacts"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
@@ -322,6 +323,11 @@ func configureRoutes(u *upstream) {
 		u.wsRoute(
 			newRoute(projectPattern+`-/jobs/[0-9]+/proxy.ws\z`, "project_jobs_proxy_ws", railsBackend),
 			channel.Handler(api)),
+
+		// Duo Workflow websocket
+		u.wsRoute(
+			newRoute(apiPattern+`v4/ai/duo_workflows/ws\z`, "duo_workflow_ws", railsBackend),
+			duoworkflow.Handler(api)),
 
 		// Long poll and limit capacity given to jobs/request and builds/register.json
 		u.route("",

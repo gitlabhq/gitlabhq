@@ -140,6 +140,7 @@ describe('WorkItemDetail component', () => {
   const findDesignDropzone = () => wrapper.findComponent(DesignDropzone);
   const findWorkItemDetailInfo = () => wrapper.findByTestId('info-alert');
   const findShowSidebarButton = () => wrapper.findByTestId('work-item-show-sidebar-button');
+  const findRootNode = () => wrapper.findByTestId('work-item-detail');
 
   const mockDragEvent = ({ types = ['Files'], files = [], items = [] }) => {
     return { dataTransfer: { types, files, items } };
@@ -929,11 +930,11 @@ describe('WorkItemDetail component', () => {
           items: [{ type: 'image/png' }],
         });
 
-        wrapper.trigger('dragenter', dragEvent);
+        findRootNode().trigger('dragenter', dragEvent);
         glIntersectionObserver.vm.$emit('appear');
         await nextTick();
 
-        wrapper.trigger('dragover', dragEvent);
+        findRootNode().trigger('dragover', dragEvent);
         glIntersectionObserver.vm.$emit('appear');
         await nextTick();
 

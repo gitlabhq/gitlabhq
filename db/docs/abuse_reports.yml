@@ -7,5 +7,5 @@ feature_categories:
 description: Stores abuse reports from other users.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cba7f20dc8614d12e3eeda6e14f454aeb22b9b54
 milestone: '7.13'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small

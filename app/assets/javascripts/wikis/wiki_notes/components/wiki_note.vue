@@ -272,7 +272,7 @@ export default {
         <slot name="avatar-badge"></slot>
       </gl-avatar-link>
     </div>
-    <div class="gl-mb-5" :class="dynamicClasses.noteParent">
+    <div :class="dynamicClasses.noteParent">
       <div class="note-content gl-px-3 gl-py-2">
         <div class="note-header">
           <note-header

@@ -86,4 +86,42 @@ RSpec.describe 'Member autocomplete', :js, feature_category: :groups_and_project
 
     include_examples "open suggestions when typing @", 'commit'
   end
+
+  context 'when mentioning users with OrganizationUserDetail username alias' do
+    let_it_be(:author) { create(:user, :with_organization) }
+    let_it_be(:organization) { author.organizations.first }
+    let_it_be(:project) { create(:project, :public, :repository, organization: organization) }
+    let_it_be(:admin_bot) { Users::Internal.for_organization(organization).admin_bot }
+
+    let(:organization_user_detail) { admin_bot.organization_user_details.first }
+    let(:resource_name) { 'issue' }
+
+    let!(:note) { create(:note, noteable: noteable, project: noteable.project) }
+    let(:noteable) { create(:issue, author: author, project: project) }
+
+    before_all do
+      project.add_owner(admin_bot)
+    end
+
+    it 'creates admin_bot with OrganizationUserDetail alias' do
+      expect(admin_bot.organization_user_details.count).to eq(1)
+      expect(admin_bot.username).not_to eq(organization_user_detail.username)
+
+      visit project_issue_path(project, noteable)
+      fill_in 'Comment', with: "#{User.reference_prefix}#{admin_bot.username[0..2]}"
+
+      expect(find_autocomplete_menu).to have_text(organization_user_detail.username)
+      expect(find_autocomplete_menu).not_to have_text(admin_bot.username)
+
+      send_keys [:arrow_down, :enter]
+
+      click_on 'Comment'
+      wait_for_requests
+
+      expect(page).to have_link(
+        "#{User.reference_prefix}#{organization_user_detail.username}",
+        href: user_path(admin_bot)
+      )
+    end
+  end
 end

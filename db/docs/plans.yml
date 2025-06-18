@@ -7,5 +7,5 @@ feature_categories:
 description: Contains information about purchasable Plans for GitLab namespaces
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/39ca951a0f28d147d4689379bbe48a9c14d55d9f
 milestone: '9.5'
-gitlab_schema: gitlab_main_clusterwide
+gitlab_schema: gitlab_main
 table_size: small

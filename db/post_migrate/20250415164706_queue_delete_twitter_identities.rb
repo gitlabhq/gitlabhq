@@ -5,7 +5,7 @@ class QueueDeleteTwitterIdentities < Gitlab::Database::Migration[2.2]
 
   disable_ddl_transaction!
   milestone '18.0'
-  restrict_gitlab_migration gitlab_schema: :gitlab_main_clusterwide
+  restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
     queue_batched_background_migration(

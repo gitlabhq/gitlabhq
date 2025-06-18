@@ -75,7 +75,7 @@ export default class ZenMode {
     // Prevent a user-resized textarea from persisting to fullscreen
     this.storedStyle = this.active_textarea.attr('style');
     this.active_textarea.removeAttr('style');
-    this.active_textarea.focus();
+    this.active_textarea.trigger('focus');
   }
 
   exit() {
@@ -88,6 +88,7 @@ export default class ZenMode {
       autosize(this.active_textarea);
       autosize.update(this.active_textarea);
 
+      this.active_textarea.trigger('focus');
       this.active_textarea = null;
       this.active_backdrop = null;
 

@@ -142,6 +142,13 @@ type RemoteObject struct {
 	ObjectStorage *ObjectStorageParams
 }
 
+// DuoWorkflow holds configuration for the Duo Workflow service.
+type DuoWorkflow struct {
+	Headers    map[string]string
+	ServiceURI string
+	Secure     bool
+}
+
 // Response represents a structure containing various GitLab-related environment variables.
 type Response struct {
 	// GL_ID is an environment variable used by gitlab-shell hooks during 'git
@@ -198,6 +205,8 @@ type Response struct {
 	NeedAudit bool `json:"NeedAudit"`
 	// Gob contains settings for the GitLab Observability Backend (GOB).
 	Gob GOBSettings `json:"gob"`
+
+	DuoWorkflow *DuoWorkflow
 }
 
 // GitalyServer represents configuration parameters for a Gitaly server,
@@ -405,6 +414,11 @@ func (api *API) PreAuthorizeFixedPath(r *http.Request, method string, path strin
 	}
 
 	return apiResponse, nil
+}
+
+// PreAuthorizer provides methods for pre-authorizing multipart requests.
+type PreAuthorizer interface {
+	PreAuthorizeHandler(next HandleFunc, suffix string) http.Handler
 }
 
 // PreAuthorizeHandler creates an HTTP handler that pre-authorizes requests.

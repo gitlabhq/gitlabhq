@@ -686,6 +686,10 @@ class User < ApplicationRecord
     .includes(:projects)
   end
 
+  scope :with_organization_user_details, -> do
+    includes(organization_user_details: [:organization])
+  end
+
   scope :left_join_user_detail, -> { left_joins(:user_detail) }
   scope :preload_user_detail, -> { preload(:user_detail) }
 
