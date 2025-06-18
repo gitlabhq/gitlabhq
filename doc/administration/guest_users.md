@@ -12,21 +12,32 @@ title: Guest users
 
 {{< /details >}}
 
-Users assigned the Guest role have limited access and capabilities compared to other user roles. Their permissions are restricted and are designed to provide basic visibility and interaction without compromising sensitive project data. For more information, see [Roles and permissions](../user/permissions.md).
+Users with the Guest role have limited access and capabilities compared to other user roles. Their [permissions](../user/permissions.md) are restricted and designed to provide only basic visibility and interaction without compromising sensitive project data.
 
-In GitLab Free and Premium, Guest users count towards the license seat usage.
+Users with the Guest role:
 
-## Unlimited seat usage
+- Can access public groups and projects.
+- Can view project plans, blockers, and progress indicators.
+- Can create and link new project work items.
+- Can view high-level project information such as:
+  - Analytics
+  - Incident reports
+  - Issues and epics
+  - Licenses
+- Cannot create projects, groups, and snippets in their personal namespaces.
+- Cannot modify existing data they didn't create.
+- Cannot view code in projects.
 
-{{< details >}}
+## Seat usage
 
-- Tier: Ultimate
+- In GitLab Free and Premium, users with the Guest role count as a billable user and consume a license seat.
+- In GitLab Ultimate, users with the Guest role do not count as a billable user or consume a license seat.
 
-{{< /details >}}
+{{< alert type="note" >}}
 
-In GitLab Ultimate, users with the Guest role do not count towards the license seat usage. You can add Guest users to your GitLab instance without impacting your billable seats.
+While the Guest role generally provides limited access, creating a [custom role](../user/custom_roles/_index.md) with the [`View repository code`](../user/custom_roles/abilities.md#source-code-management) permission allows you to provide access to code in your repositories without consuming a license seat. Adding any other permissions causes the role to occupy a billable seat.
 
-While Guest users generally have limited access, you can configure a [custom role](../user/custom_roles/_index.md) that includes the [`View repository code` permission](../user/custom_roles/abilities.md#source-code-management) to allow Guests to read code in your repositories. Adding any other permissions causes the role to occupy a billable seat.
+{{< /alert >}}
 
 ## Assign Guest role to users
 
@@ -38,38 +49,19 @@ You can assign the Guest role to a current member of a group or project, or assi
 
 To assign the Guest role to a current group or project member:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your group or project.
 1. Select **Manage** > **Members**.
 1. In the **Role** column of the group or project member you want to assign the Guest role to, select their current role (for example, **Developer**).
 1. In the **Role details** drawer, change the Role to **Guest**.
 1. Select **Update role**.
 
 If the user you want to assign the Guest role to is not yet a
-member of the project or group:
+member of the group or project:
 
-1. On the left sidebar, select **Search or go to** and find your project or group.
+1. On the left sidebar, select **Search or go to** and find your group or project.
 1. Select **Manage** > **Members**.
 1. Select **Invite members**.
 1. In **Username, name or email address**, select the relevant user.
 1. In **Select a role**, select **Guest**.
 1. Optional. In **Access expiration date**, enter a date.
 1. Select **Invite**.
-
-## Guest user permissions and restrictions
-
-Users with the Guest role can:
-
-- View project plans, blockers, and progress indicators.
-- View high-level project information such as:
-  - Analytics
-  - Incident reports
-  - Issues and epics
-  - Licenses
-- Create and link new project work items.
-- Access public groups and public projects.
-
-Users with the Guest role cannot:
-
-- Modify existing data that they have not created.
-- View code in GitLab projects by default.
-- Create projects, groups, and snippets in their personal namespaces.
