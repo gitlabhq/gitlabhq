@@ -1,0 +1,23 @@
+---
+# Custom instructions for GitLab Duo Code Review
+# Based on GitLab's official code review guidelines
+
+# References:
+# - Code Review Guidelines: https://docs.gitlab.com/development/code_review/
+# - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
+# - Contributing Guide: https://docs.gitlab.com/development/contributing/
+
+# This file defines custom review criteria that will be applied to specific files
+# during merge request reviews. Instructions are grouped by name and can target
+# multiple file patterns using glob syntax.
+
+instructions:
+  - name: Test Coverage
+    fileFilters:
+      - "spec/**/*_spec.rb"
+      - "ee/spec/**/*_spec.rb"
+    instructions: |
+      1. Test both happy paths and edge cases
+      2. Include error scenarios
+      3. Use shared examples to reduce duplication
+      4. Ensure proper database cleanup

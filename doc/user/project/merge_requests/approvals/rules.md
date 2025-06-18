@@ -157,7 +157,7 @@ users were not explicitly listed in the approval rules.
 To get email notifications every time a merge request you're eligible to approve is created:
 
 - [Set your notification level](../../../profile/notifications.md#edit-notification-settings) to **Custom**
-and select this event.
+and select the **Merge request you're eligible to approve is created** event.
 
 ### Group approvers
 
