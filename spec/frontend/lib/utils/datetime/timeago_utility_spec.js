@@ -28,8 +28,6 @@ describe('TimeAgo utils', () => {
         [new Date().getTime() + 60e3 * 60 * 24 * 2, 'in 2 days'],
         [new Date().getTime() + 60e3 * 60 * 24 * 31, 'in 1 month'],
         [new Date().getTime() + 60e3 * 60 * 24 * 61, 'in 2 months'],
-        [new Date().getTime() + 60e3 * 60 * 24 * 366, 'in 1 year'],
-        [new Date().getTime() + 60e3 * 60 * 24 * 366 * 2, 'in 2 years'],
         // test relative time in past
         [new Date().getTime() - 30e3, '30 seconds ago'],
         [new Date().getTime() - 59e3, '59 seconds ago'],
@@ -43,17 +41,11 @@ describe('TimeAgo utils', () => {
         [new Date().getTime() - 60e3 * 60 * 24 * 2, '2 days ago'],
         [new Date().getTime() - 60e3 * 60 * 24 * 31, '1 month ago'],
         [new Date().getTime() - 60e3 * 60 * 24 * 61, '2 months ago'],
-        [new Date().getTime() - 60e3 * 60 * 24 * 366, '1 year ago'],
-        [new Date().getTime() - 60e3 * 60 * 24 * 366 * 2, '2 years ago'],
       ])('formats date `%p` as `%p`', (date, result) => {
         expect(getTimeago().format(date)).toEqual(result);
       });
 
-      describe('when dates are over a year and showDateWhenRelativeTimeOverAYear is true', () => {
-        beforeEach(() => {
-          window.gon.features = { showDateWhenRelativeTimeOverAYear: true };
-        });
-
+      describe('when dates are over a year', () => {
         it.each([
           [new Date().getTime() + 60e3 * 60 * 24 * 365],
           [new Date().getTime() + 60e3 * 60 * 24 * 366],

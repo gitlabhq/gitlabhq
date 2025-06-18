@@ -270,7 +270,7 @@ describe('JobArtifactsTable component', () => {
     });
 
     it('shows the created time', () => {
-      expect(findCreated().text()).toBe('5 years ago');
+      expect(findCreated().text()).toBe('Jul 3, 2015');
     });
 
     describe('row expansion', () => {

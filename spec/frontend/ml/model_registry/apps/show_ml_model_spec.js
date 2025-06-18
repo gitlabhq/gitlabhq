@@ -134,7 +134,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
     it('sets model metadata correctly', () => {
       expect(findModelMetadata().findComponent(GlIcon).props('name')).toBe('machine-learning');
-      expect(findModelMetadata().text()).toBe('Model created in 3 years by Root');
+      expect(findModelMetadata().text()).toBe('Model created Dec 6, 2023 by Root');
 
       expect(findTimeAgoTooltip().props('time')).toBe(model.createdAt);
       expect(findTimeAgoTooltip().props('tooltipPlacement')).toBe('top');

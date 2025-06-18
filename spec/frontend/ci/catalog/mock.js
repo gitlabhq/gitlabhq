@@ -141,6 +141,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-42',
           fullPath: 'namespace/frontend-fixtures/project-42',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -160,6 +161,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-41',
           fullPath: 'namespace/frontend-fixtures/project-41',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -179,6 +181,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-42',
           fullPath: 'namespace/frontend-fixtures/project-42',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -198,6 +201,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-39',
           fullPath: 'namespace/frontend-fixtures/project-39',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -217,6 +221,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-38',
           fullPath: 'namespace/frontend-fixtures/project-38',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -236,6 +241,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-37',
           fullPath: 'namespace/frontend-fixtures/project-37',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -255,6 +261,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-36',
           fullPath: 'namespace/frontend-fixtures/project-36',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -274,6 +281,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-35',
           fullPath: 'namespace/frontend-fixtures/project-35',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -293,6 +301,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-34',
           fullPath: 'namespace/frontend-fixtures/project-34',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -312,6 +321,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-33',
           fullPath: 'namespace/frontend-fixtures/project-33',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -331,6 +341,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-32',
           fullPath: 'namespace/frontend-fixtures/project-32',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -350,6 +361,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-31',
           fullPath: 'namespace/frontend-fixtures/project-31',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -369,6 +381,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-30',
           fullPath: 'namespace/frontend-fixtures/project-30',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -388,6 +401,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-29',
           fullPath: 'namespace/frontend-fixtures/project-29',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -407,6 +421,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-28',
           fullPath: 'namespace/frontend-fixtures/project-28',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -426,6 +441,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-27',
           fullPath: 'namespace/frontend-fixtures/project-27',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -445,6 +461,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-26',
           fullPath: 'namespace/frontend-fixtures/project-26',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -464,6 +481,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-25',
           fullPath: 'namespace/frontend-fixtures/project-25',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -483,6 +501,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-24',
           fullPath: 'namespace/frontend-fixtures/project-24',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
         {
@@ -502,6 +521,7 @@ export const catalogResponseBody = {
           visibilityLevel: 'public',
           webPath: '/frontend-fixtures/project-23',
           fullPath: 'namespace/frontend-fixtures/project-23',
+          archived: false,
           __typename: 'CiCatalogResource',
         },
       ],
@@ -529,6 +549,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-45 Name',
           description: 'A simple component',
           starCount: 0,
+          archived: false,
           last30DayUsageCount: 4,
           verificationLevel: 'UNVERIFIED',
           versions: {
@@ -563,6 +584,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-44 Name',
           description: 'A simple component',
           starCount: 0,
+          archived: false,
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -579,6 +601,7 @@ export const catalogSinglePageResponse = {
           name: 'Project-43 Name',
           description: 'A simple component',
           starCount: 0,
+          archived: false,
           verificationLevel: 'UNVERIFIED',
           versions: {
             nodes: [],
@@ -604,6 +627,7 @@ export const catalogSharedDataMock = {
       description: 'This is the description of the repo',
       name: 'Ruby',
       starCount: 1,
+      archived: false,
       last30DayUsageCount: 4,
       starrersPath: '/path/to/project/-/starrers',
       topics: [],

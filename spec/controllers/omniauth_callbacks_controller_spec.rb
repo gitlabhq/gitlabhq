@@ -910,6 +910,12 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         end
       end
     end
+
+    it 'does not log saml_response for debugging' do
+      expect(Gitlab::AuthLogger).not_to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+      get provider
+    end
   end
 
   describe '#saml' do
@@ -1079,9 +1085,21 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
 
         expect(request.env['warden']).to be_authenticated
       end
+
+      it 'logs saml_response for debugging' do
+        expect(Gitlab::AuthLogger).to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+        post :saml_okta, params: { SAMLResponse: mock_saml_response }
+      end
     end
 
     it_behaves_like "stores value for provider_2FA to session according to saml response"
+
+    it 'logs saml_response for debugging' do
+      expect(Gitlab::AuthLogger).to receive(:info).with(payload_type: 'saml_response', saml_response: anything)
+
+      post :saml, params: { SAMLResponse: mock_saml_response }
+    end
   end
 
   describe 'enable admin mode' do

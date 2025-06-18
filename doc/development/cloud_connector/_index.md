@@ -1,11 +1,11 @@
 ---
-stage: Systems
-group: Cloud Connector
+stage: Shared ownership
+group: Shared ownership
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: Cloud Connector
 ---
 
-[GitLab Cloud Connector](https://about.gitlab.com/direction/cloud-connector/) is a way to access services common to
+GitLab Cloud Connector is a way to access services common to
 multiple GitLab deployments, instances, and cells. As of now, Cloud Connector is not a
 dedicated service itself, but rather a collection of APIs and code that standardizes the approach to authentication and
 other items when integrating Cloud based services with the GitLab instance. This page aims to explain how to use
@@ -31,8 +31,8 @@ To add new feature to the existing backend service (**Ai Gateway**):
 1. [Implement permission checks in GitLab Rails](#implement-permission-checks-in-gitlab-rails).
 1. [Implement authorization checks in backend service](#implement-authorization-checks-in-backend-service).
 
-**Optional**: If the backend service the token is used for requires additional claims to be embedded in the
-service access token, contact [#g_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
+**Optional:** If the backend service the token is used for requires additional claims to be embedded in the
+service access token, contact [#f_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
 because we do not currently have interfaces in place to self-service this.
 
 #### Register the new feature in the JWT issuer
@@ -357,7 +357,7 @@ to `foo-service`.
 
 Adding new routes requires access to production infrastructure configuration. If you require a new route to be
 added, open an issue in the [`gitlab-org/gitlab` issue tracker](https://gitlab.com/gitlab-org/gitlab/-/issues/new)
-and assign it to the Cloud Connector group.
+and assign it to the Runway group.
 
 ## Testing
 

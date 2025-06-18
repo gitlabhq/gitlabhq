@@ -26,6 +26,7 @@ describe('CiResourceHeader', () => {
   const findVerificationBadge = () => wrapper.findComponent(CiVerificationBadge);
   const findVersionBadge = () => wrapper.findComponent(GlBadge);
   const findVisibilityIcon = () => wrapper.findComponent(ProjectVisibilityIcon);
+  const findArchiveBadge = () => wrapper.findByTestId('archive-badge');
 
   const createComponent = ({ props = {} } = {}) => {
     wrapper = shallowMountExtended(CiResourceHeader, {
@@ -206,6 +207,18 @@ describe('CiResourceHeader', () => {
           reportedUserId: 0,
           reportedFromUrl: reportedUrl,
         });
+      });
+    });
+
+    describe('archive badge', () => {
+      it('renders the archive badge when resource is archived', () => {
+        createComponent({ props: { resource: { ...resource, archived: true } } });
+        expect(findArchiveBadge().exists()).toBe(true);
+      });
+
+      it('does not render the archive badge when resource is not archived', () => {
+        createComponent({ props: { resource: { ...resource, archived: false } } });
+        expect(findArchiveBadge().exists()).toBe(false);
       });
     });
   });

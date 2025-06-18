@@ -104,7 +104,7 @@ describe('MlExperimentsShow', () => {
       expect(findExperimentMetadata().findComponent(GlIcon).props('name')).toBe(
         'issue-type-test-case',
       );
-      expect(findExperimentMetadata().text()).toBe('Experiment created in 2 years by root');
+      expect(findExperimentMetadata().text()).toBe('Experiment created Nov 7, 2022 by root');
 
       expect(findTimeAgoTooltip().props('time')).toBe(MOCK_EXPERIMENT.created_at);
 

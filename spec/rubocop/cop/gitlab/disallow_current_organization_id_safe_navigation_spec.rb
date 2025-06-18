@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rubocop_spec_helper'
-require 'rubocop/rspec/support'
 require_relative '../../../../rubocop/cop/gitlab/disallow_current_organization_id_safe_navigation'
 
 RSpec.describe RuboCop::Cop::Gitlab::DisallowCurrentOrganizationIdSafeNavigation, feature_category: :organization do

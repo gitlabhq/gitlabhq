@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils';
 import { cloneDeep } from 'lodash';
 import { nextTick } from 'vue';
 import originalOneReleaseQueryResponse from 'test_fixtures/graphql/releases/graphql/queries/one_release.query.graphql.json';
+import { DATE_ONLY_FORMAT, localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { convertOneReleaseGraphQLResponse } from '~/releases/util';
 import { RELEASED_AT_ASC, RELEASED_AT_DESC, CREATED_ASC, CREATED_DESC } from '~/releases/constants';
 import { trimText } from 'helpers/text_helper';
@@ -55,7 +56,7 @@ describe('Release block footer', () => {
     describe.each`
       dateType           | dateFlag          | expectedInfoStringPrefix | expectedDateString
       ${'empty'}         | ${undefined}      | ${null}                  | ${null}
-      ${'in the past'}   | ${dateAt}         | ${null}                  | ${'1 year ago'}
+      ${'in the past'}   | ${dateAt}         | ${null}                  | ${localeDateFormat[DATE_ONLY_FORMAT].format(dateAt)}
       ${'in the future'} | ${mockFutureDate} | ${'Will be'}             | ${'in 1 month'}
     `(
       'with date set to $dateType',

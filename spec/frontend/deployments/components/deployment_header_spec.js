@@ -100,7 +100,7 @@ describe('~/deployments/components/deployment_header.vue', () => {
     it('shows when the deployment was created', () => {
       const timeago = wrapper.findComponent(TimeAgoTooltip);
 
-      expect(timeago.text()).toBe(`Started 1 year ago by @${deployment.triggerer.username}`);
+      expect(timeago.text()).toBe(`Started Jan 1, 2019 by @${deployment.triggerer.username}`);
     });
   });
 });
