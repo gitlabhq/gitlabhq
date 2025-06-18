@@ -88,9 +88,11 @@ Advanced search follows the [Elasticsearch end-of-life policy](https://www.elast
 | GitLab version          | OpenSearch version             |
 |-------------------------|--------------------------------|
 | GitLab 18.1 and later   | OpenSearch 1.x and later       |
-| GitLab 17.6.3 and later | OpenSearch 1.x and 2.x         |
+| GitLab 17.6.3 to 18.0   | OpenSearch 1.x and 2.x         |
 | GitLab 15.5.3 to 17.6.2 | OpenSearch 1.x, 2.0 to 2.17    |
 | GitLab 15.0 to 15.5.2   | OpenSearch 1.x                 |
+
+OpenSearch 3.x is supported starting from GitLab 18.1. See [merge request 192197](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192197) for details.
 
 If your version of Elasticsearch or OpenSearch is incompatible, to prevent data loss, indexing pauses and
 a message is logged in the

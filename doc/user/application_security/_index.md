@@ -30,6 +30,9 @@ Secret push protection
 Merge request approval policies
 : Enforce an additional approval on merge requests that would introduce vulnerabilities.
 
+For a click-through demo, see [Integrating security to the pipeline](https://gitlab.navattic.com/gitlab-scans).
+<!-- Demo published on 2024-01-15 -->
+
 ## How application security testing works
 
 GitLab detects security vulnerabilities throughout your code, dependencies, containers, and
@@ -46,7 +49,7 @@ During development
   created.
 
 Outside development
-: Security testing can be run manually on-demand or scheduled to run at regular intervals.
+: Security testing can be run manually on demand or scheduled to run at regular intervals.
 
 ## Vulnerability management lifecycle
 
