@@ -123,6 +123,75 @@ To enable `@GitLabDuo` to automatically review merge requests:
 1. In the **GitLab Duo Code Review** section, select **Enable automatic reviews by GitLab Duo**.
 1. Select **Save changes**.
 
+## Customize instructions for GitLab Duo Code Review
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com
+- Status: Beta
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4?inv=1&invt=Ab0dPw&project=ai-enablement-dev-69497ba7)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/545136) in GitLab 18.2 as a [beta](../../../policy/development_stages_support.md#beta) [with a flag](../../../administration/feature_flags/_index.md) named `duo_code_review_custom_instructions`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+GitLab Duo Code Review can help ensure consistent code review standards in your project.
+Define a glob pattern for files, and create custom instructions for files matching that
+pattern. For example, enforce Ruby style conventions only on Ruby files, and Go style
+conventions on Go files. GitLab Duo appends your custom instructions to its standard review
+criteria.
+
+To configure custom instructions:
+
+1. In the root of your repository, create a `.gitlab/duo` directory if it doesn't already exist.
+1. In the `.gitlab/duo` directory, create a file named `mr-review-instructions.yaml`.
+1. Add your custom instructions using this format:
+
+```yaml
+instructions:
+  - name: <instruction_group_name>
+    fileFilters:
+      - <glob_pattern_1>
+      - <glob_pattern_2>
+    instructions: |
+      <your_custom_review_instructions>
+```
+
+For example:
+
+```yaml
+instructions:
+  - name: Ruby Style Guide
+    fileFilters:
+      - "*.rb"
+      - "lib/**/*.rb"
+    instructions: |
+      1. Ensure all methods have proper documentation
+      2. Follow Ruby style guide conventions
+      3. Prefer symbols over strings for hash keys
+
+  - name: Test Coverage
+    fileFilters:
+      - "spec/**/*_spec.rb"
+    instructions: |
+      1. Test both happy paths and edge cases
+      2. Include error scenarios
+      3. Use shared examples to reduce duplication
+```
+
 ## Summarize a code review
 
 {{< details >}}

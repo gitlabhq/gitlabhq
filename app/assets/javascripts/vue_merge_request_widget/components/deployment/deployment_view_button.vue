@@ -64,6 +64,7 @@ export default {
         size="small"
         placement="bottom-end"
         searchable
+        data-testid="deploy-url-menu"
         @search="search"
       >
         <template #list-item="{ item }">

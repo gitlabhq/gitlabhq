@@ -502,6 +502,12 @@ FactoryBot.define do
       end
     end
 
+    trait :mocked_checksum do
+      after(:build) do |artifact, evaluator|
+        artifact.file_sha256 = Digest::SHA256.hexdigest("mocked")
+      end
+    end
+
     trait :annotations do
       file_type { :annotations }
       file_format { :gzip }

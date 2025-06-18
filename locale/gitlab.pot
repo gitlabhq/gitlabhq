@@ -1587,6 +1587,9 @@ msgstr ""
 msgid "%{title} webhook (for example, `%{example}`)."
 msgstr ""
 
+msgid "%{title}: %{exceptions}"
+msgstr ""
+
 msgid "%{tooltipText} image"
 msgstr ""
 
@@ -1753,6 +1756,9 @@ msgid "(%d closed)"
 msgid_plural "(%d closed)"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "(%{count}) %{exceptions}"
+msgstr ""
 
 msgid "(%{mrCount} merged)"
 msgstr ""
@@ -25696,6 +25702,11 @@ msgstr ""
 msgid "Except policy:"
 msgstr ""
 
+msgid "Exception"
+msgid_plural "Exceptions"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Exceptions"
 msgstr ""
 
@@ -31661,6 +31672,9 @@ msgstr ""
 msgid "IdentityVerification|Country or region"
 msgstr ""
 
+msgid "IdentityVerification|Email Verification"
+msgstr ""
+
 msgid "IdentityVerification|Email update is only offered once."
 msgstr ""
 
@@ -31709,6 +31723,12 @@ msgstr ""
 msgid "IdentityVerification|Maximum login attempts exceeded. Wait %{interval} and try again."
 msgstr ""
 
+msgid "IdentityVerification|Payment Method Verification"
+msgstr ""
+
+msgid "IdentityVerification|Phone Number Verification"
+msgstr ""
+
 msgid "IdentityVerification|Phone number"
 msgstr ""
 
@@ -31743,6 +31763,9 @@ msgid "IdentityVerification|Send code in %{timer}"
 msgstr ""
 
 msgid "IdentityVerification|Something went wrong. Please try again."
+msgstr ""
+
+msgid "IdentityVerification|Step %{stepIndex} of %{totalSteps}"
 msgstr ""
 
 msgid "IdentityVerification|Step %{stepNumber}: Verify a payment method"
@@ -37617,6 +37640,9 @@ msgid "Maximum number of changes (branches or tags) in a single push above which
 msgstr ""
 
 msgid "Maximum number of comments exceeded"
+msgstr ""
+
+msgid "Maximum number of files per project to be indexed"
 msgstr ""
 
 msgid "Maximum number of mirrors that can be synchronizing at the same time."
@@ -45733,6 +45759,12 @@ msgstr ""
 msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
+msgid "Pipelines|Preview inputs"
+msgstr ""
+
+msgid "Pipelines|Preview your inputs"
+msgstr ""
+
 msgid "Pipelines|Project cache successfully reset."
 msgstr ""
 
@@ -45803,6 +45835,9 @@ msgid "Pipelines|The GitLab CI configuration could not be updated."
 msgstr ""
 
 msgid "Pipelines|The branch or tag does not exist"
+msgstr ""
+
+msgid "Pipelines|The pipeline will run with these inputs:"
 msgstr ""
 
 msgid "Pipelines|There are currently no finished pipelines."

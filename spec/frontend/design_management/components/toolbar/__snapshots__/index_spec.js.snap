@@ -59,7 +59,9 @@ exports[`Design management toolbar component renders design and updated data 1`]
       href="/-/designs/306/7f747adcd4693afadbe968d7ba7d983349b9012d"
       icon="download"
       size="medium"
+      tag="button"
       title="Download design"
+      type="button"
       variant="default"
     />
     <delete-button-stub
@@ -80,7 +82,9 @@ exports[`Design management toolbar component renders design and updated data 1`]
       data-testid="toggle-design-sidebar"
       icon="comments"
       size="medium"
+      tag="button"
       title="Show comments"
+      type="button"
       variant="default"
     />
     <design-navigation-stub

@@ -46,14 +46,12 @@ ee/spec/frontend/related_items_tree/components/tree_root_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
 ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
-ee/spec/frontend/status_checks/components/modal_create_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js
 ee/spec/frontend/users/identity_verification/components/international_phone_input_spec.js
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
-spec/frontend/admin/abuse_report/components/reported_content_spec.js
 spec/frontend/admin/abuse_reports/components/abuse_reports_filtered_search_bar_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
 spec/frontend/alert_management/components/alert_management_table_spec.js
@@ -80,14 +78,12 @@ spec/frontend/clusters/components/new_cluster_spec.js
 spec/frontend/clusters/components/remove_cluster_confirmation_spec.js
 spec/frontend/clusters_list/components/delete_agent_button_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
-spec/frontend/custom_emoji/components/list_spec.js
 spec/frontend/design_management/components/design_notes/design_reply_form_spec.js
 spec/frontend/design_management/components/design_overlay_spec.js
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/components/source_editor_toolbar_spec.js
 spec/frontend/editor/extensions/source_editor_toolbar_ext_spec.js
-spec/frontend/error_tracking/components/error_details_spec.js
 spec/frontend/error_tracking/components/error_tracking_list_spec.js
 spec/frontend/feature_flags/components/strategies/percent_rollout_spec.js
 spec/frontend/feature_flags/components/strategy_spec.js
@@ -101,7 +97,6 @@ spec/frontend/helpers/init_simple_app_helper_spec.js
 spec/frontend/integrations/edit/components/trigger_field_spec.js
 spec/frontend/integrations/edit/components/trigger_fields_spec.js
 spec/frontend/invite_members/components/members_token_select_spec.js
-spec/frontend/issuable/components/issuable_by_email_spec.js
 spec/frontend/issuable/related_issues/components/related_issues_root_spec.js
 spec/frontend/issues/list/components/issues_list_app_spec.js
 spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js
@@ -116,7 +111,6 @@ spec/frontend/members/components/table/max_role_spec.js
 spec/frontend/members/components/table/members_table_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
 spec/frontend/notes/components/discussion_notes_spec.js
-spec/frontend/packages_and_registries/container_registry/explorer/components/list_page/image_list_row_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js

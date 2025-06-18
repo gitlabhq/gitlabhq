@@ -38,7 +38,9 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
         class="gl-mr-2 gl-self-center"
         icon="information-o"
         size="medium"
+        tag="button"
         title=""
+        type="button"
         variant="link"
       />
       <div
@@ -54,7 +56,9 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
           data-testid="crud-collapse-toggle"
           icon=""
           size="small"
+          tag="button"
           title="Collapse"
+          type="button"
           variant="default"
         >
           <gl-animated-chevron-lg-down-up-icon-stub

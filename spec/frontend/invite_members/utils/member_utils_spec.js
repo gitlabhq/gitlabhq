@@ -1,5 +1,10 @@
 import MockAdapter from 'axios-mock-adapter';
-import { memberName, searchUsers, triggerExternalAlert } from '~/invite_members/utils/member_utils';
+import {
+  memberName,
+  searchUsers,
+  triggerExternalAlert,
+  baseBindingAttributes,
+} from '~/invite_members/utils/member_utils';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
@@ -38,5 +43,11 @@ describe('searchUsers', () => {
 describe('Trigger External Alert', () => {
   it('returns false', () => {
     expect(triggerExternalAlert()).toBe(false);
+  });
+});
+
+describe('baseBindingAttributes', () => {
+  it('returns empty object', () => {
+    expect(baseBindingAttributes()).toEqual({});
   });
 });

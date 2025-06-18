@@ -116,7 +116,17 @@ export default {
     PageHeading,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['groupPath', 'workItemPlanningViewEnabled'],
+  inject: {
+    groupPath: {
+      default: '',
+    },
+    projectNamespaceFullPath: {
+      default: '',
+    },
+    workItemPlanningViewEnabled: {
+      default: false,
+    },
+  },
   i18n: {
     suggestionTitle: s__('WorkItem|Similar items'),
     similarWorkItemHelpText: s__(
@@ -946,6 +956,7 @@ export default {
               :full-path="fullPath"
               :is-group="isGroup"
               :current-project-name="namespaceFullName"
+              :project-namespace-full-path="projectNamespaceFullPath"
               toggle-id="create-work-item-project"
             />
           </gl-form-group>

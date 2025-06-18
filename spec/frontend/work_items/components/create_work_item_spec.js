@@ -118,6 +118,7 @@ describe('Create work item component', () => {
       apolloProvider: mockApollo,
       propsData: {
         fullPath: 'full-path',
+        projectNamespaceFullPath: 'full-path',
         preselectedWorkItemType,
         ...props,
       },

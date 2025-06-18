@@ -82,7 +82,9 @@ exports[`packages_list_row renders 1`] = `
         data-testid="action-delete"
         icon="remove"
         size="medium"
+        tag="button"
         title="Remove package"
+        type="button"
         variant="danger"
       />
     </div>

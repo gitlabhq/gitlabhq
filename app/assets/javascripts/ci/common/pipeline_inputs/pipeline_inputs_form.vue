@@ -1,5 +1,5 @@
 <script>
-import { GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlButton } from '@gitlab/ui';
 import { isEqual, debounce } from 'lodash';
 import EMPTY_VARIABLES_SVG from '@gitlab/svgs/dist/illustrations/variables-sm.svg';
 import { s__ } from '~/locale';
@@ -10,6 +10,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
 import getPipelineInputsQuery from './graphql/queries/pipeline_creation_inputs.query.graphql';
+import PipelineInputsPreviewDrawer from './pipeline_inputs_preview_drawer.vue';
 
 const ARRAY_TYPE = 'ARRAY';
 
@@ -20,6 +21,8 @@ export default {
     InputsTableSkeletonLoader,
     PipelineInputsTable,
     GlCollapsibleListbox,
+    GlButton,
+    PipelineInputsPreviewDrawer,
   },
   inject: ['projectPath'],
   props: {
@@ -53,6 +56,7 @@ export default {
       inputs: [],
       selectedInputNames: [],
       searchTerm: '',
+      showPreviewDrawer: false,
     };
   },
   apollo: {
@@ -285,6 +289,16 @@ export default {
     :title="s__('Pipelines|Inputs')"
   >
     <template #actions>
+      <gl-button
+        category="secondary"
+        variant="confirm"
+        size="small"
+        :disabled="!hasInputs"
+        @click="showPreviewDrawer = true"
+      >
+        {{ s__('Pipelines|Preview inputs') }}
+      </gl-button>
+
       <gl-collapsible-listbox
         v-model="selectedInputNames"
         :items="filteredInputsList"
@@ -328,5 +342,11 @@ export default {
         {{ s__('Pipelines|There are no inputs for this configuration.') }}
       </div>
     </template>
+
+    <pipeline-inputs-preview-drawer
+      :open="showPreviewDrawer"
+      :inputs="inputs"
+      @close="showPreviewDrawer = false"
+    />
   </crud-component>
 </template>

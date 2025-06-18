@@ -203,6 +203,14 @@ describe('InviteMembersModal', () => {
         );
       });
     });
+
+    describe('hasErrorDuringInvite prop', () => {
+      it('does not pass hasErrorDuringInvite prop when function returns null', () => {
+        createInviteMembersToProjectWrapper();
+
+        expect(findBase().props('hasErrorDuringInvite')).toBeUndefined();
+      });
+    });
   });
 
   describe('rendering with tracking considerations', () => {

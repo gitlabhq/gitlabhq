@@ -29,7 +29,8 @@ describe('Deployment View App button', () => {
 
   const findReviewAppLink = () => wrapper.findComponent(ReviewAppLink);
   const findMrWidgetDeploymentDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
-  const findDeployUrlMenuItems = () => wrapper.findAllComponents(GlLink);
+  const findDeployUrlMenuItems = () =>
+    wrapper.findByTestId('deploy-url-menu').findAllComponents(GlLink);
 
   describe('text', () => {
     it('renders text as passed', () => {

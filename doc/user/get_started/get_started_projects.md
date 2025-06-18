@@ -4,7 +4,6 @@ group: Organizations
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Learn how to configure projects to suit your organization.
 title: Get started organizing work with projects
-description: Overview of how features fit together.
 ---
 
 Projects in GitLab organize all the data for a specific development project.

@@ -107,6 +107,7 @@ export async function mountIssuesListApp() {
     releasesPath,
     resetPath,
     rssPath,
+    projectNamespaceFullPath,
     showNewIssueLink,
     signInPath,
     wiCanAdminLabel,
@@ -179,6 +180,7 @@ export async function mountIssuesListApp() {
       newProjectPath,
       releasesPath,
       rssPath,
+      projectNamespaceFullPath,
       showNewIssueLink: parseBoolean(showNewIssueLink),
       signInPath,
       // For CsvImportExportButtons component

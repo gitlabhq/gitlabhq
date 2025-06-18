@@ -62,7 +62,9 @@ exports[`Code navigation popover component renders popover 1`] = `
           href="http://gitlab.com/test.js"
           icon=""
           size="medium"
+          tag="button"
           target="_blank"
+          type="button"
           variant="default"
         >
           Go to definition

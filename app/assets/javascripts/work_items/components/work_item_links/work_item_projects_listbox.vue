@@ -44,6 +44,11 @@ export default {
       required: false,
       default: undefined,
     },
+    projectNamespaceFullPath: {
+      required: false,
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -60,7 +65,9 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          // The `projectNamespaceFullPath` is available in case
+          // project belongs to user's personal namespace.
+          fullPath: this.projectNamespaceFullPath || this.fullPath,
           projectSearch: this.searchKey,
         };
       },

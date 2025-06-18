@@ -9,7 +9,9 @@ exports[`Design management upload button component renders upload design button 
     category="primary"
     icon="media"
     size="medium"
+    tag="button"
     title="Adding a design with the same filename replaces the file in a new version."
+    type="button"
     variant="default"
   >
     Add design

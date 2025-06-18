@@ -1,0 +1,116 @@
+# frozen_string_literal: true
+
+module Ci
+  module Slsa
+    class ProvenanceStatement
+      include ActiveModel::Serializers::JSON
+
+      attr_accessor :_type, :subject, :predicate_type, :predicate
+
+      def self.from_build(build)
+        raise ArgumentError, "runner manager information not available in build" unless build.runner_manager
+
+        archives = build.job_artifacts.filter { |artifact| artifact.file_type == "archive" }
+        raise ArgumentError, 'artifacts associated with build do not contain a single archive' if archives.length != 1
+
+        archive = archives[0]
+        archive_resource = ResourceDescriptor.new(name: archive.file.filename, digest: { sha256: archive.file_sha256 })
+
+        provenance_statement = ProvenanceStatement.new
+        provenance_statement.subject = [archive_resource]
+        provenance_statement.predicate.build_definition = BuildDefinition.from_build(build)
+        provenance_statement.predicate.run_details = RunDetails.from_build(build)
+
+        provenance_statement
+      end
+
+      def initialize
+        @predicate = Predicate.new
+        @_type = "https://in-toto.io/Statement/v1"
+        @predicate_type = "https://slsa.dev/provenance/v1"
+      end
+
+      def as_json(options = nil)
+        json = super
+        exceptions = ["_type"]
+        json.deep_transform_keys do |k|
+          next k if exceptions.include?(k)
+
+          k.camelize(:lower)
+        end
+      end
+
+      def attributes
+        { '_type' => nil, 'subject' => nil, 'predicate_type' => nil, 'predicate' => nil }
+      end
+
+      class BuildDefinition
+        include ActiveModel::Model
+
+        attr_accessor :build_type, :external_parameters, :internal_parameters, :resolved_dependencies
+
+        def self.from_build(build)
+          # TODO: update buildType as part of https://gitlab.com/gitlab-org/gitlab/-/issues/426764
+          build_type = "https://gitlab.com/gitlab-org/gitlab/-/issues/546150"
+          external_parameters = { variables: build.variables.map(&:key) }
+          internal_parameters = {
+            architecture: build.runner_manager.architecture,
+            executor: build.runner_manager.executor_type,
+            job: build.id,
+            name: build.runner.display_name
+          }
+
+          build_resource = ResourceDescriptor.new(uri: Gitlab::Routing.url_helpers.project_url(build.project),
+            digest: { gitCommit: build.sha })
+          resolved_dependencies = [build_resource]
+
+          BuildDefinition.new(build_type: build_type, external_parameters: external_parameters,
+            internal_parameters: internal_parameters,
+            resolved_dependencies: resolved_dependencies)
+        end
+      end
+
+      class RunDetails
+        include ActiveModel::Model
+
+        attr_accessor :builder, :metadata, :byproducts
+
+        def self.from_build(build)
+          builder = {
+            id: Gitlab::Routing.url_helpers.group_runner_url(build.runner.owner, build.runner),
+            version: {
+              "gitlab-runner": build.runner_manager.revision
+            }
+          }
+
+          metadata = {
+            invocationId: build.id,
+            # https://github.com/in-toto/attestation/blob/7aefca35a0f74a6e0cb397a8c4a76558f54de571/spec/v1/field_types.md#timestamp
+            startedOn: build.started_at&.utc&.rfc3339,
+            finishedOn: build.finished_at&.utc&.rfc3339
+          }
+
+          RunDetails.new(builder: builder, metadata: metadata)
+        end
+      end
+
+      class Builder
+        include ActiveModel::Model
+
+        attr_accessor :id, :builder_dependencies, :version
+      end
+
+      class BuildMetadata
+        include ActiveModel::Model
+
+        attr_accessor :invocation_id, :started_on, :finished_on
+      end
+
+      class Predicate
+        include ActiveModel::Model
+
+        attr_accessor :build_definition, :run_details
+      end
+    end
+  end
+end

@@ -246,6 +246,7 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
         releases_path: project_releases_path(project, format: :json),
         reset_path: new_issuable_address_project_path(project, issuable_type: 'issue'),
         rss_path: '#',
+        project_namespace_full_path: project.namespace.full_path,
         show_new_issue_link: 'true',
         sign_in_path: new_user_session_path,
         time_tracking_limit_to_hours: "false"

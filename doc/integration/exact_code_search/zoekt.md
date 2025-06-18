@@ -326,6 +326,32 @@ To define the indexing timeout for a project:
    (for example, `30m` (30 minutes), `2h` (two hours), or `1d` (one day)).
 1. Select **Save changes**.
 
+## Set the maximum number of files in a project to be indexed
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/539526) in GitLab 18.2.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+You can set the maximum number of files in a project that can be indexed.
+Projects with more files than this limit in the default branch are not indexed.
+
+The default value is `500,000`.
+
+You can adjust this value based on the node's performance and workload.
+To set the maximum number of files in a project to be indexed:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. In the **Maximum number of files per project to be indexed** text box, enter a number greater than zero.
+1. Select **Save changes**.
+
 ## Define the retry interval for failed namespaces
 
 {{< history >}}

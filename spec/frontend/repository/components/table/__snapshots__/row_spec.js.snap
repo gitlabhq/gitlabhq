@@ -29,6 +29,8 @@ exports[`Repository table row component renders a symlink table row 1`] = `
       />
     </a>
     <gl-icon-stub
+      arialabel="Locked by Root"
+      class="gl-relative gl-z-1"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -87,6 +89,8 @@ exports[`Repository table row component renders table row 1`] = `
       />
     </a>
     <gl-icon-stub
+      arialabel="Locked by Root"
+      class="gl-relative gl-z-1"
       name="lock"
       size="12"
       title="Locked by Root"
@@ -145,6 +149,8 @@ exports[`Repository table row component renders table row for path with special 
       />
     </a>
     <gl-icon-stub
+      arialabel="Locked by Root"
+      class="gl-relative gl-z-1"
       name="lock"
       size="12"
       title="Locked by Root"

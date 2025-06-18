@@ -1144,6 +1144,10 @@
     - !reference [".qa:rules:e2e-test-never-run", rules]
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        BABEL_ENV: "istanbul"
+        CACHE_ASSETS_AS_PACKAGE: "false"
     - <<: *if-default-branch-refs
     - <<: *if-merge-request-labels-run-all-e2e
     - <<: *if-merge-request-labels-run-cs-evaluation

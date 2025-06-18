@@ -57,7 +57,11 @@ namespace :admin do
     put 'renew', on: :member
   end
 
-  resources :groups, only: [:index, :new, :create]
+  resources :groups, only: [:index, :new, :create] do
+    collection do
+      get :all, :inactive, to: 'groups#index'
+    end
+  end
 
   resources :organizations, only: [:index]
 

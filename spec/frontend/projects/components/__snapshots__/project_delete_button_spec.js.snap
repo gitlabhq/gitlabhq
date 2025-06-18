@@ -28,6 +28,8 @@ exports[`Project remove modal initialized matches the snapshot 1`] = `
     data-testid="delete-button"
     icon=""
     size="medium"
+    tag="button"
+    type="button"
     variant="danger"
   >
     Delete project

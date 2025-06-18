@@ -5,6 +5,8 @@ module QA
     name: :ci_release_cli_catalog_publish_option
   } do
     describe 'CI catalog release with glab', :skip_live_env do
+      let(:glab_version) { 'v1.59.1' }
+
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 
       let!(:project) do
@@ -168,7 +170,7 @@ module QA
             tags: ["#{executor}"]
 
           create-release-with-existing-tag:
-            image: registry.gitlab.com/gitlab-org/cli:latest
+            image: registry.gitlab.com/gitlab-org/cli:#{glab_version}
             script:
               - echo "Creating release $CI_COMMIT_TAG"
             rules:
@@ -189,7 +191,7 @@ module QA
               - if: $CI_COMMIT_TAG != "v9.0.2" # to prevent creating a new pipeline because of the tag created in the test
 
           create-release-with-new-tag-filled-with-information:
-            image: registry.gitlab.com/gitlab-org/cli:latest
+            image: registry.gitlab.com/gitlab-org/cli:#{glab_version}
             script:
               - echo "Creating release $CI_COMMIT_TAG"
             rules:

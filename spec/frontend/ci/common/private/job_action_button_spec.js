@@ -136,7 +136,7 @@ describe('JobActionButton', () => {
     });
 
     it('passes correct props', () => {
-      expect(findActionButton().props()).toStrictEqual({
+      expect(findActionButton().props()).toMatchObject({
         block: false,
         buttonTextClasses: '',
         category: 'primary',
