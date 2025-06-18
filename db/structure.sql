@@ -4933,6 +4933,32 @@ CREATE TABLE merge_request_commits_metadata (
 )
 PARTITION BY RANGE (project_id);
 
+CREATE TABLE p_ai_active_context_code_enabled_namespaces (
+    id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    connection_id bigint NOT NULL,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    state smallint DEFAULT 0 NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+)
+PARTITION BY RANGE (namespace_id);
+
+CREATE TABLE p_ai_active_context_code_repositories (
+    id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    connection_id bigint,
+    enabled_namespace_id bigint,
+    metadata jsonb DEFAULT '{}'::jsonb NOT NULL,
+    last_commit text,
+    state smallint DEFAULT 0 NOT NULL,
+    indexed_at timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_b253d453c7 CHECK ((char_length(last_commit) <= 64))
+)
+PARTITION BY RANGE (project_id);
+
 CREATE TABLE p_batched_git_ref_updates_deletions (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -18883,6 +18909,24 @@ CREATE SEQUENCE organizations_id_seq
 
 ALTER SEQUENCE organizations_id_seq OWNED BY organizations.id;
 
+CREATE SEQUENCE p_ai_active_context_code_enabled_namespaces_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ai_active_context_code_enabled_namespaces_id_seq OWNED BY p_ai_active_context_code_enabled_namespaces.id;
+
+CREATE SEQUENCE p_ai_active_context_code_repositories_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ai_active_context_code_repositories_id_seq OWNED BY p_ai_active_context_code_repositories.id;
+
 CREATE SEQUENCE p_batched_git_ref_updates_deletions_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -27831,6 +27875,10 @@ ALTER TABLE ONLY organization_users ALTER COLUMN id SET DEFAULT nextval('organiz
 
 ALTER TABLE ONLY organizations ALTER COLUMN id SET DEFAULT nextval('organizations_id_seq'::regclass);
 
+ALTER TABLE ONLY p_ai_active_context_code_enabled_namespaces ALTER COLUMN id SET DEFAULT nextval('p_ai_active_context_code_enabled_namespaces_id_seq'::regclass);
+
+ALTER TABLE ONLY p_ai_active_context_code_repositories ALTER COLUMN id SET DEFAULT nextval('p_ai_active_context_code_repositories_id_seq'::regclass);
+
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions ALTER COLUMN id SET DEFAULT nextval('p_batched_git_ref_updates_deletions_id_seq'::regclass);
 
 ALTER TABLE ONLY p_catalog_resource_sync_events ALTER COLUMN id SET DEFAULT nextval('p_catalog_resource_sync_events_id_seq'::regclass);
@@ -30551,6 +30599,12 @@ ALTER TABLE ONLY organization_users
 
 ALTER TABLE ONLY organizations
     ADD CONSTRAINT organizations_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY p_ai_active_context_code_enabled_namespaces
+    ADD CONSTRAINT p_ai_active_context_code_enabled_namespaces_pkey PRIMARY KEY (id, namespace_id);
+
+ALTER TABLE ONLY p_ai_active_context_code_repositories
+    ADD CONSTRAINT p_ai_active_context_code_repositories_pkey PRIMARY KEY (id, project_id);
 
 ALTER TABLE ONLY p_batched_git_ref_updates_deletions
     ADD CONSTRAINT p_batched_git_ref_updates_deletions_pkey PRIMARY KEY (id, partition_id);
@@ -33376,6 +33430,10 @@ CREATE INDEX idx_abuse_reports_user_id_status_and_category ON abuse_reports USIN
 
 CREATE INDEX idx_addon_purchases_on_last_refreshed_at_desc_nulls_last ON subscription_add_on_purchases USING btree (last_assigned_users_refreshed_at DESC NULLS LAST);
 
+CREATE INDEX idx_ai_active_context_code_enabled_namespaces_namespace_id ON ONLY p_ai_active_context_code_enabled_namespaces USING btree (namespace_id);
+
+CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
+
 CREATE INDEX idx_alert_management_alerts_on_created_at_project_id_with_issue ON alert_management_alerts USING btree (created_at, project_id) WHERE (issue_id IS NOT NULL);
 
 CREATE INDEX idx_analytics_devops_adoption_segments_on_namespace_id ON analytics_devops_adoption_segments USING btree (namespace_id);
@@ -33608,6 +33666,8 @@ CREATE INDEX idx_on_protected_branch ON approval_group_rules_protected_branches 
 
 CREATE INDEX idx_open_issues_on_project_and_confidential_and_author_and_id ON issues USING btree (project_id, confidential, author_id, id) WHERE (state_id = 1);
 
+CREATE INDEX idx_p_ai_active_context_code_repositories_enabled_namespace_id ON ONLY p_ai_active_context_code_repositories USING btree (enabled_namespace_id);
+
 CREATE INDEX idx_p_ci_finished_pipeline_ch_sync_evts_on_project_namespace_id ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (project_namespace_id);
 
 CREATE INDEX idx_packages_debian_group_component_files_on_architecture_id ON packages_debian_group_component_files USING btree (architecture_id);
@@ -33773,6 +33833,10 @@ CREATE INDEX idx_test_reports_on_issue_id_created_at_and_id ON requirements_mana
 CREATE INDEX idx_unarchived_occurrences_for_aggregation_severity_nulls_first ON sbom_occurrences USING btree (traversal_ids, highest_severity NULLS FIRST, component_id, component_version_id) WHERE (archived = false);
 
 CREATE UNIQUE INDEX idx_uniq_analytics_dashboards_pointers_on_project_id ON analytics_dashboards_pointers USING btree (project_id);
+
+CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_namespace_id ON ONLY p_ai_active_context_code_enabled_namespaces USING btree (connection_id, namespace_id);
+
+CREATE UNIQUE INDEX idx_unique_ai_code_repository_connection_project_id ON ONLY p_ai_active_context_code_repositories USING btree (connection_id, project_id);
 
 CREATE UNIQUE INDEX idx_usages_on_cmpt_used_by_project_cmpt_and_last_used_date ON catalog_resource_component_last_usages USING btree (component_id, used_by_project_id, last_used_date);
 
@@ -41340,6 +41404,8 @@ ALTER INDEX index_uploads_9ba88c4165_on_uploaded_by_user_id ATTACH PARTITION vul
 
 ALTER INDEX index_uploads_9ba88c4165_on_uploader_and_path ATTACH PARTITION vulnerability_remediation_uploads_uploader_path_idx;
 
+CREATE TRIGGER ai_active_context_connections_loose_fk_trigger AFTER DELETE ON ai_active_context_connections REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
 CREATE TRIGGER ai_conversation_threads_loose_fk_trigger AFTER DELETE ON ai_conversation_threads REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER approval_policy_rules_loose_fk_trigger AFTER DELETE ON approval_policy_rules REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
@@ -41403,6 +41469,8 @@ CREATE TRIGGER notes_loose_fk_trigger AFTER DELETE ON notes REFERENCING OLD TABL
 CREATE TRIGGER nullify_merge_request_metrics_build_data_on_update BEFORE UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION nullify_merge_request_metrics_build_data();
 
 CREATE TRIGGER organizations_loose_fk_trigger AFTER DELETE ON organizations REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
+
+CREATE TRIGGER p_ai_active_context_code_enabled_namespaces_loose_fk_trigger AFTER DELETE ON p_ai_active_context_code_enabled_namespaces REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER p_ci_builds_loose_fk_trigger AFTER DELETE ON p_ci_builds REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records_override_table('p_ci_builds');
 
@@ -44750,6 +44818,9 @@ ALTER TABLE ONLY clusters_kubernetes_namespaces
 ALTER TABLE ONLY epic_issues
     ADD CONSTRAINT fk_rails_4209981af6 FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
 
+ALTER TABLE p_ai_active_context_code_enabled_namespaces
+    ADD CONSTRAINT fk_rails_42b1b86224 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY analytics_cycle_analytics_stage_aggregations
     ADD CONSTRAINT fk_rails_42e6fe37d7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -45658,6 +45729,9 @@ ALTER TABLE ONLY merge_request_predictions
 
 ALTER TABLE ONLY incident_management_escalation_rules
     ADD CONSTRAINT fk_rails_b3c9c17bd4 FOREIGN KEY (oncall_schedule_id) REFERENCES incident_management_oncall_schedules(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ai_active_context_code_repositories
+    ADD CONSTRAINT fk_rails_b3d72d06cf FOREIGN KEY (connection_id) REFERENCES ai_active_context_connections(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY duo_workflows_checkpoints
     ADD CONSTRAINT fk_rails_b4c109b1a4 FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;

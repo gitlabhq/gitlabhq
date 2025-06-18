@@ -59,7 +59,8 @@ customizable dashboard layout as part of GitLab issue [#546201](https://gitlab.c
 
 The `dashboard_layout.vue` component takes a dashboard configuration object as input
 and renders a dashboard layout with title, description, actions, and panels in a
-cross-browser 12-column grid system.
+cross-browser 12-column grid system. The grid is responsive and collapses down
+to a single column at the [medium breakpoint](https://design.gitlab.com/product-foundations/layout/#breakpoints).
 
 ### Dashboard panels
 

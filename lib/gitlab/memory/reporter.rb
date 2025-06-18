@@ -91,15 +91,20 @@ module Gitlab
           io_r.close
           err_w.close
 
-          report.run(io_w)
-          io_w.close
+          begin
+            report.run(io_w)
+            io_w.close
+          rescue Errno::EPIPE
+            # this means the process went away before we could write to it;
+            # fall through to standard error handling below
+          end
 
           _, status = Process.wait2(pid)
         end
 
         errors = err_r.read&.strip
         err_r.close
-        raise StandardError, "exit #{status.exitstatus}: #{errors}" if !status&.success? && errors.present?
+        raise StandardError, "exit #{status.exitstatus}: #{errors}" unless status&.success?
       ensure
         [io_r, io_w, err_r, err_w].each(&:close)
         # Make sure we don't leave any running processes behind.

@@ -56,7 +56,7 @@ CI/CD Variables:
 
 ## Define input parameters with `spec:inputs`
 
-Use `spec:inputs` in the CI/CD configuration [header](../yaml/_index.md) to define input parameters that
+Use `spec:inputs` in the CI/CD configuration [header](../yaml/_index.md#header-keywords) to define input parameters that
 can be passed to the configuration file.
 
 Use the `$[[ inputs.input-id ]]` interpolation format outside the header section to declare where to use

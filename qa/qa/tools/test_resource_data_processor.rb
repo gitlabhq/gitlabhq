@@ -30,6 +30,9 @@ module QA
       # @param [Integer] time fabrication time
       # @return [Hash]
       def collect(resource:, info:, fabrication_method:, fabrication_time:)
+        # http_method is empty when we use the browser_ui to create a resource,
+        # so assign it a default :post value if it is empty otherwise it will be set to :get in resource_api_path
+        http_method = resource.api_fabrication_http_method || :post
         api_path = resource_api_path(resource)
         type = resource.class.name
 
@@ -38,7 +41,7 @@ module QA
           api_path: api_path,
           fabrication_method: fabrication_method,
           fabrication_time: fabrication_time,
-          http_method: resource.api_fabrication_http_method || :post,
+          http_method: http_method,
           timestamp: Time.now.to_s
         }
       end

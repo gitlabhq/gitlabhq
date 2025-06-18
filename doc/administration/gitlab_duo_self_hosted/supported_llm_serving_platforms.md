@@ -167,6 +167,12 @@ This change has been observed to notably improve response times in internal benc
 
    - [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
 
+   To set up the private Bedrock endpoint (operating in a VPC), ensure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured with your internal URL when launching the AIGW container.
+
+   **Example configuration**: `AWS_BEDROCK_RUNTIME_ENDPOINT = https://bedrock-runtime.{aws_region_name}.amazonaws.com`
+   
+   For VPC endpoints, the URL format may be different, such as `https://vpce-{vpc-endpoint-id}-{service-name}.{aws_region_name}.vpce.amazonaws.com`
+
 1. [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/).
    Provides access to OpenAI's powerful models, enabling developers to integrate advanced AI capabilities into their applications with robust security and scalable infrastructure.
    - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)

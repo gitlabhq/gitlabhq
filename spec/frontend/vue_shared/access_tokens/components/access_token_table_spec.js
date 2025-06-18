@@ -123,7 +123,7 @@ describe('AccessTokenTable', () => {
       describe('when token is expiring', () => {
         it('shows an expiring status badge', () => {
           const tokens = [
-            { ...defaultToken, expiresAt: new Date(Date.now() + 10 * 366000).toString() },
+            { ...defaultToken, expiresAt: '2020-07-20' }, // 14 days
           ];
           createComponent({ tokens });
 
@@ -250,7 +250,7 @@ describe('AccessTokenTable', () => {
 
         describe('when it is non-empty', () => {
           it('shows a relative date', () => {
-            const tokens = [{ ...defaultToken, expiresAt: '2021-01-01T00:00:00.000Z' }];
+            const tokens = [{ ...defaultToken, expiresAt: '2021-01-01' }];
             createComponent({ tokens });
 
             const field = wrapper.findByTestId('field-expires');

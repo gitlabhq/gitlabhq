@@ -446,6 +446,19 @@ organization_users:
   - table: users
     column: user_id
     on_delete: async_delete
+p_ai_active_context_code_enabled_namespaces:
+  - table: ai_active_context_connections
+    column: connection_id
+    on_delete: async_delete
+p_ai_active_context_code_repositories:
+  - table: projects
+    column: project_id
+    on_delete: update_column_to
+    target_column: state
+    target_value: 240
+  - table: p_ai_active_context_code_enabled_namespaces
+    column: enabled_namespace_id
+    on_delete: async_nullify
 p_ci_build_names:
   - table: projects
     column: project_id

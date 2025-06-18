@@ -55,6 +55,8 @@ if Gitlab.ee?
       Vulnerabilities::Archive,
       Vulnerabilities::ArchivedRecord,
       Vulnerabilities::ArchiveExport,
+      Ai::ActiveContext::Code::EnabledNamespace,
+      Ai::ActiveContext::Code::Repository,
       Ai::KnowledgeGraph::EnabledNamespace,
       Ai::KnowledgeGraph::Replica,
       Ai::KnowledgeGraph::Task

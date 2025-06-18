@@ -58,6 +58,7 @@ describe('parse', () => {
       hasNextPage
       hasPreviousPage
     }
+    count
   }
 }
 ",
@@ -122,6 +123,7 @@ assignee = currentUser()`),
       hasNextPage
       hasPreviousPage
     }
+    count
   }
 }
 ",
@@ -187,6 +189,7 @@ query: assignee = currentUser()
       hasNextPage
       hasPreviousPage
     }
+    count
   }
 }
 ",

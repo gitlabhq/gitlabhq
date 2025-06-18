@@ -1,4 +1,4 @@
-import { getDateInFuture, nWeeksAfter, toISODateFormat } from '~/lib/utils/datetime_utility';
+import { getDateInFuture, nDaysAfter, toISODateFormat } from '~/lib/utils/datetime_utility';
 import { setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import { STATISTICS_CONFIG } from '~/access_tokens/constants';
 
@@ -42,14 +42,21 @@ export function serializeParams(filters, page = 1) {
 }
 
 /**
- * Replace the 'DATE_HOLDER' string with a date 2 weeks in the future based on current time.
+ * Returns a date 15 days in the future based on current time in ISO format ('YYYY-MM-DD')
  */
-export function update2WeekFromNow(stats = STATISTICS_CONFIG) {
+export function fifteenDaysFromNow() {
+  return toISODateFormat(nDaysAfter(new Date(), 15));
+}
+
+/**
+ * Replace the 'DATE_HOLDER' string with a date 15 days in the future based on current time.
+ */
+export function update15DaysFromNow(stats = STATISTICS_CONFIG) {
   const clonedStats = structuredClone(stats);
   clonedStats.forEach((stat) => {
     const filter = stat.filters.find((item) => item.value.data === 'DATE_HOLDER');
     if (filter) {
-      filter.value.data = toISODateFormat(nWeeksAfter(new Date(), 2));
+      filter.value.data = fifteenDaysFromNow();
     }
   });
 

@@ -1,7 +1,7 @@
 import {
   defaultDate,
   serializeParams,
-  update2WeekFromNow,
+  update15DaysFromNow,
   updateUrlWithQueryParams,
 } from '~/vue_shared/access_tokens/utils';
 import { getBaseURL, updateHistory } from '~/lib/utils/url_utility';
@@ -78,21 +78,21 @@ describe('update2WeekFromNow', () => {
   ];
 
   it('replace `DATE_HOLDER` with date 2 weeks from now', () => {
-    expect(update2WeekFromNow(param)).toMatchObject([
+    expect(update15DaysFromNow(param)).toMatchObject([
       {
         title: 'dummy',
         tooltipTitle: 'dummy',
-        filters: [{ type: 'dummy', value: { data: '2020-07-20', operator: 'dummy' } }],
+        filters: [{ type: 'dummy', value: { data: '2020-07-21', operator: 'dummy' } }],
       },
     ]);
   });
 
   it('use default parameter', () => {
-    expect(update2WeekFromNow()).toBeDefined();
+    expect(update15DaysFromNow()).toBeDefined();
   });
 
   it('returns a clone of the original parameter', () => {
-    const result = update2WeekFromNow(param);
+    const result = update15DaysFromNow(param);
     expect(result).not.toBe(param);
     expect(result[0].filters).not.toBe(param[0].filters);
   });
@@ -100,7 +100,7 @@ describe('update2WeekFromNow', () => {
 
 describe('updateUrlWithQueryParams', () => {
   it('calls updateHistory with correct parameters', () => {
-    updateUrlWithQueryParams({ params: { page: 1, revoked: true }, sort: 'name_asc' });
+    updateUrlWithQueryParams({ params: { page: 1, revoked: 'true' }, sort: 'name_asc' });
 
     expect(updateHistory).toHaveBeenCalledWith({
       url: `${getBaseURL()}/?page=1&revoked=true&sort=name_asc`,
