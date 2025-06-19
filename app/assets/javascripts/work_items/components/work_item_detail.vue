@@ -584,6 +584,12 @@ export default {
     canPasteDesign() {
       return !this.isSaving && !this.isAddingNotes && !this.editMode && !this.activeChildItem;
     },
+    commentTemplatePaths() {
+      // Fallback to the newCommentTemplatePaths prop if field from work item is null/undefined or empty
+      return this.workItem?.commentTemplatesPaths?.length
+        ? this.workItem.commentTemplatesPaths
+        : this.newCommentTemplatePaths;
+    },
   },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
@@ -1249,7 +1255,7 @@ export default {
                 :can-create-note="canCreateNote"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="workItem.confidential"
-                :new-comment-template-paths="newCommentTemplatePaths"
+                :new-comment-template-paths="commentTemplatePaths"
                 class="gl-pt-5"
                 :use-h2="!isModalOrDrawer"
                 :small-header-style="isModal"
@@ -1272,7 +1278,7 @@ export default {
         :active-item="activeChildItem"
         :open="isItemSelected"
         :issuable-type="activeChildItemType"
-        :new-comment-template-paths="newCommentTemplatePaths"
+        :new-comment-template-paths="commentTemplatePaths"
         click-outside-exclude-selector=".issuable-list"
         @close="activeChildItem = null"
         @workItemDeleted="deleteChildItem"

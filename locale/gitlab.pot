@@ -32482,7 +32482,7 @@ msgstr ""
 msgid "InProductMarketing|Ship secure software faster"
 msgstr ""
 
-msgid "InProductMarketing|Start a Self-Managed trial"
+msgid "InProductMarketing|Start with Self-Managed"
 msgstr ""
 
 msgid "InProductMarketing|Team members collaborating"

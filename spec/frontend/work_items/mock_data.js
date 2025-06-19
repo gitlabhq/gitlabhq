@@ -255,6 +255,23 @@ export const workItemQueryResponse = {
         updateWorkItem: false,
         __typename: 'WorkItemPermissions',
       },
+      commentTemplatesPaths: [
+        {
+          text: 'Your comment templates',
+          href: '/-/profile/comment_templates',
+          __typename: 'CommentTemplatePathType',
+        },
+        {
+          text: 'Project comment templates',
+          href: '/gitlab-org/gitlab-test/-/comment_templates',
+          __typename: 'CommentTemplatePathType',
+        },
+        {
+          text: 'Group comment templates',
+          href: '/groups/gitlab-org/-/comment_templates',
+          __typename: 'CommentTemplatePathType',
+        },
+      ],
       widgets: [
         {
           __typename: 'WorkItemWidgetDescription',
@@ -470,6 +487,7 @@ export const updateWorkItemMutationResponse = {
           updateWorkItem: false,
           __typename: 'WorkItemPermissions',
         },
+        commentTemplatesPaths: [],
         reference: 'test-project-path#1',
         createNoteEmail:
           'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
@@ -626,6 +644,7 @@ export const convertWorkItemMutationResponse = {
           updateWorkItem: false,
           __typename: 'WorkItemPermissions',
         },
+        commentTemplatesPaths: [],
         reference: 'gitlab-org/gitlab-test#1',
         createNoteEmail:
           'gitlab-incoming+gitlab-org-gitlab-test-2-ddpzuq0zd2wefzofcpcdr3dg7-issue-1@gmail.com',
@@ -1707,6 +1726,7 @@ export const workItemResponseFactory = ({
   movedToWorkItemUrl = null,
   duplicatedToWorkItemUrl = null,
   promotedToEpicUrl = null,
+  commentTemplatesPaths = null,
 } = {}) => ({
   data: {
     workItem: {
@@ -1753,6 +1773,7 @@ export const workItemResponseFactory = ({
         updateWorkItem: canUpdate,
         __typename: 'WorkItemPermissions',
       },
+      commentTemplatesPaths,
       reference: 'test-project-path#1',
       createNoteEmail:
         'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
@@ -2153,6 +2174,7 @@ export const createWorkItemMutationResponse = {
           updateWorkItem: false,
           __typename: 'WorkItemPermissions',
         },
+        commentTemplatesPaths: [],
         reference: 'test-project-path#1',
         createNoteEmail:
           'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
@@ -2242,6 +2264,7 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
       },
       confidential: false,
       reference: 'test-project-path#1',
+
       widgets: [
         {
           type: 'HIERARCHY',
@@ -2686,6 +2709,7 @@ export const workItemHierarchyResponse = {
         reference: 'test-project-path#1',
         createNoteEmail:
           'gitlab-incoming+test-project-path-13fp7g6i9agekcv71s0jx9p58-issue-1@gmail.com',
+
         widgets: [
           {
             type: 'HIERARCHY',
@@ -2888,6 +2912,7 @@ export const workItemHierarchyTreeEmptyResponse = {
         updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
+
       confidential: false,
       reference: 'test-project-path#2',
       namespace: {
@@ -3157,6 +3182,7 @@ export const workItemHierarchyTreeResponse = {
         updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
+
       confidential: false,
       reference: 'test-project-path#2',
       namespace: {
@@ -3205,6 +3231,7 @@ export const workItemHierarchyTreeSingleClosedItemResponse = {
         updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
+
       confidential: false,
       reference: 'test-project-path#2',
       namespace: {
@@ -3416,6 +3443,7 @@ export const changeWorkItemParentMutationResponse = {
           updateWorkItem: true,
           __typename: 'WorkItemPermissions',
         },
+        commentTemplatesPaths: [],
         description: null,
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         id: 'gid://gitlab/WorkItem/2',
@@ -5941,6 +5969,7 @@ export const updateWorkItemNotificationsMutationResponse = (subscribed) => ({
     workItemSubscribe: {
       workItem: {
         id: 'gid://gitlab/WorkItem/1',
+
         widgets: [
           {
             __typename: 'WorkItemWidgetNotifications',
@@ -6214,6 +6243,7 @@ export const createWorkItemQueryResponse = (widgets = []) => ({
           updateWorkItem: true,
           __typename: 'WorkItemPermissions',
         },
+        commentTemplatesPaths: [],
         widgets: [
           {
             type: 'ASSIGNEES',
@@ -6663,6 +6693,7 @@ export const workItemHierarchyNoChildrenTreeResponse = {
         updateWorkItem: true,
         __typename: 'WorkItemPermissions',
       },
+
       confidential: false,
       reference: 'test-project-path#2',
       namespace: {
@@ -6886,6 +6917,7 @@ export const mockCreateWorkItemDraftData = {
         summarizeComments: true,
         updateWorkItem: true,
       },
+
       widgets: [
         {
           __typename: 'WorkItemWidgetDescription',

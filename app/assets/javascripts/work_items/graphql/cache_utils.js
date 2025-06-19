@@ -937,6 +937,7 @@ export const setNewWorkItemCache = async ({
             __typename: 'WorkItemType',
           },
           userPermissions: newWorkItemOptimisticUserPermissions,
+          commentTemplatesPaths: [],
           widgets,
           __typename: 'WorkItem',
         },

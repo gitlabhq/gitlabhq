@@ -164,6 +164,7 @@ describe('WorkItemDetail component', () => {
     uploadDesignMutationHandler = uploadSuccessDesignMutationHandler,
     hasLinkedItemsEpicsFeature = true,
     showSidebar = true,
+    newCommentTemplatePaths = [],
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -184,6 +185,7 @@ describe('WorkItemDetail component', () => {
         workItemIid,
         isDrawer,
         modalIsGroup,
+        newCommentTemplatePaths,
       },
       data() {
         return {
@@ -855,6 +857,70 @@ describe('WorkItemDetail component', () => {
       expect(findNotesWidget().exists()).toBe(true);
       expect(findNotesWidget().props('isWorkItemConfidential')).toBe(confidential);
       expect(findNotesWidget().props('canCreateNote')).toBeDefined();
+    });
+
+    describe('comment templates', () => {
+      const mockCommentTemplatePaths = [
+        {
+          text: 'Your comment templates',
+          href: '/-/profile/comment_templates',
+          __typename: 'CommentTemplatePathType',
+        },
+        {
+          text: 'Project comment templates',
+          href: '/gitlab-org/gitlab-test/-/comment_templates',
+          __typename: 'CommentTemplatePathType',
+        },
+        {
+          text: 'Group comment templates',
+          href: '/groups/gitlab-org/-/comment_templates',
+          __typename: 'CommentTemplatePathType',
+        },
+      ];
+      const newCommentTemplatePaths = [
+        { text: 'Default template', href: '/groups/gitlab-org/-/comment_templates' },
+      ];
+
+      it('passes fetched comment template paths to WorkItemNotes component', async () => {
+        const commentTemplateQueryResponse = workItemByIidResponseFactory({
+          commentTemplatesPaths: mockCommentTemplatePaths,
+        });
+
+        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
+
+        createComponent({ handler: commentTemplateHandler });
+        await waitForPromises();
+
+        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(
+          mockCommentTemplatePaths,
+        );
+      });
+
+      it('uses prop `newCommentTemplatePaths` value  if the query returns empty array', async () => {
+        const commentTemplateQueryResponse = workItemByIidResponseFactory({
+          commentTemplatesPaths: [],
+        });
+
+        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
+
+        createComponent({ handler: commentTemplateHandler, newCommentTemplatePaths });
+        await waitForPromises();
+
+        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(newCommentTemplatePaths);
+      });
+
+      it('uses prop `newCommentTemplatePaths` value  if the query returns null', async () => {
+        const commentTemplateQueryResponse = workItemByIidResponseFactory({
+          commentTemplatesPaths: null,
+        });
+
+        const commentTemplateHandler = jest.fn().mockResolvedValue(commentTemplateQueryResponse);
+
+        createComponent({ handler: commentTemplateHandler, newCommentTemplatePaths });
+        await waitForPromises();
+
+        expect(findNotesWidget().props('newCommentTemplatePaths')).toEqual(newCommentTemplatePaths);
+      });
     });
   });
 

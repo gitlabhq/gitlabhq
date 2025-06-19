@@ -39,6 +39,10 @@ fragment WorkItem on WorkItem {
   userPermissions {
     ...WorkItemPermissions
   }
+  commentTemplatesPaths {
+    text
+    href
+  }
   widgets {
     ...WorkItemWidgets
   }
