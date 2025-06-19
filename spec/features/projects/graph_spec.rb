@@ -79,10 +79,10 @@ RSpec.describe 'Project Graph', :js, feature_category: :source_code_management d
         dropdown_branch_item.click
       end
 
-      scroll_to(find('.tree-ref-header'), align: :center)
+      scroll_to(find_by_testid('commit-statistics'), align: :center)
       expect(page).to have_selector '.gl-new-dropdown-toggle', text: ref_name
-      page.within '.tree-ref-header' do
-        expect(page).to have_selector('h4', text: ref_name)
+      within_testid('commit-statistics') do
+        expect(page).to have_selector('h2', text: ref_name)
       end
     end
   end

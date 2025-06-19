@@ -494,6 +494,12 @@ module Ci
     scope :order_id_asc, -> { order(id: :asc) }
     scope :order_id_desc, -> { order(id: :desc) }
 
+    scope :not_archived, -> do
+      archive_cutoff = Gitlab::CurrentSettings.archive_builds_older_than
+
+      archive_cutoff ? created_after(archive_cutoff) : all
+    end
+
     # Returns the pipelines in descending order (= newest first), optionally
     # limited to a number of references.
     #

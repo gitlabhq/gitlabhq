@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe CloudConnector::ConnectedService, feature_category: :cloud_connector do
+RSpec.describe CloudConnector::ConnectedService, feature_category: :plan_provisioning do
   describe '#free_access?' do
     let(:service) { described_class.new(name: :code_suggestions, cut_off_date: cut_off_date) }
 

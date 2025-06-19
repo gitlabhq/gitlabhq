@@ -65,7 +65,7 @@ RSpec.describe 'Group Package and registry settings', feature_category: :package
 
       wait_for_requests
 
-      expect(page).to be_axe_clean.within('[data-testid="packages-and-registries-group-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+      expect(page).to be_axe_clean.within_testid('packages-and-registries-group-settings')
                                   .skipping :'link-in-text-block'
     end
 

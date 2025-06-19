@@ -341,6 +341,10 @@ RSpec.configure do |config|
       # Please see https://gitlab.com/groups/gitlab-org/-/epics/17781 for tracking the progress.
       stub_feature_flags(repository_file_tree_browser: false)
 
+      # Since we are very early in development of this feature, it might cause unexpected behaviors when the flag is enabled
+      # Please see https://gitlab.com/groups/gitlab-org/-/epics/17482 for tracking the progress.
+      stub_feature_flags(project_commits_refactor: false)
+
       # New issue page can cause tests to fail if they link to issue or issue list page
       # Default false while we make it compatible
       stub_feature_flags(work_item_view_for_issues: false)
@@ -351,6 +355,7 @@ RSpec.configure do |config|
 
       # New personal homepage is still a WIP and not functional.
       stub_feature_flags(personal_homepage: false)
+
     else
       unstub_all_feature_flags
     end

@@ -35782,6 +35782,8 @@ CREATE UNIQUE INDEX index_issues_on_namespace_id_iid_unique ON issues USING btre
 
 CREATE INDEX index_issues_on_namespace_id_relative_position_id_state_id ON issues USING btree (namespace_id, relative_position, id, state_id);
 
+CREATE INDEX index_issues_on_namespace_id_updated_at_id_state_id ON issues USING btree (namespace_id, updated_at, id, state_id);
+
 CREATE INDEX index_issues_on_project_health_status_asc_work_item_type ON issues USING btree (project_id, health_status, id DESC, state_id, work_item_type_id);
 
 CREATE UNIQUE INDEX index_issues_on_project_id_and_external_key ON issues USING btree (project_id, external_key) WHERE (external_key IS NOT NULL);

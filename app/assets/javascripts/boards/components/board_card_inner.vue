@@ -201,8 +201,11 @@ export default {
     targetId() {
       return uniqueId(`${this.item.iid}`);
     },
+    isNotListStatus() {
+      return this.item?.status?.id !== this.list?.status?.id;
+    },
     showStatus() {
-      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag;
+      return this.hasStatus && this.glFeatures.workItemStatusFeatureFlag && this.isNotListStatus;
     },
     hasStatus() {
       return Boolean(this.item.status);

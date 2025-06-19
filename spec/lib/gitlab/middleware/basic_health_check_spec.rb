@@ -57,6 +57,21 @@ RSpec.describe Gitlab::Middleware::BasicHealthCheck do
 
         expect(response[0]).to eq(404)
       end
+
+      context 'IPv6 compatibility' do
+        before do
+          env['REMOTE_ADDR'] = '::127.0.0.1'
+        end
+
+        it 'returns 200 response when entry is IPv4 compatible' do
+          allow(Settings.monitoring).to receive(:ip_whitelist).and_return(['127.0.0.1'])
+          expect(app).not_to receive(:call)
+
+          response = middleware.call(env)
+
+          expect(response[0]).to eq(200)
+        end
+      end
     end
 
     context 'whitelisted IP' do

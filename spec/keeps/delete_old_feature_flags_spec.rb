@@ -72,7 +72,6 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
     let(:identifiers) { ['DeleteOldFeatureFlags', feature_flag_name] }
 
     before do
-      # Unstub can_remove_ff? for these tests
       allow(keep).to receive(:can_remove_ff?).and_call_original
       allow(keep).to receive(:logger).and_return(double.as_null_object)
       allow(keep).to receive(:matches_filter_identifiers?).and_return(true)
@@ -272,17 +271,16 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
       before do
         allow(keep).to receive(:ai_helper).and_return(ai_helper)
-        allow(keep).to receive(:ask_for_and_apply_patch).and_return(true)
+        allow(keep).to receive(:files_mentioning_feature_flag).and_return(['app/controllers/feature_controller.rb'])
+        allow(keep).to receive(:remove_feature_flag_prompts).and_return(
+          instance_double(Keeps::Prompts::RemoveFeatureFlags, fetch: 'user message')
+        )
+        allow(ai_helper).to receive(:ask_for_and_apply_patch).and_return(true)
+        allow(Gitlab::Housekeeper::Shell).to receive(:rubocop_autocorrect).and_return(true)
       end
 
       it 'returns a Gitlab::Housekeeper::Change', :aggregate_failures do
-        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
-          'git', 'grep', '--name-only', '-i', "feature.*#{feature_flag_name}", '--', ':^locale/', ':^db/structure.sql'
-        )
-        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
-          'git', 'grep', '--heading', '--line-number', '--break',
-          feature_flag_name, '--', ':^locale/', ':^db/structure.sql'
-        )
+        allow(keep).to receive(:execute_grep).and_return("grep results")
         expect(FileUtils).to receive(:rm).with(feature_flag_file)
 
         actual_changes = keep.each_change(&:itself)
@@ -297,7 +295,8 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(actual_change.reviewers).to match_array(['@john_doe'])
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
           'feature flag', groups.dig(:foo, :label)])
-        expect(actual_change.changed_files).to match_array([feature_flag_file])
+        expect(actual_change.changed_files).to include(feature_flag_file)
+        expect(actual_change.changed_files).to include('app/controllers/feature_controller.rb')
       end
     end
 
@@ -318,10 +317,7 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       end
 
       it 'returns a Gitlab::Housekeeper::Change', :aggregate_failures do
-        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
-          'git', 'grep', '--heading', '--line-number', '--break',
-          feature_flag_name, '--', ':^locale/', ':^db/structure.sql'
-        )
+        allow(keep).to receive(:execute_grep).and_return("grep results")
         expect(FileUtils).to receive(:rm).with(feature_flag_file)
         expect(Gitlab::Housekeeper::Shell).to receive(:execute).with('git', 'apply', feature_flag_patch_path)
         expect(FileUtils).to receive(:rm).with(feature_flag_patch_path)
@@ -340,6 +336,258 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
         expect(actual_change.labels).to match_array(['automation:feature-flag-removal', 'maintenance::removal',
           'feature flag', groups.dig(:foo, :label)])
       end
+    end
+  end
+
+  describe '#files_mentioning_feature_flag' do
+    let(:logger) { instance_double(Gitlab::Housekeeper::Logger) }
+
+    before do
+      keep.instance_variable_set(:@logger, logger)
+      allow(logger).to receive(:puts)
+    end
+
+    context 'when there are matching files' do
+      it 'returns the list of files' do
+        expect(keep).to receive(:find_files_with_pattern).with("feature.*#{feature_flag_name}").and_return(['file1.rb'])
+        expect(keep).to receive(:find_files_with_pattern).with(
+          "push_frontend_feature_flag.*#{feature_flag_name}"
+        ).and_return(['file2.rb'])
+        expect(keep).to receive(:find_files_with_pattern).with("glFeatures.*featureFlagName").and_return(['file3.js'])
+        expect(keep).to receive(:find_files_with_pattern).with("gon.*featureFlagName").and_return([])
+        expect(keep).to receive(:find_files_with_pattern).with("featureFlagName").and_return(['file4.vue'])
+        expect(keep).to receive(:find_files_with_pattern).with("feature_flag_name").and_return([])
+
+        result = keep.send(:files_mentioning_feature_flag, feature_flag_name)
+
+        expect(result).to match_array(['file1.rb', 'file2.rb', 'file3.js', 'file4.vue'])
+      end
+
+      it 'makes the expected git grep calls to find relevant files' do
+        camel_case_flag = feature_flag_name.camelize(:lower)
+
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+          'git', 'grep', '--name-only', "feature.*#{feature_flag_name}",
+          '--', ':^locale/', ':^db/structure.sql'
+        ).and_return("file1.rb")
+
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+          'git', 'grep', '--name-only', "push_frontend_feature_flag.*#{feature_flag_name}",
+          '--', ':^locale/', ':^db/structure.sql'
+        ).and_return("file2.rb")
+
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+          'git', 'grep', '--name-only', "glFeatures.*#{camel_case_flag}",
+          '--', ':^locale/', ':^db/structure.sql'
+        ).and_return("file3.js")
+
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+          'git', 'grep', '--name-only', "gon.*#{camel_case_flag}",
+          '--', ':^locale/', ':^db/structure.sql'
+        ).and_return("")
+
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+          'git', 'grep', '--name-only', camel_case_flag,
+          '--', ':^locale/', ':^db/structure.sql'
+        ).and_return("file4.vue")
+
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+          'git', 'grep', '--name-only', feature_flag_name,
+          '--', ':^locale/', ':^db/structure.sql'
+        ).and_return("")
+
+        result = keep.send(:files_mentioning_feature_flag, feature_flag_name)
+        expect(result).to match_array(['file1.rb', 'file2.rb', 'file3.js', 'file4.vue'])
+      end
+    end
+
+    context 'when there are no matching files' do
+      it 'returns an empty array' do
+        allow(keep).to receive(:find_files_with_pattern).and_return([])
+
+        result = keep.send(:files_mentioning_feature_flag, feature_flag_name)
+
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when there are duplicate files' do
+      it 'returns unique file names' do
+        camel_case_flag = feature_flag_name.camelize(:lower)
+        expect(keep).to receive(:find_files_with_pattern).with("feature.*#{feature_flag_name}").and_return(['file1.rb'])
+        expect(keep).to receive(:find_files_with_pattern).with(
+          "push_frontend_feature_flag.*#{feature_flag_name}"
+        ).and_return(['file1.rb'])
+        expect(keep).to receive(:find_files_with_pattern)
+          .with("glFeatures.*#{camel_case_flag}").and_return(['file2.js'])
+        expect(keep).to receive(:find_files_with_pattern).with("gon.*#{camel_case_flag}").and_return([])
+        expect(keep).to receive(:find_files_with_pattern).with(camel_case_flag).and_return(['file2.js'])
+        expect(keep).to receive(:find_files_with_pattern).with(feature_flag_name).and_return([])
+
+        result = keep.send(:files_mentioning_feature_flag, feature_flag_name)
+
+        expect(result).to match_array(['file1.rb', 'file2.js'])
+      end
+    end
+  end
+
+  describe '#find_files_with_pattern' do
+    let(:logger) { instance_double(Gitlab::Housekeeper::Logger) }
+
+    before do
+      keep.instance_variable_set(:@logger, logger)
+      allow(logger).to receive(:puts)
+    end
+
+    context 'when git grep finds files' do
+      it 'returns the list of files' do
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'grep', '--name-only', 'search_pattern', '--', ':^locale/', ':^db/structure.sql')
+          .and_return("file1.rb\nfile2.rb")
+
+        result = keep.send(:find_files_with_pattern, 'search_pattern')
+
+        expect(result).to eq(['file1.rb', 'file2.rb'])
+      end
+    end
+
+    context 'when git grep returns empty string' do
+      it 'returns an empty array' do
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'grep', '--name-only', 'search_pattern', '--', ':^locale/', ':^db/structure.sql')
+          .and_return("")
+
+        result = keep.send(:find_files_with_pattern, 'search_pattern')
+
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when git grep returns nil' do
+      it 'returns an empty array' do
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'grep', '--name-only', 'search_pattern', '--', ':^locale/', ':^db/structure.sql')
+          .and_return(nil)
+
+        result = keep.send(:find_files_with_pattern, 'search_pattern')
+
+        expect(result).to eq([])
+      end
+    end
+
+    context 'when git grep raises an error' do
+      it 'logs the error and returns an empty array' do
+        expect(Gitlab::Housekeeper::Shell).to receive(:execute)
+          .with('git', 'grep', '--name-only', 'search_pattern', '--', ':^locale/', ':^db/structure.sql')
+          .and_raise(Gitlab::Housekeeper::Shell::Error)
+
+        expect(logger).to receive(:puts).with("No files found for pattern: search_pattern")
+
+        result = keep.send(:find_files_with_pattern, 'search_pattern')
+
+        expect(result).to eq([])
+      end
+    end
+  end
+
+  describe '#apply_patch' do
+    let(:feature_flag) do
+      instance_double(
+        Feature::Definition,
+        name: feature_flag_name,
+        path: feature_flag_file
+      )
+    end
+
+    let(:patch_path) { feature_flag_file.sub(/.yml$/, '.patch') }
+    let(:expected_files) { [patch_path, 'changed_file.rb'] }
+
+    it 'executes git apply with the correct patch file' do
+      change = instance_double(Gitlab::Housekeeper::Change)
+
+      allow(keep).to receive(:patch_path).with(feature_flag).and_return(patch_path)
+      allow(keep).to receive(:extract_changed_files_from_patch).with(feature_flag).and_return(['changed_file.rb'])
+
+      expect(change).to receive(:changed_files).at_least(:once).and_return([])
+      expect(change).to receive(:changed_files=).with(expected_files)
+
+      expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+        'git', 'apply', patch_path
+      ).and_return(true)
+
+      expect(FileUtils).to receive(:rm).with(patch_path)
+
+      result = keep.send(:apply_patch, feature_flag, change)
+      expect(result).to be true
+    end
+
+    it 'returns false when git apply fails' do
+      change = instance_double(Gitlab::Housekeeper::Change)
+
+      allow(keep).to receive(:patch_path).with(feature_flag).and_return(patch_path)
+      allow(keep).to receive(:extract_changed_files_from_patch).with(feature_flag).and_return(['changed_file.rb'])
+
+      expect(change).to receive(:changed_files).at_least(:once).and_return([])
+      expect(change).to receive(:changed_files=).with(expected_files)
+
+      expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+        'git', 'apply', patch_path
+      ).and_raise(Gitlab::Housekeeper::Shell::Error)
+
+      result = keep.send(:apply_patch, feature_flag, change)
+      expect(result).to be false
+    end
+  end
+
+  describe '#feature_flag_grep' do
+    before do
+      allow(keep).to receive(:git_patterns).with(feature_flag_name).and_return(
+        %w[pattern1 pattern2]
+      )
+    end
+
+    it 'collects grep results from all patterns' do
+      expect(keep).to receive(:execute_grep).with("pattern1").and_return("result1\n")
+      expect(keep).to receive(:execute_grep).with("pattern2").and_return("result2\n")
+
+      result = keep.send(:feature_flag_grep, feature_flag_name)
+
+      expect(result).to include("result1\n", "result2\n")
+    end
+
+    it 'handles nil results gracefully' do
+      expect(keep).to receive(:execute_grep).with("pattern1").and_return(nil)
+      expect(keep).to receive(:execute_grep).with("pattern2").and_return("result2")
+
+      result = keep.send(:feature_flag_grep, feature_flag_name)
+
+      expect(result).to eq("result2\n")
+    end
+  end
+
+  describe '#execute_grep' do
+    it 'calls git grep with the given pattern' do
+      pattern = "feature.*#{feature_flag_name}"
+
+      expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+        'git', 'grep', '--heading', '--line-number', '--break',
+        pattern, '--', ':^locale/', ':^db/structure.sql'
+      ).and_return("grep results")
+
+      result = keep.send(:execute_grep, pattern)
+      expect(result).to eq("grep results")
+    end
+
+    it 'returns empty string when git grep raises an error' do
+      pattern = "feature.*#{feature_flag_name}"
+
+      expect(Gitlab::Housekeeper::Shell).to receive(:execute).with(
+        'git', 'grep', '--heading', '--line-number', '--break',
+        pattern, '--', ':^locale/', ':^db/structure.sql'
+      ).and_raise(Gitlab::Housekeeper::Shell::Error)
+
+      result = keep.send(:execute_grep, pattern)
+      expect(result).to eq("")
     end
   end
 end

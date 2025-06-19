@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Watchdog::Configurator, feature_category: :durability_metrics do
   shared_examples 'as configurator' do |handler_class, event_reporter_class, sleep_time_env, sleep_time|
     it 'configures the correct handler' do
       configurator.call(configuration)

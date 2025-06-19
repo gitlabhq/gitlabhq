@@ -5123,6 +5123,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'returns the base_pipeline when merge does not have a merge request pipeline' do
         expect(pipeline).to eq(base_pipeline)
       end
+
+      context 'when there is no base pipeline' do
+        let!(:start_pipeline) do
+          create(:ci_pipeline,
+            :success,
+            project: project,
+            ref: merge_request.target_branch,
+            sha: merge_request.diff_start_sha
+          )
+        end
+
+        before do
+          base_pipeline.destroy!
+        end
+
+        it 'returns the start pipeline' do
+          expect(pipeline).to eq(start_pipeline)
+        end
+      end
     end
 
     context 'when service_class does not use merge base pipeline' do
@@ -5139,6 +5158,25 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         it 'returns the base pipeline' do
           expect(pipeline).to eq(base_pipeline)
+        end
+      end
+
+      context 'when there is no base pipeline' do
+        let!(:start_pipeline) do
+          create(:ci_pipeline,
+            :success,
+            project: project,
+            ref: merge_request.target_branch,
+            sha: merge_request.diff_start_sha
+          )
+        end
+
+        before do
+          base_pipeline.destroy!
+        end
+
+        it 'returns the start pipeline' do
+          expect(pipeline).to eq(start_pipeline)
         end
       end
     end

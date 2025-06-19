@@ -90,6 +90,19 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
 
         execute_request
       end
+
+      it 'tracks glql related logs' do
+        RequestStore.clear!
+
+        execute_request
+
+        expect(RequestStore.store[:graphql_logs]).to match([
+          hash_including(
+            glql_referer: anything,
+            glql_query_sha: anything
+          )
+        ])
+      end
     end
 
     context 'when 2 consecutive ActiveRecord::QueryAborted errors occur' do

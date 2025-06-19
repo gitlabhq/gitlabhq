@@ -5974,42 +5974,6 @@ RSpec.describe User, feature_category: :user_profile do
     it_behaves_like '#ci_owned_runners'
   end
 
-  describe '#projects_with_reporter_access_limited_to' do
-    let(:project1) { create(:project) }
-    let(:project2) { create(:project) }
-    let(:user) { create(:user) }
-
-    before do
-      project1.add_reporter(user)
-      project2.add_guest(user)
-    end
-
-    it 'returns the projects when using a single project ID' do
-      projects = user.projects_with_reporter_access_limited_to(project1.id)
-
-      expect(projects).to eq([project1])
-    end
-
-    it 'returns the projects when using an Array of project IDs' do
-      projects = user.projects_with_reporter_access_limited_to([project1.id])
-
-      expect(projects).to eq([project1])
-    end
-
-    it 'returns the projects when using an ActiveRecord relation' do
-      projects = user
-        .projects_with_reporter_access_limited_to(Project.select(:id))
-
-      expect(projects).to eq([project1])
-    end
-
-    it 'does not return projects you do not have reporter access to' do
-      projects = user.projects_with_reporter_access_limited_to(project2.id)
-
-      expect(projects).to be_empty
-    end
-  end
-
   describe '#all_expanded_groups' do
     # foo/bar would also match foo/barbaz instead of just foo/bar and foo/bar/baz
     let!(:user) { create(:user) }

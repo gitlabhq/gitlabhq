@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'prometheus/client'
 
-RSpec.describe Gitlab::Memory::Watchdog::EventReporter, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Watchdog::EventReporter, feature_category: :durability_metrics do
   let(:logger) { instance_double(::Logger) }
   let(:violations_counter) { instance_double(::Prometheus::Client::Counter) }
   let(:violations_handled_counter) { instance_double(::Prometheus::Client::Counter) }

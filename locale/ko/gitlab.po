@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-27 10:57\n"
+"PO-Revision-Date: 2025-05-28 10:59\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} 에서 %{end}"
@@ -1995,6 +1995,9 @@ msgstr "작업 아티팩트는 작업이 완료될 때 작업에 의해 저장�
 
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
 msgstr "프로젝트에 대한 %{ci_project_subscriptions_limit} 구독의 한도가 적용됩니다."
+
+msgid "A list for this status already exists on the board"
+msgstr "보드에 이 상태에 대한 목록이 이미 존재합니다"
 
 msgid "A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system."
 msgstr "정보 시스템에 대해 동등하거나 유사한 보호를 제공하는 조직에서 사용하는 관리, 운영 또는 기술적 통제(즉, 보호 또는 대책)입니다."
@@ -12082,6 +12085,9 @@ msgstr "소스 브랜치로 푸시할 수 없습니다."
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr "내부 ID로 그룹 마일스톤을 참조할 수 없습니다!"
 
+msgid "Cannot set both system defined status and custom status"
+msgstr "시스템 정의 상태와 사용자 정의 상태를 동시에 설정할 수 없습니다"
+
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
 msgstr "미리보기를 표시할 수 없습니다. 스케치 파일을 미리 보려면 Sketch 버전 43 이상에서 도입된 파일 형식이 있어야 합니다."
 
@@ -13532,7 +13538,7 @@ msgid "ClusterAgents|Allow configuring agents in receptive mode."
 msgstr "수신 모드에서 에이전트를 구성하도록 허용합니다."
 
 msgid "ClusterAgents|Allow configuring agents to be authorized for the entire instance and across top level groups."
-msgstr ""
+msgstr "전체 인스턴스와 최상위 레벨 그룹들에 대해 인증된 것으로 에이전트를 구성하는 것을 허용"
 
 msgid "ClusterAgents|An error occurred while loading your agent"
 msgstr "에이전트를 로딩하는 중 오류가 발생했습니다."
@@ -15379,6 +15385,9 @@ msgstr "프로젝트 로딩 오류"
 msgid "ComplianceFrameworks|External"
 msgstr "외부"
 
+msgid "ComplianceFrameworks|External Control Name"
+msgstr "외부 컨트롤 이름"
+
 msgid "ComplianceFrameworks|External URL"
 msgstr "외부 URL"
 
@@ -15453,6 +15462,9 @@ msgstr "옵션"
 
 msgid "ComplianceFrameworks|Please enter a valid URL"
 msgstr "유효한 URL을 입력하세요"
+
+msgid "ComplianceFrameworks|Please enter a valid name"
+msgstr "유효한 이름을 입력하세요"
 
 msgid "ComplianceFrameworks|Policies"
 msgstr "정책"
@@ -16545,7 +16557,7 @@ msgid "CompromisedPasswordDetection|GitLab documentation"
 msgstr "GitLab 문서"
 
 msgid "CompromisedPasswordDetection|Instructions for changing your password can be found in the %{doc_link}."
-msgstr ""
+msgstr "비밀번호 변경에 대한 지침은 %{doc_link}에서 확인할 수 있습니다."
 
 msgid "CompromisedPasswordDetection|Please change your password immediately."
 msgstr "비밀번호를 즉시 변경해 주세요."
@@ -16636,6 +16648,9 @@ msgstr "GitLab 관리 템플릿을 사용하여 `.gitlab-ci.yml`에서 SAST IaC�
 
 msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "`.gitlab-ci.yml`에 SAST IaC를 구성하고 이 파일이 없으면 생성합니다."
+
+msgid "Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr "`.gitlab-ci.yml`에 SAST 및 비밀 탐지를 구성하고 이 파일이 아직 없으면 생성합니다."
 
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
 msgstr "GitLab 관리 템플릿을 사용하여 `.gitlab-ci.yml`에서 SAST를 설정합니다. [변수 오버라이드 추가](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings)를 통해 SAST 설정을 커스터마이징할 수 있습니다."
@@ -24590,6 +24605,9 @@ msgstr "에픽 보드"
 msgid "Epic actions"
 msgstr "에픽 동작"
 
+msgid "Epic and its work item parent must be the same"
+msgstr "에픽과 해당 상위 작업 항목은 동일해야 합니다."
+
 msgid "Epic boards"
 msgstr "에픽 보드"
 
@@ -27159,6 +27177,18 @@ msgstr "허용되는 지역 IP는 1~255자 사이여야 합니다."
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr "허용된 지역 IP에는 유효한 IP 주소가 포함되어야 합니다."
 
+msgid "Geo|CI Job Artifact"
+msgstr "CI 작업 아티팩트"
+
+msgid "Geo|CI Job Artifacts"
+msgstr "CI 작업 아티팩트"
+
+msgid "Geo|CI Secure File"
+msgstr "CI 보안 파일"
+
+msgid "Geo|CI Secure Files"
+msgstr "CI 보안 파일"
+
 msgid "Geo|Checksum: %{verificationChecksum}"
 msgstr "체크섬: %{verificationChecksum}"
 
@@ -27167,12 +27197,6 @@ msgstr "체크섬됨"
 
 msgid "Geo|Choose specific groups or storage shards"
 msgstr "특정 그룹 혹은 스토리지 샤드 선택"
-
-msgid "Geo|Ci Secure File"
-msgstr "Ci 보안 파일"
-
-msgid "Geo|Ci Secure Files"
-msgstr "Ci 보안 파일"
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr "쉼표로 구분됨(예시: '1.1.1.1, 2.2.2.0/24')"
@@ -27333,11 +27357,11 @@ msgstr "내부 URL"
 msgid "Geo|Internal URL (optional)"
 msgstr "내부 URL (옵션)"
 
-msgid "Geo|Job Artifact"
-msgstr "작업 아티팩트"
+msgid "Geo|LFS Object"
+msgstr "LFS 개체"
 
-msgid "Geo|Job Artifacts"
-msgstr "작업 아티팩트"
+msgid "Geo|LFS Objects"
+msgstr "LFS 개체"
 
 msgid "Geo|Last event ID"
 msgstr "마지막 이벤트 ID"
@@ -27362,12 +27386,6 @@ msgstr "Geo에 대해 더 자세히 알아보기"
 
 msgid "Geo|Learn more about Geo site statuses"
 msgstr "Geo 사이트 상태에 대해 더 자세히 알아보기"
-
-msgid "Geo|Lfs Object"
-msgstr "Lfs 오브젝트"
-
-msgid "Geo|Lfs Objects"
-msgstr "Lfs 오브젝트"
 
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
 msgstr "이 세컨더리 사이트가 백그라운드에서 실행할 수 있는 동시 작업 수를 제한합니다."
@@ -31749,12 +31767,6 @@ msgstr "네임스페이스 요청 실패"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "%{provider} 리포지토리 요청 실패"
-
-msgid "ImportProjects|Select a destination namespace."
-msgstr "대상 네임스페이스를 선택하세요."
-
-msgid "ImportProjects|Select namespace"
-msgstr "네임스페이스 선택"
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "가져오려는 리포지토리 선택"
@@ -37280,8 +37292,8 @@ msgstr "운영자 역할이 하나 이상의 사용자에 할당되어 있습니
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr "정말 이 역할을 삭제하시겠습니까?"
 
-msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles."
-msgstr "당신의 LDAP 디렉토리를 커스텀 운영자 역할로 자동 동기화."
+msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles. For users matched to multiple LDAP syncs, the oldest sync entry will be used."
+msgstr "LDAP 디렉터리를 사용자 지정 운영자 역할에 자동으로 동기화합니다. 여러 LDAP 동기화와 일치하는 사용자의 경우 가장 오래된 동기화 항목이 사용됩니다."
 
 msgid "MemberRole|Base role"
 msgstr "기본 역할"
@@ -37547,8 +37559,8 @@ msgstr "리포터 역할은 프로젝트나 그룹에 대한 정보를 얻어야
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
 msgstr "이 멤버는 LDAP 사용자입니다. 역할을 변경하면 LDAP 그룹 동기화의 설정이 오버라이드 됩니다."
 
-msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will keep their current role but future changes will require manual updates. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
-msgstr "LDAP 서버와의 자동 동기화가 제거됩니다. 사용자는 현재 역할을 유지하지만 향후 변경 사항은 수동으로 업데이트해야 합니다. %{confirmStart}LDAP 동기화를 제거하시겠습니까?%{confirmEnd}"
+msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will have their current role unassigned on the next sync. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
+msgstr "LDAP 서버와의 자동 동기화가 제거됩니다. 다음 동기화 시 사용자의 현재 역할이 할당 해제됩니다. %{confirmStart}LDAP 동기화를 제거하시겠습니까?%{confirmEnd}"
 
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
 msgstr "이 역할은 수작업으로 선택되었으며 LDAP 동기화 역할과 동기화되지 않습니다."
@@ -37561,6 +37573,9 @@ msgstr "커스텀 역할을 삭제하려면 모든 사용자에게서 역할을 
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
 msgstr "역할 보고서를 내보낼 수 없습니다. 이 오류가 지속되면 지원팀에 연락바랍니다."
+
+msgid "MemberRole|Unknown LDAP server. Please check your server settings."
+msgstr "알수 없는 LDAP 서버. 서버 설정을 점검하세요."
 
 msgid "MemberRole|Update role"
 msgstr "역할 업데이트"
@@ -38181,7 +38196,7 @@ msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{li
 msgstr "커밋 %{linkStart}%{commitDisplay}%{linkEnd}에서 스레드를 시작했습니다."
 
 msgid "MergeRequest|Allow merge request pipelines to access protected variables and runners"
-msgstr ""
+msgstr "머지 리퀘스트 파이프라인이 보호된 변수와 러너에 액세스하도록 허용"
 
 msgid "MergeRequest|Awaiting review"
 msgstr "리뷰 대기 중"
@@ -38211,7 +38226,7 @@ msgid "MergeRequest|Compare %{target} and %{source}"
 msgstr "%{target} 과 %{source}비교"
 
 msgid "MergeRequest|Control access to protected variables and runners in merge request pipelines"
-msgstr ""
+msgstr "머지 리퀘스트 파이프라인에서 보호된 변수와 러너에 대한 액세스 제어"
 
 msgid "MergeRequest|Error dismissing suggestion popover. Please try again."
 msgstr "제안 팝오버 해지 중 오류가 발생했습니다.다시 시도해 주세요."
@@ -44574,7 +44589,7 @@ msgid "PipelineScheduleIntervalPattern|Learn more."
 msgstr "더 알아보기."
 
 msgid "PipelineScheduleIntervalPattern|Pipelines cannot run more frequently than the pipeline schedule worker cron setting (%{workerCronExpression}) allows."
-msgstr ""
+msgstr "파이프라인은 파이프라인 일정 작업자 Cron 설정(%{workerCronExpression})에서 허용하는 것보다 더 자주 실행될 수 없습니다."
 
 msgid "PipelineScheduleIntervalPattern|Set a custom interval with Cron syntax."
 msgstr "Cron 문법을 사용하여 커스텀 일정 간격을 설정합니다."
@@ -46819,7 +46834,7 @@ msgstr "%{provider} 연결 끊기"
 msgid "Profiles|Disconnect SAML for %{group_name}"
 msgstr "%{group_name}에 대한 SAML 연결해제"
 
-msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are your sure?"
+msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are you sure?"
 msgstr "SAML 공급자 연결을 해제하면 SAML 인증이 필요한 그룹, 하위 그룹 및 프로젝트에 대한 액세스 권한이 제거됩니다. 확실한가요?"
 
 msgid "Profiles|Discord ID is too long (maximum is %{max_length} characters)."
@@ -48377,7 +48392,7 @@ msgid "ProjectSettings|View and edit files in this project."
 msgstr "이 프로젝트의 파일을 보고 편집합니다."
 
 msgid "ProjectSettings|View and edit files in this project. When set to %{em_start}Everyone With Access%{em_end} non-project members have only read access."
-msgstr ""
+msgstr "이 프로젝트의 파일을 보고, 편집합니다. %{em_start}권한이 있는 모든 사람%{em_end}으로 설정하면 프로젝트 멤버가 아닌 사람은 읽기 권한만 갖습니다."
 
 msgid "ProjectSettings|View project analytics."
 msgstr "프로젝트 분석 보기."
@@ -48659,6 +48674,9 @@ msgstr "설명 형식"
 msgid "ProjectsNew|Direct transfer projects with a top-level Group"
 msgstr "최상위 그룹이 있는 프로젝트를 직접 전송"
 
+msgid "ProjectsNew|Enable Secret Detection"
+msgstr "비밀 탐지 활성화"
+
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
 msgstr "정적 애플리케이션 보안 테스트(SAST) 활성화"
 
@@ -48796,6 +48814,9 @@ msgstr "GitLab을 처음 사용하는 경우 권장"
 
 msgid "ProjectsNew|Run CI/CD for external repository"
 msgstr "외부 리포지토리에 대한 CI/CD 실행"
+
+msgid "ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access."
+msgstr "무단 접근을 방지하기 위해 코드를 스캔하여 비밀번호와 자격 증명을 확인하세요."
 
 msgid "ProjectsNew|Select"
 msgstr "선택"
@@ -49560,6 +49581,9 @@ msgstr "공급자"
 
 msgid "Provider ID"
 msgstr "공급자 ID"
+
+msgid "Provider is invalid"
+msgstr "공급자가 유효하지 않음"
 
 msgid "Provision instructions"
 msgstr "프로비저닝 지침"
@@ -51242,7 +51266,7 @@ msgid "Require expiration date"
 msgstr "만료일 필요"
 
 msgid "Require users to verify their email address when their account is locked."
-msgstr ""
+msgstr "계정이 잠겨있는 경우, 사용자는 자신의 이메일 주소을 검증해야 합니다."
 
 msgid "Required approvals (%{approvals_given} of %{required} given)"
 msgstr "필요한 승인 ( %{required}중 %{approvals_given} 승인)"
@@ -54145,7 +54169,7 @@ msgid "Secrets|Secret %{secretName} has been deleted."
 msgstr "%{secretName} 비밀이 삭제되었습니다."
 
 msgid "Secrets|Secret manager user permissions"
-msgstr ""
+msgstr "비밀 관리자 사용자 권한"
 
 msgid "Secrets|Secrets"
 msgstr "비밀"
@@ -54878,7 +54902,7 @@ msgid "SecurityOrchestration|Automate %{strongStart}vulnerability management%{st
 msgstr "%{strongStart}취약성 관리%{strongEnd} 워크플로를 자동화합니다."
 
 msgid "SecurityOrchestration|Automatically configures scans to run only where needed for MR approval policies"
-msgstr ""
+msgstr "MR 승인 정책에 필요한 경우에만 스캔을 자동으로 실행하도록 구성합니다."
 
 msgid "SecurityOrchestration|Automatically selected runners"
 msgstr "자동으로 선택된 러너"
@@ -59144,6 +59168,12 @@ msgstr "상태 점검"
 
 msgid "Status checks must pass."
 msgstr "상태 점검을 통과해야 합니다."
+
+msgid "Status feature not available"
+msgstr "상태 기능이 가용하지 않음"
+
+msgid "Status list requires either a system defined status or custom status"
+msgstr ""
 
 msgid "Status lists not available with your current license"
 msgstr "현재 라이선스로는 상태 목록을 사용할 수 없습니다."
@@ -66097,7 +66127,7 @@ msgid "UserMapping|Source name"
 msgstr "소스 이름"
 
 msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
-msgstr ""
+msgstr "%{strongStart}운영자가 플레이스홀더 사용자를 재할당할 때 확인 건너뛰기%{strongEnd} 설정이 활성화되었습니다. 사용자는 재할당을 승인할 필요가 없으며, 기여 내용은 즉시 재할당됩니다."
 
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
 msgstr "파일이 처리 중이며 완료되면 이메일을 받게 됩니다."
@@ -69804,11 +69834,20 @@ msgstr "모든 그룹 멤버에게 이 에이전트를 허용하시겠습니까?
 msgid "Workspaces|Allowed agents"
 msgstr "허용된 에이전트"
 
+msgid "Workspaces|Availability"
+msgstr "가용성"
+
+msgid "Workspaces|Available"
+msgstr "가용"
+
 msgid "Workspaces|Block agent"
 msgstr "에이전트 차단"
 
 msgid "Workspaces|Block this agent for all group members?"
 msgstr "모든 그룹 구성원에 대해 이 에이전트를 차단하시겠습니까?"
+
+msgid "Workspaces|Blocked"
+msgstr "차단됨"
 
 msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
 msgstr "에이전트를 차단해도 삭제되지는 않습니다. 에이전트는 에이전트가 생성된 프로젝트에서만 삭제할 수 있습니다."
@@ -69818,6 +69857,12 @@ msgstr "취소"
 
 msgid "Workspaces|Cluster agent"
 msgstr "클러스터 에이전트"
+
+msgid "Workspaces|Configure which Kubernetes agents are available for new workspaces. These settings do not affect existing workspaces."
+msgstr "새 작업 공간에 사용할 수 있는 Kubernetes 에이전트를 구성합니다. 이 설정은 기존 작업 공간에는 영향을 미치지 않습니다."
+
+msgid "Workspaces|Connected"
+msgstr "연결됨"
 
 msgid "Workspaces|Could not load available agents. Refresh the page to try again."
 msgstr "사용 가능한 에이전트를 로드할 수 없습니다. 다시 시도하려면 페이지를 새로고침하세요."
@@ -69876,6 +69921,9 @@ msgstr "GitLab 기본 devfile 내용"
 msgid "Workspaces|GitLab devfile"
 msgstr "GitLab devfile"
 
+msgid "Workspaces|Group"
+msgstr "그룹"
+
 msgid "Workspaces|Group agents"
 msgstr "그룹 에이전트"
 
@@ -69894,17 +69942,26 @@ msgstr "즉각적인 개발 환경"
 msgid "Workspaces|Learn more."
 msgstr "자세히 알아보세요."
 
+msgid "Workspaces|Name"
+msgstr "이름"
+
 msgid "Workspaces|New workspace"
 msgstr "새 작업공간"
 
 msgid "Workspaces|No active workspaces"
 msgstr "활성 작업 공간 없음"
 
+msgid "Workspaces|No agents available"
+msgstr "가용 에이전트가 없음"
+
 msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr "작업 공간을 생성할 수 있는 에이전트가 없습니다. 문제 해결을 위해 %{linkStart}작업 공간 설명서%{linkEnd} 를 참조하세요."
 
 msgid "Workspaces|No terminated workspaces"
 msgstr "종료된 작업 공간 없음"
+
+msgid "Workspaces|Not connected"
+msgstr "연결되지 않음"
 
 msgid "Workspaces|Open workspace"
 msgstr "작업공간 열기"
@@ -69935,6 +69992,9 @@ msgstr "시작 중"
 
 msgid "Workspaces|Starting workspace"
 msgstr "작업공간 시작 중"
+
+msgid "Workspaces|Status"
+msgstr "상태"
 
 msgid "Workspaces|Stop"
 msgstr "정지"
@@ -69995,6 +70055,9 @@ msgstr "devfile이 제공되지 않으면 GitLab 기본 devfile이 사용됩니�
 
 msgid "Workspaces|Workspaces"
 msgstr "작업공간"
+
+msgid "Workspaces|Workspaces Agent Availability"
+msgstr "워크스페이스 에이전트 가용성"
 
 msgid "Workspaces|Workspaces Settings"
 msgstr "작업공간 설정"

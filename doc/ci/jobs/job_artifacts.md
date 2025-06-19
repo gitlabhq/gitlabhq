@@ -14,7 +14,7 @@ title: Job artifacts
 
 Jobs can output an archive of files and directories. This output is known as a job artifact.
 
-You can download job artifacts by using the GitLab UI or the [API](../../api/job_artifacts.md#get-job-artifacts).
+You can download job artifacts by using the GitLab UI or the [API](../../api/job_artifacts.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of job artifacts, watch the video [GitLab CI pipelines, artifacts, and environments](https://www.youtube.com/watch?v=PCKDICEe10s).
@@ -235,7 +235,7 @@ unless the report is added as a regular artifact with `artifacts:paths`.
 ### From a URL
 
 You can download the artifacts archive for a specific job with a publicly accessible
-URL for the [job artifacts API](../../api/job_artifacts.md#download-the-artifacts-archive).
+URL for the [job artifacts API](../../api/job_artifacts.md#download-job-artifacts-by-reference-name).
 
 For example:
 

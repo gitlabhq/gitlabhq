@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe SeedCloudConnectorKeysNew, migration: :gitlab_main, feature_category: :cloud_connector do
+RSpec.describe SeedCloudConnectorKeysNew, migration: :gitlab_main, feature_category: :system_access do
   it 'seeds Cloud Connector keys' do
     keys_table = table(:cloud_connector_keys)
 

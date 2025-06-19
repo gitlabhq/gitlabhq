@@ -6450,6 +6450,29 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '.not_archived' do
+    let_it_be(:old_pipeline) { create(:ci_pipeline, created_at: 3.months.ago, project: project) }
+    let_it_be(:fresh_pipeline) { create(:ci_pipeline, project: project) }
+
+    subject { described_class.not_archived }
+
+    context 'when archive_builds_in is set' do
+      before do
+        stub_application_setting(archive_builds_in_seconds: 1.week)
+      end
+
+      it { is_expected.to match_array([fresh_pipeline]) }
+    end
+
+    context 'when archive_builds_in is not set' do
+      before do
+        stub_application_setting(archive_builds_in_seconds: nil)
+      end
+
+      it { is_expected.to match_array([old_pipeline, fresh_pipeline]) }
+    end
+  end
+
   describe '#queued_duration', :freeze_time do
     it 'returns nil when pipeline has not started' do
       # Build a pipeline created 1 hour ago with no start or finish time

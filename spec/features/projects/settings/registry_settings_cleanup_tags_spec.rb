@@ -45,7 +45,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
       wait_for_requests
 
-      expect(page).to be_axe_clean.within('[data-testid="container-expiration-policy-project-settings"]') # rubocop:todo Capybara/TestidFinders -- Doesn't cover use case, see https://gitlab.com/gitlab-org/gitlab/-/issues/442224
+      expect(page).to be_axe_clean.within_testid('container-expiration-policy-project-settings')
                                   .skipping :'link-in-text-block'
     end
 

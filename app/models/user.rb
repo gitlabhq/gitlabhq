@@ -1477,16 +1477,6 @@ class User < ApplicationRecord
     authorizations.where('project_authorizations.access_level >= ?', min_access_level)
   end
 
-  # Returns the projects this user has reporter (or greater) access to, limited
-  # to at most the given projects.
-  #
-  # This method is useful when you have a list of projects and want to
-  # efficiently check to which of these projects the user has at least reporter
-  # access.
-  def projects_with_reporter_access_limited_to(projects)
-    authorized_projects(Gitlab::Access::REPORTER).where(id: projects)
-  end
-
   def owned_projects
     @owned_projects ||= Project.from_union(
       [

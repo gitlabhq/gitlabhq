@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: tr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-27 10:58\n"
+"PO-Revision-Date: 2025-05-28 11:08\n"
 
 msgid " %{start} to %{end}"
 msgstr ""
@@ -2171,6 +2171,9 @@ msgid "A job artifact is an archive of files and directories saved by a job when
 msgstr ""
 
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
+msgstr ""
+
+msgid "A list for this status already exists on the board"
 msgstr ""
 
 msgid "A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system."
@@ -12295,6 +12298,9 @@ msgstr ""
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr ""
 
+msgid "Cannot set both system defined status and custom status"
+msgstr ""
+
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
 msgstr ""
 
@@ -15598,6 +15604,9 @@ msgstr ""
 msgid "ComplianceFrameworks|External"
 msgstr ""
 
+msgid "ComplianceFrameworks|External Control Name"
+msgstr ""
+
 msgid "ComplianceFrameworks|External URL"
 msgstr ""
 
@@ -15671,6 +15680,9 @@ msgid "ComplianceFrameworks|Optional"
 msgstr ""
 
 msgid "ComplianceFrameworks|Please enter a valid URL"
+msgstr ""
+
+msgid "ComplianceFrameworks|Please enter a valid name"
 msgstr ""
 
 msgid "ComplianceFrameworks|Policies"
@@ -16855,6 +16867,9 @@ msgid "Configure SAST IaC in `.gitlab-ci.yml` using the GitLab managed template.
 msgstr ""
 
 msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr ""
+
+msgid "Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr ""
 
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
@@ -24843,6 +24858,9 @@ msgstr ""
 msgid "Epic actions"
 msgstr ""
 
+msgid "Epic and its work item parent must be the same"
+msgstr ""
+
 msgid "Epic boards"
 msgstr ""
 
@@ -27422,6 +27440,18 @@ msgstr ""
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr ""
 
+msgid "Geo|CI Job Artifact"
+msgstr ""
+
+msgid "Geo|CI Job Artifacts"
+msgstr ""
+
+msgid "Geo|CI Secure File"
+msgstr ""
+
+msgid "Geo|CI Secure Files"
+msgstr ""
+
 msgid "Geo|Checksum: %{verificationChecksum}"
 msgstr ""
 
@@ -27429,12 +27459,6 @@ msgid "Geo|Checksummed"
 msgstr ""
 
 msgid "Geo|Choose specific groups or storage shards"
-msgstr ""
-
-msgid "Geo|Ci Secure File"
-msgstr ""
-
-msgid "Geo|Ci Secure Files"
 msgstr ""
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
@@ -27596,10 +27620,10 @@ msgstr ""
 msgid "Geo|Internal URL (optional)"
 msgstr ""
 
-msgid "Geo|Job Artifact"
+msgid "Geo|LFS Object"
 msgstr ""
 
-msgid "Geo|Job Artifacts"
+msgid "Geo|LFS Objects"
 msgstr ""
 
 msgid "Geo|Last event ID"
@@ -27624,12 +27648,6 @@ msgid "Geo|Learn more about Geo"
 msgstr ""
 
 msgid "Geo|Learn more about Geo site statuses"
-msgstr ""
-
-msgid "Geo|Lfs Object"
-msgstr ""
-
-msgid "Geo|Lfs Objects"
 msgstr ""
 
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
@@ -32021,12 +32039,6 @@ msgid "ImportProjects|Requesting namespaces failed"
 msgstr ""
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
-msgstr ""
-
-msgid "ImportProjects|Select a destination namespace."
-msgstr ""
-
-msgid "ImportProjects|Select namespace"
 msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
@@ -37575,7 +37587,7 @@ msgstr ""
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr ""
 
-msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles."
+msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles. For users matched to multiple LDAP syncs, the oldest sync entry will be used."
 msgstr ""
 
 msgid "MemberRole|Base role"
@@ -37842,7 +37854,7 @@ msgstr ""
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
 msgstr ""
 
-msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will keep their current role but future changes will require manual updates. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
+msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will have their current role unassigned on the next sync. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
 msgstr ""
 
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
@@ -37855,6 +37867,9 @@ msgid "MemberRole|To delete custom role, remove role from all users."
 msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
+msgstr ""
+
+msgid "MemberRole|Unknown LDAP server. Please check your server settings."
 msgstr ""
 
 msgid "MemberRole|Update role"
@@ -47140,7 +47155,7 @@ msgstr "%{provider} bağlantısını kes"
 msgid "Profiles|Disconnect SAML for %{group_name}"
 msgstr ""
 
-msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are your sure?"
+msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are you sure?"
 msgstr ""
 
 msgid "Profiles|Discord ID is too long (maximum is %{max_length} characters)."
@@ -48981,6 +48996,9 @@ msgstr "Açıklama formatı"
 msgid "ProjectsNew|Direct transfer projects with a top-level Group"
 msgstr ""
 
+msgid "ProjectsNew|Enable Secret Detection"
+msgstr ""
+
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
 msgstr ""
 
@@ -49117,6 +49135,9 @@ msgid "ProjectsNew|Recommended if you're new to GitLab"
 msgstr ""
 
 msgid "ProjectsNew|Run CI/CD for external repository"
+msgstr ""
+
+msgid "ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access."
 msgstr ""
 
 msgid "ProjectsNew|Select"
@@ -49883,6 +49904,9 @@ msgid "Provider"
 msgstr ""
 
 msgid "Provider ID"
+msgstr ""
+
+msgid "Provider is invalid"
 msgstr ""
 
 msgid "Provision instructions"
@@ -59517,6 +59541,12 @@ msgid "Status checks"
 msgstr ""
 
 msgid "Status checks must pass."
+msgstr ""
+
+msgid "Status feature not available"
+msgstr ""
+
+msgid "Status list requires either a system defined status or custom status"
 msgstr ""
 
 msgid "Status lists not available with your current license"
@@ -70244,10 +70274,19 @@ msgstr ""
 msgid "Workspaces|Allowed agents"
 msgstr ""
 
+msgid "Workspaces|Availability"
+msgstr ""
+
+msgid "Workspaces|Available"
+msgstr ""
+
 msgid "Workspaces|Block agent"
 msgstr ""
 
 msgid "Workspaces|Block this agent for all group members?"
+msgstr ""
+
+msgid "Workspaces|Blocked"
 msgstr ""
 
 msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
@@ -70257,6 +70296,12 @@ msgid "Workspaces|Cancel"
 msgstr ""
 
 msgid "Workspaces|Cluster agent"
+msgstr ""
+
+msgid "Workspaces|Configure which Kubernetes agents are available for new workspaces. These settings do not affect existing workspaces."
+msgstr ""
+
+msgid "Workspaces|Connected"
 msgstr ""
 
 msgid "Workspaces|Could not load available agents. Refresh the page to try again."
@@ -70316,6 +70361,9 @@ msgstr ""
 msgid "Workspaces|GitLab devfile"
 msgstr ""
 
+msgid "Workspaces|Group"
+msgstr ""
+
 msgid "Workspaces|Group agents"
 msgstr ""
 
@@ -70334,16 +70382,25 @@ msgstr ""
 msgid "Workspaces|Learn more."
 msgstr ""
 
+msgid "Workspaces|Name"
+msgstr ""
+
 msgid "Workspaces|New workspace"
 msgstr ""
 
 msgid "Workspaces|No active workspaces"
 msgstr ""
 
+msgid "Workspaces|No agents available"
+msgstr ""
+
 msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr ""
 
 msgid "Workspaces|No terminated workspaces"
+msgstr ""
+
+msgid "Workspaces|Not connected"
 msgstr ""
 
 msgid "Workspaces|Open workspace"
@@ -70374,6 +70431,9 @@ msgid "Workspaces|Starting"
 msgstr ""
 
 msgid "Workspaces|Starting workspace"
+msgstr ""
+
+msgid "Workspaces|Status"
 msgstr ""
 
 msgid "Workspaces|Stop"
@@ -70434,6 +70494,9 @@ msgid "Workspaces|When no devfile is provided, the GitLab default devfile will b
 msgstr ""
 
 msgid "Workspaces|Workspaces"
+msgstr ""
+
+msgid "Workspaces|Workspaces Agent Availability"
 msgstr ""
 
 msgid "Workspaces|Workspaces Settings"

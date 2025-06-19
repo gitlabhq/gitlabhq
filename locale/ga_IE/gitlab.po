@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: ga-IE\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-27 10:57\n"
+"PO-Revision-Date: 2025-05-28 10:59\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} go %{end}"
@@ -2703,6 +2703,9 @@ msgstr "Is cartlann comhaid agus eolairí a shábháiltear ag post nuair a chrí
 
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
 msgstr "Tá teorainn síntiúis %{ci_project_subscriptions_limit} le tionscadal nó uaidh i bhfeidhm."
+
+msgid "A list for this status already exists on the board"
+msgstr "Tá liosta don stádas seo ar an mbord cheana féin"
 
 msgid "A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system."
 msgstr "Rialú bainistíochta, oibríochta nó teicniúil (is é sin, cosaint nó frithbheart) a úsáideann eagraíocht a sholáthraíonn cosaint choibhéiseach nó inchomparáide do chóras faisnéise."
@@ -12934,6 +12937,9 @@ msgstr "Ní féidir brú chuig brainse foinse"
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr "Ní féidir tagairt a dhéanamh do chloch mhíle grúpa le haitheantas inmheánach!"
 
+msgid "Cannot set both system defined status and custom status"
+msgstr "Ní féidir stádas sainithe córais agus stádas saincheaptha araon a shocrú"
+
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
 msgstr "Ní féidir réamhamharc a thaispe Le haghaidh réamhamharcanna ar chomhaid sceitse, caithfidh an formáid comhaid a thabhairt isteach ag leagan Sketch 43 agus os a chionn a bheith acu."
 
@@ -16255,6 +16261,9 @@ msgstr "Earráid agus tionscadail á lódáil."
 msgid "ComplianceFrameworks|External"
 msgstr "Seachtrach"
 
+msgid "ComplianceFrameworks|External Control Name"
+msgstr "Ainm Rialaithe Seachtraigh"
+
 msgid "ComplianceFrameworks|External URL"
 msgstr "URL seachtrach"
 
@@ -16329,6 +16338,9 @@ msgstr "Roghnach"
 
 msgid "ComplianceFrameworks|Please enter a valid URL"
 msgstr "Cuir isteach URL bailí"
+
+msgid "ComplianceFrameworks|Please enter a valid name"
+msgstr "Cuir isteach ainm bailí le do thoil"
 
 msgid "ComplianceFrameworks|Policies"
 msgstr "Polasaithe"
@@ -17516,6 +17528,9 @@ msgstr "Cumraigh SAST IAC in `.gitlab-ci.yml` ag baint úsáide as an teimpléad
 
 msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Cumraigh SAST IAC in `.gitlab-ci.yml`, ag cruthú an comhad seo mura bhfuil sé ann cheana féin"
+
+msgid "Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr "Cumraigh SAST agus Brath Rúnda i `.gitlab-ci.yml`, ag cruthú an chomhaid seo mura bhfuil sé ann cheana féin"
 
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
 msgstr "Cumraigh SAST in `.gitlab-ci.yml` ag baint úsáide as an teimpléad bainistithe GitLab. Is féidir leat [athrógaí athraitheacha a chur leis] (https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) chun socruithe SAST a shaincheapadh."
@@ -25602,6 +25617,9 @@ msgstr "Boird Eipiciúla"
 msgid "Epic actions"
 msgstr "Gníomhartha eipiciúil"
 
+msgid "Epic and its work item parent must be the same"
+msgstr "Ní mór don Epic agus don tuismitheoir míre oibre a bheith mar an gcéanna"
+
 msgid "Epic boards"
 msgstr "Boird eipiciúla"
 
@@ -28211,6 +28229,18 @@ msgstr "Ba chóir go mbeadh Geo IP Ceadaithe idir 1 agus 255 carachtar"
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr "Ba chóir go mbeadh seoltaí IP bailí ag Geo IP Ceadaithe"
 
+msgid "Geo|CI Job Artifact"
+msgstr "Déantús Poist CI"
+
+msgid "Geo|CI Job Artifacts"
+msgstr "Déantúsáin Poist CI"
+
+msgid "Geo|CI Secure File"
+msgstr "Comhad Slán CI"
+
+msgid "Geo|CI Secure Files"
+msgstr "Comhaid Shlána CI"
+
 msgid "Geo|Checksum: %{verificationChecksum}"
 msgstr "Suim seiceála:: %{verificationChecksum}"
 
@@ -28219,12 +28249,6 @@ msgstr "Achoimre Seiceála"
 
 msgid "Geo|Choose specific groups or storage shards"
 msgstr "Roghnaigh grúpaí sonracha nó scartaí stórála"
-
-msgid "Geo|Ci Secure File"
-msgstr "Comhad Slán Ci"
-
-msgid "Geo|Ci Secure Files"
-msgstr "Comhaid Shlána Ci"
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr "scartha le camóg, m.sh. '1.1.1.1, 2.2.2.0/24'"
@@ -28385,11 +28409,11 @@ msgstr "URL Inmheánach"
 msgid "Geo|Internal URL (optional)"
 msgstr "URL Inmheánach (roghnach)"
 
-msgid "Geo|Job Artifact"
-msgstr "Déantús Poist"
+msgid "Geo|LFS Object"
+msgstr "Réad LFS"
 
-msgid "Geo|Job Artifacts"
-msgstr "Déantúsáin Poist"
+msgid "Geo|LFS Objects"
+msgstr "Réada LFS"
 
 msgid "Geo|Last event ID"
 msgstr "ID imeachta deireanach"
@@ -28414,12 +28438,6 @@ msgstr "Foghlaim tuilleadh faoi Geo"
 
 msgid "Geo|Learn more about Geo site statuses"
 msgstr "Tuilleadh eolais faoi stádais láithreáin Geo"
-
-msgid "Geo|Lfs Object"
-msgstr "Réad Lfs"
-
-msgid "Geo|Lfs Objects"
-msgstr "Réada Lfs"
 
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
 msgstr "Teorainn le líon na n-oibríochtaí comhthráthacha is féidir leis an suíomh tánaisteach seo a rith sa chúlra."
@@ -32841,12 +32859,6 @@ msgstr "Theip ar spásanna ainmneacha a iarraidh"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "Theip ar do stór %{provider} a iarraidh"
-
-msgid "ImportProjects|Select a destination namespace."
-msgstr "Roghnaigh ainmspás ceann scríbe."
-
-msgid "ImportProjects|Select namespace"
-msgstr "Roghnaigh ainmspás"
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "Roghnaigh na stórais is mian leat a iompórtáil"
@@ -38460,8 +38472,8 @@ msgstr "Sanntar ról riaracháin d’úsáideoir amháin nó níos mó. Bain ró
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr "An bhfuil tú cinnte gur mhaith leat an ról seo a scriosadh?"
 
-msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles."
-msgstr "Sioncrónaigh d'eolaire LDAP go huathoibríoch le róil riarthóra saincheaptha."
+msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles. For users matched to multiple LDAP syncs, the oldest sync entry will be used."
+msgstr "Sioncrónaigh d'eolaire LDAP go huathoibríoch le róil riarthóra saincheaptha. I gcás úsáideoirí atá meaitseáilte le sioncrónaithe LDAP iolracha, úsáidfear an iontráil sioncrónaithe is sine."
 
 msgid "MemberRole|Base role"
 msgstr "Ról bunúsach"
@@ -38727,8 +38739,8 @@ msgstr "Tá ról an Tuairisceora oiriúnach do bhaill foirne a gcaithfidh fanach
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
 msgstr "Is úsáideoir LDAP é an comhalta seo. Athrófar a ról a n-athrú na socruithe ó shioncronú grúpa LDAP."
 
-msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will keep their current role but future changes will require manual updates. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
-msgstr "Baintear sioncrónú uathoibríoch le do fhreastalaí LDAP leis seo. Coinneoidh úsáideoirí a ról reatha ach beidh nuashonruithe láimhe ag teastáil le haghaidh athruithe amach anseo. %{confirmStart}An bhfuil tú cinnte gur mian leat sioncrónú LDAP a bhaint?%{confirmEnd}"
+msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will have their current role unassigned on the next sync. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
+msgstr "Baintear sioncrónú uathoibríoch le do fhreastalaí LDAP leis seo. Díshannfar ról reatha úsáideoirí ar an gcéad sioncrónú eile. %{confirmStart}An bhfuil tú cinnte gur mian leat sioncrónú LDAP a bhaint?%{confirmEnd}"
 
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
 msgstr "Roghnaíodh an ról seo de láimh agus ní dhéanfar sioncrónú leis an ról sioncrónaithe LDAP."
@@ -38741,6 +38753,9 @@ msgstr "Chun ról saincheaptha a scriosadh, bain ról ó gach úsáideoir."
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
 msgstr "Ní féidir an tuairisc róil a easpórtáil. Déan teagmháil leis an bhfoireann tacaíochta má leanann an earráid seo."
+
+msgid "MemberRole|Unknown LDAP server. Please check your server settings."
+msgstr "Freastalaí LDAP anaithnid. Seiceáil socruithe do fhreastalaí le do thoil."
 
 msgid "MemberRole|Update role"
 msgstr "Ról nuashonraithe"
@@ -48103,7 +48118,7 @@ msgstr "Dícheangail %{provider}"
 msgid "Profiles|Disconnect SAML for %{group_name}"
 msgstr "Dícheangail SAML le haghaidh %{group_name}"
 
-msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are your sure?"
+msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are you sure?"
 msgstr "Má dhícheanglaíonn tú do sholáthraí SAML, bainfear rochtain de ghrúpaí, foghrúpaí agus tionscadail a bhfuil fíordheimhniú SAML ag teastáil uathu. An bhfuil tú cinnte?"
 
 msgid "Profiles|Discord ID is too long (maximum is %{max_length} characters)."
@@ -49947,6 +49962,9 @@ msgstr "Formáid cur síos"
 msgid "ProjectsNew|Direct transfer projects with a top-level Group"
 msgstr "Tionscadail aistrithe díreacha le Grúpa barrleibhéil"
 
+msgid "ProjectsNew|Enable Secret Detection"
+msgstr "Cumasaigh Brath Rúnda"
+
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
 msgstr "Cumasaigh Tástáil Slándála Feidhmchláir Statach (SAST)"
 
@@ -50084,6 +50102,9 @@ msgstr "Molta má tá tú nua le GitLab"
 
 msgid "ProjectsNew|Run CI/CD for external repository"
 msgstr "Rith CI/CD le haghaidh stór seachtrach"
+
+msgid "ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access."
+msgstr "Scan do chód le haghaidh rúin agus dintiúir chun rochtain neamhúdaraithe a chosc."
 
 msgid "ProjectsNew|Select"
 msgstr "Roghnaigh"
@@ -50856,6 +50877,9 @@ msgstr "Soláthraí"
 
 msgid "Provider ID"
 msgstr "ID Soláthraí"
+
+msgid "Provider is invalid"
+msgstr "Tá an soláthraí neamhbhailí"
 
 msgid "Provision instructions"
 msgstr "Treoracha soláthair"
@@ -60640,6 +60664,12 @@ msgstr "Seiceálacha stádais"
 
 msgid "Status checks must pass."
 msgstr "Caithfidh seiceálacha stádais pas a dhéanamh."
+
+msgid "Status feature not available"
+msgstr "Níl gné stádais ar fáil"
+
+msgid "Status list requires either a system defined status or custom status"
+msgstr "Éilíonn liosta stádais stádas atá sainithe ag an gcóras nó stádas saincheaptha"
 
 msgid "Status lists not available with your current license"
 msgstr "Níl liostaí stádais ar fáil le do cheadúnas reatha"
@@ -71564,11 +71594,20 @@ msgstr "Ceadaigh an gníomhaire seo do gach ball grúpa?"
 msgid "Workspaces|Allowed agents"
 msgstr "Gníomhairí ceadaithe"
 
+msgid "Workspaces|Availability"
+msgstr "Infhaighteacht"
+
+msgid "Workspaces|Available"
+msgstr "Ar fáil"
+
 msgid "Workspaces|Block agent"
 msgstr "Gníomhaire bloc"
 
 msgid "Workspaces|Block this agent for all group members?"
 msgstr "Cuir bac ar an ngníomhaire seo do gach ball grúpa?"
+
+msgid "Workspaces|Blocked"
+msgstr "Blocáilte"
 
 msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
 msgstr "Ní scriosann gníomhaire a bhlocáil é. Ní féidir gníomhairí a scriosadh ach sa tionscadal inar cruthaíodh iad."
@@ -71578,6 +71617,12 @@ msgstr "Cealaigh"
 
 msgid "Workspaces|Cluster agent"
 msgstr "Gníomhaire braisle"
+
+msgid "Workspaces|Configure which Kubernetes agents are available for new workspaces. These settings do not affect existing workspaces."
+msgstr "Cumraigh cé na gníomhairí Kubernetes atá ar fáil do spásanna oibre nua. Ní dhéanann na socruithe seo difear do spásanna oibre atá ann cheana féin."
+
+msgid "Workspaces|Connected"
+msgstr "Ceangailte"
 
 msgid "Workspaces|Could not load available agents. Refresh the page to try again."
 msgstr "Ní fhéadfaí gníomhairí atá ar fáil a luchtú. Athnuaigh an leathanach chun triail a bhaint as arís."
@@ -71636,6 +71681,9 @@ msgstr "Ábhar réamhshocraithe devfile GitLab"
 msgid "Workspaces|GitLab devfile"
 msgstr "GitLab devfile"
 
+msgid "Workspaces|Group"
+msgstr "Grúpa"
+
 msgid "Workspaces|Group agents"
 msgstr "Gníomhairí grúpa"
 
@@ -71654,17 +71702,26 @@ msgstr "Timpeallachtaí forbartha láithreacha"
 msgid "Workspaces|Learn more."
 msgstr "Foghlaim níos mó."
 
+msgid "Workspaces|Name"
+msgstr "Ainm"
+
 msgid "Workspaces|New workspace"
 msgstr "Spás oibre nua"
 
 msgid "Workspaces|No active workspaces"
 msgstr "Níl aon spásanna oibre gníomhacha"
 
+msgid "Workspaces|No agents available"
+msgstr "Níl aon ghníomhairí ar fáil"
+
 msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr "Níl aon ghníomhairí ar fáil chun spásanna oibre a chruthú. Téigh i gcomhairle le %{linkStart} Doiciméadú spásanna oibre %{linkEnd} le haghaidh fabhtcheartaithe."
 
 msgid "Workspaces|No terminated workspaces"
 msgstr "Níl aon spásanna oibre foirceanta"
+
+msgid "Workspaces|Not connected"
+msgstr "Gan cheangal"
 
 msgid "Workspaces|Open workspace"
 msgstr "Spás oibre oscailte"
@@ -71695,6 +71752,9 @@ msgstr "Ag tosú"
 
 msgid "Workspaces|Starting workspace"
 msgstr "Ag tosú spás oibre"
+
+msgid "Workspaces|Status"
+msgstr "Stádas"
 
 msgid "Workspaces|Stop"
 msgstr "Stad"
@@ -71755,6 +71815,9 @@ msgstr "Nuair nach gcuirtear aon devfile ar fáil, úsáidfear an devfile réamh
 
 msgid "Workspaces|Workspaces"
 msgstr "Spásanna Oibre"
+
+msgid "Workspaces|Workspaces Agent Availability"
+msgstr "Infhaighteacht Gníomhaire Spásanna Oibre"
 
 msgid "Workspaces|Workspaces Settings"
 msgstr "Socruithe Spásanna Oibre"

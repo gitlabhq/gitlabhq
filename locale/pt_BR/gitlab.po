@@ -14,7 +14,7 @@ msgstr ""
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
 "X-Crowdin-File-ID: 16\n"
-"PO-Revision-Date: 2025-05-27 10:58\n"
+"PO-Revision-Date: 2025-05-28 11:03\n"
 
 msgid " %{start} to %{end}"
 msgstr " %{start} até %{end}"
@@ -2172,6 +2172,9 @@ msgstr "Um artefato de job é um arquivamento de arquivos e diretórios salvos p
 
 msgid "A limit of %{ci_project_subscriptions_limit} subscriptions to or from a project applies."
 msgstr "Aplica-se um limite de %{ci_project_subscriptions_limit} assinaturas para ou de um projeto."
+
+msgid "A list for this status already exists on the board"
+msgstr ""
 
 msgid "A management, operational, or technical control (that is, safeguard or countermeasure) employed by an organization that provides equivalent or comparable protection for an information system."
 msgstr "Um controle de gestão, operacional ou técnico (isto é, salvaguarda ou contramedida) empregado por uma organização que fornece proteção equivalente ou comparável para um sistema de informação."
@@ -4887,7 +4890,7 @@ msgid "AdminSettings|Size and domain settings for Pages static sites."
 msgstr "Configurações de tamanho e domínio para sites estáticos do Pages."
 
 msgid "AdminSettings|Skip confirmation when administrators reassign placeholder users %{link_start}%{icon}%{link_end}"
-msgstr ""
+msgstr "Pular a confirmação quando os administradores reatribuírem usuários de espaço reservado %{link_start}%{icon}%{link_end}"
 
 msgid "AdminSettings|The URL of your Cube instance."
 msgstr "O URL da sua instância do Cube."
@@ -4947,7 +4950,7 @@ msgid "AdminSettings|Use for cluster and index migrations. When indexing is paus
 msgstr "Use para migrações de cluster e índice. Quando a indexação é pausada, o GitLab ainda rastreia as alterações."
 
 msgid "AdminSettings|User impersonation is not enabled on the GitLab instance."
-msgstr ""
+msgstr "A representação do usuário não está ativada na instância do GitLab."
 
 msgid "AdminSettings|Users and groups must accept the invitation before they're added to a group or project."
 msgstr "Usuários e grupos devem aceitar o convite antes de serem adicionados a um grupo ou projeto."
@@ -12295,6 +12298,9 @@ msgstr "Não é possível enviar por push para o branch de origem"
 msgid "Cannot refer to a group milestone by an internal id!"
 msgstr "Não é possível fazer referência a um marco de grupo por um ID interno!"
 
+msgid "Cannot set both system defined status and custom status"
+msgstr ""
+
 msgid "Cannot show preview. For previews on sketch files, they must have the file format introduced by Sketch version 43 and above."
 msgstr "Não é possível mostrar a visualização. Para visualizações em arquivos sketch, eles devem ter o formato de arquivo introduzido pelo Sketch versão 43 e superior."
 
@@ -15598,6 +15604,9 @@ msgstr "Erro ao carregar projetos."
 msgid "ComplianceFrameworks|External"
 msgstr "Externo"
 
+msgid "ComplianceFrameworks|External Control Name"
+msgstr ""
+
 msgid "ComplianceFrameworks|External URL"
 msgstr "URL externo"
 
@@ -15672,6 +15681,9 @@ msgstr "Opcional"
 
 msgid "ComplianceFrameworks|Please enter a valid URL"
 msgstr "Insira um URL válido"
+
+msgid "ComplianceFrameworks|Please enter a valid name"
+msgstr ""
 
 msgid "ComplianceFrameworks|Policies"
 msgstr "Políticas"
@@ -16856,6 +16868,9 @@ msgstr "Configure SAST IaC em `.gitlab-ci.yml` usando o modelo gerenciado pelo G
 
 msgid "Configure SAST IaC in `.gitlab-ci.yml`, creating this file if it does not already exist"
 msgstr "Configure o SAST IaC em `.gitlab-ci.yml`, criando este arquivo se ainda não existir"
+
+msgid "Configure SAST and Secret Detection in `.gitlab-ci.yml`, creating this file if it does not already exist"
+msgstr "Configure SAST e Detecção de Segredo em `.gitlab-ci.yml`, criando este arquivo se ele ainda não existir"
 
 msgid "Configure SAST in `.gitlab-ci.yml` using the GitLab managed template. You can [add variable overrides](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) to customize SAST settings."
 msgstr "Configure o SAST em `.gitlab-ci.yml` usando o modelo gerenciado pelo GitLab. Você pode [adicionar substituições de variáveis](https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings) para personalizar as configurações do SAST."
@@ -24843,6 +24858,9 @@ msgstr "Quadros de épicos"
 msgid "Epic actions"
 msgstr "Ações de épicos"
 
+msgid "Epic and its work item parent must be the same"
+msgstr ""
+
 msgid "Epic boards"
 msgstr "Quadros de épicos"
 
@@ -27422,6 +27440,18 @@ msgstr "O Geo IP permitido deve ter entre 1 e 255 caracteres"
 msgid "Geo|Allowed Geo IP should contain valid IP addresses"
 msgstr "O Geo IP permitido deve conter endereços IP válidos"
 
+msgid "Geo|CI Job Artifact"
+msgstr ""
+
+msgid "Geo|CI Job Artifacts"
+msgstr ""
+
+msgid "Geo|CI Secure File"
+msgstr ""
+
+msgid "Geo|CI Secure Files"
+msgstr ""
+
 msgid "Geo|Checksum: %{verificationChecksum}"
 msgstr "Checksum: %{verificationChecksum}"
 
@@ -27430,12 +27460,6 @@ msgstr "Soma de verificação"
 
 msgid "Geo|Choose specific groups or storage shards"
 msgstr "Escolha grupos específicos ou fragmentos de armazenamento"
-
-msgid "Geo|Ci Secure File"
-msgstr "Arquivo seguro Ci"
-
-msgid "Geo|Ci Secure Files"
-msgstr "Arquivos seguros Ci"
 
 msgid "Geo|Comma-separated, e.g. '1.1.1.1, 2.2.2.0/24'"
 msgstr "Separado por vírgulas, por exemplo, '1.1.1.1, 2.2.2.0/24'"
@@ -27596,11 +27620,11 @@ msgstr "URL interno"
 msgid "Geo|Internal URL (optional)"
 msgstr "URL interno (opcional)"
 
-msgid "Geo|Job Artifact"
-msgstr "Artefato de tarefas"
+msgid "Geo|LFS Object"
+msgstr ""
 
-msgid "Geo|Job Artifacts"
-msgstr "Artefatos de tarefas"
+msgid "Geo|LFS Objects"
+msgstr ""
 
 msgid "Geo|Last event ID"
 msgstr "ID do último evento"
@@ -27625,12 +27649,6 @@ msgstr "Saiba mais sobre o Geo"
 
 msgid "Geo|Learn more about Geo site statuses"
 msgstr "Saiba mais sobre os status do site Geo"
-
-msgid "Geo|Lfs Object"
-msgstr "Objeto Lfs"
-
-msgid "Geo|Lfs Objects"
-msgstr "Objetos Lfs"
 
 msgid "Geo|Limit the number of concurrent operations this secondary site can run in the background."
 msgstr "Limite o número de operações simultâneas que este site secundário pode executar em segundo plano."
@@ -30730,7 +30748,7 @@ msgid "Groups|Group path is unavailable. Path has been replaced with a suggested
 msgstr "O caminho do grupo não está disponível. O caminho foi substituído por um caminho disponível sugerido."
 
 msgid "Groups|Groups that are archived or pending deletion will appear here."
-msgstr ""
+msgstr "Os grupos que estão arquivados ou pendentes de exclusão aparecerão aqui."
 
 msgid "Groups|Learn more about subgroups"
 msgstr "Saiba mais sobre os subgrupos"
@@ -30769,7 +30787,7 @@ msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr "Isso criará um projeto %{path} e adicionará um README.md."
 
 msgid "Groups|You don't have any inactive groups."
-msgstr ""
+msgstr "Você não tem nenhum grupo inativo."
 
 msgid "Groups|You're creating a new top-level group"
 msgstr "Você está criando um novo grupo de nível superior"
@@ -32022,12 +32040,6 @@ msgstr "Falha ao solicitar namespaces"
 
 msgid "ImportProjects|Requesting your %{provider} repositories failed"
 msgstr "Falha ao solicitar seus repositórios %{provider}"
-
-msgid "ImportProjects|Select a destination namespace."
-msgstr ""
-
-msgid "ImportProjects|Select namespace"
-msgstr ""
 
 msgid "ImportProjects|Select the repositories you want to import"
 msgstr "Selecione os repositórios que deseja importar"
@@ -37575,7 +37587,7 @@ msgstr "A função de administrador é atribuída a um ou mais usuários. Remova
 msgid "MemberRole|Are you sure you want to delete this role?"
 msgstr "Tem certeza de que deseja excluir esta função?"
 
-msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles."
+msgid "MemberRole|Automatically sync your LDAP directory to custom admin roles. For users matched to multiple LDAP syncs, the oldest sync entry will be used."
 msgstr ""
 
 msgid "MemberRole|Base role"
@@ -37842,7 +37854,7 @@ msgstr "O cargo relator é adequado para membros da equipe que precisam se mante
 msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
 msgstr ""
 
-msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will keep their current role but future changes will require manual updates. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
+msgid "MemberRole|This removes automatic syncing with your LDAP server. Users will have their current role unassigned on the next sync. %{confirmStart}Are you sure you want to remove LDAP synchronization?%{confirmEnd}"
 msgstr ""
 
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
@@ -37856,6 +37868,9 @@ msgstr ""
 
 msgid "MemberRole|Unable to export role report. Contact support if this error persists."
 msgstr "Não foi possível exportar o relatório da função. Entre em contato com o suporte se esse erro persistir."
+
+msgid "MemberRole|Unknown LDAP server. Please check your server settings."
+msgstr ""
 
 msgid "MemberRole|Update role"
 msgstr "Atualize função"
@@ -47140,8 +47155,8 @@ msgstr "Desconectar %{provider}"
 msgid "Profiles|Disconnect SAML for %{group_name}"
 msgstr ""
 
-msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are your sure?"
-msgstr ""
+msgid "Profiles|Disconnecting your SAML provider will remove your access from groups, subgroups and projects which require SAML authentication. Are you sure?"
+msgstr "A desconexão do seu provedor do SAML removerá seu acesso a grupos, subgrupos e projetos que exigem a autenticação de SAML. Tem certeza?"
 
 msgid "Profiles|Discord ID is too long (maximum is %{max_length} characters)."
 msgstr "A ID do Discord é muito longa (máximo de %{max_length} caracteres)."
@@ -48981,6 +48996,9 @@ msgstr "Formato de descrição"
 msgid "ProjectsNew|Direct transfer projects with a top-level Group"
 msgstr "Projetos de transferência direta com um grupo de nível superior"
 
+msgid "ProjectsNew|Enable Secret Detection"
+msgstr "Ativar detecção de senhas"
+
 msgid "ProjectsNew|Enable Static Application Security Testing (SAST)"
 msgstr "Ativar Teste de Segurança de Aplicações Estáticas (SAST)"
 
@@ -49118,6 +49136,9 @@ msgstr "Recomendado se você está começando agora no GitLab"
 
 msgid "ProjectsNew|Run CI/CD for external repository"
 msgstr "Executar CI/CD para repositório externo"
+
+msgid "ProjectsNew|Scan your code for secrets and credentials to prevent unauthorized access."
+msgstr "Examine seu código em busca de segredos e credenciais para impedir o acesso não autorizado."
 
 msgid "ProjectsNew|Select"
 msgstr "Selecionar"
@@ -49884,6 +49905,9 @@ msgstr "Provedor"
 
 msgid "Provider ID"
 msgstr "ID do provedor"
+
+msgid "Provider is invalid"
+msgstr ""
 
 msgid "Provision instructions"
 msgstr "Instruções de provisionamento"
@@ -59518,6 +59542,12 @@ msgstr "Verificações de status"
 
 msgid "Status checks must pass."
 msgstr "As verificações de status devem passar."
+
+msgid "Status feature not available"
+msgstr ""
+
+msgid "Status list requires either a system defined status or custom status"
+msgstr ""
 
 msgid "Status lists not available with your current license"
 msgstr ""
@@ -70244,11 +70274,20 @@ msgstr "Permitir este agente para todos os membros do grupo?"
 msgid "Workspaces|Allowed agents"
 msgstr "Agentes permitidos"
 
+msgid "Workspaces|Availability"
+msgstr "Disponibilidade"
+
+msgid "Workspaces|Available"
+msgstr "Disponível"
+
 msgid "Workspaces|Block agent"
 msgstr "Bloquear agente"
 
 msgid "Workspaces|Block this agent for all group members?"
 msgstr "Bloquear este agente para todos os membros do grupo?"
+
+msgid "Workspaces|Blocked"
+msgstr "Bloqueado"
 
 msgid "Workspaces|Blocking an agent doesn't delete it. Agents can only be deleted in the project where they were created."
 msgstr "Um agente bloqueado não pode ser excluído. Os agentes só podem ser excluídos no projeto em que foram criados."
@@ -70258,6 +70297,12 @@ msgstr "Cancelar"
 
 msgid "Workspaces|Cluster agent"
 msgstr "Agente de cluster"
+
+msgid "Workspaces|Configure which Kubernetes agents are available for new workspaces. These settings do not affect existing workspaces."
+msgstr ""
+
+msgid "Workspaces|Connected"
+msgstr "Conectado"
 
 msgid "Workspaces|Could not load available agents. Refresh the page to try again."
 msgstr "Não foi possível carregar os agentes disponíveis. Atualize a página para tentar novamente."
@@ -70316,6 +70361,9 @@ msgstr "Conteúdo do devfile padrão do GitLab"
 msgid "Workspaces|GitLab devfile"
 msgstr "Devfile do GitLab"
 
+msgid "Workspaces|Group"
+msgstr "Grupo"
+
 msgid "Workspaces|Group agents"
 msgstr "Agentes do grupo"
 
@@ -70334,17 +70382,26 @@ msgstr "Ambientes de desenvolvimento instantâneos"
 msgid "Workspaces|Learn more."
 msgstr "Saiba mais."
 
+msgid "Workspaces|Name"
+msgstr "Nome"
+
 msgid "Workspaces|New workspace"
 msgstr "Novo espaço de trabalho"
 
 msgid "Workspaces|No active workspaces"
 msgstr "Nenhum espaço de trabalho ativo"
 
+msgid "Workspaces|No agents available"
+msgstr "Nenhum agente disponível"
+
 msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr "Nenhum agente disponível para criar espaços de trabalho. Consulte a %{linkStart}documentação de espaços de trabalho%{linkEnd} para solução de problemas."
 
 msgid "Workspaces|No terminated workspaces"
 msgstr "Nenhum espaço de trabalho terminado"
+
+msgid "Workspaces|Not connected"
+msgstr "Não conectado"
 
 msgid "Workspaces|Open workspace"
 msgstr "Abrir espaço de trabalho"
@@ -70375,6 +70432,9 @@ msgstr "Iniciando"
 
 msgid "Workspaces|Starting workspace"
 msgstr "Iniciando o espaço de trabalho"
+
+msgid "Workspaces|Status"
+msgstr "Status"
 
 msgid "Workspaces|Stop"
 msgstr "Parar"
@@ -70435,6 +70495,9 @@ msgstr "Quando nenhum devfile for fornecido, o devfile padrão do GitLab será u
 
 msgid "Workspaces|Workspaces"
 msgstr "Configurações de espaços de trabalho"
+
+msgid "Workspaces|Workspaces Agent Availability"
+msgstr ""
 
 msgid "Workspaces|Workspaces Settings"
 msgstr ""

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'diagnostic reports', :aggregate_failures, feature_category: :cloud_connector do
+RSpec.describe 'diagnostic reports', :aggregate_failures, feature_category: :durability_metrics do
   subject(:load_initializer) do
     load Rails.root.join('config/initializers/diagnostic_reports.rb')
   end

@@ -737,7 +737,7 @@ RSpec.shared_examples 'work items crm contacts' do
       click_button _('Edit')
       wait_for_requests
 
-      expect(page).to be_axe_clean.within('[data-testid="work-item-crm-contacts"]')
+      expect(page).to be_axe_clean.within_testid('work-item-crm-contacts')
     end
   end
 end

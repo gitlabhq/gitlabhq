@@ -2326,7 +2326,8 @@ class MergeRequest < ApplicationRecord
   def comparison_base_pipeline(service_class)
     target_shas = [
       (diff_head_pipeline&.target_sha if use_merge_base_pipeline_for_comparison?(service_class)),
-      diff_base_sha
+      diff_base_sha,
+      diff_start_sha
     ]
 
     target_shas

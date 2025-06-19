@@ -63,10 +63,14 @@ RSpec.describe Ci::CreateCommitStatusService, :clean_gitlab_redis_cache, feature
             stub_application_setting(archive_builds_in_seconds: 3600)
           end
 
-          it 'returns an error' do
-            expect(response).to be_error
-            expect(response.http_status).to eq(:forbidden)
-            expect(response.message).to eq('403 Forbidden')
+          it 'creates commit status on a new pipeline' do
+            expect(response).to be_success
+            expect(job.sha).to eq(commit.id)
+            expect(job.status).to eq(status)
+            expect(job.name).to eq('default')
+            expect(job.ref).not_to be_empty
+            expect(job.pipeline_id).to be_present
+            expect(job.pipeline_id).not_to eq(pipeline.id)
           end
         end
 

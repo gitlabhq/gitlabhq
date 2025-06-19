@@ -3,7 +3,7 @@
 require 'fast_spec_helper'
 require 'tempfile'
 
-RSpec.describe Gitlab::Bullet::Exclusions, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Bullet::Exclusions, feature_category: :durability_metrics do
   let(:config_file) do
     file = Tempfile.new('bullet.yml')
     File.basename(file)

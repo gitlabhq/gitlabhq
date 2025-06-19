@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Instrumentation, feature_category: :durability_metrics do
   include MemoryInstrumentationHelper
 
   before do

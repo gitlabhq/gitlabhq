@@ -2,7 +2,7 @@
 
 require 'cloud_profiler_agent'
 
-RSpec.describe CloudProfilerAgent::Looper, feature_category: :cloud_connector do
+RSpec.describe CloudProfilerAgent::Looper, feature_category: :durability_metrics do
   # rubocop:disable RSpec/InstanceVariable
   before do
     @now = 0.0

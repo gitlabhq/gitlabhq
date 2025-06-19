@@ -38,7 +38,6 @@ ee/spec/frontend/metrics/details/metrics_details_spec.js
 ee/spec/frontend/metrics/details/related_traces_spec.js
 ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
 ee/spec/frontend/oncall_schedule/schedule/components/preset_days/days_header_sub_item_spec.js
-ee/spec/frontend/product_analytics/onboarding/onboarding_view_spec.js
 ee/spec/frontend/projects/settings/branch_rules/components/view/index_spec.js
 ee/spec/frontend/projects/settings/components/shared_runners_toggle_spec.js
 ee/spec/frontend/related_items_tree/components/related_items_tree_body_spec.js

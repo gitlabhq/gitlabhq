@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Memory::Watchdog::Handlers::PumaHandler, feature_category: :cloud_connector do
+RSpec.describe Gitlab::Memory::Watchdog::Handlers::PumaHandler, feature_category: :durability_metrics do
   # rubocop: disable RSpec/VerifiedDoubles
   # In tests, the Puma constant is not loaded so we cannot make this an instance_double.
   let(:puma_worker_handle_class) { double('Puma::Cluster::WorkerHandle') }

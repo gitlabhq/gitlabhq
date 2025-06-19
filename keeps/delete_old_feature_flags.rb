@@ -147,6 +147,7 @@ module Keeps
 
       unless applied
         @logger.puts "#{feature_flag.name} aborting because change not applied."
+        @logger.puts "Change #{change.to_json}"
         change.abort!
         return change
       end
@@ -172,39 +173,69 @@ module Keeps
     end
 
     def feature_flag_grep(feature_flag_name)
+      all_results = ''
+
+      git_patterns(feature_flag_name).each do |pattern|
+        result = execute_grep(pattern)
+        all_results += "#{result}\n" if result.present?
+      end
+
+      all_results.empty? ? nil : all_results
+    end
+
+    def execute_grep(pattern)
       Gitlab::Housekeeper::Shell.execute(
         'git',
         'grep',
         '--heading',
         '--line-number',
         '--break',
-        feature_flag_name,
+        pattern,
         '--',
         *(GREP_IGNORE.map { |path| ":^#{path}" })
       )
     rescue ::Gitlab::Housekeeper::Shell::Error
       # git grep returns error status if nothing is found
+      ""
     end
 
     def ai_patch(feature_flag, change)
+      failed_files = []
+
       files_mentioning_feature_flag(feature_flag.name).each do |file|
         flag_enabled = get_latest_feature_flag_status(feature_flag) == :enabled
         user_message = remove_feature_flag_prompts.fetch(feature_flag, file, flag_enabled)
 
-        return false unless user_message
+        unless user_message
+          @logger.puts "#{feature_flag.name}: No prompt generated for #{file}, skipping"
+          failed_files << file
+          next
+        end
 
         applied = ai_helper.ask_for_and_apply_patch(user_message, file)
-        return false unless applied
 
-        unless ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(file)
-          @logger.puts "#{feature_flag.name} aborting because autocorrect failed for file #{file}"
-          change.changed_files << file # Adding file so debugging becomes easier.
-          change.abort!
-          return change
+        unless applied
+          @logger.puts "#{feature_flag.name}: Failed to apply AI patch for #{file}, skipping"
+          failed_files << file
+          next
+        end
+
+        begin
+          ::Gitlab::Housekeeper::Shell.rubocop_autocorrect(file) unless file.end_with?('.vue', '.js')
+        rescue ::Gitlab::Housekeeper::Shell::Error => e
+          @logger.puts "#{feature_flag.name}: Rubocop error for #{file}, but continuing: #{e.message}"
         end
 
         change.changed_files << file
       end
+
+      if failed_files.any?
+        @logger.puts "#{feature_flag.name}: Successfully processed #{success_count} files"
+        @logger.puts "failed on #{failed_files.size} files"
+        @logger.puts "Failed files: #{failed_files.join(', ')}"
+      end
+
+      failed_files.empty?
     end
 
     def apply_patch_or_ask_ai(feature_flag, change)
@@ -220,6 +251,7 @@ module Keeps
       begin
         Gitlab::Housekeeper::Shell.execute('git', 'apply', patch_path(feature_flag))
       rescue ::Gitlab::Housekeeper::Shell::Error
+        @logger.puts "#{patch_path(feature_flag)} git apply error"
         return false
       end
 
@@ -263,7 +295,7 @@ module Keeps
 
       unless (200..299).cover?(response.code)
         raise Error,
-          "Failed with response code: #{response.code} and body:\n#{response.body}"
+          "Get URL: #{rollout_issue_url} Failed with response code: #{response.code} and body:\n#{response.body}"
       end
 
       Gitlab::Json.parse(response.body, symbolize_names: true)
@@ -338,19 +370,46 @@ module Keeps
       ::Keeps::Helpers::AiEditor.new
     end
 
+    def git_patterns(feature_flag_name)
+      camel_case_flag = feature_flag_name.camelize(:lower)
+      [
+        "feature.*#{feature_flag_name}",
+        "push_frontend_feature_flag.*#{feature_flag_name}",
+        "glFeatures.*#{camel_case_flag}",
+        "gon.*#{camel_case_flag}",
+        camel_case_flag,
+        feature_flag_name
+      ]
+    end
+
     def files_mentioning_feature_flag(feature_flag_name)
-      files = Gitlab::Housekeeper::Shell.execute(
+      all_files = []
+
+      git_patterns(feature_flag_name).each do |pattern|
+        result = find_files_with_pattern(pattern)
+        all_files += result if result.any?
+      end
+
+      @logger.puts "All files mentioning feature flag #{feature_flag_name}"
+      all_files.uniq
+    end
+
+    def find_files_with_pattern(pattern)
+      result = Gitlab::Housekeeper::Shell.execute(
         'git',
         'grep',
         '--name-only',
-        '-i',
-        "feature.*#{feature_flag_name}",
+        pattern,
         '--',
         *(GREP_IGNORE.map { |path| ":^#{path}" })
       )
-      return [] unless files
 
-      files.split("\n")
+      return [] if result.blank?
+
+      result.split("\n")
+    rescue ::Gitlab::Housekeeper::Shell::Error
+      @logger.puts "No files found for pattern: #{pattern}" if @logger
+      []
     end
   end
 end

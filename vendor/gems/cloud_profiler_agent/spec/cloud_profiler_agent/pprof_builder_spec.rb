@@ -2,7 +2,7 @@
 
 require 'cloud_profiler_agent'
 
-RSpec.describe CloudProfilerAgent::PprofBuilder, feature_category: :cloud_connector do
+RSpec.describe CloudProfilerAgent::PprofBuilder, feature_category: :durability_metrics do
   subject { described_class.new(profile, start_time, end_time) }
 
   # load_profile loads one of the example profiles created by
