@@ -64,9 +64,9 @@ import {
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
 import {
-  groupWorkItemsQueryResponse,
-  groupWorkItemsQueryResponseNoLabels,
-  groupWorkItemsQueryResponseNoAssignees,
+  workItemsQueryResponse,
+  workItemsQueryResponseNoLabels,
+  workItemsQueryResponseNoAssignees,
   groupWorkItemStateCountsQueryResponse,
   combinedQueryResultExample,
 } from '../../mock_data';
@@ -89,7 +89,7 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 
-  const defaultQueryHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponse);
+  const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponse);
   const defaultCountsQueryHandler = jest
     .fn()
     .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
@@ -229,7 +229,7 @@ describeSkipVue3(skipReason, () => {
 
     it('renders work items', () => {
       expect(findIssuableList().props('issuables')).toEqual(
-        groupWorkItemsQueryResponse.data.group.workItems.nodes,
+        workItemsQueryResponse.data.namespace.workItems.nodes,
       );
     });
 
@@ -266,8 +266,8 @@ describeSkipVue3(skipReason, () => {
       ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
     `('$description', ({ pageInfo, exists }) => {
       it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
-        const response = cloneDeep(groupWorkItemsQueryResponse);
-        Object.assign(response.data.group.workItems.pageInfo, pageInfo);
+        const response = cloneDeep(workItemsQueryResponse);
+        Object.assign(response.data.namespace.workItems.pageInfo, pageInfo);
         mountComponent({ queryHandler: jest.fn().mockResolvedValue(response) });
         await waitForPromises();
 
@@ -351,10 +351,10 @@ describeSkipVue3(skipReason, () => {
     });
 
     it('combines the slim and full results correctly and passes the to the list component', async () => {
-      const fullHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponseNoLabels);
+      const fullHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
       const fullMockQuery = mockListQueryFactory('eeFullQuery');
       const fullEEQueryHandler = [fullMockQuery, fullHandler];
-      const slimHandler = jest.fn().mockResolvedValue(groupWorkItemsQueryResponseNoAssignees);
+      const slimHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
       const slimMockQuery = mockListQueryFactory('eeSlimQuery');
       const slimEEQueryHandler = [slimMockQuery, slimHandler];
       mountComponent({
@@ -675,7 +675,7 @@ describeSkipVue3(skipReason, () => {
         });
 
         describe('selecting issues', () => {
-          const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+          const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
           const payload = {
             iid: issue.iid,
             webUrl: issue.webUrl,
@@ -783,7 +783,7 @@ describeSkipVue3(skipReason, () => {
 
     describe('When the `show` parameter matches an item in the list', () => {
       it('displays the item in the drawer', async () => {
-        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+        const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
         await mountComponentWithShowParam(issue);
 
         expect(findDrawer().props('open')).toBe(true);
@@ -817,7 +817,7 @@ describeSkipVue3(skipReason, () => {
 
     describe('when window `popstate` event is triggered', () => {
       it('closes the drawer if there is no `show` param', async () => {
-        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
+        const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
         await mountComponentWithShowParam(issue);
         expect(findDrawer().props('open')).toBe(true);
         expect(findDrawer().props('activeItem')).toMatchObject(issue);
@@ -830,8 +830,8 @@ describeSkipVue3(skipReason, () => {
       });
 
       it('updates the drawer with the new item if there is a `show` param', async () => {
-        const issue = groupWorkItemsQueryResponse.data.group.workItems.nodes[0];
-        const nextIssue = groupWorkItemsQueryResponse.data.group.workItems.nodes[1];
+        const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
+        const nextIssue = workItemsQueryResponse.data.namespace.workItems.nodes[1];
         await mountComponentWithShowParam(issue);
 
         expect(findDrawer().props('open')).toBe(true);
@@ -872,8 +872,8 @@ describeSkipVue3(skipReason, () => {
   });
 
   describe('empty states', () => {
-    const emptyWorkItemsResponse = cloneDeep(groupWorkItemsQueryResponse);
-    emptyWorkItemsResponse.data.group.workItems.nodes = [];
+    const emptyWorkItemsResponse = cloneDeep(workItemsQueryResponse);
+    emptyWorkItemsResponse.data.namespace.workItems.nodes = [];
 
     const emptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
     emptyCountsResponse.data.group.workItemStateCounts = {

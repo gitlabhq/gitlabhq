@@ -38,9 +38,11 @@ module Types
       description: 'Lock version of the work item. Incremented each time the work item is updated.'
     field :namespace, Types::NamespaceType, null: true,
       description: 'Namespace the work item belongs to.',
+      skip_type_authorization: [:read_namespace],
       experiment: { milestone: '15.10' }
     field :project, Types::ProjectType, null: true,
       description: 'Project the work item belongs to.',
+      skip_type_authorization: [:read_project],
       experiment: { milestone: '15.3' }
     field :state, WorkItemStateEnum, null: false,
       description: 'State of the work item.'

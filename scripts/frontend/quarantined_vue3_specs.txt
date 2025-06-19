@@ -115,7 +115,6 @@ spec/frontend/packages_and_registries/infrastructure_registry/components/details
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/pypi_installation_spec.js
 spec/frontend/packages_and_registries/settings/group/components/forwarding_settings_spec.js
-spec/frontend/packages_and_registries/settings/project/settings/components/container_expiration_policy_spec.js
 spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js

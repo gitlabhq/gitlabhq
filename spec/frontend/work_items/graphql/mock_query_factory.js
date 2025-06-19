@@ -2,7 +2,7 @@ import { gql } from '@apollo/client/core';
 
 export const mockQueryFactory = (queryName) => {
   return gql`query ${queryName} {
-    group(fullPath: "example") {
+    namespace(fullPath: "example") {
       id
     }
   }`;
@@ -10,7 +10,7 @@ export const mockQueryFactory = (queryName) => {
 
 export const mockListQueryFactory = (queryName) => {
   return gql`query ${queryName} {
-    group(fullPath: "example") {
+    namespace(fullPath: "example") {
       id
       workItems {
         nodes {

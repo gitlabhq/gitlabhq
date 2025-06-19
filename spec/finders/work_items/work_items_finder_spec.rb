@@ -16,8 +16,8 @@ RSpec.describe WorkItems::WorkItemsFinder, feature_category: :team_planning do
   context 'with start and end date filtering' do
     include_context '{Issues|WorkItems}Finder#execute context', :work_item
 
-    let_it_be(:work_item1) { create(:work_item,  :epic, project: project1) }
-    let_it_be(:work_item2) { create(:work_item,  :epic, project: project1) }
+    let_it_be(:work_item1) { create(:work_item, :issue, project: project1) }
+    let_it_be(:work_item2) { create(:work_item, :issue, project: project1) }
 
     let(:scope) { 'all' }
     let(:params) { { start_date: '2020-08-12', end_date: '2020-08-14', project_id: project1.id } }

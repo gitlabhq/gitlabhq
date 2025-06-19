@@ -1,6 +1,6 @@
 <script>
 import { GlButton, GlFilteredSearchToken, GlLoadingIcon } from '@gitlab/ui';
-import { capitalize, isEmpty, unionBy } from 'lodash';
+import { isEmpty, unionBy } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_statistics.vue';
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
@@ -14,7 +14,7 @@ import {
   getInitialPageParams,
   getTypeTokenOptions,
 } from 'ee_else_ce/issues/list/utils';
-import { TYPENAME_USER } from '~/graphql_shared/constants';
+import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import {
   STATUS_ALL,
@@ -223,13 +223,13 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.[this.namespace].workItems.nodes ?? [];
+        return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
         return isEmpty(this.pageParams);
       },
       result({ data }) {
-        this.namespaceId = data?.[this.namespace]?.id;
+        this.namespaceId = data?.namespace?.id;
         this.handleListDataResults(data);
       },
       error(error) {
@@ -247,7 +247,7 @@ export default {
         return this.queryVariables;
       },
       update(data) {
-        return data?.[this.namespace].workItems.nodes ?? [];
+        return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
         return !this.isEpicsList || this.eeEpicListSlimQuery === null || isEmpty(this.pageParams);
@@ -703,13 +703,13 @@ export default {
       });
     },
     handleListDataResults(listData) {
-      this.pageInfo = listData?.[this.namespace].workItems.pageInfo ?? {};
+      this.pageInfo = listData?.namespace.workItems.pageInfo ?? {};
 
-      if (listData?.[this.namespace]) {
+      if (listData?.namespace) {
         document.title = this.calculateDocumentTitle(listData);
       }
       if (!this.withTabs) {
-        this.hasAnyIssues = Boolean(listData?.[this.namespace].workItems.nodes);
+        this.hasAnyIssues = Boolean(listData?.namespace.workItems.nodes);
         this.isInitialLoadComplete = true;
       }
       this.checkDrawerParams();
@@ -728,7 +728,7 @@ export default {
       }
     },
     calculateDocumentTitle(data) {
-      const middleCrumb = this.isGroup ? data.group.name : data.project.name;
+      const middleCrumb = data.namespace.name;
       if (this.isPlanningViewsEnabled) {
         return `${s__('WorkItem|Work items')} · ${middleCrumb} · GitLab`;
       }
@@ -867,7 +867,7 @@ export default {
       // evict the namespace's workItems cache to force a full refetch
       const { cache } = this.$apollo.provider.defaultClient;
       cache.evict({
-        id: cache.identify({ __typename: capitalize(this.namespace), id: this.namespaceId }),
+        id: cache.identify({ __typename: TYPENAME_NAMESPACE, id: this.namespaceId }),
         fieldName: 'workItems',
       });
       cache.gc();

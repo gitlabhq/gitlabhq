@@ -5508,9 +5508,9 @@ export const groupEpicsWithMilestonesQueryResponse = {
   },
 };
 
-export const groupWorkItemsQueryResponse = {
+export const workItemsQueryResponse = {
   data: {
-    group: {
+    namespace: {
       id: 'gid://gitlab/Group/3',
       __typename: 'Group',
       name: 'Test',
@@ -5639,9 +5639,9 @@ export const groupWorkItemsQueryResponse = {
   },
 };
 
-export const groupWorkItemsQueryResponseNoLabels = {
+export const workItemsQueryResponseNoLabels = {
   data: {
-    group: {
+    namespace: {
       id: 'gid://gitlab/Group/3',
       __typename: 'Group',
       name: 'Test',
@@ -5738,9 +5738,9 @@ export const groupWorkItemsQueryResponseNoLabels = {
   },
 };
 
-export const groupWorkItemsQueryResponseNoAssignees = {
+export const workItemsQueryResponseNoAssignees = {
   data: {
-    group: {
+    namespace: {
       id: 'gid://gitlab/Group/3',
       __typename: 'Group',
       name: 'Test',

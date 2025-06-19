@@ -2,10 +2,9 @@
 
 module Types
   module WorkItems
+    # rubocop:disable Graphql/AuthorizeTypes -- authorized by resolver
     class LinkedItemType < BaseObject
       graphql_name 'LinkedWorkItemType'
-
-      authorize :read_work_item
 
       field :link_created_at, ::Types::TimeType,
         description: 'Timestamp the link was created.', null: false,
@@ -30,5 +29,6 @@ module Types
         object
       end
     end
+    # rubocop:enable Graphql/AuthorizeTypes
   end
 end

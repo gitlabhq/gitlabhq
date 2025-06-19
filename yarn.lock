@@ -1434,14 +1434,15 @@
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
 "@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
+  name jackspeak
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
-"@gitlab/query-language-rust@0.8.5":
-  version "0.8.5"
-  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.8.5.tgz#97e3778cd96c7bad4a28480ac243936fb0cbc7a1"
-  integrity sha512-a/q38sdafUHz+4rTxem3sQuWb6ilfsAWUC1t9qYo1ziyNnvoIZGZga2g1QjhNeUNj71qKQ6fkSSXWIQ9sH5VcQ==
+"@gitlab/query-language-rust@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/query-language-rust/-/query-language-rust-0.9.0.tgz#b00ffe1b2df95fce4a9f159e9099e49035940e3a"
+  integrity sha512-3kwdxvGPHG8DzYUk400+zCB6ofFuTl6f+rnjnZmhCZuzXm9FfmNqvqj5MS1QHHfLQegGJVCz9FkdUStX5PyGXA==
 
 "@gitlab/stylelint-config@6.2.2":
   version "6.2.2"

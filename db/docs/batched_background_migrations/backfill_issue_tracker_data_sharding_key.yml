@@ -1,0 +1,8 @@
+---
+migration_job_name: BackfillIssueTrackerDataShardingKey
+description: Sets sharding key (project_id/group_id/organization_id) on issue_tracker_data based on associated integration
+feature_category: integrations
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193901
+milestone: '18.2'
+queued_migration_version: 20250613121051
+finalized_by: # version of the migration that finalized this BBM

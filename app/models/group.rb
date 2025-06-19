@@ -1115,10 +1115,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:glql_load_on_click)
   end
 
-  def work_item_epics_list_enabled?
-    ::Feature.enabled?(:work_item_epics_list, root_ancestor, type: :beta)
-  end
-
   # overriden in EE
   def supports_group_work_items?
     false

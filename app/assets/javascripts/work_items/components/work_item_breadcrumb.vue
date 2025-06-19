@@ -61,7 +61,7 @@ export default {
         text: this.listName,
       };
 
-      if (this.isWorkItemOnly || this.glFeatures.workItemEpicsList || this.issueAsWorkItem) {
+      if (this.isWorkItemOnly || this.isGroup || this.issueAsWorkItem) {
         indexCrumb.to = { name: ROUTES.index, query: this.$route.query };
       } else {
         indexCrumb.href = this.listPath;

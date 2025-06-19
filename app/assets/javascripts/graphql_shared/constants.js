@@ -27,6 +27,7 @@ export const TYPENAME_LABEL = 'Label';
 export const TYPENAME_MEMBER_ROLE = 'MemberRole';
 export const TYPENAME_MERGE_REQUEST = 'MergeRequest';
 export const TYPENAME_MILESTONE = 'Milestone';
+export const TYPENAME_NAMESPACE = 'Namespace';
 export const TYPENAME_NOTE = 'Note';
 export const TYPENAME_PACKAGES_PACKAGE = 'Packages::Package';
 export const TYPENAME_PROJECT = 'Project';

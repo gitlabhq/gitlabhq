@@ -113,12 +113,16 @@ class IssuesFinder < IssuableFinder
   end
 
   def by_issue_types(items)
-    issue_type_params = Array(params[:issue_types]).map(&:to_s)
-    return items if issue_type_params.blank?
-    return klass.none unless (WorkItems::Type.base_types.keys & issue_type_params).sort == issue_type_params.sort
-
-    items.with_issue_type(params[:issue_types])
+    types_filter.filter(items)
   end
+
+  def types_filter
+    Issues::IssueTypesFilter.new(
+      params: original_params,
+      parent: params.parent
+    )
+  end
+  strong_memoize_attr :types_filter
 
   def by_service_desk(items)
     return items unless params[:author_username] == "support-bot"

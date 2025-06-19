@@ -10,7 +10,6 @@ describe('WorkItemBreadcrumb', () => {
 
   const createComponent = ({
     workItemType = null,
-    workItemEpicsList = true,
     $route = {},
     listPath = '/epics',
     isGroup = true,
@@ -22,7 +21,6 @@ describe('WorkItemBreadcrumb', () => {
       provide: {
         workItemType,
         glFeatures: {
-          workItemEpicsList,
           workItemsAlpha,
           workItemPlanningView,
         },
@@ -37,18 +35,7 @@ describe('WorkItemBreadcrumb', () => {
   };
 
   describe('when the workspace is a group', () => {
-    it('renders a href to the legacy epics page if the workItemEpicsList feature is disabled', () => {
-      createComponent({ workItemType: WORK_ITEM_TYPE_NAME_EPIC, workItemEpicsList: false });
-
-      expect(findBreadcrumb().props('items')).toEqual([
-        {
-          text: 'Epics',
-          href: '/epics',
-        },
-      ]);
-    });
-
-    it('renders root `Work items` breadcrumb on work items list page when `workItemPlanningView` feature is enabled', () => {
+    it('renders root `Work items` breadcrumb on work items list page', () => {
       createComponent({ workItemPlanningView: true });
 
       expect(findBreadcrumb().props('items')).toEqual([
@@ -94,7 +81,7 @@ describe('WorkItemBreadcrumb', () => {
   describe('when the workspace is a project', () => {
     describe('when in issues mode', () => {
       it('renders root `Issues` breadcrumb with href on work items list page', () => {
-        createComponent({ isGroup: false, listPath: '/issues', workItemEpicsList: false });
+        createComponent({ isGroup: false, listPath: '/issues' });
 
         expect(findBreadcrumb().props('items')).toEqual([
           {
@@ -110,7 +97,6 @@ describe('WorkItemBreadcrumb', () => {
         createComponent({
           isGroup: false,
           listPath: '/issues',
-          workItemEpicsList: false,
           workItemsAlpha: true,
         });
 
@@ -131,7 +117,6 @@ describe('WorkItemBreadcrumb', () => {
         createComponent({
           isGroup: false,
           listPath: '/issues',
-          workItemEpicsList: false,
           workItemsAlpha: false,
         });
 

@@ -1082,6 +1082,39 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  context 'when skipping authorization' do
+    shared_examples  'request with skipped abilities' do |abilities = []|
+      it 'authorizes objects as expected' do
+        expect_any_instance_of(Gitlab::Graphql::Authorize::ObjectAuthorization) do |authorization|
+          expect(authorization).to receive(:ok).with(
+            project.work_items.first,
+            current_user,
+            scope_validator: nil,
+            skip_abilities: abilities
+          )
+        end
+
+        post_graphql(query, current_user: current_user)
+      end
+    end
+
+    context 'when authorize_issue_types_in_finder feature flag is enabled' do
+      before do
+        stub_feature_flags(authorize_issue_types_in_finder: true)
+      end
+
+      it_behaves_like 'request with skipped abilities', [:read_work_item]
+    end
+
+    context 'when authorize_issue_types_in_finder feature flag is disabled' do
+      before do
+        stub_feature_flags(authorize_issue_types_in_finder: false)
+      end
+
+      it_behaves_like 'request with skipped abilities', []
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :id)
   end
