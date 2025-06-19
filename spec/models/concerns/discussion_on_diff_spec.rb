@@ -69,15 +69,6 @@ RSpec.describe DiscussionOnDiff do
       it "returns an empty array" do
         expect(truncated_lines).to eq([])
       end
-
-      it 'tracks the exception' do
-        expect(Gitlab::ErrorTracking)
-          .to receive(:track_exception)
-          .with(an_instance_of(DiscussionOnDiff::TruncatedDiffLinesError))
-          .and_call_original
-
-        truncated_lines
-      end
     end
 
     context "when the diff line does not exist on a corrupt diff note" do

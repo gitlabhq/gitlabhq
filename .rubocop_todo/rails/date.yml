@@ -39,7 +39,6 @@ Rails/Date:
     - 'ee/lib/gitlab/insights/executors/dora_executor.rb'
     - 'ee/lib/gitlab/sitemaps/sitemap_file.rb'
     - 'ee/lib/tasks/gitlab/license.rake'
-    - 'ee/spec/controllers/projects/runners_controller_spec.rb'
     - 'ee/spec/features/admin/admin_audit_logs_spec.rb'
     - 'ee/spec/features/boards/scoped_issue_board_spec.rb'
     - 'ee/spec/features/groups/audit_events_spec.rb'

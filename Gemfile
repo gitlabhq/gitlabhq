@@ -646,7 +646,7 @@ gem 'spamcheck', '~> 1.3.0', feature_category: :insider_threat
 gem 'gitaly', '~> 18.1.0.pre.rc1', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
-gem 'gitlab-kas-grpc', '~> 17.11.0', feature_category: :deployment_management
+gem 'gitlab-kas-grpc', '~> 18.1.0', feature_category: :deployment_management
 
 gem 'grpc', '~> 1.72.0', feature_category: :shared
 

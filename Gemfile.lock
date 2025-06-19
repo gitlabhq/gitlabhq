@@ -768,7 +768,7 @@ GEM
       nokogiri (~> 1, >= 1.10.8)
     gitlab-glfm-markdown (0.0.31)
       rb_sys (~> 0.9.109)
-    gitlab-kas-grpc (17.11.3)
+    gitlab-kas-grpc (18.1.0)
       grpc (~> 1.0)
     gitlab-labkit (0.37.0)
       actionpack (>= 5.0.0, < 8.1.0)
@@ -2167,7 +2167,7 @@ DEPENDENCIES
   gitlab-glfm-markdown (~> 0.0.31)
   gitlab-housekeeper!
   gitlab-http!
-  gitlab-kas-grpc (~> 17.11.0)
+  gitlab-kas-grpc (~> 18.1.0)
   gitlab-labkit (~> 0.37.0)
   gitlab-license (~> 2.6)
   gitlab-mail_room (~> 0.0.24)

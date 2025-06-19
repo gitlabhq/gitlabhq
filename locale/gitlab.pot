@@ -52621,6 +52621,9 @@ msgstr ""
 msgid "Runners|Add notes such as the runner owner or what it should be used for."
 msgstr ""
 
+msgid "Runners|Add notes such as the runner owner or what it should be used for. Users with runner update permissions see this note."
+msgstr ""
+
 msgid "Runners|Add tags to specify jobs that the runner can run. %{helpLinkStart}Learn more%{helpLinkEnd}."
 msgstr ""
 

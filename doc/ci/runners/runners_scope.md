@@ -781,6 +781,27 @@ project.
 
 ![Screenshot showing where to find the IP address for a project runner in the runner details](img/project_runner_ip_address_v17_6.png)
 
+## Add maintenance notes to runner configuration
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced for administrators](https://gitlab.com/gitlab-org/gitlab/-/issues/348299) in GitLab 15.1.
+- [Made available for groups and projects](https://gitlab.com/gitlab-org/gitlab/-/issues/422621) in GitLab 18.2.
+
+{{< /history >}}
+
+You can add a maintenance note to document the runner. Users who can edit the runner
+see the note when they view the runner details.
+
+Use this feature to inform others about consequences or problems related to changing the runner configuration.
+
 ## Enable use of runner registration tokens in projects and groups
 
 {{< history >}}

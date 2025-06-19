@@ -63,7 +63,7 @@ As a user, to delete your own account:
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
-If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/account-deletion/)
+If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/personal-data-request/)
 to ask for your account and data to be removed from GitLab.
 
 ### Create a new account with the same email address

@@ -10,6 +10,8 @@ settings to GitLab.
 
 Application settings are stored in the `application_settings` table. Each setting has its own column and there should only be one row.
 
+Duo-related applications settings are [stored in a different table](#adding-a-duo-related-setting).
+
 ## Add a new application setting
 
 First of all, you have to decide if it is necessary to add an application setting.
@@ -103,3 +105,13 @@ Dropping the original column before ignoring it in the model can cause problems 
 When migrating settings to JSONB columns with `jsonb_accessor` defaults,
 remove them from `ApplicationSettingImplementation.defaults` because
 JSONB accessors take precedence over the `defaults` method.
+
+### Adding a Duo-related setting
+
+We have several instance-wide GitLab Duo settings in the `application_settings` table. These include `duo_features_enabled` (boolean), `duo_workflow` (jsonb), and `duo_chat` (jsonb). 
+
+At some point, we realized it was simpler to add new instance-wide settings to a different table. Going forward, any new Duo-related instance-wide settings should be added to the `ai_settings` table.
+
+For Duo settings at the group or project level, there is also a `namespace_ai_settings` table.
+
+The [cascading settings framework](cascading_settings.md) assumes that the instance-wide setting is on the `application_settings` table and that group and project settings are on `namespace_settings` and `project_settings`, respectively. If you are considering adding a cascading setting for Duo, that may be a good reason to use `application_settings` instead of `ai_settings`.

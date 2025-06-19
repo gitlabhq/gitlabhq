@@ -18,7 +18,6 @@ RSpec/BeEq:
     - 'ee/spec/controllers/projects/issues_controller_spec.rb'
     - 'ee/spec/controllers/projects/merge_requests_controller_spec.rb'
     - 'ee/spec/controllers/projects/mirrors_controller_spec.rb'
-    - 'ee/spec/controllers/projects/runners_controller_spec.rb'
     - 'ee/spec/controllers/projects/settings/operations_controller_spec.rb'
     - 'ee/spec/controllers/projects/settings/repository_controller_spec.rb'
     - 'ee/spec/controllers/projects_controller_spec.rb'

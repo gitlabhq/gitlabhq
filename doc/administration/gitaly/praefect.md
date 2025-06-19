@@ -370,7 +370,7 @@ Praefect makes a low number of connections. If you choose to use PgBouncer, you 
 both the GitLab application database and the Praefect database.
 
 To configure PgBouncer in front of the PostgreSQL instance, you must point Praefect to PgBouncer by setting database
-parameters on Praefect configuration:
+parameters on the Praefect configuration:
 
 ```ruby
 praefect['configuration'] = {
@@ -401,15 +401,17 @@ To configure the additional connection, you must either:
   but with different pool mode (`pool_mode = session`).
 - Connect Praefect directly to PostgreSQL and bypass PgBouncer.
 
-#### Configure a new PgBouncer database with `pool_mode = session`
+##### Configure a new PgBouncer database with `pool_mode = session`
 
 You should use PgBouncer with `session` pool mode. You can use the
 [bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and
 [configure it manually](https://www.pgbouncer.org/config.html).
 
-The following example uses the bundled PgBouncer and sets up two separate connection pools on PostgreSQL host,
+The following example uses the bundled PgBouncer and sets up two separate connection pools on the PostgreSQL host,
 one in `session` pool mode and the other in `transaction` pool mode. For this example to work,
-you need to prepare PostgreSQL server as documented in [the setup instructions](#manual-database-setup):
+you need to prepare PostgreSQL server as documented in [the setup instructions](#manual-database-setup). 
+
+Then, configure the separate connection pools on the PgBouncer host:
 
 ```ruby
 pgbouncer['databases'] = {
@@ -494,7 +496,7 @@ configuration option is set. For more details, consult the PgBouncer documentati
 
 {{< /alert >}}
 
-#### Configure Praefect to connect directly to PostgreSQL
+##### Configure Praefect to connect directly to PostgreSQL
 
 As an alternative to configuring PgBouncer with `session` pool mode, Praefect can be configured to use different
 connection parameters for direct access to PostgreSQL. This connection supports the `LISTEN` feature.
