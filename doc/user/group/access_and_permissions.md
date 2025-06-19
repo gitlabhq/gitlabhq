@@ -33,16 +33,10 @@ For more information, see also [Sharing projects and groups](../project/members/
 Group push rules allow group maintainers to set
 [push rules](../project/repository/push_rules.md) for newly created projects in the specific group.
 
-In GitLab 15.4 and later, to configure push rules for a group:
+To configure push rules for a group:
 
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand the **Pre-defined push rules** section.
-1. Select the settings you want.
-1. Select **Save push rules**.
-
-In GitLab 15.3 and earlier, to configure push rules for a group:
-
-1. On the left sidebar, select **Push rules**.
 1. Select the settings you want.
 1. Select **Save push rules**.
 
@@ -86,7 +80,7 @@ address. This top-level group setting applies to:
 
 - The GitLab UI, including subgroups, projects, and issues. It does not apply to GitLab Pages.
 - The API.
-- On GitLab Self-Managed, in 15.1 and later, you can also configure
+- On GitLab Self-Managed you can also configure
   [globally-allowed IP address ranges](../../administration/settings/visibility_and_access_controls.md#configure-globally-allowed-ip-address-ranges)
   for the group.
 

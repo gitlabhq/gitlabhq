@@ -24,7 +24,7 @@ commits directly in the GitLab UI. Unlike the [Web Editor](../repository/web_edi
 IDE provides a full-featured development environment with source control management.
 
 Support for [GitLab Flavored Markdown](../../markdown.md) preview in the Web IDE is proposed in
-[issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
+[epic 15810](https://gitlab.com/groups/gitlab-org/-/epics/15810).
 
 ## Open the Web IDE
 

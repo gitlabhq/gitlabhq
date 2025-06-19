@@ -572,6 +572,7 @@ in your Sidekiq logs. For more information, see
 - Indexing all project records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/428070) in GitLab 16.7 [with a flag](../../administration/feature_flags/_index.md) named `search_index_all_projects`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148111) in GitLab 16.11. Feature flag `search_index_all_projects` removed.
 - Indexing vulnerability records [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `vulnerability_es_ingestion`. Disabled by default.
+- Indexing vulnerability records is [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/536299) on GitLab.com and GitLab Dedicated in GitLab 18.2. Feature flag `vulnerability_es_ingestion` removed.
 
 {{< /history >}}
 
