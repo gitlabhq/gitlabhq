@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,7 +9,7 @@ import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
-import { todosResponse } from '../todos/mock_data';
+import { todosResponse } from '../../todos/mock_data';
 
 Vue.use(VueApollo);
 
@@ -34,6 +34,7 @@ describe('TodosWidget', () => {
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
   const findRefreshButton = () => wrapper.findComponent(GlButton);
+  const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
   const findAllTodosLink = () => wrapper.find('a[href="/dashboard/todos"]');
 
   describe('rendering', () => {
@@ -70,11 +71,54 @@ describe('TodosWidget', () => {
     });
   });
 
+  describe('empty state', () => {
+    it('shows empty state when there are no todos', async () => {
+      const emptyResponse = {
+        data: {
+          currentUser: {
+            id: 'user-1',
+            todos: {
+              nodes: [],
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: null,
+                endCursor: null,
+              },
+            },
+          },
+        },
+      };
+
+      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
+      createComponent({ todosQueryHandler: emptyQueryHandler });
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(true);
+      expect(findTodoItems()).toHaveLength(0);
+    });
+
+    it('does not show empty state when loading', () => {
+      createComponent();
+
+      expect(findEmptyState().exists()).toBe(false);
+    });
+
+    it('does not show empty state when there are todos', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findEmptyState().exists()).toBe(false);
+      expect(findTodoItems().length).toBeGreaterThan(0);
+    });
+  });
+
   describe('GraphQL query', () => {
     it('makes the correct GraphQL query with proper variables', () => {
       createComponent();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
+        action: null,
         first: 5,
         state: ['pending'],
       });
@@ -149,6 +193,76 @@ describe('TodosWidget', () => {
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('filter functionality', () => {
+    const findFilterDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+    const findFilteredEmptyState = () =>
+      wrapper.findByText('Sorry, your filter produced no results');
+
+    it('renders filter dropdown', () => {
+      createComponent();
+
+      expect(findFilterDropdown().exists()).toBe(true);
+    });
+
+    it('queries without action parameter when no filter is set', () => {
+      createComponent();
+
+      expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
+        first: 5,
+        state: ['pending'],
+        action: null,
+      });
+    });
+
+    it('queries with action parameter when filter is set', async () => {
+      createComponent();
+      todosQuerySuccessHandler.mockClear();
+
+      await findFilterDropdown().vm.$emit('select', 'build_failed');
+      await waitForPromises();
+
+      expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
+        first: 5,
+        state: ['pending'],
+        action: ['build_failed'],
+      });
+    });
+
+    it('queries with multiple actions for semicolon-separated filter', async () => {
+      createComponent();
+      todosQuerySuccessHandler.mockClear();
+
+      await findFilterDropdown().vm.$emit('select', 'mentioned;directly_addressed');
+      await waitForPromises();
+
+      expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
+        first: 5,
+        state: ['pending'],
+        action: ['mentioned', 'directly_addressed'],
+      });
+    });
+
+    it('shows filtered empty state when no todos match filter', async () => {
+      const emptyResponse = {
+        data: {
+          currentUser: {
+            id: 'user-1',
+            todos: { nodes: [] },
+          },
+        },
+      };
+
+      const emptyQueryHandler = jest.fn().mockResolvedValue(emptyResponse);
+      createComponent({ todosQueryHandler: emptyQueryHandler });
+
+      await findFilterDropdown().vm.$emit('select', 'build_failed');
+      await waitForPromises();
+
+      expect(findFilteredEmptyState().exists()).toBe(true);
+      expect(findEmptyState().exists()).toBe(false);
     });
   });
 

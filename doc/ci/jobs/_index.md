@@ -366,6 +366,7 @@ When you retry a [trigger job](../yaml/_index.md#trigger) that triggers a downst
 Prerequisites:
 
 - You must have at least the Developer role for the project.
+- The job must not be [archived](../../administration/settings/continuous_integration.md#archive-pipelines).
 
 To retry a job from a merge request:
 

@@ -616,6 +616,9 @@ msgstr ""
 msgid "%{attribute} already taken."
 msgstr ""
 
+msgid "%{author_container_start}%{author}requested to merge %{author_container_end}%{source_branch} %{copy_button} into %{target_branch} %{target_copy_button} %{created_at}"
+msgstr ""
+
 msgid "%{author_link} cloned %{original_issue} to %{new_issue}."
 msgstr ""
 
@@ -632,9 +635,6 @@ msgid "%{author} commented %{time}"
 msgstr ""
 
 msgid "%{author} has created a merge request that you can approve."
-msgstr ""
-
-msgid "%{author} requested to merge %{source_branch} %{copy_button} into %{target_branch} %{target_copy_button} %{created_at}"
 msgstr ""
 
 msgid "%{board_target} not found"
@@ -6578,6 +6578,9 @@ msgstr ""
 msgid "All users with matching phone numbers"
 msgstr ""
 
+msgid "All your to-do items are done."
+msgstr ""
+
 msgid "Allow"
 msgstr ""
 
@@ -8500,7 +8503,7 @@ msgstr ""
 msgid "Archive"
 msgstr ""
 
-msgid "Archive jobs"
+msgid "Archive pipelines"
 msgstr ""
 
 msgid "Archive project"
@@ -15333,7 +15336,7 @@ msgstr ""
 msgid "CompareRevisions|Changes are shown as if the %{boldStart}source%{boldEnd} revision was being merged into the %{boldStart}target%{boldEnd} revision. %{linkStart}Learn more about comparing revisions.%{linkEnd}"
 msgstr ""
 
-msgid "CompareRevisions|Commits on Source (%{commits_amount})"
+msgid "CompareRevisions|Commits on Source"
 msgstr ""
 
 msgid "CompareRevisions|Compare"
@@ -29486,6 +29489,9 @@ msgstr ""
 msgid "Go to your snippets"
 msgstr ""
 
+msgid "Good job!"
+msgstr ""
+
 msgid "Google Artifact Registry"
 msgstr ""
 
@@ -34047,6 +34053,9 @@ msgstr ""
 msgid "Issues and merge requests"
 msgstr ""
 
+msgid "Issues and merge requests you visit will appear here."
+msgstr ""
+
 msgid "Issues are being rebalanced at the moment, so manual reordering is disabled."
 msgstr ""
 
@@ -35179,9 +35188,6 @@ msgstr ""
 msgid "Jobs fail if they run longer than the timeout time. Input value is in seconds by default. Human readable input is also accepted, for example %{code_open}1 hour%{code_close}."
 msgstr ""
 
-msgid "Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day."
-msgstr ""
-
 msgid "Jobs|All"
 msgstr ""
 
@@ -36163,9 +36169,6 @@ msgid "LastPushEvent|at"
 msgstr ""
 
 msgid "Latest pipeline for the most recent commit on this ref"
-msgstr ""
-
-msgid "Latest to-do items"
 msgstr ""
 
 msgid "Latest version"
@@ -45556,6 +45559,9 @@ msgstr ""
 msgid "Pipelines for new changes cause older pending or running pipelines on the same branch to be cancelled."
 msgstr ""
 
+msgid "Pipelines older than the configured time are considered archived. Jobs in archived pipelines can no longer be retried. Leave empty to never archive pipelines automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day."
+msgstr ""
+
 msgid "Pipelines settings for '%{project_name}' were successfully updated."
 msgstr ""
 
@@ -50821,6 +50827,9 @@ msgid "Recent searches"
 msgstr ""
 
 msgid "Recently used"
+msgstr ""
+
+msgid "Recently viewed"
 msgstr ""
 
 msgid "Reconfigure"
@@ -64297,6 +64306,9 @@ msgstr ""
 msgid "To-Do List"
 msgstr ""
 
+msgid "To-do items"
+msgstr ""
+
 msgid "Today"
 msgstr ""
 
@@ -64324,6 +64336,9 @@ msgid "Todos|Added approver"
 msgstr ""
 
 msgid "Todos|Alert"
+msgstr ""
+
+msgid "Todos|All"
 msgstr ""
 
 msgid "Todos|Approval required"

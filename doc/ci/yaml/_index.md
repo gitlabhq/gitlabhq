@@ -3705,37 +3705,10 @@ create-pages:
 This example does not move the directory, but uses the `publish` property directly.
 It also configures the pages deployment to be unpublished after a week.
 
-**Deprecated: Use `pages` as a job name**
+**Additional details**:
 
-Using `pages` as a job name results in the same behavior as specifying
-the Pages property `pages: true`. This method is available for backwards compatibility,
-but might not receive all future improvements to the Pages job configuration.
-
-**Example using `pages` as a job name**:
-
-```yaml
-pages:  # specifies that this is a Pages job and publishes the default public directory
-  stage: deploy
-  script:
-    - mv my-html-content public
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  environment: production
-```
-
-To use `pages` as a job name without triggering a Pages deployment, set the `pages`
-property to false:
-
-```yaml
-pages:
-  stage: deploy
-  script:
-    - mv my-html-content public
-  pages: false # this job will not trigger a Pages deployment
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  environment: production
-```
+- Using `pages` as a job name [is deprecated](#publish-keyword-and-pages-job-name-for-gitlab-pages).
+- To use `pages` as a job name without triggering a Pages deployment, set the `pages` property to false
 
 #### `pages.publish`
 
@@ -3749,7 +3722,6 @@ pages:
 {{< /history >}}
 
 Use `pages.publish` to configure the content directory of a [`pages` job](#pages).
-The top-level `publish` keyword is deprecated as of GitLab 17.9 and must now be nested under the `pages` keyword.
 
 **Keyword type**: Job keyword. You can use it only as part of a `pages` job.
 
@@ -3794,6 +3766,10 @@ create-pages:
 ```
 
 The publish path specified must be relative to the build root.
+
+**Additional details**:
+
+- The top-level `publish` keyword [is deprecated](#publish-keyword-and-pages-job-name-for-gitlab-pages) and must now be nested under the `pages` keyword
 
 #### `pages.path_prefix`
 
@@ -6634,3 +6610,10 @@ deploy:
 
 In this example, the `deploy` job runs only when the Kubernetes service is active
 in the project.
+
+### `publish` keyword and `pages` job name for GitLab Pages
+
+The job-level `publish` keyword and the `pages` job name for GitLab Pages deployment jobs are deprecated.
+These are still usable to ensure backwards compatibility, but could be scheduled for removal
+in a future milestone. To control the pages deployment, use the [`pages`](#pages)
+and [`pages.publish`](#pagespublish) keywords instead.

@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import initMrNotes from 'ee_else_ce/mr_notes';
-import StickyHeader from '~/merge_requests/components/sticky_header.vue';
 import { start as startCodeReviewMessaging } from '~/code_review/signals';
 import diffsEventHub from '~/diffs/event_hub';
 import { EVT_MR_DIFF_GENERATED } from '~/diffs/constants';
@@ -24,7 +23,7 @@ const tabData = Vue.observable({
 const initMrStickyHeader = () => {
   const el = document.getElementById('js-merge-sticky-header');
 
-  if (el) {
+  if (el && !CSS.supports('container-type: scroll-state')) {
     const { data } = el.dataset;
 
     let parsedData;
@@ -56,6 +55,9 @@ const initMrStickyHeader = () => {
       store,
       pinia,
       apolloProvider,
+      components: {
+        StickyHeader: () => import('~/merge_requests/components/sticky_header.vue'),
+      },
       provide: {
         query: getStateQuery,
         iid,
@@ -67,7 +69,7 @@ const initMrStickyHeader = () => {
         sourceProjectPath,
       },
       render(h) {
-        return h(StickyHeader, {
+        return h('sticky-header', {
           props: {
             tabs: tabData.tabs,
             isImported: parseBoolean(imported),

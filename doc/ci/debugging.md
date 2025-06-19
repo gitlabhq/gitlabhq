@@ -439,8 +439,8 @@ On GitLab Self-Managed, you can [increase the size limits](../administration/ins
 
 ### `500` error when editing the `.gitlab-ci.yml` file
 
-A [loop of included configuration files](pipeline_editor/_index.md#configuration-validation-currently-not-available-message)
-can cause a `500` error when editing the `.gitlab-ci.yml` file with the [web editor](../user/project/repository/web_editor.md).
+A loop of included configuration files can cause a `500` error when editing the `.gitlab-ci.yml` file
+with the [web editor](../user/project/repository/web_editor.md).
 
 Ensure that included configuration files do not create a loop of references to each other.
 

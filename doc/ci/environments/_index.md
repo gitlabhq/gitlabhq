@@ -405,6 +405,8 @@ deploy_review:
 Stopping an environment means its deployments are not accessible on the target server. You must stop
 an environment before it can be deleted.
 
+When using the `on_stop` action to stop an environment, the job runs if it's not [archived](../../administration/settings/continuous_integration.md#archive-pipelines).
+
 ### Stop an environment by using the UI
 
 {{< alert type="note" >}}

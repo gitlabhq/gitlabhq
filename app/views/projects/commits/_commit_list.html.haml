@@ -2,9 +2,11 @@
 - hidden = @hidden_commit_count
 - commits = Commit.decorate(commits, @project)
 
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5'}, body_options: { class: 'gl-py-0'}, footer_options: { class: 'gl-bg-orange-50' }) do |c|
-  - c.with_header do
-    = s_('CompareRevisions|Commits on Source (%{commits_amount})').html_safe % { commits_amount: @total_commit_count }
+= render ::Layouts::CrudComponent.new(s_('CompareRevisions|Commits on Source'),
+  count: @total_commit_count,
+  is_collapsible: true,
+  options: { class: 'gl-mb-5' },
+  footer_options: { class: 'gl-bg-orange-50' }) do |c|
   - c.with_body do
     - if hidden > 0
       %ul.content-list

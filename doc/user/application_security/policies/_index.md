@@ -418,3 +418,17 @@ When working with security policies, consider these troubleshooting tips:
   contact your group administrator to ensure you have the necessary permissions in the group.
 
 If you are still experiencing issues, you can [view recent reported bugs](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=popularity&state=opened&label_name%5B%5D=group%3A%3Asecurity%20policies&label_name%5B%5D=type%3A%3Abug&first_page_size=20) and raise new unreported issues.
+
+### Resynchronize policies with the GraphQL API
+
+If you notice inconsistencies in any of the policies, such as policies that aren't being enforced or approvals that are incorrect, you can manually force a resynchronization of the policies with the GraphQL `resyncSecurityPolicies` mutation:
+
+```graphql
+mutation {
+  resyncSecurityPolicies(input: { fullPath: "group-or-project-path" }) {
+    errors
+  }
+}
+```
+
+Set `fullPath` to the path of the project or group to which the security policy project is assigned.

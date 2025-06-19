@@ -659,6 +659,10 @@ security_trainings:
   - table: projects
     column: project_id
     on_delete: async_delete
+sent_notifications_7abbf02cb6:
+  - table: namespaces
+    column: namespace_id
+    on_delete: async_delete
 snippets:
   - table: organizations
     column: organization_id

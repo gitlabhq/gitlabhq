@@ -29,6 +29,8 @@ By default, manual jobs display as skipped when the pipeline starts.
 You can use [protected branches](../../user/project/repository/branches/protected.md) to more strictly
 [protect manual deployments](#protect-manual-jobs) from being run by unauthorized users.
 
+Manual jobs that are [archived](../../administration/settings/continuous_integration.md#archive-pipelines) do not run.
+
 ### Types of manual jobs
 
 Manual jobs can be either optional or blocking.
@@ -168,6 +170,9 @@ This job can no longer be scheduled to run automatically. You can, however, exec
 
 To start a delayed job manually, select **Unschedule** ({{< icon name="time-out" >}}) to stop the delay timer and then select **Run** ({{< icon name="play" >}}).
 Soon GitLab Runner starts the job.
+
+Delayed jobs that are [archived](../../administration/settings/continuous_integration.md#archive-pipelines)
+do not run.
 
 ## Parallelize large jobs
 

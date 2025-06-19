@@ -157,26 +157,66 @@ $comparison-empty-state-height: 62px;
   }
 }
 
-.merge-request-tabs-holder {
-  top: $calc-application-header-height;
-  z-index: $tabs-holder-z-index;
-  @apply gl-border-b gl-bg-default;
+@supports (container-type: scroll-state) {
+  .merge-request-sticky-header {
+    @include media-breakpoint-up(lg) {
+      @apply gl-sticky;
+      container-type: scroll-state;
+      container-name: sticky-header;
+      top: $calc-application-header-height;
+      z-index: $tabs-holder-z-index;
 
-  @include media-breakpoint-up(md) {
-    position: sticky;
-  }
+      &:has(.detail-page-description)::after {
+        height: calc(45px + 26px); // Height of the 2 sticky bars combined
+      }
 
-  &.affix {
-    left: 0;
-    transition: right 0.15s;
+      &::after {
+        content: '';
+        top: $calc-application-header-height;
+        height: 45px;
+        @include translucent-glass-background;
+        @apply gl-border-b gl-fixed gl-left-0 gl-right-0 gl-z-0 gl-hidden;
+      }
 
-    @include media-breakpoint-down(xs) {
-      right: 0;
+      @container sticky-header scroll-state(stuck: top) {
+        &::after {
+          @apply gl-block;
+        }
+
+        .merge-request-tabs {
+          @apply gl-h-auto;
+        }
+      
+        .nav-links li a {
+          @apply gl-py-4;
+        }
+
+        .detail-page-description {
+          @apply gl-pt-1 gl-pb-0 gl-flex-nowrap;
+        }
+
+        time,
+        .merge-request-author-container {
+          @apply gl-hidden;
+        }
+      }
+    }
+
+    @include media-breakpoint-up(lg) {
+      @container sticky-header scroll-state(stuck: top) {
+        .merge-request-sticky-title {
+          @apply gl-block;
+        }
+      }
     }
   }
+}
 
-  .nav-links {
-    border: 0;
+@supports not (container-type: scroll-state) {
+  .merge-request-sticky-header {
+    z-index: calc($top-bar-z-index - 1);
+    height: $mr-sticky-header-height;
+    @include translucent-glass-background;
   }
 }
 
@@ -191,10 +231,6 @@ $comparison-empty-state-height: 62px;
     &:not(:only-child) {
       margin: $gl-padding-4;
     }
-  }
-
-  .merge-request-tabs {
-    height: $grid-size * 6;
   }
 }
 

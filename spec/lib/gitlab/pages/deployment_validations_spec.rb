@@ -87,6 +87,12 @@ RSpec.describe Gitlab::Pages::DeploymentValidations, :aggregate_failures, featur
         include_examples "valid pages deployment"
       end
 
+      context 'and the directory specified with `pages.publish` contains one trailing slash' do
+        let(:build_options) { { pages: { publish: 'foo/' } } }
+
+        include_examples "valid pages deployment"
+      end
+
       context 'and `publish` is present in root as well as pages' do
         let(:build_options) { { publish: 'foo', pages: { publish: 'foo' } } }
 

@@ -549,6 +549,14 @@ RSpec.configure do |config|
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
     Users::Internal.clear_memoization(:support_bot_id)
   end
+
+  # Clear cached state in Cloud Connector; different tests can otherwise leak state
+  # into each other, causing tests to fail.
+  config.before do
+    ::Gitlab::CloudConnector::DataModel::Base.descendants.each do |clazz|
+      clazz.instance_variable_set(:@data_loader, nil)
+    end
+  end
 end
 
 # Disabled because it's causing N+1 queries.

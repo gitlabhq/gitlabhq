@@ -1,0 +1,74 @@
+---
+- name: Maven virtual registry now available in beta
+  description: |
+    The Maven virtual registry simplifies Maven dependency management in GitLab. Without the Maven virtual registry, you must configure each project to access dependencies from Maven Central, private repositories, or the GitLab package registry. This approach slows builds with sequential repository queries and complicates security auditing and compliance reporting.
+
+    The Maven virtual registry addresses these issues by aggregating multiple upstream repositories behind a single endpoint. Platform engineers can configure Maven Central, private registries, and GitLab package registries through one URL. Intelligent caching improves build performance and integrates with GitLab's authentication systems. Organizations benefit from reduced configuration overhead, faster builds, and centralized access control for improved security and compliance.
+
+    The Maven virtual registry is currently available in beta for GitLab Premium and Ultimate customers on both GitLab.com and GitLab Self-Managed. The GA release will include additional capabilities, such as a web-based user interface for registry configuration, shareable upstream functionality, lifecycle policies for cache management, and enhanced analytics. Current beta limitations include a maximum of 20 virtual registries per top-level groups and 20 upstreams per virtual registry, with API-only configuration available during the beta period.
+
+    We invite enterprise customers to participate in the Maven virtual registry beta program to help shape the final release. Beta participants will receive early access to the capabilities, direct engagement with GitLab product teams, and priority support during evaluation. To join the beta program, express interest and provide your use case details in [issue 498139](https://gitlab.com/gitlab-org/gitlab/-/issues/498139), and share feedback and suggestions in [issue 543045](https://gitlab.com/gitlab-org/gitlab/-/issues/543045).
+  stage: Package
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/packages/virtual_registry/maven/'
+  image_url: https://img.youtube.com/vi/ZkIkaJDEcEE/hqdefault.jpg
+  published_at: 2025-06-19
+  release: 18.1
+- name: Duo Code Review is now generally available
+  description: |
+    Duo Code Review is now generally available and ready for production use. This AI-powered code review assistant transforms the traditional code review process by providing intelligent, automated feedback on your merge requests. It helps identify potential bugs, security vulnerabilities, and code quality issues before human reviewers get involved, making the entire review process more efficient and thorough. It includes:
+
+    - **Automated initial review**: Duo Code Review analyzes your code changes and provides comprehensive feedback on potential issues, improvements, and best practices.
+    - **Interactive refinement**: Mention `@GitLabDuo` in merge request comments to get targeted feedback on specific changes or questions.
+    - **Actionable suggestions**: Many suggestions can be applied directly from your browser, streamlining the improvement process.
+    - **Context-aware analysis**: Leverages understanding of the changed files to provide relevant, project-specific recommendations.
+
+    To request a code review:
+
+    - In your merge request, add `@GitLabDuo` as a reviewer using the `/assign_reviewer @GitLabDuo` quick action, or assign GitLab Duo directly as a reviewer.
+    - Mention `@GitLabDuo` in comments to ask specific questions or request focused feedback on any discussion thread.
+    - Enable automatic reviews in your project settings to have GitLab Duo automatically review all new merge requests.
+
+    Duo Code Review helps teams maintain higher code quality standards while reducing the time spent on manual review cycles. By catching issues early and providing educational feedback, it serves as both a quality gate and a learning tool for development teams.
+
+    [Watch an overview](https://www.youtube.com/watch?v=FlHqfMMfbzQ) of Duo Code Review in action from our beta release.
+
+    Share your experience and feedback in [issue 517386](https://gitlab.com/gitlab-org/gitlab/-/issues/517386) to help us continue improving this feature.
+  stage: Create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/user/project/merge_requests/duo_in_merge_requests/#have-gitlab-duo-review-your-code'
+  image_url: https://about.gitlab.com/images/18_1/create-duo-code-review.png
+  published_at: 2025-06-19
+  release: 18.1
+- name: Compromised password detection for native GitLab credentials
+  description: |
+    GitLab.com now performs a secure check of your account credentials when you sign in to GitLab.com.
+    If your password is part of a known leak, GitLab displays a banner and sends you an email notification.
+    These notifications include instructions for how to update your credentials.
+
+    For maximum security, GitLab recommends using a unique, strong password for GitLab, enabling two-factor authentication, and regularly reviewing your account activity.
+
+    This feature is only available for native GitLab usernames and passwords. SSO credentials are not checked.
+  stage: Software Supply Chain Security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/security/compromised_password_detection/'
+  image_url: https://about.gitlab.com/images/18_1/sscs_password_alert.png
+  published_at: 2025-06-19
+  release: 18.1
+- name: Achieve SLSA Level 1 compliance with CI/CD components
+  description: |
+    You can now achieve [SLSA](https://slsa.dev/) Level 1 compliance using GitLab's new CI/CD components for signing and verifying SLSA-compliant [artifact provenance metadata](https://docs.gitlab.com/ci/runners/configure_runners/#artifact-provenance-metadata) generated by GitLab Runner. The components wrap [Sigstore Cosign functionality](https://docs.gitlab.com/ee/ci/yaml/signing_examples.html) in reusable modules that can be easily integrated into CI/CD workflows.
+  stage: Software Supply Chain Security
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: 'https://docs.gitlab.com/ci/pipelines/pipeline_security/#sign-and-verify-slsa-provenance-with-a-cicd-component'
+  image_url: https://about.gitlab.com/images/18_1/SLSA_component.png
+  published_at: 2025-06-19
+  release: 18.1

@@ -43,11 +43,11 @@
       .form-group
         = f.gitlab_ui_checkbox_component :keep_latest_artifact, s_('AdminSettings|Keep the latest artifacts for all jobs in the latest successful pipelines'), help_text: s_('AdminSettings|The latest artifacts for all jobs in the most recent successful pipelines in each project are stored and do not expire.')
       .form-group
-        = f.label :archive_builds_in_human_readable, _('Archive jobs'), class: 'label-bold'
+        = f.label :archive_builds_in_human_readable, _('Archive pipelines'), class: 'label-bold'
         = f.text_field :archive_builds_in_human_readable, class: 'form-control gl-form-input'
         .form-text.gl-text-subtle
-          = html_escape(_("Jobs older than the configured time are considered expired and are archived. Archived jobs can no longer be retried. Leave empty to never archive jobs automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
-          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'archive-older-jobs')
+          = html_escape(_("Pipelines older than the configured time are considered archived. Jobs in archived pipelines can no longer be retried. Leave empty to never archive pipelines automatically. The default unit is in days, but you can use other units, for example %{code_open}15 days%{code_close}, %{code_open}1 month%{code_close}, %{code_open}2 years%{code_close}. Minimum value is 1 day.")) % { code_open: '<code>'.html_safe, code_close: '</code>'.html_safe }
+          = link_to _('Learn more.'), help_page_path('administration/settings/continuous_integration.md', anchor: 'archive-pipelines')
       .form-group
         = f.gitlab_ui_checkbox_component :protected_ci_variables, s_('AdminSettings|Protect CI/CD variables by default'), help_text: s_('AdminSettings|New CI/CD variables in projects and groups default to protected.')
       .form-group

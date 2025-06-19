@@ -31,7 +31,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
   it 'publishes review' do
     write_diff_comment
 
-    page.within '.merge-request-tabs-holder' do
+    page.within '.merge-request-tabs-container' do
       click_button 'Your review'
     end
 
@@ -149,7 +149,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
         expect(page).to have_selector('.draft-note', text: 'Its a draft comment')
 
-        page.within '.merge-request-tabs-holder' do
+        page.within '.merge-request-tabs-container' do
           click_button 'Your review'
         end
 
@@ -161,7 +161,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
         expect(page).to have_selector('.note:not(.draft-note)', text: 'Its a regular comment')
 
-        page.within '.merge-request-tabs-holder' do
+        page.within '.merge-request-tabs-container' do
           click_button 'Your review'
         end
 
@@ -209,7 +209,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(resolve: true)
 
-      page.within '.merge-request-tabs-holder' do
+      page.within '.merge-request-tabs-container' do
         click_button 'Your review'
       end
 
@@ -253,7 +253,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
 
       write_reply_to_discussion(button_text: 'Start a review', unresolve: true)
 
-      page.within '.merge-request-tabs-holder' do
+      page.within '.merge-request-tabs-container' do
         click_button 'Your review'
       end
 
