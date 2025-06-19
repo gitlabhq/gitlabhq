@@ -2,7 +2,7 @@ include:
   - local: gems/gem.gitlab-ci.yml
     inputs:
       gem_name: "bundler-checksum"
-      gem_path_prefix: "vendor/gems/"
+      gem_path_prefix: "gems/"
 
 rspec:
   variables:

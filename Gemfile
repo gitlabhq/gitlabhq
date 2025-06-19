@@ -7,7 +7,7 @@ end
 source 'https://rubygems.org'
 
 if ENV.fetch('BUNDLER_CHECKSUM_VERIFICATION_OPT_IN', 'false') != 'false' # this verification is still experimental
-  $LOAD_PATH.unshift(File.expand_path("vendor/gems/bundler-checksum/lib", __dir__))
+  $LOAD_PATH.unshift(File.expand_path("gems/bundler-checksum/lib", __dir__))
   require 'bundler-checksum'
   BundlerChecksum.patch!
 end
@@ -21,7 +21,7 @@ end
 
 extend ignore_feature_category
 
-gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', require: false, feature_category: :shared
+gem 'bundler-checksum', '~> 0.1.0', path: 'gems/bundler-checksum', require: false, feature_category: :shared
 
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
 

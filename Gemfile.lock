@@ -5,6 +5,12 @@ PATH
       activerecord (>= 7)
 
 PATH
+  remote: gems/bundler-checksum
+  specs:
+    bundler-checksum (0.1.0)
+      bundler
+
+PATH
   remote: gems/click_house-client
   specs:
     click_house-client (0.1.0)
@@ -125,12 +131,6 @@ PATH
     ipynbdiff (0.4.8)
       diffy (~> 3.4)
       oj (~> 3.16, >= 3.16.10)
-
-PATH
-  remote: vendor/gems/bundler-checksum
-  specs:
-    bundler-checksum (0.1.0)
-      bundler
 
 PATH
   remote: vendor/gems/cloud_profiler_agent

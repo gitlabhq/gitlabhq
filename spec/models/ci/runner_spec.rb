@@ -2605,4 +2605,37 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       expect(encoded_token).to eq('fake_encrypted_token')
     end
   end
+
+  describe 'scopes' do
+    let_it_be(:runner_contacted_yesterday) { create(:ci_runner, contacted_at: 1.day.ago) }
+    let_it_be(:runner_contacted_today) { create(:ci_runner, contacted_at: Time.current) }
+    let_it_be(:runner_contacted_week_ago) { create(:ci_runner, contacted_at: 1.week.ago) }
+    let_it_be(:runner_never_contacted) { create_list(:ci_runner, 2, contacted_at: nil) }
+
+    describe '.order_contacted_at_asc' do
+      subject { described_class.order_contacted_at_asc }
+
+      it 'orders runners by contacted_at in ascending order with nulls first' do
+        is_expected.to eq([
+          *runner_never_contacted,
+          runner_contacted_week_ago,
+          runner_contacted_yesterday,
+          runner_contacted_today
+        ])
+      end
+    end
+
+    describe '.order_contacted_at_desc' do
+      subject { described_class.order_contacted_at_desc }
+
+      it 'orders runners by contacted_at in descending order with nulls last' do
+        is_expected.to eq([
+          runner_contacted_today,
+          runner_contacted_yesterday,
+          runner_contacted_week_ago,
+          *runner_never_contacted
+        ])
+      end
+    end
+  end
 end

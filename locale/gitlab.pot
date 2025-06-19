@@ -23343,10 +23343,16 @@ msgstr ""
 msgid "Duo Workflow|Something went wrong saving Duo Workflow settings"
 msgstr ""
 
+msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Agents"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Fetching logs..."
 msgstr ""
 
 msgid "DuoAgentsPlatform|New Agent runs will appear here."
@@ -23355,7 +23361,19 @@ msgstr ""
 msgid "DuoAgentsPlatform|No Agent runs yet"
 msgstr ""
 
+msgid "DuoAgentsPlatform|No logs available yet."
+msgstr ""
+
+msgid "DuoAgentsPlatform|Output"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Prompt"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Prompt is unavailable"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"

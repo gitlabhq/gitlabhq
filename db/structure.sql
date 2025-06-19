@@ -16257,6 +16257,7 @@ CREATE TABLE issuable_resource_links (
     is_unique boolean,
     namespace_id bigint,
     CONSTRAINT check_67be6729db CHECK ((char_length(link) <= 2200)),
+    CONSTRAINT check_897e487714 CHECK ((namespace_id IS NOT NULL)),
     CONSTRAINT check_b137147e0b CHECK ((char_length(link_text) <= 255))
 );
 

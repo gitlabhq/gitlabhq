@@ -25,10 +25,6 @@ include:
       gem_path_prefix: "vendor/gems/"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
-      gem_name: "bundler-checksum"
-      gem_path_prefix: "vendor/gems/"
-  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
-    inputs:
       gem_name: "cloud_profiler_agent"
       gem_path_prefix: "vendor/gems/"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml

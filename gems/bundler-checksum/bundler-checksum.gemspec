@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'Track checksums locally with Bundler'
   spec.description   = 'Track checksums locally with Bundler'
-  spec.homepage      = 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/vendor/gems/bundler-checksum'
+  spec.homepage      = 'https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/bundler-checksum'
   spec.license       = 'MIT'
 
   spec.files         = Dir['bin/*', 'lib/**/*.rb']

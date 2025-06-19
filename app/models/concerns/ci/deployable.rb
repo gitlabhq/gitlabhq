@@ -108,6 +108,10 @@ module Ci
       end
     end
 
+    def environment_auto_stop_in
+      options.dig(:environment, :auto_stop_in) if options
+    end
+
     def expanded_auto_stop_in
       return unless environment_auto_stop_in
 

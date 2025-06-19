@@ -14,5 +14,8 @@ PLATFORMS
 DEPENDENCIES
   bundler-checksum!
 
+CHECKSUMS
+  bundler-checksum (0.1.0)
+
 BUNDLED WITH
-   2.6.6
+   2.6.9

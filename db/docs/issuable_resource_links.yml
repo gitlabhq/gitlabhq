@@ -8,14 +8,6 @@ description: Persists resources links for an issuable, particularly incident.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/88417
 milestone: '15.1'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: issue_id
-        table: issues
-        sharding_key: namespace_id
-        belongs_to: issue
+sharding_key:
+  namespace_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name: BackfillIssuableResourceLinksNamespaceId

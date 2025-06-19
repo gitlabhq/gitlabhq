@@ -228,8 +228,10 @@ module Ci
         .project_type
     end
 
-    scope :order_contacted_at_asc, -> { order(contacted_at: :asc) }
-    scope :order_contacted_at_desc, -> { order(contacted_at: :desc) }
+    # Never contacted runners (NULL contacted_at) appear first when sorting ascending
+    scope :order_contacted_at_asc, -> { order(arel_table[:contacted_at].asc.nulls_first) }
+    # Never contacted runners (NULL contacted_at) appear last when sorting descending
+    scope :order_contacted_at_desc, -> { order(arel_table[:contacted_at].desc.nulls_last) }
     scope :order_created_at_asc, -> { order(created_at: :asc) }
     scope :order_created_at_desc, -> { order(created_at: :desc) }
     scope :order_token_expires_at_asc, -> { order(token_expires_at: :asc) }

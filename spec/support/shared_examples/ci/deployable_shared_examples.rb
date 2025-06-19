@@ -514,6 +514,21 @@ RSpec.shared_examples 'a deployable job' do
       end
     end
 
+    describe '#environment_auto_stop_in' do
+      subject { job.environment_auto_stop_in }
+
+      let(:job) { described_class.new(options: options) }
+      let(:options) { { environment: { auto_stop_in: '1 week' } } }
+
+      it { is_expected.to eq('1 week') }
+
+      context 'when options does not include auto_stop_in' do
+        let(:options) { { environment: { name: 'production' } } }
+
+        it { is_expected.to be_nil }
+      end
+    end
+
     describe '#expanded_auto_stop_in' do
       let(:job) { create(factory_type, environment: 'environment', options: options, pipeline: pipeline) }
       let(:options) do
