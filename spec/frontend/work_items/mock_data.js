@@ -901,6 +901,8 @@ export const mockBlockedByLinkedItem = {
 
 export const mockBlockedByOpenAndClosedLinkedItems = {
   type: WIDGET_TYPE_LINKED_ITEMS,
+  blockedByCount: 1,
+  blockingCount: 0,
   linkedItems: {
     nodes: [
       {
@@ -1102,6 +1104,8 @@ export const workItemEmptyLinkedItemsResponse = {
         widgets: [
           {
             type: WIDGET_TYPE_LINKED_ITEMS,
+            blockingCount: 0,
+            blockedByCount: 0,
             linkedItems: {
               nodes: [],
               __typename: 'LinkedWorkItemTypeConnection',
@@ -1125,6 +1129,8 @@ export const workItemSingleLinkedItemResponse = {
         widgets: [
           {
             type: WIDGET_TYPE_LINKED_ITEMS,
+            blockedByCount: 1,
+            blockingCount: 0,
             linkedItems: {
               nodes: [
                 {
@@ -1484,6 +1490,7 @@ export const workItemDevelopmentFragmentResponse = ({
       __typename: 'WorkItemRelatedBranchConnection',
     },
     closingMergeRequests: {
+      count: mrNodes.length,
       nodes: mrNodes,
       __typename: 'WorkItemClosingMergeRequestConnection',
     },
@@ -5692,6 +5699,7 @@ export const workItemsQueryResponseNoLabels = {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
             },
+            __typename: 'WorkItem',
           },
           {
             id: 'gid://gitlab/WorkItem/51',
@@ -5731,6 +5739,7 @@ export const workItemsQueryResponseNoLabels = {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
             },
+            __typename: 'WorkItem',
           },
         ],
       },
@@ -5788,6 +5797,7 @@ export const workItemsQueryResponseNoAssignees = {
                       __typename: 'Label',
                       id: 'gid://gitlab/Label/7',
                       color: '#f00',
+                      textColor: '#000',
                       description: '',
                       title: 'Label 7',
                     },
@@ -5800,6 +5810,7 @@ export const workItemsQueryResponseNoAssignees = {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
             },
+            __typename: 'WorkItem',
           },
           {
             id: 'gid://gitlab/WorkItem/51',
@@ -5836,6 +5847,7 @@ export const workItemsQueryResponseNoAssignees = {
                       __typename: 'Label',
                       id: 'gid://gitlab/Label/7',
                       color: '#f00',
+                      textColor: '#000',
                       description: '',
                       title: 'Label 7',
                     },
@@ -5848,6 +5860,7 @@ export const workItemsQueryResponseNoAssignees = {
               id: 'gid://gitlab/WorkItems::Type/5',
               name: 'Issue',
             },
+            __typename: 'WorkItem',
           },
         ],
       },
@@ -5858,30 +5871,34 @@ export const workItemsQueryResponseNoAssignees = {
 export const combinedQueryResultExample = [
   {
     id: 'gid://gitlab/WorkItem/58',
+    iid: '23',
+    author: {
+      id: 'gid://gitlab/User/9',
+      avatarUrl: 'author/avatar/url',
+      name: 'Arthur',
+      username: 'arthur',
+      webUrl: 'author/web/url',
+      webPath: 'author/web/url',
+    },
+    closedAt: '',
+    confidential: true,
+    createdAt: '2020-01-23T12:34:56Z',
+    hidden: true,
+    namespace: {
+      id: 'full-path-epic-id',
+      fullPath: 'full-path',
+    },
+    reference: 'javascriptjs/js#23',
+    state: 'OPEN',
+    title: 'a group level work item',
+    updatedAt: '',
+    webUrl: 'web/url',
+    userDiscussionsCount: 0,
     widgets: [
       {
         __typename: 'WorkItemWidgetAssignees',
         assignees: {
-          nodes: [
-            {
-              __typename: 'UserCore',
-              avatarUrl: '',
-              id: 'gid://gitlab/User/1',
-              name: 'John Doe',
-              username: 'doe_I',
-              webPath: '/doe_I',
-              webUrl: '',
-            },
-            {
-              __typename: 'UserCore',
-              avatarUrl: '',
-              id: 'gid://gitlab/User/2',
-              name: 'Marcus Rutherford',
-              username: 'ruthfull',
-              webPath: '/ruthfull',
-              webUrl: '',
-            },
-          ],
+          nodes: mockAssignees,
         },
         type: 'ASSIGNEES',
       },
@@ -5893,6 +5910,7 @@ export const combinedQueryResultExample = [
             {
               __typename: 'Label',
               color: '#f00',
+              textColor: '#000',
               description: '',
               id: 'gid://gitlab/Label/7',
               title: 'Label 7',
@@ -5902,33 +5920,42 @@ export const combinedQueryResultExample = [
         type: 'LABELS',
       },
     ],
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Issue',
+    },
+    __typename: 'WorkItem',
   },
   {
     id: 'gid://gitlab/WorkItem/51',
+    iid: '21',
+    author: {
+      id: 'gid://gitlab/User/9',
+      avatarUrl: 'author/avatar/url',
+      name: 'Arthur',
+      username: 'arthur',
+      webUrl: 'author/web/url',
+      webPath: 'author/web/url',
+    },
+    closedAt: '',
+    confidential: true,
+    createdAt: '2020-01-23T12:34:56Z',
+    hidden: true,
+    namespace: {
+      id: 'full-path-epic-id',
+      fullPath: 'full-path',
+    },
+    reference: 'javascriptjs/js#23',
+    state: 'OPEN',
+    title: 'a group level work item',
+    updatedAt: '',
+    webUrl: 'web/url',
+    userDiscussionsCount: 0,
     widgets: [
       {
         __typename: 'WorkItemWidgetAssignees',
         assignees: {
-          nodes: [
-            {
-              __typename: 'UserCore',
-              avatarUrl: '',
-              id: 'gid://gitlab/User/1',
-              name: 'John Doe',
-              username: 'doe_I',
-              webPath: '/doe_I',
-              webUrl: '',
-            },
-            {
-              __typename: 'UserCore',
-              avatarUrl: '',
-              id: 'gid://gitlab/User/2',
-              name: 'Marcus Rutherford',
-              username: 'ruthfull',
-              webPath: '/ruthfull',
-              webUrl: '',
-            },
-          ],
+          nodes: mockAssignees,
         },
         type: 'ASSIGNEES',
       },
@@ -5940,6 +5967,7 @@ export const combinedQueryResultExample = [
             {
               __typename: 'Label',
               color: '#f00',
+              textColor: '#000',
               description: '',
               id: 'gid://gitlab/Label/7',
               title: 'Label 7',
@@ -5949,8 +5977,33 @@ export const combinedQueryResultExample = [
         type: 'LABELS',
       },
     ],
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/5',
+      name: 'Issue',
+    },
+    __typename: 'WorkItem',
   },
 ];
+
+export const workItemsQueryResponseCombined = {
+  data: {
+    namespace: {
+      id: 'gid://gitlab/Group/3',
+      __typename: 'Group',
+      name: 'Test',
+      workItems: {
+        pageInfo: {
+          hasNextPage: true,
+          hasPreviousPage: false,
+          startCursor: 'startCursor',
+          endCursor: 'endCursor',
+          __typename: 'PageInfo',
+        },
+        nodes: combinedQueryResultExample,
+      },
+    },
+  },
+};
 
 export const updateWorkItemMutationResponseFactory = (options) => {
   const response = workItemResponseFactory(options);

@@ -37,6 +37,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
     expect(data['update_user_endpoint']).to eq(update_user_endpoint)
     expect(data['diffs_stream_url']).to eq(stream_url)
     expect(data['diff_file_endpoint']).to eq(diff_file_endpoint)
+    expect(data['lazy']).to eq(lazy)
   end
 
   context "with should_sort_metadata_files set to true" do

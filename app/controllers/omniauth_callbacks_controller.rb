@@ -129,9 +129,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def omniauth_login_counter
-    @counter ||= Gitlab::Metrics.counter(
-      :gitlab_omniauth_login_total,
-      'Counter of OmniAuth login attempts')
+    Gitlab::Auth::OAuth::BeforeRequestPhaseOauthLoginCounterIncrement.counter
   end
 
   def log_failed_login(user, provider)

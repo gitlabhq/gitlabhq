@@ -37342,6 +37342,9 @@ msgstr ""
 msgid "MarkdownEditor|Click to expand"
 msgstr ""
 
+msgid "MarkdownEditor|Close find and replace bar"
+msgstr ""
+
 msgid "MarkdownEditor|Find and replace"
 msgstr ""
 
@@ -52717,9 +52720,6 @@ msgstr ""
 msgid "Runners|Assigned Group"
 msgstr ""
 
-msgid "Runners|Assigned Projects (%{projectCount})"
-msgstr ""
-
 msgid "Runners|Assigned project runners"
 msgstr ""
 
@@ -52858,9 +52858,6 @@ msgid "Runners|Deploy GitLab Runner in AWS"
 msgstr ""
 
 msgid "Runners|Description"
-msgstr ""
-
-msgid "Runners|Details"
 msgstr ""
 
 msgid "Runners|Don't see what you are looking for? See the full list of options, including a fully customizable option %{linkStart}here%{linkEnd}."
@@ -53541,9 +53538,6 @@ msgid "Runners|This may not be needed if you manage your runner as a %{linkStart
 msgstr ""
 
 msgid "Runners|This runner has not run any jobs"
-msgstr ""
-
-msgid "Runners|This runner has not run any jobs."
 msgstr ""
 
 msgid "Runners|This runner is outdated, an upgrade is recommended"
@@ -58080,7 +58074,7 @@ msgstr ""
 msgid "ServiceDesk|On public projects, tickets are always confidential by default."
 msgstr ""
 
-msgid "ServiceDesk|Only project members with at least the Reporter role can view new tickets."
+msgid "ServiceDesk|Only project members with at least the Planner role can view new tickets."
 msgstr ""
 
 msgid "ServiceDesk|Or reset and connect a new custom email address to this Service Desk."

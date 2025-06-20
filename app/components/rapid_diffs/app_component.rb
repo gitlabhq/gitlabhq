@@ -40,7 +40,8 @@ module RapidDiffs
         show_whitespace: @show_whitespace,
         diff_view_type: @diff_view,
         diff_file_endpoint: @diff_file_endpoint,
-        update_user_endpoint: @update_user_endpoint
+        update_user_endpoint: @update_user_endpoint,
+        lazy: @lazy
       }
     end
 

@@ -173,11 +173,7 @@ export default {
       </template>
 
       <template #cell(status)="{ item }">
-        <runner-status-cell :runner="item">
-          <template #runner-job-status-badge="{ runner }">
-            <slot name="runner-job-status-badge" :runner="runner"></slot>
-          </template>
-        </runner-status-cell>
+        <runner-status-cell :runner="item" />
       </template>
 
       <template #head(summary)="{ label }">

@@ -380,6 +380,7 @@ describe('Markdown field header component', () => {
     const findFindAndReplaceBar = () => wrapper.findByTestId('find-and-replace');
     const findNextButton = () => wrapper.findByTestId('find-next');
     const findPrevButton = () => wrapper.findByTestId('find-prev');
+    const findCloseButton = () => wrapper.findByTestId('find-and-replace-close');
 
     const showFindAndReplace = async () => {
       $(document).triggerHandler('markdown-editor:find-and-replace:show', [$('form')]);
@@ -545,6 +546,14 @@ describe('Markdown field header component', () => {
 
       const matches = findCloneDiv().element.querySelectorAll('.js-highlight');
       expect(matches.length).toBe(2);
+    });
+
+    it('should have a close button', async () => {
+      await showFindAndReplace();
+      expect(findFindInput().exists()).toBe(true);
+      findCloseButton().vm.$emit('click', true);
+      await nextTick();
+      expect(findFindInput().exists()).toBe(false);
     });
   });
 });

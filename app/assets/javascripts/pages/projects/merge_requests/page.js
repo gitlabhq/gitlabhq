@@ -103,8 +103,8 @@ const initReviewDrawer = () => {
   });
 };
 
-export function initMrPage() {
-  initMrNotes();
+export function initMrPage(createRapidDiffsApp) {
+  initMrNotes(createRapidDiffsApp);
   initShow(store, pinia);
   initMrMoreDropdown();
   startCodeReviewMessaging({ signalBus: diffsEventHub });

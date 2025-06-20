@@ -2,9 +2,9 @@ import { nextTick } from 'vue';
 import { GlDropdownItem } from '@gitlab/ui';
 import { MountingPortal } from 'portal-vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-
 import ReportAbuseDropdownItem from '~/projects/report_abuse/components/report_abuse_dropdown_item.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import { stubComponent } from 'helpers/stub_component';
 
 describe('ReportAbuseDropdownItem', () => {
   let wrapper;
@@ -22,6 +22,9 @@ describe('ReportAbuseDropdownItem', () => {
         reportAbusePath: ACTION_PATH,
         reportedUserId: USER_ID,
         reportedFromUrl: REPORTED_FROM_URL,
+      },
+      stubs: {
+        MountingPortal: stubComponent(MountingPortal),
       },
     });
   };
@@ -45,9 +48,8 @@ describe('ReportAbuseDropdownItem', () => {
   });
 
   it('renders abuse category selector inside MountingPortal', () => {
-    expect(findMountingPortal().props()).toMatchObject({
-      mountTo: '#js-report-abuse-drawer',
-      append: true,
+    expect(findMountingPortal().attributes()).toMatchObject({
+      'mount-to': '#js-report-abuse-drawer',
       name: 'abuse-category-selector',
     });
   });

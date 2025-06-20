@@ -461,11 +461,9 @@ describe('MergeRequestTabs', () => {
         let init;
         let hide;
         let show;
-        let reloadDiffs;
 
         beforeEach(() => {
           setWindowLocation('https://example.com?rapid_diffs=true');
-          reloadDiffs = jest.fn();
           init = jest.fn();
           hide = jest.fn();
           show = jest.fn();
@@ -473,7 +471,6 @@ describe('MergeRequestTabs', () => {
             init,
             hide,
             show,
-            reloadDiffs,
           }));
         });
 
@@ -485,7 +482,6 @@ describe('MergeRequestTabs', () => {
           testContext.class.tabShown('diffs', 'not-a-vue-page');
           expect(createRapidDiffsApp).toHaveBeenCalledTimes(1);
           expect(init).toHaveBeenCalledTimes(1);
-          expect(reloadDiffs).toHaveBeenCalledTimes(1);
         });
 
         it('creates a single Rapid Diffs app instance', () => {
@@ -498,7 +494,6 @@ describe('MergeRequestTabs', () => {
           testContext.class.tabShown('diffs', 'not-a-vue-page');
           expect(createRapidDiffsApp).toHaveBeenCalledTimes(1);
           expect(init).toHaveBeenCalledTimes(1);
-          expect(reloadDiffs).toHaveBeenCalledTimes(1);
         });
 
         it('hides Rapid Diffs', () => {

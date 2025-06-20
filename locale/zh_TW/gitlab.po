@@ -57171,7 +57171,7 @@ msgstr "預設新工單為機密"
 msgid "ServiceDesk|On public projects, tickets are always confidential by default."
 msgstr "在公共專案中，預設工單總是機密"
 
-msgid "ServiceDesk|Only project members with at least the Reporter role can view new tickets."
+msgid "ServiceDesk|Only project members with at least the Planner role can view new tickets."
 msgstr "只有至少具備報告者角色的專案成員可以查看新工單"
 
 msgid "ServiceDesk|Or reset and connect a new custom email address to this Service Desk."

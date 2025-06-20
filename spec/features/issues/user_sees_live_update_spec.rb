@@ -7,6 +7,7 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
   let_it_be(:user) { project.creator }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
   end
 
@@ -14,14 +15,22 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
     it 'updates the title' do
       issue = create(:issue, author: user, assignees: [user], project: project, title: 'new title')
 
+      using_session :other_session do
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_css('h1', text: 'new title')
+      end
+
+      sign_in(user)
       visit project_issue_path(project, issue)
 
-      expect(page).to have_text("new title")
+      click_button 'Edit title and description'
+      fill_in 'Title', with: 'updated title'
+      click_button 'Save changes'
 
-      issue.update!(title: "updated title")
-      wait_for_requests
-
-      expect(page).to have_text("updated title")
+      using_session :other_session do
+        expect(page).to have_css('h1', text: 'updated title')
+      end
     end
   end
 
@@ -34,13 +43,8 @@ RSpec.describe 'Issues > User sees live update', :js, feature_category: :team_pl
 
       expect(page).to have_css('.gl-badge', text: 'Confidential')
 
-      click_button 'Issue actions'
-      within '#new-actions-header-dropdown' do
-        click_button 'Turn off confidentiality'
-      end
-
-      visit project_issue_path(project, issue)
-      wait_for_requests
+      click_button 'More actions', match: :first
+      click_button 'Turn off confidentiality'
 
       expect(page).not_to have_css('.gl-badge', text: 'Confidential')
     end

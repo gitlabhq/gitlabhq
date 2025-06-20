@@ -14172,7 +14172,9 @@ CREATE TABLE duo_workflows_workflows (
     workflow_definition text DEFAULT 'software_development'::text NOT NULL,
     allow_agent_to_request_user boolean DEFAULT true NOT NULL,
     pre_approved_agent_privileges smallint[] DEFAULT '{1,2}'::smallint[] NOT NULL,
+    image text,
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
+    CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255))
 );
 
@@ -16293,7 +16295,8 @@ CREATE TABLE issuable_slas (
     due_at timestamp with time zone NOT NULL,
     label_applied boolean DEFAULT false NOT NULL,
     issuable_closed boolean DEFAULT false NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_1ae7689c41 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issuable_slas_id_seq

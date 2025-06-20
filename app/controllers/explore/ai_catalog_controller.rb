@@ -2,7 +2,7 @@
 
 module Explore
   class AiCatalogController < Explore::ApplicationController
-    feature_category :duo_workflow
+    feature_category :workflow_catalog
     before_action :check_feature_flag
 
     private

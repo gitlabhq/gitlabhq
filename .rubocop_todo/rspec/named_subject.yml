@@ -3176,7 +3176,6 @@ RSpec/NamedSubject:
     - 'spec/tooling/lib/tooling/mappings/partial_to_views_mappings_spec.rb'
     - 'spec/tooling/lib/tooling/mappings/view_to_js_mappings_spec.rb'
     - 'spec/tooling/lib/tooling/mappings/view_to_system_specs_mappings_spec.rb'
-    - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
     - 'spec/tooling/lib/tooling/test_map_generator_spec.rb'
     - 'spec/tooling/lib/tooling/test_map_packer_spec.rb'
     - 'spec/tooling/quality/test_level_spec.rb'

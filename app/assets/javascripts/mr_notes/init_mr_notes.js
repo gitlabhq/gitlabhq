@@ -4,13 +4,14 @@ import { initMrStateLazyLoad } from '~/mr_notes/init';
 import MergeRequest from '../merge_request';
 import { resetServiceWorkersPublicPath } from '../lib/utils/webpack';
 
-export default function initMrNotes() {
+export default function initMrNotes(createRapidDiffsApp) {
   resetServiceWorkersPublicPath();
 
   const mrShowNode = document.querySelector('.merge-request');
   // eslint-disable-next-line no-new
   new MergeRequest({
     action: mrShowNode.dataset.mrAction,
+    createRapidDiffsApp,
   });
 
   initMrStateLazyLoad();

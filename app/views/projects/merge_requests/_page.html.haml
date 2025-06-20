@@ -13,9 +13,7 @@
 - add_page_specific_style 'page_bundles/reports'
 - add_page_specific_style 'page_bundles/ci_status'
 
-- rapid_diffs_enabled = ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) && params[:rapid_diffs] == 'true'
-
-- unless rapid_diffs_enabled
+- unless rapid_diffs_page_enabled?
   - add_page_startup_api_call @endpoint_metadata_url
   - add_page_startup_api_call @linked_file_url if @linked_file_url
   - if mr_action == 'diffs' && !@file_by_file_default
@@ -94,7 +92,10 @@
         - if @project.builds_enabled?
           = render 'projects/commit/pipelines_list', disable_initialization: true, endpoint: pipelines_project_merge_request_path(@project, @merge_request)
       = render_if_exists "projects/merge_requests/reports_tab_pane"
-      - unless rapid_diffs_enabled
+      - if rapid_diffs_page_enabled?
+        = render "projects/merge_requests/tabs/pane", name: "diffs", class: "diffs", id: 'diffs' do
+          = render 'projects/merge_requests/rapid_diffs_app'
+      - else
         - params = request.query_parameters.merge(ck: @diffs_batch_cache_key, diff_head: true)
         = render "projects/merge_requests/tabs/pane", name: "diffs", id: "js-diffs-app", class: "diffs", data: diffs_tab_pane_data(@project, @merge_request, params)
 

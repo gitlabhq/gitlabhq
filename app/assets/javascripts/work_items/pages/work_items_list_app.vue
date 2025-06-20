@@ -83,6 +83,8 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/constants';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
+import getWorkItemsQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
@@ -98,7 +100,6 @@ import {
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '../constants';
-import getWorkItemsQuery from '../graphql/list/get_work_items.query.graphql';
 import { sortOptions, urlSortParams } from './list/constants';
 
 const EmojiToken = () =>
@@ -158,16 +159,6 @@ export default {
       required: false,
       default: 0,
     },
-    eeEpicListFullQuery: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-    eeEpicListSlimQuery: {
-      type: Object,
-      required: false,
-      default: null,
-    },
     withTabs: {
       type: Boolean,
       required: false,
@@ -215,9 +206,7 @@ export default {
   apollo: {
     workItemsFull: {
       query() {
-        return this.isEpicsList && this.eeEpicListFullQuery
-          ? this.eeEpicListFullQuery
-          : getWorkItemsQuery;
+        return getWorkItemsQuery;
       },
       variables() {
         return this.queryVariables;
@@ -241,7 +230,7 @@ export default {
     },
     workItemsSlim: {
       query() {
-        return this.eeEpicListSlimQuery;
+        return getWorkItemsSlimQuery;
       },
       variables() {
         return this.queryVariables;
@@ -250,7 +239,7 @@ export default {
         return data?.namespace.workItems.nodes ?? [];
       },
       skip() {
-        return !this.isEpicsList || this.eeEpicListSlimQuery === null || isEmpty(this.pageParams);
+        return isEmpty(this.pageParams);
       },
       result({ data }) {
         this.handleListDataResults(data);
@@ -290,13 +279,10 @@ export default {
   },
   computed: {
     workItems() {
-      if (this.isEpicsList) {
-        if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
-          return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
-        }
-        return this.workItemsSlim;
+      if (this.workItemsFull.length > 0 && this.workItemsSlim.length > 0 && !this.detailLoading) {
+        return this.combineSlimAndFullLists(this.workItemsSlim, this.workItemsFull);
       }
-      return this.workItemsFull;
+      return this.workItemsSlim;
     },
     shouldShowList() {
       return (
@@ -358,10 +344,7 @@ export default {
       return Boolean(this.searchQuery);
     },
     isLoading() {
-      if (this.isEpicsList) {
-        return this.$apollo.queries.workItemsSlim.loading && !this.isRefetching;
-      }
-      return this.detailLoading && !this.isRefetching;
+      return this.$apollo.queries.workItemsSlim.loading && !this.isRefetching;
     },
     isOpenTab() {
       return this.state === STATUS_OPEN;

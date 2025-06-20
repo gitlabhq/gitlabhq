@@ -21,8 +21,6 @@ import { useApp } from '~/rapid_diffs/stores/app';
 export class RapidDiffsFacade {
   root;
   appData;
-  streamRemainingDiffs;
-  reloadDiffs;
   intersectionObserver;
   adapterConfig = VIEWER_ADAPTERS;
 
@@ -31,12 +29,15 @@ export class RapidDiffsFacade {
   constructor({ DiffFileImplementation = DiffFile } = {}) {
     this.#DiffFileImplementation = DiffFileImplementation;
     this.root = document.querySelector('[data-rapid-diffs]');
-    this.appData = camelizeKeys(JSON.parse(this.root.dataset.appData));
-    this.streamRemainingDiffs = this.#streamRemainingDiffs.bind(this);
-    this.reloadDiffs = this.#reloadDiffs.bind(this);
   }
 
   init() {
+    this.appData = camelizeKeys(JSON.parse(this.root.dataset.appData));
+    if (this.#lazy) {
+      this.#reloadDiffs(true);
+    } else {
+      this.#streamRemainingDiffs();
+    }
     this.#delegateEvents();
     this.#registerCustomElements();
     this.#initHeader();
@@ -148,6 +149,10 @@ export class RapidDiffsFacade {
     disableBrokenContentVisibility(this.root);
     initHiddenFilesWarning(this.root.querySelector('[data-hidden-files-warning]'));
     this.root.addEventListener(DIFF_FILE_MOUNTED, useDiffsList(pinia).addLoadedFile);
+  }
+
+  get #lazy() {
+    return this.appData.lazy;
   }
 }
 

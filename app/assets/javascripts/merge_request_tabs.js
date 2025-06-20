@@ -351,7 +351,14 @@ export default class MergeRequestTabs {
         this.resetViewContainer();
         this.mergeRequestPipelinesTable = destroyPipelines(this.mergeRequestPipelinesTable);
       } else if (this.isDiffAction(action)) {
-        if (!isInVueNoteablePage()) {
+        if (this.createRapidDiffsApp) {
+          if (!this.rapidDiffsApp) {
+            this.rapidDiffsApp = this.createRapidDiffsApp();
+            this.rapidDiffsApp.init();
+          } else {
+            this.rapidDiffsApp.show();
+          }
+        } else if (!isInVueNoteablePage()) {
           /*
             for pages where we have not yet converted to the new vue
             implementation we load the diff tab content the old way,
@@ -533,17 +540,7 @@ export default class MergeRequestTabs {
 
   // Initialize the Changes tab
   async startDiffs(options = {}) {
-    if (this.createRapidDiffsApp) {
-      if (!this.rapidDiffsApp) {
-        this.rapidDiffsApp = this.createRapidDiffsApp();
-        this.rapidDiffsApp.reloadDiffs(true);
-        this.rapidDiffsApp.init();
-      } else {
-        this.rapidDiffsApp.show();
-      }
-    } else {
-      this.loadDiff(options);
-    }
+    this.loadDiff(options);
   }
   // load the legacy diff tab content from the backend
   loadDiff({ endpoint, strip = true }) {

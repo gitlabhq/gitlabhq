@@ -38,7 +38,6 @@ import {
   I18N_GROUP_TYPE,
   I18N_PROJECT_TYPE,
   INSTANCE_TYPE,
-  JOBS_ROUTE_PATH,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
@@ -391,7 +390,6 @@ describe('AdminRunnersApp', () => {
         .findComponent(RunnerJobStatusBadge);
 
       expect(badge.props('jobStatus')).toBe(mockRunners[0].jobExecutionStatus);
-      expect(badge.attributes('href')).toBe(`${adminUrl}#${JOBS_ROUTE_PATH}`);
     });
 
     it('When runner is paused or unpaused, some data is refetched', () => {

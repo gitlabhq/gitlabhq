@@ -60,7 +60,6 @@ RSpec/RepeatedSubjectCall:
     - 'spec/support/shared_examples/graphql/mutations/boards_list_create_shared_examples.rb'
     - 'spec/support/shared_examples/services/container_expiration_policy_shared_examples.rb'
     - 'spec/tasks/gitlab/check_rake_spec.rb'
-    - 'spec/tooling/lib/tooling/predictive_tests_spec.rb'
     - 'spec/workers/analytics/usage_trends/counter_job_worker_spec.rb'
     - 'spec/workers/purge_dependency_proxy_cache_worker_spec.rb'
     - 'spec/workers/stage_update_worker_spec.rb'

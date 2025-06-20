@@ -621,6 +621,8 @@
   - 1
 - - merge_requests_notify_approvers
   - 1
+- - merge_requests_policy_violations_detected_audit_event
+  - 1
 - - merge_requests_process_auto_merge_from_event
   - 1
 - - merge_requests_process_draft_note_published

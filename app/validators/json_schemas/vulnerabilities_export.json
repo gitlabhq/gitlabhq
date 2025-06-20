@@ -12,7 +12,7 @@
       ],
       "description": "This object should include an SVG asset to be rendered in PDF reports"
     },
-    "group_vulnerabilities_history": {
+    "group_vulnerabilities_over_time": {
       "type": [
         "object",
         "null"

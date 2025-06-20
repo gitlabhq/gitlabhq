@@ -87,6 +87,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   ]
   urgency :low, [:pipeline_status, :pipelines, :exposed_artifacts]
 
+  helper_method :rapid_diffs_page_enabled?
+
   def index
     @merge_requests = @issuables
 
@@ -105,8 +107,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rapid_diffs
-    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
-      ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip)
+    return render_404 unless rapid_diffs_page_enabled?
 
     streaming_offset = 5
     @reload_stream_url = diffs_stream_url(@merge_request)
@@ -723,6 +724,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def email_format_path
     merge_request_path(merge_request, format: :patch)
+  end
+
+  def rapid_diffs_page_enabled?
+    ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+      ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
+      params[:rapid_diffs] == 'true'
   end
 end
 

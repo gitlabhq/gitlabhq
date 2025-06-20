@@ -1,6 +1,89 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative '../lib/tooling/predictive_tests'
+require 'bundler/inline'
 
-Tooling::PredictiveTests.new.execute
+gemfile do
+  source 'https://rubygems.org'
+
+  gem 'gitlab', '~> 5.1'
+  gem 'test_file_finder', '~> 0.3'
+  # loaded from standard library by gitlab and will stop working on ruby 3.4
+  gem 'base64'
+  gem 'csv'
+end
+
+require 'optparse'
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
+
+  opts.on('--select-tests', 'Run test selection logic') do
+    options[:select_tests] = true
+  end
+
+  opts.on('--export-selected-test-metrics', 'Export selected test metrics') do
+    options[:export_metrics] = true
+  end
+
+  opts.on('-h', '--help', 'Show this help message') do
+    puts opts
+    exit
+  end
+end.parse!
+
+# Validate that exactly one option is provided
+if options.empty?
+  puts "Error: Please specify either --select-tests or --export-selected-test-metrics"
+  puts "Use --help for more information"
+  exit 1
+elsif options.size > 1
+  puts "Error: Please specify only one operation at a time"
+  puts "Use --help for more information"
+  exit 1
+end
+
+def validate_required_env_variables!(variables)
+  variables.select { |key| ENV[key.to_s].to_s.empty? }.tap do |missing_variables|
+    next if missing_variables.empty?
+
+    warn "[predictive tests] Missing ENV variable(s): #{missing_variables.join(',')}."
+    exit 1
+  end
+end
+
+if options[:select_tests]
+  require_relative '../lib/tooling/predictive_tests/test_selector'
+
+  validate_required_env_variables!(%w[
+    RSPEC_MATCHING_TEST_FILES_PATH
+    RSPEC_VIEWS_INCLUDING_PARTIALS_PATH
+    FRONTEND_FIXTURES_MAPPING_PATH
+    RSPEC_MATCHING_JS_FILES_PATH
+  ])
+  test_mapping_file = (ENV['RSPEC_TESTS_MAPPING_PATH'] if ENV['RSPEC_TESTS_MAPPING_ENABLED'] == 'true')
+
+  Tooling::PredictiveTests::TestSelector.new(
+    rspec_changed_files_path: ENV['RSPEC_CHANGED_FILES_PATH'],
+    rspec_matching_test_files_path: ENV['RSPEC_MATCHING_TEST_FILES_PATH'],
+    rspec_views_including_partials_path: ENV['RSPEC_VIEWS_INCLUDING_PARTIALS_PATH'],
+    frontend_fixtures_mapping_path: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
+    rspec_matching_js_files_path: ENV['RSPEC_MATCHING_JS_FILES_PATH'],
+    rspec_test_mapping_path: test_mapping_file
+  ).execute
+elsif options[:export_metrics]
+  require_relative '../lib/tooling/predictive_tests/metrics_exporter'
+
+  validate_required_env_variables!(%w[
+    GLCI_CRYSTALBALL_MAPPING_DIR
+    GLCI_ALL_FAILED_RSPEC_TESTS_FILE
+    GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR
+  ])
+
+  Tooling::PredictiveTests::MetricsExporter.new(
+    rspec_all_failed_tests_file: ENV['GLCI_ALL_FAILED_RSPEC_TESTS_FILE'],
+    crystalball_mapping_dir: ENV['GLCI_CRYSTALBALL_MAPPING_DIR'],
+    output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
+  ).execute
+end

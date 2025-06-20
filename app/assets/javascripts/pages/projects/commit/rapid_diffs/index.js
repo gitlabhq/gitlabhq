@@ -6,5 +6,4 @@ initCommitBoxInfo();
 initCommitActions();
 
 const app = createRapidDiffsApp();
-app.streamRemainingDiffs();
 app.init();

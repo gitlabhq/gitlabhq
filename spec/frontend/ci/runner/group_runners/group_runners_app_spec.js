@@ -35,7 +35,6 @@ import {
   I18N_STATUS_STALE,
   INSTANCE_TYPE,
   GROUP_TYPE,
-  JOBS_ROUTE_PATH,
   PARAM_KEY_PAUSED,
   PARAM_KEY_STATUS,
   PARAM_KEY_TAG,
@@ -278,7 +277,7 @@ describe('GroupRunnersApp', () => {
       const badge = findRunnerRow(id).findByTestId('td-status').findComponent(RunnerJobStatusBadge);
 
       expect(badge.props('jobStatus')).toBe(jobExecutionStatus);
-      expect(badge.attributes('href')).toBe(`${webUrl}#${JOBS_ROUTE_PATH}`);
+      // expect(badge.attributes('href')).toBe(webUrl);
     });
 
     it('view link is displayed correctly', () => {

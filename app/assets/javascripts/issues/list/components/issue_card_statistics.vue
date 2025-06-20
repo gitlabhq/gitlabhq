@@ -19,7 +19,7 @@ export default {
     closingMergeRequestsCount() {
       return (
         this.issue.mergeRequestsCount ||
-        findDevelopmentWidget(this.issue)?.closingMergeRequests.count
+        findDevelopmentWidget(this.issue)?.closingMergeRequests?.count
       );
     },
     downvotes() {

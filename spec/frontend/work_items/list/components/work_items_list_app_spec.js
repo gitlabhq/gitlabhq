@@ -49,7 +49,8 @@ import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
-import getWorkItemsQuery from '~/work_items/graphql/list/get_work_items.query.graphql';
+import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
+import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -64,13 +65,12 @@ import {
 } from '~/work_items/constants';
 import { createRouter } from '~/work_items/router';
 import {
-  workItemsQueryResponse,
+  workItemsQueryResponseCombined,
   workItemsQueryResponseNoLabels,
   workItemsQueryResponseNoAssignees,
   groupWorkItemStateCountsQueryResponse,
   combinedQueryResultExample,
 } from '../../mock_data';
-import { mockQueryFactory, mockListQueryFactory } from '../../graphql/mock_query_factory';
 
 jest.mock('~/lib/utils/scroll_utils', () => ({ scrollUp: jest.fn() }));
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -89,7 +89,8 @@ describeSkipVue3(skipReason, () => {
   Vue.use(VueApollo);
   Vue.use(VueRouter);
 
-  const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponse);
+  const defaultQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
+  const defaultSlimQueryHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
   const defaultCountsQueryHandler = jest
     .fn()
     .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
@@ -109,6 +110,7 @@ describeSkipVue3(skipReason, () => {
   const mountComponent = ({
     provide = {},
     queryHandler = defaultQueryHandler,
+    slimQueryHandler = defaultSlimQueryHandler,
     countsQueryHandler = defaultCountsQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
     workItemsToggleEnabled = true,
@@ -126,7 +128,8 @@ describeSkipVue3(skipReason, () => {
     wrapper = shallowMount(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),
       apolloProvider: createMockApollo([
-        [getWorkItemsQuery, queryHandler],
+        [getWorkItemsFullQuery, queryHandler],
+        [getWorkItemsSlimQuery, slimQueryHandler],
         [getWorkItemStateCountsQuery, countsQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
         ...additionalHandlers,
@@ -229,7 +232,7 @@ describeSkipVue3(skipReason, () => {
 
     it('renders work items', () => {
       expect(findIssuableList().props('issuables')).toEqual(
-        workItemsQueryResponse.data.namespace.workItems.nodes,
+        workItemsQueryResponseCombined.data.namespace.workItems.nodes,
       );
     });
 
@@ -266,9 +269,12 @@ describeSkipVue3(skipReason, () => {
       ${'when neither hasNextPage nor hasPreviousPage are true'} | ${{ hasNextPage: false, hasPreviousPage: false }} | ${false}
     `('$description', ({ pageInfo, exists }) => {
       it(`${exists ? 'renders' : 'does not render'} pagination controls`, async () => {
-        const response = cloneDeep(workItemsQueryResponse);
+        const response = cloneDeep(workItemsQueryResponseNoLabels);
         Object.assign(response.data.namespace.workItems.pageInfo, pageInfo);
-        mountComponent({ queryHandler: jest.fn().mockResolvedValue(response) });
+        mountComponent({
+          slimQueryHandler: jest.fn().mockResolvedValue(response),
+          queryHandler: jest.fn().mockResolvedValue(response),
+        });
         await waitForPromises();
 
         expect(findIssuableList().props('showPaginationControls')).toBe(exists);
@@ -306,79 +312,34 @@ describeSkipVue3(skipReason, () => {
         }),
       );
     });
+  });
 
-    it('uses the eeEpicListQuery prop rather than the regular query', async () => {
-      const handler = jest.fn();
-      const mockQuery = mockQueryFactory('eeQuery');
-      const mockEEQueryHandler = [mockQuery, handler];
-      mountComponent({
-        provide: {
-          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        },
-        additionalHandlers: [mockEEQueryHandler],
-        props: {
-          eeEpicListFullQuery: mockQuery,
-        },
-      });
+  describe('slim and full queries', () => {
+    beforeEach(() => {
+      mountComponent();
 
-      await waitForPromises();
-
-      expect(handler).toHaveBeenCalled();
+      return waitForPromises();
     });
 
-    it('calls the slim EE query as well as the full EE query', async () => {
-      const fullHandler = jest.fn();
-      const fullMockQuery = mockQueryFactory('eeFullQuery');
-      const fullEEQueryHandler = [fullMockQuery, fullHandler];
-      const slimHandler = jest.fn();
-      const slimMockQuery = mockQueryFactory('eeSlimQuery');
-      const slimEEQueryHandler = [slimMockQuery, slimHandler];
-      mountComponent({
-        provide: {
-          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        },
-        additionalHandlers: [fullEEQueryHandler, slimEEQueryHandler],
-        props: {
-          eeEpicListFullQuery: fullMockQuery,
-          eeEpicListSlimQuery: slimMockQuery,
-        },
-      });
-
-      await waitForPromises();
-
-      expect(fullHandler).toHaveBeenCalled();
-      expect(slimHandler).toHaveBeenCalled();
+    it('calls the slim query as well as the full query', () => {
+      expect(defaultQueryHandler).toHaveBeenCalled();
+      expect(defaultSlimQueryHandler).toHaveBeenCalled();
     });
 
-    it('combines the slim and full results correctly and passes the to the list component', async () => {
-      const fullHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoLabels);
-      const fullMockQuery = mockListQueryFactory('eeFullQuery');
-      const fullEEQueryHandler = [fullMockQuery, fullHandler];
-      const slimHandler = jest.fn().mockResolvedValue(workItemsQueryResponseNoAssignees);
-      const slimMockQuery = mockListQueryFactory('eeSlimQuery');
-      const slimEEQueryHandler = [slimMockQuery, slimHandler];
-      mountComponent({
-        provide: {
-          workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-        },
-        additionalHandlers: [fullEEQueryHandler, slimEEQueryHandler],
-        props: {
-          eeEpicListFullQuery: fullMockQuery,
-          eeEpicListSlimQuery: slimMockQuery,
-        },
-      });
-
-      await waitForPromises();
-
+    it('combines the slim and full results correctly and passes the to the list component', () => {
       expect(findIssuableList().props('issuables')).toEqual(combinedQueryResultExample);
     });
   });
 
-  describe('when there is an error fetching work items', () => {
+  describe.each`
+    queryName | handlerName
+    ${'full'} | ${'queryHandler'}
+    ${'slim'} | ${'slimQueryHandler'}
+  `('when there is an error with the $queryName list query', ({ handlerName }) => {
     const message = 'Something went wrong when fetching work items. Please try again.';
 
     beforeEach(async () => {
-      mountComponent({ queryHandler: jest.fn().mockRejectedValue(new Error('ERROR')) });
+      mountComponent({ [handlerName]: jest.fn().mockRejectedValue(new Error('ERROR')) });
       await waitForPromises();
     });
 
@@ -675,7 +636,7 @@ describeSkipVue3(skipReason, () => {
         });
 
         describe('selecting issues', () => {
-          const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
+          const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
           const payload = {
             iid: issue.iid,
             webUrl: issue.webUrl,
@@ -783,7 +744,7 @@ describeSkipVue3(skipReason, () => {
 
     describe('When the `show` parameter matches an item in the list', () => {
       it('displays the item in the drawer', async () => {
-        const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
+        const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
         await mountComponentWithShowParam(issue);
 
         expect(findDrawer().props('open')).toBe(true);
@@ -817,7 +778,7 @@ describeSkipVue3(skipReason, () => {
 
     describe('when window `popstate` event is triggered', () => {
       it('closes the drawer if there is no `show` param', async () => {
-        const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
+        const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
         await mountComponentWithShowParam(issue);
         expect(findDrawer().props('open')).toBe(true);
         expect(findDrawer().props('activeItem')).toMatchObject(issue);
@@ -830,8 +791,8 @@ describeSkipVue3(skipReason, () => {
       });
 
       it('updates the drawer with the new item if there is a `show` param', async () => {
-        const issue = workItemsQueryResponse.data.namespace.workItems.nodes[0];
-        const nextIssue = workItemsQueryResponse.data.namespace.workItems.nodes[1];
+        const issue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[0];
+        const nextIssue = workItemsQueryResponseCombined.data.namespace.workItems.nodes[1];
         await mountComponentWithShowParam(issue);
 
         expect(findDrawer().props('open')).toBe(true);
@@ -872,8 +833,11 @@ describeSkipVue3(skipReason, () => {
   });
 
   describe('empty states', () => {
-    const emptyWorkItemsResponse = cloneDeep(workItemsQueryResponse);
+    const emptyWorkItemsResponse = cloneDeep(workItemsQueryResponseNoLabels);
     emptyWorkItemsResponse.data.namespace.workItems.nodes = [];
+
+    const emptyWorkItemsSlimResponse = cloneDeep(workItemsQueryResponseNoAssignees);
+    emptyWorkItemsSlimResponse.data.namespace.workItems.nodes = [];
 
     const emptyCountsResponse = cloneDeep(groupWorkItemStateCountsQueryResponse);
     emptyCountsResponse.data.group.workItemStateCounts = {
@@ -887,6 +851,7 @@ describeSkipVue3(skipReason, () => {
         setWindowLocation('?label_name=bug');
         mountComponent({
           queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
           countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
         });
         await waitForPromises();
@@ -902,6 +867,7 @@ describeSkipVue3(skipReason, () => {
       beforeEach(async () => {
         mountComponent({
           queryHandler: jest.fn().mockResolvedValue(emptyWorkItemsResponse),
+          slimQueryHandler: jest.fn().mockResolvedValue(emptyWorkItemsSlimResponse),
           countsQueryHandler: jest.fn().mockResolvedValue(emptyCountsResponse),
         });
         await waitForPromises();

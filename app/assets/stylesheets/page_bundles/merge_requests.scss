@@ -796,9 +796,10 @@ $diff-file-header-top: 11px;
 
 .merge-request-overview {
   @include media-breakpoint-up(lg) {
+    $mr-overview-gap-width: 2rem;
     display: grid;
-    grid-template-columns: calc(97% - #{$right-sidebar-width}) auto;
-    grid-gap: 3%;
+    grid-template-columns: calc(100% - #{$right-sidebar-width} - #{$mr-overview-gap-width}) auto;
+    column-gap: $mr-overview-gap-width;
   }
 }
 

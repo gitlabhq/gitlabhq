@@ -57171,7 +57171,7 @@ msgstr "デフォルトでは、新規チケットは非公開です"
 msgid "ServiceDesk|On public projects, tickets are always confidential by default."
 msgstr "公開プロジェクトでは、チケットはデフォルトでは常に非公開です。"
 
-msgid "ServiceDesk|Only project members with at least the Reporter role can view new tickets."
+msgid "ServiceDesk|Only project members with at least the Planner role can view new tickets."
 msgstr "レポーター以上のロールを持つプロジェクトメンバーのみが新規チケットを閲覧できます。"
 
 msgid "ServiceDesk|Or reset and connect a new custom email address to this Service Desk."

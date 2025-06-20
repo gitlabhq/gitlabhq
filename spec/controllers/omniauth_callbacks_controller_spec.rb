@@ -163,7 +163,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       Rails.application.env_config['omniauth.auth'] = @original_env_config_omniauth_auth
     end
 
-    context 'when authentication succeeds' do
+    context 'when authentication succeeds', :prometheus do
       let(:extern_uid) { 'my-uid' }
       let(:provider) { :github }
 
@@ -173,7 +173,8 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
             change do
               Gitlab::Metrics.registry
                             .get(:gitlab_omniauth_login_total)
-                            .get(omniauth_provider: 'github', status: 'succeeded')
+                            &.get(omniauth_provider: 'github', status: 'succeeded')
+                            .to_f
             end.by(1)
           )
         end
@@ -185,7 +186,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         end
       end
 
-      context 'with signed-in user' do
+      context 'with signed-in user', :prometheus do
         before do
           sign_in user
         end
@@ -199,7 +200,8 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
             change do
               Gitlab::Metrics.registry
                              .get(:gitlab_omniauth_login_total)
-                             .get(omniauth_provider: 'github', status: 'succeeded')
+                             &.get(omniauth_provider: 'github', status: 'succeeded')
+                             .to_f
             end.by(1)
           )
         end
@@ -286,7 +288,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       end
     end
 
-    context 'when sign in fails' do
+    context 'when sign in fails', :prometheus do
       include RoutesHelpers
 
       let(:extern_uid) { 'my-uid' }
@@ -312,7 +314,8 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
             change do
               Gitlab::Metrics.registry
                              .get(:gitlab_omniauth_login_total)
-                             .get(omniauth_provider: 'saml', status: 'failed')
+                             &.get(omniauth_provider: 'saml', status: 'failed')
+                             .to_f
             end.by(1)
           )
         end

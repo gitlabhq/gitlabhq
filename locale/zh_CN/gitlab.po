@@ -57171,7 +57171,7 @@ msgstr "默认情况下，新票务是保密的"
 msgid "ServiceDesk|On public projects, tickets are always confidential by default."
 msgstr "在公共项目中，默认情况下，票务始终是保密的。"
 
-msgid "ServiceDesk|Only project members with at least the Reporter role can view new tickets."
+msgid "ServiceDesk|Only project members with at least the Planner role can view new tickets."
 msgstr "只有至少具有报告者角色的项目成员才能查看新票务。"
 
 msgid "ServiceDesk|Or reset and connect a new custom email address to this Service Desk."

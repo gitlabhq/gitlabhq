@@ -57542,7 +57542,7 @@ msgstr "Per impostazione predefinita, i nuovi ticket sono riservati"
 msgid "ServiceDesk|On public projects, tickets are always confidential by default."
 msgstr "Per impostazione predefinita, nei progetti pubblici i ticket sono sempre riservati."
 
-msgid "ServiceDesk|Only project members with at least the Reporter role can view new tickets."
+msgid "ServiceDesk|Only project members with at least the Planner role can view new tickets."
 msgstr "Solo i membri del progetto con almeno il ruolo di Reporter possono visualizzare i nuovi ticket."
 
 msgid "ServiceDesk|Or reset and connect a new custom email address to this Service Desk."

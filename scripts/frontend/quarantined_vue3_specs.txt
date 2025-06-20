@@ -38,7 +38,6 @@ ee/spec/frontend/metrics/details/related_traces_spec.js
 ee/spec/frontend/ml/ai_agents/views/edit_agent_spec.js
 ee/spec/frontend/oncall_schedule/schedule/components/preset_days/days_header_sub_item_spec.js
 ee/spec/frontend/projects/settings/branch_rules/components/view/index_spec.js
-ee/spec/frontend/projects/settings/components/shared_runners_toggle_spec.js
 ee/spec/frontend/related_items_tree/components/related_items_tree_body_spec.js
 ee/spec/frontend/related_items_tree/components/tree_root_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
@@ -117,7 +116,6 @@ spec/frontend/wikis/components/delete_wiki_modal_spec.js
 spec/frontend/performance_bar/index_spec.js
 spec/frontend/pipeline_wizard/components/step_spec.js
 spec/frontend/projects/commit/components/form_modal_spec.js
-spec/frontend/projects/report_abuse/components/report_abuse_dropdown_item_spec.js
 spec/frontend/projects/settings/components/branch_rule_modal_spec.js
 spec/frontend/projects/settings/topics/components/topics_token_selector_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js

@@ -5,4 +5,3 @@ initCompareSelector();
 
 const app = createRapidDiffsApp();
 app.init();
-app.reloadDiffs();

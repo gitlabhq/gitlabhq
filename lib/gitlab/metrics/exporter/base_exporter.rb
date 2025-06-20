@@ -1,13 +1,20 @@
 # frozen_string_literal: true
 
 require 'webrick'
-require 'prometheus/client/rack/exporter'
 
 module Gitlab
   module Metrics
     module Exporter
       class BaseExporter < Daemon
         CERT_REGEX = /-----BEGIN CERTIFICATE-----(?:.|\n)+?-----END CERTIFICATE-----/
+        RACK_EXPORTER =
+          if ENV["LABKIT_METRICS_ENABLED"] == "true"
+            require 'labkit/metrics/rack_exporter'
+            ::Labkit::Metrics::RackExporter
+          else
+            require 'prometheus/client/rack/exporter'
+            ::Prometheus::Client::Rack::Exporter
+          end
 
         attr_reader :server
 
@@ -83,7 +90,8 @@ module Gitlab
             use Rack::Deflater
             use Gitlab::Metrics::Exporter::MetricsMiddleware, pid
             use Gitlab::Metrics::Exporter::GcRequestMiddleware if gc_requests
-            use ::Prometheus::Client::Rack::Exporter if ::Gitlab::Metrics.metrics_folder_present?
+            use RACK_EXPORTER if ::Gitlab::Metrics.enabled?
+
             run ->(env) { [404, {}, ['']] }
           end
         end

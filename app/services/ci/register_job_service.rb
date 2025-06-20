@@ -342,7 +342,7 @@ module Ci
     end
 
     def track_exception_for_build(ex, build)
-      Gitlab::ErrorTracking.track_exception(ex, **build_tracking_data(build))
+      Gitlab::ErrorTracking.track_and_raise_for_dev_exception(ex, **build_tracking_data(build))
     end
 
     def build_tracking_data(build)

@@ -44,6 +44,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
 
     pajamas_sort_by 'Updated date', from: 'Created date'
 
+    wait_for_requests
+
     expect(first_issue).to include('task')
   end
 
@@ -59,6 +61,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
 
       pajamas_sort_by 'Start date', from: 'Created date'
 
+      wait_for_requests
+
       expect(first_issue).to include('incident')
     end
 
@@ -66,6 +70,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
       visit project_work_items_path(project)
 
       pajamas_sort_by 'Due date', from: 'Created date'
+
+      wait_for_requests
 
       expect(first_issue).to include('issue')
     end
@@ -77,6 +83,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
 
       click_button _('Sort direction: Descending')
 
+      wait_for_requests
+
       expect(first_issue).to include('task')
     end
 
@@ -86,6 +94,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
       visit project_work_items_path(project)
 
       pajamas_sort_by 'Due date', from: 'Created date'
+
+      wait_for_requests
 
       expect(first_issue).to include('issue')
     end
@@ -99,6 +109,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
 
       click_button _('Sort direction: Descending')
 
+      wait_for_requests
+
       expect(first_issue).to include('incident')
     end
 
@@ -106,6 +118,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
       visit project_work_items_path(project)
 
       pajamas_sort_by 'Title', from: 'Created date'
+
+      wait_for_requests
 
       expect(first_issue).to include('task')
     end
@@ -125,6 +139,8 @@ RSpec.describe "User sorts work items", :js, feature_category: :team_planning do
       select_tokens 'Assignee', '=', user2.username, submit: true
 
       pajamas_sort_by 'Title', from: 'Created date'
+
+      wait_for_requests
 
       expect(first_issue).to include('task')
       expect(last_issue).to include('issue')

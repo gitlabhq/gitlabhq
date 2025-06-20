@@ -145,19 +145,17 @@ RSpec.shared_examples 'filters by tag' do
     expect(page).to have_content missing_runner
 
     input_filtered_search_filter_is_only('Tags', tag)
+    wait_for_requests
 
     expect(page).to have_content found_runner
     expect(page).not_to have_content missing_runner
   end
 end
 
-RSpec.shared_examples 'shows runner jobs tab' do
-  it 'show jobs in tab' do
-    click_on("#{s_('Runners|Jobs')} #{job_count}")
-
-    within "[data-testid='job-row-#{job.id}']" do
-      expect(page).to have_link("##{job.id}")
-    end
+RSpec.shared_examples 'shows runner jobs' do
+  it 'show jobs' do
+    expect(page).to have_content("#{s_('Runners|Jobs')} #{job_count}")
+    expect(page).to have_link("##{job.id}")
   end
 end
 

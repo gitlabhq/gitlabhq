@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Metrics do
+RSpec.describe Gitlab::Metrics, :prometheus, feature_category: :scalability do
   include StubENV
 
   describe '.settings' do
@@ -17,39 +17,39 @@ RSpec.describe Gitlab::Metrics do
     end
   end
 
-  describe '.prometheus_metrics_enabled_unmemoized' do
-    subject { described_class.send(:prometheus_metrics_enabled_unmemoized) }
+  describe '.prometheus_metrics_enabled?' do
+    subject { described_class.prometheus_metrics_enabled? }
 
-    context 'prometheus metrics enabled in config' do
+    it { is_expected.to be_in([true, false]) }
+
+    context 'when Gitlab::CurrentSettings.prometheus_metrics_enabled is enabled' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(true)
+        allow(described_class).to receive(:metrics_folder_present?).and_return(true)
+        Labkit::Metrics::Client.enable!
       end
 
-      context 'when metrics folder is present' do
-        before do
-          allow(described_class).to receive(:metrics_folder_present?).and_return(true)
-        end
-
-        it 'metrics are enabled' do
-          expect(subject).to eq(true)
-        end
-      end
-
-      context 'when metrics folder is missing' do
-        before do
-          allow(described_class).to receive(:metrics_folder_present?).and_return(false)
-        end
-
-        it 'metrics are disabled' do
-          expect(subject).to eq(false)
-        end
-      end
+      it { is_expected.to be true }
     end
-  end
 
-  describe '.prometheus_metrics_enabled?' do
-    it 'returns a boolean' do
-      expect(described_class.prometheus_metrics_enabled?).to be_in([true, false])
+    context 'when Gitlab::CurrentSettings.prometheus_metrics_enabled is false' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(false)
+        allow(described_class).to receive(:metrics_folder_present?).and_return(true)
+        Labkit::Metrics::Client.enable!
+      end
+
+      it { is_expected.to be false }
+    end
+
+    context 'when metrics are disabled' do
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(true)
+        allow(described_class).to receive(:metrics_folder_present?).and_return(false)
+        Labkit::Metrics::Client.disable!
+      end
+
+      it { is_expected.to be false }
     end
   end
 
@@ -207,38 +207,33 @@ RSpec.describe Gitlab::Metrics do
   context 'prometheus metrics disabled' do
     before do
       allow(described_class).to receive(:prometheus_metrics_enabled?).and_return(false)
+      Labkit::Metrics::Client.disable!
     end
 
     it_behaves_like 'prometheus metrics API'
 
-    describe '#null_metric' do
-      subject { described_class.send(:provide_metric, :test) }
-
-      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
-    end
-
     describe '#counter' do
       subject { described_class.counter(:counter, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.to eq(described_class.null_metric) }
     end
 
     describe '#summary' do
       subject { described_class.summary(:summary, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.to eq(described_class.null_metric) }
     end
 
     describe '#gauge' do
       subject { described_class.gauge(:gauge, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.to eq(described_class.null_metric) }
     end
 
     describe '#histogram' do
       subject { described_class.histogram(:histogram, 'doc') }
 
-      it { is_expected.to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.to eq(described_class.null_metric) }
     end
   end
 
@@ -248,38 +243,33 @@ RSpec.describe Gitlab::Metrics do
     before do
       stub_const('Prometheus::Client::Multiprocdir', metrics_multiproc_dir)
       allow(described_class).to receive(:prometheus_metrics_enabled?).and_return(true)
+      Labkit::Metrics::Client.enable!
     end
 
     it_behaves_like 'prometheus metrics API'
 
-    describe '#null_metric' do
-      subject { described_class.send(:provide_metric, :test) }
-
-      it { is_expected.to be_nil }
-    end
-
     describe '#counter' do
       subject { described_class.counter(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.not_to eq(described_class.null_metric) }
     end
 
     describe '#summary' do
       subject { described_class.summary(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.not_to eq(described_class.null_metric) }
     end
 
     describe '#gauge' do
       subject { described_class.gauge(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.not_to eq(described_class.null_metric) }
     end
 
     describe '#histogram' do
       subject { described_class.histogram(:name, 'doc') }
 
-      it { is_expected.not_to be_a(Gitlab::Metrics::NullMetric) }
+      it { is_expected.not_to eq(described_class.null_metric) }
     end
   end
 

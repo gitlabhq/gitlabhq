@@ -327,14 +327,17 @@ export default {
 
       this.findAndReplace.shouldShowBar = true;
     },
+    findAndReplace_close() {
+      this.findAndReplace.shouldShowBar = false;
+      this.getCurrentTextArea()?.removeEventListener('scroll', this.findAndReplace_syncScroll);
+      this.cloneDiv?.parentElement.removeChild(this.cloneDiv);
+      this.cloneDiv = undefined;
+    },
     findAndReplace_handleKeyDown(e) {
       if (e.key === 'Enter') {
         e.preventDefault();
       } else if (e.key === 'Escape') {
-        this.findAndReplace.shouldShowBar = false;
-        this.getCurrentTextArea()?.removeEventListener('scroll', this.findAndReplace_syncScroll);
-        this.cloneDiv?.parentElement.removeChild(this.cloneDiv);
-        this.cloneDiv = undefined;
+        this.findAndReplace_close();
       }
     },
     findAndReplace_handleKeyUp(e) {
@@ -823,6 +826,14 @@ export default {
           @click="findAndReplace_handleNext"
         />
       </div>
+      <gl-button
+        category="tertiary"
+        icon="close"
+        size="small"
+        data-testid="find-and-replace-close"
+        :aria-label="s__('MarkdownEditor|Close find and replace bar')"
+        @click="findAndReplace_close"
+      />
     </div>
   </div>
 </template>
