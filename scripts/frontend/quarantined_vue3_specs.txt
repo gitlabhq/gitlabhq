@@ -14,7 +14,6 @@ ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/boards/components/board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/board_list_spec.js
 ee/spec/frontend/boards/components/board_new_issue_spec.js
-ee/spec/frontend/boards/components/epic_board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/epics_swimlanes_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/edit_framework/components/policies_section_spec.js
@@ -95,7 +94,6 @@ spec/frontend/groups/components/transfer_group_form_spec.js
 spec/frontend/helpers/init_simple_app_helper_spec.js
 spec/frontend/integrations/edit/components/trigger_field_spec.js
 spec/frontend/integrations/edit/components/trigger_fields_spec.js
-spec/frontend/invite_members/components/members_token_select_spec.js
 spec/frontend/issuable/related_issues/components/related_issues_root_spec.js
 spec/frontend/issues/list/components/issues_list_app_spec.js
 spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js

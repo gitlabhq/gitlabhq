@@ -96,17 +96,46 @@ Contact customer support for immediate help in restoration or recovery.
 
 ## Disk requirements
 
-Gitaly and Gitaly Cluster require fast local storage to perform effectively because they are heavy I/O-based processes. Therefore,
-we strongly recommend that all Gitaly nodes use solid-state drives (SSDs).
+Gitaly and Gitaly Cluster require fast local storage to perform effectively because they are heavy
+I/O-based processes. Therefore, we strongly recommend that all Gitaly nodes use solid-state drives
+(SSDs). These SSDs should have high read and write throughput as Gitaly operates on many small files
+concurrently.
 
-These SSDs should have a throughput of at least:
+As a reference, the following charts show the P99 disk IOPS across the Gitaly production fleet on
+GitLab.com at a one-minute granularity. The data were queried from a seven-day representative
+period, starting and ending on a Monday morning. Note the regular spikes in IOPS as traffic
+becomes more intense during the work week. The raw data shows even larger spikes, with writes
+peaking at 8000 IOPS. The available disk throughput must be able to handle these spikes to avoid
+disruptions to Gitaly requests.
 
-- 8,000 input/output operations per second (IOPS) for read operations.
-- 2,000 IOPS for write operations.
+- P99 disk IOPS (reads):
 
-These IOPS values are initial recommendations, and may be adjusted to greater or lesser values
-depending on the scale of your environment's workload. If you're running the environment on a
-cloud provider, refer to their documentation about how to configure IOPS correctly.
+  ![Chart showing P99 disk IOPS for reads.](img/disk_iops_read_v18_2.png)
+
+- P99 disk IOPS (writes):
+
+  ![Chart showing P99 disk IOPS for writes.](img/disk_iops_write_v18_2.png)
+
+We typically see:
+
+- Between 500 - 1000 reads per second, with peaks of 3500 reads per second.
+- Around 500 writes per second, with peaks of over 3000 writes per second.
+
+The majority of the Gitaly fleet as of the time of writing are `t2d-standard-32` instances
+with `pd-ssd` disks. The [advertised](https://cloud.google.com/compute/docs/disks/performance#t2d_instances)
+maximum write and read IOPS are 60,000.
+
+GitLab.com also employs stricter [concurrency limits](concurrency_limiting.md) on expensive
+Git operations that aren't enabled by default on GitLab Self-Managed installations. Relaxed concurrency
+limits, operations against particularly large monorepos, or the use of the
+[pack-objects cache](configure_gitaly.md#pack-objects-cache) can also significantly increase
+disk activity.
+
+In practice for your own environment, the disk activity you observe on your Gitaly instances may vary
+greatly from these published results. If you are running on a cloud environment, choosing larger
+instances typically increases the available disk IOPS. You may also choose to select a provisioned IOPS
+disk type with guaranteed throughput. Refer to the documentation of your cloud provider about how to
+configure IOPS correctly.
 
 For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons.
 Alternatives such as [NFS](../nfs.md) or [cloud-based file systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.

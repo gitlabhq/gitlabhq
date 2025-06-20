@@ -447,6 +447,9 @@
 * Respects user preference setting for transparency
 */
 @mixin translucent-glass-background($bgcolor: var(--gl-background-color-default)) {
+  // Fallback for users with prefers-reduced-transparency: reduce
+  background-color: $bgcolor;
+
   @media (prefers-reduced-transparency: no-preference) {
     background-color: rgb(from #{$bgcolor} r g b / 92%) !important;
     backdrop-filter: blur(24px);

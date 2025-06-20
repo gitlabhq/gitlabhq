@@ -13,6 +13,7 @@ import { mockResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
+jest.mock('~/repository/utils/ref_type', () => ({ getRefType: jest.fn(() => 'MOCK_REF_TYPE') }));
 jest.mock('~/lib/utils/url_utility', () => ({ joinPaths: jest.fn((...args) => args.join('/')) }));
 
 const getQueryHandlerSuccess = jest.fn().mockResolvedValue(mockResponse);
@@ -57,6 +58,17 @@ describe('Tree List', () => {
   const findFilterInput = () => wrapper.findComponent(GlFormInput);
   const findFilterIcon = () => wrapper.findComponent(GlIcon);
   const findNoFilesMessage = () => wrapper.findByText('No files found');
+
+  it('calls apollo query with correct parameters', () => {
+    expect(getQueryHandlerSuccess).toHaveBeenCalledWith({
+      projectPath: 'group/project',
+      ref: 'main',
+      refType: 'MOCK_REF_TYPE',
+      path: '/',
+      nextPageCursor: '',
+      pageSize: 100,
+    });
+  });
 
   it('renders a title', () => {
     expect(findHeader().text()).toBe('Files');

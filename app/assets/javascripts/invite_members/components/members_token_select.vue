@@ -141,7 +141,8 @@ export default {
       // assume success for this token
       return VALID_TOKEN_BACKGROUND;
     },
-    handleInput() {
+    handleInput(tokens) {
+      this.selectedTokens = tokens;
       this.$emit('input', this.selectedTokens);
     },
     handleFocus() {
@@ -180,7 +181,7 @@ export default {
 <template>
   <gl-token-selector
     ref="tokenSelector"
-    v-model="selectedTokens"
+    :selected-tokens="selectedTokens"
     :state="exceptionState"
     :dropdown-items="users"
     :loading="loading"

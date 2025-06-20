@@ -1394,12 +1394,7 @@ If you believe this applies to you, contact us for additional guidance as requir
 
 {{< /alert >}}
 
-Due to Gitaly having notable input and output requirements, we strongly
-recommend that all Gitaly nodes use solid-state drives (SSDs). These SSDs
-should have a throughput of at least 8,000
-input/output operations per second (IOPS) for read operations and 2,000 IOPS for
-write operations. If you're running the environment on a Cloud provider,
-refer to their documentation about how to configure IOPS correctly.
+Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 
 Gitaly servers must not be exposed to the public internet because network traffic
 on Gitaly is unencrypted by default. The use of a firewall is highly recommended

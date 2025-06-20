@@ -2,29 +2,22 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import VueRouter from 'vue-router';
 import IssuesListApp from 'ee_else_ce/issues/list/components/issues_list_app.vue';
-import { config, defaultClient, resolvers } from '~/graphql_shared/issuable_client';
-import { createApolloClientWithCaching } from '~/lib/graphql';
+import { resolvers, config } from '~/graphql_shared/issuable_client';
+import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
 import DesignDetail from '~/work_items/components/design_management/design_preview/design_details.vue';
 import { ROUTES } from '~/work_items/constants';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 import { gqlClient } from './graphql';
 
-let issuesClientPromise;
+let issuesClient;
 
-async function getIssuesClient() {
-  if (issuesClientPromise) return issuesClientPromise;
-  issuesClientPromise = gon.features?.frontendCaching
-    ? createApolloClientWithCaching(resolvers, { localCacheKey: 'issues_list', ...config })
-    : Promise.resolve(defaultClient);
-  return issuesClientPromise;
-}
-
-export async function getApolloProvider() {
-  const client = ['projects:issues:index', 'groups:issues'].includes(document.body.dataset.page)
-    ? await getIssuesClient()
-    : defaultClient;
-  return new VueApollo({ defaultClient: client });
+export async function issuesListClient() {
+  if (issuesClient) return issuesClient;
+  issuesClient = gon.features?.frontendCaching
+    ? await createApolloClientWithCaching(resolvers, { localCacheKey: 'issues_list', ...config })
+    : createDefaultClient(resolvers, config);
+  return issuesClient;
 }
 
 export async function mountJiraIssuesListApp() {
@@ -131,7 +124,9 @@ export async function mountIssuesListApp() {
   return new Vue({
     el,
     name: 'IssuesListRoot',
-    apolloProvider: await getApolloProvider(),
+    apolloProvider: new VueApollo({
+      defaultClient: await issuesListClient(),
+    }),
     router: new VueRouter({
       base: window.location.pathname,
       mode: 'history',

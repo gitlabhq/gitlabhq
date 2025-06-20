@@ -48,7 +48,7 @@ export default function setupVueRepositoryList() {
     refType,
   } = dataset;
   const router = createRouter(projectPath, escapedRef, fullName);
-  initFileTreeBrowser(router, { projectPath, ref, refType });
+  initFileTreeBrowser(router, { projectPath, ref, refType }, apolloProvider);
 
   apolloProvider.clients.defaultClient.cache.writeQuery({
     query: commitsQuery,

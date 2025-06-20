@@ -165,6 +165,7 @@ export default {
             ref: currentRef,
             refType: getRefType(refType),
             path: apiPath,
+            nextPageCursor: '',
             pageSize: TREE_PAGE_SIZE,
           },
         });

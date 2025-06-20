@@ -340,7 +340,7 @@ For details about what machine types we test against and how, refer to [validati
 
 Most standard disk types are expected to work for GitLab. However, be aware of the following specific call-outs:
 
-- [Gitaly](../gitaly/_index.md#disk-requirements) requires at least 8,000 input/output operations per second (IOPS) for read operations, and 2,000 IOPS for write operations.
+- Gitaly has certain [disk requirements](../gitaly/_index.md#disk-requirements) for Gitaly storages.
 - We don't recommend the use of any disk types that are "burstable" due to inconsistent performance.
 
 Other disk types are expected to work with GitLab. Choose based on your requirements such as durability or cost.
