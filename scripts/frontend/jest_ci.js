@@ -96,10 +96,21 @@ function parseArgumentsAndEnvironment() {
     }
   }
 
+  const coverageBranchExclusions = [
+    /^as-if-foss\//,
+    /^\d+-\d+-stable(-ee)?$/, // exclude stable branches like 17-10-stable-ee, 18-0-stable-ee, etc.
+  ];
+
+  // Enable coverage if:
+  // - explicitly requested via --coverage
+  // - not running in a merge request (CI_MERGE_REQUEST_IID is unset)
+  // - the current branch is not excluded by coverageBranchExclusions
+  // - not running under Vue 3 (Vue 3 tests are not currently covered)
+  // - not running in predictive mode (predictive mode does not support coverage)
   const coverage =
     options.coverage ||
     (!process.env.CI_MERGE_REQUEST_IID &&
-      !/^as-if-foss\//.test(process.env.CI_COMMIT_BRANCH) &&
+      !coverageBranchExclusions.some((rule) => rule.test(process.env.CI_COMMIT_BRANCH)) &&
       !options.vue3 &&
       !options.predictive);
 
