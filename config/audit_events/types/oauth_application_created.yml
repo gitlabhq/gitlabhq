@@ -1,0 +1,10 @@
+---
+name: oauth_application_created
+description: User creates an OAuth application
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/550321
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194557
+feature_category: authorization
+milestone: '18.2'
+saved_to_database: true
+streamed: true
+scope: [User]

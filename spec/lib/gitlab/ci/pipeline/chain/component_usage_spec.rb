@@ -35,8 +35,9 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::ComponentUsage, feature_category: :p
 
     it_behaves_like 'internal event tracking' do
       let(:event) { 'ci_catalog_component_included' }
-      let(:label) { component.id.to_s }
+      let(:label) { "#{component.project.full_path}/#{component.name}" }
       let(:value) { 1 } # Default resource_type
+      let(:property) { component.version.name }
     end
 
     it 'creates a component usage record' do

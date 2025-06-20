@@ -103,6 +103,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`oauth_application_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194557) | User creates an OAuth application | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/550321) | User |
 | [`secure_ci_job_token_policies_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170930) | Permissions are updated for a CI_JOB_TOKEN scope | {{< icon name="check-circle" >}} Yes | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/495144) | Project |
 | [`user_authorized_oauth_application`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/179187) | User authorized an OAuth application | {{< icon name="check-circle" >}} Yes | GitLab [17.9](https://gitlab.com/gitlab-org/gitlab/-/issues/514152) | User |
 
