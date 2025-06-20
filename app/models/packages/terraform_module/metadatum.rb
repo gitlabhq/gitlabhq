@@ -15,8 +15,6 @@ module Packages
 
       attribute :fields, default: -> { {} }
 
-      ignore_column :semver_patch_convert_to_bigint, remove_with: '18.2', remove_after: '2025-06-20'
-
       validates :package, :project, presence: true
       validates :fields, json_schema: { filename: 'terraform_module_metadata', detail_errors: true },
         if: -> { fields.present? }

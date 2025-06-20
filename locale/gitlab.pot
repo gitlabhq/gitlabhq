@@ -23349,10 +23349,22 @@ msgstr ""
 msgid "DuoAgentsPlatform|Agents"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Convert Jenkins to CI"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Fetching logs..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|New"
+msgstr ""
+
+msgid "DuoAgentsPlatform|New Agent Flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New Agent runs will appear here."
@@ -23367,13 +23379,25 @@ msgstr ""
 msgid "DuoAgentsPlatform|Output"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Path must be a Jenkinsfile with the exact matching case."
+msgstr ""
+
 msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Prompt is unavailable"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Run an Agent Flow"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Select Agent Flow"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Start Agent Flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"
