@@ -6,6 +6,8 @@ module Gitlab
       class ImportPullRequestsWorker # rubocop:disable Scalability/IdempotentWorker
         include StageMethods
 
+        resumes_work_when_interrupted!
+
         private
 
         # project - An instance of Project.

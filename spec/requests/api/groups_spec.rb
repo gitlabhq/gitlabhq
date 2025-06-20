@@ -683,12 +683,17 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context "when authenticated as user" do
+      let_it_be(:project4) { create(:project, namespace: group1, path: 'test1', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+      let_it_be(:project5) { create(:project, namespace: group1, path: 'test2', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
       it "returns one of user1's groups", :aggregate_failures do
         # TODO remove this in https://gitlab.com/gitlab-org/gitlab/-/issues/545723.
-        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+        allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(104)
 
         project = create(:project, namespace: group2, path: 'Foo')
+        project2 = create(:project, namespace: group2, path: 'Foo2')
         create(:project_group_link, project: project, group: group1)
+        create(:project_group_link, project: project2, group: group1)
         group = create(:group)
         link = create(:group_group_link, shared_group: group1, shared_with_group: group)
 
@@ -725,10 +730,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
         expect(json_response['shared_with_groups'][0]).to have_key('expires_at')
         expect(json_response['projects']).to be_an Array
-        expect(json_response['projects'].length).to eq(3)
+        expect(json_response['projects'].length).to eq(5)
         expect(json_response['shared_projects']).to be_an Array
-        expect(json_response['shared_projects'].length).to eq(1)
-        expect(json_response['shared_projects'][0]['id']).to eq(project.id)
+        expect(json_response['shared_projects'].length).to eq(2)
+        expect(json_response['shared_projects'][0]['id']).to eq(project2.id)
         expect(json_response['math_rendering_limits_enabled']).to eq(group2.math_rendering_limits_enabled?)
       end
 

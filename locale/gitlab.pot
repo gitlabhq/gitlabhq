@@ -49354,6 +49354,9 @@ msgstr ""
 msgid "ProjectsNew|Analyze your source code for known security vulnerabilities."
 msgstr ""
 
+msgid "ProjectsNew|Analyze your source code for known security vulnerabilities. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "ProjectsNew|Authenticate through GitHub"
 msgstr ""
 

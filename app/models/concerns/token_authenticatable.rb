@@ -45,6 +45,12 @@ module TokenAuthenticatable
         strategy.encode(token)
       end
 
+      if options[:encrypted] && respond_to?(:scope)
+        scope :with_encrypted_tokens, ->(token_values) do
+          where("#{token_field}_encrypted" => Array.wrap(token_values))
+        end
+      end
+
       mod = token_authenticatable_module
 
       mod.define_method(token_field) do

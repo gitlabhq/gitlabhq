@@ -24,6 +24,7 @@
     can_select_namespace: current_user.can_select_namespace?.to_s,
     can_create_project: current_user.can_create_project?.to_s,
     user_project_limit: current_user.projects_limit,
+    display_sha256_repository: Feature.enabled?(:support_sha256_repositories, current_user),
     restricted_visibility_levels: restricted_visibility_levels,
     default_project_visibility: default_project_visibility,
     import_history_path: import_history_index_path,

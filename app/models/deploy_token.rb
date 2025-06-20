@@ -50,11 +50,6 @@ class DeployToken < ApplicationRecord
   accepts_nested_attributes_for :project_deploy_tokens
 
   scope :active, -> { where("revoked = false AND expires_at >= NOW()") }
-  scope :with_encrypted_tokens, ->(tokens) {
-    return none if tokens.empty?
-
-    where(token_encrypted: tokens)
-  }
 
   def self.gitlab_deploy_token
     active.find_by(name: GITLAB_DEPLOY_TOKEN_NAME)

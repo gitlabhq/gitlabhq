@@ -53,9 +53,11 @@ export default {
         v-safe-html="disabledMessage"
         class="help-text !gl-text-warning"
       ></p>
-      <p v-if="description" class="help-text">
-        {{ description }}
-      </p>
+      <slot name="description">
+        <p v-if="description" class="help-text">
+          {{ description }}
+        </p>
+      </slot>
     </gl-form-checkbox>
   </div>
 </template>

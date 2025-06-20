@@ -2944,6 +2944,16 @@ class Project < ApplicationRecord
     super && !marked_for_deletion?
   end
 
+  def self_or_ancestors_archived?
+    BatchLoader.for(id).batch(default_value: false) do |project_ids, loader|
+      Project
+        .self_or_ancestors_archived
+        .where(id: project_ids)
+        .pluck(:id)
+        .each { |project_id| loader.call(project_id, true) }
+    end
+  end
+
   def renamed?
     persisted? && path_changed?
   end

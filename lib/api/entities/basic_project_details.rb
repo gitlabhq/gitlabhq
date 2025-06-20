@@ -63,6 +63,8 @@ module API
         # once when the entities are rendered
         projects_relation.each(&:forks_count)
 
+        projects_relation.each(&:self_or_ancestors_archived?)
+
         super
       end
 

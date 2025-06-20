@@ -93,7 +93,8 @@ module ContainerExpirationPolicies
     end
 
     def next_ten_requiring_ids_from_replica
-      use_replica_if_available do
+      sessions = [::ApplicationRecord, ::Ci::ApplicationRecord]
+      ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available(sessions) do
         ContainerRepository.requiring_cleanup
                            .order(:expiration_policy_cleanup_status, :expiration_policy_started_at)
                            .limit(10)
@@ -182,12 +183,6 @@ module ContainerExpirationPolicies
 
     def project
       container_repository.project
-    end
-
-    def use_replica_if_available(&blk)
-      ::Gitlab::Database::LoadBalancing::SessionMap
-        .with_sessions([::ApplicationRecord, ::Ci::ApplicationRecord])
-        .use_replicas_for_read_queries(&blk)
     end
   end
 end

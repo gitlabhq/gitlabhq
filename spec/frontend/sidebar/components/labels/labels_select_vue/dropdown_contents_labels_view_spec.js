@@ -12,6 +12,7 @@ import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_help
 import DropdownContentsLabelsView from '~/sidebar/components/labels/labels_select_vue/dropdown_contents_labels_view.vue';
 import LabelItem from '~/sidebar/components/labels/labels_select_vue/label_item.vue';
 import { stubComponent } from 'helpers/stub_component';
+import waitForPromises from 'helpers/wait_for_promises';
 import * as actions from '~/sidebar/components/labels/labels_select_vue/store/actions';
 import * as getters from '~/sidebar/components/labels/labels_select_vue/store/getters';
 import mutations from '~/sidebar/components/labels/labels_select_vue/store/mutations';
@@ -71,7 +72,9 @@ describe('DropdownContentsLabelsView', () => {
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findSearchBoxByType = () => wrapper.findComponent(GlSearchBoxByType);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
-  const findLabelItems = () => wrapper.findAllComponents(LabelItem);
+  const findLabelList = () => wrapper.findByTestId('label-items');
+  const findLabelItems = () => findLabelList().findAll('.label-item');
+  const findLabelItemWrappers = () => findLabelList().findAll('li');
 
   const setCurrentHighlightItem = (value) => {
     let initialValue = -1;
@@ -86,7 +89,7 @@ describe('DropdownContentsLabelsView', () => {
     it('calls `focusInput` on searchInput field when the component appears', async () => {
       findIntersectionObserver().vm.$emit('appear');
 
-      await nextTick();
+      await waitForPromises();
 
       expect(focusInputMock).toHaveBeenCalled();
     });
@@ -195,11 +198,11 @@ describe('DropdownContentsLabelsView', () => {
 
     describe('when the "down" key is pressed', () => {
       it('highlights the item', async () => {
-        expect(findLabelItems().at(0).classes()).not.toContain('is-focused');
+        expect(findLabelItemWrappers().at(0).classes()).not.toContain('is-focused');
 
         await findLabelsList().trigger('keydown.down');
 
-        expect(findLabelItems().at(0).classes()).toContain('is-focused');
+        expect(findLabelItemWrappers().at(0).classes()).toContain('is-focused');
       });
     });
 
@@ -207,11 +210,11 @@ describe('DropdownContentsLabelsView', () => {
       it('un-highlights the item', async () => {
         await setCurrentHighlightItem(1);
 
-        expect(findLabelItems().at(1).classes()).toContain('is-focused');
+        expect(findLabelItemWrappers().at(1).classes()).toContain('is-focused');
 
         await findLabelsList().trigger('keydown.up');
 
-        expect(findLabelItems().at(1).classes()).not.toContain('is-focused');
+        expect(findLabelItemWrappers().at(1).classes()).not.toContain('is-focused');
       });
     });
 
@@ -307,7 +310,7 @@ describe('DropdownContentsLabelsView', () => {
     });
 
     it('renders label elements for all labels', () => {
-      expect(findLabelItems()).toHaveLength(mockLabels.length);
+      expect(wrapper.findAllComponents(LabelItem)).toHaveLength(mockLabels.length);
     });
 
     it('renders label element with `highlight` set to true when value of `currentHighlightItem` is more than -1', async () => {

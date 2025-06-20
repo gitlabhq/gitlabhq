@@ -1,13 +1,27 @@
 <script>
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlFormGroup, GlSprintf, GlLink, GlExperimentBadge } from '@gitlab/ui';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
+import MultipleChoiceSelector from '~/vue_shared/components/multiple_choice_selector.vue';
+import MultipleChoiceSelectorItem from '~/vue_shared/components/multiple_choice_selector_item.vue';
 import SharedProjectCreationFields from './shared_project_creation_fields.vue';
 
 export default {
   components: {
     GlButton,
+    GlFormGroup,
+    GlSprintf,
+    GlLink,
+    GlExperimentBadge,
     MultiStepFormTemplate,
+    MultipleChoiceSelector,
+    MultipleChoiceSelectorItem,
     SharedProjectCreationFields,
+  },
+  inject: {
+    displaySha256Repository: {
+      default: false,
+    },
   },
   props: {
     option: {
@@ -20,11 +34,25 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      configurationReadme: true,
+      configurationSast: false,
+      configurationSha256: false,
+    };
+  },
   methods: {
     onSelectNamespace(newNamespace) {
       this.$emit('onSelectNamespace', newNamespace);
     },
+    onConfigurationChange(checked) {
+      this.configurationReadme = checked.includes('readme');
+      this.configurationSast = checked.includes('sast');
+      this.configurationSha256 = checked.includes('sha256');
+    },
   },
+  helpPageSast: helpPagePath('user/application_security/sast/_index'),
+  projectConfigurationDefaultOptions: ['readme'],
 };
 </script>
 
@@ -35,7 +63,80 @@ export default {
         :namespace="namespace"
         @onSelectNamespace="onSelectNamespace"
       />
-      <!-- Project Configuration and Experimental features will be added here in: https://gitlab.com/gitlab-org/gitlab/-/issues/514700 -->
+
+      <gl-form-group
+        :label="s__('ProjectsNew|Project Configuration')"
+        data-testid="configuration-form-group"
+      >
+        <multiple-choice-selector
+          :checked="$options.projectConfigurationDefaultOptions"
+          data-testid="configuration-selector"
+          @input="onConfigurationChange"
+        >
+          <multiple-choice-selector-item
+            value="readme"
+            :title="s__('ProjectsNew|Initialize repository with a README')"
+            data-testid="initialize-with-readme-checkbox"
+          >
+            <template #description>
+              {{
+                s__(
+                  'ProjectsNew|Allows you to immediately clone this project’s repository. Skip this if you plan to push up an existing repository.',
+                )
+              }}
+              <input
+                type="hidden"
+                name="project[initialize_with_readme]"
+                :value="configurationReadme"
+              />
+            </template>
+          </multiple-choice-selector-item>
+          <multiple-choice-selector-item
+            value="sast"
+            :title="s__('ProjectsNew|Enable Static Application Security Testing (SAST)')"
+            data-testid="initialize-with-sast-checkbox"
+          >
+            <template #description>
+              <p class="help-text">
+                <gl-sprintf
+                  :message="
+                    s__(
+                      'ProjectsNew|Analyze your source code for known security vulnerabilities. %{linkStart}Learn more%{linkEnd}.',
+                    )
+                  "
+                >
+                  <template #link="{ content }">
+                    <gl-link :href="$options.helpPageSast">{{ content }}</gl-link>
+                  </template>
+                </gl-sprintf>
+              </p>
+              <input
+                type="hidden"
+                name="project[initialize_with_sast]"
+                :value="configurationSast"
+              />
+            </template>
+          </multiple-choice-selector-item>
+          <multiple-choice-selector-item
+            v-if="displaySha256Repository"
+            value="sha256"
+            :description="
+              s__(
+                `ProjectsNew|Might break existing functionality with other repositories or APIs. It's not possible to change SHA-256 repositories back to the default SHA-1 hashing algorithm.`,
+              )
+            "
+            data-testid="initialize-with-sha-256-checkbox"
+          >
+            {{ s__('ProjectsNew|Use SHA-256 for repository hashing algorithm') }}
+            <gl-experiment-badge class="!gl-m-0" />
+            <input
+              type="hidden"
+              name="project[use_sha256_repository]"
+              :value="configurationSha256"
+            />
+          </multiple-choice-selector-item>
+        </multiple-choice-selector>
+      </gl-form-group>
 
       <!-- Two checkboxes from JiHu should be added here in: https://gitlab.com/gitlab-org/gitlab/-/issues/514700 -->
     </template>

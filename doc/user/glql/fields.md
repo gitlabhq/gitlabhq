@@ -32,8 +32,9 @@ This feature is available for testing, but not ready for production use.
 
 With GitLab Query Language (GLQL), fields are used to:
 
-- Filter the results returned from a [GLQL query](_index.md#query-syntax).
-- Control the details displayed in a [GLQL view](_index.md#presentation-syntax).
+- [Filter](#fields-inside-query) the results returned from a [GLQL query](_index.md#query-syntax).
+- [Control the details](#fields-in-glql-views) displayed in a [GLQL view](_index.md#presentation-syntax).
+- [Sort](#fields-to-sort-glql-views-by) the results displayed in a GLQL view.
 
 The following fields are available:
 
@@ -1335,7 +1336,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 ### Assignees
 
-**Description**: Display all users who are assigned to an issue or a merge request listed in the view.
+**Description**: Display all users who are assigned to an object listed in the view.
 
 **Field name**: `assignee`
 
@@ -1345,39 +1346,63 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 ### Author
 
-**Description**: Display the author of an issue or a merge request listed in the view.
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display the author of an object listed in the view.
 
 **Field name**: `author`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Closed at
 
-**Description**: Display relative time since today when an issue or a merge request listed in the view was closed.
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display relative time since today when an object listed in the view was closed.
 
 **Field name**: `closed`
 
 **Aliases**: `closedAt`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Confidential
 
-**Description**: Display either `Yes` or `No` indicating whether an issue listed in the view is confidential.
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display either `Yes` or `No` indicating whether an object listed in the view is confidential.
 
 **Field name**: `confidential`
 
-**Supported for**: Issues
+**Supported for**: Issues, epics
 
 ### Created at
 
-**Description**: Display relative time since today when an issue or a merge request listed in the view was opened.
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display relative time since today when an object listed in the view was opened.
 
 **Field name**: `created`
 
 **Aliases**: `createdAt`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Deployed at
 
@@ -1411,25 +1436,37 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 ### Description
 
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
 **Description**: Displays the description of an issue or a merge request listed in the view.
 
 **Field name**: `description`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Due date
 
-**Description**: Display relative time since today when an issue listed in the view is due.
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display relative time since today when an object listed in the view is due.
 
 **Field name**: `due`
 
 **Aliases**: `dueDate`
 
-**Supported for**: Issues
+**Supported for**: Issues, epics
 
 ### Health status
 
-**Description**: Display a badge indicating the health status of an issue listed in the view.
+**Description**: Display a badge indicating the health status of an object listed in the view.
 
 **Field name**: `health`
 
@@ -1439,11 +1476,17 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 ### ID
 
-**Description**: Display the ID of an issue or merge request listed in the view.
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display the ID of an object listed in the view.
 
 **Field name**: `id`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Iteration
 
@@ -1453,7 +1496,7 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 {{< /history >}}
 
-**Description**: Display the iteration an issue listed in the view may be associated with.
+**Description**: Display the iteration an object listed in the view may be associated with.
 
 **Field name**: `iteration`
 
@@ -1461,13 +1504,19 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 ### Labels
 
-**Description**: Display all the labels associated with an issue or a merge request listed in the view.
+**Description**: Display all labels associated with an object listed in the view.
+
+{{< history >}}
+
+- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
 
 **Field name**: `label`
 
 **Aliases**: `labels`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Last comment
 
@@ -1477,11 +1526,11 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 {{< /history >}}
 
-**Description**: Display the last comment made on an issue or a merge request listed in the view.
+**Description**: Display the last comment made on an object listed in the view.
 
 **Field name**: `lastComment`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Merged at
 
@@ -1501,11 +1550,11 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 ### Milestone
 
-**Description**: Display the milestone associated with an issue or a merge request listed in the view.
+**Description**: Display the milestone associated with an object listed in the view.
 
 **Field name**: `milestone`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Reviewers
 
@@ -1523,22 +1572,36 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Supported for**: Merge requests
 
+### Start date
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: Display the start date of epics listed in the view.
+
+**Field name**: `startDate`
+
+**Supported for**: Epics
+
 ### State
 
-**Description**: Display a badge indicating the state of an issue or merge request listed in the view. For issues,
-the state values can include `Open` or `Closed`. For merge requests, these include `Open`, `Closed` and `Merged`.
+**Description**: Display a badge indicating the state of an object listed in the view. For issues and epics,
+possible values are `Open` or `Closed`. For merge requests, possible values are `Open`, `Closed` or `Merged`.
 
 **Field name**: `state`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Title
 
-**Description**: Displays the title of an issue or a merge request listed in the view.
+**Description**: Displays the title of an object listed in the view.
 
 **Field name**: `title`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Type
 
@@ -1550,18 +1613,44 @@ the state values can include `Open` or `Closed`. For merge requests, these inclu
 
 ### Updated at
 
-**Description**: Display relative time since today when an issue or a merge request listed in the view was last updated.
+**Description**: Display relative time since today when an object listed in the view was last updated.
 
 **Field name**: `updated`
 
 **Aliases**: `updatedAt`
 
-**Supported for**: Issues, merge requests
+**Supported for**: Issues, epics, merge requests
 
 ### Weight
 
-**Description**: Display the weight of an issue listed in the view.
+**Description**: Display the weight of an object listed in the view.
 
 **Field name**: `weight`
 
 **Supported for**: Issues
+
+## Fields to sort GLQL views by
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/178) in GitLab 18.2.
+
+{{< /history >}}
+
+In GLQL views, the `sort` view parameter is a field name followed by
+a sort order (`asc` or `desc`) that sorts the results by the specified
+field and order.
+
+| Field         | Supported for                 | Description                                     |
+|---------------|-------------------------------|-------------------------------------------------|
+| Closed at     | Issues, epics, merge requests | Sort by closed date                             |
+| Created       | Issues, epics, merge requests | Sort by created date                            |
+| Due date      | Issues, epics                 | Sort by due date                                |
+| Health status | Issues                        | Sort by health status                           |
+| Merged at     | Merge requests                | Sort by merge date                              |
+| Milestone     | Issues, merge requests        | Sort by milestone due date                      |
+| Popularity    | Issues, epics, merge requests | Sort by the number of thumbs up emoji reactions |
+| Start date    | Epics                         | Sort by start date                              |
+| Title         | Issues, epics, merge requests | Sort by title                                   |
+| Updated       | Issues, epics, merge requests | Sort by last updated date                       |
+| Weight        | Issues                        | Sort by weight                                  |

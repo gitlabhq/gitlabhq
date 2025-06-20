@@ -1443,6 +1443,39 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response.map { |r| [r['type'], r['name']] }.compact).to eq(refs)
       end
+
+      it 'applies per_page limit to Gitaly calls' do
+        expect_next_instance_of(Gitlab::Repositories::ContainingCommitFinder, project.repository, commit_id, limit: 50, type: 'all') do |finder|
+          expect(finder).to receive(:execute).and_call_original
+        end
+
+        get api(route, current_user), params: { type: 'all', per_page: 50 }
+        expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      context 'when second page is requested' do
+        it 'fetches enough records to display the second page' do
+          expect_next_instance_of(Gitlab::Repositories::ContainingCommitFinder, project.repository, commit_id, limit: 100, type: 'all') do |finder|
+            expect(finder).to receive(:execute).and_call_original
+          end
+
+          get api(route, current_user), params: { type: 'all', per_page: 50, page: 2 }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      context 'when feature flag "containing_commits_limit" is disabled' do
+        before do
+          stub_feature_flags(containing_commits_limit: false)
+        end
+
+        it 'does not limit Gitaly calls' do
+          expect(Gitlab::Repositories::ContainingCommitFinder).not_to receive(:new)
+
+          get api(route, current_user), params: { type: 'all', per_page: 50 }
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 

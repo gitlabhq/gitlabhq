@@ -148,6 +148,17 @@ RSpec.describe Gitlab::Database::LoadBalancing::SessionMap, feature_category: :d
           # exact logic for use_replicas_for_read_queries is tested in `.with_sessions` test suite
         end
       end
+
+      it 'accepts custom sessions parameter' do
+        sessions = [::ApplicationRecord, ::Ci::ApplicationRecord]
+
+        expect(described_class).to receive(:with_sessions).with(sessions).and_return(scoped_session)
+        expect(scoped_session).to receive(:use_replicas_for_read_queries).and_yield
+
+        described_class.use_replica_if_available(sessions) do
+          # exact logic for use_replicas_for_read_queries is tested in `.with_sessions` test suite
+        end
+      end
     end
   end
 

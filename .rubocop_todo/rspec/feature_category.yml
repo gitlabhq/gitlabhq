@@ -1158,7 +1158,6 @@ RSpec/FeatureCategory:
     - 'spec/controllers/projects/variables_controller_spec.rb'
     - 'spec/controllers/projects/web_ide_schemas_controller_spec.rb'
     - 'spec/controllers/projects/web_ide_terminals_controller_spec.rb'
-    - 'spec/controllers/snippets/blobs_controller_spec.rb'
     - 'spec/controllers/snippets_controller_spec.rb'
     - 'spec/controllers/users/callouts_controller_spec.rb'
     - 'spec/controllers/users/terms_controller_spec.rb'

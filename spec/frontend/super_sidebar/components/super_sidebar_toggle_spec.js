@@ -90,5 +90,19 @@ describe('SuperSidebarToggle component', () => {
         property: 'nav_sidebar',
       });
     });
+
+    it('expands the sidebar and focuses the collapse toggle', async () => {
+      createWrapper({ type: 'expand' });
+      findButton().vm.$emit('click');
+      await nextTick();
+      expect(toggleSuperSidebarCollapsed).toHaveBeenCalledWith(false, true);
+      expect(document.activeElement).toEqual(
+        document.querySelector(`.${JS_TOGGLE_COLLAPSE_CLASS}`),
+      );
+      expect(trackingSpy).toHaveBeenCalledWith(undefined, 'nav_show', {
+        label: 'nav_toggle',
+        property: 'nav_sidebar',
+      });
+    });
   });
 });

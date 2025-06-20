@@ -66,6 +66,8 @@ module Resolvers
         .new(current_user: current_user, params: finder_params(args), project_ids_relation: parse_gids(args[:ids]))
         .execute
 
+      projects.each { |project| BatchLoader::GraphQL.wrap(project.self_or_ancestors_archived?) }
+
       apply_lookahead(projects)
     end
 

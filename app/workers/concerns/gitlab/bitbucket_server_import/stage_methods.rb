@@ -4,6 +4,7 @@ module Gitlab
   module BitbucketServerImport
     module StageMethods
       extend ActiveSupport::Concern
+      include ::Import::ResumableImportJob
 
       included do
         include ApplicationWorker

@@ -30,7 +30,7 @@ module Gitlab
         end
 
         def execute
-          read_from_replica_if_available do
+          ::Gitlab::Database::LoadBalancing::SessionMap.use_replica_if_available do
             serialize_root
 
             includes.each do |relation_definition|
@@ -261,12 +261,6 @@ module Gitlab
             SMALL_BATCH_RELATIONS.include?(relation_name)
 
           BATCH_SIZE
-        end
-
-        def read_from_replica_if_available(&block)
-          ::Gitlab::Database::LoadBalancing::SessionMap
-            .with_sessions(Gitlab::Database::LoadBalancing.base_models)
-            .use_replicas_for_read_queries(&block)
         end
 
         def before_read_callback(record)

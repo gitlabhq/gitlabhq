@@ -240,10 +240,6 @@ module Ci
     scope :with_tags, -> { preload(:tags) }
     scope :with_creator, -> { preload(:creator) }
 
-    scope :with_encrypted_tokens, ->(token_values) do
-      where(token_encrypted: Array.wrap(token_values))
-    end
-
     scope :with_api_entity_associations, -> { preload(:creator) }
 
     validate :tag_constraints

@@ -336,14 +336,9 @@ module Keeps
       all_feature_flag_files.map do |f|
         feature_definition = Feature::Definition.new(f,
           YAML.safe_load_file(f, permitted_classes: [Symbol], symbolize_names: true))
-        next unless global_search_flag?(feature_definition)
 
         yield(feature_definition)
       end
-    end
-
-    def global_search_flag?(feature_flag)
-      feature_flag.group == 'group::global search'
     end
 
     def all_feature_flag_files
