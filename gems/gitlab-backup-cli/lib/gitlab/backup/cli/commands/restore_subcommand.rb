@@ -4,7 +4,7 @@ module Gitlab
   module Backup
     module Cli
       module Commands
-        class RestoreSubcommand < ObjectStorageCommand
+        class RestoreSubcommand < Command
           package_name 'Restore'
 
           desc 'all BACKUP_ID', 'Restores a backup including repositories, database and local files'

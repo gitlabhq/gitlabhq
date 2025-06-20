@@ -21,7 +21,7 @@ import {
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
-import { CREATED_DESC, UPDATED_DESC } from '~/issues/list/constants';
+import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
@@ -47,7 +47,6 @@ import {
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
-import { sortOptions, urlSortParams } from '~/work_items/pages/list/constants';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
 import getWorkItemsFullQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_full.query.graphql';
 import getWorkItemsSlimQuery from 'ee_else_ce/work_items/graphql/list/get_work_items_slim.query.graphql';
@@ -142,8 +141,12 @@ describeSkipVue3(skipReason, () => {
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         canBulkUpdate: true,
         canBulkEditEpics: true,
+        hasBlockedIssuesFeature: false,
         hasEpicsFeature: false,
         hasGroupBulkEditFeature: true,
+        hasIssuableHealthStatusFeature: false,
+        hasIssueDateFilterFeature: false,
+        hasIssueWeightsFeature: false,
         hasOkrsFeature: false,
         hasQualityManagementFeature: false,
         hasCustomFieldsFeature: false,
@@ -152,8 +155,6 @@ describeSkipVue3(skipReason, () => {
         isSignedIn: true,
         showNewWorkItem: true,
         workItemType: null,
-        hasIssueDateFilterFeature: false,
-        timeTrackingLimitToHours: false,
         ...provide,
       },
       propsData: {
@@ -205,7 +206,6 @@ describeSkipVue3(skipReason, () => {
         namespace: 'work-items',
         recentSearchesStorageKey: 'issues',
         showWorkItemTypeIcon: true,
-        sortOptions,
         tabs: WorkItemsListApp.issuableListTabs,
       });
     });
@@ -257,6 +257,124 @@ describeSkipVue3(skipReason, () => {
 
     it('calls `getParameterByName` to get the `show` param', () => {
       expect(getParameterByName).toHaveBeenCalledWith(DETAIL_VIEW_QUERY_PARAM_NAME);
+    });
+  });
+
+  describe('sort options', () => {
+    describe('when all features are enabled', () => {
+      it('renders all sort options', async () => {
+        mountComponent({
+          provide: {
+            hasBlockedIssuesFeature: true,
+            hasIssuableHealthStatusFeature: true,
+            hasIssueWeightsFeature: true,
+          },
+        });
+        await waitForPromises();
+
+        expect(findIssuableList().props('sortOptions')).toEqual([
+          expect.objectContaining({ title: 'Priority' }),
+          expect.objectContaining({ title: 'Created date' }),
+          expect.objectContaining({ title: 'Updated date' }),
+          expect.objectContaining({ title: 'Closed date' }),
+          expect.objectContaining({ title: 'Milestone due date' }),
+          expect.objectContaining({ title: 'Due date' }),
+          expect.objectContaining({ title: 'Popularity' }),
+          expect.objectContaining({ title: 'Label priority' }),
+          expect.objectContaining({ title: 'Title' }),
+          expect.objectContaining({ title: 'Start date' }),
+          expect.objectContaining({ title: 'Health' }),
+          expect.objectContaining({ title: 'Weight' }),
+          expect.objectContaining({ title: 'Blocking' }),
+        ]);
+      });
+    });
+
+    describe('when all features are not enabled', () => {
+      it('renders base sort options', async () => {
+        mountComponent({
+          provide: {
+            hasBlockedIssuesFeature: false,
+            hasIssuableHealthStatusFeature: false,
+            hasIssueWeightsFeature: false,
+          },
+        });
+        await waitForPromises();
+
+        expect(findIssuableList().props('sortOptions')).toEqual([
+          expect.objectContaining({ title: 'Priority' }),
+          expect.objectContaining({ title: 'Created date' }),
+          expect.objectContaining({ title: 'Updated date' }),
+          expect.objectContaining({ title: 'Closed date' }),
+          expect.objectContaining({ title: 'Milestone due date' }),
+          expect.objectContaining({ title: 'Due date' }),
+          expect.objectContaining({ title: 'Popularity' }),
+          expect.objectContaining({ title: 'Label priority' }),
+          expect.objectContaining({ title: 'Title' }),
+          expect.objectContaining({ title: 'Start date' }),
+        ]);
+      });
+    });
+
+    describe('when epics list', () => {
+      describe('when workItemEpicMilestones is disabled', () => {
+        it('does not render "Priority", "Milestone due date", "Label priority", and "Weight" sort options', async () => {
+          mountComponent({
+            provide: {
+              glFeatures: {
+                workItemEpicMilestones: false,
+              },
+              hasBlockedIssuesFeature: true,
+              hasIssuableHealthStatusFeature: true,
+              hasIssueWeightsFeature: true,
+              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+            },
+          });
+          await waitForPromises();
+
+          expect(findIssuableList().props('sortOptions')).toEqual([
+            expect.objectContaining({ title: 'Created date' }),
+            expect.objectContaining({ title: 'Updated date' }),
+            expect.objectContaining({ title: 'Closed date' }),
+            expect.objectContaining({ title: 'Due date' }),
+            expect.objectContaining({ title: 'Popularity' }),
+            expect.objectContaining({ title: 'Title' }),
+            expect.objectContaining({ title: 'Start date' }),
+            expect.objectContaining({ title: 'Health' }),
+            expect.objectContaining({ title: 'Blocking' }),
+          ]);
+        });
+      });
+
+      describe('when workItemEpicMilestones is enabled', () => {
+        it('does not render "Priority", "Label priority", and "Weight" sort options', async () => {
+          mountComponent({
+            provide: {
+              glFeatures: {
+                workItemEpicMilestones: true,
+              },
+              hasBlockedIssuesFeature: true,
+              hasIssuableHealthStatusFeature: true,
+              hasIssueWeightsFeature: true,
+              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+            },
+          });
+          await waitForPromises();
+
+          expect(findIssuableList().props('sortOptions')).toEqual([
+            expect.objectContaining({ title: 'Created date' }),
+            expect.objectContaining({ title: 'Updated date' }),
+            expect.objectContaining({ title: 'Closed date' }),
+            expect.objectContaining({ title: 'Milestone due date' }),
+            expect.objectContaining({ title: 'Due date' }),
+            expect.objectContaining({ title: 'Popularity' }),
+            expect.objectContaining({ title: 'Title' }),
+            expect.objectContaining({ title: 'Start date' }),
+            expect.objectContaining({ title: 'Health' }),
+            expect.objectContaining({ title: 'Blocking' }),
+          ]);
+        });
+      });
     });
   });
 

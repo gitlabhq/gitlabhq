@@ -2,7 +2,7 @@
 stage: AI-powered
 group: AI Framework
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: AI-native features and functionality.
+description: Get help from a suite of AI-native features while you work in GitLab.
 title: GitLab Duo
 ---
 

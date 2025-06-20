@@ -47,7 +47,7 @@
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
               = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
-        .gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
+        .merge-request-tabs-actions.gl-flex.gl-flex-wrap.gl-items-center.gl-gap-3
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if !!@issuable_sidebar.dig(:current_user, :id)
             .js-sidebar-todo-widget-root{ data: { project_path: @issuable_sidebar[:project_full_path], iid: @issuable_sidebar[:iid], id: @issuable_sidebar[:id] } }

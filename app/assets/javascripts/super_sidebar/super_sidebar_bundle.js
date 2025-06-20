@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { GlToast } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
+import { getApolloProvider } from '~/issues/list/issue_client';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
-import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { JS_TOGGLE_EXPAND_CLASS, CONTEXT_NAMESPACE_GROUPS } from './constants';
 import createStore from './components/global_search/store';
 import {
@@ -94,7 +94,7 @@ export const getSuperSidebarData = () => {
   };
 };
 
-export const initSuperSidebar = ({
+export const initSuperSidebar = async ({
   el,
   rootPath,
   currentPath,
@@ -125,7 +125,7 @@ export const initSuperSidebar = ({
   return new Vue({
     el,
     name: 'SuperSidebarRoot',
-    apolloProvider,
+    apolloProvider: await getApolloProvider(),
     provide: {
       rootPath,
       currentPath,

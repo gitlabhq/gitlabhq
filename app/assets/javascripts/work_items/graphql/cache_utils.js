@@ -1,8 +1,6 @@
 import { produce } from 'immer';
-import VueApollo from 'vue-apollo';
 import { map, isEqual } from 'lodash';
-import { apolloProvider } from '~/graphql_shared/issuable_client';
-import { issuesListClient } from '~/issues/list';
+import { getApolloProvider } from '~/issues/list/issue_client';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
@@ -854,13 +852,7 @@ export const setNewWorkItemCache = async ({
     });
   }
 
-  const issuesListApolloProvider = new VueApollo({
-    defaultClient: await issuesListClient(),
-  });
-
-  const cacheProvider = document.querySelector('.js-issues-list-app')
-    ? issuesListApolloProvider
-    : apolloProvider;
+  const cacheProvider = await getApolloProvider();
 
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
 

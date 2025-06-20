@@ -159,7 +159,7 @@ $comparison-empty-state-height: 62px;
 
 @supports (container-type: scroll-state) {
   .merge-request-sticky-header {
-    @include media-breakpoint-up(lg) {
+    @include media-breakpoint-up(md) {
       @apply gl-sticky;
       container-type: scroll-state;
       container-name: sticky-header;
@@ -179,7 +179,7 @@ $comparison-empty-state-height: 62px;
       }
 
       @container sticky-header scroll-state(stuck: top) {
-        &::after {
+        &::after, .merge-request-sticky-title {
           @apply gl-block;
         }
 
@@ -199,13 +199,11 @@ $comparison-empty-state-height: 62px;
         .merge-request-author-container {
           @apply gl-hidden;
         }
-      }
-    }
 
-    @include media-breakpoint-up(lg) {
-      @container sticky-header scroll-state(stuck: top) {
-        .merge-request-sticky-title {
-          @apply gl-block;
+        @include media-breakpoint-down(md) {
+          .merge-request-tabs-actions {
+            @apply gl-hidden;
+          }
         }
       }
     }

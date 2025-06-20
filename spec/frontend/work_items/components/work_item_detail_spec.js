@@ -501,7 +501,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('does not show title in the header when parent exists', () => {
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', 'gl-mt-3']);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', '!gl-mt-3']);
       });
     });
 
@@ -518,7 +518,7 @@ describe('WorkItemDetail component', () => {
       });
 
       it('does not show title in the header when parent exists', () => {
-        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', 'gl-mt-3']);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', '!gl-mt-3']);
       });
     });
   });

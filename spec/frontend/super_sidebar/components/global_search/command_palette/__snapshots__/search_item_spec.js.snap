@@ -22,12 +22,6 @@ exports[`SearchItem should render the item 1`] = `
     >
       Cole Dickinson
     </span>
-    <span
-      aria-hidden="true"
-      class="gl-text-subtle"
-    >
-      ·
-    </span>
   </span>
 </div>
 `;
@@ -38,6 +32,7 @@ exports[`SearchItem should render the item 2`] = `
 >
   <gl-icon-stub
     class="gl-mr-3 gl-shrink-0"
+    data-testid="icon"
     name="users"
     size="16"
     variant="current"
@@ -49,12 +44,6 @@ exports[`SearchItem should render the item 2`] = `
       class="gl-text-strong gl-truncate"
     >
       Manage &gt; Activity
-    </span>
-    <span
-      aria-hidden="true"
-      class="gl-text-subtle"
-    >
-      ·
     </span>
   </span>
 </div>
@@ -85,11 +74,13 @@ exports[`SearchItem should render the item 3`] = `
     <span
       aria-hidden="true"
       class="gl-text-subtle"
+      data-testid="namespace-bullet"
     >
       ·
     </span>
     <span
       class="gl-text-sm gl-text-subtle gl-truncate"
+      data-testid="namespace"
     >
       Gitlab Org / MockProject1
     </span>
@@ -118,12 +109,6 @@ exports[`SearchItem should render the item 4`] = `
       class="gl-text-strong gl-truncate"
     >
       Dismiss Cipher with no integrity
-    </span>
-    <span
-      aria-hidden="true"
-      class="gl-text-subtle"
-    >
-      ·
     </span>
   </span>
 </div>

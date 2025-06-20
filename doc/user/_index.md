@@ -3,6 +3,7 @@ stage: none
 group: unassigned
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 title: Use GitLab
+description: Get to know the GitLab end-to-end workflow.
 ---
 
 Get to know the GitLab end-to-end workflow. Configure permissions,

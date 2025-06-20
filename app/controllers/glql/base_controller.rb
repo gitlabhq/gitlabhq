@@ -23,7 +23,6 @@ module Glql
       # We catch all errors here so they are tracked by SLIs.
       # But we only increment the rate limiter failure count for ActiveRecord::QueryAborted.
       increment_rate_limit_counter if error.is_a?(ActiveRecord::QueryAborted)
-      ensure_logs_populated
 
       raise error
     ensure
@@ -56,19 +55,13 @@ module Glql
 
     def logs
       graphql_logs = super.presence || [{}]
-      graphql_logs.map { |log| log.merge(log_data) }
-    end
 
-    def ensure_logs_populated
-      RequestStore.store[:graphql_logs] ||= []
-      RequestStore.store[:graphql_logs] << log_data
-    end
-
-    def log_data
-      {
-        glql_referer: request.headers["Referer"],
-        glql_query_sha: query_sha
-      }
+      graphql_logs.map do |log|
+        log.merge(
+          glql_referer: request.headers["Referer"],
+          glql_query_sha: query_sha
+        )
+      end
     end
 
     def check_rate_limit

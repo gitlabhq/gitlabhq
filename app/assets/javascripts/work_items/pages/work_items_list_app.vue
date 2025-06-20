@@ -12,6 +12,7 @@ import {
   getDefaultWorkItemTypes,
   getFilterTokens,
   getInitialPageParams,
+  getSortOptions,
   getTypeTokenOptions,
 } from 'ee_else_ce/issues/list/utils';
 import { TYPENAME_NAMESPACE, TYPENAME_USER } from '~/graphql_shared/constants';
@@ -33,6 +34,7 @@ import {
   PARAM_PAGE_BEFORE,
   PARAM_SORT,
   PARAM_STATE,
+  urlSortParams,
 } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -100,7 +102,6 @@ import {
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '../constants';
-import { sortOptions, urlSortParams } from './list/constants';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -120,7 +121,6 @@ const statusMap = {
 
 export default {
   issuableListTabs,
-  sortOptions,
   components: {
     GlLoadingIcon,
     GlButton,
@@ -141,9 +141,12 @@ export default {
     'autocompleteAwardEmojisPath',
     'canBulkUpdate',
     'canBulkEditEpics',
+    'hasBlockedIssuesFeature',
     'hasEpicsFeature',
     'hasGroupBulkEditFeature',
+    'hasIssuableHealthStatusFeature',
     'hasIssueDateFilterFeature',
+    'hasIssueWeightsFeature',
     'hasOkrsFeature',
     'hasQualityManagementFeature',
     'hasCustomFieldsFeature',
@@ -581,6 +584,21 @@ export default {
     showPageSizeSelector() {
       return this.workItems.length > 0;
     },
+    sortOptions() {
+      return getSortOptions({
+        hasBlockedIssuesFeature: this.hasBlockedIssuesFeature,
+        hasIssuableHealthStatusFeature: this.hasIssuableHealthStatusFeature,
+        hasIssueWeightsFeature: this.hasIssueWeightsFeature,
+        hasManualSort: false,
+        hasStartDate: true,
+        hasPriority: !this.isEpicsList,
+        hasMilestoneDueDate: Boolean(
+          !this.isEpicsList || (this.isEpicsList && this.glFeatures.workItemEpicMilestones),
+        ),
+        hasLabelPriority: !this.isEpicsList,
+        hasWeight: !this.isEpicsList,
+      });
+    },
     tabCounts() {
       const { all, closed, opened } = this.workItemStateCounts;
       return {
@@ -880,7 +898,7 @@ export default {
 
       // Trigger pageSize UI component update based on URL changes
       this.pageSize = this.pageParams.firstPageSize;
-      this.sortKey = deriveSortKey({ sort, sortMap: urlSortParams });
+      this.sortKey = deriveSortKey({ sort });
       this.state = state || STATUS_OPEN;
     },
     checkDrawerParams() {
@@ -976,7 +994,7 @@ export default {
         :show-page-size-selector="showPageSizeSelector"
         :show-pagination-controls="showPaginationControls"
         show-work-item-type-icon
-        :sort-options="$options.sortOptions"
+        :sort-options="sortOptions"
         sync-filter-and-sort
         :tab-counts="tabCounts"
         :tabs="tabs"

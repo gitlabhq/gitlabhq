@@ -452,7 +452,7 @@ export default {
     },
     titleClassHeader() {
       return {
-        'sm:!gl-hidden gl-mt-3': this.shouldShowAncestors,
+        'sm:!gl-hidden !gl-mt-3': this.shouldShowAncestors,
         'sm:!gl-block': !this.shouldShowAncestors,
         'gl-w-full': !this.shouldShowAncestors && !this.editMode,
         'editable-wi-title': this.editMode && !this.shouldShowAncestors,
@@ -461,7 +461,7 @@ export default {
     titleClassComponent() {
       return {
         'sm:!gl-block': !this.shouldShowAncestors,
-        'gl-hidden sm:!gl-block gl-mt-3': this.shouldShowAncestors,
+        'gl-hidden sm:!gl-block !gl-mt-3': this.shouldShowAncestors,
         'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },

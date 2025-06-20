@@ -136,6 +136,14 @@ module Gitlab
             raise ::Gitlab::Backup::Cli::Error, 'GITLAB_PATH is missing'
           end
 
+          def registry_enabled?
+            gitlab_config.dig(env, 'registry', 'enabled')
+          end
+
+          def object_storage_connection
+            gitlab_config.dig(env, 'object_storage', 'connection')
+          end
+
           private
 
           # Return the shared path used as a fallback base location to each blob type
