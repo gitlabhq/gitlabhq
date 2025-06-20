@@ -295,6 +295,7 @@ export default {
             workItemTypeIconName: workItemType.iconName,
             workItemTitle,
             workItemDescription,
+            confidential: this.isConfidential,
           });
         }
 

@@ -68365,6 +68365,9 @@ msgstr ""
 msgid "Vulnerability Explanation currently only supports vulnerabilities reported by SAST."
 msgstr ""
 
+msgid "Vulnerability History"
+msgstr ""
+
 msgid "Vulnerability Report"
 msgstr ""
 

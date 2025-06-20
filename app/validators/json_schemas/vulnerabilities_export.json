@@ -32,9 +32,9 @@
         "null"
       ],
       "enum": [
-        "product",
+        "project",
         "group",
-        "dashboard",
+        "instance",
         null
       ],
       "description": "The type of vulnerability grouping this report is being created for"

@@ -847,6 +847,7 @@ describe('Create work item component', () => {
             am
             a
             description!`,
+        confidential: false,
       });
     });
   });
