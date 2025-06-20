@@ -496,8 +496,8 @@ module Ci
       end
     end
 
-    def archived?
-      degenerated? || super
+    def archived?(...)
+      degenerated? || super(...)
     end
 
     def playable?

@@ -197,6 +197,36 @@ RSpec.describe RootController, feature_category: :shared do
 
             expect(response).to render_template 'dashboard/projects/index'
           end
+
+          context 'when the `merge_request_dashboard` feature flag is enabled' do
+            before do
+              stub_feature_flags(merge_request_dashboard: true)
+            end
+
+            it 'passes the correct data to the view' do
+              get :index
+
+              expect(assigns[:homepage_app_data]).to eq({
+                review_requested_path: "/dashboard/merge_requests",
+                assigned_to_you_path: "/dashboard/merge_requests"
+              })
+            end
+          end
+
+          context 'when the `merge_request_dashboard` feature flag is disabled' do
+            before do
+              stub_feature_flags(merge_request_dashboard: false)
+            end
+
+            it 'passes the correct data to the view' do
+              get :index
+
+              expect(assigns[:homepage_app_data]).to eq({
+                review_requested_path: "/dashboard/merge_requests?reviewer_username=#{user.username}",
+                assigned_to_you_path: "/dashboard/merge_requests?assignee_username=#{user.username}"
+              })
+            end
+          end
         end
 
         context 'with `personal_homepage` feature flag enabled' do

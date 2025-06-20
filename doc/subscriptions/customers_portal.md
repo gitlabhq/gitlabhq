@@ -228,6 +228,16 @@ To change the GitLab.com account linked to your Customers Portal profile:
 1. Under **Your GitLab.com account**, select **Change linked account**.
 1. Sign in to the [GitLab.com](https://gitlab.com/users/sign_in) account you want to link to the Customers Portal profile.
 
+## Tax ID for non-US customers
+
+A Tax ID is a unique number assigned by tax authorities to businesses registered for Value Added Tax (VAT), Goods and Services Tax (GST), or similar indirect taxes.
+
+Providing a valid Tax ID may reduce your tax burden by allowing us to apply reverse charge mechanisms instead of charging VAT/GST on your invoices. Without a valid Tax ID, we charge applicable VAT/GST rates based on your location.
+
+If your business isn't registered for indirect taxes (due to size thresholds or other reasons), we apply the standard VAT/GST rate according to local regulations.
+
+For detailed Tax ID formats by country and additional information, see our [complete Tax ID reference guide](https://handbook.gitlab.com/handbook/finance/tax/#frequently-asked-questions---tax-id-for-non-us-customers).
+
 ## Customers that purchased through a reseller
 
 If you purchased a subscription through an authorized reseller (including GCP and AWS marketplaces), you have access to the Customers Portal to:

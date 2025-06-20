@@ -6431,7 +6431,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#archived?' do
-    subject { build_stubbed(:ci_pipeline, created_at: 1.day.ago, project: project) }
+    subject(:pipeline) { build_stubbed(:ci_pipeline, created_at: 1.day.ago, project: project) }
 
     context 'when archive_builds_in is set' do
       before do
@@ -6439,6 +6439,23 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it { is_expected.to be_archived }
+
+      it 'does not log by default' do
+        expect(::Gitlab::Ci::Pipeline::AccessLogger).not_to receive(:new)
+
+        expect(pipeline.archived?).to be_truthy
+      end
+
+      context 'when logging is requested' do
+        it 'calls access logger' do
+          expect(::Gitlab::Ci::Pipeline::AccessLogger)
+            .to receive(:new)
+            .with(pipeline: pipeline, archived: true)
+            .and_call_original
+
+          expect(pipeline.archived?(log: true)).to be_truthy
+        end
+      end
     end
 
     context 'when archive_builds_in is not set' do
@@ -6447,6 +6464,17 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
 
       it { is_expected.not_to be_archived }
+
+      context 'when logging is requested' do
+        it 'calls access logger' do
+          expect(::Gitlab::Ci::Pipeline::AccessLogger)
+            .to receive(:new)
+            .with(pipeline: pipeline, archived: false)
+            .and_call_original
+
+          expect(pipeline.archived?(log: true)).to be_falsey
+        end
+      end
     end
   end
 

@@ -1,0 +1,19 @@
+query MergeRequestsWidgetMetadata {
+  currentUser {
+    id
+    reviewRequestedMergeRequests(first: 1, sort: UPDATED_DESC, state: opened) {
+      count
+      nodes {
+        id
+        updatedAt
+      }
+    }
+    assignedMergeRequests(first: 1, sort: UPDATED_DESC, state: opened) {
+      count
+      nodes {
+        id
+        updatedAt
+      }
+    }
+  }
+}

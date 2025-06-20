@@ -103,7 +103,7 @@ To configure a self-hosted model:
 
 For more information about:
 
-- Configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#finding-the-model-name).
+- Configuring the model identifier for models deployed through vLLM, see the [vLLM documentation](supported_llm_serving_platforms.md#find-the-model-name).
 - Configuring Amazon Bedrock models with cross-region inferencing, see the
   [Amazon supported regions and models for inference profiles documentation](https://docs.aws.amazon.com/bedrock/latest/userguide/inference-profiles-support.html)
 

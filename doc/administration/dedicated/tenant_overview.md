@@ -39,7 +39,9 @@ The top section shows important information about your tenant, including:
 - Current GitLab version
 - Reference architecture
 - Maintenance window
-- AWS regions for data storage and backup
+- Primary and secondary AWS regions for data storage, with their availability zone IDs
+- Backup AWS region
+- AWS account IDs for the tenant and hosted runners
 
 ## Maintenance windows
 

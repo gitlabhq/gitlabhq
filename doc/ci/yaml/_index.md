@@ -5934,9 +5934,9 @@ successfully complete before starting.
   The downstream pipeline can complete successfully without running any optional manual jobs.
 - [Blocking manual jobs](../jobs/job_control.md#types-of-manual-jobs) in the downstream pipeline
   must run before the trigger job is marked as successful or failed. The trigger job
-  shows **pending** ({{< icon name="status_pending" >}}) if the downstream pipeline status is
-  **waiting for manual action** ({{< icon name="status_manual" >}}) due to manual jobs. By default,
-  jobs in later stages do not start until the trigger job completes.
+  shows **running** ({{< icon name="status_running" >}}) if the downstream pipeline status is
+  **waiting for manual action** ({{< icon name="status_manual" >}}) due to manual jobs.
+  By default, jobs in later stages do not start until the trigger job completes.
 - If the downstream pipeline has a failed job, but the job uses [`allow_failure: true`](#allow_failure),
   the downstream pipeline is considered successful and the trigger job shows **success**.
 

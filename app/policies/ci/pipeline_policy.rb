@@ -27,7 +27,7 @@ module Ci
     end
 
     condition(:archived, scope: :subject) do
-      @subject.archived?
+      @subject.archived?(log: true)
     end
 
     # Allow reading builds for external pipelines regardless of whether CI/CD is disabled

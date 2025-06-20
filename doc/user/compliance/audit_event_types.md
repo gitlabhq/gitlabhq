@@ -545,6 +545,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`model_selection_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194862) | A model selection feature had its configuration changed | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/547982) | Instance, Group, Project, User |
 | [`self_hosted_model_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165303) | A new self-hosted model configuration was added | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
 | [`self_hosted_model_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165321) | A new self-hosted model configuration was destroyed | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/477999) | Instance |
 | [`self_hosted_model_feature_changed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/165489) | A self-hosted model feature had its configuration changed | {{< icon name="check-circle" >}} Yes | GitLab [17.4](https://gitlab.com/gitlab-org/gitlab/-/issues/463215) | Instance |

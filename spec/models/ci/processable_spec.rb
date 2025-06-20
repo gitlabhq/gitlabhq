@@ -688,4 +688,13 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       processable.trigger_short_token
     end
   end
+
+  describe '#redis_state' do
+    let(:processable) { build_stubbed(:ci_processable, pipeline: pipeline) }
+
+    it 'is a memoized Ci::JobRedisState record' do
+      expect(processable.redis_state).to be_an_instance_of(Ci::JobRedisState)
+      expect(processable.strong_memoized?(:redis_state)).to be(true)
+    end
+  end
 end

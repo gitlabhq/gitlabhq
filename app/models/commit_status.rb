@@ -301,8 +301,8 @@ class CommitStatus < Ci::ApplicationRecord
     false
   end
 
-  def archived?
-    pipeline.archived?
+  def archived?(...)
+    pipeline.archived?(...)
   end
 
   def stuck?

@@ -90,13 +90,21 @@ module Ci
     end
 
     def enqueue_immediately?
-      !!options[:enqueue_immediately]
+      if Feature.enabled?(:ci_redis_enqueue_immediately, project)
+        redis_state.enqueue_immediately?
+      else
+        !!options[:enqueue_immediately]
+      end
     end
 
     def set_enqueue_immediately!
-      # ensures that even if `config_options: nil` in the database we set the
-      # new value correctly.
-      self.options = options.merge(enqueue_immediately: true)
+      if Feature.enabled?(:ci_redis_enqueue_immediately, project)
+        redis_state.enqueue_immediately = true
+      else
+        # ensures that even if `config_options: nil` in the database we set the
+        # new value correctly.
+        self.options = options.merge(enqueue_immediately: true)
+      end
     end
 
     private

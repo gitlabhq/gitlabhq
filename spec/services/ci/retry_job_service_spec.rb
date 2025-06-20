@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
+RSpec.describe Ci::RetryJobService, :clean_gitlab_redis_shared_state, feature_category: :continuous_integration do
   using RSpec::Parameterized::TableSyntax
   let_it_be(:reporter) { create(:user) }
   let_it_be(:developer) { create(:user) }
@@ -552,6 +552,37 @@ RSpec.describe Ci::RetryJobService, feature_category: :continuous_integration do
         end
 
         it_behaves_like 'checks enqueue_immediately?'
+      end
+
+      context 'with ci_redis_enqueue_immediately disabled' do
+        before do
+          stub_feature_flags(ci_redis_enqueue_immediately: false)
+        end
+
+        let!(:job) do
+          create(:ci_build, *[trait].compact, :failed, pipeline: pipeline, ci_stage: stage)
+        end
+
+        where(:trait, :enqueue_immediately) do
+          nil                | false
+          :manual            | true
+          :expired_scheduled | true
+        end
+
+        with_them do
+          it 'retries the given job but not the other manual/scheduled jobs' do
+            expect { subject }
+              .to change { Ci::Build.count }.by(1)
+              .and not_change { test_manual_build.reload.status }
+              .and not_change { subsequent_manual_build.reload.status }
+              .and not_change { test_scheduled_build.reload.status }
+              .and not_change { subsequent_scheduled_build.reload.status }
+
+            expect(new_job).to be_pending
+          end
+
+          it_behaves_like 'checks enqueue_immediately?'
+        end
       end
     end
   end

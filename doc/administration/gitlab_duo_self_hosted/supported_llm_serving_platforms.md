@@ -43,9 +43,9 @@ When configuring the endpoint URL for any OpenAI API compatible platforms (such 
 - If using the default vLLM configuration, the endpoint URL would be `https://<hostname>:8000/v1`
 - If your server is configured behind a proxy or load balancer, you might not need to specify the port, in which case the URL would be `https://<hostname>/v1`
 
-#### Finding the model name
+#### Find the model name
 
-After the model has been deployed, you can obtain the model name for the model identifier field in GitLab by querying the vLLM server's `/v1/models` endpoint:
+After the model has been deployed, to get the model name for the model identifier field in GitLab, query the vLLM server's `/v1/models` endpoint:
 
 ```shell
 curl \
@@ -152,31 +152,56 @@ This change has been observed to notably improve response times in internal benc
 
 ## For cloud-hosted model deployments
 
-1. [AWS Bedrock](https://aws.amazon.com/bedrock/).
-   A fully managed service that allows developers to build and scale generative AI applications using pre-trained models from leading AI companies. It seamlessly integrates with other AWS services and offers a pay-as-you-go pricing model.
+### AWS Bedrock
 
-   You must configure IAM credentials to access Bedrock with the appropriate AWS IAM permissions before accessing Bedrock models. Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in the GitLab Duo Self-Hosted UI. You also need to [use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
+[AWS Bedrock](https://aws.amazon.com/bedrock/) is a fully managed service that
+allows developers to build and scale generative AI applications using pre-trained
+models from leading AI companies. It seamlessly integrates with other AWS services
+and offers a pay-as-you-go pricing model.
 
-   To authenticate your AI Gateway instance export the appropriate AWS SDK environment variables such as [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting the Docker container. For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
+To access AWS Bedrock models:
+
+1. Configure IAM credentials to access Bedrock with the appropriate AWS IAM
+   permissions:
+
+   - Make sure that the IAM role has the `AmazonBedrockFullAccess` policy to allow
+   [access to Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-AmazonBedrockFullAccess). You cannot do this in
+   the GitLab Duo Self-Hosted UI.
+
+   - [Use the AWS console to request access to the models](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access-modify.html) that you want to use.
+
+1. Authenticate your AI gateway instance by exporting the appropriate AWS SDK
+   environment variables such as [`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_REGION_NAME`](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) when starting
+   the Docker container.
+
+   For more information, see the [AWS Identity and Access Management (IAM) Guide](https://docs.aws.amazon.com/bedrock/latest/userguide/security-iam.html).
 
    {{< alert type="note" >}}
 
-   Temporary credentials are not supported by AI Gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
+   Temporary credentials are not supported by AI gateway at this time. For more information on adding support for Bedrock to use instance profile or temporary credentials, see [issue 542389](https://gitlab.com/gitlab-org/gitlab/-/issues/542389).
 
    {{</alert>}}
 
-   - [Supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html)
+1. Optional. To set up a private Bedrock endpoint operating in a virtual private cloud (VPC),
+   make sure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured
+   with your internal URL when launching the AI gateway container.
 
-   To set up the private Bedrock endpoint (operating in a VPC), ensure the `AWS_BEDROCK_RUNTIME_ENDPOINT` environment variable is configured with your internal URL when launching the AIGW container.
+   An example configuration: `AWS_BEDROCK_RUNTIME_ENDPOINT = https://bedrock-runtime.{aws_region_name}.amazonaws.com`
 
-   **Example configuration**: `AWS_BEDROCK_RUNTIME_ENDPOINT = https://bedrock-runtime.{aws_region_name}.amazonaws.com`
-   
    For VPC endpoints, the URL format may be different, such as `https://vpce-{vpc-endpoint-id}-{service-name}.{aws_region_name}.vpce.amazonaws.com`
 
-1. [Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/).
-   Provides access to OpenAI's powerful models, enabling developers to integrate advanced AI capabilities into their applications with robust security and scalable infrastructure.
-   - [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
-   - [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
+For more information, see [supported foundation models in Amazon Bedrock](https://docs.aws.amazon.com/bedrock/latest/userguide/models-supported.html).
+
+### Azure OpenAI
+
+[Azure OpenAI](https://learn.microsoft.com/en-us/azure/ai-services/openai/) provides
+access to OpenAI's powerful models, enabling developers to integrate advanced AI
+capabilities into their applications with robust security and scalable infrastructure.
+
+For more information, see:
+
+- [Working with Azure OpenAI models](https://learn.microsoft.com/en-us/azure/ai-services/openai/how-to/working-with-models?tabs=powershell)
+- [Azure OpenAI Service models](https://learn.microsoft.com/en-us/azure/ai-services/openai/concepts/models?tabs=python-secure%2Cglobal-standard%2Cstandard-chat-completions)
 
 ## Use multiple models and platforms
 

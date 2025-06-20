@@ -46,6 +46,14 @@ module Ci
       )
     end
 
+    # The run after commit queue is processed LIFO
+    # We need to ensure that the Redis data is persisted before any other callbacks the might depend on it.
+    before_commit do |job|
+      job.run_after_commit do
+        redis_state.save if defined?(@redis_state)
+      end
+    end
+
     state_machine :status do
       event :enqueue do
         transition [:created, :skipped, :manual, :scheduled] => :waiting_for_resource, if: :with_resource_group?
@@ -266,6 +274,12 @@ module Ci
 
     def manual_confirmation_message
       options[:manual_confirmation] if manual_job?
+    end
+
+    def redis_state
+      strong_memoize(:redis_state) do
+        Ci::JobRedisState.find_or_initialize_by(job: self)
+      end
     end
 
     private

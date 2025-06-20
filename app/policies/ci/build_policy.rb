@@ -33,7 +33,7 @@ module Ci
     end
 
     condition(:archived, scope: :subject) do
-      @subject.archived?
+      @subject.archived?(log: true)
     end
 
     condition(:artifacts_public, scope: :subject) do

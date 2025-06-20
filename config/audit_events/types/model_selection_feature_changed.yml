@@ -1,0 +1,10 @@
+---
+name: model_selection_feature_changed
+description: A model selection feature had its configuration changed
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/547982
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194862
+feature_category: self-hosted_models
+milestone: '18.2'
+saved_to_database: true
+streamed: true
+scope: [Instance, Group, Project, User]
