@@ -5,9 +5,8 @@ import { __ } from '~/locale';
 import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { Mousetrap } from '~/lib/mousetrap';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { getBaseURL, relativePathToAbsolute } from '~/lib/utils/url_utility';
-import { hashState } from '~/blob/state';
-import { getPageParamValue, getPageSearchString } from '~/blob/utils';
+import { hashState, updateHash } from '~/blob/state';
+import { getAbsolutePermalinkPath } from './utils';
 
 Vue.use(GlToast);
 
@@ -34,26 +33,22 @@ export default {
       return shouldDisableShortcuts();
     },
     absolutePermalinkPath() {
-      const baseAbsolutePath = relativePathToAbsolute(this.permalinkPath, getBaseURL());
-      if (hashState.currentHash) {
-        const page = getPageParamValue(hashState.currentHash);
-        const searchString = getPageSearchString(baseAbsolutePath, page);
-        if (Number.isNaN(Number(hashState.currentHash))) {
-          return `${baseAbsolutePath}${searchString}${hashState.currentHash}`;
-        }
-        return `${baseAbsolutePath}${searchString}#L${hashState.currentHash}`;
-      }
-      return baseAbsolutePath;
+      return getAbsolutePermalinkPath(this.permalinkPath, hashState.currentHash);
     },
   },
   mounted() {
     this.mousetrap = new Mousetrap();
     this.mousetrap.bind(keysFor(PROJECT_FILES_GO_TO_PERMALINK), this.triggerCopyPermalink);
+    window.addEventListener('hashchange', this.onHashChange);
   },
   beforeDestroy() {
     this.mousetrap.unbind(keysFor(PROJECT_FILES_GO_TO_PERMALINK));
+    window.removeEventListener('hashchange', this.onHashChange);
   },
   methods: {
+    onHashChange() {
+      updateHash(window.location.hash || '');
+    },
     triggerCopyPermalink() {
       const buttonElement = this.$refs.copyPermalinkButton.$el;
       buttonElement.click();

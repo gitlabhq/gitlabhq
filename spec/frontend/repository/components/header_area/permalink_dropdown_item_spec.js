@@ -4,7 +4,7 @@ import PermalinkDropdownItem from '~/repository/components/header_area/permalink
 import { keysFor, PROJECT_FILES_GO_TO_PERMALINK } from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
-import { hashState } from '~/blob/state';
+import { hashState, updateHash } from '~/blob/state';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
@@ -43,6 +43,24 @@ describe('PermalinkDropdownItem', () => {
     expect(findPermalinkLinkDropdown().exists()).toBe(true);
   });
 
+  describe('hash change handling', () => {
+    it('calls updateHash when hash changes', () => {
+      window.location.hash = 'L42';
+      createComponent();
+      window.dispatchEvent(new Event('hashchange'));
+
+      expect(updateHash).toHaveBeenCalledWith('#L42');
+    });
+
+    it('handles empty hash correctly', () => {
+      window.location.hash = '';
+      createComponent();
+      window.dispatchEvent(new Event('hashchange'));
+
+      expect(updateHash).toHaveBeenCalledWith('');
+    });
+  });
+
   describe('updatedPermalinkPath', () => {
     it('returns absolutePermalinkPath when no line number is set', () => {
       expect(findPermalinkLinkDropdown().attributes('data-clipboard-text')).toBe(
@@ -51,7 +69,7 @@ describe('PermalinkDropdownItem', () => {
     });
 
     it('returns updated path with line number when set', () => {
-      hashState.currentHash = 10;
+      hashState.currentHash = '#L10';
       createComponent();
 
       expect(findPermalinkLinkDropdown().attributes('data-clipboard-text')).toBe(
@@ -115,6 +133,17 @@ describe('PermalinkDropdownItem', () => {
 
       wrapper.destroy();
       expect(unbindSpy).toHaveBeenCalledWith(keysFor(PROJECT_FILES_GO_TO_PERMALINK));
+    });
+
+    it('add and remove event listener for hashChange event', () => {
+      const addEventListenerSpy = jest.spyOn(window, 'addEventListener');
+      const removeEventListenerSpy = jest.spyOn(window, 'removeEventListener');
+
+      createComponent();
+      expect(addEventListenerSpy).toHaveBeenCalledWith('hashchange', expect.any(Function));
+
+      wrapper.destroy();
+      expect(removeEventListenerSpy).toHaveBeenCalledWith('hashchange', expect.any(Function));
     });
   });
 

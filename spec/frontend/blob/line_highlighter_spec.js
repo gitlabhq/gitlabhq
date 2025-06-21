@@ -2,7 +2,10 @@
 import htmlStaticLineHighlighter from 'test_fixtures_static/line_highlighter.html';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import LineHighlighter from '~/blob/line_highlighter';
+import { updateHash } from '~/blob/state';
 import * as utils from '~/lib/utils/common_utils';
+
+jest.mock('~/blob/state');
 
 describe('LineHighlighter', () => {
   const testContext = {};
@@ -282,6 +285,18 @@ describe('LineHighlighter', () => {
       testContext.subject(5, 15);
 
       expect(testContext.spies.__setLocationHash__).toHaveBeenCalledWith('#L5-15');
+    });
+
+    it('calls updateHash with the correct hash for a single line', () => {
+      testContext.subject(5);
+
+      expect(updateHash).toHaveBeenCalledWith('#L5');
+    });
+
+    it('calls updateHash with the correct hash for a range', () => {
+      testContext.subject(5, 15);
+
+      expect(updateHash).toHaveBeenCalledWith('#L5-15');
     });
   });
 });
