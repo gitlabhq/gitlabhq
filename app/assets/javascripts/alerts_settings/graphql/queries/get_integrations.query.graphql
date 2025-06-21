@@ -3,7 +3,7 @@
 query getIntegrations($projectPath: ID!) {
   project(fullPath: $projectPath) {
     id
-    alertManagementIntegrations {
+    alertManagementIntegrations: alertManagementHttpIntegrations(types: null) {
       nodes {
         ...IntegrationItem
       }

@@ -11,12 +11,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 import IntegrationsList from '~/alerts_settings/components/alerts_integrations_list.vue';
 import AlertsSettingsForm from '~/alerts_settings/components/alerts_settings_form.vue';
 import AlertsSettingsWrapper from '~/alerts_settings/components/alerts_settings_wrapper.vue';
-import { typeSet, i18n } from '~/alerts_settings/constants';
-import createPrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/create_prometheus_integration.mutation.graphql';
+import { i18n } from '~/alerts_settings/constants';
 import destroyHttpIntegrationMutation from '~/alerts_settings/graphql/mutations/destroy_http_integration.mutation.graphql';
 import resetHttpTokenMutation from '~/alerts_settings/graphql/mutations/reset_http_token.mutation.graphql';
-import resetPrometheusTokenMutation from '~/alerts_settings/graphql/mutations/reset_prometheus_token.mutation.graphql';
-import updatePrometheusIntegrationMutation from '~/alerts_settings/graphql/mutations/update_prometheus_integration.mutation.graphql';
 import getHttpIntegrationQuery from '~/alerts_settings/graphql/queries/get_http_integration.query.graphql';
 import getIntegrationsQuery from '~/alerts_settings/graphql/queries/get_integrations.query.graphql';
 import alertsUpdateService from '~/alerts_settings/services';
@@ -43,7 +40,6 @@ import {
   destroyIntegrationResponse,
   integrationToDestroy,
   destroyIntegrationResponseWithErrors,
-  prometheusIntegrationsList,
 } from './mocks/apollo_mock';
 import mockIntegrations from './mocks/integrations.json';
 
@@ -90,15 +86,6 @@ describe('AlertsSettingsWrapper', () => {
     mutation: 'resetHttpTokenMutation',
   });
 
-  const createPrometheousIntegrationResponse = integrationResponse({
-    mutation: 'createPrometheusIntegrationMutation',
-    id: '2',
-  });
-
-  const resetPrometheousResponse = integrationResponse({
-    mutation: 'resetPrometheusTokenMutation',
-  });
-
   const currentHttpIntegrationResponse = {
     data: {
       project: {
@@ -129,16 +116,6 @@ describe('AlertsSettingsWrapper', () => {
 
   const resetTokenHandler = jest.fn().mockResolvedValue(resetHttpTokenResponse);
 
-  const createPrometheousIntegrationHandler = jest
-    .fn()
-    .mockResolvedValue(createPrometheousIntegrationResponse);
-
-  const updatePrometheousIntegrationHandler = jest
-    .fn()
-    .mockResolvedValue(createPrometheousIntegrationResponse);
-
-  const resetPrometheousIntegrationHandler = jest.fn().mockResolvedValue(resetPrometheousResponse);
-
   const currentHttpIntegrationQueryHandler = jest
     .fn()
     .mockResolvedValue(currentHttpIntegrationResponse);
@@ -153,9 +130,6 @@ describe('AlertsSettingsWrapper', () => {
     createIntegrationResponseHandler = createIntegrationHandler,
     updateIntegrationResponseHandler = updateIntegrationHandler,
     resetTokenResponseHandler = resetTokenHandler,
-    createPrometheousResponseHandler = createPrometheousIntegrationHandler,
-    updatePrometheousResponseIntegrationHandler = updatePrometheousIntegrationHandler,
-    resetPrometheousResponseIntegrationHandler = resetPrometheousIntegrationHandler,
     currentHttpIntegrationQueryResponseHandler = currentHttpIntegrationQueryHandler,
   } = {}) {
     Vue.use(VueApollo);
@@ -167,9 +141,6 @@ describe('AlertsSettingsWrapper', () => {
       [createHttpIntegrationMutation, createIntegrationResponseHandler],
       [updateHttpIntegrationMutation, updateIntegrationResponseHandler],
       [resetHttpTokenMutation, resetTokenResponseHandler],
-      [createPrometheusIntegrationMutation, createPrometheousResponseHandler],
-      [updatePrometheusIntegrationMutation, updatePrometheousResponseIntegrationHandler],
-      [resetPrometheusTokenMutation, resetPrometheousResponseIntegrationHandler],
       [getHttpIntegrationQuery, currentHttpIntegrationQueryResponseHandler],
     ];
 
@@ -264,29 +235,23 @@ describe('AlertsSettingsWrapper', () => {
       await findAddIntegrationBtn().vm.$emit('click');
     });
 
-    describe('Create', () => {
-      beforeEach(() => {
-        findAlertsSettingsForm().vm.$emit('create-new-integration', {
-          type: typeSet.http,
-          variables: createHttpVariables,
-        });
+    it('`createIntegrationHandler` is called when a new integration is created', async () => {
+      findAlertsSettingsForm().vm.$emit('create-new-integration', {
+        variables: createHttpVariables,
       });
 
-      it('`createIntegrationHandler` is called when a new integration is created', async () => {
-        expect(createIntegrationHandler).toHaveBeenCalledTimes(1);
-        expect(createIntegrationHandler).toHaveBeenCalledWith({
-          ...createHttpVariables,
-        });
-
-        await waitForPromises();
-
-        expect(findAlert().exists()).toBe(true);
+      expect(createIntegrationHandler).toHaveBeenCalledTimes(1);
+      expect(createIntegrationHandler).toHaveBeenCalledWith({
+        ...createHttpVariables,
       });
+
+      await waitForPromises();
+
+      expect(findAlert().exists()).toBe(true);
     });
 
     it('`updateHttpIntegrationHandler` is called when updated', () => {
       findAlertsSettingsForm().vm.$emit('update-integration', {
-        type: typeSet.http,
         variables: updateHttpVariables,
       });
 
@@ -299,7 +264,6 @@ describe('AlertsSettingsWrapper', () => {
 
     it('`resetHttpTokenMutationHandler` is called on reset-token', () => {
       findAlertsSettingsForm().vm.$emit('reset-token', {
-        type: typeSet.http,
         variables: { id: HTTP_ID },
       });
 
@@ -308,39 +272,36 @@ describe('AlertsSettingsWrapper', () => {
       });
     });
 
-    it('`createPrometheusIntegrationMutation` is called on creating a prometheus integration', () => {
+    it('`createHttpIntegrationMutation` is called on creating a prometheus integration', () => {
       findAlertsSettingsForm().vm.$emit('create-new-integration', {
-        type: typeSet.prometheus,
         variables: createPrometheusVariables,
       });
 
-      expect(createPrometheousIntegrationHandler).toHaveBeenCalledTimes(1);
-      expect(createPrometheousIntegrationHandler).toHaveBeenCalledWith({
+      expect(createIntegrationHandler).toHaveBeenCalledTimes(1);
+      expect(createIntegrationHandler).toHaveBeenCalledWith({
         ...createPrometheusVariables,
       });
     });
 
-    it('`updatePrometheusIntegrationMutation` is called on prometheus mutation update', () => {
+    it('`updateHttpIntegrationMutation` is called on prometheus mutation update', () => {
       findAlertsSettingsForm().vm.$emit('update-integration', {
-        type: typeSet.prometheus,
         variables: updatePrometheusVariables,
       });
 
-      expect(updatePrometheousIntegrationHandler).toHaveBeenCalledTimes(1);
+      expect(updateIntegrationHandler).toHaveBeenCalledTimes(1);
 
-      expect(updatePrometheousIntegrationHandler).toHaveBeenCalledWith({
+      expect(updateIntegrationHandler).toHaveBeenCalledWith({
         ...updatePrometheusVariables,
         id: currentIntegration.id,
       });
     });
 
-    it('`resetPrometheusTokenMutation` is called on prometheus reset token', () => {
+    it('`resetHttpTokenMutation` is called on prometheus reset token', () => {
       findAlertsSettingsForm().vm.$emit('reset-token', {
-        type: typeSet.prometheus,
         variables: { id: PROMETHEUS_ID },
       });
 
-      expect(resetPrometheousIntegrationHandler).toHaveBeenCalledWith({
+      expect(resetTokenHandler).toHaveBeenCalledWith({
         id: PROMETHEUS_ID,
       });
     });
@@ -432,65 +393,36 @@ describe('AlertsSettingsWrapper', () => {
     });
 
     describe('Edit integration', () => {
-      describe('HTTP', () => {
-        beforeEach(async () => {
-          createComponentWithApollo({
-            provide: {
-              multiIntegrations: true,
-            },
-          });
-
-          await waitForPromises();
-
-          findIntegrationsList().vm.$emit('edit-integration', updateHttpVariables);
-
-          await nextTick();
+      beforeEach(async () => {
+        createComponentWithApollo({
+          provide: {
+            multiIntegrations: true,
+          },
         });
 
-        it('calls `currentHttpIntegration` on editing', () => {
-          expect(currentHttpIntegrationQueryHandler).toHaveBeenCalled();
-        });
-
-        it('`updateCurrentHttpIntegrationMutation` is called when we after editing', async () => {
-          await waitForPromises();
-
-          expect(mockUpdateCurrentHttpIntegrationMutationHandler).toHaveBeenCalledTimes(1);
-        });
+        await waitForPromises();
       });
 
-      describe('Prometheus', () => {
-        it('`updateCurrentPrometheusIntegrationMutation` is called on editing', async () => {
-          const currentMockIntegration =
-            prometheusIntegrationsList.data.project.alertManagementIntegrations.nodes[3];
-          createComponentWithApollo({
-            provide: {
-              multiIntegrations: true,
-            },
-            getIntegrationQueryHandler: jest.fn().mockResolvedValue(prometheusIntegrationsList),
-            currentIntegrationQueryHandler: jest.fn().mockResolvedValue(currentMockIntegration),
-            currentHttpIntegrationQueryResponseHandler: jest
-              .fn()
-              .mockResolvedValue(currentHttpIntegrationResponse),
-          });
+      async function expectCurrentIntegrationToBeFetched() {
+        await nextTick();
 
-          await waitForPromises();
+        expect(currentHttpIntegrationQueryHandler).toHaveBeenCalled();
 
-          findIntegrationsList().vm.$emit('edit-integration', {
-            ...updatePrometheusVariables,
-          });
+        await waitForPromises();
 
-          await nextTick();
+        expect(mockUpdateCurrentHttpIntegrationMutationHandler).toHaveBeenCalledTimes(1);
+      }
 
-          expect(mockUpdateCurrentHttpIntegrationMutationHandler).toHaveBeenCalledTimes(1);
-          expect(mockUpdateCurrentHttpIntegrationMutationHandler).toHaveBeenCalledWith(
-            {},
-            // Using expect.objectContaining , because of limitations
-            // Check https://gitlab.com/gitlab-org/gitlab/-/issues/420993
-            expect.objectContaining({ id: mockIntegrations[3].id }),
-            expect.anything(),
-            expect.anything(),
-          );
-        });
+      it('calls `currentHttpIntegration` on editing HTTP integrations', () => {
+        findIntegrationsList().vm.$emit('edit-integration', updateHttpVariables);
+
+        expectCurrentIntegrationToBeFetched();
+      });
+
+      it('calls `currentHttpIntegration` on editing Prometheus integrations', () => {
+        findIntegrationsList().vm.$emit('edit-integration', updatePrometheusVariables);
+
+        expectCurrentIntegrationToBeFetched();
       });
     });
 

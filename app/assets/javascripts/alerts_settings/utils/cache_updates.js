@@ -30,12 +30,11 @@ const deleteIntegrationFromStore = (store, query, { httpIntegrationDestroy }, va
 const addIntegrationToStore = (
   store,
   query,
-  { httpIntegrationCreate, prometheusIntegrationCreate },
+  { httpIntegrationCreate },
   variables,
   // eslint-disable-next-line max-params
 ) => {
-  const integration =
-    httpIntegrationCreate?.integration || prometheusIntegrationCreate?.integration;
+  const integration = httpIntegrationCreate?.integration;
   if (!integration) {
     return;
   }

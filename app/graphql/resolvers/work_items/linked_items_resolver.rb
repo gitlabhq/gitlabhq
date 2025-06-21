@@ -63,7 +63,7 @@ module Resolvers
           work_item.resource_parent == item.resource_parent &&
           work_item.confidential == item.confidential
 
-        current_user.can?(:read_work_item, item)
+        Ability.allowed?(current_user, :read_work_item, item)
       end
     end
   end

@@ -254,7 +254,7 @@ to automatically create a GitLab incident for each PagerDuty incident.
 This configuration requires you to make changes in both PagerDuty and GitLab.
 
 For other incident management tools, you can set up the
-[HTTP integration](../../operations/incident_management/integrations.md#http-endpoints),
+[HTTP integration](../../operations/incident_management/integrations.md#alerting-endpoints),
 and use it to automatically:
 
 1. [Create an incident when an alert is triggered](../../operations/incident_management/manage_incidents.md#automatically-when-an-alert-is-triggered).

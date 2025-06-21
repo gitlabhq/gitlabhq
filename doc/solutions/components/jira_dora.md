@@ -131,7 +131,7 @@ At this point, incidents you resolve in Jira will also be resolved in GitLab. Th
 - [DORA metrics](../../user/analytics/dora_metrics.md)
   - [Measure DORA metrics with Jira](../../user/analytics/dora_metrics.md#with-jira)
 - [GitLab incident management](../../operations/incident_management/manage_incidents.md)
-- [GitLab HTTP endpoints](../../operations/incident_management/integrations.md#http-endpoints)
+- [GitLab HTTP endpoints](../../operations/incident_management/integrations.md#alerting-endpoints)
   - [GitLab HTTP endpoint authorization](../../operations/incident_management/integrations.md#authorization)
   - [GitLab alert parameters](../../operations/incident_management/integrations.md#customize-the-alert-payload-outside-of-gitlab)
   - [GitLab recovery alerts](../../operations/incident_management/integrations.md#recovery-alerts)

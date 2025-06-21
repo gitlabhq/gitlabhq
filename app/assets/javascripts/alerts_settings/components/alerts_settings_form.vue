@@ -9,6 +9,7 @@ import {
   GlFormTextarea,
   GlModal,
   GlModalDirective,
+  GlSprintf,
   GlToggle,
   GlTabs,
   GlTab,
@@ -55,6 +56,7 @@ export default {
     GlFormTextarea,
     GlFormSelect,
     GlModal,
+    GlSprintf,
     GlToggle,
     GlTabs,
     GlTab,
@@ -157,7 +159,7 @@ export default {
       };
     },
     showMappingBuilder() {
-      return this.multiIntegrations && this.isHttp && this.alertFields?.length;
+      return this.multiIntegrations && this.integrationForm.type && this.alertFields?.length;
     },
     hasSamplePayload() {
       return this.isValidNonEmptyJSON(this.currentIntegration?.payloadExample);
@@ -175,6 +177,11 @@ export default {
       return this.isPrometheus
         ? i18n.integrationFormSteps.setupCredentials.prometheusHelp
         : i18n.integrationFormSteps.setupCredentials.help;
+    },
+    customMappingHelpMsg() {
+      return this.isPrometheus
+        ? i18n.integrationFormSteps.mapFields.prometheusHelp
+        : i18n.integrationFormSteps.mapFields.help;
     },
     isFormValid() {
       return (
@@ -206,15 +213,15 @@ export default {
       return this.isFormValid && this.isFormDirty;
     },
     dataForSave() {
-      const { name, active } = this.integrationForm;
+      const { name, active, type } = this.integrationForm;
       const customMappingVariables = {
         payloadAttributeMappings: this.mapping,
         payloadExample: this.samplePayload.json || '{}',
       };
 
-      const variables = this.isHttp ? { name, active, ...customMappingVariables } : { active };
+      const variables = { name, active, type, ...customMappingVariables };
 
-      return { type: this.integrationForm.type, variables };
+      return { variables };
     },
     testAlertModal() {
       return this.isFormDirty ? testAlertModalId : null;
@@ -222,6 +229,8 @@ export default {
   },
   watch: {
     tabIndex(val) {
+      // some interactions change activeTabIndex but not tabIndex, so reset first
+      this.activeTabIndex = tabIndices.configureDetails;
       this.activeTabIndex = val;
     },
     currentIntegration(val) {
@@ -285,13 +294,9 @@ export default {
         : null;
     },
     triggerValidation() {
-      if (this.isHttp) {
-        this.validateName();
-        if (!this.validationState.name) {
-          this.$refs.integrationName.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      } else if (this.isPrometheus) {
-        this.validationState.name = true;
+      this.validateName();
+      if (!this.validationState.name) {
+        this.$refs.integrationName.$el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     },
     sendTestAlert() {
@@ -312,7 +317,7 @@ export default {
     reset() {
       this.resetFormValues();
       this.resetPayloadAndMapping();
-      this.$emit('clear-current-integration', { type: this.currentIntegration?.type });
+      this.$emit('clear-current-integration');
     },
     resetFormValues() {
       this.integrationForm.type = integrationTypes.none.value;
@@ -329,7 +334,6 @@ export default {
       }
 
       this.$emit('reset-token', {
-        type: this.integrationForm.type,
         variables: { id: this.currentIntegration.id },
       });
     },
@@ -419,7 +423,7 @@ export default {
         </gl-form-group>
         <div class="gl-mt-3">
           <gl-form-group
-            v-if="isHttp"
+            v-if="integrationForm.type"
             :label="$options.i18n.integrationFormSteps.nameIntegration.label"
             label-for="name-integration"
             :invalid-feedback="$options.i18n.integrationFormSteps.nameIntegration.error"
@@ -459,7 +463,11 @@ export default {
               class="!gl-mb-0"
               :invalid-feedback="samplePayload.error"
             >
-              <span>{{ $options.i18n.integrationFormSteps.mapFields.help }}</span>
+              <gl-sprintf :message="customMappingHelpMsg">
+                <template #code="{ content }">
+                  <code>{{ content }}</code>
+                </template>
+              </gl-sprintf>
 
               <gl-form-textarea
                 id="sample-payload"

@@ -1,6 +1,6 @@
 const projectPath = '';
 export const HTTP_ID = 'gid://gitlab/AlertManagement::HttpIntegration/7';
-export const PROMETHEUS_ID = 'gid://gitlab/PrometheusService/12';
+export const PROMETHEUS_ID = 'gid://gitlab/AlertManagement::HttpIntegration/4';
 export const errorMsg = 'Something went wrong';
 
 export const createHttpVariables = {
@@ -130,58 +130,6 @@ export const destroyIntegrationResponseWithErrors = {
         payloadExample: '{"field": "value"}',
         payloadAttributeMappings: [],
         payloadAlertFields: [],
-      },
-    },
-  },
-};
-
-export const prometheusIntegrationsList = {
-  data: {
-    project: {
-      id: '1',
-      alertManagementIntegrations: {
-        nodes: [
-          {
-            __typename: 'AlertManagementIntegration',
-            id: 'gid://gitlab/AlertManagement::HttpIntegration/7',
-            type: 'HTTP',
-            active: true,
-            name: 'test',
-            url: 'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/eddd36969b2d3d6a.json',
-            token: '7eb24af194116411ec8d66b58c6b0d2e',
-            apiUrl: null,
-          },
-          {
-            __typename: 'AlertManagementIntegration',
-            id: 'gid://gitlab/AlertManagement::HttpIntegration/6',
-            type: 'HTTP',
-            active: false,
-            name: 'test',
-            url: 'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/abce123.json',
-            token: '8639e0ce06c731b00ee3e8dcdfd14fe0',
-            apiUrl: null,
-          },
-          {
-            __typename: 'AlertManagementIntegration',
-            id: 'gid://gitlab/AlertManagement::HttpIntegration/5',
-            type: 'HTTP',
-            active: false,
-            name: 'test',
-            url: 'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/bcd64c85f918a2e2.json',
-            token: '5c8101533d970a55d5c105f8abff2192',
-            apiUrl: null,
-          },
-          {
-            __typename: 'AlertManagementIntegration',
-            id: 'gid://gitlab/PrometheusService/12',
-            type: 'PROMETHEUS',
-            active: true,
-            name: 'Prometheus',
-            url: 'http://192.168.1.152:3000/root/autodevops/prometheus/alerts/notify.json',
-            token: '0b18c37caa8fe980799b349916fe5ddf',
-            apiUrl: null,
-          },
-        ],
       },
     },
   },
