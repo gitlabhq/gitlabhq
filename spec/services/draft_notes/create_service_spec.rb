@@ -20,6 +20,22 @@ RSpec.describe DraftNotes::CreateService, feature_category: :code_review_workflo
     expect(draft.discussion_id).to be_nil
   end
 
+  it 'creates keep-around refs' do
+    diff_refs = project.commit(RepoHelpers.sample_commit.id).try(:diff_refs)
+
+    position = Gitlab::Diff::Position.new(
+      old_path: "files/ruby/popen.rb",
+      new_path: "files/ruby/popen.rb",
+      old_line: nil,
+      new_line: 14,
+      diff_refs: diff_refs
+    )
+
+    expect(project.repository).to receive(:keep_around)
+
+    create_draft(note: 'Comment on diff', position: position.to_json)
+  end
+
   it 'tracks the start event when the draft is persisted' do
     expect(Gitlab::UsageDataCounters::MergeRequestActivityUniqueCounter)
       .to receive(:track_create_review_note_action)

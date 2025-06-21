@@ -36,6 +36,8 @@ module DraftNotes
         merge_request_activity_counter.track_create_review_note_action(user: current_user)
       end
 
+      draft_note.keep_around_commits if draft_note.on_diff?
+
       after_execute
 
       draft_note

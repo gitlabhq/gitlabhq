@@ -102,4 +102,26 @@ module DiffPositionableNote
 
     errors.add(:commit_id, 'does not match the diff refs')
   end
+
+  def keep_around_commits
+    repository.keep_around(*shas, source: "#{noteable_type}/#{self.class.name}")
+  end
+
+  def repository
+    noteable.respond_to?(:repository) ? noteable.repository : project.repository
+  end
+
+  def shas
+    [
+      original_position.base_sha,
+      original_position.start_sha,
+      original_position.head_sha
+    ].tap do |a|
+      if position != original_position
+        a << position.base_sha
+        a << position.start_sha
+        a << position.head_sha
+      end
+    end
+  end
 end

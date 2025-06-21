@@ -47,6 +47,18 @@ class DraftNote < ApplicationRecord
       .map(&:position)
   end
 
+  def self.bulk_insert_and_keep_commits!(items, **options)
+    inserted_records = bulk_insert!(items, **options)
+
+    keep_commits_for_records(items)
+
+    inserted_records
+  end
+
+  def self.keep_commits_for_records(records)
+    records.find(&:on_diff?)&.keep_around_commits
+  end
+
   def project
     merge_request.target_project
   end

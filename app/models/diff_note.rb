@@ -143,20 +143,6 @@ class DiffNote < Note
     position&.multiline?
   end
 
-  def shas
-    [
-      self.original_position.base_sha,
-      self.original_position.start_sha,
-      self.original_position.head_sha
-    ].tap do |a|
-      if self.position != self.original_position
-        a << self.position.base_sha
-        a << self.position.start_sha
-        a << self.position.head_sha
-      end
-    end
-  end
-
   def latest_diff_file_path
     latest_diff_file.file_path
   end
@@ -223,13 +209,5 @@ class DiffNote < Note
     return if self.original_position.complete? && self.position.complete?
 
     errors.add(:position, "is incomplete")
-  end
-
-  def keep_around_commits
-    repository.keep_around(*shas, source: "#{noteable_type}/#{self.class.name}")
-  end
-
-  def repository
-    noteable.respond_to?(:repository) ? noteable.repository : project.repository
   end
 end
