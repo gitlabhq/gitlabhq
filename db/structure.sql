@@ -38483,6 +38483,8 @@ CREATE UNIQUE INDEX index_workspace_agentk_states_on_workspace_id ON workspace_a
 
 CREATE INDEX index_workspace_tokens_on_project_id ON workspace_tokens USING btree (project_id);
 
+CREATE INDEX index_workspace_tokens_on_token_encrypted ON workspace_tokens USING btree (token_encrypted);
+
 CREATE UNIQUE INDEX index_workspace_tokens_on_workspace_id ON workspace_tokens USING btree (workspace_id);
 
 CREATE INDEX index_workspace_variables_on_project_id ON workspace_variables USING btree (project_id);
