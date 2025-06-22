@@ -445,6 +445,11 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
+.work-item-link-child:hover .work-item-status{
+  // Subtle border as dark mode background is same as status badge
+  box-shadow: inset 0 0 0 1px var(--gl-color-alpha-light-8);
+}
+
 // Safari
 @supports (-webkit-appearance:none) and (stroke-color:transparent) {
   @include browser-specific-overrides;

@@ -4469,6 +4469,7 @@ Input type: `CreateIssueInput`
 | <a id="mutationcreateissuemoveafterid"></a>`moveAfterId` | [`IssueID`](#issueid) | Global ID of issue that should be placed after the current issue. |
 | <a id="mutationcreateissuemovebeforeid"></a>`moveBeforeId` | [`IssueID`](#issueid) | Global ID of issue that should be placed before the current issue. |
 | <a id="mutationcreateissueprojectpath"></a>`projectPath` | [`ID!`](#id) | Project full path the issue is associated with. |
+| <a id="mutationcreateissuestatusid"></a>`statusId` | [`WorkItemsStatusesStatusID`](#workitemsstatusesstatusid) | Global ID of the status. |
 | <a id="mutationcreateissuetitle"></a>`title` | [`String!`](#string) | Title of the issue. |
 | <a id="mutationcreateissuetype"></a>`type` | [`IssueType`](#issuetype) | Type of the issue. |
 | <a id="mutationcreateissueweight"></a>`weight` | [`Int`](#int) | Weight of the issue. |

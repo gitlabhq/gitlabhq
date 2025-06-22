@@ -39,6 +39,8 @@ module ActiveRecord
       class_methods do
         # Caches created instances for fast retrieval used in associations.
         def find(id)
+          id = id.to_i
+
           find_instances[id] ||= self::ITEMS.find { |item| item[:id] == id }&.then do |item_data|
             new(item_data)
           end
