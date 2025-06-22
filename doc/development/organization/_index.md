@@ -216,6 +216,10 @@ As an example, see [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/46
 
 For more information about development with organizations, see [Organization](../organization)
 
+#### Add a sharding key to a pre-existing table
+
+See the following [guidance](sharding/_index.md).
+
 #### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
 
 We need to backfill a `sharding_key` to hundreds of tables that do not have one.
@@ -299,7 +303,11 @@ exempt_from_sharding: true
 to the table's database dictionary file. This can be used for:
 
 - JiHu specific tables, since they do not have any data on the .com database. [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905)
-- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541)
+- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541).
+  These tables should be dropped as soon as practical.
+
+Do not use `exempt_from_sharding` for any other purposes.
+Tables which are exempt breaks our efforts at isolation and will introduce issues later in the Organizations and Cells projects.
 
 When tables are exempted from sharding key requirements, they also do not show up in our
 [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
