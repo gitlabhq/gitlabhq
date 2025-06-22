@@ -82,6 +82,14 @@ configure the **secondary** in a few ways:
 - Use a separate object store and enable the **Allow this secondary node to replicate
   content on Object Storage** setting.
 
+{{< alert type="warning" >}}
+
+To avoid data loss, you should only enable the **Allow this secondary node to replicate content on
+Object Storage** setting if you are using separate object stores for the Primary and Secondary
+sites.
+
+{{< /alert >}}
+
 GitLab does not support the case where both:
 
 - The **primary** site uses local storage.
