@@ -334,7 +334,7 @@ RSpec.describe 'Group', :with_current_organization, feature_category: :groups_an
 
     it 'marks the group for deletion' do
       expect { remove_with_confirm('Delete group', group.path) }.to change {
-        group.reload.marked_for_deletion?
+        group.reload.self_deletion_scheduled?
       }.from(false).to(true)
       expect(page).to have_content "pending deletion"
     end

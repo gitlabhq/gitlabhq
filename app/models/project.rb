@@ -2941,7 +2941,7 @@ class Project < ApplicationRecord
   end
 
   def archived
-    super && !marked_for_deletion?
+    super && !self_deletion_scheduled?
   end
 
   def self_or_ancestors_archived?

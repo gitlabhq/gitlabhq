@@ -5546,7 +5546,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
         delete api(path, user), params: params
 
         expect(response).to have_gitlab_http_status(:accepted)
-        expect(project.reload.marked_for_deletion?).to be_truthy
+        expect(project.reload.self_deletion_scheduled?).to be_truthy
       end
 
       it 'returns error if project cannot be marked for deletion' do

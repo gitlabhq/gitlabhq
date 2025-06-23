@@ -1249,7 +1249,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context "when project is not marked for deletion" do
       before do
-        allow(project).to receive(:marked_for_deletion?).and_return(false)
+        allow(project).to receive(:self_deletion_scheduled?).and_return(false)
       end
 
       subject { helper.home_panel_data_attributes }
@@ -1259,7 +1259,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context "when project is marked for deletion" do
       before do
-        allow(project).to receive(:marked_for_deletion?).and_return(true)
+        allow(project).to receive(:self_deletion_scheduled?).and_return(true)
       end
 
       subject { helper.home_panel_data_attributes }

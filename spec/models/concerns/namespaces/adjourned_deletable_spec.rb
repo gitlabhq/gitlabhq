@@ -49,7 +49,7 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
     context 'when self_deletion_scheduled_deletion_created_on is nil' do
       it 'returns false' do
         expect(record.self_deletion_scheduled?).to be(false)
-        expect(record.marked_for_deletion?).to be(false)
+        expect(record.self_deletion_scheduled?).to be(false)
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe Namespaces::AdjournedDeletable, feature_category: :groups_and_pro
 
       it 'returns true' do
         expect(record.self_deletion_scheduled?).to be(true)
-        expect(record.marked_for_deletion?).to be(true)
+        expect(record.self_deletion_scheduled?).to be(true)
       end
     end
   end

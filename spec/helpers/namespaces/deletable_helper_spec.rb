@@ -281,7 +281,7 @@ RSpec.describe Namespaces::DeletableHelper, feature_category: :groups_and_projec
 
     context 'when group is marked for deletion' do
       before do
-        allow(group).to receive_messages(marked_for_deletion?: true)
+        allow(group).to receive_messages(self_deletion_scheduled?: true)
       end
 
       it_behaves_like 'permanent deletion message'

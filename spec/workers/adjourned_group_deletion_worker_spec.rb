@@ -122,7 +122,7 @@ RSpec.describe AdjournedGroupDeletionWorker, feature_category: :groups_and_proje
       it 'restores the group' do
         worker.perform
 
-        expect(group_marked_for_deletion.reload.marked_for_deletion?).to be_falsey
+        expect(group_marked_for_deletion.reload.self_deletion_scheduled?).to be_falsey
       end
     end
   end

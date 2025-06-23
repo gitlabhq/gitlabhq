@@ -176,7 +176,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def destroy
-    return destroy_immediately if group.marked_for_deletion? && ::Gitlab::Utils.to_boolean(params[:permanently_remove])
+    if group.self_deletion_scheduled? &&
+        ::Gitlab::Utils.to_boolean(params.permit(:permanently_remove)[:permanently_remove])
+      return destroy_immediately
+    end
 
     result = ::Groups::MarkForDeletionService.new(group, current_user).execute
 
@@ -210,7 +213,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def restore
-    return render_404 unless group.marked_for_deletion?
+    return render_404 unless group.self_deletion_scheduled?
 
     result = ::Groups::RestoreService.new(group, current_user).execute
 

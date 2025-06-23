@@ -555,7 +555,7 @@ module ProjectsHelper
       cicd_catalog_path: cicd_catalog_path,
       is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
-      is_project_marked_for_deletion: project.marked_for_deletion?.to_s,
+      is_project_marked_for_deletion: project.self_deletion_scheduled?.to_s,
       project_avatar: project.avatar_url,
       project_name: project.name,
       project_id: project.id,
@@ -575,7 +575,7 @@ module ProjectsHelper
   def archiving_available?(project)
     return false unless project
 
-    project.persisted? && !project.marked_for_deletion? && can?(current_user, :archive_project, project)
+    project.persisted? && !project.self_deletion_scheduled? && can?(current_user, :archive_project, project)
   end
 
   def show_archived_project_banner?(project)

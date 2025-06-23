@@ -281,7 +281,7 @@ module QA
       # @param resource [Hash] Resource to check
       # @param fetch_again [Boolean] Whether to fetch the resource again before checking
       # @return [Boolean]
-      def marked_for_deletion?(resource, fetch_again: false)
+      def self_deletion_scheduled?(resource, fetch_again: false)
         if fetch_again
           resource = get_resource(resource)
           return false unless resource
@@ -358,7 +358,7 @@ module QA
           if permanent
             deleted
           else
-            deleted || (success?(response&.code) && marked_for_deletion?(parse_body(response)))
+            deleted || (success?(response&.code) && self_deletion_scheduled?(parse_body(response)))
           end
         end
       end

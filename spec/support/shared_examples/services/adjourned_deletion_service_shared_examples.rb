@@ -20,7 +20,7 @@ RSpec.shared_examples 'adjourned deletion service' do
     it 'uses admin bot to restore the resource', :enable_admin_mode do
       service.execute
 
-      expect(resource.reload.marked_for_deletion?).to be(false)
+      expect(resource.reload.self_deletion_scheduled?).to be(false)
     end
   end
 

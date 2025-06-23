@@ -30,8 +30,6 @@ module Namespaces
     def self_deletion_scheduled?
       self_deletion_scheduled_deletion_created_on.present?
     end
-    # TODO: Replace calls to #marked_for_deletion? with #self_deletion_scheduled?
-    alias_method :marked_for_deletion?, :self_deletion_scheduled?
 
     # Returns the first record that's scheduled for deletion in self's ancestors chain (including itself).
     def first_scheduled_for_deletion_in_hierarchy_chain

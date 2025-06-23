@@ -81,7 +81,7 @@ RSpec.describe Groups::RestoreService, feature_category: :groups_and_projects do
       it 'does not restore the group' do
         execute
 
-        expect(group.marked_for_deletion?).to be_truthy
+        expect(group.self_deletion_scheduled?).to be_truthy
       end
 
       it 'returns error' do

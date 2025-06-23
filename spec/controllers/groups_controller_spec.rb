@@ -565,7 +565,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       context 'success' do
         it 'marks the group for delayed deletion' do
-          expect { subject }.to change { group.reload.marked_for_deletion? }.from(false).to(true)
+          expect { subject }.to change { group.reload.self_deletion_scheduled? }.from(false).to(true)
         end
 
         it 'does not immediately delete the group' do
@@ -602,7 +602,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         end
 
         it 'does not mark the group for deletion' do
-          expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(false)
+          expect { subject }.not_to change { group.reload.self_deletion_scheduled? }.from(false)
         end
 
         context 'for a html request' do
@@ -710,7 +710,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
 
       context 'when the restore succeeds' do
         it 'restores the group' do
-          expect { subject }.to change { group.reload.marked_for_deletion? }.from(true).to(false)
+          expect { subject }.to change { group.reload.self_deletion_scheduled? }.from(true).to(false)
         end
 
         it 'renders success notice upon restoring' do
@@ -727,7 +727,7 @@ RSpec.describe GroupsController, :with_current_organization, factory_default: :k
         end
 
         it 'does not restore the group' do
-          expect { subject }.not_to change { group.reload.marked_for_deletion? }.from(true)
+          expect { subject }.not_to change { group.reload.self_deletion_scheduled? }.from(true)
         end
 
         it 'redirects to group edit page' do

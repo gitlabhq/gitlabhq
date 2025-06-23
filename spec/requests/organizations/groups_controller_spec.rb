@@ -202,7 +202,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       specify do
         gitlab_request
 
-        expect(group).to be_marked_for_deletion
+        expect(group).to be_self_deletion_scheduled
       end
     end
 
@@ -210,7 +210,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
       specify do
         gitlab_request
 
-        expect(group).not_to be_marked_for_deletion
+        expect(group).not_to be_self_deletion_scheduled
       end
     end
 
@@ -257,7 +257,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
 
           context 'when mark for deletion succeeds' do
             it 'marks the group for delayed deletion' do
-              expect { gitlab_request }.to change { group.reload.marked_for_deletion? }.from(false).to(true)
+              expect { gitlab_request }.to change { group.reload.self_deletion_scheduled? }.from(false).to(true)
             end
 
             it 'does not immediately delete the group' do
@@ -284,7 +284,7 @@ RSpec.describe Organizations::GroupsController, feature_category: :organization 
             end
 
             it 'does not mark the group for deletion' do
-              expect { gitlab_request }.not_to change { group.reload.marked_for_deletion? }.from(false)
+              expect { gitlab_request }.not_to change { group.reload.self_deletion_scheduled? }.from(false)
             end
 
             it 'renders the error' do

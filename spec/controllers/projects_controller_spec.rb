@@ -1227,7 +1227,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       specify :aggregate_failures do
         delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-        expect(project.marked_for_deletion?).to be_falsey
+        expect(project.self_deletion_scheduled?).to be_falsey
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(dashboard_projects_path)
       end
@@ -1237,7 +1237,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
       specify :aggregate_failures do
         delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-        expect(project.reload.marked_for_deletion?).to be_truthy
+        expect(project.reload.self_deletion_scheduled?).to be_truthy
         expect(project.reload.hidden?).to be_falsey
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(project_path(project))
@@ -1298,7 +1298,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         specify :aggregate_failures do
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.marked_for_deletion?).to be_falsey
+          expect(project.self_deletion_scheduled?).to be_falsey
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(dashboard_projects_path)
         end
@@ -1308,7 +1308,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         specify :aggregate_failures do
           delete :destroy, params: { namespace_id: project.namespace, id: project }
 
-          expect(project.reload.marked_for_deletion?).to be_truthy
+          expect(project.reload.self_deletion_scheduled?).to be_truthy
           expect(project.reload.hidden?).to be_falsey
           expect(response).to have_gitlab_http_status(:found)
           expect(response).to redirect_to(project_path(project))

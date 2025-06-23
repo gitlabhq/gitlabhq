@@ -174,7 +174,7 @@ module API
       def immediately_delete_subgroup_error(group)
         if !group.subgroup?
           '`permanently_remove` option is only available for subgroups.'
-        elsif !group.marked_for_deletion_on.present?
+        elsif !group.self_deletion_scheduled?
           'Group must be marked for deletion first.'
         elsif group.full_path != params[:full_path]
           '`full_path` is incorrect. You must enter the complete path for the subgroup.'

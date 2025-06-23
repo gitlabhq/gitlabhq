@@ -131,7 +131,7 @@ module Namespaces
     end
 
     def confirm_remove_group_message(group, permanently_remove)
-      return _permanently_delete_group_message(group) if permanently_remove || group.marked_for_deletion?
+      return _permanently_delete_group_message(group) if permanently_remove || group.self_deletion_scheduled?
 
       safe_format(
         _("The contents of this group, its subgroups and projects will be permanently deleted after " \
