@@ -74,7 +74,7 @@ module Atlassian
             'deploymentSequenceNumber' => { 'type' => 'integer' },
             'updateSequenceNumber' => { 'type' => 'integer' },
             'associations' => {
-              'type' => %w[array],
+              'type' => 'array',
               'items' => association_type,
               'minItems' => 1
             },
@@ -236,7 +236,7 @@ module Atlassian
           'properties' => {
             'associationType' => {
               'type' => 'string',
-              'pattern' => '(issueKeys|issueIdOrKeys|serviceIdOrKeys)'
+              'pattern' => '(issueKeys|issueIdOrKeys|serviceIdOrKeys|commit|pull-request)'
             },
             'values' => issue_keys_type
           }
@@ -257,9 +257,29 @@ module Atlassian
       def issue_keys_type
         {
           'type' => 'array',
-          'items' => { 'type' => 'string' },
           'minItems' => 1,
-          'maxItems' => 100
+          'maxItems' => 100,
+          'items' => {
+            'anyOf' => [
+              { 'type' => 'string' },
+              {
+                'type' => 'object',
+                'required' => %w[pullRequestId repositoryId],
+                'properties' => {
+                  'pullRequestId' => { 'type' => 'string' },
+                  'repositoryId' => { 'type' => 'string' }
+                }
+              },
+              {
+                'type' => 'object',
+                'required' => %w[commitHash repositoryId],
+                'properties' => {
+                  'commitHash' => { 'type' => 'string' },
+                  'repositoryId' => { 'type' => 'string' }
+                }
+              }
+            ]
+          }
         }
       end
 

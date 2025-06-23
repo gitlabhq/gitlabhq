@@ -8,6 +8,7 @@ module RuboCop
       class Except < RuboCop::Cop::Base
         MSG = 'Use the `FromExcept` concern, instead of using `Gitlab::SQL::Except` directly'
 
+        # @!method raw_except?(node)
         def_node_matcher :raw_except?, <<~PATTERN
           (send (const (const (const nil? :Gitlab) :SQL) :Except) :new ...)
         PATTERN

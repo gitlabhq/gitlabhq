@@ -5,7 +5,7 @@ module QA
     name: :ci_release_cli_catalog_publish_option
   } do
     describe 'CI catalog release with glab', :skip_live_env do
-      let(:glab_version) { 'v1.59.1' }
+      let(:glab_version) { 'v1.59.2' }
 
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
 

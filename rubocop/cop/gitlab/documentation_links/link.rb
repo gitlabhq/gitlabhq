@@ -43,11 +43,13 @@ module RuboCop
           end
           self.anchors_by_docs_file = {}
 
+          # @!method help_page_path?(node)
           def_node_matcher :help_page_path?, <<~PATTERN
             (send _ {:help_page_url :help_page_path} $...)
           PATTERN
           RESTRICT_ON_SEND = %i[help_page_url help_page_path].to_set.freeze
 
+          # @!method anchor_param(node)
           def_node_matcher :anchor_param, <<~PATTERN
             (send nil? %RESTRICT_ON_SEND
               _

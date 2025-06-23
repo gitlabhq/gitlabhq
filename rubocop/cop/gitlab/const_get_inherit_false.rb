@@ -11,6 +11,7 @@ module RuboCop
 
         MSG = 'Use inherit=false when using const_get.'
 
+        # @!method const_get?(node)
         def_node_matcher :const_get?, <<~PATTERN
         (send _ :const_get ...)
         PATTERN

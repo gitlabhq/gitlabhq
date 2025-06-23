@@ -72,7 +72,7 @@ you can use to identify and describe these weaknesses in terms of CWEs.
 ## Deduplication
 
 When a category's process deems findings to be the same, or if they are similar enough that a noise reduction is
-required, only one finding is kept and the others are eliminated. Read more about the [deduplication process](../vulnerability_report/pipeline.md#deduplication-process).
+required, only one finding is kept and the others are eliminated. Read more about the [deduplication process](../detect/vulnerability_deduplication.md).
 
 ## Dependency graph export
 

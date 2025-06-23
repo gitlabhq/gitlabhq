@@ -91,7 +91,7 @@ and preventing the introduction of new ones.
 For more information, see:
 
 - [View the vulnerability report](vulnerability_report/_index.md)
-- [View security findings in merge requests](detect/security_scan_results.md#merge-request)
+- [View security findings in merge requests](detect/security_scanning_results.md)
 - [View the Security Dashboard](security_dashboard/_index.md)
 - [Labels](../project/labels.md)
 - [Issue boards](../project/issue_board.md)

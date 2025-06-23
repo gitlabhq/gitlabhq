@@ -57,6 +57,7 @@ describe('BoardSettingsSidebar', () => {
           GlModal: createMockDirective('gl-modal'),
         },
         stubs: {
+          MountingPortal: stubComponent(MountingPortal),
           GlDrawer: stubComponent(GlDrawer, {
             template: '<div><slot name="header"></slot><slot></slot></div>',
           }),
@@ -81,9 +82,8 @@ describe('BoardSettingsSidebar', () => {
       createComponent();
     });
     it('renders a MountingPortal component', () => {
-      expect(wrapper.findComponent(MountingPortal).props()).toMatchObject({
-        mountTo: '#js-right-sidebar-portal',
-        append: true,
+      expect(wrapper.findComponent(MountingPortal).attributes()).toMatchObject({
+        'mount-to': '#js-right-sidebar-portal',
         name: 'board-settings-sidebar',
       });
     });

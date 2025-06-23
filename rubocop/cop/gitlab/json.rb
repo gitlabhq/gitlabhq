@@ -12,6 +12,7 @@ module RuboCop
 
         AVAILABLE_METHODS = %i[parse parse! load decode dump generate encode pretty_generate].to_set.freeze
 
+        # @!method json_node?(node)
         def_node_matcher :json_node?, <<~PATTERN
           (send (const {nil? | (const nil? :ActiveSupport)} :JSON) $_ $...)
         PATTERN

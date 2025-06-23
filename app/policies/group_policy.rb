@@ -185,6 +185,11 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :award_emoji
   end
 
+  rule { guest | can?(:admin_issue) }.policy do
+    enable :set_new_issue_metadata
+    enable :set_new_work_item_metadata
+  end
+
   rule { planner }.policy do
     enable :planner_access
     enable :guest_access

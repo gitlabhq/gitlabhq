@@ -783,7 +783,7 @@ recognizes through the [`artifacts:reports`](../../../ci/yaml/_index.md#artifact
 keyword in the CI configuration file.
 
 Once the CI job finishes, the Runner uploads these reports to GitLab, which are then available in
-the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../vulnerability_report/pipeline.md)
+the CI Job artifacts. In GitLab Ultimate, these reports can be viewed in the corresponding [pipeline](../detect/security_scanning_results.md)
 and become part of the [vulnerability report](../vulnerability_report/_index.md).
 
 These reports must follow a format defined in the

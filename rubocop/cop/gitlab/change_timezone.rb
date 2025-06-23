@@ -7,6 +7,7 @@ module RuboCop
         MSG = "Do not change timezone in the runtime (application or rspec), " \
           "it could result in silently modifying other behavior."
 
+        # @!method changing_timezone?(node)
         def_node_matcher :changing_timezone?, <<~PATTERN
           (send (const nil? :Time) :zone= ...)
         PATTERN

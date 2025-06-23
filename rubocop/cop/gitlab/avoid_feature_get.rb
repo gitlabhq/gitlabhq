@@ -24,6 +24,7 @@ module RuboCop
         MSG = 'Use `stub_feature_flags` method instead of `Feature.get`. ' \
           'See doc/development/feature_flags/index.md#feature-flags-in-tests for more information.'
 
+        # @!method feature_get?(node)
         def_node_matcher :feature_get?, <<~PATTERN
           (send (const {nil? cbase} :Feature) :get ...)
         PATTERN

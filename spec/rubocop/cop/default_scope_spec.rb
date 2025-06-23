@@ -9,31 +9,31 @@ RSpec.describe RuboCop::Cop::DefaultScope do
   end
 
   it 'flags the use of default_scope with a constant receiver' do
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       User.default_scope
       ^^^^^^^^^^^^^^^^^^ Do not use `default_scope`, [...]
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of default_scope with a nil receiver' do
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class Foo ; default_scope ; end
                   ^^^^^^^^^^^^^ Do not use `default_scope`, [...]
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of default_scope when passing arguments' do
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class Foo ; default_scope(:foo) ; end
                   ^^^^^^^^^^^^^^^^^^^ Do not use `default_scope`, [...]
-    SOURCE
+    RUBY
   end
 
   it 'flags the use of default_scope when passing a block' do
-    expect_offense(<<~SOURCE)
+    expect_offense(<<~RUBY)
       class Foo ; default_scope { :foo } ; end
                   ^^^^^^^^^^^^^ Do not use `default_scope`, [...]
-    SOURCE
+    RUBY
   end
 
   it 'ignores the use of default_scope with a local variable receiver' do

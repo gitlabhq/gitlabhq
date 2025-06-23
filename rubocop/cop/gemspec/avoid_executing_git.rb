@@ -33,10 +33,12 @@ module RuboCop
             ...)
         PATTERN
 
+        # @!method send_node?(node)
         def_node_matcher :send_node?, <<~PATTERN
           send
         PATTERN
 
+        # @!method executes_string(node)
         def_node_search :executes_string, <<~PATTERN
           $(xstr (str $_))
         PATTERN

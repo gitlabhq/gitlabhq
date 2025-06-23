@@ -134,7 +134,7 @@ class IssuePolicy < IssuablePolicy
   end
 
   # guest members need to be able to set issue metadata per https://gitlab.com/gitlab-org/gitlab/-/issues/300100
-  rule { ~persisted & is_project_member & can?(:guest_access) }.policy do
+  rule { ~persisted & can?(:set_new_issue_metadata) }.policy do
     enable :set_issue_metadata
   end
 

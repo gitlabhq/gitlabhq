@@ -18,10 +18,12 @@ module RuboCop
           the option :allow_local_requests in the request call.
         EOL
 
+        # @!method includes_httparty?(node)
         def_node_matcher :includes_httparty?, <<~PATTERN
           (send nil? :include (const nil? :HTTParty))
         PATTERN
 
+        # @!method httparty_node?(node)
         def_node_matcher :httparty_node?, <<~PATTERN
           (send (const nil? :HTTParty)...)
         PATTERN

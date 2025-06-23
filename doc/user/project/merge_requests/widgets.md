@@ -104,4 +104,4 @@ see the status of these checks in merge requests
 
 If you enable any application security scanning tools, GitLab shows the results in the security
 scanning widget. For more information, see
-[security scanning output in merge request widget](../../application_security/detect/security_scan_results.md#merge-request).
+[security scanning output in merge request widget](../../application_security/detect/security_scanning_results.md).

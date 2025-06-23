@@ -62,7 +62,7 @@ target branches.
 
 ## View scan results
 
-Detected vulnerabilities appear in [merge requests](../detect/security_scan_results.md#merge-request), the [pipeline security tab](../vulnerability_report/pipeline.md),
+Detected vulnerabilities appear in [merge requests](../detect/security_scanning_results.md), the [pipeline security tab](../detect/security_scanning_results.md),
 and the [vulnerability report](../vulnerability_report/_index.md).
 
 {{< alert type="note" >}}

@@ -21,6 +21,7 @@ module RuboCop
           Instead, use the `Gitlab::HTTP` wrapper.
         MSG
 
+        # @!method http_v2_node?(node)
         def_node_matcher :http_v2_node?, <<~PATTERN
           (send (const (const nil? :Gitlab) :HTTP_V2) {#{METHODS_PATTERN}} ...)
         PATTERN

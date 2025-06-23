@@ -424,6 +424,13 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:create_issue) }.enable :create_work_item
 
+  # We cannot use `guest_access` because that includes non-members on public projects
+  # Only guests that are project members are allowed to set metadata when creating new issues
+  rule { guest | can?(:admin_issue) }.policy do
+    enable :set_new_issue_metadata
+    enable :set_new_work_item_metadata
+  end
+
   rule { can?(:create_issue) }.enable :create_task
 
   # These abilities are not allowed to admins that are not members of the project,

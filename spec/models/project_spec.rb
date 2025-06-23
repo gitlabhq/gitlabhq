@@ -9320,7 +9320,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  it_behaves_like 'it has loose foreign keys', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/526190' do
+  it_behaves_like 'it has loose foreign keys' do
     let(:factory_name) { :project }
   end
 

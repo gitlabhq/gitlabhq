@@ -6,24 +6,24 @@ require_relative '../../../../rubocop/cop/gitlab/avoid_feature_category_not_owne
 RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
   shared_examples 'defining feature category on a class' do
     it 'flags a method call on a class' do
-      expect_offense(<<~SOURCE)
+      expect_offense(<<~RUBY)
         feature_category :not_owned
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization
-      SOURCE
+      RUBY
     end
 
     it 'flags a method call on a class with an array passed' do
-      expect_offense(<<~SOURCE)
+      expect_offense(<<~RUBY)
         feature_category :not_owned, [:index, :edit]
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization
-      SOURCE
+      RUBY
     end
 
     it 'flags a method call on a class with an array passed' do
-      expect_offense(<<~SOURCE)
+      expect_offense(<<~RUBY)
         worker.feature_category :not_owned, [:index, :edit]
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization
-      SOURCE
+      RUBY
     end
   end
 
@@ -51,17 +51,17 @@ RSpec.describe RuboCop::Cop::Gitlab::AvoidFeatureCategoryNotOwned do
     it_behaves_like 'defining feature category on a class'
 
     it 'flags when passed as a hash for a Grape endpoint as keyword args' do
-      expect_offense(<<~SOURCE)
+      expect_offense(<<~RUBY)
         get :hello, feature_category: :not_owned
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization
-      SOURCE
+      RUBY
     end
 
     it 'flags when passed as a hash for a Grape endpoint in a hash' do
-      expect_offense(<<~SOURCE)
+      expect_offense(<<~RUBY)
         get :hello, { feature_category: :not_owned, urgency: :low}
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization
-      SOURCE
+      RUBY
     end
   end
 end

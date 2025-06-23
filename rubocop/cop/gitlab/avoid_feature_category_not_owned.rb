@@ -11,10 +11,12 @@ module RuboCop
         MSG = 'Avoid adding new endpoints with `feature_category :not_owned`. See https://docs.gitlab.com/ee/development/feature_categorization'
         RESTRICT_ON_SEND = %i[feature_category get post put patch delete].freeze
 
+        # @!method feature_category_not_owned?(node)
         def_node_matcher :feature_category_not_owned?, <<~PATTERN
           (send _ :feature_category (sym :not_owned) ...)
         PATTERN
 
+        # @!method feature_category_not_owned_api?(node)
         def_node_matcher :feature_category_not_owned_api?, <<~PATTERN
           (send nil? {:get :post :put :patch :delete} _
             (hash <(pair (sym :feature_category) (sym :not_owned)) ...>)

@@ -14,6 +14,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     context 'when the deployment does not belong to any Jira issue' do
       before do
         allow(subject).to receive(:issue_keys).and_return([])
+        allow(subject).to receive(:commits_since_last_deploy).and_return([])
         allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
         allow(subject).to receive(:generate_deployment_commands).and_return(nil)
       end
@@ -258,7 +259,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     end
 
     it 'limits the number of commits scanned' do
-      stub_const("#{described_class}::COMMITS_LIMIT", 10)
+      stub_const("#{described_class}::COMMITS_LIMIT", 20)
 
       expect(subject.issue_keys).to contain_exactly('add a')
     end
@@ -362,6 +363,31 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
           expect(subject.issue_keys).to contain_exactly('add a')
         end
       end
+    end
+  end
+
+  describe '#associations' do
+    let(:project) { build_stubbed(:project) }
+    let(:deployment) { build_stubbed(:deployment, project: project) }
+    let(:entity) { described_class.new(deployment) }
+
+    let(:commit) { instance_double(Commit, id: 'abc123') }
+    let(:merge_request) { instance_double(DeploymentMergeRequest, merge_request_id: 42) }
+
+    before do
+      allow(entity).to receive(:issue_keys).and_return(['JIRA-1'])
+      allow(entity).to receive(:commits_since_last_deploy).and_return([commit])
+      allow(deployment).to receive(:deployment_merge_requests).and_return([merge_request])
+      allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
+      allow(project).to receive(:id).and_return(1)
+    end
+
+    it 'returns the correct associations structure' do
+      expect(entity.associations).to eq([
+        { associationType: :issueKeys, values: ['JIRA-1'] },
+        { associationType: :commit, values: [{ commitHash: 'abc123', repositoryId: '1' }] },
+        { associationType: 'pull-request', values: [{ pullRequestId: 42, repositoryId: '1' }] }
+      ])
     end
   end
 end

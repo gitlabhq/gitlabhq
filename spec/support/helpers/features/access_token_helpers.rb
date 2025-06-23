@@ -38,6 +38,10 @@ module Features
       find_by_testid('field-last-used')
     end
 
+    def last_used_ips
+      find_by_testid('field-last-used-ips')
+    end
+
     def access_token_options
       find_by_testid('access-token-options')
     end

@@ -146,7 +146,7 @@ You can also download the security scan results:
 
 - In the pipeline's **Security** tab, select **Download results**.
 
-For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+For more details, see [Pipeline security report](../detect/security_scanning_results.md).
 
 {{< alert type="note" >}}
 
@@ -369,7 +369,7 @@ In Ultimate, the [SAST report file](#download-a-sast-report) is processed by Git
 - [Merge request widget](#merge-request-widget)
 - [Merge request changes view](#merge-request-changes-view)
 - [Vulnerability report](../vulnerability_report/_index.md)
-- [Pipeline security report](../vulnerability_report/pipeline.md)
+- [Pipeline security report](../detect/security_scanning_results.md)
 
 A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
 for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST

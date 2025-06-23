@@ -16,7 +16,7 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     return redirect_to admin_cohorts_path if params[:tab] == 'cohorts'
 
-    @users = User.filter_items(params[:filter]).order_name_asc
+    @users = filter_users
 
     if params[:search_query].present?
       # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- available only for self-managed instances
@@ -460,6 +460,10 @@ class Admin::UsersController < Admin::ApplicationController
 
   def after_successful_update_flash
     { notice: _('User was successfully updated.') }
+  end
+
+  def filter_users
+    User.filter_items(params[:filter]).order_name_asc
   end
 end
 

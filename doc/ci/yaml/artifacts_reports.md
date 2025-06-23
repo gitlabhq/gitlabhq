@@ -116,7 +116,7 @@ GitLab can display the results of one or more reports in:
 
 - The merge request [security widget](../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md#view-details-of-an-api-fuzzing-vulnerability).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
-- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
 - The [security dashboard](../../user/application_security/api_fuzzing/configuration/enabling_the_analyzer.md#security-dashboard).
 
 ## `artifacts:reports:browser_performance`
@@ -201,7 +201,7 @@ The collected Container Scanning report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [container scanning widget](../../user/application_security/container_scanning/_index.md).
-- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
 
@@ -218,7 +218,7 @@ The collected coverage fuzzing report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [coverage fuzzing widget](../../user/application_security/coverage_fuzzing/_index.md#interacting-with-the-vulnerabilities).
-- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md).
 
@@ -271,7 +271,7 @@ report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request security widget.
-- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md).
 
@@ -289,7 +289,7 @@ The collected Dependency Scanning report uploads to GitLab as an artifact.
 GitLab can display the results of one or more reports in:
 
 - The merge request [dependency scanning widget](../../user/application_security/dependency_scanning/_index.md).
-- The pipeline [**Security** tab](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline).
+- The pipeline [**Security** tab](../../user/application_security/detect/security_scanning_results.md).
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md).
 - The [Project Vulnerability report](../../user/application_security/vulnerability_report/_index.md).
 - The [dependency list](../../user/application_security/dependency_list/_index.md).
@@ -447,7 +447,7 @@ The collected Secret Detection report is uploaded to GitLab.
 GitLab can display the results of one or more reports in:
 
 - The merge request [secret scanning widget](../../user/application_security/secret_detection/pipeline/_index.md).
-- The [pipeline security tab](../../user/application_security/detect/security_scan_results.md).
+- The [pipeline security tab](../../user/application_security/detect/security_scanning_results.md).
 - The [security dashboard](../../user/application_security/security_dashboard/_index.md).
 
 ## `artifacts:reports:terraform`

@@ -166,6 +166,7 @@ instructions:
     fileFilters:
       - <glob_pattern_1>
       - <glob_pattern_2>
+      - !<exclude_pattern>  # Exclude files matching this pattern
     instructions: |
       <your_custom_review_instructions>
 ```
@@ -178,10 +179,32 @@ instructions:
     fileFilters:
       - "*.rb"
       - "lib/**/*.rb"
+      - "!spec/**/*.rb"  # Exclude test files
     instructions: |
       1. Ensure all methods have proper documentation
       2. Follow Ruby style guide conventions
       3. Prefer symbols over strings for hash keys
+
+  - name: TypeScript Source Files
+    fileFilters:
+      - "**/*.ts"
+      - "!**/*.test.ts"  # Exclude test files
+      - "!**/*.spec.ts"  # Exclude spec files
+    instructions: |
+      1. Ensure proper TypeScript types (avoid 'any')
+      2. Follow naming conventions
+      3. Document complex functions
+
+  - name: All Files Except Tests
+    fileFilters:
+      - "!**/*.test.*"   # Exclude all test files
+      - "!**/*.spec.*"   # Exclude all spec files
+      - "!test/**/*"     # Exclude test directories
+      - "!spec/**/*"     # Exclude spec directories
+    instructions: |
+      1. Follow consistent code style
+      2. Add meaningful comments for complex logic
+      3. Ensure proper error handling
 
   - name: Test Coverage
     fileFilters:

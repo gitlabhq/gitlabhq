@@ -25,7 +25,7 @@ For public and internal projects, you can change who can see your:
 - Pipelines
 - Job output logs
 - Job artifacts
-- [Pipeline security dashboard](../../user/application_security/vulnerability_report/pipeline.md#view-vulnerabilities-in-a-pipeline)
+- [Pipeline security results](../../user/application_security/detect/security_scanning_results.md)
 
 To change the visibility of your pipelines and related features:
 
