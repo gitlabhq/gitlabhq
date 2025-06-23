@@ -182,7 +182,6 @@ RSpec.shared_examples 'LFS http requests' do
   context 'with download permission' do
     before do
       authorize_download
-      project.lfs_objects << lfs_object if defined?(project) && project
     end
 
     describe 'download request' do

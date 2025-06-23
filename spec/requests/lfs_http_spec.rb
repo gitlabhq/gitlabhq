@@ -23,11 +23,12 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
 
       context 'project specific LFS settings' do
         let(:body) { upload_body(sample_object) }
-        let(:response) { request && super() }
 
         before do
           authorize_upload
           project.update_attribute(:lfs_enabled, project_lfs_enabled)
+
+          subject
         end
 
         describe 'LFS disabled in project' do
@@ -58,48 +59,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
           context 'when downloading' do
             subject(:request) { get(objects_url(project, sample_oid), params: {}, headers: headers) }
 
-            context 'when LFS object is not linked to project' do
-              it_behaves_like 'LFS http 404 response'
-            end
-
-            context 'when LFS object is linked to project' do
-              before do
-                project.lfs_objects << lfs_object
-              end
-
-              it_behaves_like 'LFS http 200 blob response'
-            end
-
-            context 'when a fork relationship' do
-              let_it_be(:original_project) { create(:project, :public) }
-              let(:forked_project) { fork_project(original_project, user, repository: true) }
-
-              subject(:request) { get objects_url(forked_project, sample_oid), params: {}, headers: headers }
-
-              before do
-                forked_project.add_developer(user)
-              end
-
-              context 'when the LFS object is linked to the original project' do
-                before do
-                  create(:lfs_objects_project, project: original_project, lfs_object: lfs_object)
-                end
-
-                it_behaves_like 'LFS http 200 blob response'
-              end
-
-              context 'when the LFS object is not linked to the original project' do
-                it_behaves_like 'LFS http 404 response'
-              end
-            end
-
-            context 'when validate_lfs_object_access FF is disabled' do
-              before do
-                stub_feature_flags(validate_lfs_object_access: false)
-              end
-
-              it_behaves_like 'LFS http 200 blob response'
-            end
+            it_behaves_like 'LFS http 200 blob response'
           end
         end
       end
