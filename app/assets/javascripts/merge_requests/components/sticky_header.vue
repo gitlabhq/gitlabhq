@@ -275,7 +275,7 @@ export default {
                 issuable-type="merge_request"
               />
             </template>
-            <submit-review-button v-if="glFeatures.improvedReviewExperience" />
+            <submit-review-button />
           </div>
         </div>
       </div>

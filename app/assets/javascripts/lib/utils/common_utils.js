@@ -791,6 +791,8 @@ export const isCurrentUser = (userId) => {
 /**
  * Clones an object via JSON stringifying and re-parsing.
  * This ensures object references are not persisted (e.g. unlike lodash cloneDeep)
+ * See https://github.com/lodash/lodash/issues/4710#issuecomment-606892867 for details on cloneDeep circular references
+ * See https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm for the underlying mechanism used by Lodash
  */
 export const cloneWithoutReferences = (obj) => {
   return JSON.parse(JSON.stringify(obj));

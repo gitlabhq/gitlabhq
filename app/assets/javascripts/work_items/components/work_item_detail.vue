@@ -210,6 +210,7 @@ export default {
       info: getParameterByName('resolves_discussion'),
       showSidebar: true,
       truncationEnabled: true,
+      lastRealtimeUpdatedAt: new Date(),
     };
   },
   apollo: {
@@ -591,8 +592,12 @@ export default {
         : this.newCommentTemplatePaths;
     },
   },
+  beforeDestroy() {
+    document.removeEventListener('actioncable:reconnected', this.refetchIfStale);
+  },
   mounted() {
     addShortcutsExtension(ShortcutsWorkItems);
+    document.addEventListener('actioncable:reconnected', this.refetchIfStale);
   },
   methods: {
     handleWorkItemCreated() {
@@ -863,6 +868,14 @@ export default {
       this.trackEvent('change_work_item_description_truncation', {
         label: this.truncationEnabled.toString(), // New user truncation setting
       });
+    },
+    refetchIfStale() {
+      const now = new Date();
+      const staleThreshold = 5 * 60 * 1000; // 5 minutes in milliseconds
+      if (now - this.lastRealtimeUpdatedAt > staleThreshold) {
+        this.$apollo.queries.workItem.refetch();
+        this.lastRealtimeUpdatedAt = now;
+      }
     },
   },
   WORK_ITEM_TYPE_NAME_OBJECTIVE,

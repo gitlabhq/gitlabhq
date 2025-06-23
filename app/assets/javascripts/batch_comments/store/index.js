@@ -17,7 +17,6 @@ export const useBatchComments = defineStore('batchComments', {
       isPublishing: false,
       currentlyPublishingDrafts: [],
       shouldAnimateReviewButton: false,
-      reviewBarRendered: false,
       isMergeRequest: false,
       drawerOpened: false,
       // TODO: this gets populated from the sidebar_reviewers.vue, we should have a separate store for this

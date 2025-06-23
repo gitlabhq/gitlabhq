@@ -153,14 +153,15 @@ Supported parameters:
 | `sort`        | `updated desc`              | The [field to sort the data by](fields.md#fields-to-sort-glql-views-by) followed by a sort order (`asc` or `desc`). |
 | `title`       | `GLQL table` or `GLQL list` | A title displayed at the top of the GLQL view. |
 
-For example, to display first five issues assigned to current user in the `gitlab-org/gitlab`
-project as a list, displaying fields `title`, `health`, and `due`:
+For example, to display the first five issues assigned to the current user in the `gitlab-org/gitlab`
+project as a list, sorted by due date (earliest first) and displaying the `title`, `health`, and `due` fields:
 
 ````yaml
 ```glql
 display: list
 fields: title, health, due
 limit: 5
+sort: due asc
 query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
 ```
 ````

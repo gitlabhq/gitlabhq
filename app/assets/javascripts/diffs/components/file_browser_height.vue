@@ -2,7 +2,6 @@
 import { mapState } from 'pinia';
 import StickyViewportFillerHeight from '~/diffs/components/sticky_viewport_filler_height.vue';
 import { useBatchComments } from '~/batch_comments/store';
-import { observeElementOnce } from '~/lib/utils/dom_utils';
 
 export default {
   name: 'FileBrowserHeight',
@@ -18,7 +17,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(useBatchComments, ['reviewBarRendered', 'draftsCount']),
+    ...mapState(useBatchComments, ['draftsCount']),
     reviewBarEnabled() {
       return this.draftsCount > 0;
     },
@@ -26,17 +25,6 @@ export default {
       return this.reviewBarEnabled
         ? this.bottomPadding + this.reviewBarCachedHeight
         : this.bottomPadding;
-    },
-  },
-  watch: {
-    reviewBarRendered: {
-      handler(rendered) {
-        if (!rendered || this.reviewBarCachedHeight) return;
-        observeElementOnce(document.querySelector('.js-review-bar'), ([bar]) => {
-          this.reviewBarCachedHeight = bar.boundingClientRect.height;
-        });
-      },
-      immediate: true,
     },
   },
   mounted() {

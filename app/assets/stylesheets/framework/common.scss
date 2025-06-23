@@ -25,10 +25,6 @@
   --system-footer-height: #{$system-footer-height};
 }
 
-.review-bar-visible {
-  --mr-review-bar-height: #{$mr-review-bar-height};
-}
-
 @include media-breakpoint-up(sm) {
   .right-sidebar-collapsed {
     --application-bar-right: #{$right-sidebar-collapsed-width};

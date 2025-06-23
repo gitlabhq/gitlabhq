@@ -3,7 +3,6 @@ import { GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters } from 'vuex';
 import { mapState } from 'pinia';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
 import {
@@ -20,7 +19,7 @@ export default {
     GlSprintf,
     GlButton,
   },
-  mixins: [resolvedStatusMixin, glFeatureFlagsMixin()],
+  mixins: [resolvedStatusMixin],
   props: {
     draft: {
       type: Object,
@@ -101,23 +100,14 @@ export default {
 
 <template>
   <span>
-    <component
-      :is="glFeatures.improvedReviewExperience ? 'gl-button' : 'span'"
-      :variant="glFeatures.improvedReviewExperience ? 'link' : undefined"
-      class="review-preview-item-header"
-      :class="{ '!gl-justify-start': glFeatures.improvedReviewExperience }"
+    <gl-button
+      variant="link"
+      class="review-preview-item-header !gl-justify-start"
       data-testid="preview-item-header"
       @click="$emit('click', draft)"
     >
-      <gl-icon class="flex-shrink-0" :name="iconName" /><span
-        class="text-nowrap gl-items-center"
-        :class="{ 'gl-font-bold': !glFeatures.improvedReviewExperience }"
-      >
-        <span
-          class="review-preview-item-header-text block-truncated"
-          :class="{ 'gl-ml-2': !glFeatures.improvedReviewExperience }"
-          >{{ titleText }}</span
-        >
+      <gl-icon class="flex-shrink-0" :name="iconName" /><span class="text-nowrap gl-items-center">
+        <span class="review-preview-item-header-text block-truncated">{{ titleText }}</span>
         <template v-if="showLinePosition">
           <template v-if="startLineNumber === endLineNumber">
             :<span :class="getLineClasses(startLineNumber)">{{ startLineNumber }}</span>
@@ -136,7 +126,7 @@ export default {
           </gl-sprintf>
         </template>
       </span>
-    </component>
+    </gl-button>
     <span class="review-preview-item-content">
       <p>{{ content }}</p>
     </span>

@@ -109,8 +109,6 @@
 - if @merge_request.can_be_cherry_picked?
   = render "projects/commit/change", type: 'cherry-pick', commit: @merge_request.commit_to_cherry_pick
 
-#js-review-bar{ data: review_bar_data(@merge_request, current_user) }
-
 #js-reviewer-drawer-portal
 
 - if current_user && Feature.enabled?(:mr_experience_survey, current_user)

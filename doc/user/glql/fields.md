@@ -1582,7 +1582,9 @@ can be used to indicate what fields to include in the rendered GLQL view.
 
 **Description**: Display the start date of epics listed in the view.
 
-**Field name**: `startDate`
+**Field name**: `start`
+
+**Aliases**: `startDate`
 
 **Supported for**: Epics
 
@@ -1641,16 +1643,80 @@ In GLQL views, the `sort` view parameter is a field name followed by
 a sort order (`asc` or `desc`) that sorts the results by the specified
 field and order.
 
-| Field         | Supported for                 | Description                                     |
-|---------------|-------------------------------|-------------------------------------------------|
-| Closed at     | Issues, epics, merge requests | Sort by closed date                             |
-| Created       | Issues, epics, merge requests | Sort by created date                            |
-| Due date      | Issues, epics                 | Sort by due date                                |
-| Health status | Issues                        | Sort by health status                           |
-| Merged at     | Merge requests                | Sort by merge date                              |
-| Milestone     | Issues, merge requests        | Sort by milestone due date                      |
-| Popularity    | Issues, epics, merge requests | Sort by the number of thumbs up emoji reactions |
-| Start date    | Epics                         | Sort by start date                              |
-| Title         | Issues, epics, merge requests | Sort by title                                   |
-| Updated       | Issues, epics, merge requests | Sort by last updated date                       |
-| Weight        | Issues                        | Sort by weight                                  |
+| Field         | Name (and alias)         | Supported for                 | Description                                     |
+|---------------|--------------------------|-------------------------------|-------------------------------------------------|
+| Closed at     | `closed`, `closedAt`     | Issues, epics, merge requests | Sort by closed date                             |
+| Created       | `created`, `createdAt`   | Issues, epics, merge requests | Sort by created date                            |
+| Due date      | `due`, `dueDate`         | Issues, epics                 | Sort by due date                                |
+| Health status | `health`, `healthStatus` | Issues                        | Sort by health status                           |
+| Merged at     | `merged`, `mergedAt`     | Merge requests                | Sort by merge date                              |
+| Milestone     | `milestone`              | Issues, merge requests        | Sort by milestone due date                      |
+| Popularity    | `popularity`             | Issues, epics, merge requests | Sort by the number of thumbs up emoji reactions |
+| Start date    | `start`, `startDate`     | Epics                         | Sort by start date                              |
+| Title         | `title`                  | Issues, epics, merge requests | Sort by title                                   |
+| Updated at    | `updated`, `updatedAt`   | Issues, epics, merge requests | Sort by last updated date                       |
+| Weight        | `weight`                 | Issues                        | Sort by weight                                  |
+
+**Examples**:
+
+- List all issues in the `gitlab-org/gitlab` project sorted by title. Display columns 
+  `state`, `title`, and `updated`.
+
+  ````yaml
+  ```glql
+  display: table
+  fields: state, title, updated
+  sort: title asc
+  query: project = "gitlab-org/gitlab" and type = Issue
+  ```
+  ````
+
+- List all merge requests in the `gitlab-org` group assigned to the
+  authenticated user sorted by the merge date (latest first). Display columns 
+  `title`, `reviewer`, and `merged`.
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, reviewer, merged
+  sort: merged desc
+  query: group = "gitlab-org" and type = MergeRequest and state = merged and author = currentUser()
+  limit: 10
+  ```
+  ````
+
+- List all epics in the `gitlab-org` group sorted by the start date (oldest
+  first). Display columns `title`, `state`, and `startDate`.
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, state, startDate
+  sort: startDate asc
+  query: group = "gitlab-org" and type = Epic
+  ```
+  ````
+
+- List all issues in the `gitlab-org` group with an assigned weight sorted by
+  the weight (highest first). Display columns `title`, `weight`, and `health`.
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, weight, health
+  sort: weight desc
+  query: group = "gitlab-org" and weight = any
+  ```
+  ````
+
+- List all issues in the `gitlab-org` group due up to a week from today sorted by the due
+  date (earliest first). Display columns `title`, `duedate`, and `assignee`.
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, dueDate, assignee
+  sort: dueDate asc
+  query: group = "gitlab-org" and due >= today() and due <= 1w
+  ```
+  ````

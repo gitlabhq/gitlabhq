@@ -76,12 +76,12 @@ of whether you can use these features with Duo Core or Duo Pro when
 | Feature                                                                                                           | Available on GitLab Duo Self-Hosted         | GitLab version         | Status  |
 | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
 | [General](../../user/gitlab_duo_chat/_index.md)                                                                   | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Explain Code](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                      | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Write Test](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                       | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Code Explanation](../../user/gitlab_duo_chat/examples.md#explain-selected-code)                                      | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
+| [Test Generation](../../user/gitlab_duo_chat/examples.md#write-tests-in-the-ide)                                       | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                            | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
-| [Troubleshoot Job](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.10 and later | Beta |
-| [Explain Vulnerability](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.10 and later | Beta |
+| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 
 For more examples of a question you can ask, see
 [Ask about GitLab](../../user/gitlab_duo_chat/examples.md).
@@ -90,8 +90,8 @@ For more examples of a question you can ask, see
 
 | Feature                                                                                                                                      | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
 | -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
-| [Generate Commit Message](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
-| [Summarize New Merge Request](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Merge Commit Message Generation](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message)                        | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Merge Request Summary](../../user/project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 | [Code Review](../../user/project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code)                                   | {{< icon name="dash-circle" >}} No | Not applicable         | Not applicable |
 | [Code Review Summary](../../user/project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review)                                    | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Experiment |
 
@@ -100,7 +100,7 @@ For more examples of a question you can ask, see
 | Feature                                                                                                                          | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
 | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
 | [Issue Description Generation](../../user/project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No  | Not applicable   | Not applicable |
-| [Issue Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Discussion Summary](../../user/discussions/_index.md#summarize-issue-discussions-with-duo-chat)                           | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 
 #### Other features
 

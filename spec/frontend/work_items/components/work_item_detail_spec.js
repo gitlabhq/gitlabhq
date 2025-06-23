@@ -7,6 +7,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { useRealDate } from 'helpers/fake_date';
 import WorkItemLoading from '~/work_items/components/work_item_loading.vue';
 import WorkItemDetail from '~/work_items/components/work_item_detail.vue';
 import WorkItemActions from '~/work_items/components/work_item_actions.vue';
@@ -165,6 +166,7 @@ describe('WorkItemDetail component', () => {
     hasLinkedItemsEpicsFeature = true,
     showSidebar = true,
     newCommentTemplatePaths = [],
+    lastRealtimeUpdatedAt = new Date('2023-01-01T12:00:00.000Z'),
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -192,6 +194,7 @@ describe('WorkItemDetail component', () => {
           updateInProgress,
           error,
           showSidebar,
+          lastRealtimeUpdatedAt,
         };
       },
       provide: {
@@ -1467,5 +1470,33 @@ describe('WorkItemDetail component', () => {
     await nextTick();
 
     expect(findWorkItemDesigns().props('canPasteDesign')).toBe(true);
+  });
+
+  describe('when websocket is reconnecting', () => {
+    useRealDate();
+
+    it('refetches work item when `actioncable:reconnected` event is emitted', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(1);
+
+      document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not refetch work item if less than 5 minutes have passed since last fetch', async () => {
+      createComponent({ lastRealtimeUpdatedAt: new Date() });
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(1);
+
+      document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+      await waitForPromises();
+
+      expect(successHandler).toHaveBeenCalledTimes(1);
+    });
   });
 });

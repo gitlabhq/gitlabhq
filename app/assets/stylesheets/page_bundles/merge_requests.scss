@@ -826,31 +826,13 @@ $diff-file-header-top: 11px;
   }
 }
 
-// stylelint-disable-next-line gitlab/no-gl-class
-.submit-review-dropdown .gl-new-dropdown-panel {
-  max-width: none;
-}
-
-.submit-review-dropdown-form {
-  width: calc(100vw - 20px);
-  max-width: 756px;
-}
-
-.submit-review-dropdown-animated {
-  animation: review-btn-animate 300ms ease-in;
-}
-
 @include keyframes(review-btn-animate) {
-  0% {
+  0%, 100% {
     transform: scale(1);
   }
 
   75% {
     transform: scale(1.2);
-  }
-
-  100% {
-    transform: scale(1);
   }
 }
 
@@ -895,42 +877,6 @@ $diff-file-header-top: 11px;
 
 .memory-graph-container {
   @apply gl-bg-default gl-border;
-}
-
-.review-bar-component {
-  position: fixed;
-  bottom: $calc-application-footer-height;
-  left: 0;
-  z-index: $zindex-dropdown-menu;
-  display: flex;
-  align-items: center;
-  width: 100%;
-  height: var(--mr-review-bar-height);
-  padding-left: $super-sidebar-width;
-  padding-right: $right-sidebar-collapsed-width;
-  background: var(--gl-background-color-default);
-  border-top: 1px solid var(--gl-border-color-default);
-  @apply gl-transition-padding;
-
-  @media (max-width: map-get($grid-breakpoints, sm)-1) {
-    padding-left: 0;
-    padding-right: 0;
-  }
-
-  .submit-review-dropdown {
-    margin-left: $grid-size;
-
-    .md-header {
-      top: -$gl-spacing-scale-2;
-    }
-  }
-}
-
-.review-bar-content {
-  max-width: $limited-layout-width;
-  padding: 0 $container-margin;
-  width: 100%;
-  margin: 0 auto;
 }
 
 .review-preview-item-header {

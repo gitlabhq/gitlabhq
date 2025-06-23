@@ -291,4 +291,28 @@ RSpec.describe 'getting a collection of projects', feature_category: :source_cod
       end
     end
   end
+
+  context 'when providing namespace_path filter' do
+    let_it_be(:path) { %i[projects nodes] }
+    let_it_be(:group) { create(:group, owners: [current_user]) }
+    let_it_be(:project) { create(:project, group: group, owners: [current_user]) }
+
+    before do
+      post_graphql(query, current_user: current_user)
+    end
+
+    subject { graphql_data_at(*path).pluck('id') }
+
+    context 'when `namespace_path` has match' do
+      let(:filters) { { namespace_path: group.full_path } }
+
+      it { is_expected.to contain_exactly(project.to_global_id.to_s) }
+    end
+
+    context 'when `namespace_path` has no match' do
+      let(:filters) { { namespace_path: 'non_existent_path' } }
+
+      it { is_expected.to be_empty }
+    end
+  end
 end

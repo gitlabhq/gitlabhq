@@ -92,9 +92,7 @@ describe('Merge requests sticky header component', () => {
 
   describe('submit review', () => {
     it('renders submit review button', () => {
-      createComponent({
-        provide: { glFeatures: { improvedReviewExperience: true } },
-      });
+      createComponent();
 
       expect(wrapper.findComponent(SubmitReviewButton).exists()).toBe(true);
     });

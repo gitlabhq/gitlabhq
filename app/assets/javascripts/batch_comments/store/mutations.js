@@ -68,9 +68,6 @@ export default {
   [types.CLEAR_DRAFTS]() {
     this.drafts = [];
   },
-  [types.SET_REVIEW_BAR_RENDERED]() {
-    this.reviewBarRendered = true;
-  },
   [types.SET_DRAFT_EDITING]({ draftId, isEditing }) {
     const draftIndex = this.drafts.findIndex((draft) => draft.id === draftId);
     const draft = this.drafts[draftIndex];

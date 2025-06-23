@@ -126,17 +126,4 @@ describe('Batch comments draft preview item component', () => {
       expect(wrapper.find('.review-preview-item-header-text').text()).toContain('Your new comment');
     });
   });
-
-  it.each`
-    improvedReviewExperience | component
-    ${true}                  | ${'button'}
-    ${false}                 | ${'span'}
-  `(
-    'renders as $component when improvedReviewExperience is $improvedReviewExperience',
-    ({ improvedReviewExperience }) => {
-      createComponent({}, improvedReviewExperience);
-
-      expect(wrapper.findByTestId('preview-item-header').element).toMatchSnapshot();
-    },
-  );
 });

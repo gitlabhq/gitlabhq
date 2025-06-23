@@ -27,6 +27,12 @@ export default class ActionCableLink extends ApolloLink {
               observer.complete();
             }
           },
+          // we want to react to websocket reconnection events to update data on stale browser tabs
+          connected({ reconnected }) {
+            if (reconnected) {
+              document.dispatchEvent(new CustomEvent('actioncable:reconnected'));
+            }
+          },
         },
       );
 

@@ -7,19 +7,6 @@ module QA
         include Page::Component::Note
         include Page::Component::Issuable::Sidebar
 
-        view 'app/assets/javascripts/batch_comments/components/preview_dropdown.vue' do
-          element 'review-preview-dropdown'
-        end
-
-        view 'app/assets/javascripts/batch_comments/components/review_bar.vue' do
-          element 'review-bar-content'
-        end
-
-        view 'app/assets/javascripts/batch_comments/components/submit_dropdown.vue' do
-          element 'submit-review-dropdown'
-          element 'submit-review-button'
-        end
-
         view 'app/assets/javascripts/batch_comments/components/review_drawer.vue' do
           element 'submit-review-button'
         end

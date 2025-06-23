@@ -81,8 +81,6 @@ const initMrStickyHeader = () => {
 };
 
 const initReviewDrawer = () => {
-  if (!window.gon?.features?.improvedReviewExperience) return;
-
   // Review drawer has to be located outside the MR sticky/non-sticky header
   // Otherwise it will disappear when header switches between sticky/non-sticky components
   const el = document.querySelector('#js-review-drawer');

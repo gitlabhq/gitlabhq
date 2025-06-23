@@ -8,7 +8,6 @@ import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
-import { observeElementOnce } from '~/lib/utils/dom_utils';
 
 jest.mock('~/lib/utils/dom_utils');
 
@@ -86,21 +85,6 @@ describe('FileBrowserHeight', () => {
       expect(filler.props('minHeight')).toBe(minHeight);
       expect(filler.props('stickyTopOffset')).toBe(topPadding);
       expect(filler.props('stickyBottomOffset')).toBe(bottomPadding);
-    });
-
-    it('updates bottom offset when review bar is shown', async () => {
-      const reviewBarHeight = 50;
-      let callback;
-      useBatchComments().drafts = [{}];
-      useBatchComments().reviewBarRendered = true;
-      observeElementOnce.mockImplementation((element, cb) => {
-        callback = cb;
-      });
-      createComponent();
-      callback([{ boundingClientRect: { height: reviewBarHeight } }]);
-      await nextTick();
-      const filler = wrapper.findComponent(StickyViewportFillerHeight);
-      expect(filler.props('stickyBottomOffset')).toBe(bottomPadding + reviewBarHeight);
     });
   });
 

@@ -13,8 +13,11 @@ export default {
   computed: {
     ...mapState(useBatchComments, ['draftsCount', 'isReviewer', 'shouldAnimateReviewButton']),
   },
+  mounted() {
+    this.fetchDrafts();
+  },
   methods: {
-    ...mapActions(useBatchComments, ['setDrawerOpened']),
+    ...mapActions(useBatchComments, ['fetchDrafts', 'setDrawerOpened']),
   },
 };
 </script>
@@ -24,7 +27,9 @@ export default {
     <gl-button
       variant="confirm"
       data-testid="review-drawer-toggle"
-      :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
+      :class="{
+        'motion-safe:gl-animate-[review-btn-animate_300ms_ease-in]': shouldAnimateReviewButton,
+      }"
       @click="setDrawerOpened(true)"
     >
       {{ __('Your review') }}

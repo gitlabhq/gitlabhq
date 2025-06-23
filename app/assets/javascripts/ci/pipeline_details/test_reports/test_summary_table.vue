@@ -45,7 +45,7 @@ export default {
           {{ __('Job') }}
         </div>
         <div role="rowheader" class="table-section section-25">
-          {{ __('Duration') }}
+          {{ __('Execution time') }}
         </div>
         <div role="rowheader" class="table-section section-10 gl-text-center">
           {{ __('Failed') }}
@@ -93,7 +93,7 @@ export default {
 
         <div class="table-section section-25">
           <div role="rowheader" class="table-mobile-header gl-font-bold">
-            {{ __('Duration') }}
+            {{ __('Execution time') }}
           </div>
           <div class="table-mobile-content gl-text-left">
             {{ testSuite.formattedTime }}

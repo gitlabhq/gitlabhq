@@ -16339,7 +16339,8 @@ CREATE TABLE issue_customer_relations_contacts (
     contact_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_9fd68b6ded CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE issue_customer_relations_contacts_id_seq
