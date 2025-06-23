@@ -1,9 +1,0 @@
----
-name: validate_lfs_object_access
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/510292
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191723
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547584
-milestone: '18.1'
-group: group::source code
-type: beta
-default_enabled: false
