@@ -61,8 +61,7 @@ fi
 # Then set DESTINATIONS to the content of VERSION file
 if [[ "${QA_IMAGE_NAME}" == "gitlab-ee-qa" ]] && \
    [[ "${CI_REGISTRY}" == "dev.gitlab.org:5005" ]] && \
-   [[ "$(version_file_content)" == *"internal"* ]] && \
-   [[ "${CI_COMMIT_TITLE}" == "Update VERSION files" ]]; then
+   [[ "$CI_COMMIT_TITLE" =~ ^Update\ VERSION\ file\ for.*internal ]]; then
    QA_IMAGE_FOR_INTERNAL_RELEASE="${BASE_IMAGE_PATH}:$(version_file_content)"
    DESTINATIONS="${DESTINATIONS} --tag ${QA_IMAGE_FOR_INTERNAL_RELEASE}"
 fi

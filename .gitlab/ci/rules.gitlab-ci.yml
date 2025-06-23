@@ -240,6 +240,10 @@
 .if-observability-skip-e2e-jobs: &if-observability-skip-e2e-jobs
   if: '$SKIP_GITLAB_OBSERVABILITY_BACKEND_TRIGGER || $GITLAB_OBSERVABILITY_BACKEND_PIPELINE_TRIGGER_TOKEN == null || $GITLAB_OBSERVABILITY_BACKEND_TOKEN_FOR_CI_SCRIPTS == null'
 
+.if-dev-internal-release: &if-dev-internal-release
+  if: '$CI_SERVER_HOST == "dev.gitlab.org" && $CI_PROJECT_PATH == "gitlab/gitlab-ee" && $CI_COMMIT_REF_NAME =~
+  /^[\d-]+-stable-ee$/ && $CI_COMMIT_TITLE =~ /^Update VERSION file.*internal/'
+
 ####################
 # Changes patterns #
 ####################
@@ -1109,6 +1113,7 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         ARCH: amd64,arm64
+    - <<: *if-dev-internal-release
     - !reference [".build-images:rules:build-qa-image-merge-requests", rules]
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
     # Always build on stable branches to serve release-environments pipeline
