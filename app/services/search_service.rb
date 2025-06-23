@@ -29,10 +29,6 @@ class SearchService
   end
   strong_memoize_attr :group
 
-  def projects
-    # overridden in EE
-  end
-
   def search_type_errors
     # overridden in EE
   end

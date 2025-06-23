@@ -1,11 +1,10 @@
 @use 'components/rapid_diffs/constants';
+@use 'page_bundles/merge_request' as mr;
 @import 'mixins_and_variables_and_functions';
 @import 'components/rapid_diffs';
 
-$mr-tabs-height: $grid-size * 6;
-
 .rd-app {
-  --rd-app-sticky-top: calc(#{$calc-application-header-height} + #{$mr-tabs-height});
+  --rd-app-sticky-top: calc(#{$calc-application-header-height} + #{mr.$merge-request-sticky-header-height});
 
   // MR tabs are hidden on small breakpoint
   @include media-breakpoint-down(sm) {

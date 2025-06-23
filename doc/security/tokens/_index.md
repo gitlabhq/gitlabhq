@@ -311,6 +311,27 @@ You cannot use this token to access any other data. Anyone who has
 your token can create issues and merge requests as if they were
 you. If you think your token has leaked, reset the token immediately.
 
+### Workspace token
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194097) in GitLab 18.2.
+
+{{< /history >}}
+
+Each [workspace](../../user/workspace/_index.md) has an internal, automatically managed token that
+does not expire. It allows HTTP and SSH communication with a workspace. It exists whenever a workspace
+is requested to be in the **running** state, and is automatically injected and used by the workspace.
+
+Starting a stopped workspace creates a new workspace token.
+Restarting a running workspace deletes the existing token and creates a new token.
+
+You cannot directly view or manage this internal token. You cannot use this token to access any other data.
+
+To revoke a workspace token,
+[**stop** or **terminate** the workspace](../../user/workspace/_index.md#manage-workspaces-from-a-project).
+The token is deleted immediately.
+
 ## Available scopes
 
 This table shows default scopes per token. For some tokens, you can limit scopes further when you create the token.
@@ -355,6 +376,7 @@ The following table shows the prefixes for each type of token.
 | Feed token                        | `glft-`            |
 | Incoming mail token               | `glimt-`           |
 | GitLab agent for Kubernetes token | `glagent-`         |
+| Workspace token                   | `glwt-` (Added in GitLab 18.2) |
 | GitLab session cookies            | `_gitlab_session=` |
 | SCIM Tokens                       | `glsoat-` <br /> &bull; ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/435096) in GitLab 16.8 behind a feature flag named `prefix_scim_tokens`. Disabled by default.) <br > &bull; ([Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435423) in GitLab 16.9. Feature flag `prefix_scim_tokens` removed.) |
 | Feature Flags Client token        | `glffct-`          |

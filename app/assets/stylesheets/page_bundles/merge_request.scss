@@ -4,6 +4,7 @@
 
 $tabs-holder-z-index: 250;
 $comparison-empty-state-height: 62px;
+$merge-request-sticky-header-height: 45px;
 
 .apply-suggestions-input-min-width {
   @include media-breakpoint-up(lg) {
@@ -167,13 +168,13 @@ $comparison-empty-state-height: 62px;
       z-index: $tabs-holder-z-index;
 
       &:has(.detail-page-description)::after {
-        height: calc(45px + 26px); // Height of the 2 sticky bars combined
+        height: calc(#{$merge-request-sticky-header-height} + 26px); // Height of the 2 sticky bars combined
       }
 
       &::after {
         content: '';
         top: $calc-application-header-height;
-        height: 45px;
+        height: $merge-request-sticky-header-height;
         @include translucent-glass-background;
         @apply gl-border-b gl-fixed gl-left-0 gl-right-0 gl-z-0 gl-hidden;
       }
@@ -186,7 +187,7 @@ $comparison-empty-state-height: 62px;
         .merge-request-tabs {
           @apply gl-h-auto;
         }
-      
+
         .nav-links li a {
           @apply gl-py-4;
         }

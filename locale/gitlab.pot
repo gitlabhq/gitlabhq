@@ -7067,9 +7067,6 @@ msgstr ""
 msgid "An error occurred when updating the title"
 msgstr ""
 
-msgid "An error occurred while acknowledging the notification. Refresh the page and try again."
-msgstr ""
-
 msgid "An error occurred while adding approvers"
 msgstr ""
 
@@ -14802,6 +14799,9 @@ msgid "CodeSuggestions|GitLab Duo Enterprise"
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo Pro"
+msgstr ""
+
+msgid "CodeSuggestions|GitLab Duo Self-Hosted"
 msgstr ""
 
 msgid "CodeSuggestions|GitLab Duo should be operational."

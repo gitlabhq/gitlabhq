@@ -1,13 +1,23 @@
+import MockAdapter from 'axios-mock-adapter';
 import { GlAvatar, GlDisclosureDropdown } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent } from 'helpers/stub_component';
 import UserMenu from '~/super_sidebar/components/user_menu.vue';
 import UserMenuProfileItem from '~/super_sidebar/components/user_menu_profile_item.vue';
 import SetStatusModal from '~/set_status_modal/set_status_modal_wrapper.vue';
 import { mockTracking } from 'helpers/tracking_helper';
-import PersistentUserCallout from '~/persistent_user_callout';
+import { visitUrl } from '~/lib/utils/url_utility';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
+import waitForPromises from 'helpers/wait_for_promises';
+import { logError } from '~/lib/logger';
 import { userMenuMockData, userMenuMockStatus, userMenuMockPipelineMinutes } from '../mock_data';
+
+jest.mock('~/sentry/sentry_browser_wrapper');
+jest.mock('~/lib/utils/url_utility');
+jest.mock('~/lib/logger');
 
 describe('UserMenu component', () => {
   let wrapper;
@@ -290,6 +300,7 @@ describe('UserMenu component', () => {
   });
 
   describe('Buy compute minutes item', () => {
+    /** @type {import('@vue/test-utils').Wrapper} */
     let item;
 
     const setItem = ({
@@ -343,7 +354,8 @@ describe('UserMenu component', () => {
         });
 
         it('tracks the click on the item', () => {
-          item.vm.$emit('action');
+          showDropdown();
+          item.trigger('click');
           expect(trackingSpy).toHaveBeenCalledWith(
             undefined,
             userMenuMockPipelineMinutes.tracking_attrs['track-action'],
@@ -356,35 +368,44 @@ describe('UserMenu component', () => {
       });
 
       describe('Callout & notification dot', () => {
-        let spyFactory;
+        /** @type {MockAdapter} */
+        let mockAxios;
+        const dismissEndpoint = userMenuMockPipelineMinutes.callout_attrs.dismiss_endpoint;
+        const featureName = userMenuMockPipelineMinutes.callout_attrs.feature_id;
+        const href = userMenuMockPipelineMinutes.buy_pipeline_minutes_path;
 
         beforeEach(() => {
-          spyFactory = jest.spyOn(PersistentUserCallout, 'factory');
+          mockAxios = new MockAdapter(axios);
+        });
+
+        afterEach(() => {
+          mockAxios.restore();
         });
 
         describe('When `show_notification_dot` is `false`', () => {
           beforeEach(() => {
             setItem({ show_buy_pipeline_minutes: true, show_notification_dot: false });
-            showDropdown();
-          });
-
-          it('does not set callout attributes', () => {
-            expect(item.attributes()).not.toEqual(
-              expect.objectContaining({
-                'data-feature-id': userMenuMockPipelineMinutes.callout_attrs.feature_id,
-                'data-dismiss-endpoint': userMenuMockPipelineMinutes.callout_attrs.dismiss_endpoint,
-              }),
-            );
-          });
-
-          it('does not initialize the Persistent Callout', () => {
-            expect(spyFactory).not.toHaveBeenCalled();
           });
 
           it('does not render notification dot', () => {
             expect(wrapper.findByTestId('buy-pipeline-minutes-notification-dot').exists()).toBe(
               false,
             );
+          });
+
+          describe('clicking menu item', () => {
+            beforeEach(() => {
+              showDropdown();
+              item.trigger('click');
+            });
+
+            it('does not call the callout dismiss endpoint', () => {
+              expect(mockAxios.history.post.length).toBe(0);
+            });
+
+            it('does not manually proceed to the URL', () => {
+              expect(visitUrl).not.toHaveBeenCalled();
+            });
           });
         });
 
@@ -394,23 +415,50 @@ describe('UserMenu component', () => {
             showDropdown();
           });
 
-          it('sets the callout data attributes', () => {
-            expect(item.attributes()).toEqual(
-              expect.objectContaining({
-                'data-feature-id': userMenuMockPipelineMinutes.callout_attrs.feature_id,
-                'data-dismiss-endpoint': userMenuMockPipelineMinutes.callout_attrs.dismiss_endpoint,
-              }),
-            );
-          });
-
-          it('initializes the Persistent Callout', () => {
-            expect(spyFactory).toHaveBeenCalled();
-          });
-
           it('renders notification dot', () => {
             expect(wrapper.findByTestId('buy-pipeline-minutes-notification-dot').exists()).toBe(
               true,
             );
+          });
+
+          describe('clicking menu item', () => {
+            describe('with successful callout dismissal', () => {
+              beforeEach(async () => {
+                mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
+                item.trigger('click');
+                await waitForPromises();
+              });
+
+              it('dismisses the callout', () => {
+                expect(mockAxios.history.post[0].data).toBe(
+                  JSON.stringify({ feature_name: featureName }),
+                );
+              });
+
+              it('proceeds to the original URL', () => {
+                expect(visitUrl).not.toHaveBeenCalledWith('abc');
+              });
+            });
+
+            describe('with failed callout dismissal', () => {
+              beforeEach(async () => {
+                mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
+                item.trigger('click');
+                await waitForPromises();
+              });
+
+              it('reports the error to the Sentry', () => {
+                expect(Sentry.captureException).toHaveBeenCalled();
+              });
+
+              it('reports the error to the console', () => {
+                expect(logError).toHaveBeenCalled();
+              });
+
+              it('proceeds to the original URL', () => {
+                expect(visitUrl).toHaveBeenCalledWith(href);
+              });
+            });
           });
         });
       });

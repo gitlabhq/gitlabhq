@@ -21,8 +21,9 @@
 
 .upload-dropzone-card {
   @apply gl-transition-[background,border];
-  stroke: $gl-border-color-default;
   @apply gl-text-default;
+  @apply gl-border-0;
+  @apply gl-rounded-base;
 
   &:hover,
   &:focus,

@@ -14,6 +14,21 @@ module QA
             include QA::Page::Component::ConfirmModal
           end
 
+          base.view 'app/assets/javascripts/vue_shared/access_tokens/components/access_token.vue' do
+            element 'created-access-token-field'
+          end
+
+          base.view 'app/assets/javascripts/vue_shared/access_tokens/components/access_tokens.vue' do
+            element 'add-new-token-button'
+          end
+
+          base.view 'app/assets/javascripts/vue_shared/access_tokens/components/access_token_form.vue' do
+            element 'create-token-button'
+            element 'access-token-name-field'
+            element 'expiry-date-field'
+            element 'api-checkbox', '${scope.value}-checkbox' # rubocop:disable QA/ElementWithPattern
+          end
+
           base.view 'app/assets/javascripts/access_tokens/components/expires_at_field.vue' do
             element 'expiry-date-field'
           end
@@ -24,19 +39,12 @@ module QA
           end
 
           base.view 'app/views/shared/tokens/_scopes_form.html.haml' do
-            element 'api-label', '#{scope}-label' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
+            element 'api-checkbox', '#{scope}-checkbox' # rubocop:disable QA/ElementWithPattern, Lint/InterpolationCheck
           end
 
           base.view 'app/assets/javascripts/access_tokens/components/new_access_token_app.vue' do
-            element 'access-token-section'
             element 'created-access-token-field'
           end
-
-          # rubocop:disable Layout/LineLength -- Single line is more readable
-          base.view 'app/assets/javascripts/vue_shared/components/input_copy_toggle_visibility/input_copy_toggle_visibility.vue' do
-            element 'toggle-visibility-button'
-          end
-          # rubocop:enable Layout/LineLength
 
           base.view 'app/assets/javascripts/access_tokens/components/access_token_table_app.vue' do
             element 'revoke-button'
@@ -70,7 +78,7 @@ module QA
         end
 
         def check_api
-          click_element('api-label')
+          check_element('api-checkbox', true)
         end
 
         def click_create_token_button
@@ -78,9 +86,7 @@ module QA
         end
 
         def created_access_token
-          within_element('access-token-section') do
-            find_element('created-access-token-field').value
-          end
+          find_element('created-access-token-field').value
         end
 
         def fill_expiry_date(date)
@@ -92,10 +98,6 @@ module QA
           end
 
           fill_element('expiry-date-field', date)
-        end
-
-        def has_token_row_for_name?(token_name)
-          page.has_css?('tr', text: token_name, wait: 1.0)
         end
 
         def first_token_row_for_name(token_name)

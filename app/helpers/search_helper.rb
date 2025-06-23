@@ -11,7 +11,6 @@ module SearchHelper
     :snippets,
     :sort,
     :force_search_results,
-    :project_ids,
     :type
   ].freeze
 

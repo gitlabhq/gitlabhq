@@ -1,5 +1,4 @@
 import MockAdapter from 'axios-mock-adapter';
-import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -46,23 +45,6 @@ describe('PersistentUserCallout', () => {
         <a href="/somewhere-else" target="_blank" class="normal-link">Another link</a>
       </div>
     `;
-
-    return fixture;
-  }
-
-  function createFollowLinkFixture() {
-    const fixture = document.createElement('div');
-    fixture.innerHTML = `
-      <ul>
-        <li
-          class="container"
-          data-dismiss-endpoint="${dismissEndpoint}"
-          data-feature-id="${featureName}"
-        >
-          <a class="js-follow-link" href="/somewhere-pleasant">A Link</a>
-        </li>
-      </ul>
-  `;
 
     return fixture;
   }
@@ -170,55 +152,6 @@ describe('PersistentUserCallout', () => {
 
       expect(visitUrl).not.toHaveBeenCalled();
       expect(persistentUserCallout.container.remove).toHaveBeenCalled();
-    });
-  });
-
-  describe('follow links', () => {
-    let link;
-    let mockAxios;
-    let persistentUserCallout;
-
-    useMockLocationHelper();
-
-    beforeEach(() => {
-      const fixture = createFollowLinkFixture();
-      const container = fixture.querySelector('.container');
-      link = fixture.querySelector('.js-follow-link');
-      mockAxios = new MockAdapter(axios);
-
-      persistentUserCallout = new PersistentUserCallout(container);
-      jest.spyOn(persistentUserCallout.container, 'remove').mockImplementation(() => {});
-    });
-
-    afterEach(() => {
-      mockAxios.restore();
-    });
-
-    it('uses a link to trigger callout and defers following until callout is finished', async () => {
-      const { href } = link;
-      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
-
-      link.click();
-
-      await waitForPromises();
-
-      expect(window.location.assign).toHaveBeenCalledWith(href);
-      expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
-      expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
-    });
-
-    it('invokes Flash when the dismiss request fails', async () => {
-      mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_INTERNAL_SERVER_ERROR);
-
-      link.click();
-
-      await waitForPromises();
-
-      expect(window.location.assign).not.toHaveBeenCalled();
-      expect(createAlert).toHaveBeenCalledWith({
-        message:
-          'An error occurred while acknowledging the notification. Refresh the page and try again.',
-      });
     });
   });
 

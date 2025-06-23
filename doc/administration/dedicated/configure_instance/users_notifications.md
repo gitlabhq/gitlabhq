@@ -15,12 +15,12 @@ title: GitLab Dedicated users and notifications
 
 ## Add Switchboard users
 
-Administrators can add two types of Switchboard users to their GitLab Dedicated instance:
+Administrators can add two types of Switchboard users to manage and view their GitLab Dedicated instance:
 
 - **Read only**: Users can only view instance data.
 - **Admin**: Users can edit the instance configuration and manage users.
 
-To add a new user to your GitLab Dedicated instance:
+To add a new user to Switchboard for your GitLab Dedicated instance:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. From the top of the page, select **Users**.
@@ -29,6 +29,8 @@ To add a new user to your GitLab Dedicated instance:
 1. Select **Create**.
 
 An invitation to use Switchboard is sent to the user.
+
+There is no direct link between the users in Switchboard and the users in the GitLab Dedicated instance.
 
 ### Manage notification preferences
 
