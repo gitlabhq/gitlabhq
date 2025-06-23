@@ -54,17 +54,6 @@ will stop working.
 
 {{< /alert >}}
 
-GitLab compares the found vulnerabilities between the source and target branches, then:
-
-- Displays the results in the merge request widget.
-- Saves the results as a [container scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
-  that you can download and analyze later. When downloading, you always receive the most recent
-  artifact.
-- Saves a [CycloneDX SBOM JSON report](#cyclonedx-software-bill-of-materials) which lists the
-  components detected.
-
-![Container Scanning Widget](img/container_scanning_v13_2.png)
-
 ## Features
 
 | Features                                                                                                                                                                                                          | In Free and Premium                                                                                                                   | In Ultimate                                                                                                    |
@@ -82,13 +71,11 @@ GitLab compares the found vulnerabilities between the source and target branches
 | Support for the [vulnerability allow list](#vulnerability-allowlisting)                                                                                                                                           | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 | [Access to Dependency List page](../dependency_list/_index.md)                                                                                                                                                    | {{< icon name="dotted-circle" >}} No                                                                                                  | {{< icon name="check-circle" >}} Yes                                                                           |
 
-## Configuration
+## Getting started
 
 Enable the Container Scanning analyzer in your CI/CD pipeline. When a pipeline runs, the images your
 application depends on are scanned for vulnerabilities. You can customize Container Scanning by
 using CI/CD variables.
-
-### Enabling the analyzer
 
 Prerequisites:
 
@@ -102,6 +89,8 @@ Prerequisites:
   credentials through the `CS_REGISTRY_USER` and `CS_REGISTRY_PASSWORD` [configuration variables](#available-cicd-variables).
   For more details on how to use these variables, see [authenticate to a remote registry](#authenticate-to-a-remote-registry).
 
+Please see details below for [user and project-specific requirements](#prerequisites).
+
 To enable the analyzer, either:
 
 - Enable Auto DevOps, which includes dependency scanning.
@@ -110,7 +99,7 @@ To enable the analyzer, either:
   scanning.
 - Edit the `.gitlab-ci.yml` file manually.
 
-#### Use a preconfigured merge request
+### Use a preconfigured merge request
 
 This method automatically prepares a merge request that includes the container scanning template
 in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
@@ -133,7 +122,7 @@ To enable Container Scanning:
 
 Pipelines now include a Container Scanning job.
 
-#### Edit the `.gitlab-ci.yml` file manually
+### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex or you need to use non-default options.
@@ -164,6 +153,81 @@ To enable Container Scanning:
    passes, then select **Merge**.
 
 Pipelines now include a Container Scanning job.
+
+## Understanding the results
+
+You can review vulnerabilities in a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Severity: Categorized into six levels based on impact.
+     [Learn more about severity levels](../vulnerabilities/severities.md).
+   - CVSS score: Provides a numeric value that maps to severity.
+   - EPSS: Shows the likelihood of a vulnerability being exploited in the wild.
+   - Has Known Exploit (KEV): Indicates that a given vulnerability has been exploited.
+   - Project: Highlights the project where the vulnerability was identified.
+   - Report type: Explains the output type.
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Image: Provides the image attributed to the vulnerability
+   - Namespace: Identifies the workspace attributed to the vulnerability.
+   - Links: Evidence of the vulnerability being cataloged in various advisory databases.
+   - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
+
+For more details, see [Pipeline security report](../vulnerability_report/pipeline.md).
+
+Additional ways to see Container Scanning results:
+
+- [Vulnerability report](../vulnerability_report/_index.md): Shows confirmed vulnerabilities on the default branch.
+- [Container scanning report artifact](../../../ci/yaml/artifacts_reports.md#artifactsreportscontainer_scanning)
+
+## Roll out
+
+After you are confident in the Container Scanning results for a single project, you can extend its implementation to additional projects:
+
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Container Scanning settings across groups.
+- If you have unique requirements, Container Scanning can be run in [offline environments](#running-container-scanning-in-an-offline-environment).
+
+## Supported distributions
+
+The following Linux distributions are supported:
+
+- Alma Linux
+- Alpine Linux
+- Amazon Linux
+- CentOS
+- CBL-Mariner
+- Debian
+- Distroless
+- Oracle Linux
+- Photon OS
+- Red Hat (RHEL)
+- Rocky Linux
+- SUSE
+- Ubuntu
+
+### FIPS-enabled images
+
+GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
+images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
+standard tag plus the `-fips` extension.
+
+{{< alert type="note" >}}
+
+The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
+
+{{< /alert >}}
+
+Container scanning of images in authenticated registries is not supported when FIPS mode
+is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
+the analyzer exits with an error and does not perform the scan.
+
+## Configuration
 
 ### Customizing analyzer behavior
 
@@ -301,41 +365,6 @@ positives.
    interpretation by individual container scanners. In cases where a container scanner misreports
    the availability of a fixed package for a vulnerability, using `CS_IGNORE_STATUSES` can lead to
    false positive or false negative filtering of findings when this setting is enabled.
-
-### Supported distributions
-
-The following Linux distributions are supported:
-
-- Alma Linux
-- Alpine Linux
-- Amazon Linux
-- CentOS
-- CBL-Mariner
-- Debian
-- Distroless
-- Oracle Linux
-- Photon OS
-- Red Hat (RHEL)
-- Rocky Linux
-- SUSE
-- Ubuntu
-
-#### FIPS-enabled images
-
-GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the container-scanning images. You can therefore replace standard images with FIPS-enabled
-images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify the `CS_ANALYZER_IMAGE` variable to the
-standard tag plus the `-fips` extension.
-
-{{< alert type="note" >}}
-
-The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
-
-{{< /alert >}}
-
-Container scanning of images in authenticated registries is not supported when FIPS mode
-is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
-the analyzer exits with an error and does not perform the scan.
 
 ### Overriding the container scanning template
 
@@ -528,7 +557,7 @@ successfully run. For more information, see [Offline environments](../offline_de
 
 To use container scanning in an offline environment, you need:
 
-- GitLab Runner with the [`docker` or `kubernetes` executor](#enabling-the-analyzer).
+- GitLab Runner with the [`docker` or `kubernetes` executor](#getting-started).
 - To configure a local Docker container registry with copies of the container scanning images. You
   can find these images in their respective registries:
 
