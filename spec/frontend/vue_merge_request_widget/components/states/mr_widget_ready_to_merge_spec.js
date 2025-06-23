@@ -531,13 +531,13 @@ describe('ReadyToMerge', () => {
 
       await triggerEditCommitInput();
 
-      expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(true);
+      expect(wrapper.findByTestId('edit_commit_message').exists()).toBe(true);
 
       findMergeButton().vm.$emit('click');
 
       await waitForPromises();
 
-      expect(wrapper.findComponent('[data-testid="edit_commit_message"]').exists()).toBe(false);
+      expect(wrapper.findByTestId('edit_commit_message').exists()).toBe(false);
     });
   });
 

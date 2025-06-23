@@ -130,7 +130,6 @@ spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
 spec/frontend/tooltips/index_spec.js
 spec/frontend/vue_alerts_spec.js
-spec/frontend/vue_merge_request_widget/components/states/mr_widget_ready_to_merge_spec.js
 spec/frontend/vue_popovers_spec.js
 spec/frontend/vue_shared/components/confirm_modal_spec.js
 spec/frontend/vue_shared/components/design_management/design_note_pin_spec.js
