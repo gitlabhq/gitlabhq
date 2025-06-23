@@ -61,7 +61,7 @@ RSpec.describe RuboCop::Cop::Rails::MigrationTimestamp, feature_category: :share
     end
 
     with_them do
-      it 'registers an offense' do
+      it 'does not register an offense' do
         expect_no_offenses(<<~RUBY, "/db/migrate/#{filename}")
           print 1
         RUBY

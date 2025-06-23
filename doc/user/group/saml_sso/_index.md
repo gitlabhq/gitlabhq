@@ -507,7 +507,7 @@ Prerequisites:
 - You must have the Owner role for the group that the enterprise user belongs to.
 - Group SSO must be enabled.
 
-You can disable password authentication for all [enterprise users](../../enterprise_user/_index.md) in a group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
+You can disable password authentication for all [enterprise users](../../enterprise_user/_index.md) of the group. This also applies to enterprise users who are administrators of the group. Configuring this setting stops enterprise users from changing, resetting, or authenticating with their password. Instead, these users can authenticate with:
 
 - The group SAML IdP for the GitLab web UI.
 - A personal access token for the GitLab API and Git with HTTP Basic Authentication unless the group has [disabled personal access tokens for enterprise users](../../profile/personal_access_tokens.md#disable-personal-access-tokens-for-enterprise-users).

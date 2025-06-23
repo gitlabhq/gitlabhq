@@ -44,4 +44,8 @@ RSpec.describe 'admin/application_settings/_extension_marketplace', feature_cate
     expect(vue_app).not_to be_nil
     expect(vue_app['data-view-model']).to eq(expected_json)
   end
+
+  it 'renders link to the extension marketplace admin docs' do
+    expect(page).to have_link(href: help_page_path('administration/settings/vscode_extension_marketplace.md'))
+  end
 end

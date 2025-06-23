@@ -140,7 +140,7 @@ Consider the following:
 
 - You can only establish private links between VPCs in the same region. Therefore, you can only establish a connection in the regions specified for your Dedicated instance.
 - The connection requires the [Availability Zone IDs (AZ IDs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) for the two Availability Zones (AZs) in the regions that you selected during onboarding.
-- If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects both AZ IDs.
+- If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects both AZ IDs. AZ IDs are displayed in Switchboard on the Overview page for both the Primary and Secondary regions.
 - GitLab Dedicated limits the number of outbound private link connections to 10.
 
 #### Add an outbound private link with Switchboard
@@ -149,7 +149,7 @@ Prerequisites:
 
 - [Create the endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) for your internal service to be available to GitLab Dedicated.
 - Configure a Network Load Balancer (NLB) for the endpoint service in the Availability Zones (AZs) where your Dedicated instance is deployed. Either:
-  - Use the AZs listed in the Outbound private link configuration in Switchboard.
+  - Use the configured AZs. AZ IDs are displayed on the Overview page in Switchboard.
   - Enable the NLB in every AZ in the region.
 - Add the ARN of the role that GitLab Dedicated uses to connect to your endpoint service to the Allowed Principals list on the Endpoint Service. You can find this ARN in Switchboard under Outbound private link IAM principal. For more information, see [Manage permissions](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
 - Recommended. Set **Acceptance required** to **No** to enable GitLab Dedicated to connect in a single operation. If set to **Yes**, you must manually accept the connection after it's initiated.
@@ -184,9 +184,9 @@ Prerequisites:
 1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service
    will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
    [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
-1. Make sure you have configured a Network Load Balancer (NLB) for the endpoint service in the two AZs to which your Dedicated instance was deployed. If you did not specify these during onboarding to Dedicated, you must either:
-   - Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request the AZ IDs required to enable the connection and ensure the NLB is enabled in those AZs.
-   - Ensure the NLB is enabled in every AZ in the region.
+1. Configure a Network Load Balancer (NLB) for the endpoint service in the Availability Zones (AZs) where your Dedicated instance is deployed. Either:
+   - Use the configured AZs. AZ IDs are displayed on the Overview page in Switchboard.
+   - Enable the NLB in every AZ in the region.
 1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab will provide you with the ARN of an
    IAM role that will be initiating the connection to your endpoint service. You must ensure this ARN is included, or otherwise covered by other
    entries, in the list of "Allowed Principals" on the Endpoint Service, as described by the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).

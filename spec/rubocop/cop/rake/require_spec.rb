@@ -108,7 +108,7 @@ RSpec.describe RuboCop::Cop::Rake::Require do
       allow(cop).to receive(:in_rake_file?).and_return(false)
     end
 
-    it 'registers an offenses for require methods' do
+    it 'does not register an offenses for require methods' do
       expect_no_offenses("require 'json'")
     end
   end

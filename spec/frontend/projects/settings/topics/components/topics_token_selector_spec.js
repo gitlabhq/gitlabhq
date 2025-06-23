@@ -19,6 +19,7 @@ describe('TopicsTokenSelector', () => {
     wrapper = mount(TopicsTokenSelector, {
       attachTo: div,
       propsData: {
+        organizationId: '1',
         selected,
       },
       data() {
@@ -49,9 +50,7 @@ describe('TopicsTokenSelector', () => {
     const tokenSelectorInput = findTokenSelectorInput();
 
     tokenSelectorInput.element.value = value;
-    tokenSelectorInput.trigger('input');
-
-    return nextTick();
+    return tokenSelectorInput.trigger('input');
   };
 
   const tokenSelectorTriggerEnter = (event) => {

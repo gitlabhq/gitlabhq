@@ -305,7 +305,6 @@ RSpec/ExpectChange:
     - 'spec/services/projects/detect_repository_languages_service_spec.rb'
     - 'spec/services/projects/operations/update_service_spec.rb'
     - 'spec/services/projects/repository_languages_service_spec.rb'
-    - 'spec/services/projects/transfer_service_spec.rb'
     - 'spec/services/projects/update_pages_service_spec.rb'
     - 'spec/services/projects/update_repository_storage_service_spec.rb'
     - 'spec/services/projects/update_service_spec.rb'

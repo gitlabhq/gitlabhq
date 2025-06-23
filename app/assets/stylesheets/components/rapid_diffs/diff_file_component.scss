@@ -3,7 +3,7 @@
 .rd-diff-file-component {
   display: block;
   scroll-margin-top: var(--rd-app-sticky-top-with-padding);
-  margin-bottom: $gl-padding;
+  margin-bottom: var(--rd-diff-file-bottom-margin);
 }
 
 .rd-diff-file {

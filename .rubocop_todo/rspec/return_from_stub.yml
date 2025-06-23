@@ -144,7 +144,6 @@ RSpec/ReturnFromStub:
     - 'spec/services/ci/create_pipeline_service/logger_spec.rb'
     - 'spec/services/ci/pipeline_artifacts/destroy_all_expired_service_spec.rb'
     - 'spec/services/ci/pipeline_trigger_service_spec.rb'
-    - 'spec/services/ci/register_job_service_spec.rb'
     - 'spec/services/ci/resource_groups/assign_resource_from_resource_group_service_spec.rb'
     - 'spec/services/environments/auto_stop_service_spec.rb'
     - 'spec/services/environments/canary_ingress/update_service_spec.rb'

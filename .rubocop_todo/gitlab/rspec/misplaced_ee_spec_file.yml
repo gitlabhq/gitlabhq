@@ -152,7 +152,6 @@ Gitlab/RSpec/MisplacedEeSpecFile:
     - 'ee/spec/lib/gitlab/tree_summary_spec.rb'
     - 'ee/spec/lib/search/navigation_spec.rb'
     - 'ee/spec/lib/sidebars/admin/panel_spec.rb'
-    - 'ee/spec/lib/sidebars/projects/super_sidebar_panel_spec.rb'
     - 'ee/spec/lib/sidebars/user_settings/panel_spec.rb'
     - 'ee/spec/mailers/emails/merge_requests_spec.rb'
     - 'ee/spec/mailers/notify_spec.rb'

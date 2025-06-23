@@ -18,6 +18,12 @@ functionality of the [Web IDE](../../user/project/web_ide/_index.md) and
 [Workspaces](../../user/workspace/_index.md) in GitLab. As an administrator, you can enable this
 feature across your GitLab instance and configure which extension registry your users can access.
 
+{{< alert type="note" >}}
+
+To access the VS Code Extension Marketplace, your web browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+
+{{< /alert >}}
+
 ## Access VS Code Extension Marketplace settings
 
 Prerequisites:

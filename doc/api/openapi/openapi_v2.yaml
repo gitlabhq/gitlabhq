@@ -45493,6 +45493,8 @@ definitions:
         type: string
       auto_duo_code_review_enabled:
         type: string
+      web_based_commit_signing_enabled:
+        type: string
     description: API_Entities_Project model
   API_Entities_LicenseBasic:
     type: object
@@ -61152,6 +61154,8 @@ definitions:
         type: string
       auto_duo_code_review_enabled:
         type: string
+      web_based_commit_signing_enabled:
+        type: string
       permissions:
         type: object
         properties:
@@ -61688,6 +61692,9 @@ definitions:
       ci_restrict_pipeline_cancellation_role:
         type: string
         description: Roles allowed to cancel pipelines and jobs.
+      web_based_commit_signing_enabled:
+        type: boolean
+        description: Enable web based commit signing for this project
     description: Update an existing project
   postApiV4ProjectsIdShare:
     type: object

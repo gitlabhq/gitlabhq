@@ -95,7 +95,7 @@ export default {
   <gl-form-group id="project_topics" :label="$options.i18n.topicsTitle">
     <gl-token-selector
       ref="tokenSelector"
-      v-model="selectedTokens"
+      :selected-tokens="selectedTokens"
       :dropdown-items="topics"
       :loading="loading"
       allow-user-defined-tokens

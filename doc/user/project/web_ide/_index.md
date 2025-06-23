@@ -266,6 +266,12 @@ The VS Code Extension Marketplace provides you with access to extensions that en
 functionality of the Web IDE. By default, the GitLab Web IDE instance is configured to use the
 [Open VSX Registry](https://open-vsx.org/).
 
+{{< alert type="note" >}}
+
+To access the VS Code Extension Marketplace, your web browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+
+{{< /alert >}}
+
 Before you can manage and use extensions in the Web IDE:
 
 - A GitLab administrator must [enable the extension marketplace](../../../administration/settings/vscode_extension_marketplace.md)

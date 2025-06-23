@@ -889,7 +889,6 @@ RSpec/BeEq:
     - 'spec/lib/gitlab/mail_room/authenticator_spec.rb'
     - 'spec/lib/gitlab/merge_requests/mergeability/check_result_spec.rb'
     - 'spec/lib/gitlab/metrics/method_call_spec.rb'
-    - 'spec/lib/gitlab/metrics_spec.rb'
     - 'spec/lib/gitlab/mimir_client_spec.rb'
     - 'spec/lib/gitlab/namespaced_session_store_spec.rb'
     - 'spec/lib/gitlab/pages/deployment_validations_spec.rb'

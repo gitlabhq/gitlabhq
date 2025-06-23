@@ -18,7 +18,7 @@ RSpec.describe RuboCop::Cop::Scalability::IdempotentWorker do
     CODE
   end
 
-  it 'adds an offense when not defining idempotent method' do
+  it 'does not register an offense when not defining idempotent method' do
     expect_no_offenses(<<~CODE)
       class SomeWorker
         idempotent!

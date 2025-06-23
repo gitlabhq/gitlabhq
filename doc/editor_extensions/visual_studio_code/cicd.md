@@ -6,6 +6,19 @@ description: Use the GitLab Workflow extension for VS Code to handle common GitL
 title: CI/CD pipelines in the VS Code extension
 ---
 
+{{< details >}}
+
+- Tier: Free, Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1895) in GitLab VS Code extension 6.14.0 for GitLab 18.1 and later.
+
+{{< /history >}}
+
 If your GitLab project uses CI/CD pipelines, you can start, watch, and debug CI/CD pipelines from the
 GitLab Workflow extension for VS Code. When you work locally on a Git branch, the bottom status bar
 shows either:

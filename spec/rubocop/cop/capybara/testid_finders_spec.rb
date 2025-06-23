@@ -39,7 +39,7 @@ RSpec.describe RuboCop::Cop::Capybara::TestidFinders, feature_category: :shared 
     end
 
     with_them do
-      it 'does not register an offense' do
+      it 'registers an offense' do
         expect_offense(<<~RUBY, node: code)
           %{node}
           ^{node} Prefer to use custom helper method[...]

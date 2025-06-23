@@ -260,7 +260,7 @@ To disable 2FA:
 1. Find a user with the **Enterprise** and **2FA** badges.
 1. Select **More actions** ({{< icon name="ellipsis_v" >}}) and select **Disable two-factor authentication**.
 
-You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-authentication-for-an-enterprise-user) to disable 2FA for enterprise users.
+You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-authentication-for-an-enterprise-user) to disable 2FA for enterprise users, including enterprise users who are no longer a member of the group.
 
 ## 2FA for Git over SSH operations
 

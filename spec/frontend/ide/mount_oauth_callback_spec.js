@@ -51,9 +51,6 @@ describe('~/ide/mount_oauth_callback', () => {
       gitlabUrl: `${TEST_HOST}`,
       username: TEST_USERNAME,
       embedderOriginUrl: TEST_HOST,
-      workbenchBaseUrl: `${TEST_HOST}/test/webpack/assets/gitlab-web-ide/public/path`,
-      extensionsHostBaseUrl:
-        'https://{{uuid}}.cdn.web-ide.gitlab-static.net/web-ide-vscode/{{quality}}/{{commit}}',
     });
   });
 

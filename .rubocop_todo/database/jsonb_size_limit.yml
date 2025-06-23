@@ -48,7 +48,6 @@ Database/JsonbSizeLimit:
     - 'app/models/work_items/widget_definition.rb'
     - 'ee/app/models/ai/active_context/collection.rb'
     - 'ee/app/models/ai/conversation/message.rb'
-    - 'ee/app/models/ai/usage_event.rb'
     - 'ee/app/models/authz/admin_role.rb'
     - 'ee/app/models/cloud_connector/access.rb'
     - 'ee/app/models/concerns/audit_events/externally_streamable.rb'

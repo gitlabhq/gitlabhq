@@ -9,7 +9,7 @@ import {
   setupRootElement,
   handleTracking,
   handleUpdateUrl,
-  isMultiDomainEnabled,
+  getWebIDEWorkbenchConfig,
 } from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
 import { renderWebIdeError } from './render_web_ide_error';
@@ -18,14 +18,6 @@ const getMRTargetProject = () => {
   const url = new URL(window.location.href);
 
   return url.searchParams.get('target_project') || '';
-};
-
-const getCrossOriginExtensionHostFlagValue = (extensionMarketplaceSettings) => {
-  return (
-    extensionMarketplaceSettings?.enabled ||
-    extensionMarketplaceSettings?.reason === 'opt_in_unset' ||
-    extensionMarketplaceSettings?.reason === 'opt_in_disabled'
-  );
 };
 
 export const initGitlabWebIDE = async (el) => {
@@ -44,6 +36,8 @@ export const initGitlabWebIDE = async (el) => {
     signOutPath,
   } = el.dataset;
 
+  const languageServerWebIDE = gon?.features?.webIdeLanguageServer || false;
+  const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig();
   const rootEl = setupRootElement(el);
   const editorFont = editorFontJSON
     ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
@@ -62,14 +56,13 @@ export const initGitlabWebIDE = async (el) => {
         'X-Requested-With': 'XMLHttpRequest',
       };
 
-  const isLanguageServerEnabled = gon?.features?.webIdeLanguageServer || false;
-
   const lineRange = getLineRangeFromHash();
 
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
     await start(rootEl, {
-      ...(await getBaseConfig()),
+      ...getBaseConfig(),
+      ...webIdeWorkbenchConfig,
       nonce,
       httpHeaders,
       auth: oauthConfig,
@@ -87,15 +80,11 @@ export const initGitlabWebIDE = async (el) => {
         signIn: el.dataset.signInPath,
       },
       featureFlags: {
-        crossOriginExtensionHost: getCrossOriginExtensionHostFlagValue(
-          extensionMarketplaceSettings,
-        ),
-        languageServerWebIDE: isLanguageServerEnabled,
-        dedicatedWebIDEOrigin: isMultiDomainEnabled(),
+        dedicatedWebIDEOrigin: true,
+        languageServerWebIDE,
+        crossOriginExtensionHost: webIdeWorkbenchConfig.featureFlags.crossOriginExtensionHost,
       },
       editorFont,
-      // TODO: Use extensionMarketplaceSettings when https://gitlab.com/gitlab-org/gitlab-web-ide/-/merge_requests/425
-      // is merged and deployed.
       extensionsGallerySettings: extensionMarketplaceSettings,
       settingsContextHash,
       codeSuggestionsEnabled,

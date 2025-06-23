@@ -11,5 +11,3 @@ Gitlab/RSpec/AvoidCreateDefaultOrganization:
     - 'spec/models/organizations/organization_user_spec.rb'
     - 'spec/models/user_spec.rb'
     - 'spec/requests/api/graphql/organizations/organization_query_spec.rb'
-    - 'spec/requests/api/oauth_tokens_spec.rb'
-    - 'spec/requests/oauth/flows/device_grant_spec.rb'

@@ -208,6 +208,10 @@ permission to approve merge requests.
 Some users (like managers) might not need permission to push or merge code, but still need
 oversight on proposed work.
 
+Users with the Reporter role can approve merge requests only through regular approval rules.
+Code owner approval rules require users to have at least the Developer role. For more information,
+see [Eligible approvers](#eligible-approvers).
+
 Prerequisites:
 
 - You must select a specific branch, as this method does not work with `All Branches` or `All protected branches` settings.
