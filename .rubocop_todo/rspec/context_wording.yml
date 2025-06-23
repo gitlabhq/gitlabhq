@@ -904,7 +904,6 @@ RSpec/ContextWording:
     - 'spec/controllers/projects/web_ide_terminals_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/controllers/root_controller_spec.rb'
-    - 'spec/controllers/search_controller_spec.rb'
     - 'spec/controllers/sessions_controller_spec.rb'
     - 'spec/controllers/snippets/notes_controller_spec.rb'
     - 'spec/controllers/snippets_controller_spec.rb'

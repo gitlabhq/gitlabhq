@@ -272,7 +272,7 @@ RSpec.describe Projects::TransferService, feature_category: :groups_and_projects
 
         it 'replaces inherited integrations', :aggregate_failures do
           expect { execute_transfer }
-            .to change(Integration, :count).by(0)
+            .to not_change(Integration, :count)
             .and change { project.slack_integration.webhook }.to eq(group_integration.webhook)
         end
       end

@@ -96,7 +96,7 @@ export default {
 
       <gl-button
         v-if="pipeline.flags.retryable"
-        v-gl-tooltip.hover
+        v-gl-tooltip
         :aria-label="$options.BUTTON_TOOLTIP_RETRY"
         :title="$options.BUTTON_TOOLTIP_RETRY"
         :disabled="isRetrying"
@@ -111,7 +111,7 @@ export default {
 
       <gl-button
         v-if="pipeline.flags.cancelable"
-        v-gl-tooltip.hover
+        v-gl-tooltip
         :aria-label="$options.BUTTON_TOOLTIP_CANCEL"
         :title="$options.BUTTON_TOOLTIP_CANCEL"
         :loading="isCanceling"

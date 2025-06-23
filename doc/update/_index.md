@@ -43,6 +43,7 @@ To upgrade GitLab:
 1. If available in your starting version, consider [turning on maintenance mode](../administration/maintenance_mode/_index.md)
    during the upgrade.
 1. Consult changes for different versions of GitLab to ensure compatibility before upgrading:
+   - [GitLab 18 changes](versions/gitlab_18_changes.md)
    - [GitLab 17 changes](versions/gitlab_17_changes.md)
    - [GitLab 16 changes](versions/gitlab_16_changes.md)
    - [GitLab 15 changes](versions/gitlab_15_changes.md)
@@ -240,6 +241,7 @@ If you're using Geo:
 
 - Review [Geo upgrade documentation](../administration/geo/replication/upgrading_the_geo_sites.md).
 - Read about the Geo version-specific update instructions:
+  - [GitLab 18](versions/gitlab_18_changes.md)
   - [GitLab 17](versions/gitlab_17_changes.md)
   - [GitLab 16](versions/gitlab_16_changes.md)
   - [GitLab 15](versions/gitlab_15_changes.md)

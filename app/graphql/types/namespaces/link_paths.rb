@@ -52,7 +52,7 @@ module Types
         fallback_value: nil
 
       field :new_comment_template,
-        GraphQL::Types::String,
+        [Types::Namespaces::LinkPaths::CommentTemplateType],
         null: true,
         description: 'Namespace new_comment_template_paths.',
         fallback_value: nil

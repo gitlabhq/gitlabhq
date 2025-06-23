@@ -19,7 +19,7 @@ RSpec.describe Types::Namespaces::LinkPaths::ProjectNamespaceLinksType, feature_
       :issues_list | lazy { "/#{namespace.full_path}/-/issues" }
       :labels_manage | lazy { "/#{namespace.full_path}/-/labels" }
       :new_project | lazy { "/projects/new?namespace_id=#{group.id}" }
-      :new_comment_template | "/-/profile/comment_templates"
+      :new_comment_template | [{ href: "/-/profile/comment_templates", text: "Your comment templates" }]
       :contribution_guide_path | nil
     end
 

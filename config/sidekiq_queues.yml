@@ -1103,5 +1103,9 @@
   - 1
 - - work_items_validate_epic_work_item_sync
   - 1
+- - work_items_weights_update_rolled_up_weights_event_handler
+  - 1
+- - work_items_weights_update_weights
+  - 1
 - - x509_certificate_revoke
   - 1

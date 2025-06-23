@@ -1116,7 +1116,7 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
     it 'drops the bridge without creating a pipeline' do
       expect { subject }
         .to raise_error(RuntimeError, /undefined failure/)
-        .and change { Ci::Pipeline.count }.by(0)
+        .and not_change { Ci::Pipeline.count }
 
       expect(bridge.reload).to be_failed
       expect(bridge.failure_reason).to eq('data_integrity_failure')

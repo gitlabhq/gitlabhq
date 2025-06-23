@@ -228,7 +228,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/controllers/projects/releases/evidences_controller_spec.rb'
     - 'spec/controllers/projects/releases_controller_spec.rb'
     - 'spec/controllers/projects/templates_controller_spec.rb'
-    - 'spec/controllers/search_controller_spec.rb'
     - 'spec/features/admin/users/admin_sees_user_spec.rb'
     - 'spec/features/admin/users/users_spec.rb'
     - 'spec/features/commits_spec.rb'

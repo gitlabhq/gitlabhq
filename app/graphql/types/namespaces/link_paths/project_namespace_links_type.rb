@@ -20,7 +20,7 @@ module Types
         end
 
         def new_comment_template
-          url_helpers.new_comment_template_paths(group, project)&.dig(0, :href)
+          url_helpers.new_comment_template_paths(group, project)
         end
 
         def contribution_guide_path

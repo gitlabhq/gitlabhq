@@ -57,8 +57,8 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
           expect(service).to receive(:try_obtain_lease).and_call_original
 
           expect { subject }
-            .to change { ::Packages::Package.count }.by(0)
-            .and change { Packages::DependencyLink.count }.by(0)
+            .to not_change { ::Packages::Package.count }
+            .and not_change { Packages::DependencyLink.count }
           expect(package_file.reload.file_name).not_to eq(package_file_name)
           expect(package_file.package).to be_processing
           expect(package_file.package.reload.name).not_to eq(package_name)
@@ -99,9 +99,9 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
         expect { subject }
           .to change { ::Packages::Package.count }.by(-1)
-          .and change { Packages::Dependency.count }.by(0)
-          .and change { Packages::DependencyLink.count }.by(0)
-          .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(0)
+          .and not_change { Packages::Dependency.count }
+          .and not_change { Packages::DependencyLink.count }
+          .and not_change { Packages::Nuget::DependencyLinkMetadatum.count }
           .and change { ::Packages::Nuget::Metadatum.count }.by(1)
           .and change { existing_package.build_infos.count }.by(1)
         expect(package_file.reload.file_name).to eq(package_file_name)
@@ -278,10 +278,10 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
           expect { subject }
             .to change { ::Packages::Package.count }.by(-1)
-            .and change { Packages::Dependency.count }.by(0)
-            .and change { Packages::DependencyLink.count }.by(0)
-            .and change { Packages::Nuget::DependencyLinkMetadatum.count }.by(0)
-            .and change { ::Packages::Nuget::Metadatum.count }.by(0)
+            .and not_change { Packages::Dependency.count }
+            .and not_change { Packages::DependencyLink.count }
+            .and not_change { Packages::Nuget::DependencyLinkMetadatum.count }
+            .and not_change { ::Packages::Nuget::Metadatum.count }
             .and change { existing_package.nuget_symbols.count }.by(1)
           expect(package_file.reload.file_name).to eq(package_file_name)
           expect(package_file.package).to eq(existing_package)

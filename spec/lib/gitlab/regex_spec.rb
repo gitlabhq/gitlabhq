@@ -780,7 +780,8 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('..\..\foo') }
     it { is_expected.not_to match('%2f%2e%2e%2f%2essh%2fauthorized_keys') }
     it { is_expected.not_to match('$foo/bar') }
-    it { is_expected.not_to match('my file name') }
+    it { is_expected.not_to match('my package name') }
+    it { is_expected.not_to match('foo.bar.baz-2.0-20190901~47283-1') }
     it { is_expected.not_to match('!!()()') }
   end
 
@@ -790,12 +791,15 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('123') }
     it { is_expected.to match('foo') }
     it { is_expected.to match('foo.bar.baz-2.0-20190901.47283-1.jar') }
+    it { is_expected.to match('foo.bar.baz-2.0-20190901~47283-1') }
     it { is_expected.not_to match('../../foo') }
     it { is_expected.not_to match('..\..\foo') }
     it { is_expected.not_to match('%2f%2e%2e%2f%2essh%2fauthorized_keys') }
     it { is_expected.not_to match('$foo/bar') }
     it { is_expected.not_to match('my file name') }
     it { is_expected.not_to match('!!()()') }
+    it { is_expected.not_to match('~/../../filename') }
+    it { is_expected.not_to match('filename~') }
   end
 
   describe '.prefixed_semver_regex' do

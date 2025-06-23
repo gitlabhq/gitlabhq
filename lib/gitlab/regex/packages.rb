@@ -268,7 +268,7 @@ module Gitlab
       end
 
       def generic_package_file_name_regex
-        generic_package_name_regex
+        @generic_package_file_name_regex ||= /\A(?!~)[A-Za-z0-9\.\_\-\+~]+(?<!~)\z/
       end
 
       def sha256_regex

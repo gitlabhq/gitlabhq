@@ -173,7 +173,7 @@ RSpec.describe Packages::Pypi::CreatePackageService, :aggregate_failures, featur
 
         it 'adds the file' do
           expect { service_response }
-            .to change { Packages::Package.pypi.count }.by(0)
+            .to not_change { Packages::Package.pypi.count }
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(created_package.package_files.size).to eq 2

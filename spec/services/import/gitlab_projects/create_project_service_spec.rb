@@ -104,8 +104,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
         end
 
         response = nil
-        expect { response = subject.execute }
-          .to change(Project, :count).by(0)
+        expect { response = subject.execute }.to not_change(Project, :count)
 
         expect(response).to be_error
         expect(response.http_status).to eq(:bad_request)
@@ -119,8 +118,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
         params.delete(:path)
 
         response = nil
-        expect { response = subject.execute }
-          .to change(Project, :count).by(0)
+        expect { response = subject.execute }.to not_change(Project, :count)
 
         expect(response).to be_error
         expect(response.http_status).to eq(:bad_request)
@@ -133,8 +131,7 @@ RSpec.describe ::Import::GitlabProjects::CreateProjectService, :aggregate_failur
           params.merge!(name: '_ an invalid name _', path: '_ an invalid path _')
 
           response = nil
-          expect { response = subject.execute }
-            .to change(Project, :count).by(0)
+          expect { response = subject.execute }.to not_change(Project, :count)
 
           expect(response).to be_error
           expect(response.http_status).to eq(:bad_request)

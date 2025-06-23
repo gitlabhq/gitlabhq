@@ -37,7 +37,7 @@ RSpec.describe Packages::Npm::CreateMetadataCacheService, :clean_gitlab_redis_sh
       let_it_be(:tag) { create(:packages_tag, package: package, name: tag_name) }
 
       it 'does not create a new metadata cache' do
-        expect { subject }.to change { Packages::Npm::MetadataCache.count }.by(0)
+        expect { subject }.to not_change { Packages::Npm::MetadataCache.count }
       end
 
       it 'updates the metadata cache', :aggregate_failures do
@@ -63,7 +63,7 @@ RSpec.describe Packages::Npm::CreateMetadataCacheService, :clean_gitlab_redis_sh
       end
 
       it 'does not create a new metadata cache' do
-        expect { subject }.to change { Packages::Npm::MetadataCache.count }.by(0)
+        expect { subject }.to not_change { Packages::Npm::MetadataCache.count }
       end
 
       it 'returns nil' do

@@ -24325,6 +24325,15 @@ Represents a summary of the compared codequality report.
 | <a id="codequalityreportscomparerreportsummaryresolved"></a>`resolved` | [`Int`](#int) | Count of resolved code quality degradations. |
 | <a id="codequalityreportscomparerreportsummarytotal"></a>`total` | [`Int`](#int) | Total count of code quality degradations. |
 
+### `CommentTemplatePath`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="commenttemplatepathhref"></a>`href` | [`String!`](#string) | Path of the comment template. |
+| <a id="commenttemplatepathtext"></a>`text` | [`String!`](#string) | Text used on the template path. |
+
 ### `CommentTemplatePathType`
 
 #### Fields
@@ -24585,6 +24594,7 @@ Represents a ComplianceRequirement associated with a ComplianceFramework.
 | ---- | ---- | ----------- |
 | <a id="compliancerequirementcompliancerequirementscontrols"></a>`complianceRequirementsControls` | [`ComplianceRequirementsControlConnection`](#compliancerequirementscontrolconnection) | Compliance controls of the compliance requirement. (see [Connections](#connections)) |
 | <a id="compliancerequirementdescription"></a>`description` | [`String!`](#string) | Description of the compliance requirement. |
+| <a id="compliancerequirementframework"></a>`framework` | [`ComplianceFramework`](#complianceframework) | Compliance framework associated with the requirement. |
 | <a id="compliancerequirementid"></a>`id` | [`ID!`](#id) | Compliance requirement ID. |
 | <a id="compliancerequirementname"></a>`name` | [`String!`](#string) | Name of the compliance requirement. |
 
@@ -24606,6 +24616,7 @@ Represents a ComplianceRequirementsControl associated with a ComplianceRequireme
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="compliancerequirementscontrolcompliancerequirement"></a>`complianceRequirement` | [`ComplianceRequirement`](#compliancerequirement) | Compliance requirement associated with the control. |
 | <a id="compliancerequirementscontrolcontroltype"></a>`controlType` | [`String!`](#string) | Type of the compliance control. |
 | <a id="compliancerequirementscontrolexpression"></a>`expression` | [`String`](#string) | Expression of the compliance control. |
 | <a id="compliancerequirementscontrolexternalcontrolname"></a>`externalControlName` | [`String`](#string) | Name of the external control. |
@@ -30315,7 +30326,7 @@ Limited group data accessible to users without full group read access (e.g. non-
 | <a id="groupnamespacelinksissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
 | <a id="groupnamespacelinkslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="groupnamespacelinkslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
-| <a id="groupnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`String`](#string) | Namespace new_comment_template_paths. |
+| <a id="groupnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
 | <a id="groupnamespacelinksnewproject"></a>`newProject` | [`String`](#string) | Namespace new_project. |
 | <a id="groupnamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="groupnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
@@ -38577,7 +38588,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="projectnamespacelinksissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
 | <a id="projectnamespacelinkslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="projectnamespacelinkslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
-| <a id="projectnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`String`](#string) | Namespace new_comment_template_paths. |
+| <a id="projectnamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
 | <a id="projectnamespacelinksnewproject"></a>`newProject` | [`String`](#string) | Namespace new_project. |
 | <a id="projectnamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="projectnamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
@@ -41452,7 +41463,7 @@ fields relate to interactions between the two entities.
 | <a id="usernamespacelinksissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
 | <a id="usernamespacelinkslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="usernamespacelinkslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
-| <a id="usernamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`String`](#string) | Namespace new_comment_template_paths. |
+| <a id="usernamespacelinksnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
 | <a id="usernamespacelinksnewproject"></a>`newProject` | [`String`](#string) | Namespace new_project. |
 | <a id="usernamespacelinksregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="usernamespacelinksreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |
@@ -49725,7 +49736,7 @@ Implementations:
 | <a id="namespaceslinkpathsissueslist"></a>`issuesList` | [`String`](#string) | Namespace issues_list. |
 | <a id="namespaceslinkpathslabelsfetch"></a>`labelsFetch` | [`String`](#string) | Namespace labels_fetch. |
 | <a id="namespaceslinkpathslabelsmanage"></a>`labelsManage` | [`String`](#string) | Namespace labels_manage. |
-| <a id="namespaceslinkpathsnewcommenttemplate"></a>`newCommentTemplate` | [`String`](#string) | Namespace new_comment_template_paths. |
+| <a id="namespaceslinkpathsnewcommenttemplate"></a>`newCommentTemplate` | [`[CommentTemplatePath!]`](#commenttemplatepath) | Namespace new_comment_template_paths. |
 | <a id="namespaceslinkpathsnewproject"></a>`newProject` | [`String`](#string) | Namespace new_project. |
 | <a id="namespaceslinkpathsregister"></a>`register` | [`String`](#string) | Namespace register_path. |
 | <a id="namespaceslinkpathsreportabuse"></a>`reportAbuse` | [`String`](#string) | Namespace report_abuse. |

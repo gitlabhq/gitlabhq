@@ -48,7 +48,7 @@ RSpec.shared_examples 'WikiPages::UpdateService#execute' do |container_type|
     end
 
     it 'doesn not create a WikiPage::Meta record' do
-      expect { service.execute(page) }.to change { WikiPage::Meta.count }.by 0
+      expect { service.execute(page) }.to not_change { WikiPage::Meta.count }
     end
   end
 

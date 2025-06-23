@@ -88,7 +88,7 @@ RSpec.shared_examples 'issuable supports timelog creation mutation' do
       it 'returns an error' do
         expect do
           post_graphql_mutation(mutation, current_user: current_user)
-        end.to change { Timelog.count }.by(0)
+        end.to not_change { Timelog.count }
 
         expect(response).to have_gitlab_http_status(:success)
         expect(mutation_response['errors']).to match_array(

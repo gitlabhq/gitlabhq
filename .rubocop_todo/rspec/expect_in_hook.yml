@@ -87,7 +87,6 @@ RSpec/ExpectInHook:
     - 'spec/controllers/projects/settings/ci_cd_controller_spec.rb'
     - 'spec/controllers/projects/settings/operations_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
-    - 'spec/controllers/search_controller_spec.rb'
     - 'spec/controllers/snippets/notes_controller_spec.rb'
     - 'spec/features/admin/admin_mode/login_spec.rb'
     - 'spec/features/admin/admin_projects_spec.rb'

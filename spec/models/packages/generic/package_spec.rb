@@ -14,6 +14,7 @@ RSpec.describe Packages::Generic::Package, type: :model, feature_category: :pack
       it { is_expected.not_to allow_value('$foo/bar').for(:name) }
       it { is_expected.not_to allow_value('my file name').for(:name) }
       it { is_expected.not_to allow_value('!!().for(:name)().for(:name)').for(:name) }
+      it { is_expected.not_to allow_value('test-packagename~with-tildes').for(:name) }
     end
 
     describe '#version' do

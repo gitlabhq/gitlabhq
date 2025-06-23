@@ -17,7 +17,7 @@ RSpec.describe Types::Namespaces::LinkPaths::GroupNamespaceLinksType, feature_ca
       :issues_list | lazy { "/groups/#{namespace.full_path}/-/issues" }
       :labels_manage | lazy { "/groups/#{namespace.full_path}/-/labels" }
       :new_project | lazy { "/projects/new?namespace_id=#{namespace.id}" }
-      :new_comment_template | "/-/profile/comment_templates"
+      :new_comment_template | [{ href: "/-/profile/comment_templates", text: "Your comment templates" }]
     end
 
     with_them do

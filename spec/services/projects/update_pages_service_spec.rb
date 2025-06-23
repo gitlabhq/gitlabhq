@@ -76,7 +76,7 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
     it 'assigns the deploy stage' do
       expect { service.execute }
         .to change(GenericCommitStatus, :count).by(1)
-        .and change(Ci::Stage.where(name: 'deploy'), :count).by(0)
+        .and not_change(Ci::Stage.where(name: 'deploy'), :count)
 
       status = GenericCommitStatus.last
 

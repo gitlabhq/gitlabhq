@@ -110,7 +110,6 @@ Style/StringConcatenation:
     - 'spec/controllers/projects/labels_controller_spec.rb'
     - 'spec/controllers/projects/uploads_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
-    - 'spec/controllers/search_controller_spec.rb'
     - 'spec/experiments/application_experiment_spec.rb'
     - 'spec/factories/ci/daily_build_group_report_results.rb'
     - 'spec/factories/gitaly/commit.rb'

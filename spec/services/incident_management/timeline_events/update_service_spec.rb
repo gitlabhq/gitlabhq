@@ -249,12 +249,12 @@ RSpec.describe IncidentManagement::TimelineEvents::UpdateService, feature_catego
 
             it 'adds the new tag and removes the old tag' do
               # Since it adds a tag (+1) and removes old tag (-1) so next change in count in 0
-              expect { execute }.to change { timeline_event.timeline_event_tags.count }.by(0)
+              expect { execute }.to not_change { timeline_event.timeline_event_tags.count }
             end
 
             it 'adds the new tag link and removes the old tag link' do
               # Since it adds a tag link (+1) and removes old tag link (-1) so next change in count in 0
-              expect { execute }.to change { IncidentManagement::TimelineEventTagLink.count }.by(0)
+              expect { execute }.to not_change { IncidentManagement::TimelineEventTagLink.count }
             end
 
             it 'returns the new tag and does not contain the old tag in response' do

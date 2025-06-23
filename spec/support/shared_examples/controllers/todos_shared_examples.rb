@@ -29,7 +29,7 @@ RSpec.shared_examples 'todos actions' do
       sign_in(user)
       expect do
         post_create
-      end.to change { user.todos.count }.by(0)
+      end.to not_change { user.todos.count }
 
       expect(response).to have_gitlab_http_status(:not_found)
     end
@@ -37,7 +37,7 @@ RSpec.shared_examples 'todos actions' do
     it 'does not create todo when user is not logged in' do
       expect do
         post_create
-      end.to change { user.todos.count }.by(0)
+      end.to not_change { user.todos.count }
 
       expect(response).to have_gitlab_http_status(:found)
     end

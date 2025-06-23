@@ -2604,7 +2604,6 @@
 - './spec/controllers/repositories/git_http_controller_spec.rb'
 - './spec/controllers/repositories/lfs_storage_controller_spec.rb'
 - './spec/controllers/root_controller_spec.rb'
-- './spec/controllers/search_controller_spec.rb'
 - './spec/controllers/sent_notifications_controller_spec.rb'
 - './spec/controllers/sessions_controller_spec.rb'
 - './spec/controllers/snippets/blobs_controller_spec.rb'
