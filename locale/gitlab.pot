@@ -2407,6 +2407,9 @@ msgstr ""
 msgid "AI|Accept & Insert"
 msgstr ""
 
+msgid "AI|Agents"
+msgstr ""
+
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
@@ -12667,6 +12670,9 @@ msgid "Check again"
 msgstr ""
 
 msgid "Check feature availability on namespace plan"
+msgstr ""
+
+msgid "Check option: %{option}"
 msgstr ""
 
 msgid "Check out branch"

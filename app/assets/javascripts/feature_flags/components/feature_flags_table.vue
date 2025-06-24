@@ -205,7 +205,7 @@ export default {
         >
           <template v-if="item.edit_path">
             <gl-button
-              v-gl-tooltip.hover.bottom="$options.i18n.editLabel"
+              v-gl-tooltip="$options.i18n.editLabel"
               data-testid="feature-flag-edit-button"
               class="gl-flex-grow"
               icon="pencil"
@@ -215,7 +215,7 @@ export default {
           </template>
           <template v-if="item.destroy_path">
             <gl-button
-              v-gl-tooltip.hover.bottom="$options.i18n.deleteLabel"
+              v-gl-tooltip="$options.i18n.deleteLabel"
               class="gl-flex-grow"
               variant="danger"
               icon="remove"
@@ -232,7 +232,7 @@ export default {
         >
           <template v-if="item.edit_path">
             <gl-button
-              v-gl-tooltip.hover.bottom="$options.i18n.editLabel"
+              v-gl-tooltip="$options.i18n.editLabel"
               data-testid="feature-flag-edit-button"
               class="gl-flex-grow"
               icon="pencil"
@@ -242,7 +242,7 @@ export default {
           </template>
           <template v-if="item.destroy_path">
             <gl-button
-              v-gl-tooltip.hover.bottom="$options.i18n.deleteLabel"
+              v-gl-tooltip="$options.i18n.deleteLabel"
               data-testid="feature-flag-delete-button"
               class="gl-flex-grow"
               variant="danger"

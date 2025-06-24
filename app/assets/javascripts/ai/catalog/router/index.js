@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import AiCatalogIndex from '../pages/ai_catalog_index.vue';
-import { AI_CATALOG_INDEX_ROUTE } from './constants';
+import AiCatalogAgents from '../pages/ai_catalog_agents.vue';
+import { AI_CATALOG_INDEX_ROUTE, AI_CATALOG_AGENTS_ROUTE } from './constants';
 
 Vue.use(VueRouter);
 
@@ -13,7 +13,12 @@ export const createRouter = (base) => {
       {
         name: AI_CATALOG_INDEX_ROUTE,
         path: '',
-        component: AiCatalogIndex,
+        component: AiCatalogAgents,
+      },
+      {
+        name: AI_CATALOG_AGENTS_ROUTE,
+        path: '/agents',
+        component: AiCatalogAgents,
       },
     ],
   });

@@ -49,7 +49,7 @@ Enable static reachability analysis to identify high-risk dependencies.
 
 Prerequisites:
 
-- Enable [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md#configuration).
+- Enable [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
 
   Make sure you follow the [pip](dependency_scanning_sbom/_index.md#pip) or [pipenv](dependency_scanning_sbom/_index.md#pipenv)
   related instructions for dependency scanning using SBOM. You can also use any other Python package manager that is [supported](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning#supported-files) by the DS analyzer.

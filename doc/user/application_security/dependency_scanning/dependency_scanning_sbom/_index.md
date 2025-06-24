@@ -45,52 +45,127 @@ ensure coverage for all of these dependency types. To cover as much of your risk
 we encourage you to use all of our security scanners. For a comparison of these features, see
 [Dependency Scanning compared to Container Scanning](../../comparison_dependency_and_container_scanning.md).
 
-## How it scans an application
+## Getting started
 
-The dependency scanning using SBOM approach relies on two distinct phases:
+Enable the Dependency Scanning using SBOM feature with one of the following options:
 
-- First, the dependency detection phase that focuses solely on creating a comprehensive inventory of your
-project’s dependencies and their relationship (dependency graph). This inventory is captured in an SBOM (Software Bill of Materials)
-document.
-- Second, after the CI/CD pipeline completes, the GitLab platform processes your SBOM report and performs
-a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. It is the same scanner
-that provides [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
+- Use the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
+  - The (deprecated) Gemnasium analyzer is used by default.
+  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template to enable a GitLab provided analyzer.
+  - The (deprecated) Gemnasium analyzer is used by default.
+  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
+- Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
-This separation of concerns and the modularity of this architecture allows to better support customers through expansion
-of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard
-report types.
+The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
+To enable the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#getting-started).
 
-## Dependency detection
+## Understanding the results
 
-Dependency scanning using SBOM requires the detected dependencies to be captured in a CycloneDX SBOM document.
-However, the modular aspect of this functionality allows you to select how this document is generated:
+The dependency scanning analyzer produces CycloneDX Software Bill of Materials (SBOM) for each supported
+lock file or dependency graph export detected.
 
-- Using the Dependency Scanning analyzer provided by GitLab (recommended)
-- Using the (deprecated) Gemnasium analyzer provided by GitLab
-- Using a custom job with a 3rd party CycloneDX SBOM generator or a custom tool.
+### CycloneDX Software Bill of Materials
 
-In order to activate dependency scanning using SBOM, the provided CycloneDX SBOM document must:
+The dependency scanning analyzer outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
+for each supported lock or dependency graph export it detects. The CycloneDX SBOMs are created as job artifacts.
 
-- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
-- Comply with the GitLab CycloneDX property taxonomy.
-- Be uploaded as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
+The CycloneDX SBOMs are:
 
-When using GitLab provided analyzers, these requirements are met.
+- Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
+- Available as job artifacts of the dependency scanning job.
+- Uploaded as `cyclonedx` reports.
+- Saved in the same directory as the detected lock or dependency graph exports files.
 
-## Security analysis
+For example, if your project has the following structure:
 
-Once a compatible CycloneDX SBOM document is uploaded, GitLab automatically performs the security analysis
-with the GitLab SBOM Vulnerability Scanner. Each component is checked against the GitLab Advisory Database and
-scan results are processed in the following manners:
+```plaintext
+.
+├── ruby-project/
+│   └── Gemfile.lock
+├── ruby-project-2/
+│   └── Gemfile.lock
+└── php-project/
+    └── composer.lock
+```
 
-If the SBOM report is declared by a CI/CD job on the default branch: vulnerabilities are created,
-and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
+The following CycloneDX SBOMs are created as job artifacts:
 
-If the SBOM report is declared by a CI/CD job on a non-default branch: security findings are created,
-and can be seen in the [security tab of the pipeline view](../../detect/security_scanning_results.md) and MR security widget.
-This functionality is behing a feature flag and tracked in [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636).
+```plaintext
+.
+├── ruby-project/
+│   ├── Gemfile.lock
+│   └── gl-sbom-gem-bundler.cdx.json
+├── ruby-project-2/
+│   ├── Gemfile.lock
+│   └── gl-sbom-gem-bundler.cdx.json
+└── php-project/
+    ├── composer.lock
+    └── gl-sbom-packagist-composer.cdx.json
+```
 
-### Supported package types
+### Merging multiple CycloneDX SBOMs
+
+You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM.
+
+{{< alert type="note" >}}
+
+GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
+to store implementation-specific details in the metadata of each CycloneDX SBOM, such as the
+location of dependency graph exports and lock files. If multiple CycloneDX SBOMs are merged together,
+this information is removed from the resulting merged file.
+
+{{< /alert >}}
+
+For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
+merged, and the resulting file validated.
+
+```yaml
+stages:
+  - test
+  - merge-cyclonedx-sboms
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+merge cyclonedx sboms:
+  stage: merge-cyclonedx-sboms
+  image:
+    name: cyclonedx/cyclonedx-cli:0.27.1
+    entrypoint: [""]
+  script:
+    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
+    # optional: validate the merged sbom
+    - cyclonedx validate --input-version v1_6 --input-file gl-sbom-all.cdx.json
+  artifacts:
+    paths:
+      - gl-sbom-all.cdx.json
+```
+
+## Optimization
+
+To optimize Dependency Scanning with SBOM according to your requirements you can:
+
+- Exclude files and directories from the scan.
+- Define the max depth to look for files.
+
+### Exclude files and directories from the scan
+
+To exclude files or directories from being scanned, use `DS_EXCLUDED_PATHS` with a comma-separated list of patterns in your `.gitlab-ci.yml`. This will prevent specified files and directories from being targeted by the scan.
+
+### Define the max depth to look for files
+
+To optmize the analyzer behavior you may set a max depth value through the `DS_MAX_DEPTH` environment variable. A value of `-1` scans all directories regardless of depth. The default is `2`.
+
+## Roll out
+
+After you are confident in the Dependency Scanning with SBOM results for a single project, you can extend its implementation to additional projects:
+
+- Use [enforced scan execution](../../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scanning with SBOM settings across groups.
+- If you have unique requirements, Dependency Scanning with SBOM can be run in [offline environments](../../offline_deployments/_index.md).
+
+## Supported package types
 
 For the security analysis to be effective, the components listed in your SBOM report must have corresponding
 entries in the [GitLab Advisory Database](../../gitlab_advisory_database/_index.md).
@@ -122,7 +197,7 @@ Enable the Dependency Scanning using SBOM feature with one of the following opti
 - Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
 The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
-To enable the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#enabling-the-analyzer).
+To enable the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#getting-started).
 
 ## Enabling the analyzer
 
@@ -483,7 +558,7 @@ The following variables allow configuration of global dependency scanning settin
 | `DS_PIPCOMPILE_REQUIREMENTS_FILE_NAME_PATTERN`   | Defines which requirement files to process using glob pattern matching (for example, `requirements*.txt` or `*-requirements.txt`). The pattern should match filenames only, not directory paths. See [glob pattern documentation](https://github.com/bmatcuk/doublestar/tree/v1?tab=readme-ov-file#patterns) for syntax details. |
 | `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
 
-#### Overriding dependency scanning jobs
+##### Overriding dependency scanning jobs
 
 To override a job definition declare a new job with the same name as the one to override.
 Place this new job after the template inclusion and specify any additional keys under it.
@@ -501,93 +576,50 @@ dependency-scanning:
 
 When using the Dependency Scanning CI/CD component, the analyzer can be customized by configuring the [inputs](https://gitlab.com/explore/catalog/components/dependency-scanning).
 
-## Output
+## How it scans an application
 
-The dependency scanning analyzer produces CycloneDX Software Bill of Materials (SBOM) for each supported
-lock file or dependency graph export detected.
+The dependency scanning using SBOM approach relies on two distinct phases:
 
-### CycloneDX Software Bill of Materials
+- First, the dependency detection phase that focuses solely on creating a comprehensive inventory of your
+project’s dependencies and their relationship (dependency graph). This inventory is captured in an SBOM (Software Bill of Materials)
+document.
+- Second, after the CI/CD pipeline completes, the GitLab platform processes your SBOM report and performs
+a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. It is the same scanner
+that provides [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
 
-{{< history >}}
+This separation of concerns and the modularity of this architecture allows to better support customers through expansion
+of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard
+report types.
 
-- Generally available in GitLab 15.7.
+## Dependency detection
 
-{{< /history >}}
+Dependency scanning using SBOM requires the detected dependencies to be captured in a CycloneDX SBOM document.
+However, the modular aspect of this functionality allows you to select how this document is generated:
 
-The dependency scanning analyzer outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
-for each supported lock or dependency graph export it detects. The CycloneDX SBOMs are created as job artifacts.
+- Using the Dependency Scanning analyzer provided by GitLab (recommended)
+- Using the (deprecated) Gemnasium analyzer provided by GitLab
+- Using a custom job with a 3rd party CycloneDX SBOM generator or a custom tool.
 
-The CycloneDX SBOMs are:
+To activate dependency scanning using SBOM, the provided CycloneDX SBOM document must:
 
-- Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
-- Available as job artifacts of the dependency scanning job.
-- Uploaded as `cyclonedx` reports.
-- Saved in the same directory as the detected lock or dependency graph exports files.
+- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4`, `1.5`, or `1.6`. Online validator available on [CycloneDX Web Tool](https://cyclonedx.github.io/cyclonedx-web-tool/validate).
+- Comply with [the GitLab CycloneDX property taxonomy](../../../../development/sec/cyclonedx_property_taxonomy.md).
+- Be uploaded as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
-For example, if your project has the following structure:
+When using GitLab-provided analyzers, these requirements are met.
 
-```plaintext
-.
-├── ruby-project/
-│   └── Gemfile.lock
-├── ruby-project-2/
-│   └── Gemfile.lock
-└── php-project/
-    └── composer.lock
-```
+## Security analysis
 
-The following CycloneDX SBOMs are created as job artifacts:
+After a compatible CycloneDX SBOM document is uploaded, GitLab automatically performs the security analysis
+with the GitLab SBOM Vulnerability Scanner. Each component is checked against the GitLab Advisory Database and
+scan results are processed in the following manners:
 
-```plaintext
-.
-├── ruby-project/
-│   ├── Gemfile.lock
-│   └── gl-sbom-gem-bundler.cdx.json
-├── ruby-project-2/
-│   ├── Gemfile.lock
-│   └── gl-sbom-gem-bundler.cdx.json
-└── php-project/
-    ├── composer.lock
-    └── gl-sbom-packagist-composer.cdx.json
-```
+If the SBOM report is declared by a CI/CD job on the default branch: vulnerabilities are created,
+and can be seen in the [vulnerability report](../../vulnerability_report/_index.md).
 
-### Merging multiple CycloneDX SBOMs
-
-You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM.
-
-{{< alert type="note" >}}
-
-GitLab uses [CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store)
-to store implementation-specific details in the metadata of each CycloneDX SBOM, such as the
-location of dependency graph exports and lock files. If multiple CycloneDX SBOMs are merged together,
-this information is removed from the resulting merged file.
-
-{{< /alert >}}
-
-For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
-merged, and the resulting file validated.
-
-```yaml
-stages:
-  - test
-  - merge-cyclonedx-sboms
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-merge cyclonedx sboms:
-  stage: merge-cyclonedx-sboms
-  image:
-    name: cyclonedx/cyclonedx-cli:0.27.1
-    entrypoint: [""]
-  script:
-    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
-    # optional: validate the merged sbom
-    - cyclonedx validate --input-version v1_6 --input-file gl-sbom-all.cdx.json
-  artifacts:
-    paths:
-      - gl-sbom-all.cdx.json
-```
+If the SBOM report is declared by a CI/CD job on a non-default branch: security findings are created,
+and can be seen in the [security tab of the pipeline view](../../vulnerability_report/pipeline.md) and MR security widget.
+This functionality is behind a feature flag and tracked in [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636).
 
 ## Troubleshooting
 

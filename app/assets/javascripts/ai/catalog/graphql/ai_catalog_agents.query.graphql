@@ -1,0 +1,10 @@
+query aiCatalogAgents {
+  aiCatalogAgents @client {
+    nodes {
+      id
+      name
+      description
+      model
+    }
+  }
+}

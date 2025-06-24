@@ -6,7 +6,7 @@ import createDefaultClient from '~/lib/graphql';
 import AiCatalogApp from './ai_catalog_app.vue';
 import { createRouter } from './router';
 
-import userWorkflowsQuery from './graphql/user_workflows.query.graphql';
+import aiCatalogAgentsQuery from './graphql/ai_catalog_agents.query.graphql';
 
 export const initAiCatalog = (selector = '#js-ai-catalog') => {
   const el = document.querySelector(selector);
@@ -26,24 +26,23 @@ export const initAiCatalog = (selector = '#js-ai-catalog') => {
 
   /* eslint-disable @gitlab/require-i18n-strings */
   apolloProvider.clients.defaultClient.cache.writeQuery({
-    query: userWorkflowsQuery,
+    query: aiCatalogAgentsQuery,
     data: {
-      currentUser: {
-        id: 1,
-        workflows: {
-          nodes: [
-            {
-              id: 1,
-              name: 'Workflow 1',
-              type: 'Type 1',
-            },
-            {
-              id: 2,
-              name: 'Workflow 2',
-              type: 'Type 2',
-            },
-          ],
-        },
+      aiCatalogAgents: {
+        nodes: [
+          {
+            id: 1,
+            name: 'Claude Sonnet 4',
+            description: 'Smart, efficient model for everyday user',
+            model: 'claude-sonnet-4-20250514',
+          },
+          {
+            id: 2,
+            name: 'Claude Opus 4',
+            description: 'Powerful, large model for complex challenges',
+            model: 'claude-opus-4-20250514',
+          },
+        ],
       },
     },
   });

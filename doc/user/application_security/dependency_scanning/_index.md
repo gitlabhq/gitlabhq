@@ -93,6 +93,225 @@ Dependency Scanning does not support runtime installation of compilers and inter
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   For other interactive reading and how-to demos, see [Get Started With GitLab Application Security Playlist](https://www.youtube.com/playlist?list=PL05JrBw4t0KrUrjDoefSkgZLx5aJYFaF9)
 
+## Getting started
+
+To get started with Dependency Scanning the following steps show how to enable Dependency Scanning for your project.
+
+Prerequisites:
+
+- The `test` stage is required in the `.gitlab-ci.yml` file.
+- With self-managed runners you need a GitLab Runner with the
+  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+- If you're using SaaS runners on GitLab.com, this is enabled by default.
+
+To enable the analyzer, either:
+
+- Enable [Auto DevOps](../../../topics/autodevops/_index.md), which includes dependency scanning.
+- Use a preconfigured merge request.
+- Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
+  scanning.
+- Edit the `.gitlab-ci.yml` file manually.
+- [Use CI/CD components](#use-cicd-components)
+
+### Use a preconfigured merge request
+
+This method automatically prepares a merge request that includes the Dependency Scanning template
+in the `.gitlab-ci.yml` file. You then merge the merge request to enable Dependency Scanning.
+
+{{< alert type="note" >}}
+
+This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
+If you have a complex GitLab configuration file it might not be parsed successfully, and an error
+might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+
+{{< /alert >}}
+
+To enable Dependency Scanning:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dependency Scanning** row, select **Configure with a merge request**.
+1. Select **Create merge request**.
+1. Review the merge request, then select **Merge**.
+
+Pipelines now include a Dependency Scanning job.
+
+### Edit the `.gitlab-ci.yml` file manually
+
+This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
+your GitLab CI/CD configuration file is complex.
+
+To enable Dependency Scanning:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Pipeline editor**.
+1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
+   content.
+1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
+   already exists, add only the `template` line below it.
+
+   ```yaml
+   include:
+     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+   ```
+
+1. Select the **Validate** tab, then select **Validate pipeline**.
+
+   The message **Simulation completed successfully** confirms the file is valid.
+1. Select the **Edit** tab.
+1. Complete the fields. Do not use the default branch for the **Branch** field.
+1. Select the **Start a new merge request with these changes** checkbox, then select **Commit
+   changes**.
+1. Complete the fields according to your standard workflow, then select **Create
+   merge request**.
+1. Review and edit the merge request according to your standard workflow, then select **Merge**.
+
+Pipelines now include a Dependency Scanning job.
+
+### Use CI/CD components
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/development_stages_support.md).
+- The dependency scanning CI/CD component only supports Android projects.
+
+{{< /history >}}
+
+Use [CI/CD components](../../../ci/components/_index.md) to perform Dependency Scanning of your
+application. For instructions, see the respective component's README file.
+
+#### Available CI/CD components
+
+See <https://gitlab.com/explore/catalog/components/dependency-scanning>
+
+After completing these steps, you can:
+
+- Learn more about how to [understand the results](#understanding-the-results).
+- Plan a [roll out](#roll-out) to more projects.
+
+## Understanding the results
+
+You can review vulnerabilities in a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Severity: Categorized into six levels based on impact.
+     [Learn more about severity levels](../vulnerabilities/severities.md).
+   - CVSS score: Provides a numeric value that maps to severity.
+   - EPSS: Shows the likelihood of a vulnerability being exploited in the wild.
+   - Has Known Exploit (KEV): Indicates that a given vulnerability has been exploited.
+   - Project: Highlights the project where the vulnerability was identified.
+   - Report type / Scanner: Explains the output type and scanner used to generate the output.
+   - Reachable: Provides an indication whether the vulnerable dependency is used in code.
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Location: Names the file where the vulnerable dependency is located.
+   - Links: Evidence of the vulnerability being cataloged in various advisory databases.
+   - Identifiers: A list of references used to classify the vulnerability, such as CVE identifiers.
+
+Dependency Scanning produces the following output:
+
+- **Dependency scanning report**: Contains details of all vulnerabilities detected in dependencies.
+- **CycloneDX Software Bill of Materials**: Software Bill of Materials (SBOM) for each supported
+  lock or build file detected.
+
+### Dependency scanning report
+
+Dependency scanning outputs a report containing details of all vulnerabilities. The report is
+processed internally and the results are shown in the UI. The report is also output as an artifact
+of the dependency scanning job, named `gl-dependency-scanning-report.json`.
+
+For more details of the dependency scanning report, see the
+[Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
+
+### CycloneDX Software Bill of Materials
+
+Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
+for each supported lock or build file it detects.
+
+The CycloneDX SBOMs are:
+
+- Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
+- Available as job artifacts of the dependency scanning job.
+- Saved in the same directory as the detected lock or build files.
+
+For example, if your project has the following structure:
+
+```plaintext
+.
+├── ruby-project/
+│   └── Gemfile.lock
+├── ruby-project-2/
+│   └── Gemfile.lock
+├── php-project/
+│   └── composer.lock
+└── go-project/
+    └── go.sum
+```
+
+Then the Gemnasium scanner generates the following CycloneDX SBOMs:
+
+```plaintext
+.
+├── ruby-project/
+│   ├── Gemfile.lock
+│   └── gl-sbom-gem-bundler.cdx.json
+├── ruby-project-2/
+│   ├── Gemfile.lock
+│   └── gl-sbom-gem-bundler.cdx.json
+├── php-project/
+│   ├── composer.lock
+│   └── gl-sbom-packagist-composer.cdx.json
+└── go-project/
+    ├── go.sum
+    └── gl-sbom-go-go.cdx.json
+```
+
+#### Merging multiple CycloneDX SBOMs
+
+You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM. GitLab uses
+[CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store) to store
+implementation-specific details in the metadata of each CycloneDX SBOM, such as the location of
+build and lock files. If multiple CycloneDX SBOMs are merged together, this information is removed
+from the resulting merged file.
+
+For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
+merged, and the resulting file validated.
+
+```yaml
+stages:
+  - test
+  - merge-cyclonedx-sboms
+
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+merge cyclonedx sboms:
+  stage: merge-cyclonedx-sboms
+  image:
+    name: cyclonedx/cyclonedx-cli:0.25.1
+    entrypoint: [""]
+  script:
+    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
+    # optional: validate the merged sbom
+    - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
+  artifacts:
+    paths:
+      - gl-sbom-all.cdx.json
+```
+
+## Roll out
+
+After you are confident in the Dependency Scanning results for a single project, you can extend its implementation to additional projects:
+
+- Use [enforced scan execution](../detect/security_configuration.md#create-a-shared-configuration) to apply Dependency Scannign settings across groups.
+- If you have unique requirements, Dependency Scanning with SBOM can be run in [offline environments](../offline_deployments/_index.md).
+
 ## Supported languages and package managers
 
 The following languages and dependency managers are supported by Dependency Scanning:
@@ -337,6 +556,413 @@ The following languages and dependency managers are supported by Dependency Scan
     </p>
   </li>
 </ol>
+<!-- markdownlint-enable MD044 -->
+
+### Running jobs in merge request pipelines
+
+See [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines)
+
+### Customizing analyzer behavior
+
+To customize Dependency Scanning, use [CI/CD variables](#available-cicd-variables).
+
+{{< alert type="warning" >}}
+
+Test all customization of GitLab analyzers in a merge request before merging these changes to the
+default branch. Failure to do so can give unexpected results, including a large number of false
+positives.
+
+{{< /alert >}}
+
+### Overriding dependency scanning jobs
+
+To override a job definition (for example, to change properties like `variables` or `dependencies`),
+declare a new job with the same name as the one to override. Place this new job after the template
+inclusion and specify any additional keys under it. For example, this disables `DS_REMEDIATE` for
+the `gemnasium` analyzer:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+gemnasium-dependency_scanning:
+  variables:
+    DS_REMEDIATE: "false"
+```
+
+To override the `dependencies: []` attribute, add an override job as described previously, targeting this attribute:
+
+```yaml
+include:
+  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+gemnasium-dependency_scanning:
+  dependencies: ["build"]
+```
+
+### Available CI/CD variables
+
+You can use CI/CD variables to [customize](#customizing-analyzer-behavior) dependency scanning behavior.
+
+#### Global analyzer settings
+
+The following variables allow configuration of global dependency scanning settings.
+
+| CI/CD variables             | Description |
+| ----------------------------|------------ |
+| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
+| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
+| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied before the scan is executed. Default: `"spec, test, tests, tmp"`. |
+| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
+| `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
+| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
+
+#### Analyzer-specific settings
+
+The following variables configure the behavior of specific dependency scanning analyzers.
+
+| CI/CD variable                       | Analyzer           | Default                      | Description |
+|--------------------------------------|--------------------|------------------------------|-------------|
+| `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
+| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab Advisory Database](#access-to-the-gitlab-advisory-database). |
+| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab Advisory Database. |
+| `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
+| `GEMNASIUM_IGNORED_SCOPES`           | `gemnasium`        |                              | Comma-separated list of Maven dependency scopes to ignore. For more details, see the [Maven dependency scope documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope) |
+| `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
+| `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
+| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
+| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, Maven, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
+| `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
+| `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
+| `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
+| `GOPRIVATE`                          | `gemnasium`        |                              | A list of glob patterns and prefixes to be fetched from source. For more information, see the Go private modules [documentation](https://go.dev/ref/mod#private-modules). |
+| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21`. |
+| `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](#authenticate-with-a-private-maven-repository). |
+| `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
+| `GRADLE_PLUGIN_INIT_PATH`            | `gemnasium-maven`  | `"gemnasium-init.gradle"`    | Specifies the path to the Gradle initialization script. The init script must include `allprojects { apply plugin: 'project-report' }` to ensure compatibility. |
+| `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Controls Gradle dependency resolution strictness. Accepts `"none"` to allow partial results, or `"failed"` to fail the scan when any dependencies fail to resolve. |
+| `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
+| `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
+| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning**: Read [the following security consideration](#python-projects) when using this environment variable. |
+| `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. This is a filename and not a path. When this environment variable is set only the specified file is scanned. |
+| `PIPENV_PYPI_MIRROR`                 | `gemnasium-python` |                              | If set, overrides the PyPi index used by Pipenv with a [mirror](https://github.com/pypa/pipenv/blob/v2022.1.8/pipenv/environments.py#L263). |
+| `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. |
+| `DS_PIP_DEPENDENCY_PATH`             | `gemnasium-python` |                              | Path to load Python pip dependencies from. |
+
+#### Other variables
+
+The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they do work. This is a large list, many of which we may be unaware of, and as such is not documented.
+
+For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
+set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
+file like this:
+
+```yaml
+variables:
+  HTTPS_PROXY: "https://squid-proxy:3128"
+```
+
+{{< alert type="note" >}}
+
+Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
+
+{{< /alert >}}
+
+Alternatively we may use it in specific jobs, like Dependency Scanning:
+
+```yaml
+dependency_scanning:
+  variables:
+    HTTPS_PROXY: $HTTPS_PROXY
+```
+
+As we have not tested all variables you may find some do work and others do not.
+If one does not work and you need it we suggest
+[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
+or contributing to the code to enable it to be used.
+
+### Custom TLS certificate authority
+
+Dependency Scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
+default shipped with the analyzer container image.
+
+Support for custom certificate authorities was introduced in the following versions.
+
+| Analyzer           | Version                                                                                                |
+|--------------------|--------------------------------------------------------------------------------------------------------|
+| `gemnasium`        | [v2.8.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/releases/v2.8.0)        |
+| `gemnasium-maven`  | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0)  |
+| `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
+
+#### Using a custom TLS certificate authority
+
+To use a custom TLS certificate authority, assign the
+[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
+to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
+
+For example, to configure the certificate in the `.gitlab-ci.yml` file:
+
+```yaml
+variables:
+  ADDITIONAL_CA_CERT_BUNDLE: |
+      -----BEGIN CERTIFICATE-----
+      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
+      ...
+      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
+      -----END CERTIFICATE-----
+```
+
+### Authenticate with a private Maven repository
+
+To use a private Maven repository that requires authentication, you should store your credentials in
+a CI/CD variable and reference them in your Maven settings file. Do not add the credentials to your
+`.gitlab-ci.yml` file.
+
+To authenticate with a private Maven repository:
+
+1. Add the `MAVEN_CLI_OPTS` CI/CD variable to your
+   [project's settings](../../../ci/variables/_index.md#for-a-project), setting the value to include
+   your credentials.
+
+   For example, if your username is `myuser` and the password is `verysecret`:
+
+   | Type     | Key              | Value |
+   |----------|------------------|-------|
+   | Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
+
+1. Create a Maven settings file with your server configuration.
+
+   For example, add the following to the settings file `mysettings.xml`. This file is referenced in
+   the `MAVEN_CLI_OPTS` CI/CD variable.
+
+   ```xml
+   <!-- mysettings.xml -->
+   <settings>
+       ...
+       <servers>
+           <server>
+               <id>private_server</id>
+               <username>${repository.user}</username>
+               <password>${repository.password}</password>
+           </server>
+       </servers>
+   </settings>
+   ```
+
+### FIPS-enabled images
+
+{{< history >}}
+
+- Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
+
+{{< /history >}}
+
+GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
+versions of the Gemnasium images. When FIPS mode is enabled in the GitLab instance, Gemnasium
+scanning jobs automatically use the FIPS-enabled images. To manually switch to FIPS-enabled images,
+set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
+
+Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
+
+FIPS-enabled images are based on RedHat's UBI micro.
+They don't have package managers such as `dnf` or `microdnf`
+so it's not possible to install system packages at runtime.
+
+### Offline environment
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+For instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, some adjustments are required for dependency scanning
+jobs to run successfully. For more information, see [Offline environments](../offline_deployments/_index.md).
+
+#### Requirements
+
+To run dependency scanning in an offline environment you must have:
+
+- A GitLab Runner with the `docker` or `kubernetes` executor
+- Local copies of the dependency scanning analyzer images
+- Access to the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
+- Access to the [Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database)
+
+#### Local copies of analyzer images
+
+To use dependency scanning with all [supported languages and frameworks](#supported-languages-and-package-managers):
+
+1. Import the following default dependency scanning analyzer images from `registry.gitlab.com` into
+   your [local Docker container registry](../../packages/container_registry/_index.md):
+
+   ```plaintext
+   registry.gitlab.com/security-products/gemnasium:6
+   registry.gitlab.com/security-products/gemnasium:6-fips
+   registry.gitlab.com/security-products/gemnasium-maven:6
+   registry.gitlab.com/security-products/gemnasium-maven:6-fips
+   registry.gitlab.com/security-products/gemnasium-python:6
+   registry.gitlab.com/security-products/gemnasium-python:6-fips
+   ```
+
+   The process for importing Docker images into a local offline Docker registry depends on
+   **your network security policy**. Consult your IT staff to find an accepted and approved
+   process by which external resources can be imported or temporarily accessed.
+   These scanners are [periodically updated](../detect/vulnerability_scanner_maintenance.md)
+   with new definitions, and you may want to download them regularly.
+
+1. Configure GitLab CI/CD to use the local analyzers.
+
+   Set the value of the CI/CD variable `SECURE_ANALYZERS_PREFIX` to your local Docker registry - in
+   this example, `docker-registry.example.com`.
+
+   ```yaml
+   include:
+     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
+
+   variables:
+     SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
+   ```
+
+#### Access to the GitLab Advisory Database
+
+The [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is the
+source of vulnerability data used by the `gemnasium`, `gemnasium-maven`, and `gemnasium-python`
+analyzers. The Docker images of these analyzers include a clone of the database.
+The clone is synchronized with the database before starting a scan,
+to ensure the analyzers have the latest vulnerability data.
+
+In an offline environment, the default host of the GitLab Advisory Database can't be accessed.
+Instead, you must host the database somewhere that it is accessible to the GitLab runners. You must
+also update the database manually at your own schedule.
+
+Available options for hosting the database are:
+
+- [Use a clone of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
+- [Use a copy of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
+
+##### Use a clone of the GitLab Advisory Database
+
+Using a clone of the GitLab Advisory Database is recommended because it is the most efficient
+method.
+
+To host a clone of the GitLab Advisory Database:
+
+1. Clone the GitLab Advisory Database to a host that is accessible by HTTP from the GitLab runners.
+1. In your `.gitlab-ci.yml` file, set the value of the CI/CD variable `GEMNASIUM_DB_REMOTE_URL` to
+   the URL of the Git repository.
+
+For example:
+
+```yaml
+variables:
+  GEMNASIUM_DB_REMOTE_URL: https://users-own-copy.example.com/gemnasium-db.git
+```
+
+##### Use a copy of the GitLab Advisory Database
+
+Using a copy of the GitLab Advisory Database requires you to host an archive file which is
+downloaded by the analyzers.
+
+To use a copy of the GitLab Advisory Database:
+
+1. Download an archive of the GitLab Advisory Database to a host that is accessible by HTTP from the
+   GitLab runners. The archive is located at
+   `https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz`.
+1. Update your `.gitlab-ci.yml` file.
+
+   - Set CI/CD variable `GEMNASIUM_DB_LOCAL_PATH` to use the local copy of the database.
+   - Set CI/CD variable `GEMNASIUM_DB_UPDATE_DISABLED` to disable the database update.
+   - Download and extract the advisory database before the scan begins.
+
+   ```yaml
+   variables:
+     GEMNASIUM_DB_LOCAL_PATH: ./gemnasium-db-local
+     GEMNASIUM_DB_UPDATE_DISABLED: "true"
+
+   dependency_scanning:
+     before_script:
+       - wget https://local.example.com/gemnasium_db.tar.gz
+       - mkdir -p $GEMNASIUM_DB_LOCAL_PATH
+       - tar -xzvf gemnasium_db.tar.gz --strip-components=1 -C $GEMNASIUM_DB_LOCAL_PATH
+   ```
+
+### Using a proxy with Gradle projects
+
+The Gradle wrapper script does not read the `HTTP(S)_PROXY` environment variables. See [this upstream issue](https://github.com/gradle/gradle/issues/11065).
+
+To make the Gradle wrapper script use a proxy, you can specify the options using the `GRADLE_CLI_OPTS` CI/CD variable:
+
+```yaml
+variables:
+  GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
+```
+
+### Using a proxy with Maven projects
+
+Maven does not read the `HTTP(S)_PROXY` environment variables.
+
+To make the Maven dependency scanner use a proxy, you can configure it using a `settings.xml` file (see [Maven documentation](https://maven.apache.org/guides/mini/guide-proxies.html)) and instruct Maven to use this configuration by using the `MAVEN_CLI_OPTS` CI/CD variable:
+
+```yaml
+variables:
+  MAVEN_CLI_OPTS: "--settings mysettings.xml"
+```
+
+### Specific settings for languages and package managers
+
+See the following sections for configuring specific languages and package managers.
+
+#### Python (pip)
+
+If you need to install Python packages before the analyzer runs, you should use `pip install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
+
+#### Python (setuptools)
+
+If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
+
+When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
+from the previous `.gitlab-ci.yml` template) is needed. However, you must update your `setup.py` to
+ensure that it can reach your private repository. Here is an example configuration:
+
+1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each
+   dependency in the `install_requires` list:
+
+   ```python
+   install_requires=['pyparsing>=2.0.3'],
+   dependency_links=['https://pypi.example.com/simple/pyparsing'],
+   ```
+
+1. Fetch the certificate from your repository URL and add it to the project:
+
+   ```shell
+   printf "\n" | openssl s_client -connect pypi.example.com:443 -servername pypi.example.com | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
+   ```
+
+1. Point `setup.py` at the newly downloaded certificate:
+
+   ```python
+   import setuptools.ssl_support
+   setuptools.ssl_support.cert_paths = ['internal.crt']
+   ```
+
+#### Python (Pipenv)
+
+If running in a limited network connectivity environment, you must configure the `PIPENV_PYPI_MIRROR`
+variable to use a private PyPi mirror. This mirror must contain both default and development dependencies.
+
+```yaml
+variables:
+  PIPENV_PYPI_MIRROR: https://pypi.example.com/simple
+```
+
+<!-- markdownlint-disable MD044 -->
+Alternatively, if it's not possible to use a private registry, you can load the required packages
+into the Pipenv virtual environment cache. For this option, the project must check in the
+`Pipfile.lock` into the repository, and load both default and development packages into the cache.
+See the example [python-pipenv](https://gitlab.com/gitlab-org/security-products/tests/python-pipenv/-/blob/41cc017bd1ed302f6edebcfa3bc2922f428e07b6/.gitlab-ci.yml#L20-42)
+project for an example of how this can be done.
 <!-- markdownlint-enable MD044 -->
 
 ## Dependency detection
@@ -653,7 +1279,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
 </ol>
 <!-- markdownlint-enable MD044 -->
 
-### How analyzers are triggered
+## How analyzers are triggered
 
 GitLab relies on [`rules:exists`](../../../ci/yaml/_index.md#rulesexists) to start the relevant analyzers for the languages detected by the presence of the
 [supported files](#supported-languages-and-package-managers) in the repository.
@@ -662,7 +1288,7 @@ A maximum of two directory levels from the repository's root is searched. For ex
 `api/Gemfile`, or `api/client/Gemfile`, but not if the only supported dependency file is
 `api/v1/client/Gemfile`.
 
-### How multiple files are processed
+## How multiple files are processed
 
 {{< alert type="note" >}}
 
@@ -671,7 +1297,7 @@ If you've run into problems while scanning multiple files, contribute a comment 
 
 {{< /alert >}}
 
-#### Python
+### Python
 
 We only execute one installation in the directory where either a requirements file or a lock file has been detected. Dependencies are only analyzed by `gemnasium-python` for the first file that is detected. Files are searched for in the following order:
 
@@ -682,7 +1308,7 @@ We only execute one installation in the directory where either a requirements fi
 
 The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently a Poetry lock file in the root directory would be detected before a Pipenv file in a subdirectory.
 
-#### Java and Scala
+### Java and Scala
 
 We only execute one build in the directory where a build file has been detected. For large projects that include
 multiple Gradle, Maven, or sbt builds, or any combination of these, `gemnasium-maven` only analyzes dependencies for the first build file
@@ -695,7 +1321,7 @@ that is detected. Build files are searched for in the following order:
 The search begins with the root directory and then continues with subdirectories if no builds are found in the root directory. Consequently an sbt build file in the root directory would be detected before a Gradle build file in a subdirectory.
 For [multi-module](https://maven.apache.org/pom.html#Aggregation) Maven projects, and multi-project [Gradle](https://docs.gradle.org/current/userguide/intro_multi_project_builds.html) and [sbt](https://www.scala-sbt.org/1.x/docs/Multi-Project.html) builds, sub-module and sub-project files are analyzed if they are declared in the parent build file.
 
-#### JavaScript
+### JavaScript
 
 The following analyzers are executed, each of which have different behavior when processing multiple files:
 
@@ -711,630 +1337,24 @@ The following analyzers are executed, each of which have different behavior when
 The `gemnasium` analyzer scans supports JavaScript projects for vendored libraries
 (that is, those checked into the project but not managed by the package manager).
 
-#### Go
+### Go
 
 Multiple files are supported. When a `go.mod` file is detected, the analyzer attempts to generate a [build list](https://go.dev/ref/mod#glos-build-list) using
 [Minimal Version Selection](https://go.dev/ref/mod#glos-minimal-version-selection). If this fails, the analyzer instead attempts to parse the dependencies within the `go.mod` file.
 
 As a requirement, the `go.mod` file should be cleaned up using the command `go mod tidy` to ensure proper management of dependencies. The process is repeated for every detected `go.mod` file.
 
-#### PHP, C, C++, .NET, C&#35;, Ruby, JavaScript
+### PHP, C, C++, .NET, C&#35;, Ruby, JavaScript
 
 The analyzer for these languages supports multiple lockfiles.
 
-#### Support for additional languages
+### Support for additional languages
 
 Support for additional languages, dependency managers, and dependency files are tracked in the following issues:
 
 | Package Managers    | Languages | Supported files | Scan tools | Issue |
 | ------------------- | --------- | --------------- | ---------- | ----- |
 | [Poetry](https://python-poetry.org/) | Python | `pyproject.toml` | [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) | [GitLab#32774](https://gitlab.com/gitlab-org/gitlab/-/issues/32774) |
-
-## Configuration
-
-Enable the dependency scanning analyzer to ensure it scans your application's dependencies for known
-vulnerabilities. You can then adjust its behavior by using CI/CD variables.
-
-### Enabling the analyzer
-
-Prerequisites:
-
-- The `test` stage is required in the `.gitlab-ci.yml` file.
-- With self-managed runners you need a GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-- If you're using SaaS runners on GitLab.com, this is enabled by default.
-
-To enable the analyzer, either:
-
-- Enable [Auto DevOps](../../../topics/autodevops/_index.md), which includes dependency scanning.
-- Use a preconfigured merge request.
-- Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
-  scanning.
-- Edit the `.gitlab-ci.yml` file manually.
-- [Use CI/CD components](#use-cicd-components)
-
-#### Use a preconfigured merge request
-
-This method automatically prepares a merge request that includes the Dependency Scanning template
-in the `.gitlab-ci.yml` file. You then merge the merge request to enable Dependency Scanning.
-
-{{< alert type="note" >}}
-
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
-If you have a complex GitLab configuration file it might not be parsed successfully, and an error
-might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
-
-{{< /alert >}}
-
-To enable Dependency Scanning:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
-1. In the **Dependency Scanning** row, select **Configure with a merge request**.
-1. Select **Create merge request**.
-1. Review the merge request, then select **Merge**.
-
-Pipelines now include a Dependency Scanning job.
-
-#### Edit the `.gitlab-ci.yml` file manually
-
-This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
-your GitLab CI/CD configuration file is complex.
-
-To enable Dependency Scanning:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipeline editor**.
-1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
-   content.
-1. Copy and paste the following to the bottom of the `.gitlab-ci.yml` file. If an `include` line
-   already exists, add only the `template` line below it.
-
-   ```yaml
-   include:
-     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-   ```
-
-1. Select the **Validate** tab, then select **Validate pipeline**.
-
-   The message **Simulation completed successfully** confirms the file is valid.
-1. Select the **Edit** tab.
-1. Complete the fields. Do not use the default branch for the **Branch** field.
-1. Select the **Start a new merge request with these changes** checkbox, then select **Commit
-   changes**.
-1. Complete the fields according to your standard workflow, then select **Create
-   merge request**.
-1. Review and edit the merge request according to your standard workflow, then select **Merge**.
-
-Pipelines now include a Dependency Scanning job.
-
-#### Use CI/CD components
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/development_stages_support.md).
-- The dependency scanning CI/CD component only supports Android projects.
-
-{{< /history >}}
-
-Use [CI/CD components](../../../ci/components/_index.md) to perform Dependency Scanning of your
-application. For instructions, see the respective component's README file.
-
-##### Available CI/CD components
-
-See <https://gitlab.com/explore/catalog/components/dependency-scanning>
-
-### Running jobs in merge request pipelines
-
-See [Use security scanning tools with merge request pipelines](../detect/security_configuration.md#use-security-scanning-tools-with-merge-request-pipelines)
-
-### Customizing analyzer behavior
-
-To customize Dependency Scanning, use [CI/CD variables](#available-cicd-variables).
-
-{{< alert type="warning" >}}
-
-Test all customization of GitLab analyzers in a merge request before merging these changes to the
-default branch. Failure to do so can give unexpected results, including a large number of false
-positives.
-
-{{< /alert >}}
-
-### Overriding dependency scanning jobs
-
-To override a job definition (for example, to change properties like `variables` or `dependencies`),
-declare a new job with the same name as the one to override. Place this new job after the template
-inclusion and specify any additional keys under it. For example, this disables `DS_REMEDIATE` for
-the `gemnasium` analyzer:
-
-```yaml
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-gemnasium-dependency_scanning:
-  variables:
-    DS_REMEDIATE: "false"
-```
-
-To override the `dependencies: []` attribute, add an override job as described previously, targeting this attribute:
-
-```yaml
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-gemnasium-dependency_scanning:
-  dependencies: ["build"]
-```
-
-### Available CI/CD variables
-
-You can use CI/CD variables to [customize](#customizing-analyzer-behavior) dependency scanning behavior.
-
-#### Global analyzer settings
-
-The following variables allow configuration of global dependency scanning settings.
-
-| CI/CD variables             | Description |
-| ----------------------------|------------ |
-| `ADDITIONAL_CA_CERT_BUNDLE` | Bundle of CA certificates to trust. The bundle of certificates provided here is also used by other tools during the scanning process, such as `git`, `yarn`, or `npm`. For more details, see [Custom TLS certificate authority](#custom-tls-certificate-authority). |
-| `DS_EXCLUDED_ANALYZERS`     | Specify the analyzers (by name) to exclude from Dependency Scanning. For more information, see [Analyzers](#analyzers). |
-| `DS_EXCLUDED_PATHS`         | Exclude files and directories from the scan based on the paths. A comma-separated list of patterns. Patterns can be globs (see [`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4@v4.0.2#Match) for supported patterns), or file or folder paths (for example, `doc,spec`). Parent directories also match patterns. This is a pre-filter which is applied before the scan is executed. Default: `"spec, test, tests, tmp"`. |
-| `DS_IMAGE_SUFFIX`           | Suffix added to the image name. (GitLab team members can view more information in this confidential issue: `https://gitlab.com/gitlab-org/gitlab/-/issues/354796`). Automatically set to `"-fips"` when FIPS mode is enabled. |
-| `DS_MAX_DEPTH`              | Defines how many directory levels deep that the analyzer should search for supported files to scan. A value of `-1` scans all directories regardless of depth. Default: `2`. |
-| `SECURE_ANALYZERS_PREFIX`   | Override the name of the Docker registry providing the official default images (proxy). |
-
-#### Analyzer-specific settings
-
-The following variables configure the behavior of specific dependency scanning analyzers.
-
-| CI/CD variable                       | Analyzer           | Default                      | Description |
-|--------------------------------------|--------------------|------------------------------|-------------|
-| `GEMNASIUM_DB_LOCAL_PATH`            | `gemnasium`        | `/gemnasium-db`              | Path to local Gemnasium database. |
-| `GEMNASIUM_DB_UPDATE_DISABLED`       | `gemnasium`        | `"false"`                    | Disable automatic updates for the `gemnasium-db` advisory database. For usage see [Access to the GitLab Advisory Database](#access-to-the-gitlab-advisory-database). |
-| `GEMNASIUM_DB_REMOTE_URL`            | `gemnasium`        | `https://gitlab.com/gitlab-org/security-products/gemnasium-db.git` | Repository URL for fetching the GitLab Advisory Database. |
-| `GEMNASIUM_DB_REF_NAME`              | `gemnasium`        | `master`                     | Branch name for remote repository database. `GEMNASIUM_DB_REMOTE_URL` is required. |
-| `GEMNASIUM_IGNORED_SCOPES`           | `gemnasium`        |                              | Comma-separated list of Maven dependency scopes to ignore. For more details, see the [Maven dependency scope documentation](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#Dependency_Scope) |
-| `DS_REMEDIATE`                       | `gemnasium`        | `"true"`, `"false"` in FIPS mode | Enable automatic remediation of vulnerable dependencies. Not supported in FIPS mode. |
-| `DS_REMEDIATE_TIMEOUT`               | `gemnasium`        | `5m`                         | Timeout for auto-remediation. |
-| `GEMNASIUM_LIBRARY_SCAN_ENABLED`     | `gemnasium`        | `"true"`                     | Enable detecting vulnerabilities in vendored JavaScript libraries (libraries which are not managed by a package manager). This functionality requires a JavaScript lockfile to be present in a commit, otherwise Dependency Scanning is not executed and vendored files are not scanned.<br>Dependency scanning uses the [Retire.js](https://github.com/RetireJS/retire.js) scanner to detect a limited set of vulnerabilities. For details of which vulnerabilities are detected, see the [Retire.js repository](https://github.com/RetireJS/retire.js/blob/master/repository/jsrepository.json). |
-| `DS_INCLUDE_DEV_DEPENDENCIES`        | `gemnasium`        | `"true"`                     | When set to `"false"`, development dependencies and their vulnerabilities are not reported. Only projects using Composer, Maven, npm, pnpm, Pipenv or Poetry are supported. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/227861) in GitLab 15.1. |
-| `GOOS`                               | `gemnasium`        | `"linux"`                    | The operating system for which to compile Go code. |
-| `GOARCH`                             | `gemnasium`        | `"amd64"`                    | The architecture of the processor for which to compile Go code. |
-| `GOFLAGS`                            | `gemnasium`        |                              | The flags passed to the `go build` tool. |
-| `GOPRIVATE`                          | `gemnasium`        |                              | A list of glob patterns and prefixes to be fetched from source. For more information, see the Go private modules [documentation](https://go.dev/ref/mod#private-modules). |
-| `DS_JAVA_VERSION`                    | `gemnasium-maven`  | `17`                         | Version of Java. Available versions: `8`, `11`, `17`, `21`. |
-| `MAVEN_CLI_OPTS`                     | `gemnasium-maven`  | `"-DskipTests --batch-mode"` | List of command line arguments that are passed to `maven` by the analyzer. See an example for [using private repositories](#authenticate-with-a-private-maven-repository). |
-| `GRADLE_CLI_OPTS`                    | `gemnasium-maven`  |                              | List of command line arguments that are passed to `gradle` by the analyzer. |
-| `GRADLE_PLUGIN_INIT_PATH`            | `gemnasium-maven`  | `"gemnasium-init.gradle"`    | Specifies the path to the Gradle initialization script. The init script must include `allprojects { apply plugin: 'project-report' }` to ensure compatibility. |
-| `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Controls Gradle dependency resolution strictness. Accepts `"none"` to allow partial results, or `"failed"` to fail the scan when any dependencies fail to resolve. |
-| `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | List of command-line arguments that the analyzer passes to `sbt`. |
-| `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | Base URL of Python Package Index. |
-| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | Array of [extra URLs](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url) of package indexes to use in addition to `PIP_INDEX_URL`. Comma-separated. **Warning**: Read [the following security consideration](#python-projects) when using this environment variable. |
-| `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | Pip requirements file to be scanned. This is a filename and not a path. When this environment variable is set only the specified file is scanned. |
-| `PIPENV_PYPI_MIRROR`                 | `gemnasium-python` |                              | If set, overrides the PyPi index used by Pipenv with a [mirror](https://github.com/pypa/pipenv/blob/v2022.1.8/pipenv/environments.py#L263). |
-| `DS_PIP_VERSION`                     | `gemnasium-python` |                              | Force the install of a specific pip version (example: `"19.3"`), otherwise the pip installed in the Docker image is used. |
-| `DS_PIP_DEPENDENCY_PATH`             | `gemnasium-python` |                              | Path to load Python pip dependencies from. |
-
-#### Other variables
-
-The previous tables are not an exhaustive list of all variables that can be used. They contain all specific GitLab and analyzer variables we support and test. There are many variables, such as environment variables, that you can pass in and they do work. This is a large list, many of which we may be unaware of, and as such is not documented.
-
-For example, to pass the non-GitLab environment variable `HTTPS_PROXY` to all Dependency Scanning jobs,
-set it as a [CI/CD variable in your `.gitlab-ci.yml`](../../../ci/variables/_index.md#define-a-cicd-variable-in-the-gitlab-ciyml-file)
-file like this:
-
-```yaml
-variables:
-  HTTPS_PROXY: "https://squid-proxy:3128"
-```
-
-{{< alert type="note" >}}
-
-Gradle projects require [an additional variable](#using-a-proxy-with-gradle-projects) setup to use a proxy.
-
-{{< /alert >}}
-
-Alternatively we may use it in specific jobs, like Dependency Scanning:
-
-```yaml
-dependency_scanning:
-  variables:
-    HTTPS_PROXY: $HTTPS_PROXY
-```
-
-As we have not tested all variables you may find some do work and others do not.
-If one does not work and you need it we suggest
-[submitting a feature request](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Feature%20proposal%20-%20detailed&issue[title]=Docs%20feedback%20-%20feature%20proposal:%20Write%20your%20title)
-or contributing to the code to enable it to be used.
-
-### Custom TLS certificate authority
-
-Dependency Scanning allows for use of custom TLS certificates for SSL/TLS connections instead of the
-default shipped with the analyzer container image.
-
-Support for custom certificate authorities was introduced in the following versions.
-
-| Analyzer           | Version                                                                                                |
-|--------------------|--------------------------------------------------------------------------------------------------------|
-| `gemnasium`        | [v2.8.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/releases/v2.8.0)        |
-| `gemnasium-maven`  | [v2.9.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-maven/-/releases/v2.9.0)  |
-| `gemnasium-python` | [v2.7.0](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium-python/-/releases/v2.7.0) |
-
-#### Using a custom TLS certificate authority
-
-To use a custom TLS certificate authority, assign the
-[text representation of the X.509 PEM public-key certificate](https://www.rfc-editor.org/rfc/rfc7468#section-5.1)
-to the CI/CD variable `ADDITIONAL_CA_CERT_BUNDLE`.
-
-For example, to configure the certificate in the `.gitlab-ci.yml` file:
-
-```yaml
-variables:
-  ADDITIONAL_CA_CERT_BUNDLE: |
-      -----BEGIN CERTIFICATE-----
-      MIIGqTCCBJGgAwIBAgIQI7AVxxVwg2kch4d56XNdDjANBgkqhkiG9w0BAQsFADCB
-      ...
-      jWgmPqF3vUbZE0EyScetPJquRFRKIesyJuBFMAs=
-      -----END CERTIFICATE-----
-```
-
-### Authenticate with a private Maven repository
-
-To use a private Maven repository that requires authentication, you should store your credentials in
-a CI/CD variable and reference them in your Maven settings file. Do not add the credentials to your
-`.gitlab-ci.yml` file.
-
-To authenticate with a private Maven repository:
-
-1. Add the `MAVEN_CLI_OPTS` CI/CD variable to your
-   [project's settings](../../../ci/variables/_index.md#for-a-project), setting the value to include
-   your credentials.
-
-   For example, if your username is `myuser` and the password is `verysecret`:
-
-   | Type     | Key              | Value |
-   |----------|------------------|-------|
-   | Variable | `MAVEN_CLI_OPTS` | `--settings mysettings.xml -Drepository.password=verysecret -Drepository.user=myuser` |
-
-1. Create a Maven settings file with your server configuration.
-
-   For example, add the following to the settings file `mysettings.xml`. This file is referenced in
-   the `MAVEN_CLI_OPTS` CI/CD variable.
-
-   ```xml
-   <!-- mysettings.xml -->
-   <settings>
-       ...
-       <servers>
-           <server>
-               <id>private_server</id>
-               <username>${repository.user}</username>
-               <password>${repository.password}</password>
-           </server>
-       </servers>
-   </settings>
-   ```
-
-### FIPS-enabled images
-
-{{< history >}}
-
-- Introduced in GitLab 15.0 - Gemnasium uses FIPS-enabled images when FIPS mode is enabled.
-
-{{< /history >}}
-
-GitLab also offers [FIPS-enabled Red Hat UBI](https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image)
-versions of the Gemnasium images. When FIPS mode is enabled in the GitLab instance, Gemnasium
-scanning jobs automatically use the FIPS-enabled images. To manually switch to FIPS-enabled images,
-set the variable `DS_IMAGE_SUFFIX` to `"-fips"`.
-
-Dependency scanning for Gradle projects and auto-remediation for Yarn projects are not supported in FIPS mode.
-
-FIPS-enabled images are based on RedHat's UBI micro.
-They don't have package managers such as `dnf` or `microdnf`
-so it's not possible to install system packages at runtime.
-
-## Output
-
-Dependency Scanning produces the following output:
-
-- **Dependency scanning report**: Contains details of all vulnerabilities detected in dependencies.
-- **CycloneDX Software Bill of Materials**: Software Bill of Materials (SBOM) for each supported
-  lock or build file detected.
-
-### Dependency scanning report
-
-Dependency scanning outputs a report containing details of all vulnerabilities. The report is
-processed internally and the results are shown in the UI. The report is also output as an artifact
-of the dependency scanning job, named `gl-dependency-scanning-report.json`.
-
-For more details of the dependency scanning report, see the
-[Dependency scanning report schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/dependency-scanning-report-format.json).
-
-### CycloneDX Software Bill of Materials
-
-{{< history >}}
-
-- Generally available in GitLab 15.7.
-
-{{< /history >}}
-
-Dependency Scanning outputs a [CycloneDX](https://cyclonedx.org/) Software Bill of Materials (SBOM)
-for each supported lock or build file it detects.
-
-The CycloneDX SBOMs are:
-
-- Named `gl-sbom-<package-type>-<package-manager>.cdx.json`.
-- Available as job artifacts of the dependency scanning job.
-- Saved in the same directory as the detected lock or build files.
-
-For example, if your project has the following structure:
-
-```plaintext
-.
-├── ruby-project/
-│   └── Gemfile.lock
-├── ruby-project-2/
-│   └── Gemfile.lock
-├── php-project/
-│   └── composer.lock
-└── go-project/
-    └── go.sum
-```
-
-Then the Gemnasium scanner generates the following CycloneDX SBOMs:
-
-```plaintext
-.
-├── ruby-project/
-│   ├── Gemfile.lock
-│   └── gl-sbom-gem-bundler.cdx.json
-├── ruby-project-2/
-│   ├── Gemfile.lock
-│   └── gl-sbom-gem-bundler.cdx.json
-├── php-project/
-│   ├── composer.lock
-│   └── gl-sbom-packagist-composer.cdx.json
-└── go-project/
-    ├── go.sum
-    └── gl-sbom-go-go.cdx.json
-```
-
-#### Merging multiple CycloneDX SBOMs
-
-You can use a CI/CD job to merge the multiple CycloneDX SBOMs into a single SBOM. GitLab uses
-[CycloneDX Properties](https://cyclonedx.org/use-cases/#properties--name-value-store) to store
-implementation-specific details in the metadata of each CycloneDX SBOM, such as the location of
-build and lock files. If multiple CycloneDX SBOMs are merged together, this information is removed
-from the resulting merged file.
-
-For example, the following `.gitlab-ci.yml` extract demonstrates how the Cyclone SBOM files can be
-merged, and the resulting file validated.
-
-```yaml
-stages:
-  - test
-  - merge-cyclonedx-sboms
-
-include:
-  - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-merge cyclonedx sboms:
-  stage: merge-cyclonedx-sboms
-  image:
-    name: cyclonedx/cyclonedx-cli:0.25.1
-    entrypoint: [""]
-  script:
-    - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
-    # optional: validate the merged sbom
-    - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
-  artifacts:
-    paths:
-      - gl-sbom-all.cdx.json
-```
-
-## Contributing to the vulnerability database
-
-To find a vulnerability, you can search the [`GitLab Advisory Database`](https://advisories.gitlab.com/).
-You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).
-
-## Offline environment
-
-{{< details >}}
-
-- Tier: Ultimate
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-For instances in an environment with limited, restricted, or intermittent access
-to external resources through the internet, some adjustments are required for dependency scanning
-jobs to run successfully. For more information, see [Offline environments](../offline_deployments/_index.md).
-
-### Requirements
-
-To run dependency scanning in an offline environment you must have:
-
-- A GitLab Runner with the `docker` or `kubernetes` executor
-- Local copies of the dependency scanning analyzer images
-- Access to the [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db)
-- Access to the [Package Metadata Database](../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database)
-
-### Local copies of analyzer images
-
-To use dependency scanning with all [supported languages and frameworks](#supported-languages-and-package-managers):
-
-1. Import the following default dependency scanning analyzer images from `registry.gitlab.com` into
-   your [local Docker container registry](../../packages/container_registry/_index.md):
-
-   ```plaintext
-   registry.gitlab.com/security-products/gemnasium:6
-   registry.gitlab.com/security-products/gemnasium:6-fips
-   registry.gitlab.com/security-products/gemnasium-maven:6
-   registry.gitlab.com/security-products/gemnasium-maven:6-fips
-   registry.gitlab.com/security-products/gemnasium-python:6
-   registry.gitlab.com/security-products/gemnasium-python:6-fips
-   ```
-
-   The process for importing Docker images into a local offline Docker registry depends on
-   **your network security policy**. Consult your IT staff to find an accepted and approved
-   process by which external resources can be imported or temporarily accessed.
-   These scanners are [periodically updated](../detect/vulnerability_scanner_maintenance.md)
-   with new definitions, and you may want to download them regularly.
-
-1. Configure GitLab CI/CD to use the local analyzers.
-
-   Set the value of the CI/CD variable `SECURE_ANALYZERS_PREFIX` to your local Docker registry - in
-   this example, `docker-registry.example.com`.
-
-   ```yaml
-   include:
-     - template: Jobs/Dependency-Scanning.gitlab-ci.yml
-
-   variables:
-     SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
-   ```
-
-### Access to the GitLab Advisory Database
-
-The [GitLab Advisory Database](https://gitlab.com/gitlab-org/security-products/gemnasium-db) is the
-source of vulnerability data used by the `gemnasium`, `gemnasium-maven`, and `gemnasium-python`
-analyzers. The Docker images of these analyzers include a clone of the database.
-The clone is synchronized with the database before starting a scan,
-to ensure the analyzers have the latest vulnerability data.
-
-In an offline environment, the default host of the GitLab Advisory Database can't be accessed.
-Instead, you must host the database somewhere that it is accessible to the GitLab runners. You must
-also update the database manually at your own schedule.
-
-Available options for hosting the database are:
-
-- [Use a clone of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
-- [Use a copy of the GitLab Advisory Database](#use-a-copy-of-the-gitlab-advisory-database).
-
-#### Use a clone of the GitLab Advisory Database
-
-Using a clone of the GitLab Advisory Database is recommended because it is the most efficient
-method.
-
-To host a clone of the GitLab Advisory Database:
-
-1. Clone the GitLab Advisory Database to a host that is accessible by HTTP from the GitLab runners.
-1. In your `.gitlab-ci.yml` file, set the value of the CI/CD variable `GEMNASIUM_DB_REMOTE_URL` to
-   the URL of the Git repository.
-
-For example:
-
-```yaml
-variables:
-  GEMNASIUM_DB_REMOTE_URL: https://users-own-copy.example.com/gemnasium-db.git
-```
-
-#### Use a copy of the GitLab Advisory Database
-
-Using a copy of the GitLab Advisory Database requires you to host an archive file which is
-downloaded by the analyzers.
-
-To use a copy of the GitLab Advisory Database:
-
-1. Download an archive of the GitLab Advisory Database to a host that is accessible by HTTP from the
-   GitLab runners. The archive is located at
-   `https://gitlab.com/gitlab-org/security-products/gemnasium-db/-/archive/master/gemnasium-db-master.tar.gz`.
-1. Update your `.gitlab-ci.yml` file.
-
-   - Set CI/CD variable `GEMNASIUM_DB_LOCAL_PATH` to use the local copy of the database.
-   - Set CI/CD variable `GEMNASIUM_DB_UPDATE_DISABLED` to disable the database update.
-   - Download and extract the advisory database before the scan begins.
-
-   ```yaml
-   variables:
-     GEMNASIUM_DB_LOCAL_PATH: ./gemnasium-db-local
-     GEMNASIUM_DB_UPDATE_DISABLED: "true"
-
-   dependency_scanning:
-     before_script:
-       - wget https://local.example.com/gemnasium_db.tar.gz
-       - mkdir -p $GEMNASIUM_DB_LOCAL_PATH
-       - tar -xzvf gemnasium_db.tar.gz --strip-components=1 -C $GEMNASIUM_DB_LOCAL_PATH
-   ```
-
-## Using a proxy with Gradle projects
-
-The Gradle wrapper script does not read the `HTTP(S)_PROXY` environment variables. See [this upstream issue](https://github.com/gradle/gradle/issues/11065).
-
-To make the Gradle wrapper script use a proxy, you can specify the options using the `GRADLE_CLI_OPTS` CI/CD variable:
-
-```yaml
-variables:
-  GRADLE_CLI_OPTS: "-Dhttps.proxyHost=squid-proxy -Dhttps.proxyPort=3128 -Dhttp.proxyHost=squid-proxy -Dhttp.proxyPort=3128 -Dhttp.nonProxyHosts=localhost"
-```
-
-## Using a proxy with Maven projects
-
-Maven does not read the `HTTP(S)_PROXY` environment variables.
-
-To make the Maven dependency scanner use a proxy, you can configure it using a `settings.xml` file (see [Maven documentation](https://maven.apache.org/guides/mini/guide-proxies.html)) and instruct Maven to use this configuration by using the `MAVEN_CLI_OPTS` CI/CD variable:
-
-```yaml
-variables:
-  MAVEN_CLI_OPTS: "--settings mysettings.xml"
-```
-
-## Specific settings for languages and package managers
-
-See the following sections for configuring specific languages and package managers.
-
-### Python (pip)
-
-If you need to install Python packages before the analyzer runs, you should use `pip install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
-
-### Python (setuptools)
-
-If you need to install Python packages before the analyzer runs, you should use `python setup.py install --user` in the `before_script` of the scanning job. The `--user` flag causes project dependencies to be installed in the user directory. If you do not pass the `--user` option, packages are installed globally, and they are not scanned and don't show up when listing project dependencies.
-
-When using self-signed certificates for your private PyPi repository, no extra job configuration (aside
-from the previous `.gitlab-ci.yml` template) is needed. However, you must update your `setup.py` to
-ensure that it can reach your private repository. Here is an example configuration:
-
-1. Update `setup.py` to create a `dependency_links` attribute pointing at your private repository for each
-   dependency in the `install_requires` list:
-
-   ```python
-   install_requires=['pyparsing>=2.0.3'],
-   dependency_links=['https://pypi.example.com/simple/pyparsing'],
-   ```
-
-1. Fetch the certificate from your repository URL and add it to the project:
-
-   ```shell
-   printf "\n" | openssl s_client -connect pypi.example.com:443 -servername pypi.example.com | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > internal.crt
-   ```
-
-1. Point `setup.py` at the newly downloaded certificate:
-
-   ```python
-   import setuptools.ssl_support
-   setuptools.ssl_support.cert_paths = ['internal.crt']
-   ```
-
-### Python (Pipenv)
-
-If running in a limited network connectivity environment, you must configure the `PIPENV_PYPI_MIRROR`
-variable to use a private PyPi mirror. This mirror must contain both default and development dependencies.
-
-```yaml
-variables:
-  PIPENV_PYPI_MIRROR: https://pypi.example.com/simple
-```
-
-<!-- markdownlint-disable MD044 -->
-Alternatively, if it's not possible to use a private registry, you can load the required packages
-into the Pipenv virtual environment cache. For this option, the project must check in the
-`Pipfile.lock` into the repository, and load both default and development packages into the cache.
-See the example [python-pipenv](https://gitlab.com/gitlab-org/security-products/tests/python-pipenv/-/blob/41cc017bd1ed302f6edebcfa3bc2922f428e07b6/.gitlab-ci.yml#L20-42)
-project for an example of how this can be done.
-<!-- markdownlint-enable MD044 -->
 
 ## Warnings
 
@@ -1596,3 +1616,8 @@ Follow these best practices when you build projects that use CocoaPods for depen
 1. After you update your Podfile, run `pod install` to install dependencies and update your workspace.
 
 Remember to always run `pod install` after updating your Podfile to ensure all dependencies are properly installed and the workspace is updated.
+
+## Contributing to the vulnerability database
+
+To find a vulnerability, you can search the [`GitLab Advisory Database`](https://advisories.gitlab.com/).
+You can also [submit new vulnerabilities](https://gitlab.com/gitlab-org/security-products/gemnasium-db/blob/master/CONTRIBUTING.md).

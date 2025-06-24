@@ -26,25 +26,26 @@ describe('content_editor/extensions/task_item', () => {
     tiptapEditor.commands.setContent(initialDoc.toJSON());
 
     expect(tiptapEditor.view.dom.querySelector('li')).toMatchInlineSnapshot(`
-      <li
-        data-checked="false"
-        dir="auto"
-      >
-        <label>
-          <input
-            type="checkbox"
-          />
-          <span />
-        </label>
-        <div>
-          <p
-            dir="auto"
-          >
-            foo
-          </p>
-        </div>
-      </li>
-    `);
+<li
+  data-checked="false"
+  dir="auto"
+>
+  <label>
+    <input
+      aria-label="Check option: foo"
+      type="checkbox"
+    />
+    <span />
+  </label>
+  <div>
+    <p
+      dir="auto"
+    >
+      foo
+    </p>
+  </div>
+</li>
+`);
   });
 
   it('renders task item as disabled if it is inapplicable', () => {
@@ -53,27 +54,28 @@ describe('content_editor/extensions/task_item', () => {
     tiptapEditor.commands.setContent(initialDoc.toJSON());
 
     expect(tiptapEditor.view.dom.querySelector('li')).toMatchInlineSnapshot(`
-      <li
-        data-checked="false"
-        data-inapplicable="true"
-        dir="auto"
-      >
-        <label>
-          <input
-            disabled=""
-            type="checkbox"
-          />
-          <span />
-        </label>
-        <div>
-          <p
-            dir="auto"
-          >
-            foo
-          </p>
-        </div>
-      </li>
-    `);
+<li
+  data-checked="false"
+  data-inapplicable="true"
+  dir="auto"
+>
+  <label>
+    <input
+      aria-label="Check option: foo"
+      disabled=""
+      type="checkbox"
+    />
+    <span />
+  </label>
+  <div>
+    <p
+      dir="auto"
+    >
+      foo
+    </p>
+  </div>
+</li>
+`);
   });
 
   it('ignores any <s> tags in the task item', () => {
@@ -87,26 +89,27 @@ describe('content_editor/extensions/task_item', () => {
     `);
 
     expect(tiptapEditor.view.dom.querySelector('li')).toMatchInlineSnapshot(`
-      <li
-        data-checked="false"
-        data-inapplicable="true"
-        dir="auto"
-      >
-        <label>
-          <input
-            disabled=""
-            type="checkbox"
-          />
-          <span />
-        </label>
-        <div>
-          <p
-            dir="auto"
-          >
-            foo
-          </p>
-        </div>
-      </li>
-    `);
+<li
+  data-checked="false"
+  data-inapplicable="true"
+  dir="auto"
+>
+  <label>
+    <input
+      aria-label="Check option: foo"
+      disabled=""
+      type="checkbox"
+    />
+    <span />
+  </label>
+  <div>
+    <p
+      dir="auto"
+    >
+      foo
+    </p>
+  </div>
+</li>
+`);
   });
 });

@@ -159,7 +159,6 @@ export default {
     {
       key: 'progress',
       label: __('Status'),
-      tdClass: '!gl-align-middle',
       tdAttr: { 'data-testid': 'import-status-indicator' },
     },
     {
@@ -916,7 +915,7 @@ export default {
             />
           </template>
           <template #cell(progress)="{ item: group }">
-            <div class="gl-mt-3">
+            <div class="gl-mt-2 gl-pt-1">
               <import-status-cell
                 class="gl-items-end lg:gl-items-start"
                 :status="group.visibleStatus"
