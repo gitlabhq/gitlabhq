@@ -4,25 +4,9 @@ click_house_database_names = %i[main]
 
 namespace :gitlab do
   namespace :clickhouse do
-    namespace :schema do
-      desc 'GitLab | ClickHouse | Load the databases from schema dump'
-      task :load, [:skip_unless_configured] => :environment do |_t, args|
-        click_house_database_names.each do |database|
-          puts "Running gitlab:clickhouse:load:#{database} rake task"
-          Rake::Task["gitlab:clickhouse:schema:load:#{database}"].invoke(args[:skip_unless_configured])
-        end
-      end
-
-      desc 'GitLab | ClickHouse | Dump the databases schema'
-      task :dump, [:skip_unless_configured] => :environment do |_t, args|
-        click_house_database_names.each do |database|
-          puts "Running gitlab:clickhouse:schema:dump:#{database} rake task"
-          Rake::Task["gitlab:clickhouse:schema:dump:#{database}"].invoke(args[:skip_unless_configured])
-        end
-      end
-
-      namespace :dump do
-        click_house_database_names.each do |database|
+    click_house_database_names.each do |database|
+      namespace :schema do
+        namespace :dump do
           desc "GitLab | ClickHouse | Dump the #{database} ClickHouse database schema"
           task database, [:skip_unless_configured] => :environment do |_t, args|
             if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
@@ -33,10 +17,8 @@ namespace :gitlab do
             dump(database)
           end
         end
-      end
 
-      namespace :load do
-        click_house_database_names.each do |database|
+        namespace :load do
           desc "GitLab | ClickHouse | Load the #{database} database from schema dump"
           task database, [:skip_unless_configured] => :environment do |_t, args|
             if args[:skip_unless_configured] && !::ClickHouse::Client.database_configured?(database)
@@ -46,6 +28,24 @@ namespace :gitlab do
 
             load_schema(database)
           end
+        end
+      end
+    end
+
+    namespace :schema do
+      desc 'GitLab | ClickHouse | Load the databases from schema dump'
+      task :load, [:skip_unless_configured] => :environment do |_t, args|
+        click_house_database_names.each do |database|
+          puts "Running gitlab:clickhouse:schema:load:#{database} rake task"
+          Rake::Task["gitlab:clickhouse:schema:load:#{database}"].invoke(args[:skip_unless_configured])
+        end
+      end
+
+      desc 'GitLab | ClickHouse | Dump the databases schema'
+      task :dump, [:skip_unless_configured] => :environment do |_t, args|
+        click_house_database_names.each do |database|
+          puts "Running gitlab:clickhouse:schema:dump:#{database} rake task"
+          Rake::Task["gitlab:clickhouse:schema:dump:#{database}"].invoke(args[:skip_unless_configured])
         end
       end
     end

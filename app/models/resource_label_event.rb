@@ -5,9 +5,6 @@ class ResourceLabelEvent < ResourceEvent
   include Import::HasImportSource
   include FromUnion
 
-  ignore_column :reference_html, remove_with: '18.2', remove_after: '2025-06-19'
-  ignore_column :cached_markdown_version, remove_with: '18.2', remove_after: '2025-06-19'
-
   belongs_to :label
 
   scope :inc_relations, -> { includes(:label, :user) }
