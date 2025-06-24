@@ -1,10 +1,12 @@
 <script>
 import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
-import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import { findNotesWidget } from '../utils';
 import WorkItemStateBadge from './work_item_state_badge.vue';
@@ -12,6 +14,8 @@ import WorkItemTypeIcon from './work_item_type_icon.vue';
 
 export default {
   components: {
+    HiddenBadge,
+    ImportedBadge,
     LockedBadge,
     GlAvatarLink,
     GlSprintf,
@@ -31,6 +35,11 @@ export default {
       required: false,
       default: null,
     },
+  },
+  data() {
+    return {
+      workItem: {},
+    };
   },
   computed: {
     createdAt() {
@@ -68,7 +77,6 @@ export default {
     },
   },
   apollo: {
-    // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
     workItem: {
       query: workItemByIidQuery,
       variables() {
@@ -109,6 +117,8 @@ export default {
       hide-text-in-small-screens
     />
     <locked-badge v-if="isDiscussionLocked" class="gl-align-middle" :issuable-type="workItemType" />
+    <hidden-badge v-if="workItem.hidden" class="gl-align-middle" />
+    <imported-badge v-if="workItem.imported" class="gl-align-middle" />
     <work-item-type-icon
       v-if="workItemType"
       class="gl-align-middle"

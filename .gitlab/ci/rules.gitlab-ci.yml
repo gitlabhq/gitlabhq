@@ -2072,6 +2072,12 @@
     - <<: *if-merge-request-labels-run-all-rspec
     - <<: *if-default-branch-schedule-weekly
 
+.rails:rules:setup-test-env-ee:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:setup-test-env", rules]
+
 .rails:rules:setup-test-env-fips:
   rules:
     - <<: *if-default-branch-schedule-weekly

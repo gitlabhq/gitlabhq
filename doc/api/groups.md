@@ -1659,8 +1659,16 @@ Parameters:
 - `unique_project_download_limit`, `unique_project_download_limit_interval_in_seconds`, and `unique_project_download_limit_allowlist` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92970) in GitLab 15.3 [with a flag](../administration/feature_flags/_index.md) named `limit_unique_project_downloads_per_namespace_user`. Disabled by default.
 - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/365724) in GitLab 15.6.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183101) in GitLab 18.0. Feature flag `limit_unique_project_downloads_per_namespace_user` removed.
-
+- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193928) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the  `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Updates the project group. Only available to group owners and administrators.
 
@@ -1713,6 +1721,7 @@ PUT /groups/:id
 | `duo_features_enabled`                               | boolean           | no       | Indicates whether GitLab Duo features are enabled for this group. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
 | `lock_duo_features_enabled`                          | boolean           | no       | Indicates whether the GitLab Duo features enabled setting is enforced for all subgroups. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144931) in GitLab 16.10. GitLab Self-Managed, Premium and Ultimate only. |
 | `max_artifacts_size`                                 | integer           | No       | The maximum file size in megabytes for individual job artifacts. |
+| `web_based_commit_signing_enabled`                  | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only for top-level groups on GitLab SaaS. When enabled for a group, applies to all projects in the group. |
 
 {{< alert type="note" >}}
 

@@ -924,6 +924,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       end
     end
 
+    describe 'import_sources' do
+      let(:valid_import_sources) { Gitlab::ImportSources.values }
+
+      it { is_expected.to allow_value(valid_import_sources).for(:import_sources) }
+    end
+
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         expect do

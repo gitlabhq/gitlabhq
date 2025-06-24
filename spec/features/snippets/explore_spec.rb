@@ -7,7 +7,7 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
   let!(:internal_snippet) { create(:personal_snippet, :internal) }
   let!(:private_snippet) { create(:personal_snippet, :private) }
 
-  context 'User' do
+  context 'when user is authenticated' do
     let(:user) { create(:user) }
 
     before do
@@ -27,7 +27,7 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
     end
   end
 
-  context 'External user' do
+  context 'when external user is authenticated' do
     let(:user) { create(:user, :external) }
 
     before do
@@ -58,7 +58,7 @@ RSpec.describe 'Explore Snippets', feature_category: :source_code_management do
     end
   end
 
-  context 'Not authenticated user' do
+  context 'when user is not authenticated' do
     before do
       visit explore_snippets_path
     end

@@ -73,12 +73,14 @@ function createPopover(el, user) {
     populateUserInfo(user);
   }
   const UserPopoverComponent = Vue.extend(UserPopover);
+
   return new UserPopoverComponent({
     propsData: {
       target: el,
       user,
       show: true,
       placement: el.dataset.placement || 'top',
+      container: el.parentNode?.id || null,
     },
   });
 }
@@ -97,6 +99,13 @@ function launchPopover(el, mountPopover) {
   el.user = emptyUser;
   el.addEventListener(
     'mouseleave',
+    ({ target }) => {
+      target.removeAttribute('aria-describedby');
+    },
+    { once: true },
+  );
+  el.addEventListener(
+    'focusout',
     ({ target }) => {
       target.removeAttribute('aria-describedby');
     },
@@ -138,6 +147,7 @@ export default function addPopovers(mountPopover = (instance) => instance.$mount
   // https://gitlab.com/gitlab-org/gitlab/-/issues/351395#note_1039341458
   if (window.gon?.current_user_id && !hasAddedLazyPopovers) {
     document.addEventListener('mouseover', (event) => lazyLaunchPopover(mountPopover, event));
+    document.addEventListener('focusin', (event) => lazyLaunchPopover(mountPopover, event));
     hasAddedLazyPopovers = true;
   }
 }

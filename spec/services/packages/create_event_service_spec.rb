@@ -57,8 +57,14 @@ RSpec.describe Packages::CreateEventService, feature_category: :package_registry
 
       context 'with a deploy token' do
         let_it_be(:user) { create(:deploy_token) }
+        let(:hashed_deploy_token_id) { 'hashed-deploy-token-id-sha256' }
+        let(:event_attrs) { super().merge(additional_properties: { deploy_token_id: hashed_deploy_token_id }) }
 
         let(:property) { 'deploy_token' }
+
+        before do
+          allow(Gitlab::CryptoHelper).to receive(:sha256).and_return(hashed_deploy_token_id)
+        end
 
         it 'updates the correct metrics' do
           expect { service }.to trigger_internal_events('pull_package_from_registry').with(event_attrs)

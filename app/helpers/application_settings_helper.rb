@@ -148,14 +148,18 @@ module ApplicationSettingsHelper
   end
 
   def import_sources_checkboxes(form)
-    Gitlab::ImportSources.options.map do |name, source|
-      checked = @application_setting.import_sources.include?(source)
+    import_sources_without_templates = Gitlab::ImportSources.import_table.reject do |importer|
+      Gitlab::ImportSources.template?(importer.name)
+    end
+
+    import_sources_without_templates.map do |source|
+      checked = @application_setting.import_sources.include?(source.name)
 
       form.gitlab_ui_checkbox_component(
         :import_sources,
-        name,
+        source.title,
         checkbox_options: { checked: checked, multiple: true, autocomplete: 'off' },
-        checked_value: source,
+        checked_value: source.name,
         unchecked_value: nil
       )
     end

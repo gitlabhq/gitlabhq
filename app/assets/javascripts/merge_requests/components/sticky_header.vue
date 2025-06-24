@@ -178,7 +178,7 @@ export default {
       >
         <div class="gl-flex gl-w-full gl-items-center gl-gap-2">
           <status-badge :issuable-type="$options.TYPE_MERGE_REQUEST" :state="badgeState.state" />
-          <imported-badge v-if="isImported" :importable-type="$options.TYPE_MERGE_REQUEST" />
+          <imported-badge v-if="isImported" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"
             href="#top"

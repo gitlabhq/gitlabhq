@@ -78,7 +78,7 @@ describe('Merge requests sticky header component', () => {
         props: { isImported: true },
       });
 
-      expect(findImportedBadge().props('importableType')).toBe('merge_request');
+      expect(findImportedBadge().exists()).toBe(true);
     });
 
     it('does not render when merge request is not imported', () => {

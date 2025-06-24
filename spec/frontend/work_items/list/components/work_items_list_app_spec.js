@@ -161,6 +161,9 @@ describeSkipVue3(skipReason, () => {
         rootPageFullPath: 'full/path',
         ...props,
       },
+      stubs: {
+        WorkItemBulkEditSidebar: true,
+      },
     });
   };
 

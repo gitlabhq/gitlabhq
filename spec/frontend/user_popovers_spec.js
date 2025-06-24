@@ -83,12 +83,13 @@ describe('User Popovers', () => {
       resetHTMLFixture();
     });
 
-    describe('shows a placeholder popover on hover', () => {
+    describe.each(['mouseover', 'focusin'])('shows a placeholder popover on %s', (eventType) => {
       let linksWithUsers;
+
       beforeEach(() => {
         linksWithUsers = findFixtureLinks();
         linksWithUsers.forEach((el) => {
-          triggerEvent('mouseover', el);
+          triggerEvent(eventType, el);
         });
       });
 
@@ -105,7 +106,7 @@ describe('User Popovers', () => {
         jest.runOnlyPendingTimers();
 
         addedLinks.forEach((link) => {
-          triggerEvent('mouseover', link);
+          triggerEvent(eventType, link);
         });
 
         expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
@@ -121,7 +122,7 @@ describe('User Popovers', () => {
 
         expect(findPopovers().length).toBe(linksWithUsers.length);
 
-        triggerEvent('mouseover', div);
+        triggerEvent(eventType, div);
 
         expect(findPopovers().length).toBe(linksWithUsers.length + 1);
       });
@@ -149,48 +150,55 @@ describe('User Popovers', () => {
 
     it('does not initialize the user popovers twice for the same element', () => {
       const [firstUserLink] = findFixtureLinks();
-      triggerEvent('mouseover', firstUserLink);
-      jest.runOnlyPendingTimers();
-      triggerEvent('mouseleave', firstUserLink);
-      jest.runOnlyPendingTimers();
-      triggerEvent('mouseover', firstUserLink);
-      jest.runOnlyPendingTimers();
+
+      const events = ['mouseover', 'mouseleave', 'mouseover', 'focusin', 'focusout'];
+
+      events.forEach((event) => {
+        triggerEvent(event, firstUserLink);
+        jest.runOnlyPendingTimers();
+      });
 
       expect(findPopovers().length).toBe(1);
     });
 
-    describe('when user link emits mouseenter event with empty user cache', () => {
+    describe.each(['focusin', 'mouseover'])(
+      'when user link emits %s event with empty user cache',
+      (eventType) => {
+        let userLink;
+
+        beforeEach(() => {
+          UsersCache.retrieveById.mockReset();
+
+          [userLink] = findFixtureLinks();
+
+          triggerEvent(eventType, userLink);
+        });
+
+        it('populates popover with preloaded user data', () => {
+          const { name, userId, username, email } = userLink.dataset;
+
+          expect(userLink.user).toEqual(
+            expect.objectContaining({
+              name,
+              userId,
+              username,
+              email,
+            }),
+          );
+        });
+      },
+    );
+
+    describe.each([
+      { eventType: 'mouseover', leaveEvent: 'mouseleave' },
+      { eventType: 'focusin', leaveEvent: 'focusout' },
+    ])('when user link emits $eventType event', ({ eventType, leaveEvent }) => {
       let userLink;
 
       beforeEach(() => {
-        UsersCache.retrieveById.mockReset();
-
         [userLink] = findFixtureLinks();
 
-        triggerEvent('mouseover', userLink);
-      });
-
-      it('populates popover with preloaded user data', () => {
-        const { name, userId, username, email } = userLink.dataset;
-
-        expect(userLink.user).toEqual(
-          expect.objectContaining({
-            name,
-            userId,
-            username,
-            email,
-          }),
-        );
-      });
-    });
-
-    describe('when user link emits mouseenter event', () => {
-      let userLink;
-
-      beforeEach(() => {
-        [userLink] = findFixtureLinks();
-
-        triggerEvent('mouseover', userLink);
+        triggerEvent(eventType, userLink);
       });
 
       it('removes title attribute from user links', () => {
@@ -205,9 +213,9 @@ describe('User Popovers', () => {
         expect(UsersCache.retrieveStatusById).toHaveBeenCalledWith(userId);
       });
 
-      it('removes aria-describedby attribute from the user link on mouseleave', () => {
+      it(`removes aria-describedby attribute from the user link on ${leaveEvent}`, () => {
         userLink.setAttribute('aria-describedby', 'popover');
-        triggerEvent('mouseleave', userLink);
+        triggerEvent(leaveEvent, userLink);
 
         expect(userLink.getAttribute('aria-describedby')).toBe(null);
       });

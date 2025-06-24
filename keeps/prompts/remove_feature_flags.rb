@@ -282,6 +282,7 @@ module Keeps
           - NEVER change the syntax of remaining feature flags from `this.glFeatures.otherFlag` to anything else
           - NEVER replace `this.glFeatures.` with `$options.features.` or any other syntax
           - NEVER modify feature flags other than `#{camel_case_flag}`
+          - NEVER add optional chaining to feature flag mixin `this.glFeatures?.flagName` or `glFeatures?.flagName`.
           - If in doubt, keep the mixin - it's safer to leave it than to break other feature flags
 
           If there are no changes needed to the file, return it unchanged.

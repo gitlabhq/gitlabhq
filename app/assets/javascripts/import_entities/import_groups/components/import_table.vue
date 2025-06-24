@@ -153,7 +153,7 @@ export default {
     },
     {
       key: 'importTarget',
-      label: s__('BulkImport|New group'),
+      label: s__('BulkImport|Path of the new group'),
       thClass: `gl-w-1/2`,
     },
     {
@@ -886,14 +886,7 @@ export default {
             />
           </template>
           <template #head(importTarget)="data">
-            <span data-testid="new-path-col">
-              <span class="gl-mr-2">{{ data.label }}</span
-              ><gl-icon
-                v-gl-tooltip="s__('BulkImport|Path of the new group')"
-                name="information"
-                :size="12"
-              />
-            </span>
+            {{ data.label }}
           </template>
           <template #cell(selected)="{ rowSelected, selectRow, unselectRow, item: group }">
             <gl-form-checkbox

@@ -1112,7 +1112,6 @@ RSpec/ContextWording:
     - 'spec/features/reportable_note/merge_request_spec.rb'
     - 'spec/features/search/user_searches_for_code_spec.rb'
     - 'spec/features/signed_commits_spec.rb'
-    - 'spec/features/snippets/explore_spec.rb'
     - 'spec/features/tags/developer_creates_tag_spec.rb'
     - 'spec/features/tags/developer_deletes_tag_spec.rb'
     - 'spec/features/tags/maintainer_deletes_protected_tag_spec.rb'

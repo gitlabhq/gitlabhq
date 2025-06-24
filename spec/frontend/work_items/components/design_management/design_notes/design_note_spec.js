@@ -197,7 +197,7 @@ describe('Design note component', () => {
         },
       });
 
-      expect(findImportedBadge().props('importableType')).toBe('comment');
+      expect(findImportedBadge().exists()).toBe(true);
     });
   });
 

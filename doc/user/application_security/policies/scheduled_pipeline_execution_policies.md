@@ -92,6 +92,7 @@ The `schedules` section supports the following options:
 | `time_window.value` | Duration in seconds (minimum: 600, maximum: 2629746) |
 | `time_window.distribution` | Distribution method (currently, only `random` is supported) |
 | `timezone` | IANA timezone identifier (defaults to UTC if not specified) |
+| `branches` | Optional array with names of the branches to schedule pipelines on. If `branches` is specified, pipelines run only on the specified branches and only if they exist in the project. If not specified, pipelines run only on the default branch. You can provide a maximum of five unique branch names per schedule. |
 | `days` | Use with weekly schedules only: Array of days when the schedule runs (for example, `["Monday", "Friday"]`) |
 | `days_of_month` | Use with monthly schedules only: Array of dates when the schedule runs (for example, `[1, 15]`, can include values from 1 to 31) |
 | `snooze` | Optional configuration to temporarily pause the schedule |
@@ -112,6 +113,10 @@ schedules:
       value: 3600  # 1 hour window
       distribution: random
     timezone: "America/New_York"
+    branches:
+      - main
+      - develop
+      - staging
 ```
 
 #### Weekly schedule example
@@ -207,6 +212,45 @@ For example, `2025-06-26T16:27:00+00:00` represents June 26, 2025, at 4:27 PM UT
 
 To remove a snooze before its expiration time, remove the `snooze` section from the policy configuration or set a date in the past for the `until` value.
 
+## Schedule pipelines for specific branches
+
+By default, schedules run on the default branch only. Scheduled pipeline execution policies support branch filtering, which allows you to schedule pipelines for additional branches. Use the `branches` property to perform regular scans or checks on other important branches in your project.
+
+When you configure the `branches` property in your schedule:
+
+- If you don't specify any branches, the scheduled pipeline runs only on the default branch.
+- If you specify branches, the policy schedules pipelines for each specified branch that actually exists in the project.
+- You can specify a maximum of five unique branch names per schedule.
+- You must specify each branch name in full. Wildcard matching is not supported.
+
+### Branch filtering example
+
+```yaml
+pipeline_execution_schedule_policy:
+- name: Scan Multiple Branches
+  description: 'Run security scans on main, staging and develop branches'
+  enabled: true
+  content:
+    include:
+    - project: your-group/your-project
+      file: security-scan.yml
+  schedules:
+  - type: weekly
+    days:
+      - Monday
+    start_time: '02:00'
+    time_window:
+      value: 3600
+      distribution: random
+    branches:
+      - main
+      - staging
+      - develop
+      - feature/new-authentication
+```
+
+In this example, if all of the specified branches exist in the project, the policy creates four separate pipelines (one for each branch).
+
 ## Requirements
 
 To use scheduled pipeline execution policies:
@@ -219,7 +263,8 @@ The security policy bot is a system account that GitLab automatically creates to
 
 Note these limitations:
 
-- Scheduled pipeline execution policies can only run on default branches.
+- If no branches are specified, scheduled pipeline execution policies only run on the default branch.
+- You can specify up to five unique branch names in the `branches` array.
 - Time windows must be at least 10 minutes (600 seconds) to ensure proper distribution of pipelines.
 - The maximum number of scheduled pipeline execution policies per security policy project is limited to 1 policy with 1 schedule.
 - This feature is experimental and may change in future releases.
@@ -240,6 +285,7 @@ If your scheduled pipelines are not running as expected, follow these troublesho
 1. **Verify policy configuration**:
    - Ensure the policy is enabled (`enabled: true`).
    - Verify that the schedule configuration has the correct format and valid values.
+   - If you've specified branches, verify that the branches exist in the project.
    - Verify that the time zone setting is correct (if specified).
 1. **Review logs and activity**:
    - Check the security policy project's CI/CD pipeline logs for any errors.

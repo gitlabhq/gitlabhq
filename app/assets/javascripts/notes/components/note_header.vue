@@ -216,7 +216,7 @@ export default {
 
       <template v-if="isImported">
         <span v-if="isSystemNote">&middot;</span>
-        <imported-badge :text-only="isSystemNote" :importable-type="importableType" />
+        <imported-badge :text-only="isSystemNote" />
       </template>
 
       <gl-badge

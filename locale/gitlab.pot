@@ -11539,9 +11539,6 @@ msgstr ""
 msgid "BulkImport|More than six imports were attempted in one minute. Try again after a minute."
 msgstr ""
 
-msgid "BulkImport|New group"
-msgstr ""
-
 msgid "BulkImport|No additional information provided"
 msgstr ""
 
@@ -11615,6 +11612,9 @@ msgid "BulkImport|The import you started on %{start_date} from %{strong_open}%{h
 msgstr ""
 
 msgid "BulkImport|This %{importable} was imported from another instance."
+msgstr ""
+
+msgid "BulkImport|This item was imported from another instance."
 msgstr ""
 
 msgid "BulkImport|This name already exists."
@@ -70876,6 +70876,9 @@ msgid "WorkItem|This %{workItemType} will be closed when the following is merged
 msgstr ""
 
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
+msgstr ""
+
+msgid "WorkItem|This item is hidden because its author has been banned."
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."

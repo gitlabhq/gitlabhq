@@ -891,6 +891,8 @@ export const setNewWorkItemCache = async ({
           id: newWorkItemId(workItemType),
           iid: NEW_WORK_ITEM_IID,
           archived: false,
+          hidden: false,
+          imported: false,
           title: isValidWorkItemTitle ? workItemTitle : draftTitle,
           titleHtml: null,
           state: 'OPEN',

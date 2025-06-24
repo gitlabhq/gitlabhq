@@ -5,7 +5,6 @@ module Projects
     include ValidatesClassificationLabel
 
     ImportSourceDisabledError = Class.new(StandardError)
-    INTERNAL_IMPORT_SOURCES = %w[gitlab_custom_project_template gitlab_project_migration].freeze
     README_FILE = 'README.md'
 
     def initialize(user, params)
@@ -115,6 +114,11 @@ module Projects
     def validate_import_permissions
       return unless @project.import?
       return if @project.gitlab_project_import?
+
+      # Skip for project template importers, as their permission model is different from other importers
+      # See: https://gitlab.com/gitlab-org/gitlab/-/issues/414046#note_1945586449.
+      return if Gitlab::ImportSources.template?(@project.import_type)
+
       return if current_user.can?(:import_projects, parent_namespace)
 
       @project.errors.add(:user, 'is not allowed to import projects')
@@ -324,7 +328,12 @@ module Projects
 
       import_type = @params[:import_type].to_s
 
-      return if INTERNAL_IMPORT_SOURCES.include?(import_type)
+      # Skip for projects created through the Direct Transfer importer.
+      return if import_type == BulkImports::Projects::Transformers::ProjectAttributesTransformer::PROJECT_IMPORT_TYPE
+
+      # Skip for project template importers, as their feature availability is not
+      # controlled by the `import_sources` application setting.
+      return if Gitlab::ImportSources.template?(import_type)
 
       # Skip validation when creating project from a built in template
       return if @import_export_upload.present? && import_type == 'gitlab_project'

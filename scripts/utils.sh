@@ -165,7 +165,7 @@ function setup_database_yml() {
 
   # Set up Geo database if the job name matches `rspec-ee` or `geo`.
   # Since Geo is an EE feature, we shouldn't set it up for non-EE tests.
-  if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]] || [[ "${CI_JOB_NAME}" =~ "geo" ]]; then
+  if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]] || [[ "${CI_JOB_NAME}" =~ "geo" ]] || [[ "${CI_JOB_NAME}" =~ "db:setup-ee" ]]; then
     echoinfo "Geo DB will be set up."
   else
     echoinfo "Geo DB won't be set up."
@@ -174,7 +174,7 @@ function setup_database_yml() {
 
   # Set up Embedding database if the job name matches `rspec-ee`
   # Since Embedding is an EE feature, we shouldn't set it up for non-EE tests.
-  if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]]; then
+  if [[ "${CI_JOB_NAME}" =~ "rspec-ee" ]] || [[ "${CI_JOB_NAME}" =~ "db:setup-ee" ]]; then
     echoinfo "Embedding DB will be set up."
   else
     echoinfo "Embedding DB won't be set up."

@@ -1,6 +1,5 @@
 # Lines beginning with a hash are ignored, like this one.
 # Do not add new specs to this file.
-ee/spec/frontend/admin/signup_restrictions/components/signup_form_spec.js
 ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_data_explorer_spec.js
@@ -23,7 +22,6 @@ ee/spec/frontend/dependencies/components/direct_descendant_viewer_spec.js
 ee/spec/frontend/dependencies/components/filtered_search/tokens/component_token_spec.js
 ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js
-ee/spec/frontend/integrations/edit/components/jira_issue_creation_vulnerabilities_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
 ee/spec/frontend/iterations/components/iteration_report_issues_spec.js
@@ -47,7 +45,6 @@ ee/spec/frontend/users/identity_verification/components/international_phone_inpu
 ee/spec/frontend/users/identity_verification/components/verify_phone_verification_code_spec.js
 spec/frontend/__helpers__/vue_test_utils_helper_spec.js
 spec/frontend/access_tokens/index_spec.js
-spec/frontend/admin/abuse_reports/components/abuse_reports_filtered_search_bar_spec.js
 spec/frontend/admin/broadcast_messages/components/base_spec.js
 spec/frontend/alert_management/components/alert_management_table_spec.js
 spec/frontend/boards/board_list_spec.js
@@ -88,8 +85,6 @@ spec/frontend/glql/components/presenters/table_spec.js
 spec/frontend/glql/core/presenter_spec.js
 spec/frontend/groups/components/transfer_group_form_spec.js
 spec/frontend/helpers/init_simple_app_helper_spec.js
-spec/frontend/integrations/edit/components/trigger_field_spec.js
-spec/frontend/integrations/edit/components/trigger_fields_spec.js
 spec/frontend/issuable/related_issues/components/related_issues_root_spec.js
 spec/frontend/issues/list/components/issues_list_app_spec.js
 spec/frontend/issues/service_desk/components/service_desk_list_app_spec.js

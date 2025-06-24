@@ -1,9 +1,9 @@
 import { GlForm } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
@@ -11,7 +11,6 @@ import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status
 import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
-import WorkItemBulkEditState from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_state.vue';
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
 import workItemParentQuery from '~/work_items/graphql/list//work_item_parent.query.graphql';
 import { workItemParentQueryResponse } from '../../mock_data';
@@ -34,12 +33,20 @@ describe('WorkItemBulkEditSidebar component', () => {
     .fn()
     .mockResolvedValue({ data: { workItemBulkUpdate: { updatedWorkItemCount: 1 } } });
 
-  const createComponent = ({ props = {}, mutationHandler = workItemBulkUpdateHandler } = {}) => {
-    wrapper = shallowMount(WorkItemBulkEditSidebar, {
+  const createComponent = ({
+    provide = {},
+    props = {},
+    mutationHandler = workItemBulkUpdateHandler,
+  } = {}) => {
+    wrapper = shallowMountExtended(WorkItemBulkEditSidebar, {
       apolloProvider: createMockApollo([
         [workItemParentQuery, workItemParentQueryHandler],
         [workItemBulkUpdateMutation, mutationHandler],
       ]),
+      provide: {
+        hasIssuableHealthStatusFeature: false,
+        ...provide,
+      },
       propsData: {
         checkedItems,
         fullPath: 'group/project',
@@ -50,10 +57,14 @@ describe('WorkItemBulkEditSidebar component', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
-  const findStateComponent = () => wrapper.findComponent(WorkItemBulkEditState);
+  const findStateComponent = () => wrapper.findComponentByTestId('bulk-edit-state');
   const findAssigneeComponent = () => wrapper.findComponent(WorkItemBulkEditAssignee);
   const findAddLabelsComponent = () => wrapper.findAllComponents(WorkItemBulkEditLabels).at(0);
   const findRemoveLabelsComponent = () => wrapper.findAllComponents(WorkItemBulkEditLabels).at(1);
+  const findHealthStatusComponent = () => wrapper.findComponentByTestId('bulk-edit-health-status');
+  const findSubscriptionComponent = () => wrapper.findComponentByTestId('bulk-edit-subscription');
+  const findConfidentialityComponent = () =>
+    wrapper.findComponentByTestId('bulk-edit-confidentiality');
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -117,10 +128,16 @@ describe('WorkItemBulkEditSidebar component', () => {
         const issuable_ids = '11,22'; // eslint-disable-line camelcase
         const add_label_ids = [1, 2, 3]; // eslint-disable-line camelcase
         const assignee_ids = [5]; // eslint-disable-line camelcase
+        const confidential = 'true';
+        const health_status = 'on_track'; // eslint-disable-line camelcase
         const remove_label_ids = [4, 5, 6]; // eslint-disable-line camelcase
         const state_event = 'reopen'; // eslint-disable-line camelcase
+        const subscription_event = 'subscribe'; // eslint-disable-line camelcase
         axiosMock.onPost().replyOnce(HTTP_STATUS_OK);
-        createComponent({ props: { isEpicsList: false } });
+        createComponent({
+          provide: { hasIssuableHealthStatusFeature: true },
+          props: { isEpicsList: false },
+        });
 
         findStateComponent().vm.$emit('input', state_event);
         findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
@@ -134,6 +151,9 @@ describe('WorkItemBulkEditSidebar component', () => {
           'gid://gitlab/Label/5',
           'gid://gitlab/Label/6',
         ]);
+        findHealthStatusComponent().vm.$emit('input', health_status);
+        findSubscriptionComponent().vm.$emit('input', subscription_event);
+        findConfidentialityComponent().vm.$emit('input', confidential);
         findForm().vm.$emit('submit', { preventDefault: () => {} });
         await waitForPromises();
 
@@ -143,9 +163,12 @@ describe('WorkItemBulkEditSidebar component', () => {
             update: {
               add_label_ids,
               assignee_ids,
+              confidential,
+              health_status,
               issuable_ids,
               remove_label_ids,
               state_event,
+              subscription_event,
             },
           }),
         );
@@ -250,6 +273,66 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual(labelIds);
+    });
+  });
+
+  describe('"Health status" component', () => {
+    it.each`
+      isEpicsList | hasIssuableHealthStatusFeature | expected
+      ${false}    | ${false}                       | ${false}
+      ${false}    | ${true}                        | ${true}
+      ${true}     | ${false}                       | ${false}
+      ${true}     | ${true}                        | ${false}
+    `(
+      'renders only when isEpicsList=false and hasIssuableHealthStatusFeature=true',
+      ({ isEpicsList, hasIssuableHealthStatusFeature, expected }) => {
+        createComponent({ provide: { hasIssuableHealthStatusFeature }, props: { isEpicsList } });
+
+        expect(findHealthStatusComponent().exists()).toBe(expected);
+      },
+    );
+
+    it('updates health status when "Health status" component emits "input" event', async () => {
+      createComponent({ provide: { hasIssuableHealthStatusFeature: true } });
+
+      findHealthStatusComponent().vm.$emit('input', 'needs_attention');
+      await nextTick();
+
+      expect(findHealthStatusComponent().props('value')).toBe('needs_attention');
+    });
+  });
+
+  describe('"Subscription" component', () => {
+    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
+      createComponent({ props: { isEpicsList } });
+
+      expect(findSubscriptionComponent().exists()).toBe(!isEpicsList);
+    });
+
+    it('updates subscription when "Subscription" component emits "input" event', async () => {
+      createComponent();
+
+      findSubscriptionComponent().vm.$emit('input', 'unsubscribe');
+      await nextTick();
+
+      expect(findSubscriptionComponent().props('value')).toBe('unsubscribe');
+    });
+  });
+
+  describe('"Confidentiality" component', () => {
+    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
+      createComponent({ props: { isEpicsList } });
+
+      expect(findConfidentialityComponent().exists()).toBe(!isEpicsList);
+    });
+
+    it('updates confidentiality when "Confidentiality" component emits "input" event', async () => {
+      createComponent();
+
+      findConfidentialityComponent().vm.$emit('input', 'false');
+      await nextTick();
+
+      expect(findConfidentialityComponent().props('value')).toBe('false');
     });
   });
 });

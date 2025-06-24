@@ -21,7 +21,6 @@ import CloneCodeDropdown from '~/vue_shared/components/code_dropdown/clone_code_
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { createAlert, VARIANT_DANGER, VARIANT_SUCCESS } from '~/alert';
 import { VISIBILITY_LEVEL_PUBLIC_STRING } from '~/visibility_level/constants';
-import { TYPE_SNIPPET } from '~/import/constants';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import DeleteSnippetMutation from '../mutations/delete_snippet.mutation.graphql';
 
@@ -248,7 +247,6 @@ export default {
     },
   },
   i18n,
-  TYPE_SNIPPET,
 };
 </script>
 <template>
@@ -355,11 +353,7 @@ export default {
           <gl-icon :name="visibilityLevelIcon" :size="14" class="gl-relative gl-top-1" />
         </div>
 
-        <imported-badge
-          v-if="snippet.imported"
-          :importable-type="$options.TYPE_SNIPPET"
-          class="gl-mr-2"
-        />
+        <imported-badge v-if="snippet.imported" class="gl-mr-2" />
 
         <div data-testid="authored-message" class="gl-leading-20">
           <gl-sprintf :message="authoredMessage">

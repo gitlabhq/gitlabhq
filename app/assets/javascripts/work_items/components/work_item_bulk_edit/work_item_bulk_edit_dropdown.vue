@@ -1,17 +1,24 @@
 <script>
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { __ } from '~/locale';
 
 export default {
-  listboxItems: [
-    { text: __('Open'), value: 'reopen' },
-    { text: __('Closed'), value: 'close' },
-  ],
   components: {
     GlCollapsibleListbox,
     GlFormGroup,
   },
   props: {
+    headerText: {
+      type: String,
+      required: true,
+    },
+    items: {
+      type: Array,
+      required: true,
+    },
+    label: {
+      type: String,
+      required: true,
+    },
     value: {
       type: String,
       required: false,
@@ -20,27 +27,27 @@ export default {
   },
   computed: {
     toggleText() {
-      const selected = this.$options.listboxItems.find((option) => option.value === this.value);
-      return selected?.text || __('Select state');
+      const selected = this.items.find((option) => option.value === this.value);
+      return selected?.text || this.headerText;
     },
   },
   methods: {
     reset() {
       this.$emit('input', undefined);
-      this.$refs.listbox.close();
+      this.$refs.listbox.close?.();
     },
   },
 };
 </script>
 
 <template>
-  <gl-form-group :label="__('State')">
+  <gl-form-group :label="label">
     <gl-collapsible-listbox
       ref="listbox"
       block
-      :header-text="__('Select state')"
+      :header-text="headerText"
       is-check-centered
-      :items="$options.listboxItems"
+      :items="items"
       :reset-button-label="__('Reset')"
       :selected="value"
       :toggle-text="toggleText"

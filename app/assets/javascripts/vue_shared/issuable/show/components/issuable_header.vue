@@ -168,8 +168,8 @@ export default {
         :workspace-type="workspaceType"
       />
       <locked-badge v-if="blocked" :issuable-type="issuableType" />
-      <hidden-badge v-if="isHidden" :issuable-type="issuableType" />
-      <imported-badge v-if="isImported" :importable-type="issuableType" />
+      <hidden-badge v-if="isHidden" />
+      <imported-badge v-if="isImported" />
 
       <work-item-type-icon
         v-if="shouldShowWorkItemTypeIcon"

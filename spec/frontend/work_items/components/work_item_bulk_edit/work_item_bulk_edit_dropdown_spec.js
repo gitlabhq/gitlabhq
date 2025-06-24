@@ -1,13 +1,19 @@
 import { GlCollapsibleListbox, GlFormGroup } from '@gitlab/ui';
-import { mount } from '@vue/test-utils';
-import WorkItemBulkEditState from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_state.vue';
+import { shallowMount } from '@vue/test-utils';
+import WorkItemBulkEditDropdown from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_dropdown.vue';
 
-describe('WorkItemBulkEditState component', () => {
+describe('WorkItemBulkEditDropdown component', () => {
   let wrapper;
 
   const createComponent = (props = {}) => {
-    wrapper = mount(WorkItemBulkEditState, {
+    wrapper = shallowMount(WorkItemBulkEditDropdown, {
       propsData: {
+        headerText: 'Select state',
+        items: [
+          { text: 'Open', value: 'reopen' },
+          { text: 'Closed', value: 'close' },
+        ],
+        label: 'State',
         ...props,
       },
       stubs: {
@@ -43,7 +49,7 @@ describe('WorkItemBulkEditState component', () => {
   });
 
   describe('listbox items', () => {
-    it('renders all states', () => {
+    it('renders all items', () => {
       createComponent();
 
       expect(findListbox().props('items')).toEqual([
@@ -54,7 +60,7 @@ describe('WorkItemBulkEditState component', () => {
   });
 
   describe('listbox text', () => {
-    describe('with no selected state', () => {
+    describe('with no selected value', () => {
       it('renders "Select state"', () => {
         createComponent();
 
@@ -62,12 +68,12 @@ describe('WorkItemBulkEditState component', () => {
       });
     });
 
-    describe('with selected state', () => {
+    describe('with selected value', () => {
       it.each`
         value       | text
         ${'reopen'} | ${'Open'}
         ${'close'}  | ${'Closed'}
-      `('renders $text when state=$state', ({ value, text }) => {
+      `('renders $text when value=$state', ({ value, text }) => {
         createComponent({ value });
 
         expect(findListbox().props('toggleText')).toBe(text);

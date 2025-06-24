@@ -217,7 +217,7 @@ describe('Snippet header component', () => {
         snippetProps: { imported: true },
       });
 
-      expect(findImportedBadge().props('importableType')).toBe('snippet');
+      expect(findImportedBadge().exists()).toBe(true);
     });
 
     it('does not render when snippet is not imported', () => {

@@ -356,8 +356,17 @@ List projects.
 {{< history >}}
 
 - The `_links.cluster_agents` attribute in the response was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/347047) in GitLab 15.0.
+- `web_based_commit_signing_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194650) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `use_web_based_commit_signing_enabled`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of the  `web_based_commit_signing_enabled` attribute is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Get a list of all visible projects across GitLab for the authenticated user.
 When accessed without authentication, only public projects with simple fields
@@ -1753,6 +1762,7 @@ Supported general project attributes:
 | `visibility`                                       | string            | No       | See [project visibility level](#project-visibility-level). |
 | `warn_about_potentially_unwanted_characters`       | boolean           | No       | Enable warnings about usage of potentially unwanted characters in this project. |
 | `wiki_enabled`                                     | boolean           | No       | _(Deprecated)_ Enable wiki for this project. Use `wiki_access_level` instead. |
+| `web_based_commit_signing_enabled`                 | boolean           | No       | Enables web-based commit signing for commits created from the GitLab UI. Available only on GitLab SaaS. |
 
 For example, to toggle the setting for [instance runners on a GitLab.com project](../ci/runners/_index.md):
 

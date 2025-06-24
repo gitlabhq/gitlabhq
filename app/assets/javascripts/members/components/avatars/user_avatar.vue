@@ -1,4 +1,5 @@
 <script>
+import { uniqueId } from 'lodash';
 import { GlAvatarLink, GlAvatarLabeled, GlBadge } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { generateBadges } from 'ee_else_ce/members/utils';
@@ -34,6 +35,11 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      userPopoverId: uniqueId('user-popover-'),
+    };
+  },
   computed: {
     user() {
       return this.member.user;
@@ -66,48 +72,50 @@ export default {
 </script>
 
 <template>
-  <gl-avatar-link
-    v-if="user"
-    class="js-user-link"
-    :href="user.webUrl"
-    :data-user-id="user.id"
-    :data-username="user.username"
-    :data-email="user.email"
-  >
-    <gl-avatar-labeled
-      :label="user.name"
-      :sub-label="`@${user.username}`"
-      :src="userAvatarUrl"
-      :alt="user.name"
-      :size="$options.avatarSize"
-      :entity-name="user.name"
-      :entity-id="user.id"
+  <span :id="userPopoverId">
+    <gl-avatar-link
+      v-if="user"
+      class="js-user-link"
+      :href="user.webUrl"
+      :data-user-id="user.id"
+      :data-username="user.username"
+      :data-email="user.email"
     >
-      <template #meta>
-        <div v-if="isUserBusy" class="gl-p-1">
-          <span class="gl-text-sm gl-font-normal gl-text-subtle">({{ $options.i18n.busy }})</span>
-        </div>
-        <div v-if="statusEmoji" class="gl-p-1">
-          <span
-            v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"
-            class="user-status-emoji gl-mr-0"
-          ></span>
-        </div>
-        <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
-          <gl-badge :variant="badge.variant">
-            {{ badge.text }}
-          </gl-badge>
-        </div>
-      </template>
-    </gl-avatar-labeled>
-  </gl-avatar-link>
+      <gl-avatar-labeled
+        :label="user.name"
+        :sub-label="`@${user.username}`"
+        :src="userAvatarUrl"
+        :alt="user.name"
+        :size="$options.avatarSize"
+        :entity-name="user.name"
+        :entity-id="user.id"
+      >
+        <template #meta>
+          <div v-if="isUserBusy" class="gl-p-1">
+            <span class="gl-text-sm gl-font-normal gl-text-subtle">({{ $options.i18n.busy }})</span>
+          </div>
+          <div v-if="statusEmoji" class="gl-p-1">
+            <span
+              v-safe-html:[$options.safeHtmlConfig]="glEmojiTag(statusEmoji)"
+              class="user-status-emoji gl-mr-0"
+            ></span>
+          </div>
+          <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
+            <gl-badge :variant="badge.variant">
+              {{ badge.text }}
+            </gl-badge>
+          </div>
+        </template>
+      </gl-avatar-labeled>
+    </gl-avatar-link>
 
-  <gl-avatar-labeled
-    v-else
-    :label="$options.orphanedUserLabel"
-    :alt="$options.orphanedUserLabel"
-    :size="$options.avatarSize"
-    :entity-name="$options.orphanedUserLabel"
-    :entity-id="member.id"
-  />
+    <gl-avatar-labeled
+      v-else
+      :label="$options.orphanedUserLabel"
+      :alt="$options.orphanedUserLabel"
+      :size="$options.avatarSize"
+      :entity-name="$options.orphanedUserLabel"
+      :entity-id="member.id"
+    />
+  </span>
 </template>

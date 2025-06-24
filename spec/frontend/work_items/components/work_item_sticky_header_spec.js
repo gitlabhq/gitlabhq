@@ -3,9 +3,11 @@ import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { STATE_OPEN } from '~/work_items/constants';
 import { workItemResponseFactory } from 'ee_else_ce_jest/work_items/mock_data';
+import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import ConfidentialityBadge from '~/vue_shared/components/confidentiality_badge.vue';
+import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
 import TodosToggle from '~/work_items/components/shared/todos_toggle.vue';
 import WorkItemStateBadge from '~/work_items/components/work_item_state_badge.vue';
 import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
@@ -15,6 +17,8 @@ describe('WorkItemStickyHeader', () => {
 
   const createComponent = ({
     confidential = false,
+    hidden = false,
+    imported = false,
     discussionLocked = false,
     canUpdate = true,
     features = {},
@@ -29,6 +33,8 @@ describe('WorkItemStickyHeader', () => {
           canUpdate,
           confidential,
           discussionLocked,
+          hidden,
+          imported,
           movedToWorkItemUrl,
           duplicatedToWorkItemUrl,
           promotedToEpicUrl,
@@ -51,6 +57,8 @@ describe('WorkItemStickyHeader', () => {
 
   const findStickyHeader = () => wrapper.findByTestId('work-item-sticky-header');
   const findConfidentialityBadge = () => wrapper.findComponent(ConfidentialityBadge);
+  const findHiddenBadge = () => wrapper.findComponent(HiddenBadge);
+  const findImportedBadge = () => wrapper.findComponent(ImportedBadge);
   const findLockedBadge = () => wrapper.findComponent(LockedBadge);
   const findTodosToggle = () => wrapper.findComponent(TodosToggle);
   const findIntersectionObserver = () => wrapper.findComponent(GlIntersectionObserver);
@@ -188,6 +196,34 @@ describe('WorkItemStickyHeader', () => {
       it('renders', () => {
         expect(findLockedBadge().exists()).toBe(true);
       });
+    });
+  });
+
+  describe('hidden badge', () => {
+    it('renders when the work item is hidden', () => {
+      createComponent({ hidden: true });
+
+      expect(findHiddenBadge().exists()).toBe(true);
+    });
+
+    it('does not render when the work item is not hidden', () => {
+      createComponent({ hidden: false });
+
+      expect(findHiddenBadge().exists()).toBe(false);
+    });
+  });
+
+  describe('imported badge', () => {
+    it('renders when the work item is imported', () => {
+      createComponent({ imported: true });
+
+      expect(findImportedBadge().exists()).toBe(true);
+    });
+
+    it('does not render when the work item is not imported', () => {
+      createComponent({ imported: false });
+
+      expect(findImportedBadge().exists()).toBe(false);
     });
   });
 });

@@ -966,6 +966,7 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth
         args[:property] = 'guest'
       elsif auth == :deploy_token
         args[:property] = 'deploy_token'
+        args[:additional_properties] = { deploy_token_id: Gitlab::CryptoHelper.sha256(deploy_token.id) }
       else
         args[:user] = user
         args[:property] = 'user'

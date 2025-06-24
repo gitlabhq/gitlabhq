@@ -119,6 +119,12 @@ RSpec.describe Gitlab::FileDetector, feature_category: :global_search do
 
     it 'returns the type of a Jenkins config file' do
       expect(described_class.type_of('jenkinsfile')).to eq(:jenkinsfile)
+      expect(described_class.type_of('Jenkinsfile')).to eq(:jenkinsfile)
+      expect(described_class.type_of('JenkinsFile')).to eq(:jenkinsfile)
+      expect(described_class.type_of('Jenkinsfile.groovy')).to eq(:jenkinsfile)
+      expect(described_class.type_of('cicd.Jenkinsfile')).to eq(:jenkinsfile)
+      expect(described_class.type_of('app.Jenkinsfile.prod')).to eq(:jenkinsfile)
+      expect(described_class.type_of('ci/Jenkinsfile')).to be_nil
     end
   end
 end

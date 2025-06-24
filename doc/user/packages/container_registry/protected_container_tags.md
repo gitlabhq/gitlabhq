@@ -9,7 +9,6 @@ title: Protected container tags
 
 - Tier: Free, Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
 
 {{< /details >}}
 
@@ -20,14 +19,6 @@ title: Protected container tags
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/524076) in GitLab 17.11. Feature flag `container_registry_protected_tags` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Control who can push and delete container tags in your project.
 

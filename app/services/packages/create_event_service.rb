@@ -29,8 +29,9 @@ module Packages
         namespace: params[:namespace],
         additional_properties: {
           label: event_scope.to_s,
-          property: originator_type.to_s
-        }
+          property: originator_type.to_s,
+          deploy_token_id: deploy_token_id
+        }.compact
       )
     end
 
@@ -57,6 +58,12 @@ module Packages
 
     def event_name
       params[:event_name]
+    end
+
+    def deploy_token_id
+      return unless current_user.is_a?(DeployToken)
+
+      Gitlab::CryptoHelper.sha256(current_user.id)
     end
   end
 end
