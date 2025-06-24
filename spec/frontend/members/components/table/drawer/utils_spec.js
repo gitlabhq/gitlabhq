@@ -34,11 +34,12 @@ describe('Role details drawer utils', () => {
 
   describe('callRoleUpdateApi', () => {
     it.each`
-      namespace  | propertyName
-      ${'user'}  | ${'access_level'}
-      ${'group'} | ${'group_access'}
+      namespace          | propertyName
+      ${'user'}          | ${'access_level'}
+      ${'group'}         | ${'group_access'}
+      ${'accessRequest'} | ${'access_level'}
     `(
-      'calls update API with expected data for $namespace namespace',
+      'calls update API with expected data for each member.namespace = $namespace',
       async ({ namespace, propertyName }) => {
         const memberPath = 'member/path/123';
         const mockAxios = new MockAdapter(axios);

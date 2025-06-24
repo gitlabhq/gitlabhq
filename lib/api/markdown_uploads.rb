@@ -10,6 +10,8 @@ module API
       filename: API::NO_SLASH_URL_PART_REGEX
     )
 
+    before { authenticate_non_get! }
+
     helpers do
       def find_uploads(parent)
         uploads = Banzai::UploadsFinder.new(parent: parent).execute
