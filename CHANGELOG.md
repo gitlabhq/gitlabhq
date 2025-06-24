@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.1.1 (2025-06-24)
+
+### Security (5 changes)
+
+- [Fix guest permissions for incident hierarchy updates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f3cd30dec5fc9123ce7afecc5f94d74b4083f7cf) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5078))
+- [Fix the validation logic for IDP Certificate Fingerprint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f53497ee0ff29b45f4a3698a7085d036891afbe2) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5081))
+- [Checking if framework and project have same namespace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e328730a2b5373b3b400d734b1d6ac3cdb436b19) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5075))
+- [Fix incorrect role grant after a user access_request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cb1b44753248959f3738c502570148cd6ad43059) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5077))
+- [Prevent anonymous users from creating uploads](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6e8cee2e35a2f61c610b95569b76ac74d546455a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5076))
+
 ## 18.1.0 (2025-06-18)
 
 ### Added (182 changes)
