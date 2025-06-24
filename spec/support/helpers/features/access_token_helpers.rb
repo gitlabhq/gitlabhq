@@ -16,10 +16,7 @@ module Features
 
     # Keep after migrate_user_access_tokens_ui feature flag removal
     def new_access_token
-      within_testid('new-access-token') do
-        find_by_testid('toggle-visibility-button').click
-        find_field('access-token-field').value
-      end
+      find_by_testid('created-access-token-field').value
     end
 
     def active_access_tokens_counter

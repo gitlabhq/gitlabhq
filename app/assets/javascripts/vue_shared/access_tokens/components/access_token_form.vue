@@ -92,6 +92,9 @@ export default {
       groupAttrs: {
         class: 'gl-form-input-xl',
       },
+      inputAttrs: {
+        'data-testid': 'access-token-name-field',
+      },
     },
     description: {
       label: s__('AccessTokens|Description'),
@@ -144,6 +147,7 @@ export default {
           :state="validation.state"
           :value="value"
           :target="null"
+          data-testid="expiry-date-field"
           @input="input"
           @clear="clearDatepicker"
         />
@@ -170,6 +174,7 @@ export default {
             :key="scope.value"
             :value="scope.value"
             :state="validation.state"
+            :data-testid="`${scope.value}-checkbox`"
           >
             {{ scope.value }}
             <template #help>{{ scope.text }}</template>
@@ -179,7 +184,13 @@ export default {
     </gl-form-fields>
 
     <div class="gl-flex gl-gap-3">
-      <gl-button variant="confirm" type="submit" class="js-no-auto-disable" :loading="busy">
+      <gl-button
+        variant="confirm"
+        type="submit"
+        class="js-no-auto-disable"
+        :loading="busy"
+        data-testid="create-token-button"
+      >
         {{ s__('AccessTokens|Create token') }}
       </gl-button>
       <gl-button variant="default" type="reset">

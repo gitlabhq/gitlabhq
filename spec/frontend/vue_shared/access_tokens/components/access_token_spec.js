@@ -36,9 +36,7 @@ describe('AccessToken', () => {
     expect(findInputCopyToggleVisibility().props()).toMatchObject({
       copyButtonTitle: 'Copy token',
       formInputGroupProps: {
-        'data-testid': 'access-token-field',
-        id: 'access-token-field',
-        name: 'access-token-field',
+        'data-testid': 'created-access-token-field',
       },
       initialVisibility: false,
       readonly: true,

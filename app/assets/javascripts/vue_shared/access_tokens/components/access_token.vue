@@ -10,26 +10,18 @@ export default {
     ...mapState(useAccessTokens, ['token']),
     formInputGroupProps() {
       return {
-        'data-testid': this.$options.inputId,
-        id: this.$options.inputId,
-        name: this.$options.inputId,
+        'data-testid': 'created-access-token-field',
       };
     },
   },
   methods: {
     ...mapActions(useAccessTokens, ['setToken']),
   },
-  inputId: 'access-token-field',
 };
 </script>
 
 <template>
-  <gl-alert
-    data-testid="new-access-token"
-    variant="success"
-    class="gl-mb-5"
-    @dismiss="setToken(null)"
-  >
+  <gl-alert variant="success" class="gl-mb-5" @dismiss="setToken(null)">
     <input-copy-toggle-visibility
       :copy-button-title="s__('AccessTokens|Copy token')"
       :label="s__('AccessTokens|Your token')"
