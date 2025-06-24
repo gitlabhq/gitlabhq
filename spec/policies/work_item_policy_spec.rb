@@ -41,6 +41,7 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       let(:authored_project_work_item) { create(:work_item, project: private_project, author: guest_author) }
       let(:authored_project_confidential_work_item) { create(:work_item, confidential: true, project: private_project, author: guest_author) }
       let(:not_persisted_project_work_item) { build(:work_item, project: private_project) }
+      let(:incident) { create(:work_item, :incident, project: private_project) }
 
       let_it_be(:incident_work_item) { create(:work_item, :incident, project: private_project) }
 
@@ -71,6 +72,14 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       it 'checks admin abilities for spam reporting' do
         expect(permissions(admin, project_work_item)).to be_allowed(:report_spam)
         expect(permissions(admin, project_confidential_work_item)).to be_allowed(:report_spam)
+      end
+
+      it 'checks admin_work_item_link and admin_parent_link permissions with incident work items for guest members' do
+        expect(permissions(guest, incident)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+      end
+
+      it 'checks admin_work_item_link and admin_parent_link permissions with non-incident work items for guest members' do
+        expect(permissions(guest, project_work_item)).to be_allowed(:admin_work_item_link, :admin_parent_link)
       end
     end
 
@@ -110,6 +119,14 @@ RSpec.describe WorkItemPolicy, :aggregate_failures, feature_category: :team_plan
       it 'checks admin abilities for spam reporting' do
         expect(permissions(admin, project_work_item)).to be_allowed(:report_spam)
         expect(permissions(admin, project_confidential_work_item)).to be_allowed(:report_spam)
+      end
+
+      it 'checks admin_work_item_link and admin_parent_link permissions with incident work items for guest members' do
+        expect(permissions(guest, incident_work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
+      end
+
+      it 'checks admin_work_item_link and admin_parent_link permissions with non-incident work items for guest members' do
+        expect(permissions(non_member_user, project_work_item)).to be_disallowed(:admin_work_item_link, :admin_parent_link)
       end
     end
   end
