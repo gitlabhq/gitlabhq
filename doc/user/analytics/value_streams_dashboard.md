@@ -8,7 +8,7 @@ title: Value Streams Dashboard
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Premium, Ultimate
 - Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
 
 {{< /details >}}
@@ -18,6 +18,7 @@ title: Value Streams Dashboard
 - Introduced in GitLab 15.8 as a closed [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Disabled by default.
 - Released in GitLab 15.11 as an open [beta](../../policy/development_stages_support.md#beta) feature [with a flag](../../administration/feature_flags/_index.md) named `group_analytics_dashboards_page`. Enabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/392734) in GitLab 16.0. Feature flag `group_analytics_dashboards_page` removed.
+- [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195086) from GitLab Ultimate to GitLab Premium in 18.2.
 
 {{< /history >}}
 

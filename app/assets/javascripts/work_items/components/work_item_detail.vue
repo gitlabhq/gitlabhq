@@ -525,11 +525,7 @@ export default {
       return this.workItem?.namespace?.fullName || '';
     },
     contextualViewEnabled() {
-      return (
-        gon.current_user_use_work_items_view ||
-        this.workItemsAlphaEnabled ||
-        this.glFeatures?.workItemViewForIssues
-      );
+      return this.workItemsAlphaEnabled || this.glFeatures?.workItemViewForIssues;
     },
     hasChildren() {
       return this.workItemHierarchy?.hasChildren;

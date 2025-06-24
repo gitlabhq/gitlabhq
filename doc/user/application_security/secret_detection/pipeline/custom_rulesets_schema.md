@@ -103,8 +103,8 @@ rule that you wish to modify.
 | `value` | The value of the identifier used by the predefined rule. |
 
 To determine the correct values for `type` and `value`, view the
-[`gl-secret-detection-report.json`](_index.md#output) produced by the analyzer.
-You can download this file as a job artifact from the analyzer's CI job.
+[`gl-secret-detection-report.json`](_index.md#secret-detection-results) produced by the analyzer.
+You can download this file as a job artifact from the analyzer's CI/CD job.
 
 For example, the snippet below shows a finding from a `gitlab_personal_access_token` rule with one
 identifier. The `type` and `value` keys in the JSON object correspond to the values you should

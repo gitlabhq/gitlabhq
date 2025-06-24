@@ -181,7 +181,7 @@ class GfmAutoComplete {
     // Ensure that all possible work item paths are included
     const { page } = document.body.dataset;
     this.isWorkItemsView =
-      (gon.current_user_use_work_items_view || gon.features?.workItemViewForIssues) &&
+      gon.features?.workItemViewForIssues &&
       (page.includes('groups:work_items') ||
         page.includes('projects:work_items') ||
         page.includes('groups:issues') ||

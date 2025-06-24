@@ -172,10 +172,7 @@ export default {
       return this.blockingCount > 0 || this.blockedByCount > 0;
     },
     issueAsWorkItem() {
-      return (
-        !this.isGroup &&
-        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view)
-      );
+      return !this.isGroup && this.glFeatures.workItemViewForIssues;
     },
     childItemUniqueId() {
       return `listItem-${this.childItemFullPath}/${getIdFromGraphQLId(this.childItem.id)}`;

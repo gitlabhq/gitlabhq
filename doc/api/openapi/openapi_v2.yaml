@@ -35400,6 +35400,13 @@ paths:
         type: string
         required: false
         example: ".gitlab/changelog_config.yml"
+      - in: query
+        name: config_file_ref
+        description: The git reference (for example, branch) where the changelog configuration
+          file is defined. Defaults to the default repository branch.
+        type: string
+        required: false
+        example: main
       responses:
         '200':
           description: Generates a changelog section for a release and returns it
@@ -62680,15 +62687,20 @@ definitions:
           in the changelog
         default: Changelog
         example: Changelog
-      branch:
-        type: string
-        description: The branch to commit the changelog changes to
-        example: main
       config_file:
         type: string
         description: The file path to the configuration file as stored in the project's
           Git repository. Defaults to '.gitlab/changelog_config.yml'
         example: ".gitlab/changelog_config.yml"
+      config_file_ref:
+        type: string
+        description: The git reference (for example, branch) where the changelog configuration
+          file is defined. Defaults to the default repository branch.
+        example: main
+      branch:
+        type: string
+        description: The branch to commit the changelog changes to
+        example: main
       file:
         type: string
         description: The file to commit the changelog changes to

@@ -1123,9 +1123,6 @@ msgstr ""
 msgid "%{labelStart}Validity check:%{labelEnd} %{validityCheck}"
 msgstr ""
 
-msgid "%{label_for_message} unavailable"
-msgstr ""
-
 msgid "%{label_name} is locked and was not removed"
 msgstr ""
 
@@ -6605,6 +6602,9 @@ msgstr ""
 msgid "Allow access to members of the following group"
 msgstr ""
 
+msgid "Allow access to pipelines and job details, including output logs and artifacts, based on your project's visibility settings."
+msgstr ""
+
 msgid "Allow access to the following IP addresses"
 msgstr ""
 
@@ -6651,9 +6651,6 @@ msgid "Allow projects and subgroups to override the group setting"
 msgstr ""
 
 msgid "Allow projects to enable secret push protection. This does not enable secret push protection."
-msgstr ""
-
-msgid "Allow public access to pipelines and job details, including output logs and artifacts."
 msgstr ""
 
 msgid "Allow secret push protection"
@@ -38740,7 +38737,7 @@ msgstr ""
 msgid "MergeRequestApprovals|Enforce %{link_start}separation of duties%{link_end} for all projects."
 msgstr ""
 
-msgid "MergeRequestApprovals|Enforce %{separationLinkStart}separation of duties%{separationLinkEnd} for all projects. %{learnLinkStart}Learn more.%{learnLinkEnd}"
+msgid "MergeRequestApprovals|Enforce %{separationLinkStart}separation of duties%{separationLinkEnd} for all projects. %{learnLinkStart}Learn more%{learnLinkEnd}."
 msgstr ""
 
 msgid "MergeRequestDiffs|Commenting on lines %{selectStart}start%{selectEnd} to %{end}"
@@ -48104,9 +48101,6 @@ msgstr ""
 msgid "Project has not been marked for deletion"
 msgstr ""
 
-msgid "Project has too many %{label_for_message} to search"
-msgstr ""
-
 msgid "Project import requests"
 msgstr ""
 
@@ -48192,6 +48186,9 @@ msgid "Project was not found or you do not have permission to add this project t
 msgstr ""
 
 msgid "Project with ID %{project_id} not found"
+msgstr ""
+
+msgid "Project-based pipeline visibility"
 msgstr ""
 
 msgid "Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}"
@@ -50394,9 +50391,6 @@ msgid "Public Access Help"
 msgstr ""
 
 msgid "Public deploy keys"
-msgstr ""
-
-msgid "Public pipelines"
 msgstr ""
 
 msgid "Public projects are an easy way to allow everyone to have read-only access."
@@ -55015,10 +55009,25 @@ msgstr ""
 msgid "SecretDetection|Use secret detection exclusions to specify file paths, raw values, and regex that should be excluded by secret detection in this project. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
+msgid "SecretDetection|Validate tokens using third-party API calls. When the pipeline is complete, your tokens are labeled Active, Possibly active, or Inactive. You must have pipeline secret detection enabled."
+msgstr ""
+
+msgid "SecretDetection|Validity checks"
+msgstr ""
+
+msgid "SecretDetection|Validity checks disabled"
+msgstr ""
+
+msgid "SecretDetection|Validity checks enabled"
+msgstr ""
+
 msgid "SecretDetection|Warning: Potential secret detected"
 msgid_plural "SecretDetection|Warning: Potential secrets detected"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "SecretDetection|What are validity checks?"
+msgstr ""
 
 msgid "Secrets"
 msgstr ""

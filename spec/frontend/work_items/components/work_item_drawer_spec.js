@@ -53,9 +53,8 @@ describe('WorkItemDrawer', () => {
     isGroup = true,
     mountFn = shallowMountExtended,
     stubs = { WorkItemDetail },
+    workItemViewForIssues = true,
   } = {}) => {
-    window.gon.current_user_use_work_items_view = true;
-
     wrapper = mountFn(WorkItemDrawer, {
       attachTo: document.body,
       propsData: {
@@ -75,6 +74,9 @@ describe('WorkItemDrawer', () => {
         hasSubepicsFeature: false,
         hasLinkedItemsEpicsFeature: true,
         isGroup,
+        glFeatures: {
+          workItemViewForIssues,
+        },
       },
       mocks: {
         $router: {

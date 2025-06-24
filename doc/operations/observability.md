@@ -1,7 +1,7 @@
 ---
 stage: none
-group: unassigned
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+group: Embody
+info: This page is owned by https://handbook.gitlab.com/handbook/ceo/office-of-the-ceo/embody-team/
 description: Monitor application performance and troubleshoot performance issues.
 ignore_in_report: true
 title: Observability
@@ -38,6 +38,12 @@ Use GitLab Observability (O11y) to:
 {{< alert type="disclaimer" />}}
 
 By adding observability to GitLab itself users can gain [these (planned) features](https://gitlab.com/gitlab-org/embody-team/experimental-observability/gitlab_o11y/-/issues/8).
+
+<i class="fa-youtube-play" aria-hidden="true"></i>
+For an overview, see [GitLab Experimental Observability (O11y) Introduction](https://www.youtube.com/watch?v=XI9ZruyNEgs).
+<!-- Video published on 2025-06-18 -->
+
+Join the conversation about interesting ways to use GitLab O11y in the GitLab O11y [Discord channel](https://discord.com/channels/778180511088640070/1379585187909861546).
 
 ## Set up a GitLab Observability instance
 

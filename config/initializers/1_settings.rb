@@ -774,6 +774,9 @@ Settings.cron_jobs['version_version_check_cron']['args'] = {
 Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
+Settings.cron_jobs['authn_oauth_access_token_cleanup_worker'] ||= {}
+Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['cron'] ||= '0 0 1 * *'
+Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['job_class'] = 'Authn::OauthAccessTokenCleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}

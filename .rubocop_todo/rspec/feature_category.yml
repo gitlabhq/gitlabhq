@@ -3807,7 +3807,6 @@ RSpec/FeatureCategory:
     - 'spec/views/projects/blob/_viewer.html.haml_spec.rb'
     - 'spec/views/projects/branches/index.html.haml_spec.rb'
     - 'spec/views/projects/commit/_commit_box.html.haml_spec.rb'
-    - 'spec/views/projects/commit/branches.html.haml_spec.rb'
     - 'spec/views/projects/commits/show.html.haml_spec.rb'
     - 'spec/views/projects/diffs/_viewer.html.haml_spec.rb'
     - 'spec/views/projects/edit.html.haml_spec.rb'

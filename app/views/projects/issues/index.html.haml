@@ -7,12 +7,14 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} issues")
 
+%h1.gl-sr-only= page_title
+
 .js-jira-issues-import-status-root{ data: { can_edit: can?(current_user, :admin_project, @project).to_s,
   is_jira_configured: @project.jira_integration.present?.to_s,
   issues_path: project_issues_path(@project),
   project_path: @project.full_path } }
 
-- if (Feature.enabled?(:work_item_view_for_issues, @project.group) || current_user&.user_preference&.use_work_items_view) && @project&.work_items_alpha_feature_flag_enabled?
+- if Feature.enabled?(:work_item_view_for_issues, @project.group) && @project&.work_items_alpha_feature_flag_enabled?
   #js-work-items{ data: work_items_data(@project, current_user) }
 - else
   .js-issues-list-root{ data: project_issues_list_data(@project, current_user) }

@@ -34,6 +34,34 @@ RSpec.describe Gitlab::Changelog::Config, feature_category: :source_code_managem
       described_class.from_git(project, nil, changelog_config_file)
     end
 
+    context 'when config file ref is provided' do
+      it "retrieves the specified configuration from git" do
+        allow(project.repository)
+          .to receive(:changelog_config).with('branch', changelog_config_file)
+                .and_return("---\ndate_format: '%Y'")
+
+        expect(described_class)
+          .to receive(:from_hash)
+                .with(project, { 'date_format' => '%Y' }, nil)
+
+        described_class.from_git(project, nil, changelog_config_file, 'branch')
+      end
+    end
+
+    context 'when config file ref is empty' do
+      it "retrieves the default configuration from git" do
+        allow(project.repository)
+          .to receive(:changelog_config).with('HEAD', changelog_config_file)
+                .and_return("---\ndate_format: '%Y'")
+
+        expect(described_class)
+          .to receive(:from_hash)
+                .with(project, { 'date_format' => '%Y' }, nil)
+
+        described_class.from_git(project, nil, changelog_config_file, '')
+      end
+    end
+
     it 'returns the default configuration when no YAML file exists in Git' do
       allow(project.repository)
         .to receive(:changelog_config)

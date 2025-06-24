@@ -15,6 +15,7 @@ describe('WorkItemBreadcrumb', () => {
     isGroup = true,
     workItemsAlpha = false,
     workItemPlanningView = false,
+    workItemViewForIssues = false,
     props = {},
   } = {}) => {
     wrapper = shallowMount(WorkItemBreadcrumb, {
@@ -23,6 +24,7 @@ describe('WorkItemBreadcrumb', () => {
         glFeatures: {
           workItemsAlpha,
           workItemPlanningView,
+          workItemViewForIssues,
         },
         listPath,
         isGroup,
@@ -92,12 +94,11 @@ describe('WorkItemBreadcrumb', () => {
       });
 
       it('renders root breadcrumb with router link if user turned work item view on and alpha flag is on', () => {
-        window.gon.current_user_use_work_items_view = true;
-
         createComponent({
           isGroup: false,
           listPath: '/issues',
           workItemsAlpha: true,
+          workItemViewForIssues: true,
         });
 
         expect(findBreadcrumb().props('items')).toEqual([
@@ -112,12 +113,11 @@ describe('WorkItemBreadcrumb', () => {
       });
 
       it('renders root breadcrumb with href if user turned work item view on and alpha flag is off', () => {
-        window.gon.current_user_use_work_items_view = true;
-
         createComponent({
           isGroup: false,
           listPath: '/issues',
           workItemsAlpha: false,
+          workItemViewForIssues: true,
         });
 
         expect(findBreadcrumb().props('items')).toEqual([

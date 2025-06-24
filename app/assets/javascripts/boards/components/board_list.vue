@@ -310,7 +310,7 @@ export default {
       return shouldCloneCard(this.list.listType, this.toList.listType);
     },
     issuesDrawerEnabled() {
-      if (gon.current_user_use_work_items_view) return true;
+      if (this.glFeatures.workItemViewForIssues) return true;
       return Boolean(
         this.isIssueBoard ? this.glFeatures.issuesListDrawer : this.glFeatures.epicsListDrawer,
       );

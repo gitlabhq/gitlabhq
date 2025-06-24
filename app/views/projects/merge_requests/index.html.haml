@@ -7,6 +7,8 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} merge requests")
 
+%h1.gl-sr-only= page_title
+
 = render 'projects/last_push'
 
 .js-merge-request-list-root{ data: project_merge_requests_list_data(@project, current_user) }

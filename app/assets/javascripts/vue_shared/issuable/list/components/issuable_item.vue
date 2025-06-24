@@ -285,7 +285,7 @@ export default {
         !this.isIncident &&
         !this.isServiceDeskIssue &&
         !this.isTestCase &&
-        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view)
+        this.glFeatures.workItemViewForIssues
       );
     },
     hiddenIssuableTitle() {
@@ -387,8 +387,10 @@ export default {
   >
     <a
       v-if="isClickableLink && issuableLinkHref"
+      tabindex="-1"
       :href="issuableLinkHref"
       class="!gl-absolute gl-left-0 gl-top-0 !gl-z-1 !gl-flex gl-h-full gl-w-full"
+      aria-hidden="true"
       data-testid="issuable-card-link-overlay"
     ></a>
 
@@ -417,7 +419,6 @@ export default {
           :title="__('Confidential')"
           class="gl-mr-2 gl-inline-block gl-w-5"
           data-testid="confidential-icon-container"
-          :aria-label="__('Confidential')"
         >
           <gl-icon name="eye-slash" />
         </span>
@@ -573,11 +574,15 @@ export default {
             class="gl-flex gl-items-center"
           />
         </li>
-        <div v-else-if="detailLoading">
+        <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="20" :lines="1" equal-width-lines />
-        </div>
-        <slot name="reviewers"></slot>
-        <slot name="approval-status"></slot>
+        </li>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="reviewers"></slot>
+        </li>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="approval-status"></slot>
+        </li>
         <slot name="discussions">
           <li
             v-if="showDiscussions && notesCount"
@@ -593,24 +598,29 @@ export default {
               {{ notesCount }}
             </span>
           </li>
-          <div v-else-if="detailLoading">
+          <li v-else-if="detailLoading" class="!gl-mr-0">
             <gl-skeleton-loader :width="30" :lines="1" equal-width-lines />
-          </div>
+          </li>
         </slot>
-        <slot name="statistics"></slot>
-        <work-item-relationship-icons
-          v-if="isOpen && hasBlockingRelationships"
-          :work-item-type="type"
-          :work-item-full-path="workItemFullPath"
-          :work-item-iid="issuableIid"
-          :work-item-web-url="issuableLinkHref"
-          :blocking-count="blockingCount"
-          :blocked-by-count="blockedByCount"
-        />
-        <div v-else-if="detailLoading">
+        <li class="!gl-mr-0 [&:not(:has(li))]:gl-hidden">
+          <slot name="statistics"></slot>
+        </li>
+        <li v-if="isOpen && hasBlockingRelationships" class="!gl-mr-0 empty:gl-hidden">
+          <work-item-relationship-icons
+            :work-item-type="type"
+            :work-item-full-path="workItemFullPath"
+            :work-item-iid="issuableIid"
+            :work-item-web-url="issuableLinkHref"
+            :blocking-count="blockingCount"
+            :blocked-by-count="blockedByCount"
+          />
+        </li>
+        <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="45" :lines="1" equal-width-lines />
-        </div>
-        <slot name="custom-status"></slot>
+        </li>
+        <li class="!gl-mr-0 empty:gl-hidden">
+          <slot name="custom-status"></slot>
+        </li>
       </ul>
       <div
         class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"

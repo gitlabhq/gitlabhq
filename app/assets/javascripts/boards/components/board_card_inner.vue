@@ -181,7 +181,7 @@ export default {
       return this.isEpicBoard ? WORK_ITEM_TYPE_NAME_EPIC : this.item.type;
     },
     workItemDrawerEnabled() {
-      if (gon.current_user_use_work_items_view || this.glFeatures.workItemViewForIssues) {
+      if (this.glFeatures.workItemViewForIssues) {
         return true;
       }
       return this.isEpicBoard ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;

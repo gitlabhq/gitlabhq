@@ -10,6 +10,7 @@ class ProjectSetting < ApplicationRecord
   include SafelyChangeColumnDefault
 
   columns_changing_default :protect_merge_request_pipelines
+  columns_changing_default :spp_repository_pipeline_access
 
   ALLOWED_TARGET_PLATFORMS = %w[ios osx tvos watchos android].freeze
 

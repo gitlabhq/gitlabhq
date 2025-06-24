@@ -226,10 +226,7 @@ export default {
         : s__('DesignManagement|Select all');
     },
     issueAsWorkItem() {
-      return Boolean(
-        !this.isGroup &&
-          (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view),
-      );
+      return Boolean(!this.isGroup && this.glFeatures.workItemViewForIssues);
     },
     canUseRouter() {
       return (

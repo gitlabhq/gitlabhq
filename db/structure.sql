@@ -10796,7 +10796,8 @@ CREATE TABLE bulk_import_configurations (
     encrypted_access_token_iv text,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    organization_id bigint
+    organization_id bigint,
+    CONSTRAINT check_cd24605431 CHECK ((organization_id IS NOT NULL))
 );
 
 CREATE SEQUENCE bulk_import_configurations_id_seq
@@ -21664,7 +21665,7 @@ CREATE TABLE project_settings (
     duo_features_enabled boolean DEFAULT true NOT NULL,
     require_reauthentication_to_approve boolean,
     observability_alerts_enabled boolean DEFAULT true NOT NULL,
-    spp_repository_pipeline_access boolean,
+    spp_repository_pipeline_access boolean DEFAULT true,
     max_number_of_vulnerabilities integer,
     pages_primary_domain text,
     extended_prat_expiry_webhooks_execute boolean DEFAULT false NOT NULL,

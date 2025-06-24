@@ -26,7 +26,7 @@ export default {
   <gl-button
     variant="default"
     category="tertiary"
-    class="btn-icon -gl-mr-3 -gl-scale-x-100 lg:gl-hidden"
+    class="btn-icon -gl-mr-3 -gl-scale-x-100 group-[.top-bar-duo-button-present]:gl-mr-0 lg:gl-hidden"
     :aria-label="toggleFileBrowserTitle"
     data-testid="file-tree-drawer-button"
     @click="toggleFileBrowserDrawerVisibility"

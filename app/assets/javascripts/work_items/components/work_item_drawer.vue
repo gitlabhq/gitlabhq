@@ -87,10 +87,7 @@ export default {
       return `${path}#${this.activeItem.iid}`;
     },
     issueAsWorkItem() {
-      return (
-        !this.isGroup &&
-        (this.glFeatures.workItemViewForIssues || gon.current_user_use_work_items_view)
-      );
+      return !this.isGroup && this.glFeatures.workItemViewForIssues;
     },
     getDrawerHeight() {
       return `calc(${getContentWrapperHeight()} + var(--top-bar-height))`;

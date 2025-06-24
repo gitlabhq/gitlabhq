@@ -11,8 +11,8 @@
       %fieldset.builds-feature
         .form-group
           = f.gitlab_ui_checkbox_component :public_builds,
-            _("Public pipelines"),
-            help_text: (_('Allow public access to pipelines and job details, including output logs and artifacts.') + ' ' + help_link_public_pipelines).html_safe
+            _("Project-based pipeline visibility"),
+            help_text: (_("Allow access to pipelines and job details, including output logs and artifacts, based on your project's visibility settings.") + ' ' + help_link_public_pipelines).html_safe
 
         .form-group
           = f.gitlab_ui_checkbox_component :auto_cancel_pending_pipelines,

@@ -1,0 +1,6 @@
+mutation SetValidityChecks($input: SetValidityChecksInput!) {
+  setValidityChecks(input: $input) {
+    validityChecksEnabled
+    errors
+  }
+}

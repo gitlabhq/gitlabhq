@@ -40,6 +40,16 @@ module API
           desc: 'The Git trailer to use for determining if commits are to be included in the changelog',
           default: ::Repositories::ChangelogService::DEFAULT_TRAILER,
           documentation: { example: 'Changelog' }
+
+        optional :config_file,
+          type: String,
+          documentation: { example: '.gitlab/changelog_config.yml' },
+          desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
+
+        optional :config_file_ref,
+          type: String,
+          desc: 'The git reference (for example, branch) where the changelog configuration file is defined. Defaults to the default repository branch.',
+          documentation: { example: 'main' }
       end
     end
 
@@ -323,11 +333,6 @@ module API
       end
       params do
         use :release_params
-
-        optional :config_file,
-          type: String,
-          documentation: { example: '.gitlab/changelog_config.yml' },
-          desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
       end
       route_setting :authentication, job_token_allowed: true
       route_setting :authorization, job_token_policies: :read_releases,
@@ -360,11 +365,6 @@ module API
           type: String,
           desc: 'The branch to commit the changelog changes to',
           documentation: { example: 'main' }
-
-        optional :config_file,
-          type: String,
-          documentation: { example: '.gitlab/changelog_config.yml' },
-          desc: "The file path to the configuration file as stored in the project's Git repository. Defaults to '.gitlab/changelog_config.yml'"
 
         optional :file,
           type: String,

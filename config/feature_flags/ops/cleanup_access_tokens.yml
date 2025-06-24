@@ -1,0 +1,10 @@
+---
+name: cleanup_access_tokens
+description: A feature flag to control the background worker that deletes expired and revoked OAuth access tokens
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/521855
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194633
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549828
+milestone: '18.2'
+group: group::authentication
+type: ops
+default_enabled: false

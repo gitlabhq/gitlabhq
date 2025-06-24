@@ -421,8 +421,7 @@ class Projects::IssuesController < Projects::ApplicationController
     # Service Desk issues and incidents should not use the work item view
     !issue.from_service_desk? &&
       !issue.work_item_type&.incident? &&
-      (Feature.enabled?(:work_item_view_for_issues, project&.group) ||
-      current_user&.user_preference&.use_work_items_view)
+      Feature.enabled?(:work_item_view_for_issues, project&.group)
   end
 
   def work_item_redirect_except_actions

@@ -32,7 +32,7 @@ To change the visibility of your pipelines and related features:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **General pipelines**.
-1. Select or clear the **Public pipelines** checkbox.
+1. Select or clear the **Project-based pipeline visibility** checkbox.
    When it is selected, pipelines and related features are visible:
 
    - For [**Public**](../../user/public_access.md) projects, to everyone.
@@ -57,7 +57,7 @@ This setting has no effect when:
 
 - Project visibility is set to [**Internal** or **Private**](../../user/public_access.md),
   because non-project members cannot access internal or private projects.
-- The [**Public pipelines**](#change-which-users-can-view-your-pipelines) setting is disabled.
+- The [**Project-based pipeline visibility**](#change-which-users-can-view-your-pipelines) setting is disabled.
 
 To change the pipeline visibility for non-project members:
 

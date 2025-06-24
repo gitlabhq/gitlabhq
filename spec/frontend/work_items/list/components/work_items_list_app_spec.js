@@ -121,8 +121,8 @@ describeSkipVue3(skipReason, () => {
       ...window.gon,
       features: {
         workItemsClientSideBoards: false,
+        workItemViewForIssues: workItemsToggleEnabled,
       },
-      current_user_use_work_items_view: workItemsToggleEnabled,
     };
     wrapper = shallowMount(WorkItemsListApp, {
       router: createRouter({ fullPath: '/work_item' }),

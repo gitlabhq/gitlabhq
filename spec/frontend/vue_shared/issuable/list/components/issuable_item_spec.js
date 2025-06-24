@@ -377,7 +377,6 @@ describe('IssuableItem', () => {
       const confidentialContainer = wrapper.findByTestId('confidential-icon-container');
 
       expect(confidentialContainer.attributes('title')).toBe('Confidential');
-      expect(confidentialContainer.attributes('aria-label')).toBe('Confidential');
     });
 
     it('renders spam icon when issuable is hidden', () => {
