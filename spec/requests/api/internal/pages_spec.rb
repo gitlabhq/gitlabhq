@@ -114,7 +114,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                   },
                   'unique_host' => nil,
                   'root_directory' => deployment.root_directory,
-                  'primary_domain' => nil
+                  'primary_domain' => nil,
+                  'top_level_namespace_path' => project.namespace.root_ancestor.path
                 }
               ]
             )
@@ -184,7 +185,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                   },
                   'unique_host' => 'unique-domain.example.com',
                   'root_directory' => 'public',
-                  'primary_domain' => nil
+                  'primary_domain' => nil,
+                  'top_level_namespace_path' => project.namespace.root_ancestor.path
                 }
               ]
             )
@@ -229,7 +231,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                   },
                   'unique_host' => 'unique-domain.example.com',
                   'root_directory' => 'public',
-                  'primary_domain' => 'https://pages.io'
+                  'primary_domain' => 'https://pages.io',
+                  'top_level_namespace_path' => project.namespace.root_ancestor.path
                 }
               ]
             )
@@ -280,7 +283,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     },
                     'unique_host' => nil,
                     'root_directory' => 'public',
-                    'primary_domain' => nil
+                    'primary_domain' => nil,
+                    'top_level_namespace_path' => project.namespace.root_ancestor.path
                   }
                 ]
               )
@@ -439,7 +443,8 @@ RSpec.describe API::Internal::Pages, feature_category: :pages do
                     },
                     'unique_host' => nil,
                     'root_directory' => 'public',
-                    'primary_domain' => nil
+                    'primary_domain' => nil,
+                    'top_level_namespace_path' => project.namespace.root_ancestor.path
                   }
                 ]
               )

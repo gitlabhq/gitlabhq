@@ -129,13 +129,7 @@ class NamespaceSetting < ApplicationRecord
   private
 
   def set_pipeline_variables_default_role
-    # After FF  `change_namespace_default_role_for_pipeline_variables` rollout - we have to remove both FF and pipeline_variables_default_role = NO_ONE_ALLOWED_ROLE
-    # As any self-managed and Dedicated instance should opt-in by changing their namespace settings explicitly.
-    # NO_ONE_ALLOWED will be set as the default value for namespace_settings through a database migration.
-
-    # WARNING: Removing this FF could cause breaking changes for self-hosted and dedicated instances.
-
-    return if Feature.disabled?(:change_namespace_default_role_for_pipeline_variables, namespace)
+    return if Gitlab::CurrentSettings.pipeline_variables_default_allowed
 
     self.pipeline_variables_default_role = ProjectCiCdSetting::NO_ONE_ALLOWED_ROLE
   end

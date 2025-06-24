@@ -88,11 +88,19 @@ RSpec.describe 'NamespaceSettingsUpdate', feature_category: :pipeline_compositio
     end
 
     it 'does not update pipeline_variables_default_role if not specified' do
-      variables.except!(:pipeline_variables_default_role)
+      stub_application_setting(pipeline_variables_default_allowed: false)
 
-      request
+      # Create fresh namespace after stub to reflect the application setting
+      test_namespace = create(:group, :public)
+      test_namespace.add_owner(user)
 
-      expect(namespace.reload.namespace_settings.pipeline_variables_default_role).to eq('no_one_allowed')
+      test_variables = variables.merge(full_path: test_namespace.full_path)
+      test_variables.except!(:pipeline_variables_default_role)
+
+      test_mutation = graphql_mutation(:namespace_settings_update, test_variables, 'errors')
+      post_graphql_mutation(test_mutation, current_user: user)
+
+      expect(test_namespace.reload.namespace_settings.pipeline_variables_default_role).to eq('no_one_allowed')
     end
 
     context 'when bad arguments are provided' do

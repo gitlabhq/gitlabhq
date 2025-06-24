@@ -12,7 +12,8 @@ module API
             :source,
             :unique_host,
             :root_directory,
-            :primary_domain
+            :primary_domain,
+            :top_level_namespace_path
         end
       end
     end

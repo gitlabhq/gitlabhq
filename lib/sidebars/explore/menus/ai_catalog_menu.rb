@@ -11,7 +11,7 @@ module Sidebars # rubocop: disable Gitlab/BoundedContexts -- unknown
 
         override :title
         def title
-          s_('AI|AI Catalog')
+          s_('AICatalog|AI Catalog')
         end
 
         override :sprite_icon

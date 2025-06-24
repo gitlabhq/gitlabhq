@@ -274,7 +274,6 @@ export default {
     'ee/app/assets/javascripts/environments_dashboard/components/dashboard/environment.vue',
     'ee/app/assets/javascripts/external_issues_show/components/note.vue',
     'ee/app/assets/javascripts/geo_sites/components/header/geo_site_last_updated.vue',
-    'ee/app/assets/javascripts/invite_members/components/invite_modal_base.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_form.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedule.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/rotations/components/rotation_assignee.vue',

@@ -13,7 +13,7 @@ export default {
 
 <template>
   <div>
-    <page-heading :heading="s__('AI|AI Catalog')" />
+    <page-heading :heading="s__('AICatalog|AI Catalog')" />
     <ai-catalog-nav-tabs />
     <router-view />
   </div>

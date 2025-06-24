@@ -32,9 +32,8 @@ module Gitlab
           @path = path
           @attributes = {}
 
-          # assign nil, for all unknown opts
           PARAMS.each do |param|
-            @attributes[param] = opts[param]
+            @attributes[param] = opts[param] if opts.key?(param)
           end
         end
 

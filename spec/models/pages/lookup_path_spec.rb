@@ -6,11 +6,12 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   let(:trim_prefix) { nil }
   let(:path_prefix) { nil }
   let(:file_store) { ::ObjectStorage::Store::REMOTE }
-  let(:group) { build(:group, path: 'mygroup') }
+  let(:group) { create(:group, path: 'mygroup') }
+  let(:sub_group) { create(:group, name: 'mysubgroup', parent: group) }
   let(:access_control) { false }
 
   let(:deployment) do
-    build(
+    create(
       :pages_deployment,
       id: 1,
       project: project,
@@ -19,10 +20,10 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   let(:project) do
-    build(
+    create(
       :project,
       :pages_private,
-      group: group,
+      group: sub_group,
       path: 'myproject',
       pages_https_only: true)
   end
@@ -48,6 +49,12 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   describe '#project_id' do
     it 'delegates to Project#id' do
       expect(lookup_path.project_id).to eq(project.id)
+    end
+  end
+
+  describe '#top_level_namespace_path' do
+    it 'returns the top level namespace path' do
+      expect(lookup_path.top_level_namespace_path).to eq(group.path)
     end
   end
 

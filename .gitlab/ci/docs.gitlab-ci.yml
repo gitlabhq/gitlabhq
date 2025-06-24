@@ -192,9 +192,27 @@ docs-i18n-lint markdown:
     - 'echo "  link-fragments: false" >> .markdownlint-cli2.yaml'
     - source ./scripts/utils.sh
     - |
-      function docs_lint_markdown() {
+      function docs_i18n_lint_markdown() {
         install_gitlab_gem
-        scripts/lint-i18n-doc.sh
+        scripts/i18n_lint_doc.sh
       }
 
-      run_with_custom_exit_code docs_lint_markdown
+      run_with_custom_exit_code docs_i18n_lint_markdown
+
+# Verify localized documentation files have corresponding English versions
+docs-i18n-lint paths:
+  extends:
+    - .default-retry
+    - .docs:rules:docs-i18n-lint
+    - .docs-markdown-lint-image
+  stage: lint
+  needs: []
+  script:
+    - source ./scripts/utils.sh
+    - |
+      function docs_i18n_verify_paths() {
+        install_gitlab_gem
+        scripts/i18n_verify_paths.sh
+      }
+
+      run_with_custom_exit_code docs_i18n_verify_paths

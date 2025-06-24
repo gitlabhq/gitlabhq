@@ -303,7 +303,7 @@ RSpec.shared_context '"Explore" navbar structure' do
         nav_sub_items: []
       },
       {
-        nav_item: s_("AI|AI Catalog"),
+        nav_item: s_("AICatalog|AI Catalog"),
         nav_sub_items: []
       },
       {

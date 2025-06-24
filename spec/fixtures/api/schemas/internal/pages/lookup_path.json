@@ -69,6 +69,11 @@
         "string",
         "null"
       ]
+    },
+    "top_level_namespace_path": {
+      "type": [
+        "string"
+      ]
     }
   },
   "additionalProperties": false

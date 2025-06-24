@@ -57,6 +57,13 @@
         ]
       },
       "description": "Scope that the audit event belongs to"
+    },
+    "compliance_controls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Compliance controls that are evaluated for violation when this audit event is created"
     }
   },
   "required": [

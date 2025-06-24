@@ -116,12 +116,20 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
 
     context 'when a namespace is defined' do
-      let_it_be(:project) { create(:project, :with_namespace_settings) }
+      let(:project) { create(:project, :with_namespace_settings) }
 
-      it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'no_one_allowed'
+      it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'developer'
 
       it_behaves_like 'enables restrict_user_defined_variables', 'maintainer'
       it_behaves_like 'disables restrict_user_defined_variables', 'developer'
+
+      context 'when application setting `pipeline_variables_default_allowed` is false' do
+        before do
+          stub_application_setting(pipeline_variables_default_allowed: false)
+        end
+
+        it_behaves_like 'sets the default ci_pipeline_variables_minimum_override_role', 'no_one_allowed'
+      end
     end
 
     context 'when a namespace is not defined' do
@@ -133,9 +141,9 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
       it_behaves_like 'disables restrict_user_defined_variables', 'developer'
     end
 
-    context 'when feature flag `change_namespace_default_role_for_pipeline_variables` is disabled' do
+    context 'when application setting `pipeline_variables_default_allowed` is true' do
       before do
-        stub_feature_flags(change_namespace_default_role_for_pipeline_variables: false)
+        stub_application_setting(pipeline_variables_default_allowed: true)
       end
 
       context 'and a namespace is defined' do

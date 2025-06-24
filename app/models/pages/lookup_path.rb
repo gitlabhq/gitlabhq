@@ -71,6 +71,12 @@ module Pages
     end
     strong_memoize_attr :primary_domain
 
+    def top_level_namespace_path
+      project_path = project.full_path
+      project_path.split('/').first
+    end
+    strong_memoize_attr :top_level_namespace_path
+
     private
 
     attr_reader :project, :deployment, :trim_prefix, :domain

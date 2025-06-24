@@ -422,14 +422,14 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       let(:group) { create(:group) }
       let(:variables_default_role) { group.namespace_settings.pipeline_variables_default_role }
 
-      it { expect(variables_default_role).to eq('no_one_allowed') }
+      it { expect(variables_default_role).to eq('developer') }
 
-      context 'when feature flag `change_namespace_default_role_for_pipeline_variables` is disabled' do
+      context 'when application setting `pipeline_variables_default_allowed` is false' do
         before do
-          stub_feature_flags(change_namespace_default_role_for_pipeline_variables: false)
+          stub_application_setting(pipeline_variables_default_allowed: false)
         end
 
-        it { expect(variables_default_role).to eq('developer') }
+        it { expect(variables_default_role).to eq('no_one_allowed') }
       end
     end
 

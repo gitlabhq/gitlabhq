@@ -335,7 +335,8 @@
 
 .docs-i18n-patterns: &docs-i18n-patterns
   - "doc-locale/**/*"
-  - "scripts/lint-i18n-doc.sh"
+  - "scripts/i18n_lint_doc.sh"
+  - "scripts/i18n_verify_paths.sh"
 
 .if-tech-docs-localization: &if-tech-docs-localization
   if: '($CI_PROJECT_PATH == "gitlab-com/localization" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH) ||

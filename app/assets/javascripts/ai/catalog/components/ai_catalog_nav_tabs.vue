@@ -12,7 +12,7 @@ export default {
     tabs() {
       return [
         {
-          text: s__('AI|Agents'),
+          text: s__('AICatalog|Agents'),
           route: AI_CATALOG_AGENTS_ROUTE,
         },
       ];

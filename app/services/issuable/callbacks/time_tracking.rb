@@ -29,8 +29,11 @@ module Issuable
 
       def parse_timelog_data
         time_spent = params.dig(:timelog, :time_spent)
+
         parsed_time_spent = if time_spent == ":reset"
                               :reset
+                            elsif time_spent.is_a?(String) && !time_spent.match?(/\A\d/)
+                              raise_error(time_spent_must_start_with_number('Time spent'))
                             else
                               Gitlab::TimeTrackingFormatter.parse(time_spent)
                             end
@@ -52,6 +55,10 @@ module Issuable
 
       def invalid_time_spent_format(argument_name)
         format(_("%{argument_name} must be formatted correctly. For example: 1h 30m."), argument_name: argument_name)
+      end
+
+      def time_spent_must_start_with_number(argument_name)
+        format(_("%{argument_name} must start with a number."), argument_name: argument_name)
       end
     end
   end

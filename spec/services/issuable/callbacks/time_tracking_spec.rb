@@ -178,6 +178,14 @@ RSpec.describe Issuable::Callbacks::TimeTracking, feature_category: :team_planni
           let(:message) { 'Time spent must be formatted correctly. For example: 1h 30m.' }
         end
       end
+
+      context 'when time_spent does not start with a number' do
+        let(:params) { { timelog: { time_spent: "h" } } }
+
+        it_behaves_like 'raises an Error' do
+          let(:message) { 'Time spent must start with a number.' }
+        end
+      end
     end
   end
 end
