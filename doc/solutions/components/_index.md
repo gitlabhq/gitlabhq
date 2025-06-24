@@ -44,4 +44,4 @@ GitLab Metrics and KPI Dashboard and Solution
 
 ## Compliance and Best Practice
 
-[Guild on Separation of Duties](guild_on_sod.md)
+[Guide on Separation of Duties](guide_on_sod.md)

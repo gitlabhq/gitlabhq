@@ -7,15 +7,16 @@
 
 - add_page_startup_api_call milestone_tab_path(@milestone, 'issues', show_project_name: false)
 
-= render 'shared/milestones/header', milestone: @milestone
-= render 'shared/milestones/description', milestone: @milestone
-
-- if @milestone.complete? && @milestone.active?
+- if @milestone.complete? && @milestone.active? && can?(current_user, :admin_milestone, @group || @project)
   = render Pajamas::AlertComponent.new(variant: :success,
-    alert_options: { data: { testid: 'all-issues-closed-alert' }},
+    alert_options: { data: { testid: 'all-issues-closed-alert' }, class: 'gl-mt-5' },
     dismissible: false) do |c|
     - c.with_body do
       = _('All issues for this milestone are closed. You may close this milestone now.')
+
+= render 'shared/milestones/header', milestone: @milestone
+
+= render 'shared/milestones/description', milestone: @milestone
 
 = render_if_exists 'shared/milestones/burndown', milestone: @milestone, project: @project
 

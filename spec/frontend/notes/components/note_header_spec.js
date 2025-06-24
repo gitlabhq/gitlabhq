@@ -111,7 +111,7 @@ describe('NoteHeader component', () => {
         createdAt: '2017-08-02T10:51:58.559Z',
         noteId: 123,
       });
-      findTimestampLink().trigger('click');
+      findTimestampLink().vm.$emit('click');
 
       expect(actions.setTargetNoteHash).toHaveBeenCalled();
     });

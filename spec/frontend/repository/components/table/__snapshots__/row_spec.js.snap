@@ -52,6 +52,7 @@ exports[`Repository table row component renders a symlink table row 1`] = `
       <timeago-tooltip-stub
         cssclass=""
         datetimeformat="asDateTime"
+        href=""
         time="2019-01-01"
         tooltipplacement="top"
       />
@@ -112,6 +113,7 @@ exports[`Repository table row component renders table row 1`] = `
       <timeago-tooltip-stub
         cssclass=""
         datetimeformat="asDateTime"
+        href=""
         time="2019-01-01"
         tooltipplacement="top"
       />
@@ -172,6 +174,7 @@ exports[`Repository table row component renders table row for path with special 
       <timeago-tooltip-stub
         cssclass=""
         datetimeformat="asDateTime"
+        href=""
         time="2019-01-01"
         tooltipplacement="top"
       />

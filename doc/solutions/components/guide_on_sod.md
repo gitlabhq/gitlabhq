@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-title: GitLab Tutorial Guild on Separation of Duties
+title: GitLab Tutorial Guide on Separation of Duties
 ---
 
 {{< details >}}

@@ -19,9 +19,6 @@ export default {
     },
   },
   computed: {
-    hasKeys() {
-      return this.type !== '' && this.count;
-    },
     showTypeText() {
       return this.type && this.count && this.showOutput;
     },

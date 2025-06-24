@@ -7,7 +7,10 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
+import { createAlert, VARIANT_WARNING } from '~/alert';
 import { withItems, withoutItems } from './mocks/merge_requests_widget_metadata_query_mocks';
+
+jest.mock('~/alert');
 
 describe('MergeRequestsWidget', () => {
   Vue.use(VueApollo);
@@ -18,7 +21,8 @@ describe('MergeRequestsWidget', () => {
 
   useFakeDate(MOCK_CURRENT_TIME);
 
-  const mergeRequestsWidgetMetadataQueryHandler = (data) => jest.fn().mockResolvedValue(data);
+  const mergeRequestsWidgetMetadataQuerySuccessHandler = (data) =>
+    jest.fn().mockResolvedValue(data);
 
   let wrapper;
 
@@ -29,12 +33,13 @@ describe('MergeRequestsWidget', () => {
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
 
-  function createWrapper({ mergeRequestsWidgetMetadataQueryMock = withItems } = {}) {
+  function createWrapper({
+    mergeRequestsWidgetMetadataQueryHandler = mergeRequestsWidgetMetadataQuerySuccessHandler(
+      withItems,
+    ),
+  } = {}) {
     const mockApollo = createMockApollo([
-      [
-        mergeRequestsWidgetMetadataQuery,
-        mergeRequestsWidgetMetadataQueryHandler(mergeRequestsWidgetMetadataQueryMock),
-      ],
+      [mergeRequestsWidgetMetadataQuery, mergeRequestsWidgetMetadataQueryHandler],
     ]);
     wrapper = shallowMountExtended(MergeRequestsWidget, {
       apolloProvider: mockApollo,
@@ -60,13 +65,14 @@ describe('MergeRequestsWidget', () => {
   });
 
   describe('metadata', () => {
-    it('does not show any metadata until the query has resolved', () => {
+    it("shows the counts' loading state and no timestamp until the query has resolved", () => {
       createWrapper();
 
-      expect(findReviewRequestedCount().exists()).toBe(false);
       expect(findReviewRequestedLastUpdatedAt().exists()).toBe(false);
-      expect(findAssignedCount().exists()).toBe(false);
       expect(findAssignedLastUpdatedAt().exists()).toBe(false);
+
+      expect(findReviewRequestedCount().text()).toBe('-');
+      expect(findAssignedCount().text()).toBe('-');
     });
 
     it('shows the metadata once the query has resolved', async () => {
@@ -80,16 +86,38 @@ describe('MergeRequestsWidget', () => {
     });
 
     it('shows partial metadata when the user has no relevant items', async () => {
-      createWrapper({ mergeRequestsWidgetMetadataQueryMock: withoutItems });
+      createWrapper({
+        mergeRequestsWidgetMetadataQueryHandler:
+          mergeRequestsWidgetMetadataQuerySuccessHandler(withoutItems),
+      });
       await waitForPromises();
 
-      expect(findReviewRequestedCount().exists()).toBe(true);
       expect(findReviewRequestedLastUpdatedAt().exists()).toBe(false);
-      expect(findAssignedCount().exists()).toBe(true);
       expect(findAssignedLastUpdatedAt().exists()).toBe(false);
 
       expect(findReviewRequestedCount().text()).toBe('0');
       expect(findAssignedCount().text()).toBe('0');
+    });
+
+    it('shows an alert if the query errors out', async () => {
+      createWrapper({
+        mergeRequestsWidgetMetadataQueryHandler: () => jest.fn().mockRejectedValue(),
+      });
+      await waitForPromises();
+
+      expect(findReviewRequestedLastUpdatedAt().exists()).toBe(false);
+      expect(findAssignedLastUpdatedAt().exists()).toBe(false);
+
+      expect(findReviewRequestedCount().text()).toBe('-');
+      expect(findAssignedCount().text()).toBe('-');
+
+      expect(createAlert).toHaveBeenCalledWith({
+        error: expect.any(Object),
+        title: 'Number of merge requests not available',
+        message:
+          'The number of merge requests is not available. Please refresh the page to try again.',
+        variant: VARIANT_WARNING,
+      });
     });
   });
 });

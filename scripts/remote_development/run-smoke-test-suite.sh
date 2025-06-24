@@ -82,6 +82,9 @@ function run_rspec_fast {
 function run_jest {
   trap onexit_err ERR
 
+  printf "\n\n${BBlue}Running 'yarn check --integrity' and 'yarn install' if needed${Color_Off}\n\n"
+  yarn check --integrity || yarn install
+
   printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
   yarn jest ee/spec/frontend/workspaces
 }

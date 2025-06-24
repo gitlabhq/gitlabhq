@@ -42250,6 +42250,9 @@ msgstr ""
 msgid "Number of files touched"
 msgstr ""
 
+msgid "Number of merge requests not available"
+msgstr ""
+
 msgid "Number of namespaces per indexing rollout"
 msgstr ""
 
@@ -56914,6 +56917,9 @@ msgstr ""
 msgid "SecurityOrchestration|in timezone %{timezone}"
 msgstr ""
 
+msgid "SecurityOrchestration|instance policy"
+msgstr ""
+
 msgid "SecurityOrchestration|latest"
 msgstr ""
 
@@ -62338,6 +62344,9 @@ msgid "The number of changes to fetch from GitLab when cloning a repository. Low
 msgstr ""
 
 msgid "The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?"
+msgstr ""
+
+msgid "The number of merge requests is not available. Please refresh the page to try again."
 msgstr ""
 
 msgid "The number of merge requests merged by month."

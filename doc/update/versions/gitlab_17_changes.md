@@ -375,6 +375,10 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 
 If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
 
+### Geo installations 17.11.0
+
+- GitLab versions 17.11 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
+
 ## 17.10.0
 
 ### New encryption secrets
@@ -386,6 +390,10 @@ In GitLab 17.8, three new secrets have been added to support the new encryption 
 - `active_record_encryption_key_derivation_salt`
 
 If you have a multi-node configuration, you must [ensure these secrets are the same on all nodes](#unify-new-encryption-secrets).
+
+### Geo installations 17.10.0
+
+- GitLab versions 17.10 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve this issue, upgrade to GitLab 17.11.5 or later.
 
 ## 17.9.0
 
@@ -467,7 +475,7 @@ to identify and assess the compatibility of your external integrations.
 - Cloud Native GitLab (CNG) already upgraded to OpenSSL 3 in GitLab 16.7.0. If you are using Cloud Native GitLab, no
   action is needed. However, [Cloud Native Hybrid](../../administration/reference_architectures/_index.md#recommended-cloud-providers-and-services) installations
   use the Linux packages for stateful components, such as Gitaly. For those components, you will need to verify
-  the TLS versions, ciphers, and certificates that are used to work with the security level changes 
+  the TLS versions, ciphers, and certificates that are used to work with the security level changes
   in the following discussion.
 
 With the upgrade to OpenSSL 3:

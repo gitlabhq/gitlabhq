@@ -53,6 +53,12 @@ By default, the `SHA256` digest of the tokens are stored in the database, if no 
 
 {{< /alert >}}
 
+{{< alert type="note" >}}
+
+The `token_field_encrypted` column should always be indexed, because it is used to perform uniqueness checks and lookups on the token.
+
+{{< /alert >}}
+
 ### Other options
 
 - `unique: false`: Doesn't enforce token uniqueness and disables the generation of `find_by_token_field` (where `token_field` is the attribute name). Default is `true`.

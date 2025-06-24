@@ -1,6 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { createAlert, VARIANT_WARNING } from '~/alert';
+import { __ } from '~/locale';
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
 
 export default {
@@ -24,6 +26,7 @@ export default {
   data() {
     return {
       metadata: {},
+      hasFetchError: false,
     };
   },
   apollo: {
@@ -32,6 +35,17 @@ export default {
       update({ currentUser }) {
         return currentUser;
       },
+      error(error) {
+        this.hasFetchError = true;
+        createAlert({
+          title: __('Number of merge requests not available'),
+          message: __(
+            'The number of merge requests is not available. Please refresh the page to try again.',
+          ),
+          variant: VARIANT_WARNING,
+          error,
+        });
+      },
     },
   },
   computed: {
@@ -39,13 +53,25 @@ export default {
       return this.$apollo.queries.metadata.loading;
     },
     reviewRequestedCount() {
-      return this.metadata?.reviewRequestedMergeRequests?.count ?? 0;
+      if (
+        this.isLoadingMetadata ||
+        this.hasFetchError ||
+        this.metadata.reviewRequestedMergeRequests?.count === undefined
+      )
+        return '-';
+      return this.metadata.reviewRequestedMergeRequests.count;
     },
     reviewRequestedLastUpdatedAt() {
       return this.metadata?.reviewRequestedMergeRequests?.nodes?.[0]?.updatedAt ?? null;
     },
     assignedCount() {
-      return this.metadata?.assignedMergeRequests?.count ?? 0;
+      if (
+        this.isLoadingMetadata ||
+        this.hasFetchError ||
+        this.metadata.assignedMergeRequests?.count === undefined
+      )
+        return '-';
+      return this.metadata.assignedMergeRequests.count;
     },
     assignedLastUpdatedAt() {
       return this.metadata?.assignedMergeRequests?.nodes?.[0]?.updatedAt ?? null;
@@ -60,29 +86,41 @@ export default {
       <gl-icon name="merge-request" :size="16" />{{ __('Merge requests') }}
     </h4>
     <ul class="gl-list-none gl-p-0">
-      <li class="gl-flex gl-items-center gl-gap-3">
-        <gl-link :href="reviewRequestedPath">{{ __('Review requested') }}</gl-link>
-        <template v-if="!isLoadingMetadata">
+      <li>
+        <gl-link
+          class="gl-flex gl-items-center gl-gap-3 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+          variant="meta"
+          :href="reviewRequestedPath"
+        >
+          {{ __('Review requested') }}
           <gl-badge data-testid="review-requested-count">{{ reviewRequestedCount }}</gl-badge>
-          <span
-            v-if="reviewRequestedLastUpdatedAt"
-            data-testid="review-requested-last-updated-at"
-            class="gl-ml-auto gl-text-subtle"
-            >{{ timeFormatted(reviewRequestedLastUpdatedAt) }}</span
-          >
-        </template>
+          <template v-if="!isLoadingMetadata">
+            <span
+              v-if="reviewRequestedLastUpdatedAt"
+              data-testid="review-requested-last-updated-at"
+              class="gl-ml-auto gl-text-subtle"
+              >{{ timeFormatted(reviewRequestedLastUpdatedAt) }}</span
+            >
+          </template>
+        </gl-link>
       </li>
-      <li class="gl-flex gl-items-center gl-gap-3">
-        <gl-link :href="assignedToYouPath">{{ __('Assigned to you') }}</gl-link>
-        <template v-if="!isLoadingMetadata">
+      <li>
+        <gl-link
+          class="gl-flex gl-items-center gl-gap-3 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+          variant="meta"
+          :href="assignedToYouPath"
+        >
+          {{ __('Assigned to you') }}
           <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
-          <span
-            v-if="assignedLastUpdatedAt"
-            data-testid="assigned-last-updated-at"
-            class="gl-ml-auto gl-text-subtle"
-            >{{ timeFormatted(assignedLastUpdatedAt) }}</span
-          >
-        </template>
+          <template v-if="!isLoadingMetadata">
+            <span
+              v-if="assignedLastUpdatedAt"
+              data-testid="assigned-last-updated-at"
+              class="gl-ml-auto gl-text-subtle"
+              >{{ timeFormatted(assignedLastUpdatedAt) }}</span
+            >
+          </template>
+        </gl-link>
       </li>
     </ul>
   </div>

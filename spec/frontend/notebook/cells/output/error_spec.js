@@ -11,7 +11,6 @@ describe('notebook/cells/output/error.vue', () => {
     wrapper = mount(ErrorOutput, {
       propsData: {
         rawCode: errorOutputContent,
-        index: 1,
         count: 2,
       },
       provide: { relativeRawPath },
