@@ -35,6 +35,8 @@ class WorkItemPolicy < IssuePolicy
   rule { is_incident & ~can?(:reporter_access) }.policy do
     prevent :update_work_item
     prevent :admin_work_item
+    prevent :admin_work_item_link
+    prevent :admin_parent_link
   end
 
   rule { is_incident & ~can?(:owner_access) }.policy do
