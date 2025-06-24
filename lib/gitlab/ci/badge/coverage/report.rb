@@ -58,14 +58,20 @@ module Gitlab::Ci
         def raw_coverage
           latest =
             if @job.present?
-              builds = ::Ci::Build
-                .in_pipelines([successful_pipeline, running_pipeline, failed_pipeline])
-                .latest
-                .success
-                .for_ref(@ref)
-                .by_name(@job)
+              if Feature.enabled?(:show_job_badge_regardless_of_pipeline, @project)
+                pipeline_ids = @project.ci_pipelines.latest_pipelines_for_ref_by_statuses(@ref).map(&:id)
 
-              builds.max_by(&:created_at)
+                Ci::Build.in_pipelines(pipeline_ids).latest.success.by_name(@job).max_by(&:created_at)
+              else
+                builds = ::Ci::Build
+                  .in_pipelines([successful_pipeline, running_pipeline, failed_pipeline])
+                  .latest
+                  .success
+                  .for_ref(@ref)
+                  .by_name(@job)
+
+                builds.max_by(&:created_at)
+              end
             else
               successful_pipeline
             end

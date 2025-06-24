@@ -443,6 +443,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'RequirementsManagement::ImportRequirementsCsvWorker' => 3,
         'RequirementsManagement::ProcessRequirementsReportsWorker' => 3,
         'RunPipelineScheduleWorker' => 3,
+        'Sbom::BuildDependencyGraphWorker' => 2,
         'ScanSecurityReportSecretsWorker' => 17,
         'Search::ElasticGroupAssociationDeletionWorker' => 3,
         'Search::Elastic::CommitIndexerWorker' => 2,

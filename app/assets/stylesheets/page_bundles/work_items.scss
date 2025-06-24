@@ -21,6 +21,10 @@ $work-item-overview-gap-width: 2rem;
   container-type: inline-size;
 }
 
+.work-item-drawer {
+  transition: none;
+}
+
 @mixin container-and-media($query) {
   @container work-item-view (#{$query}) {
     @content;

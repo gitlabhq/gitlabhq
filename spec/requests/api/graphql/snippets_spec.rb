@@ -9,6 +9,11 @@ RSpec.describe 'snippets', feature_category: :source_code_management do
   let_it_be(:snippets) { create_list(:personal_snippet, 3, :repository, author: current_user) }
 
   describe 'querying for all fields' do
+    before do
+      # Mock the expensive blob highlighting operations
+      allow(Gitlab::Highlight).to receive(:highlight).and_return('mocked highlighted content')
+    end
+
     let(:query) do
       graphql_query_for(:snippets, { ids: [global_id_of(snippets.first)] }, <<~SELECT)
         nodes { #{all_graphql_fields_for('Snippet')} }

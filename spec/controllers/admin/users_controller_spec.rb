@@ -52,10 +52,19 @@ RSpec.describe Admin::UsersController, :with_current_organization, feature_categ
       end
     end
 
-    it 'eager loads authorized projects association' do
+    it 'eager loads required associations' do
       get :index
 
-      expect(assigns(:users).first.association(:authorized_projects)).to be_loaded
+      expect(assigns(:users).first.association(:trusted_with_spam_attribute)).to be_loaded
+      expect(assigns(:users).first.association(:identities)).to be_loaded
+    end
+
+    it 'avoids N+1 query', :use_sql_query_cache do
+      base_query_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { get :index }
+
+      create_list(:user, 3)
+
+      expect { get :index }.not_to exceed_query_limit(base_query_count)
     end
 
     context 'pagination' do

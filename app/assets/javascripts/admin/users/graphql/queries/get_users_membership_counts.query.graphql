@@ -1,8 +1,9 @@
-query getUsersGroupCounts($usernames: [String!]) {
+query getUsersMembershipCountsQuery($usernames: [String!]) {
   users(usernames: $usernames) {
     nodes {
       id
       groupCount
+      projectCount
     }
   }
 }

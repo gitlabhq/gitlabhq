@@ -32,12 +32,12 @@ export default {
       type: String,
       required: true,
     },
-    groupCounts: {
+    membershipCounts: {
       type: Object,
       required: false,
       default: () => ({}),
     },
-    groupCountsLoading: {
+    membershipCountsLoading: {
       type: Boolean,
       required: false,
       default: false,
@@ -123,6 +123,14 @@ export default {
       return this.availableFields.filter((field) => this.fieldsToRender.includes(field.key));
     },
   },
+  methods: {
+    groupCount(id) {
+      return this.membershipCounts[id]?.groupCount || 0;
+    },
+    projectCount(id) {
+      return this.membershipCounts[id]?.projectCount || 0;
+    },
+  },
   NO_USERS_SVG,
 };
 </script>
@@ -153,14 +161,15 @@ export default {
 
     <template #cell(groupCount)="{ item: { id } }">
       <div :data-testid="`user-group-count-${id}`">
-        <gl-skeleton-loader v-if="groupCountsLoading" :width="40" :lines="1" />
-        <span v-else>{{ groupCounts[id] || 0 }}</span>
+        <gl-skeleton-loader v-if="membershipCountsLoading" :width="40" :lines="1" />
+        <span v-else>{{ groupCount(id) }}</span>
       </div>
     </template>
 
-    <template #cell(projectsCount)="{ item: { id, projectsCount } }">
+    <template #cell(projectsCount)="{ item: { id } }">
       <div :data-testid="`user-project-count-${id}`">
-        {{ projectsCount || 0 }}
+        <gl-skeleton-loader v-if="membershipCountsLoading" :width="40" :lines="1" />
+        <span v-else>{{ projectCount(id) }}</span>
       </div>
     </template>
 

@@ -549,6 +549,16 @@ module Ci
         .index_by(&:ref)
     end
 
+    def self.latest_pipelines_for_ref_by_statuses(ref, statuses = AVAILABLE_STATUSES)
+      status_values = Arel::Nodes::ValuesList.new(statuses.map { |s| [s] }).to_sql
+      query = Arel.sql("status_values.status = #{quoted_table_name}.status")
+      join_query = for_ref(ref).where(query).order(id: :desc).limit(1)
+
+      Ci::Pipeline
+        .from(sanitize_sql_array(["(#{status_values}) AS status_values(status)"]))
+        .joins(sanitize_sql_array(["INNER JOIN LATERAL (#{join_query.to_sql}) #{quoted_table_name} ON TRUE"]))
+    end
+
     def self.latest_running_for_ref(ref)
       newest_first(ref: ref).running.take
     end

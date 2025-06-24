@@ -1,0 +1,10 @@
+---
+name: policy_violations_resolved
+description: Security policy violations are resolved in the merge request
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/549812
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193482
+milestone: '18.2'
+feature_category: security_policy_management
+saved_to_database: false
+streamed: true
+scope: [Project]

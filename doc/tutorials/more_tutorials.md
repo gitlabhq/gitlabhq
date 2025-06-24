@@ -1,18 +1,14 @@
 ---
-stage: none
-group: Tutorials
-info: For assistance with this tutorials page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments-to-other-projects-and-subjects.
-title: Find more tutorial content
+remove_date: '2025-09-24'
+redirect_to: 'gitlab_navigation.md'
 ---
 
-If you're learning about GitLab, to find more tutorial content:
+<!-- markdownlint-disable -->
 
-- Find learning tracks and certification options at [GitLab University](https://university.gitlab.com/).
+This document was moved to [another location](gitlab_navigation.md).
 
-- Find recent tutorials on the [GitLab blog](https://about.gitlab.com/blog/).
+<!-- This redirect file can be deleted after <2025-09-24>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
 
-- Browse the **GitLab Snapshots** [playlist on YouTube](https://www.youtube.com/playlist?list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
-  to find video tutorials.
-
-If you find an article, video, or other resource that would be a
-great addition to the tutorial pages, add it in a merge request.
+<!-- Before deletion, see: https://docs.gitlab.com/development/documentation/redirects -->

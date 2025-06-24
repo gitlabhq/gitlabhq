@@ -3129,6 +3129,35 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         end
       end
     end
+
+    describe '.latest_pipelines_for_ref_by_statuses' do
+      let_it_be(:ref1_success_old) { create(:ci_empty_pipeline, status: :success, ref: 'first_ref') }
+      let_it_be(:ref1_success) { create(:ci_empty_pipeline, status: :success, ref: 'first_ref') }
+      let_it_be(:ref1_failed) { create(:ci_empty_pipeline, status: :failed, ref: 'first_ref') }
+      let_it_be(:ref1_blocked) { create(:ci_empty_pipeline, status: :manual, ref: 'first_ref') }
+      let_it_be(:ref2_success) { create(:ci_empty_pipeline, status: :success, ref: 'second_ref') }
+
+      context 'when only a ref is passed in' do
+        subject(:latest_pipelines_for_ref_by_statuses) { described_class.latest_pipelines_for_ref_by_statuses(ref) }
+
+        let(:ref) { 'first_ref' }
+
+        it 'returns latest pipelines for all statuses by default' do
+          expect(latest_pipelines_for_ref_by_statuses).to match_array([ref1_success, ref1_failed, ref1_blocked])
+        end
+      end
+
+      context 'when a ref and status are passed in' do
+        subject(:latest_pipelines_for_ref_by_statuses) { described_class.latest_pipelines_for_ref_by_statuses(ref, statuses) }
+
+        let(:ref) { 'first_ref' }
+        let(:statuses) { %w[success failed] }
+
+        it 'returns latest pipelines for ref and statuses' do
+          expect(latest_pipelines_for_ref_by_statuses).to match_array([ref1_success, ref1_failed])
+        end
+      end
+    end
   end
 
   describe '.newest_first' do

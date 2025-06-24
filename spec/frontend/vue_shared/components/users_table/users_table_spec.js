@@ -5,7 +5,7 @@ import UsersTable from '~/vue_shared/components/users_table/users_table.vue';
 import UserAvatar from '~/vue_shared/components/users_table/user_avatar.vue';
 import UserDate from '~/vue_shared/components/user_date.vue';
 import { FIELD_NAME, FIELD_ORGANIZATION_ROLE } from '~/vue_shared/components/users_table/constants';
-import { MOCK_USERS, MOCK_ADMIN_USER_PATH, MOCK_GROUP_COUNTS } from './mock_data';
+import { MOCK_USERS, MOCK_ADMIN_USER_PATH, MOCK_MEMBERSHIP_COUNTS } from './mock_data';
 
 describe('UsersTable component', () => {
   let wrapper;
@@ -13,6 +13,10 @@ describe('UsersTable component', () => {
 
   const findUserGroupCount = (id) => wrapper.findByTestId(`user-group-count-${id}`);
   const findUserGroupCountLoader = (id) => findUserGroupCount(id).findComponent(GlSkeletonLoader);
+
+  const findUserProjectCount = (id) => wrapper.findByTestId(`user-project-count-${id}`);
+  const findUserProjectCountLoader = (id) => findUserGroupCount(id).findComponent(GlSkeletonLoader);
+
   const getCellByLabel = (trIdx, label) => {
     return wrapper
       .findComponent(GlTable)
@@ -27,8 +31,8 @@ describe('UsersTable component', () => {
       propsData: {
         users: MOCK_USERS,
         adminUserPath: MOCK_ADMIN_USER_PATH,
-        groupCounts: MOCK_GROUP_COUNTS,
-        groupCountsLoading: false,
+        membershipCounts: MOCK_MEMBERSHIP_COUNTS,
+        membershipCountsLoading: false,
         ...props,
       },
       scopedSlots,
@@ -38,10 +42,6 @@ describe('UsersTable component', () => {
   describe('when there are users', () => {
     beforeEach(() => {
       initComponent();
-    });
-
-    it('renders the projects count', () => {
-      expect(getCellByLabel(0, 'Projects').text()).toContain(`${user.projectsCount}`);
     });
 
     it.each`
@@ -64,34 +64,37 @@ describe('UsersTable component', () => {
     });
   });
 
-  describe('group counts', () => {
-    describe('when groupCountsLoading is true', () => {
+  describe('group and project counts', () => {
+    describe('when membershipCountsLoading is true', () => {
       beforeEach(() => {
-        initComponent({ groupCountsLoading: true });
+        initComponent({ membershipCountsLoading: true });
       });
 
       it('renders a loader for each user', () => {
         expect(findUserGroupCountLoader(user.id).exists()).toBe(true);
+        expect(findUserProjectCountLoader(user.id).exists()).toBe(true);
       });
     });
 
-    describe('when groupCounts has data', () => {
+    describe('when membershipCounts has data', () => {
       beforeEach(() => {
         initComponent();
       });
 
-      it("renders the user's group count", () => {
+      it("renders the user's group and project count", () => {
         expect(findUserGroupCount(user.id).text()).toBe('5');
+        expect(findUserProjectCount(user.id).text()).toBe('10');
       });
     });
 
-    describe('when groupCounts has no data', () => {
+    describe('when membershipCounts has no data', () => {
       beforeEach(() => {
-        initComponent({ groupCounts: {} });
+        initComponent({ membershipCounts: {} });
       });
 
-      it("renders the user's group count as 0", () => {
+      it("renders the user's group and project count as 0", () => {
         expect(findUserGroupCount(user.id).text()).toBe('0');
+        expect(findUserProjectCount(user.id).text()).toBe('0');
       });
     });
   });

@@ -1326,29 +1326,21 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     context 'when route_setting allows cluster agent token' do
       let(:route_authentication_setting) { { cluster_agent_token_allowed: true } }
 
-      context 'Authorization header is empty' do
+      context 'Gitlab-Agent-Api-Request header is empty' do
         it { is_expected.to be_nil }
       end
 
-      context 'Authorization header is incorrect' do
+      context 'Gitlab-Agent-Api-Request header does not matches the agent token' do
         before do
-          request.headers['Authorization'] = 'Bearer ABCD'
+          request.headers['Gitlab-Agent-Api-Request'] = 'ABCD'
         end
 
         it { is_expected.to be_nil }
       end
 
-      context 'Authorization header is malformed' do
+      context 'Gitlab-Agent-Api-Request header matches agent token' do
         before do
-          request.headers['Authorization'] = 'Bearer'
-        end
-
-        it { is_expected.to be_nil }
-      end
-
-      context 'Authorization header matches agent token' do
-        before do
-          request.headers['Authorization'] = "Bearer #{agent_token.token}"
+          request.headers['Gitlab-Agent-Api-Request'] = agent_token.token
         end
 
         it { is_expected.to eq(agent_token) }

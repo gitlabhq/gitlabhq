@@ -1,0 +1,10 @@
+---
+name: show_job_badge_regardless_of_pipeline
+description: We should show coverage badge for a specific job regardless of pipeline status
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/407242
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194521
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/549394
+milestone: '18.1'
+group: group::pipeline execution
+type: gitlab_com_derisk
+default_enabled: false

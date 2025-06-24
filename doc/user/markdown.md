@@ -1320,11 +1320,11 @@ you can quote that without having to manually prepend `>` to every line!
 >>>
 ```
 
-> > If you paste a message from somewhere else
-> >
-> > that spans multiple lines,
-> >
-> > you can quote that without having to manually prepend `>` to every line!
+> If you paste a message from somewhere else
+>
+> that spans multiple lines,
+>
+> you can quote that without having to manually prepend `>` to every line!
 
 ## Code spans and blocks
 

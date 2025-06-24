@@ -5,10 +5,10 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import AdminUsersApp from '~/admin/users/components/app.vue';
 import UserActions from '~/admin/users/components/user_actions.vue';
-import getUsersGroupCountsQuery from '~/admin/users/graphql/queries/get_users_group_counts.query.graphql';
+import getUsersMembershipCountsQuery from '~/admin/users/graphql/queries/get_users_membership_counts.query.graphql';
 import UsersTable from '~/vue_shared/components/users_table/users_table.vue';
 import { createAlert } from '~/alert';
-import { users, paths, createGroupCountResponse } from '../mock_data';
+import { users, paths, createMembershipCountResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 
@@ -18,18 +18,18 @@ describe('AdminUsersApp component', () => {
   let wrapper;
   const user = users[0];
 
-  const mockSuccessData = [{ id: user.id, groupCount: 5 }];
-  const mockParsedGroupCount = { 2177: 5 };
+  const mockSuccessData = [{ id: user.id, groupCount: 5, projectCount: 10 }];
+  const mockParsedMembershipCount = { 2177: { groupCount: 5, projectCount: 10 } };
   const mockError = new Error();
 
-  const createFetchGroupCount = (data) =>
-    jest.fn().mockResolvedValue(createGroupCountResponse(data));
+  const createFetchMembershipCount = (data) =>
+    jest.fn().mockResolvedValue(createMembershipCountResponse(data));
   const loadingResolver = jest.fn().mockResolvedValue(new Promise(() => {}));
   const errorResolver = jest.fn().mockRejectedValueOnce(mockError);
-  const successfulResolver = createFetchGroupCount(mockSuccessData);
+  const successfulResolver = createFetchMembershipCount(mockSuccessData);
 
   function createMockApolloProvider(resolverMock) {
-    const requestHandlers = [[getUsersGroupCountsQuery, resolverMock]];
+    const requestHandlers = [[getUsersMembershipCountsQuery, resolverMock]];
 
     return createMockApollo(requestHandlers);
   }
@@ -49,28 +49,28 @@ describe('AdminUsersApp component', () => {
   const findAllUserActions = () => wrapper.findAllComponents(UserActions);
 
   describe.each`
-    description                                   | mockResolver          | loading  | groupCounts             | error
-    ${'when API call is loading'}                 | ${loadingResolver}    | ${true}  | ${{}}                   | ${false}
-    ${'when API returns successful with results'} | ${successfulResolver} | ${false} | ${mockParsedGroupCount} | ${false}
-    ${'when API returns error'}                   | ${errorResolver}      | ${false} | ${{}}                   | ${true}
-  `('$description', ({ mockResolver, loading, groupCounts, error }) => {
+    description                                   | mockResolver          | loading  | membershipCounts             | error
+    ${'when API call is loading'}                 | ${loadingResolver}    | ${true}  | ${{}}                        | ${false}
+    ${'when API returns successful with results'} | ${successfulResolver} | ${false} | ${mockParsedMembershipCount} | ${false}
+    ${'when API returns error'}                   | ${errorResolver}      | ${false} | ${{}}                        | ${true}
+  `('$description', ({ mockResolver, loading, membershipCounts, error }) => {
     beforeEach(async () => {
       initComponent({}, mockResolver);
       await waitForPromises();
     });
 
-    it(`renders the UsersTable with group-counts-loading set to ${loading}`, () => {
-      expect(findUsersTable().props('groupCountsLoading')).toBe(loading);
+    it(`renders the UsersTable with membership-counts-loading set to ${loading}`, () => {
+      expect(findUsersTable().props('membershipCountsLoading')).toBe(loading);
     });
 
-    it('renders the UsersTable with the correct group-counts data', () => {
-      expect(findUsersTable().props('groupCounts')).toStrictEqual(groupCounts);
+    it('renders the UsersTable with the correct membership-counts data', () => {
+      expect(findUsersTable().props('membershipCounts')).toStrictEqual(membershipCounts);
     });
 
     it(`does ${error ? '' : 'not '}render an error message`, () => {
       return error
         ? expect(createAlert).toHaveBeenCalledWith({
-            message: 'Could not load user group counts. Please refresh the page to try again.',
+            message: 'Could not load user membership counts. Please refresh the page to try again.',
             error: mockError,
             captureError: true,
           })

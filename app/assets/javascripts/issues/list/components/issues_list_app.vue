@@ -217,6 +217,7 @@ export default {
   },
   data() {
     return {
+      showTooltip: false,
       exportCsvPathWithQuery: this.getExportCsvPathWithQuery(),
       filterTokens: [],
       issues: [],
@@ -294,6 +295,9 @@ export default {
     },
   },
   computed: {
+    dropdownTooltip() {
+      return !this.showTooltip ? this.$options.i18n.actionsLabel : '';
+    },
     queryVariables() {
       const isIidSearch = ISSUE_REFERENCE.test(this.searchQuery);
       return {
@@ -657,6 +661,12 @@ export default {
     window.removeEventListener('popstate', this.checkDrawerParams);
   },
   methods: {
+    showDropdown() {
+      this.showTooltip = true;
+    },
+    hideDropdown() {
+      this.showTooltip = false;
+    },
     // eslint-disable-next-line max-params
     fetchWithCache(path, cacheName, searchKey, search) {
       if (this.cache[cacheName]) {
@@ -1118,15 +1128,18 @@ export default {
             :group-id="groupId"
           />
           <gl-disclosure-dropdown
-            v-gl-tooltip.hover="$options.i18n.actionsLabel"
+            v-gl-tooltip
             category="tertiary"
             icon="ellipsis_v"
             no-caret
             :toggle-text="$options.i18n.actionsLabel"
+            :title="dropdownTooltip"
             text-sr-only
             data-testid="issues-list-more-actions-dropdown"
             toggle-class="!gl-m-0 gl-h-full"
             class="!gl-w-7"
+            @shown="showDropdown"
+            @hidden="hideDropdown"
           >
             <csv-import-export-buttons
               v-if="showCsvButtons"

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Badge::Coverage::Report do
+RSpec.describe Gitlab::Ci::Badge::Coverage::Report, feature_category: :continuous_integration do
   let_it_be(:project) { create(:project) }
   let_it_be(:success_pipeline) { create(:ci_pipeline, :success, project: project) }
   let_it_be(:running_pipeline) { create(:ci_pipeline, :running, project: project) }
@@ -92,6 +92,46 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Report do
 
         it 'returns the failed pipeline coverage value' do
           expect(badge.status).to eq(10.00)
+        end
+      end
+
+      context 'when latest pipeline for project is blocked' do
+        let_it_be(:blocked_pipeline) { create(:ci_pipeline, :blocked, project: project) }
+
+        context 'and the build has finished' do
+          let_it_be(:latest_build) { create(:ci_build, :success, pipeline: blocked_pipeline, coverage: 25, created_at: 1.second.ago, name: 'coverage') }
+
+          it 'returns the coverage for the build' do
+            expect(badge.status).to eq(25.00)
+          end
+
+          context 'with FF show_job_badge_regardless_of_pipeline disabled' do
+            before do
+              stub_feature_flags(show_job_badge_regardless_of_pipeline: false)
+            end
+
+            it 'returns previous build coverage' do
+              expect(badge.status).to eq(40.00)
+            end
+          end
+        end
+
+        context 'and the build failed' do
+          let_it_be(:latest_build) { create(:ci_build, :failed, pipeline: blocked_pipeline, coverage: 10, created_at: 1.second.ago, name: 'coverage') }
+
+          it 'reverts to the last successful job' do
+            expect(badge.status).to eq(40.00)
+          end
+
+          context 'with FF show_job_badge_regardless_of_pipeline disabled' do
+            before do
+              stub_feature_flags(show_job_badge_regardless_of_pipeline: false)
+            end
+
+            it 'returns previous build coverage' do
+              expect(badge.status).to eq(40.00)
+            end
+          end
         end
       end
     end

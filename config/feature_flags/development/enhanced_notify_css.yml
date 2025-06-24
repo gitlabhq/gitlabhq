@@ -1,8 +1,0 @@
----
-name: enhanced_notify_css
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78604
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/355907
-milestone: '14.9'
-type: development
-group: group::project management
-default_enabled: true

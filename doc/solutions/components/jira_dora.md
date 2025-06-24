@@ -2,7 +2,7 @@
 stage: Solutions Architecture
 group: Solutions Architecture
 info: This page is owned by the Solutions Architecture team.
-title: Jira Incident Replicator
+title: Jira to GitLab DORA Integration
 ---
 
 {{< details >}}
@@ -22,6 +22,8 @@ With GitLab, you can get visibility into [DORA metrics](../../user/analytics/dor
 While the first two metrics are generated from GitLab CI/CD and Merge Requests, the latter two depend on [GitLab incidents](../../operations/incident_management/manage_incidents.md) being created. 
 
 For teams using Jira for incident tracking, this means that incidents need to be replicated from Jira to GitLab in real-time. This project walks through setting up that replication.
+
+**NOTE**: A similar integration exists for issue replication to generate Value Stream Analytics metrics (Lead Time, Issues Created, and Issues Closed). If you're interested in issue replication for VSA metrics, refer to the [Jira to GitLab VSA Integration](jira_vsa.md).
 
 ## Architecture
 

@@ -14,6 +14,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
   end
 
   let(:jwt_secret) { SecureRandom.random_bytes(Gitlab::Kas::SECRET_LENGTH) }
+  let(:agent_token_headers) { { Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => agent_token.token } }
 
   before do
     allow(Gitlab::Kas).to receive(:secret).and_return(jwt_secret)
@@ -30,14 +31,14 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
   end
 
   shared_examples 'agent authentication' do
-    it 'returns 401 if Authorization header not sent' do
+    it 'returns 401 if Gitlab-Agent-Api-Request header not sent' do
       send_request
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
 
-    it 'returns 401 if Authorization is for non-existent agent' do
-      send_request(headers: { 'Authorization' => 'Bearer NONEXISTENT' })
+    it 'returns 401 if Gitlab-Agent-Api-Request is for non-existent agent' do
+      send_request(headers: { Gitlab::Kas::INTERNAL_API_AGENT_REQUEST_HEADER => 'NONEXISTENT' })
 
       expect(response).to have_gitlab_http_status(:unauthorized)
     end
@@ -46,24 +47,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
   shared_examples 'agent token tracking' do
     it 'tracks token usage' do
       expect do
-        send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+        send_request(headers: agent_token_headers)
       end.to change { agent_token.reload.read_attribute(:last_used_at) }
-    end
-  end
-
-  shared_examples 'error handling' do
-    let!(:agent_token) { create(:cluster_agent_token) }
-
-    # this test verifies fix for an issue where AgentToken passed in Authorization
-    # header broke error handling in the api_helpers.rb. It can be removed after
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/406582 is done
-    it 'returns correct error for the endpoint' do
-      allow(Gitlab::Kas).to receive(:verify_api_request).and_raise(StandardError.new('Unexpected Error'))
-
-      send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
-
-      expect(response).to have_gitlab_http_status(:internal_server_error)
-      expect(response.body).to include("Unexpected Error")
     end
   end
 
@@ -73,7 +58,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     include_examples 'authorization'
-    include_examples 'error handling'
 
     context 'is authenticated for an agent' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -253,7 +237,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     include_examples 'authorization'
-    include_examples 'error handling'
 
     context 'is authenticated for an agent' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -493,7 +476,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
 
     include_examples 'authorization'
-    include_examples 'error handling'
 
     context 'agent exists' do
       it 'configures the agent and returns a 204' do
@@ -516,14 +498,13 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
     end
   end
 
-  describe 'GET /internal/kubernetes/agent_info' do
+  describe 'GET /internal/agents/agentk/agent_info' do
     def send_request(headers: {}, params: {})
-      get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+      get api('/internal/agents/agentk/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
     end
 
     include_examples 'authorization'
     include_examples 'agent authentication'
-    include_examples 'error handling'
 
     context 'an agent is found' do
       let!(:agent_token) { create(:cluster_agent_token) }
@@ -534,7 +515,50 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       include_examples 'agent token tracking'
 
       it 'returns expected data', :aggregate_failures do
-        send_request(headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+        send_request(headers: agent_token_headers)
+
+        expect(response).to have_gitlab_http_status(:success)
+
+        expect(json_response).to match(
+          a_hash_including(
+            'project_id' => project.id,
+            'agent_id' => agent.id,
+            'agent_name' => agent.name,
+            'gitaly_info' => a_hash_including(
+              'address' => match(/\.socket$/),
+              'token' => 'secret'
+            ),
+            'gitaly_repository' => a_hash_including(
+              'storage_name' => project.repository_storage,
+              'relative_path' => project.disk_path + '.git',
+              'gl_repository' => "project-#{project.id}",
+              'gl_project_path' => project.full_path
+            ),
+            'default_branch' => project.default_branch_or_main
+          )
+        )
+      end
+    end
+  end
+
+  describe 'GET /internal/kubernetes/agent_info' do
+    def send_request(headers: {}, params: {})
+      get api('/internal/kubernetes/agent_info'), params: params, headers: headers.reverse_merge(jwt_auth_headers)
+    end
+
+    include_examples 'authorization'
+    include_examples 'agent authentication'
+
+    context 'an agent is found' do
+      let!(:agent_token) { create(:cluster_agent_token) }
+
+      let(:agent) { agent_token.agent }
+      let(:project) { agent.project }
+
+      include_examples 'agent token tracking'
+
+      it 'returns expected data', :aggregate_failures do
+        send_request(headers: agent_token_headers)
 
         expect(response).to have_gitlab_http_status(:success)
 
@@ -567,7 +591,6 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     include_examples 'authorization'
     include_examples 'agent authentication'
-    include_examples 'error handling'
 
     context 'an agent is found' do
       let_it_be(:agent_token) { create(:cluster_agent_token) }
@@ -578,7 +601,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         let(:project) { create(:project, :public) }
 
         it 'returns expected data', :aggregate_failures do
-          send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+          send_request(params: { id: project.id }, headers: agent_token_headers)
 
           expect(response).to have_gitlab_http_status(:success)
 
@@ -604,7 +627,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           let(:project) { create(:project, :public, :repository_private) }
 
           it 'returns 404' do
-            send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+            send_request(params: { id: project.id }, headers: agent_token_headers)
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
@@ -615,7 +638,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         let(:project) { create(:project, :private) }
 
         it 'returns 404' do
-          send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+          send_request(params: { id: project.id }, headers: agent_token_headers)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -624,7 +647,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           let(:agent_token) { create(:cluster_agent_token, agent: create(:cluster_agent, project: project)) }
 
           it 'returns 200' do
-            send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+            send_request(params: { id: project.id }, headers: agent_token_headers)
 
             expect(response).to have_gitlab_http_status(:success)
           end
@@ -635,7 +658,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
         let(:project) { create(:project, :internal) }
 
         it 'returns 404' do
-          send_request(params: { id: project.id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+          send_request(params: { id: project.id }, headers: agent_token_headers)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -643,7 +666,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
       context 'project does not exist' do
         it 'returns 404' do
-          send_request(params: { id: non_existing_record_id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+          send_request(params: { id: non_existing_record_id }, headers: agent_token_headers)
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
@@ -658,11 +681,10 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     include_examples 'authorization'
     include_examples 'agent authentication'
-    include_examples 'error handling'
 
     shared_examples 'access is granted' do
       it 'returns success response' do
-        send_request(params: { id: project_id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+        send_request(params: { id: project_id }, headers: agent_token_headers)
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
@@ -670,7 +692,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
 
     shared_examples 'access is denied' do
       it 'returns 404' do
-        send_request(params: { id: project_id }, headers: { 'Authorization' => "Bearer #{agent_token.token}" })
+        send_request(params: { id: project_id }, headers: agent_token_headers)
 
         expect(response).to have_gitlab_http_status(:not_found)
       end

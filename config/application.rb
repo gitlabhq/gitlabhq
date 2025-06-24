@@ -277,7 +277,6 @@ module Gitlab
     config.assets.precompile << "mailers/highlighted_diff_email.css"
     config.assets.precompile << "mailers/mailer.css"
     config.assets.precompile << "mailers/mailer_client_specific.css"
-    config.assets.precompile << "mailers/notify.css"
     config.assets.precompile << "mailers/notify_enhanced.css"
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/admin/elasticsearch_form.css"

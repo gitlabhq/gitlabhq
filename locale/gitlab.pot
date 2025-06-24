@@ -5158,7 +5158,7 @@ msgstr ""
 msgid "AdminUsers|Could not load custom admin roles."
 msgstr ""
 
-msgid "AdminUsers|Could not load user group counts. Please refresh the page to try again."
+msgid "AdminUsers|Could not load user membership counts. Please refresh the page to try again."
 msgstr ""
 
 msgid "AdminUsers|Create"
@@ -10409,9 +10409,6 @@ msgid "Blocked work items are not available for the current subscription tier"
 msgstr ""
 
 msgid "Blocking"
-msgstr ""
-
-msgid "Blocking epics"
 msgstr ""
 
 msgid "Blocking issues"
@@ -25157,16 +25154,10 @@ msgstr ""
 msgid "Epics|Something went wrong while fetching child epics."
 msgstr ""
 
-msgid "Epics|Something went wrong while fetching epics list."
-msgstr ""
-
 msgid "Epics|Something went wrong while moving item."
 msgstr ""
 
 msgid "Epics|Something went wrong while ordering item."
-msgstr ""
-
-msgid "Epics|Something went wrong while updating epics."
 msgstr ""
 
 msgid "Epics|This will also remove any descendents of %{bStart}%{targetEpicTitle}%{bEnd} from %{bStart}%{parentEpicTitle}%{bEnd}. Are you sure?"

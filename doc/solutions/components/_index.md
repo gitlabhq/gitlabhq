@@ -38,6 +38,14 @@ GitLab Metrics and KPI Dashboard and Solution
 
 [Security Metrics and KPIs Dashboard](securitykpi.md)
 
+Automatically sync Jira incidents to GitLab to unlock DORA metrics tracking. Real-time replication enables Change Failure Rate and Time to Restore Service measurement.
+
+[Jira to GitLab DORA Integration](jira_dora.md)
+
+Automatically sync Jira issues to GitLab to unlock VSA metrics tracking. Real-time replication enables Lead Time, Issues Created, and Issues Closed measurement.
+
+[Jira to GitLab VSA Integration](jira_vsa.md)
+
 ## GenAI and Data Science
 
 [Agentic Workflow: Apply Coding Style Guide](duo_workflow/duo_workflow_codestyle.md)

@@ -290,7 +290,7 @@ export default {
   <div class="info-well gl-mt-5 gl-flex-col sm:gl-flex">
     <div class="well-segment gl-flex gl-w-full gl-p-5">
       <gl-icon name="fork" :size="16" class="gl-m-4 gl-block gl-text-center" />
-      <div class="gl-flex gl-grow gl-items-center gl-justify-between">
+      <div class="gl-grow gl-items-center gl-justify-between gl-gap-3 sm:gl-flex">
         <div v-if="sourceName">
           {{ $options.i18n.forkedFrom }}
           <gl-link data-testid="forked-from-link" :href="sourcePath">{{ sourceName }}</gl-link>
@@ -309,26 +309,15 @@ export default {
         <div v-else data-testid="inaccessible-project" class="gl-flex gl-items-center">
           {{ $options.i18n.inaccessibleProject }}
         </div>
-        <div class="gl-hidden sm:gl-flex">
-          <gl-button
-            v-if="hasCreateMrButton"
-            class="gl-ml-4"
-            :href="createMrPath"
-            data-testid="create-mr-button"
-          >
+        <div class="gl-mt-3 sm:gl-mt-0">
+          <gl-button v-if="hasCreateMrButton" :href="createMrPath" data-testid="create-mr-button">
             <span>{{ $options.i18n.createMergeRequest }}</span>
           </gl-button>
-          <gl-button
-            v-if="hasViewMrButton"
-            class="gl-ml-4"
-            :href="viewMrPath"
-            data-testid="view-mr-button"
-          >
+          <gl-button v-if="hasViewMrButton" :href="viewMrPath" data-testid="view-mr-button">
             <span>{{ $options.i18n.viewMergeRequest }}</span>
           </gl-button>
           <gl-button
             v-if="hasUpdateButton"
-            class="gl-ml-4"
             :disabled="forkDetails.isSyncing"
             data-testid="update-fork-button"
             @click="checkIfSyncIsPossible"

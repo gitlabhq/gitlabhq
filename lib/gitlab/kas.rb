@@ -3,6 +3,7 @@
 module Gitlab
   module Kas
     INTERNAL_API_AGENTK_REQUEST_HEADER = 'Gitlab-Agentk-Api-Request'
+    INTERNAL_API_AGENT_REQUEST_HEADER = 'Gitlab-Agent-Api-Request'
     INTERNAL_API_KAS_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
     VERSION_FILE = 'GITLAB_KAS_VERSION'
     JWT_ISSUER = 'gitlab-kas'
