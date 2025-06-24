@@ -326,6 +326,34 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
     end
   end
 
+  describe '#mutable?' do
+    subject { rule.mutable? }
+
+    context 'when access levels are nil' do
+      let(:rule) do
+        build(
+          :container_registry_protection_tag_rule,
+          minimum_access_level_for_push: nil,
+          minimum_access_level_for_delete: nil
+        )
+      end
+
+      it { is_expected.to be(false) }
+    end
+
+    context 'when access levels are not nil' do
+      let(:rule) do
+        build(
+          :container_registry_protection_tag_rule,
+          minimum_access_level_for_push: Gitlab::Access::OWNER,
+          minimum_access_level_for_delete: Gitlab::Access::MAINTAINER
+        )
+      end
+
+      it { is_expected.to be(true) }
+    end
+  end
+
   describe '#immutable?' do
     subject { rule.immutable? }
 
@@ -409,6 +437,22 @@ RSpec.describe ContainerRegistry::Protection::TagRule, type: :model, feature_cat
 
         it { is_expected.to be(expected_result) }
       end
+    end
+  end
+
+  describe '#matches_tag_name?' do
+    let_it_be(:rule) { build(:container_registry_protection_tag_rule, tag_name_pattern: 'v1.*') }
+
+    subject { rule.matches_tag_name?(tag_name) }
+
+    where(:tag_name, :expected_result) do
+      'v1.0.0' | true
+      'v2.0.0' | false
+      ''       | false
+    end
+
+    with_them do
+      it { is_expected.to be(expected_result) }
     end
   end
 end

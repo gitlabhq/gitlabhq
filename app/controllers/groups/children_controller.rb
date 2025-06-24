@@ -56,14 +56,12 @@ module Groups
     end
 
     def descendants_params
-      params_copy = safe_params.merge(
+      safe_params.merge(
         sort: safe_params[:sort] || @group_projects_sort,
         active: Gitlab::Utils.to_boolean(safe_params[:active]),
         archived: Gitlab::Utils.to_boolean(safe_params[:archived], default: safe_params[:archived]),
         not_aimed_for_deletion: Gitlab::Utils.to_boolean(safe_params[:not_aimed_for_deletion])
-      )
-      params_copy.delete(:active) unless Feature.enabled?(:group_descendants_active_filter, current_user)
-      params_copy.compact
+      ).compact
     end
     strong_memoize_attr :descendants_params
 

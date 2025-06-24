@@ -65,6 +65,10 @@ module ContainerRegistry
         minimum_access_level_for_push.nil? && minimum_access_level_for_delete.nil?
       end
 
+      def mutable?
+        [minimum_access_level_for_push, minimum_access_level_for_delete].all?(&:present?)
+      end
+
       def can_be_deleted?(user)
         return false if user.nil?
         return true if user.can_admin_all_resources?
@@ -73,6 +77,10 @@ module ContainerRegistry
         minimum_level_to_delete_rule = immutable? ? Gitlab::Access::OWNER : Gitlab::Access::MAINTAINER
 
         minimum_level_to_delete_rule <= user_access_level
+      end
+
+      def matches_tag_name?(name)
+        ::Gitlab::UntrustedRegexp.new(tag_name_pattern).match?(name)
       end
 
       private

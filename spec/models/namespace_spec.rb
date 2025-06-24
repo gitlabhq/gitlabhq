@@ -47,6 +47,14 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to have_one(:deletion_schedule).class_name('Namespaces::DeletionSchedule') }
 
     it do
+      is_expected.to have_one(:namespace_settings_with_ancestors_inherited_settings)
+                       .class_name('NamespaceSetting')
+                       .with_foreign_key('namespace_id')
+                       .with_primary_key('id')
+                       .inverse_of(:namespace)
+    end
+
+    it do
       is_expected.to have_many(:bot_user_details)
                        .class_name('UserDetail')
                        .with_foreign_key(:bot_namespace_id)
@@ -1034,6 +1042,30 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       it 'returns false when not archived' do
         root.namespace_settings.update!(archived: false)
         expect(root.self_or_ancestor_archived?).to eq(false)
+      end
+    end
+
+    context 'when namespace_settings_with_ancestors_inherited_settings is loaded' do
+      before do
+        namespace.update!(archived: true)
+        namespace.namespace_settings_with_ancestors_inherited_settings
+      end
+
+      it 'does not execute additional queries' do
+        expect { namespace.self_or_ancestor_archived? }.to match_query_count(0)
+      end
+
+      context 'when namespace_settings is nil' do
+        before do
+          namespace.namespace_settings.destroy!
+          namespace.reload
+          namespace.namespace_settings_with_ancestors_inherited_settings
+        end
+
+        it 'does not raise an error and returns false' do
+          expect { namespace.self_or_ancestor_archived? }.not_to raise_error
+          expect(namespace.self_or_ancestor_archived?).to be false
+        end
       end
     end
   end

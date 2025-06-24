@@ -155,14 +155,8 @@ module ContainerRegistry
 
     def protection_rule
       result = nil
-      project.container_registry_protection_tag_rules.each do |rule|
-        next unless Gitlab::UntrustedRegexp.new(rule.tag_name_pattern).match?(name)
-
-        if rule.immutable?
-          return rule if Feature.enabled?(:container_registry_immutable_tags, project)
-
-          next
-        end
+      project.container_registry_protection_tag_rules.select(&:mutable?).each do |rule|
+        next unless rule.matches_tag_name?(name)
 
         result ||= ::ContainerRegistry::Protection::TagRule.new
         set_highest_protection_rule_access_level(result, rule)
@@ -173,12 +167,11 @@ module ContainerRegistry
     strong_memoize_attr :protection_rule
 
     def protected_for_delete?(user)
-      return true if user.nil?
-      return false if protection_rule.nil?
-      return true if protection_rule.immutable?
+      return true unless user
+      return false unless protection_rule
       return false if user.can_admin_all_resources?
 
-      max_access = repository.project.team.max_member_access(user.id)
+      max_access = project.team.max_member_access(user.id)
       protection_rule.delete_restricted?(max_access)
     end
 
@@ -205,3 +198,5 @@ module ContainerRegistry
     end
   end
 end
+
+ContainerRegistry::Tag.prepend_mod

@@ -968,7 +968,17 @@ class ApplicationSetting < ApplicationRecord
     allow_nil: false,
     inclusion: { in: [true, false], message: N_('must be a boolean value') }
 
+  jsonb_accessor :default_profile_preferences,
+    default_dark_syntax_highlighting_theme: [:integer, { default: 2 }]
+
+  validates :default_profile_preferences, json_schema: { filename: "application_setting_default_profile_preferences" }
+
   validates :default_syntax_highlighting_theme,
+    allow_nil: false,
+    numericality: { only_integer: true, greater_than: 0 },
+    inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }
+
+  validates :default_dark_syntax_highlighting_theme,
     allow_nil: false,
     numericality: { only_integer: true, greater_than: 0 },
     inclusion: { in: Gitlab::ColorSchemes.valid_ids, message: N_('must be a valid syntax highlighting theme ID') }

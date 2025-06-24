@@ -71,6 +71,7 @@ module ApplicationSettingImplementation
         default_projects_limit: Settings.gitlab['default_projects_limit'],
         default_snippet_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_syntax_highlighting_theme: 1,
+        default_dark_syntax_highlighting_theme: 2,
         deletion_adjourned_period: DEFAULT_NUMBER_OF_DAYS_BEFORE_REMOVAL,
         deny_all_requests_except_allowed: false,
         diff_max_patch_bytes: Gitlab::Git::Diff::DEFAULT_MAX_PATCH_BYTES,

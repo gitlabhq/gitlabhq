@@ -44,7 +44,7 @@ class UserPreference < ApplicationRecord
 
   validate :user_belongs_to_home_organization, if: :home_organization_changed?
 
-  attribute :dark_color_scheme_id, default: -> { Gitlab::CurrentSettings.default_syntax_highlighting_theme }
+  attribute :dark_color_scheme_id, default: -> { Gitlab::CurrentSettings.default_dark_syntax_highlighting_theme }
   attribute :tab_width, default: -> { Gitlab::TabWidth::DEFAULT }
   attribute :time_display_relative, default: true
   attribute :time_display_format, default: 0

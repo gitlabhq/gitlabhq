@@ -19,6 +19,28 @@ class NamespaceSetting < ApplicationRecord
 
   scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }
 
+  scope :with_ancestors_inherited_settings, -> {
+    # Get all columns except 'archived' since we're overriding it
+    other_columns = column_names.reject { |col| col == 'archived' }.map { |col| "#{table_name}.#{col}" }.join(', ')
+
+    select(<<-SQL)
+    #{other_columns},
+    CASE WHEN EXISTS (
+      SELECT 1 FROM #{table_name} ns2
+      JOIN namespaces n ON n.id = ns2.namespace_id
+      WHERE ns2.archived = true
+      AND n.id = ANY(
+        SELECT unnest(namespaces.traversal_ids)
+        FROM namespaces
+        WHERE namespaces.id = #{table_name}.namespace_id
+      )
+    ) THEN true
+    ELSE #{table_name}.archived
+    END AS archived
+    SQL
+      .joins(:namespace)
+  }
+
   belongs_to :namespace, inverse_of: :namespace_settings
 
   enum :jobs_to_be_done, { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5 }, suffix: true

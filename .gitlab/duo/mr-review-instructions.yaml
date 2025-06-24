@@ -4,6 +4,7 @@
 
 # References:
 # - Code Review Guidelines: https://docs.gitlab.com/development/code_review/
+# - Databse Review Guidelines: https://docs.gitlab.com/development/database_review/
 # - Developer Guide: https://docs.gitlab.com/operator/developer/guide/
 # - Contributing Guide: https://docs.gitlab.com/development/contributing/
 
@@ -12,6 +13,34 @@
 # multiple file patterns using glob syntax.
 
 instructions:
+  - name: Ruby Code Quality
+    fileFilters:
+      - "**/*.rb"
+      - "!spec/**/*"
+    instructions: |
+      1. Check for N+1 queries - use `includes()`, `preload()`, or `eager_load()`
+      2. Be cautious with `update_all`, `delete_all`, `destroy_all` methods
+      3. Consider query performance at GitLab.com scale
+      4. Ensure proper error handling and logging
+      5. Follow Ruby style conventions and DRY principles
+      6. Verify proper authorization checks
+
+  - name: Database Migrations
+    fileFilters:
+      - "db/migrate/**/*.rb"
+      - "db/post_migrate/**/*.rb"
+      - "ee/db/geo/migrate/**/*.rb"
+      - "lib/gitlab/background_migration/**/*.rb"
+    instructions: |
+      1. Migration MUST be reversible
+      2. Consider performance at GitLab.com scale
+      3. Use batched background migrations for large tables
+      4. Test index creation on large tables before migration
+      5. Use post-migrations for time-consuming operations
+      6. Ensure column removals were ignored in previous release
+      7. New tables need proper indexes, foreign keys, and fixtures
+      8. Update db/structure.sql and Database Dictionary
+
   - name: Test Coverage
     fileFilters:
       - "spec/**/*_spec.rb"

@@ -92,6 +92,9 @@ export default {
     authorId() {
       return getIdFromGid(this.author?.id);
     },
+    authorEmails() {
+      return this.author.emails?.nodes?.reduce((acc, node) => acc.concat(node.email), []);
+    },
     noteId() {
       return getIdFromGid(this.note?.id);
     },
@@ -288,6 +291,7 @@ export default {
           <note-actions
             :class="{ '-gl-mr-5': replyNote }"
             :author-id="authorId"
+            :author-emails="authorEmails"
             :show-edit="canEdit"
             :show-reply="canReply"
             :can-report-as-abuse="canReportAsAbuse"

@@ -70,7 +70,8 @@ To change the syntax highlighting theme:
 
 To view the updated syntax highlighting theme, refresh your project's page.
 
-To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#available-settings). Use `default_syntax_highlighting_theme` to change the syntax highlighting colors on a more granular level.
+To customize the syntax highlighting theme, you can also [use the Application settings API](../../api/settings.md#available-settings). Use `default_syntax_highlighting_theme` and `default_dark_syntax_highlighting_theme` to change the syntax highlighting colors on a more
+granular level.
 
 If these steps do not work, your programming language might not be supported by the syntax highlighters.
 For more information, view [Rouge Ruby Library](https://github.com/rouge-ruby/rouge) for guidance on code files and Snippets. View [Monaco Editor](https://microsoft.github.io/monaco-editor/) and [Monarch](https://microsoft.github.io/monaco-editor/monarch.html) for guidance on the Web IDE.

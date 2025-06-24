@@ -2404,6 +2404,9 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
+msgid "AICatalog|Edit agent"
+msgstr ""
+
 msgid "AISummary|Generates a summary of this issue"
 msgstr ""
 
@@ -13149,6 +13152,9 @@ msgid "CiVariables|Input variable key"
 msgstr ""
 
 msgid "CiVariables|Input variable value"
+msgstr ""
+
+msgid "CiVariables|Insufficient permissions to view Group CI/CD variable."
 msgstr ""
 
 msgid "CiVariables|Key"
@@ -54184,6 +54190,12 @@ msgstr ""
 msgid "ScanResultPolicy|%{listType} according to the %{buttonType}"
 msgstr ""
 
+msgid "ScanResultPolicy|Access Token"
+msgstr ""
+
+msgid "ScanResultPolicy|Access tokens"
+msgstr ""
+
 msgid "ScanResultPolicy|Add exception"
 msgstr ""
 
@@ -54226,6 +54238,9 @@ msgstr ""
 msgid "ScanResultPolicy|Allowlist or Denylist"
 msgstr ""
 
+msgid "ScanResultPolicy|Apply this approval rule to any branch or a specific protected branch."
+msgstr ""
+
 msgid "ScanResultPolicy|Attribute is:"
 msgstr ""
 
@@ -54244,10 +54259,16 @@ msgstr ""
 msgid "ScanResultPolicy|Choose criteria type"
 msgstr ""
 
+msgid "ScanResultPolicy|Choose which service accounts can bypass this policy."
+msgstr ""
+
 msgid "ScanResultPolicy|Clear all"
 msgstr ""
 
 msgid "ScanResultPolicy|Customized CI Variables"
+msgstr ""
+
+msgid "ScanResultPolicy|Define branch patterns that can bypass policy requirements using wildcards and regex patterns. Use * for simple wildcards or regex patterns for advanced matching."
 msgstr ""
 
 msgid "ScanResultPolicy|Define branch patterns that can bypass policy requirements using wildcards and regex patterns. Use * for simple wildcards or regex patterns for advanced matching. %{linkStart}Learn more%{linkEnd}."
@@ -54275,6 +54296,9 @@ msgid "ScanResultPolicy|Edit denylist"
 msgstr ""
 
 msgid "ScanResultPolicy|Enable automated systems and bots to bypass policies for approved workflows."
+msgstr ""
+
+msgid "ScanResultPolicy|Error occurred while fetching access tokens."
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -54403,9 +54427,6 @@ msgstr ""
 msgid "ScanResultPolicy|Override project approval settings"
 msgstr ""
 
-msgid "ScanResultPolicy|Personal Access Token"
-msgstr ""
-
 msgid "ScanResultPolicy|Policy Exception settings"
 msgstr ""
 
@@ -54436,6 +54457,9 @@ msgstr ""
 msgid "ScanResultPolicy|Protected branch settings"
 msgstr ""
 
+msgid "ScanResultPolicy|Recently created"
+msgstr ""
+
 msgid "ScanResultPolicy|Recommended settings"
 msgstr ""
 
@@ -54460,10 +54484,19 @@ msgstr ""
 msgid "ScanResultPolicy|Save denylist"
 msgstr ""
 
+msgid "ScanResultPolicy|Security team project"
+msgstr ""
+
 msgid "ScanResultPolicy|Select a scan type before adding criteria"
 msgstr ""
 
 msgid "ScanResultPolicy|Select all"
+msgstr ""
+
+msgid "ScanResultPolicy|Select group exceptions. Choose which groups can bypass this policy."
+msgstr ""
+
+msgid "ScanResultPolicy|Select instance group or project level access tokens that can bypass this policy."
 msgstr ""
 
 msgid "ScanResultPolicy|Select license types"
@@ -54475,7 +54508,13 @@ msgstr ""
 msgid "ScanResultPolicy|Select list type"
 msgstr ""
 
-msgid "ScanResultPolicy|Service accounts/tokens"
+msgid "ScanResultPolicy|Select role exceptions. Choose which roles can bypass this policy."
+msgstr ""
+
+msgid "ScanResultPolicy|Select token exceptions"
+msgstr ""
+
+msgid "ScanResultPolicy|Select tokens"
 msgstr ""
 
 msgid "ScanResultPolicy|Severity is:"
@@ -54487,7 +54526,13 @@ msgstr ""
 msgid "ScanResultPolicy|Status is:"
 msgstr ""
 
+msgid "ScanResultPolicy|Target project documentation"
+msgstr ""
+
 msgid "ScanResultPolicy|The product %{verb} use the selected licenses"
+msgstr ""
+
+msgid "ScanResultPolicy|There are no access tokens created"
 msgstr ""
 
 msgid "ScanResultPolicy|Unknown"
@@ -54542,6 +54587,9 @@ msgid "ScanResultPolicy|You can specify either a license state (allowlist or den
 msgstr ""
 
 msgid "ScanResultPolicy|You have selected all protected branches in this policy's rules. To better protect your project, you should leave this setting enabled. %{linkStart}What are the risks of allowing pushing and force pushing?%{linkEnd}"
+msgstr ""
+
+msgid "ScanResultPolicy|access token"
 msgstr ""
 
 msgid "ScanResultPolicy|allowlist (%{licenseCount} %{licenses})"
@@ -56156,6 +56204,12 @@ msgstr ""
 msgid "SecurityOrchestration|Maximum security policy project schedule rule count exceeded"
 msgstr ""
 
+msgid "SecurityOrchestration|Merge Release Security"
+msgstr ""
+
+msgid "SecurityOrchestration|Merge Request Security"
+msgstr ""
+
 msgid "SecurityOrchestration|Merge request approval"
 msgstr ""
 
@@ -56371,6 +56425,15 @@ msgstr ""
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr ""
 
+msgid "SecurityOrchestration|Runs comprehensive scans during release processes and when merging to main/production branches"
+msgstr ""
+
+msgid "SecurityOrchestration|Runs scans on a schedule for maintenance and continuous monitoring of protected branches"
+msgstr ""
+
+msgid "SecurityOrchestration|Runs scans on source branches targeting protected branches. Optimized for MR approval policy compatibility"
+msgstr ""
+
 msgid "SecurityOrchestration|Save allowlist"
 msgstr ""
 
@@ -56398,6 +56461,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan execution policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Scan execution strategy"
+msgstr ""
+
 msgid "SecurityOrchestration|Scan will automatically choose a runner to run on because there are no tags exist on runners. You can %{linkStart}create a new tag in settings%{linkEnd}."
 msgstr ""
 
@@ -56408,6 +56474,9 @@ msgid "SecurityOrchestration|Schedule the following pipeline execution policy to
 msgstr ""
 
 msgid "SecurityOrchestration|Schedule to run for %{branchSelector}"
+msgstr ""
+
+msgid "SecurityOrchestration|Scheduled Scanning"
 msgstr ""
 
 msgid "SecurityOrchestration|Scheduled pipeline"
@@ -63683,6 +63752,9 @@ msgid "This user is the author of this %{noteable}."
 msgstr ""
 
 msgid "This user is the author of this %{workItemType}."
+msgstr ""
+
+msgid "This user is the author of this page."
 msgstr ""
 
 msgid "This value is not valid."

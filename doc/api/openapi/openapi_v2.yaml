@@ -45948,6 +45948,12 @@ definitions:
       status:
         type: string
         example: online
+      job_execution_status:
+        type: string
+        enum:
+        - active
+        - idle
+        example: idle
     description: API_Entities_Ci_Runner model
   API_Entities_Ci_ResetTokenResult:
     type: object
@@ -50335,6 +50341,12 @@ definitions:
       status:
         type: string
         example: online
+      job_execution_status:
+        type: string
+        enum:
+        - active
+        - idle
+        example: idle
     description: API_Entities_Ci_RunnerManager model
   postApiV4ProjectsIdJobsJobIdCancel:
     type: object
@@ -63671,6 +63683,12 @@ definitions:
       status:
         type: string
         example: online
+      job_execution_status:
+        type: string
+        enum:
+        - active
+        - idle
+        example: idle
       tag_list:
         type: string
       run_untagged:

@@ -76,6 +76,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           'developer_can_initial_push' => false
         },
         default_ci_config_path: nil,
+        default_dark_syntax_highlighting_theme: 2,
         default_group_visibility: Settings.gitlab.default_projects_features['visibility_level'],
         default_project_creation: Settings.gitlab['default_project_creation'],
         default_project_visibility: Settings.gitlab.default_projects_features['visibility_level'],
@@ -1604,6 +1605,15 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
       it 'rejects invalid values for default syntax highlighting theme' do
         is_expected.not_to allow_value(nil, 0,
           Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_syntax_highlighting_theme)
+      end
+    end
+
+    context 'for default_dark_syntax_highlighting_theme' do
+      it { is_expected.to allow_value(*Gitlab::ColorSchemes.valid_ids).for(:default_dark_syntax_highlighting_theme) }
+
+      it 'rejects invalid values for default dark syntax highlighting theme' do
+        is_expected.not_to allow_value(nil, 0,
+          Gitlab::ColorSchemes.available_schemes.size + 1).for(:default_dark_syntax_highlighting_theme)
       end
     end
 

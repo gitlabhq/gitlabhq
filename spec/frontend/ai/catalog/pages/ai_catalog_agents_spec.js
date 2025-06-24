@@ -1,4 +1,4 @@
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
 
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -48,20 +48,20 @@ describe('AiCatalogAgents', () => {
   };
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findAllParagraphs = () => wrapper.findAll('p');
+  const findAllListItems = () => wrapper.findAll('li');
 
   describe('loading state', () => {
     it('shows skeleton loader when loading', () => {
       createComponent({ loading: true });
 
       expect(findSkeletonLoader().exists()).toBe(true);
-      expect(findAllParagraphs()).toHaveLength(0);
+      expect(findAllListItems()).toHaveLength(0);
     });
 
     it('does not show agent content when loading', () => {
       createComponent({ loading: true });
 
-      expect(findAllParagraphs()).toHaveLength(0);
+      expect(findAllListItems()).toHaveLength(0);
     });
   });
 
@@ -71,20 +71,23 @@ describe('AiCatalogAgents', () => {
     });
 
     it('displays agent names and descriptions correctly', () => {
-      const paragraphs = findAllParagraphs();
+      const listItems = findAllListItems();
 
-      // Should have 6 paragraphs total (2 per agent: name and description)
-      expect(paragraphs).toHaveLength(6);
+      expect(listItems).toHaveLength(3);
 
-      // Check agent names (even indices: 0, 2, 4)
-      expect(paragraphs.at(0).text()).toBe('Test Agent 1');
-      expect(paragraphs.at(2).text()).toBe('Test Agent 2');
-      expect(paragraphs.at(4).text()).toBe('Test Agent 3');
+      const listItem0 = listItems.at(0);
+      const listItem1 = listItems.at(1);
+      const listItem2 = listItems.at(2);
 
-      // Check agent descriptions (odd indices: 1, 3, 5)
-      expect(paragraphs.at(1).text()).toBe('Description for agent 1');
-      expect(paragraphs.at(3).text()).toBe('Description for agent 2');
-      expect(paragraphs.at(5).text()).toBe('Description for agent 3');
+      // Check agent names
+      expect(listItem0.findComponent(GlLink).text()).toBe('Test Agent 1');
+      expect(listItem1.findComponent(GlLink).text()).toBe('Test Agent 2');
+      expect(listItem2.findComponent(GlLink).text()).toBe('Test Agent 3');
+
+      // Check agent descriptions
+      expect(listItem0.find('p').text()).toBe('Description for agent 1');
+      expect(listItem1.find('p').text()).toBe('Description for agent 2');
+      expect(listItem2.find('p').text()).toBe('Description for agent 3');
     });
 
     it('does not show skeleton loader', () => {
@@ -97,8 +100,8 @@ describe('AiCatalogAgents', () => {
       await createComponent({ mockData: emptyAgentsData });
     });
 
-    it('renders no agent paragraphs', () => {
-      expect(findAllParagraphs()).toHaveLength(0);
+    it('renders no agent list items', () => {
+      expect(findAllListItems()).toHaveLength(0);
     });
 
     it('does not show skeleton loader', () => {

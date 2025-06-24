@@ -116,6 +116,7 @@ title: Application Settings analysis
 | `default_ci_config_path` | `false` | `character` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `default_group_visibility` | `false` | `integer` | `string` | `false` | `null` | `true` | `false`| `true` |
 | `default_preferred_language` | `false` | `text` | `string` | `true` | `'en'::text` | `false` | `false`| `true` |
+| `default_profile_preferences` | `false` | `jsonb` | `` | `true` | `'{}'::jsonb` | `false` | `true`| `false` |
 | `default_project_creation` | `false` | `integer` | `integer` | `true` | `2` | `false` | `false`| `true` |
 | `default_project_deletion_protection` | `false` | `boolean` | `boolean` | `true` | `false` | `false` | `false`| `true` |
 | `default_project_visibility` | `false` | `integer` | `string` | `true` | `0` | `false` | `false`| `true` |

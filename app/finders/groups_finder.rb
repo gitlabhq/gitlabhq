@@ -22,6 +22,8 @@
 #     include_ancestors: boolean (defaults to true)
 #     organization: Scope the groups to the Organizations::Organization
 #     active: boolean - filters for active groups.
+#     archived: boolean - default is nil which returns all groups, true returns only archived groups, and false returns
+#                         non archived groups
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -113,6 +115,7 @@ class GroupsFinder < UnionFinder
     groups = by_ids(groups)
     groups = top_level_only(groups)
     groups = marked_for_deletion_on(groups)
+    groups = by_archived(groups)
     by_search(groups)
   end
 
@@ -149,6 +152,12 @@ class GroupsFinder < UnionFinder
     return groups unless params[:marked_for_deletion_on].present?
 
     groups.marked_for_deletion_on(params[:marked_for_deletion_on])
+  end
+
+  def by_archived(groups)
+    return groups if params[:archived].nil?
+
+    params[:archived] ? groups.self_or_ancestors_archived : groups.self_and_ancestors_non_archived
   end
 
   def filter_group_ids(groups)

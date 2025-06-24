@@ -118,11 +118,11 @@ db:migrate:multi-version-upgrade:
 
       run_with_custom_exit_code db_migrate_multi_version_upgrade
 
-# Validate minimum PG version supported by GitLab
-db:migrate:multi-version-upgrade-pg14:
+# Validate PG version supported by GitLab
+db:migrate:multi-version-upgrade-pg17:
   extends:
     - db:migrate:multi-version-upgrade
-    - .use-pg14
+    - .use-pg17
 
 db:migrate:reset:
   extends: .db-job-base

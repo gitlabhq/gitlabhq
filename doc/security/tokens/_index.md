@@ -50,7 +50,7 @@ If access to other resources is required from a CI/CD job, use one of the follow
 
 Additional recommendations for [CI/CD variable security](../../ci/variables/_index.md#cicd-variable-security) include:
 
-- Use [secrets storage](../../ci/pipelines/pipeline_security.md#secrets-storage) for any credentials.
+- Use [secrets storage](../../ci/pipeline_security/_index.md#secrets-storage) for any credentials.
 - CI/CD variable containing sensitive information should be [protected](../../ci/variables/_index.md#protect-a-cicd-variable),
   [masked](../../ci/variables/_index.md#mask-a-cicd-variable), and [hidden](../../ci/variables/_index.md#hide-a-cicd-variable).
 

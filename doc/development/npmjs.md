@@ -29,7 +29,7 @@ fostering trust and consistency in the GitLab ecosystem.
    - **[Secret detection](../user/application_security/secret_detection/pipeline/_index.md)**
 1. Secure NPM tokens used for registry interactions:
    - Strongly consider using an external secret store like OpenBao or Vault
-   - At a minimum, store tokens [securely](../ci/pipelines/pipeline_security.md#cicd-variables) in environment variables
+   - At a minimum, store tokens [securely](../ci/pipeline_security/_index.md#cicd-variables) in environment variables
      in GitLab CI/CD pipelines, ensuring that masking and protection is enabled.
    - Do not store tokens on your local machine in unsecured locations. Instead, store tokens in 1Password and
      refrain from storing these secrets in unencrypted files like shell profiles, `.npmrc`, and `.env`.

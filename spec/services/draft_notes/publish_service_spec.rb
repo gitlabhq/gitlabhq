@@ -10,7 +10,8 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   let(:commit) { project.commit(sample_commit.id) }
   let(:internal) { false }
   let(:executing_user) { nil }
-  let(:service) { described_class.new(merge_request, user) }
+  let(:params) { {} }
+  let(:service) { described_class.new(merge_request, user, params) }
   let(:todo_service) { instance_double(TodoService) }
   let(:notification_service) { instance_double(NotificationService) }
 
@@ -166,6 +167,15 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
       stub_feature_flags(merge_request_dashboard: true)
 
       publish
+    end
+
+    context 'when passing draft note ids' do
+      let(:draft) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user, note: 'first note', commit_id: commit_id, position: position) }
+      let(:params) { { ids: [draft.id] } }
+
+      it 'publishes draft notes by ID' do
+        expect { publish }.to change { DraftNote.count }.by(-1).and change { Note.count }.by(1)
+      end
     end
 
     context 'capturing diff notes positions and keeping around commits' do

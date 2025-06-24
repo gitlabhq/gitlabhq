@@ -473,7 +473,14 @@ class Group < Namespace
     end
 
     def with_api_scopes
-      preload(:namespace_settings, :namespace_details, :group_feature, :parent, :deletion_schedule)
+      preload(
+        :namespace_settings,
+        :namespace_settings_with_ancestors_inherited_settings,
+        :namespace_details,
+        :group_feature,
+        :parent,
+        :deletion_schedule
+      )
     end
 
     # Handle project creation permissions based on application setting and group setting. The `default_project_creation`

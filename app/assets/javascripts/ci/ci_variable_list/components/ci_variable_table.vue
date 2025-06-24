@@ -85,6 +85,9 @@ export default {
     deleteButton: __('Delete'),
     modalDeleteTitle: s__('CiVariables|Delete variable'),
     modalDeleteMessage: s__('CiVariables|Do you want to delete the variable %{key}?'),
+    insufficientPermissions: s__(
+      'CiVariables|Insufficient permissions to view Group CI/CD variable.',
+    ),
   },
   props: {
     entity: {
@@ -339,6 +342,7 @@ export default {
         <template v-if="isInheritedGroupVars" #cell(group)="{ item }">
           <div class="-gl-mr-3 gl-flex gl-items-start gl-justify-end md:gl-justify-start">
             <gl-link
+              v-if="item.groupCiCdSettingsPath"
               :id="`ci-variable-group-${item.id}`"
               data-testid="ci-variable-table-row-cicd-path"
               class="gl-inline-block gl-max-w-full gl-break-anywhere"
@@ -346,6 +350,15 @@ export default {
             >
               {{ item.groupName }}
             </gl-link>
+            <span
+              v-else
+              v-gl-tooltip
+              :title="$options.i18n.insufficientPermissions"
+              data-testid="ci-variable-table-row-group-name"
+              class="gl-inline-block gl-max-w-full gl-break-anywhere"
+            >
+              {{ item.groupName }}
+            </span>
           </div>
         </template>
         <template v-if="!isInheritedGroupVars" #cell(actions)="{ item }">

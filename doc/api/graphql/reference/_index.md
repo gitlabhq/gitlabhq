@@ -30730,7 +30730,7 @@ A block of time for which a participant is on-call.
 
 ### `InheritedCiVariable`
 
-CI/CD variables a project inherites from its parent group and ancestors.
+CI/CD variables a project inherits from its parent group and ancestors.
 
 #### Fields
 

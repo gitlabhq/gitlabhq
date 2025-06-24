@@ -61,6 +61,9 @@ class Namespace < ApplicationRecord
   has_many :non_archived_projects, -> { where.not(archived: true) }, class_name: 'Project'
   has_many :project_statistics
   has_one :namespace_settings, inverse_of: :namespace, class_name: 'NamespaceSetting', autosave: true
+  has_one :namespace_settings_with_ancestors_inherited_settings, -> { with_ancestors_inherited_settings },
+    inverse_of: :namespace, class_name: 'NamespaceSetting', primary_key: :id, foreign_key: :namespace_id
+
   has_one :ci_cd_settings, inverse_of: :namespace, class_name: 'NamespaceCiCdSetting', autosave: true
   has_one :namespace_details, inverse_of: :namespace, class_name: 'Namespace::Detail', autosave: false
   has_one :namespace_statistics
@@ -431,6 +434,10 @@ class Namespace < ApplicationRecord
   end
 
   def self_or_ancestor_archived?
+    if association(:namespace_settings_with_ancestors_inherited_settings).loaded?
+      return !!namespace_settings_with_ancestors_inherited_settings&.archived
+    end
+
     self_and_ancestors.archived.exists?
   end
 

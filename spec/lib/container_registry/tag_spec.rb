@@ -459,14 +459,6 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
             minimum_access_level_for_push: Gitlab::Access::ADMIN,
             minimum_access_level_for_delete: Gitlab::Access::ADMIN
           )
-
-          create(
-            :container_registry_protection_tag_rule,
-            project: project,
-            tag_name_pattern: 'sample',
-            minimum_access_level_for_push: nil,
-            minimum_access_level_for_delete: nil
-          )
         end
 
         it 'returns the highest access level from the matching protection rules' do
@@ -480,26 +472,6 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           let(:tag) { described_class.new(repository, 'newname') }
 
           it { is_expected.to be_nil }
-        end
-
-        context 'when there are matching immutable rules' do
-          let(:tag) { described_class.new(repository, 'sample') }
-
-          it 'returns a matching immutable rule' do
-            is_expected.to have_attributes(
-              tag_name_pattern: 'sample',
-              minimum_access_level_for_push: nil,
-              minimum_access_level_for_delete: nil
-            )
-          end
-
-          context 'when the feature container_registry_immutable_tags is disabled' do
-            before do
-              stub_feature_flags(container_registry_immutable_tags: false)
-            end
-
-            it { is_expected.to be_nil }
-          end
         end
       end
 
@@ -519,16 +491,6 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
           tag_name_pattern: 'tag',
           minimum_access_level_for_delete: Gitlab::Access::OWNER
         )
-      end
-
-      context 'when there is an immutable tag rule' do
-        before do
-          allow(tag).to receive(:immutable_protection_rule).and_return(
-            build(:container_registry_protection_tag_rule, :immutable)
-          )
-        end
-
-        it { is_expected.to be_truthy }
       end
 
       context 'when there is no protection rule' do

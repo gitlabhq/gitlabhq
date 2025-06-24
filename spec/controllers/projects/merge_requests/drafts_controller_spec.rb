@@ -414,6 +414,16 @@ RSpec.describe Projects::MergeRequests::DraftsController, feature_category: :cod
       expect(Note.find(diff_note.id).discussion.notes.last.note).to eq(diff_draft_reply.note)
     end
 
+    it 'publishes draft notes by ID' do
+      draft1 = create(:draft_note, merge_request: merge_request, author: user)
+      create(:draft_note, merge_request: merge_request, author: user)
+
+      expect { post :publish, params: params.merge!(ids: [draft1.id]) }.to change { Note.count }.by(1)
+        .and change { DraftNote.count }.by(-1)
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
     it 'can publish just a single draft note' do
       draft_params = { merge_request: merge_request, author: user }
 

@@ -26,14 +26,131 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
     it { expect(setting.default_branch_protection_defaults).to eq({}) }
   end
 
-  describe '.for_namespaces' do
-    let(:setting_1) { create(:namespace_settings, namespace: namespace_1) }
-    let(:setting_2) { create(:namespace_settings, namespace: namespace_2) }
-    let_it_be(:namespace_1) { create(:namespace) }
-    let_it_be(:namespace_2) { create(:namespace) }
+  describe 'scopes' do
+    describe '.for_namespaces' do
+      let(:setting_1) { create(:namespace_settings, namespace: namespace_1) }
+      let(:setting_2) { create(:namespace_settings, namespace: namespace_2) }
+      let_it_be(:namespace_1) { create(:namespace) }
+      let_it_be(:namespace_2) { create(:namespace) }
 
-    it 'returns namespace setting for the given projects' do
-      expect(described_class.for_namespaces(namespace_1)).to contain_exactly(setting_1)
+      it 'returns namespace setting for the given projects' do
+        expect(described_class.for_namespaces(namespace_1)).to contain_exactly(setting_1)
+      end
+    end
+
+    describe '.with_ancestors_inherited_settings' do
+      let_it_be_with_reload(:root_group) { create(:group) }
+      let_it_be_with_reload(:child_group) { create(:group, parent: root_group) }
+      let_it_be_with_reload(:grandchild_group) { create(:group, parent: child_group) }
+
+      let_it_be_with_reload(:root_settings) { root_group.namespace_settings }
+      let_it_be_with_reload(:child_settings) { child_group.namespace_settings }
+      let_it_be_with_reload(:grandchild_settings) { grandchild_group.namespace_settings }
+
+      subject(:namespaces_with_ancestors_inherited_settings) { described_class.with_ancestors_inherited_settings }
+
+      context 'when no ancestors are archived' do
+        before do
+          root_settings.update!(archived: false)
+          child_settings.update!(archived: false)
+          grandchild_settings.update!(archived: false)
+        end
+
+        it 'returns the original archived value for each namespace' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          expect(results[root_group.id].archived).to be false
+          expect(results[child_group.id].archived).to be false
+          expect(results[grandchild_group.id].archived).to be false
+        end
+      end
+
+      context 'when root namespace is archived' do
+        before do
+          root_settings.update!(archived: true)
+          child_settings.update!(archived: false)
+          grandchild_settings.update!(archived: false)
+        end
+
+        it 'marks all descendants as archived' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          expect(results[root_group.id].archived).to be true
+          expect(results[child_group.id].archived).to be true
+          expect(results[grandchild_group.id].archived).to be true
+        end
+      end
+
+      context 'when middle namespace is archived' do
+        before do
+          root_settings.update!(archived: false)
+          child_settings.update!(archived: true)
+          grandchild_settings.update!(archived: false)
+        end
+
+        it 'marks only descendants of archived namespace as archived' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          expect(results[root_group.id].archived).to be false
+          expect(results[child_group.id].archived).to be true
+          expect(results[grandchild_group.id].archived).to be true
+        end
+      end
+
+      context 'when leaf namespace is archived' do
+        before do
+          root_settings.update!(archived: false)
+          child_settings.update!(archived: false)
+          grandchild_settings.update!(archived: true)
+        end
+
+        it 'only affects the leaf namespace itself' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          expect(results[root_group.id].archived).to be false
+          expect(results[child_group.id].archived).to be false
+          expect(results[grandchild_group.id].archived).to be true
+        end
+      end
+
+      context 'when multiple ancestors are archived' do
+        before do
+          root_settings.update!(archived: true)
+          child_settings.update!(archived: false)
+          grandchild_settings.update!(archived: true)
+        end
+
+        it 'inherits archived status from any archived ancestor' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          expect(results[root_group.id].archived).to be true
+          expect(results[child_group.id].archived).to be true
+          expect(results[grandchild_group.id].archived).to be true
+        end
+      end
+
+      context 'with separate namespace hierarchies' do
+        let_it_be(:other_root) { create(:group) }
+        let_it_be(:other_child) { create(:group, parent: other_root) }
+        let_it_be(:other_root_settings) { other_root.namespace_settings }
+        let_it_be(:other_child_settings) { other_child.namespace_settings }
+
+        before do
+          root_settings.update!(archived: true)
+        end
+
+        it 'does not affect unrelated namespace hierarchies' do
+          results = namespaces_with_ancestors_inherited_settings.index_by(&:namespace_id)
+
+          # First hierarchy - affected by root being archived
+          expect(results[root_group.id].archived).to be true
+          expect(results[child_group.id].archived).to be true
+
+          # Second hierarchy - unaffected
+          expect(results[other_root.id].archived).to be false
+          expect(results[other_child.id].archived).to be false
+        end
+      end
     end
   end
 

@@ -114,8 +114,8 @@ reuse diagrams. For example:
 Before you can enable PlantUML in GitLab, set up your own PlantUML
 server to generate the diagrams:
 
-- Recommended. [In Docker](#docker).
-- [In Debian/Ubuntu](#debianubuntu).
+- [Docker](#docker) (recommended)
+- [Debian/Ubuntu](#debianubuntu)
 
 ### Docker
 

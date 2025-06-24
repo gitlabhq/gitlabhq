@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Default profile preferences",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "default_dark_syntax_highlighting_theme": {
+      "type": "integer",
+      "description": "Default dark syntax highlighting theme id"
+    }
+  }
+}
