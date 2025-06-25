@@ -580,5 +580,7 @@ registries, as they:
 - Do not allow users to authenticate to:
   - The GitLab [container registry](../user/packages/container_registry/authenticate_with_container_registry.md).
   - Packages listed in the GitLab [Package registry](../user/packages/package_registry/_index.md).
+  - [Virtual registries](../user/packages/virtual_registry/_index.md).
 - Allow users to get, list, and delete registries through
   the [container registry API](container_registry.md).
+- Allow users to get, list, and delete registry objects through the [Maven virtual registry API](maven_virtual_registries.md).

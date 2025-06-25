@@ -12,6 +12,10 @@ module Gitlab
         tracker.enabled?
       end
 
+      def frontend_connect_directly_to_snowplow_collector?
+        Gitlab::CurrentSettings.snowplow_enabled? && !Gitlab::CurrentSettings.snowplow_collector_hostname.blank?
+      end
+
       def micro_verification_enabled?
         Gitlab::Utils.to_boolean(ENV['VERIFY_TRACKING'], default: false)
       end

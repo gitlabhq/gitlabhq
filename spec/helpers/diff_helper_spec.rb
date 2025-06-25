@@ -864,4 +864,40 @@ RSpec.describe DiffHelper, feature_category: :code_review_workflow do
 
     it { is_expected.to eq("#{diff_file.file_hash[0..8]}-heading") }
   end
+
+  describe "#hide_whitespace?" do
+    subject { helper.hide_whitespace? }
+
+    context 'when request has w param set' do
+      before do
+        allow(controller).to receive(:params) { { w: '1' } }
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when user is guest' do
+      before do
+        allow(helper).to receive(:current_user).and_return(nil)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when user has preference' do
+      before do
+        allow(helper).to receive_message_chain(:current_user, :show_whitespace_in_diffs).and_return(true)
+      end
+
+      it { is_expected.to be(false) }
+
+      context 'when request has w param set' do
+        before do
+          allow(controller).to receive(:params) { { w: '1' } }
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
 end

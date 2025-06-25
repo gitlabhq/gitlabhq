@@ -12,6 +12,10 @@ module Gitlab
         COOKIE_DOMAIN = '.gitlab.com'
         DEFAULT_URI = 'http://localhost:9090'
 
+        def initialize
+          super(DestinationConfiguration.snowplow_micro_configuration)
+        end
+
         override :snowplow_options
         def snowplow_options(group)
           # Using camel case as these keys will be used only in JavaScript
@@ -26,27 +30,6 @@ module Gitlab
         override :enabled?
         def enabled?
           true
-        end
-
-        override :hostname
-        def hostname
-          "#{uri.host}:#{uri.port}"
-        end
-
-        def uri
-          url = Gitlab.config.snowplow_micro.address
-          scheme = Gitlab.config.gitlab.https ? 'https' : 'http'
-          URI("#{scheme}://#{url}")
-        rescue GitlabSettings::MissingSetting
-          URI(DEFAULT_URI)
-        end
-        strong_memoize_attr :uri
-
-        private
-
-        override :protocol
-        def protocol
-          uri.scheme
         end
       end
     end

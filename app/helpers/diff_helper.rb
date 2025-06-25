@@ -295,6 +295,12 @@ module DiffHelper
     "#{diff_file.file_hash[0..8]}-heading"
   end
 
+  def hide_whitespace?
+    return params[:w] == '1' if params.key?(:w)
+
+    current_user.nil? || !current_user.show_whitespace_in_diffs
+  end
+
   private
 
   def cached_conflicts_with_types
@@ -338,12 +344,6 @@ module DiffHelper
   def diff_compare_whitespace_link(project, from, to, options)
     url = project_compare_path(project, from, to, params_with_whitespace)
     toggle_whitespace_link(url, options)
-  end
-
-  def hide_whitespace?
-    return params[:w] == '1' if params.key?(:w)
-
-    current_user.nil? || !current_user.show_whitespace_in_diffs
   end
 
   def toggle_whitespace_link(url, options)

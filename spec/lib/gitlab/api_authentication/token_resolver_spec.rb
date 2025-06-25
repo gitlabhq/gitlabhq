@@ -9,23 +9,9 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :syst
   let_it_be(:ci_job) { create(:ci_build, project: project, user: user, status: :running) }
   let_it_be(:ci_job_done) { create(:ci_build, project: project, user: user, status: :success) }
   let_it_be(:deploy_token) { create(:deploy_token, read_package_registry: true, write_package_registry: true) }
-
-  shared_examples 'an authorized request' do
-    it 'returns the correct token' do
-      expect(subject).to eq(token)
-    end
-  end
-
-  shared_examples 'an unauthorized request' do
-    it 'raises an error' do
-      expect { subject }.to raise_error(Gitlab::Auth::UnauthorizedError)
-    end
-  end
-
-  shared_examples 'an anoymous request' do
-    it 'returns nil' do
-      expect(subject).to eq(nil)
-    end
+  let_it_be(:oauth_application) { create(:oauth_application, owner: user) }
+  let_it_be(:oauth_token) do
+    create(:oauth_access_token, application_id: oauth_application.id, resource_owner_id: user.id, scopes: [:api])
   end
 
   describe '.new' do
@@ -45,7 +31,25 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :syst
   describe '#resolve' do
     let(:resolver) { described_class.new(type) }
 
-    subject { resolver.resolve(raw) }
+    subject(:resolve) { resolver.resolve(raw) }
+
+    shared_examples 'an authorized request' do
+      it 'returns the correct token' do
+        expect(resolve).to eq(token)
+      end
+    end
+
+    shared_examples 'an unauthorized request' do
+      it 'raises an error' do
+        expect { resolve }.to raise_error(Gitlab::Auth::UnauthorizedError)
+      end
+    end
+
+    shared_examples 'an anoymous request' do
+      it 'returns nil' do
+        expect(resolve).to eq(nil)
+      end
+    end
 
     context 'with :personal_access_token_with_username' do
       let(:type) { :personal_access_token_with_username }
@@ -213,6 +217,32 @@ RSpec.describe Gitlab::APIAuthentication::TokenResolver, feature_category: :syst
 
       context 'with an invalid job token' do
         let(:raw) { username_and_password_from_jwt('not a valid CI job token') }
+
+        it_behaves_like 'an unauthorized request'
+      end
+    end
+
+    context 'with :oauth_token' do
+      let(:type) { :oauth_token }
+      let(:token) { oauth_token }
+
+      context 'with valid credentials' do
+        let(:raw) { username_and_password(nil, oauth_token.plaintext_token) }
+
+        it_behaves_like 'an authorized request'
+
+        it 'refreshes token expiry and links the composite identity' do
+          expect_next_found_instance_of(OauthAccessToken) do |token|
+            expect(token).to receive(:revoke_previous_refresh_token!)
+            expect(::Gitlab::Auth::Identity).to receive(:link_from_oauth_token).with(token)
+          end
+
+          resolve
+        end
+      end
+
+      context 'with invalid credentials' do
+        let(:raw) { username_and_password(nil, 'invalid') }
 
         it_behaves_like 'an unauthorized request'
       end

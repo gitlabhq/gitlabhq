@@ -451,6 +451,8 @@ You can include additional instructions to be considered. For example:
 - Focus on performance, for example `/refactor improving performance`.
 - Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
 
+`/refactor` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
+
 For more information, see:
 
 - <i class="fa-youtube-play" aria-hidden="true"></i> [Application modernization with GitLab Duo (C++ to Java)](https://youtu.be/FjoAmt5eeXA?si=SLv9Mv8eSUAVwW5Z).
@@ -492,6 +494,8 @@ You can include additional instructions to be considered. For example:
 - Focus on code performance problems, for example, `/fix performance problems`.
 - Focus on fixing the build when the code does not compile, for example, `/fix the build`.
 
+`/fix` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
+
 ## Write tests in the IDE
 
 {{< details >}}
@@ -526,6 +530,8 @@ You can include additional instructions to be considered. For example:
 - Focus on extreme test cases, for example `/tests focus on extreme cases, force regression testing`.
 - Focus on performance, for example `/tests focus on performance`.
 - Focus on regressions and potential exploits, for example `/tests focus on regressions and potential exploits`.
+
+`/tests` uses [Repository X-Ray](../project/repository/code_suggestions/repository_xray.md) to deliver more accurate, context-aware suggestions.
 
 For more information, see [Use GitLab Duo Chat in VS Code](_index.md#use-gitlab-duo-chat-in-vs-code).
 

@@ -10855,7 +10855,8 @@ CREATE TABLE bulk_import_export_batches (
     error text,
     project_id bigint,
     group_id bigint,
-    CONSTRAINT check_046dc60dfe CHECK ((char_length(error) <= 255))
+    CONSTRAINT check_046dc60dfe CHECK ((char_length(error) <= 255)),
+    CONSTRAINT check_31f6b54459 CHECK ((num_nonnulls(group_id, project_id) = 1))
 );
 
 CREATE SEQUENCE bulk_import_export_batches_id_seq

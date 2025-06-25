@@ -17,6 +17,9 @@ module Gitlab
         http_private_token_header
         http_header
         token_param
+        private_token_param
+        job_token_param
+        access_token_param
       ].freeze
 
       attr_reader :location
@@ -31,21 +34,27 @@ module Gitlab
       def extract(request)
         case @location
         when :http_basic_auth
-          extract_from_http_basic_auth request
+          extract_from_http_basic_auth(request)
         when :http_token
-          extract_from_http_token request
+          extract_from_http_token(request)
         when :http_bearer_token
-          extract_from_http_bearer_token request
+          extract_from_http_bearer_token(request)
         when :http_deploy_token_header
-          extract_from_http_deploy_token_header request
+          extract_from_http_deploy_token_header(request)
         when :http_job_token_header
-          extract_from_http_job_token_header request
+          extract_from_http_job_token_header(request)
         when :http_private_token_header
-          extract_from_http_private_token_header request
+          extract_from_http_private_token_header(request)
         when :http_header
-          extract_from_http_header request
+          extract_from_http_header(request)
         when :token_param
-          extract_from_token_param request
+          extract_from_query_param(request, 'token')
+        when :private_token_param
+          extract_from_query_param(request, 'private_token')
+        when :job_token_param
+          extract_from_query_param(request, 'job_token')
+        when :access_token_param
+          extract_from_query_param(request, 'access_token')
         end
       end
 
@@ -103,15 +112,15 @@ module Gitlab
         UsernameAndPassword.new(nil, password)
       end
 
-      def extract_from_token_param(request)
-        password = request.query_parameters['token']
+      def extract_from_http_header(request)
+        password = request.headers[@token_identifier]
         return unless password.present?
 
         UsernameAndPassword.new(nil, password)
       end
 
-      def extract_from_http_header(request)
-        password = request.headers[@token_identifier]
+      def extract_from_query_param(request, param_name)
+        password = request.query_parameters[param_name]
         return unless password.present?
 
         UsernameAndPassword.new(nil, password)

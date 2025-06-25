@@ -150,14 +150,11 @@ class Projects::CommitController < Projects::ApplicationController
     return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
       ::Feature.enabled?(:rapid_diffs_on_commit_show, current_user, type: :wip)
 
-    streaming_offset = 5
-    @reload_stream_url = diffs_stream_url(@commit)
-    @stream_url = diffs_stream_url(@commit, streaming_offset, diff_view)
-    @diffs_slice = @commit.first_diffs_slice(streaming_offset, commit_diff_options)
-    @diff_files_endpoint = diff_files_metadata_namespace_project_commit_path
-    @diff_file_endpoint = diff_file_namespace_project_commit_path
-    @diffs_stats_endpoint = diffs_stats_namespace_project_commit_path
-    @update_current_user_path = expose_path(api_v4_user_preferences_path)
+    @rapid_diffs_presenter = RapidDiffs::CommitPresenter.new(
+      @commit,
+      diff_view,
+      commit_diff_options
+    )
 
     show
   end
@@ -275,16 +272,6 @@ class Projects::CommitController < Projects::ApplicationController
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @diffs.size
-  end
-
-  def diffs_stream_resource_url(commit, offset, diff_view)
-    diffs_stream_namespace_project_commit_path(
-      namespace_id: commit.project.namespace.to_param,
-      project_id: commit.project.to_param,
-      id: commit.id,
-      offset: offset,
-      view: diff_view
-    )
   end
 
   def rate_limit_for_expanded_diff_files

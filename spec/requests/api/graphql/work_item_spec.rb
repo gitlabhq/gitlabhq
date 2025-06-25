@@ -877,7 +877,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 { "type" => "NOTIFICATIONS" },
                 { "type" => "PARTICIPANTS" },
                 { "type" => "START_AND_DUE_DATE" },
-                { "type" => "TIME_TRACKING" }
+                { "type" => "TIME_TRACKING" },
+                { "type" => "LINKED_RESOURCES" }
               ]
             )
           end

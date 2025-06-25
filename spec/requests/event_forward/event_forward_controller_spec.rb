@@ -19,12 +19,11 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
 
   before do
     allow(Gitlab::Tracking).to receive(:tracker).and_return(tracker)
-    allow(tracker).to receive(:emit_event_payload)
+    allow(tracker).to receive_messages(emit_event_payload: nil, enabled?: true, hostname: 'localhost')
     allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:new).and_return(event_eligibility_checker)
     allow(event_eligibility_checker).to receive(:eligible?).and_return(true)
     allow(EventForward::Logger).to receive(:build).and_return(logger)
     allow(logger).to receive(:info)
-    stub_feature_flags(collect_product_usage_events: true)
   end
 
   describe 'POST #forward' do
@@ -73,20 +72,6 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
 
       expect(response).to have_gitlab_http_status(:ok)
       expect(response.body).to be_empty
-    end
-
-    context 'when feature flag is disabled' do
-      before do
-        stub_feature_flags(collect_product_usage_events: false)
-      end
-
-      it 'returns 404 and do not call tracker' do
-        expect(tracker).not_to receive(:emit_event_payload)
-
-        request
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
     end
 
     context 'when filtering events by eligibility' do

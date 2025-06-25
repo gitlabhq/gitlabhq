@@ -104,13 +104,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def rapid_diffs
     return render_404 unless rapid_diffs_page_enabled?
 
-    streaming_offset = 5
-    @reload_stream_url = diffs_stream_url(@merge_request)
-    @stream_url = diffs_stream_url(@merge_request, streaming_offset, diff_view)
-    @diffs_slice = @merge_request.first_diffs_slice(streaming_offset, diff_options)
-    @diff_files_endpoint = diff_files_metadata_namespace_project_merge_request_path
-    @diff_file_endpoint = diff_file_namespace_project_merge_request_path
-    @diffs_stats_endpoint = diffs_stats_namespace_project_merge_request_path
+    @rapid_diffs_presenter = ::RapidDiffs::MergeRequestPresenter.new(
+      @merge_request,
+      diff_view,
+      diff_options
+    )
 
     show_merge_request
   end
@@ -676,16 +674,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
     payload[:metadata] ||= {}
     payload[:metadata]['meta.diffs_files_count'] = @merge_request.merge_request_diff.files_count
-  end
-
-  def diffs_stream_resource_url(merge_request, offset, diff_view)
-    diffs_stream_namespace_project_merge_request_path(
-      id: merge_request.iid,
-      project_id: merge_request.project.to_param,
-      namespace_id: merge_request.project.namespace.to_param,
-      offset: offset,
-      view: diff_view
-    )
   end
 
   def display_limit_warnings

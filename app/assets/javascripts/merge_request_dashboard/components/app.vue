@@ -170,6 +170,7 @@ export default {
               }"
             >
               <collapsible-section
+                :id="list.id"
                 :count="count"
                 :has-merge-requests="mergeRequests.length > 0"
                 :title="list.title"

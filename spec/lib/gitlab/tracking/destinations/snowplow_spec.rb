@@ -43,6 +43,10 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     describe '#event' do
       context 'when event is eligible' do
         before do
+          allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
+            allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
+          end
+
           expect(SnowplowTracker::AsyncEmitter)
             .to receive(:new)
                   .with(endpoint: 'gitfoo.com',
@@ -114,6 +118,10 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     it "initializes POST emitter with buffer_size 1" do
       allow(SnowplowTracker::Tracker).to receive(:new).and_return(tracker)
       allow(tracker).to receive(:track_struct_event).and_call_original
+
+      allow_next_instance_of(Gitlab::Tracking::Destinations::DestinationConfiguration) do |config|
+        allow(config).to receive_messages(hostname: 'gitfoo.com', protocol: 'https')
+      end
 
       expect(SnowplowTracker::AsyncEmitter)
         .to receive(:new)
@@ -249,86 +257,39 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         stub_application_setting(snowplow_enabled?: false)
       end
 
-      context 'and collect_product_usage_events is enabled' do
-        it 'returns true' do
-          expect(subject.enabled?).to be_truthy
-        end
-      end
-
-      context 'and collect_product_usage_events is disabled' do
-        before do
-          stub_feature_flags(collect_product_usage_events: false)
-        end
-
-        it 'returns false' do
-          expect(subject.enabled?).to be_falsey
-        end
+      it 'returns true' do
+        expect(subject.enabled?).to be_truthy
       end
     end
   end
 
-  describe '#hostname' do
+  describe '#app_id' do
+    subject { described_class.new.app_id }
+
     context 'when snowplow is enabled' do
       before do
         stub_application_setting(snowplow_enabled?: true)
       end
 
-      it 'returns snowplow_collector_hostname' do
-        expect(subject.hostname).to eq('gitfoo.com')
-      end
+      it { is_expected.to eq('_abc123_') }
     end
 
     context 'when snowplow is disabled' do
       before do
         stub_application_setting(snowplow_enabled?: false)
-        stub_feature_flags(use_staging_endpoint_for_product_usage_events: enable_stg_events)
+        stub_application_setting(gitlab_dedicated_instance?: dedicated_instance)
       end
 
-      context "with use_staging_endpoint_for_product_usage_events FF disabled" do
-        let(:enable_stg_events) { false }
+      context 'when dedicated instance' do
+        let(:dedicated_instance) { true }
 
-        it 'returns product usage event collection hostname' do
-          expect(subject.hostname).to eq('events.gitlab.net')
-        end
+        it { is_expected.to eq('gitlab_dedicated') }
       end
 
-      context "with use_staging_endpoint_for_product_usage_events FF enabled" do
-        let(:enable_stg_events) { true }
+      context 'when self-hosted instance' do
+        let(:dedicated_instance) { false }
 
-        it 'returns product usage event collection hostname' do
-          expect(subject.hostname).to eq('events-stg.gitlab.net')
-        end
-      end
-    end
-
-    describe '#app_id' do
-      subject { described_class.new.app_id }
-
-      context 'when snowplow is enabled' do
-        before do
-          stub_application_setting(snowplow_enabled?: true)
-        end
-
-        it { is_expected.to eq('_abc123_') }
-      end
-
-      context 'when snowplow is disabled' do
-        before do
-          stub_application_setting(snowplow_enabled?: false)
-          stub_application_setting(gitlab_dedicated_instance?: dedicated_instance)
-        end
-
-        context 'when dedicated instance' do
-          let(:dedicated_instance) { true }
-
-          it { is_expected.to eq('gitlab_dedicated') }
-        end
-
-        context 'when self-hosted instance' do
-          let(:dedicated_instance) { false }
-
-          it { is_expected.to eq('gitlab_sm') }
-        end
+        it { is_expected.to eq('gitlab_sm') }
       end
     end
   end

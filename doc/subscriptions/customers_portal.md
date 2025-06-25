@@ -2,14 +2,17 @@
 stage: Fulfillment
 group: Subscription Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Payment and company details.
+description: Customers Portal is a comprehensive self-service hub for purchasing and managing GitLab subscriptions and billing.
 title: The Customers Portal
 ---
 
-For some management tasks for your subscription and account, such as purchasing additional seats or storage and viewing invoices, you use the Customers Portal. See the following pages for specific instructions on managing your subscription:
+The Customers Portal is your comprehensive self-service hub for managing GitLab subscriptions and billing. You can purchase GitLab products, manage your subscriptions throughout the entire subscription lifecycle, view and pay invoices, and access your billing details and contact information.
+
+See the following pages for specific instructions on managing your subscription:
 
 - [GitLab SaaS subscription](gitlab_com/_index.md)
 - [GitLab Self-Managed subscription](self_managed/_index.md)
+- [Manage subscription](manage_subscription.md)
 
 If you made your purchase through an authorized reseller, you must contact them directly to make changes to your subscription.
 For more information, see [Customers that purchased through a reseller](#customers-that-purchased-through-a-reseller).

@@ -38,6 +38,7 @@ to the following endpoints:
 
 - GitLab package registry public API.
 - [Git commands](https://git-scm.com/docs/gitcredentials#_description).
+- [GitLab virtual registry package operations](../../../api/maven_virtual_registries.md#manage-package-operations).
 
 You can create deploy tokens at either the project or group level:
 

@@ -10,7 +10,7 @@ module RuboCop
         'with `User#can_admin_all_resources?` or `User#can_read_all_resources?`.'
 
       def_node_matcher :admin_call?, <<~PATTERN
-        ({send | csend} _ :admin? ...)
+        (call _ :admin? ...)
       PATTERN
 
       def on_send(node)

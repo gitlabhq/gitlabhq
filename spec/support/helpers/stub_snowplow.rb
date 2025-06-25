@@ -2,6 +2,9 @@
 
 module StubSnowplow
   def stub_snowplow
+    # Make sure that a new tracker with the stubed data is used
+    Gitlab::Tracking.remove_instance_variable(:@tracker) if Gitlab::Tracking.instance_variable_defined?(:@tracker)
+
     # WebMock is set up to allow requests to `localhost`
     host = 'localhost'
 

@@ -65,12 +65,6 @@ RSpec.describe 'Merge Request Creation', feature_category: :code_review_workflow
 
         expect(flash[:alert]).to be_present
       end
-
-      it 'assigns show_whitespace_default' do
-        get_diffs
-
-        expect(assigns(:show_whitespace_default)).to be(true)
-      end
     end
   end
 end

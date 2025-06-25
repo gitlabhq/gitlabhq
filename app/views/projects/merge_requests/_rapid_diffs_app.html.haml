@@ -1,5 +1,3 @@
-- args = { diffs_slice: @diffs_slice, reload_stream_url: @reload_stream_url, stream_url: @stream_url, show_whitespace: @show_whitespace_default, diff_view: @diff_view, update_user_endpoint: @update_current_user_path, diffs_stats_endpoint: @diffs_stats_endpoint, diff_files_endpoint: @diff_files_endpoint, should_sort_metadata_files: true, diff_file_endpoint: @diff_file_endpoint }
-
-= render ::RapidDiffs::AppComponent.new(**args) do |c|
+= render ::RapidDiffs::AppComponent.new(@rapid_diffs_presenter) do |c|
   - c.with_diffs_list do
-    = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(@diffs_slice, merge_request: @merge_request, parallel_view: @diff_view == :parallel)
+    = render RapidDiffs::MergeRequestDiffFileComponent.with_collection(c.diffs_slice, merge_request: @merge_request, parallel_view: c.diff_view == :parallel)

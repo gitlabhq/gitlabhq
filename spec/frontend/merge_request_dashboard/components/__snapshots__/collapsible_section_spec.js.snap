@@ -1,83 +1,88 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Merge request dashboard collapsible section renders section 1`] = `
-<section
-  class="crud gl-bg-subtle gl-border gl-border-section gl-mt-5 gl-rounded-lg"
-  id=""
+<local-storage-sync-stub
+  persist="true"
+  storagekey="mr_list_list"
 >
-  <header
-    class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-p-4 gl-pl-5 gl-pr-10 gl-relative gl-rounded-t-lg md:gl-flex-nowrap"
+  <section
+    class="crud gl-bg-subtle gl-border gl-border-section gl-mt-5 gl-rounded-lg"
+    id="reference-0"
   >
-    <div
-      class="gl-flex gl-flex-col gl-grow gl-self-center"
+    <header
+      class="crud-header gl-bg-section gl-border-b gl-border-section gl-flex gl-flex-wrap gl-gap-x-5 gl-gap-y-2 gl-justify-between gl-p-4 gl-pl-5 gl-pr-10 gl-relative gl-rounded-t-lg md:gl-flex-nowrap"
     >
-      <h2
-        class="gl-font-bold gl-gap-3 gl-inline-flex gl-items-center gl-leading-normal gl-m-0 gl-text-base"
-        data-testid="crud-title"
-      >
-        Approved
-        <gl-badge-stub
-          iconsize="md"
-          size="sm"
-          tag="span"
-          target="_self"
-          variant="muted"
-        >
-          3
-        </gl-badge-stub>
-      </h2>
-    </div>
-    <div
-      class="gl-flex gl-gap-3 gl-items-center"
-      data-testid="crud-actions"
-    >
-      <gl-button-stub
-        aria-label="Approved list help popover"
-        buttontextclasses=""
-        category="primary"
-        class="gl-mr-2 gl-self-center"
-        icon="information-o"
-        size="medium"
-        tag="button"
-        title=""
-        type="button"
-        variant="link"
-      />
       <div
-        class="gl-absolute gl-border-l gl-border-l-section gl-h-6 gl-pl-3 gl-right-5 gl-top-4"
+        class="gl-flex gl-flex-col gl-grow gl-self-center"
+      >
+        <h2
+          class="gl-font-bold gl-gap-3 gl-inline-flex gl-items-center gl-leading-normal gl-m-0 gl-text-base"
+          data-testid="crud-title"
+        >
+          Approved
+          <gl-badge-stub
+            iconsize="md"
+            size="sm"
+            tag="span"
+            target="_self"
+            variant="muted"
+          >
+            3
+          </gl-badge-stub>
+        </h2>
+      </div>
+      <div
+        class="gl-flex gl-gap-3 gl-items-center"
+        data-testid="crud-actions"
       >
         <gl-button-stub
-          aria-controls=""
-          aria-expanded="true"
-          aria-label="Collapse"
+          aria-label="Approved list help popover"
           buttontextclasses=""
-          category="tertiary"
-          class="-gl-mr-2 btn-icon gl-self-start"
-          data-testid="crud-collapse-toggle"
-          icon=""
-          size="small"
+          category="primary"
+          class="gl-mr-2 gl-self-center"
+          icon="information-o"
+          size="medium"
           tag="button"
-          title="Collapse"
+          title=""
           type="button"
-          variant="default"
+          variant="link"
+        />
+        <div
+          class="gl-absolute gl-border-l gl-border-l-section gl-h-6 gl-pl-3 gl-right-5 gl-top-4"
         >
-          <gl-animated-chevron-lg-down-up-icon-stub
-            is-on="true"
+          <gl-button-stub
+            aria-controls=""
+            aria-expanded="true"
+            aria-label="Collapse"
+            buttontextclasses=""
+            category="tertiary"
+            class="-gl-mr-2 btn-icon gl-self-start"
+            data-testid="crud-collapse-toggle"
+            icon=""
+            size="small"
+            tag="button"
+            title="Collapse"
+            type="button"
             variant="default"
-          />
-        </gl-button-stub>
+          >
+            <gl-animated-chevron-lg-down-up-icon-stub
+              is-on="true"
+              variant="default"
+            />
+          </gl-button-stub>
+        </div>
       </div>
-    </div>
-  </header>
-  <div
-    class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-lg"
-    data-testid="crud-body"
-  >
-    content
+    </header>
     <div
-      class="crud-pagination gl-border-t gl-border-t-section gl-flex gl-justify-center gl-p-5"
-      data-testid="crud-pagination"
-    />
-  </div>
-</section>
+      class="!gl-mx-0 crud-body gl-mb-0 gl-mx-5 gl-my-4 gl-rounded-b-lg"
+      data-testid="crud-body"
+    >
+      content
+      <div
+        class="crud-pagination gl-border-t gl-border-t-section gl-flex gl-justify-center gl-p-5"
+        data-testid="crud-pagination"
+      />
+    </div>
+  </section>
+</local-storage-sync-stub>
 `;

@@ -681,7 +681,7 @@ These endpoints are intended for internal use by GitLab, and generally not meant
 
 These endpoints do not adhere to the [REST API authentication methods](rest/authentication.md).
 For more information on which headers and token types are supported,
-see [Maven package registry](../user/packages/maven_repository/_index.md). Undocumented authentication methods might be removed in the future.
+see [Maven virtual registry](../user/packages/virtual_registry/maven/_index.md). Undocumented authentication methods might be removed in the future.
 
 {{< /alert >}}
 

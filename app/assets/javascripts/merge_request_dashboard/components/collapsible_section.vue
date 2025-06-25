@@ -1,5 +1,6 @@
 <script>
 import { GlBadge, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, sprintf } from '~/locale';
 
@@ -7,12 +8,17 @@ export default {
   components: {
     GlBadge,
     GlButton,
+    LocalStorageSync,
     CrudComponent,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     title: {
       type: String,
       required: true,
@@ -56,6 +62,7 @@ export default {
   data() {
     return {
       open: true,
+      savedOpenState: null,
     };
   },
   computed: {
@@ -78,6 +85,14 @@ export default {
     helpPopoverAriaLabel() {
       return sprintf(__('%{list} list help popover'), { list: this.title });
     },
+    storageKey() {
+      return `mr_list_${this.id}`;
+    },
+    isSectionOpen() {
+      if (this.savedOpenState === null) return this.open;
+
+      return this.savedOpenState;
+    },
   },
   watch: {
     loading(newVal) {
@@ -87,60 +102,67 @@ export default {
   methods: {
     onCollapsedSection() {
       this.open = false;
+      this.savedOpenState = false;
       this.$emit('clear-new');
     },
     onExpandSection() {
       this.open = true;
+      this.savedOpenState = true;
     },
   },
 };
 </script>
-2
 
 <template>
-  <crud-component
-    is-collapsible
-    :collapsed="!open"
-    :toggle-aria-label="toggleButtonLabel"
-    body-class="!gl-mx-0 gl-mb-0"
-    @collapsed="onCollapsedSection"
-    @expanded="onExpandSection"
+  <local-storage-sync
+    :storage-key="storageKey"
+    :value="savedOpenState"
+    @input="(val) => (savedOpenState = val)"
   >
-    <template #title>
-      {{ title }}
-      <gl-badge v-if="count !== null" size="sm">{{ count }}</gl-badge>
-    </template>
+    <crud-component
+      is-collapsible
+      :collapsed="!isSectionOpen"
+      :toggle-aria-label="toggleButtonLabel"
+      body-class="!gl-mx-0 gl-mb-0"
+      @collapsed="onCollapsedSection"
+      @expanded="onExpandSection"
+    >
+      <template #title>
+        {{ title }}
+        <gl-badge v-if="count !== null" size="sm">{{ count }}</gl-badge>
+      </template>
 
-    <template #actions>
-      <gl-badge
-        v-if="!open && newMergeRequests.length"
-        :variant="activeList ? 'success' : 'muted'"
-        class="gl-font-bold"
-      >
-        {{ newMergeRequestsBadgeText }}
-      </gl-badge>
-      <gl-button
-        v-gl-tooltip
-        :title="helpContent"
-        :aria-label="helpPopoverAriaLabel"
-        icon="information-o"
-        variant="link"
-        class="gl-mr-2 gl-self-center"
-      />
-    </template>
+      <template #actions>
+        <gl-badge
+          v-if="!open && newMergeRequests.length"
+          :variant="activeList ? 'success' : 'muted'"
+          class="gl-font-bold"
+        >
+          {{ newMergeRequestsBadgeText }}
+        </gl-badge>
+        <gl-button
+          v-gl-tooltip
+          :title="helpContent"
+          :aria-label="helpPopoverAriaLabel"
+          icon="information-o"
+          variant="link"
+          class="gl-mr-2 gl-self-center"
+        />
+      </template>
 
-    <template v-if="!hasMergeRequests && !loading" #empty>
-      <p class="gl-pt-1 gl-text-center gl-text-subtle">
-        {{ __('No merge requests match this list.') }}
-      </p>
-    </template>
+      <template v-if="!hasMergeRequests && !loading" #empty>
+        <p class="gl-pt-1 gl-text-center gl-text-subtle">
+          {{ __('No merge requests match this list.') }}
+        </p>
+      </template>
 
-    <template #default>
-      <slot></slot>
-    </template>
+      <template #default>
+        <slot></slot>
+      </template>
 
-    <template v-if="open" #pagination>
-      <slot name="pagination"></slot>
-    </template>
-  </crud-component>
+      <template v-if="open" #pagination>
+        <slot name="pagination"></slot>
+      </template>
+    </crud-component>
+  </local-storage-sync>
 </template>
