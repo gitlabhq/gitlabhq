@@ -413,6 +413,7 @@ RSpec.describe BlobHelper, feature_category: :source_code_management do
         user_id: user.to_global_id,
         target_branch: ref,
         original_branch: ref,
+        escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
         can_download_code: 'false',
         full_name: project.name_with_namespace
       })

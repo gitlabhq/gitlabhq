@@ -295,6 +295,7 @@ module BlobHelper
       user_id: current_user.present? ? current_user.to_global_id : '',
       target_branch: selected_branch,
       original_branch: ref,
+      escaped_ref: ActionDispatch::Journey::Router::Utils.escape_path(ref),
       can_download_code: can?(current_user, :download_code, project).to_s,
       full_name: project.name_with_namespace
     }

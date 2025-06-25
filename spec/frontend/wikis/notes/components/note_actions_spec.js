@@ -59,7 +59,9 @@ describe('WikiNoteActions', () => {
       describe('when the container is a group', () => {
         beforeEach(() => {
           wrapper = createWrapper(
-            {},
+            {
+              accessLevel: 'Owner',
+            },
             {
               containerName: 'test-group',
               containerType: 'group',
@@ -67,8 +69,11 @@ describe('WikiNoteActions', () => {
           );
         });
 
-        it('should not render the access level badge', () => {
-          expect(findUserAccessRoleBadge().exists()).toBe(false);
+        it('should render the access level badge', () => {
+          expect(findUserAccessRoleBadgeText()).toBe('Owner');
+          expect(findUserAccessRoleBadge().attributes('title')).toBe(
+            'This user has the owner role in the test-group group.',
+          );
         });
       });
 

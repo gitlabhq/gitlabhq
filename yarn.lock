@@ -1338,19 +1338,11 @@
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-3.1.1.tgz#af3aea7f1e52ec916d8b5c9dcc0f09d4c060a3fc"
   integrity sha512-5DGmA8FTdB2XbDeEwc/5ZXBl6UbBAyBOOLlPuBnZ/N1SwdH9Ii+cOX3tBROlDgcTXxjOYnLMVoKk9+FXAw0CJw==
 
-"@floating-ui/core@^1.7.0", "@floating-ui/core@^1.7.1":
+"@floating-ui/core@^1.7.1":
   version "1.7.1"
   resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.7.1.tgz#1abc6b157d4a936174f9dbd078278c3a81c8bc6b"
   integrity sha512-azI0DrjMMfIug/ExbBaeDVJXcY0a7EPvPjb2xAJPa4HeimBX+Z18HK8QQR3jb6356SnDDdxx+hinMLcJEDdOjw==
   dependencies:
-    "@floating-ui/utils" "^0.2.9"
-
-"@floating-ui/dom@1.7.0":
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-1.7.0.tgz#f9f83ee4fee78ac23ad9e65b128fc11a27857532"
-  integrity sha512-lGTor4VlXcesUMh1cupTUTDoCxMb0V6bm3CnxHzQcw8Eaf1jQbgQX4i02fYgT0vJ82tb5MZ4CZk1LRGkktJCzg==
-  dependencies:
-    "@floating-ui/core" "^1.7.0"
     "@floating-ui/utils" "^0.2.9"
 
 "@floating-ui/dom@1.7.1", "@floating-ui/dom@^1.0.0", "@floating-ui/dom@^1.7.1":
@@ -1465,15 +1457,15 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.134.0.tgz#d377ed04560e096155e6f2ff96532b32f65f5db9"
   integrity sha512-j80CQRNCdBIF0bykqWHCafYh/NaZg67Z5aZ9Whq28V+Od9l1KTn4Qb1SEd71hRLfDEkFQibdBc4L+CVVR98Q/w==
 
-"@gitlab/ui@114.7.1":
-  version "114.7.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-114.7.1.tgz#8e6492db172a89b88b0c5716eef56b0c5ad618ba"
-  integrity sha512-KeUkxEWDHqYZXpvNzAhVH2lmuO7nilc3vGf/SKq2l/UPvqqOcCiZ61JBQ7J1CrIOQxUDSxLJGe54QVYteAn/OA==
+"@gitlab/ui@114.8.1":
+  version "114.8.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-114.8.1.tgz#61edd78c7d4f7a0935efcbb5e916adbc44523412"
+  integrity sha512-sKFl0Ud15vQEMv8ZBsUnyzsk4Lg17qjxYSCPvSUNjBsLfesAxK4JdJNy8X3gulKxXY3n793gtaqbbeIY6Ixmmw==
   dependencies:
-    "@floating-ui/dom" "1.7.0"
+    "@floating-ui/dom" "1.7.1"
     echarts "^5.6.0"
     iframe-resizer "^4.3.2"
-    lodash "^4.17.20"
+    lodash "^4.17.21"
     popper.js "^1.16.1"
     portal-vue "^2.1.7"
     vue-functional-data-merge "^3.1.0"

@@ -63748,6 +63748,9 @@ msgstr ""
 msgid "This user has previously committed to the %{name} project."
 msgstr ""
 
+msgid "This user has the %{access} role in the %{name} group."
+msgstr ""
+
 msgid "This user has the %{access} role in the %{name} project."
 msgstr ""
 
