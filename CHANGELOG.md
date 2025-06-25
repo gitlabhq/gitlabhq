@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.0.3 (2025-06-24)
+
+### Fixed (1 change)
+
+- [Support markdown anchors and multi-line in permalink](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1aca27fe15724ca4a6bff73f65fa3155b202b32c)
+
+### Changed (2 changes)
+
+- [Revert "Merge branch 'backport-bugfix-restrict-LFS-download--18-0' into '18-0-stable-ee'"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f0cc5baad16efa00a8278c4d4234385c2039182c)
+- [Restrict LFS file download to project-bound objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c5676a6947bb17a155a0c9b3b2c45d7105e2e2e2)
+
+### Security (5 changes)
+
+- [Fix guest permissions for incident hierarchy updates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/393fa90059048c02b2c23d9ce05714380d42422c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5079))
+- [Fix the validation logic for IDP Certificate Fingerprint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4db4074ab27350a14d21850ca2c316d40af10954) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5082))
+- [Checking if framework and project have same namespace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/37ee6b859cb83fb2565e8ad0a46b131b7cd12358) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5066))
+- [Fix incorrect role grant after a user access_request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/26d16766ba6535c99938736f27d7cf6aba3f9ff0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5054))
+- [Prevent anonymous users from creating uploads](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9f6b810f819bb80ef3f0643cafe7e6d442f804b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5063))
+
 ## 18.0.2 (2025-06-11)
 
 ### Fixed (5 changes)

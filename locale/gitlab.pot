@@ -47221,6 +47221,9 @@ msgstr ""
 msgid "Project %{code_open}%{source_project}%{code_close} has more restricted access settings than %{code_open}%{target_project}%{code_close}. To avoid exposing private changes, make sure you're submitting changes to the correct project."
 msgstr ""
 
+msgid "Project %{project_name} and framework %{framework_name} are not from same namespace."
+msgstr ""
+
 msgid "Project %{project_name} and framework are not from same namespace."
 msgstr ""
 

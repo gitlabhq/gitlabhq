@@ -9,6 +9,8 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
 
+  let_it_be(:public_project) { create(:project, :public) }
+
   let_it_be(:user) { create(:user, guest_of: [project, group]) }
 
   describe "POST /projects/:id/uploads/authorize" do
@@ -34,6 +36,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       end
     end
 
+    context 'with anonymous user on public project' do
+      let(:project) { public_project }
+
+      it "returns 401" do
+        post api(path), headers: headers
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+
     context 'with no Workhorse headers' do
       it "returns 403" do
         post api(path, user)
@@ -46,10 +58,6 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
   describe "POST /projects/:id/uploads" do
     let(:file) { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
     let(:path) { "/projects/#{project.id}/uploads" }
-
-    before do
-      project
-    end
 
     it "uploads the file through the upload service and returns its info" do
       expect(UploadService).to receive(:new).with(project, anything, uploaded_by_user_id: user.id).and_call_original
@@ -81,6 +89,16 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
 
       expect(tempfile.path).to be_nil
       expect(File.exist?(path)).to be(false)
+    end
+
+    context 'with anonymous user on public project' do
+      let(:project) { public_project }
+
+      it "returns 401" do
+        post api(path), params: { file: file }
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
     end
   end
 
