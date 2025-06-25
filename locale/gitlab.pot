@@ -49158,6 +49158,9 @@ msgstr ""
 msgid "Protected Tag"
 msgstr ""
 
+msgid "Protected Tags"
+msgstr ""
+
 msgid "Protected branches"
 msgstr ""
 
@@ -49543,16 +49546,31 @@ msgstr ""
 msgid "ProtectedTag|By default, protected tags restrict who can modify the tag."
 msgstr ""
 
+msgid "ProtectedTag|Couldn't find any matching tags."
+msgstr ""
+
+msgid "ProtectedTag|Last commit"
+msgstr ""
+
 msgid "ProtectedTag|Learn more."
 msgstr ""
 
 msgid "ProtectedTag|Limit access to creating and updating tags."
 msgstr ""
 
+msgid "ProtectedTag|Matching Tags"
+msgstr ""
+
 msgid "ProtectedTag|Protected tags"
 msgstr ""
 
+msgid "ProtectedTag|Tag"
+msgstr ""
+
 msgid "ProtectedTag|What are protected tags?"
+msgstr ""
+
+msgid "ProtectedTag|default"
 msgstr ""
 
 msgid "Provide Feedback"
