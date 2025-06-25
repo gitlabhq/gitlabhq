@@ -36,7 +36,8 @@ FactoryBot.define do
     external_parameters do
       {
         repository: "https://gitlab.com/tanuki/hello-world",
-        ref: "refs/heads/main"
+        ref: "refs/heads/main",
+        variables: { CI_PIPELINE: "test", ANOTHER_UPPERCASED_VAR: "test" }
       }
     end
 

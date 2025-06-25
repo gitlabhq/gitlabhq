@@ -15,6 +15,7 @@ import WorkItemDescriptionTemplatesListbox from '~/work_items/components/work_it
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import workItemDescriptionTemplateQuery from '~/work_items/graphql/work_item_description_template.query.graphql';
+import projectPermissionsQuery from '~/work_items/graphql/ai_permissions_for_project.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath, newWorkItemId } from '~/work_items/utils';
 import { ROUTES, NEW_WORK_ITEM_IID, NEW_WORK_ITEM_GID } from '~/work_items/constants';
 import {
@@ -60,6 +61,22 @@ describe('WorkItemDescription', () => {
     },
   });
 
+  const mockWorkspacePermissionsResponse = {
+    data: {
+      workspace: {
+        id: 'gid://gitlab/Project/1',
+        userPermissions: {
+          generateDescription: true,
+        },
+        __typename: 'Project',
+      },
+    },
+  };
+
+  const mockWorkspacePermissionsHandler = jest
+    .fn()
+    .mockResolvedValue(mockWorkspacePermissionsResponse);
+
   const mockFullPath = 'test-project-path';
 
   const createComponent = async ({
@@ -81,6 +98,7 @@ describe('WorkItemDescription', () => {
     routeQuery = {},
     fullPath = mockFullPath,
     hideFullscreenMarkdownButton = false,
+    workspacePermissionsHandler = mockWorkspacePermissionsHandler,
   } = {}) => {
     router = {
       replace: jest.fn(),
@@ -91,6 +109,7 @@ describe('WorkItemDescription', () => {
         [workItemByIidQuery, workItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemDescriptionTemplateQuery, descriptionTemplateHandler],
+        [projectPermissionsQuery, workspacePermissionsHandler],
       ]),
       propsData: {
         fullPath,
@@ -796,6 +815,105 @@ describe('WorkItemDescription', () => {
       await createComponent({ hideFullscreenMarkdownButton: true, isEditing: true });
 
       expect(findMarkdownEditor().props('restrictedToolBarItems')).toEqual(['full-screen']);
+    });
+  });
+
+  describe('workspacePermissions query', () => {
+    it('is not called for groups', async () => {
+      const workspacePermissionsHandler = jest
+        .fn()
+        .mockResolvedValue(mockWorkspacePermissionsResponse);
+
+      await createComponent({
+        isGroup: true,
+        isEditing: true,
+        workspacePermissionsHandler,
+      });
+
+      expect(workspacePermissionsHandler).not.toHaveBeenCalled();
+    });
+
+    it('is called for projects', async () => {
+      const workspacePermissionsHandler = jest
+        .fn()
+        .mockResolvedValue(mockWorkspacePermissionsResponse);
+
+      await createComponent({
+        isGroup: false,
+        isEditing: true,
+        workspacePermissionsHandler,
+      });
+
+      expect(workspacePermissionsHandler).toHaveBeenCalledWith({
+        fullPath: mockFullPath,
+      });
+    });
+
+    describe('user has generateDescription permission', () => {
+      beforeEach(async () => {
+        const workspacePermissionsHandler = jest
+          .fn()
+          .mockResolvedValue(mockWorkspacePermissionsResponse);
+
+        await createComponent({
+          isGroup: false,
+          isEditing: true,
+          workspacePermissionsHandler,
+        });
+      });
+
+      it('passes editorAiActions prop to MarkdownEditor', () => {
+        const editorAiActions = findMarkdownEditor().props('editorAiActions');
+        expect(editorAiActions).toHaveLength(1);
+      });
+    });
+
+    describe('user does not have generateDescription permission', () => {
+      beforeEach(async () => {
+        const workspacePermissionsHandlerNoPermission = jest.fn().mockResolvedValue({
+          data: {
+            workspace: {
+              id: 'gid://gitlab/Project/1',
+              userPermissions: {
+                generateDescription: false,
+              },
+              __typename: 'Project',
+            },
+          },
+        });
+
+        await createComponent({
+          isGroup: false,
+          isEditing: true,
+          workspacePermissionsHandler: workspacePermissionsHandlerNoPermission,
+        });
+      });
+
+      it('passes empty editorAiActions prop to MarkdownEditor', () => {
+        const editorAiActions = findMarkdownEditor().props('editorAiActions');
+        expect(editorAiActions).toHaveLength(0);
+      });
+    });
+
+    describe('when workspace is null', () => {
+      beforeEach(async () => {
+        const workspacePermissionsHandlerNullWorkspace = jest.fn().mockResolvedValue({
+          data: {
+            workspace: null,
+          },
+        });
+
+        await createComponent({
+          isGroup: false,
+          isEditing: true,
+          workspacePermissionsHandler: workspacePermissionsHandlerNullWorkspace,
+        });
+      });
+
+      it('passes empty editorAiActions prop to MarkdownEditor', () => {
+        const editorAiActions = findMarkdownEditor().props('editorAiActions');
+        expect(editorAiActions).toHaveLength(0);
+      });
     });
   });
 });

@@ -1097,7 +1097,7 @@ module Ci
 
     def debug_mode?
       # perform the check on both sides in case the runner version is old
-      metadata&.debug_trace_enabled? ||
+      debug_trace_enabled? ||
         Gitlab::Utils.to_boolean(variables['CI_DEBUG_SERVICES']&.value, default: false) ||
         Gitlab::Utils.to_boolean(variables['CI_DEBUG_TRACE']&.value, default: false)
     end

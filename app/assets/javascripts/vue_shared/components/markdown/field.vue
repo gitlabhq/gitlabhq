@@ -139,6 +139,11 @@ export default {
       required: false,
       default: false,
     },
+    editorAiActions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -362,6 +367,7 @@ export default {
     :data-uploads-path="uploadsPath"
   >
     <markdown-header
+      :editor-ai-actions="editorAiActions"
       :preview-markdown="previewMarkdown"
       :line-content="lineContent"
       :can-suggest="canSuggest"

@@ -223,6 +223,7 @@ export default {
         data-testid="ref-dropdown-container"
         :project-id="projectId"
         :value="refSelectorValue"
+        :default-branch="rootRef"
         use-symbolic-ref-names
         :query-params="refSelectorQueryParams"
         @input="onInput"

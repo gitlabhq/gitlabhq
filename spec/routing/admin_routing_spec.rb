@@ -63,6 +63,14 @@ RSpec.describe Admin::ProjectsController, "routing" do
     expect(get("/admin/projects")).to route_to('admin/projects#index')
   end
 
+  it "to #active" do
+    expect(get("/admin/projects/active")).to route_to('admin/projects#index')
+  end
+
+  it "to #inactive" do
+    expect(get("/admin/projects/inactive")).to route_to('admin/projects#index')
+  end
+
   it "to #show" do
     expect(get("/admin/projects/gitlab/gitlab-ce")).to route_to('admin/projects#show', namespace_id: 'gitlab', id: 'gitlab-ce')
     expect(get("/admin/projects/gitlab/subgroup/gitlab-ce")).to route_to('admin/projects#show', namespace_id: 'gitlab/subgroup', id: 'gitlab-ce')

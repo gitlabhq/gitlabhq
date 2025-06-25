@@ -107,6 +107,14 @@ module Ci
       end
     end
 
+    # TODO: Update this logic when column `p_ci_builds.debug_trace_enabled` is added.
+    # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194954#note_2574776849.
+    def debug_trace_enabled?
+      return true if degenerated?
+
+      metadata&.debug_trace_enabled?
+    end
+
     private
 
     def read_metadata_attribute(legacy_key, metadata_key, default_value = nil)

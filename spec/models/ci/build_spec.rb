@@ -5342,12 +5342,23 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       it { is_expected.to eq false }
     end
 
-    context 'when metadata does not exist' do
+    context 'when metadata does not exist but job is not degenerated' do
       before do
-        build.metadata.destroy!
+        # Very old jobs populated this column instead of metadata
+        build.update_column(:options, { my_config: 'value' })
+        build.metadata.delete
+        build.reload
       end
 
       it { is_expected.to eq false }
+    end
+
+    context 'when job is degenerated' do
+      before do
+        build.degenerate!
+      end
+
+      it { is_expected.to eq true }
     end
   end
 

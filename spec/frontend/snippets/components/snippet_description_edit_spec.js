@@ -27,10 +27,6 @@ describe('Snippet Description Edit component', () => {
   });
 
   describe('rendering', () => {
-    it('matches the snapshot', () => {
-      expect(wrapper.element).toMatchSnapshot();
-    });
-
     it('renders the description field', () => {
       createComponent('');
 

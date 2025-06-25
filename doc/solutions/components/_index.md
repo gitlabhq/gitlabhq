@@ -50,6 +50,6 @@ Automatically sync Jira issues to GitLab to unlock VSA metrics tracking. Real-ti
 
 [Agentic Workflow: Apply Coding Style Guide](duo_workflow/duo_workflow_codestyle.md)
 
-## Compliance and Best Practice
+## Compliance and Best Practices
 
 [Guide on Separation of Duties](guide_on_sod.md)

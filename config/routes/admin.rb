@@ -123,7 +123,11 @@ namespace :admin do
 
   resource :system_info, controller: 'system_info', only: [:show]
 
-  resources :projects, only: [:index]
+  resources :projects, only: [:index] do
+    collection do
+      get :active, :inactive, to: 'projects#index'
+    end
+  end
 
   resources :usage_trends, only: :index
   resource :dev_ops_reports, controller: 'dev_ops_report', only: :show

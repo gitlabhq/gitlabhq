@@ -102,15 +102,45 @@ RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :c
         expect(subject[0]['digest']['sha256']).to eq('3d4a07bcbf2eaec380ad707451832924bee1197fbdf43d20d6d4bc96c8284268')
       end
 
-      it 'has the correct predicate build definition' do
-        build_definition = parsed['predicate']['buildDefinition']
+      context 'when a build definition is generated' do
+        let(:build_definition) { parsed['predicate']['buildDefinition'] }
 
-        # TODO: update buildType as part of https://gitlab.com/gitlab-org/gitlab/-/issues/426764
-        expect(build_definition['buildType']).to eq('https://gitlab.com/gitlab-org/gitlab/-/issues/546150')
-        expect(build_definition['externalParameters']['variables']).to include("GITLAB_CI")
-        expect(build_definition['internalParameters']['name']).to start_with("My runner")
+        it 'has the correct predicate build definition' do
+          # TODO: update buildType as part of https://gitlab.com/gitlab-org/gitlab/-/issues/426764
+          expect(build_definition['buildType']).to eq('https://gitlab.com/gitlab-org/gitlab/-/issues/546150')
+          expect(build_definition['internalParameters']['name']).to start_with("My runner")
+          expect(build_definition['resolvedDependencies'].length).to eq(1)
+        end
 
-        expect(build_definition['resolvedDependencies'].length).to eq(1)
+        it 'has the correct external parameters' do
+          statement_variables = build_definition['externalParameters']['variables']
+          expect(statement_variables).to be_an_instance_of(Hash)
+          expect(statement_variables.length).to eq(build.variables.to_a.length)
+
+          non_masked = build.variables.filter { |variable| !variable.masked? }.map(&:key)
+          masked = build.variables.filter(&:masked?).map(&:key)
+
+          expect(non_masked.length).to be > 1
+          expect(masked.length).to be > 1
+
+          non_masked.each do |variable|
+            expect(statement_variables[variable]).to eq(build.variables[variable].value)
+          end
+
+          masked.each do |variable|
+            expect(statement_variables[variable]).to eq("[MASKED]")
+          end
+        end
+
+        it 'has the right entry point' do
+          entry_point = build_definition['externalParameters']['entryPoint']
+          expect(entry_point).to eq('test')
+        end
+
+        it 'has the right source' do
+          source = build_definition['externalParameters']['source']
+          expect(source).to eq(Gitlab::Routing.url_helpers.project_url(build.project))
+        end
       end
 
       it 'has the correct run details' do
@@ -157,6 +187,29 @@ RSpec.describe Ci::Slsa::ProvenanceStatement, type: :model, feature_category: :c
           expect { provenance_statement }.to raise_error(ArgumentError)
         end
       end
+    end
+  end
+
+  describe '#deep_change_case' do
+    subject(:provenance_statement) { create(:provenance_statement) }
+
+    it 'camelizes fields appropriately' do
+      expect(parsed).to include('predicateType')
+      expect(parsed).to include('predicate')
+    end
+
+    it 'does not camelize exceptions' do
+      expect(parsed).to include('_type')
+    end
+
+    it 'camelizes recursively' do
+      expect(parsed['predicate']).to include('buildDefinition')
+      expect(parsed['predicate']['buildDefinition']).to include('buildType')
+      expect(parsed['predicate']['buildDefinition']).to include('externalParameters')
+    end
+
+    it 'does not recurse through exception keys' do
+      expect(parsed['predicate']['buildDefinition']['externalParameters']['variables']).to include('CI_PIPELINE')
     end
   end
 end

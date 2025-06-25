@@ -37,7 +37,7 @@ The GitLab approach to implementing SoD through Role-Based Access Control (RBAC)
 
 ### Role-Based Access Control (RBAC)
 
-TRBAC forms the framework for implementing and enforcing SoD. It governs permissions and responsibilities across the platform, ensuring compliance with the principles of least privilege. Through RBAC, organizations can:
+RBAC forms the framework for implementing and enforcing SoD. It governs permissions and responsibilities across the platform, ensuring compliance with the principles of least privilege. Through RBAC, organizations can:
 
 - Implement holistic user management with granular role-based controls
 - Assign roles with the least privileged access principles

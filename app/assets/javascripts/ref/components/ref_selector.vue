@@ -96,6 +96,11 @@ export default {
       required: false,
       default: null,
     },
+    defaultBranch: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -129,6 +134,13 @@ export default {
           this.tags.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
           this.commits.find((ref) => (ref.value ?? ref.name) === this.selectedRef) ||
           selectedRefFallback;
+      }
+
+      const defaultBranchData = branches.find((branch) => branch.name === this.defaultBranch);
+      // since the API for getting list of branches is paginated, we might not have a
+      // default branch available, so in that case we add it to the list
+      if (this.defaultBranch && !defaultBranchData) {
+        branches.push({ name: this.defaultBranch, value: this.defaultBranch, default: true });
       }
 
       return formatListBoxItems({ branches, tags, commits, selectedRef });

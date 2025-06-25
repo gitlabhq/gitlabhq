@@ -4471,6 +4471,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|There was an error saving the self-hosted model. Please try again."
 msgstr ""
 
+msgid "AdminSelfHostedModels|This model cannot be applied to all %{mainFeature} sub-features"
+msgstr ""
+
 msgid "AdminSelfHostedModels|This self-hosted model cannot be deleted"
 msgstr ""
 
@@ -8185,6 +8188,9 @@ msgid "Apply template"
 msgstr ""
 
 msgid "Apply this approval rule to all branches or a specific protected branch."
+msgstr ""
+
+msgid "Apply to all button"
 msgstr ""
 
 msgid "Applying"
@@ -23358,6 +23364,9 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
+msgid "DuoAgentsPlatform|Agent Flow"
+msgstr ""
+
 msgid "DuoAgentsPlatform|Agents"
 msgstr ""
 
@@ -23395,9 +23404,6 @@ msgid "DuoAgentsPlatform|Path must be a Jenkinsfile with the exact matching case
 msgstr ""
 
 msgid "DuoAgentsPlatform|Prompt"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Prompt is unavailable"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Run an Agent Flow"
@@ -37381,6 +37387,9 @@ msgstr ""
 msgid "MarkdownEditor|Close find and replace bar"
 msgstr ""
 
+msgid "MarkdownEditor|Continue editing (%{shiftKey}%{modifierKey}P)"
+msgstr ""
+
 msgid "MarkdownEditor|Find and replace"
 msgstr ""
 
@@ -37403,6 +37412,9 @@ msgid "MarkdownEditor|Outdent line (%{modifierKey}[)"
 msgstr ""
 
 msgid "MarkdownEditor|Outdent line (%{modifier_key}[)"
+msgstr ""
+
+msgid "MarkdownEditor|Preview (%{shiftKey}%{modifierKey}P)"
 msgstr ""
 
 msgid "MarkdownEditor|header"
@@ -40009,6 +40021,9 @@ msgid "ModelSelection|Model Selection"
 msgstr ""
 
 msgid "ModelSelection|Successfully updated %{mainFeature} / %{title}"
+msgstr ""
+
+msgid "ModelSelection|Successfully updated all %{mainFeature} features"
 msgstr ""
 
 msgid "Modified"

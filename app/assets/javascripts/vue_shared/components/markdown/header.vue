@@ -55,12 +55,17 @@ export default {
     newCommentTemplatePaths: {
       default: () => [],
     },
-    editorAiActions: { default: () => [] },
     mrGeneratedContent: { default: null },
     canSummarizeChanges: { default: false },
     canUseComposer: { default: false },
+    legacyEditorAiActions: { default: () => [] },
   },
   props: {
+    editorAiActions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     previewMarkdown: {
       type: Boolean,
       required: true,
@@ -123,6 +128,7 @@ export default {
   },
   data() {
     const modifierKey = getModifierKey();
+
     return {
       tag: '> ',
       suggestPopoverVisible: false,
@@ -138,6 +144,12 @@ export default {
     };
   },
   computed: {
+    aiActions() {
+      if (this.editorAiActions.length > 0) {
+        return this.editorAiActions;
+      }
+      return this.legacyEditorAiActions;
+    },
     commentTemplatePaths() {
       return this.newCommentTemplatePaths.length > 0
         ? this.newCommentTemplatePaths
@@ -180,6 +192,17 @@ export default {
         currentHighlight: this.findAndReplace.highlightedMatchIndex,
         totalHighlights: this.findAndReplace.totalMatchCount,
       });
+    },
+    previewToggleTooltip() {
+      return sprintf(
+        this.previewMarkdown
+          ? s__('MarkdownEditor|Continue editing (%{shiftKey}%{modifierKey}P)')
+          : s__('MarkdownEditor|Preview (%{shiftKey}%{modifierKey}P)'),
+        {
+          shiftKey: this.shiftKey,
+          modifierKey: this.modifierKey,
+        },
+      );
     },
   },
   watch: {
@@ -518,8 +541,10 @@ export default {
         >
           <gl-button
             v-if="enablePreview"
+            v-gl-tooltip
             data-testid="preview-toggle"
             :value="previewMarkdown ? 'preview' : 'edit'"
+            :title="previewToggleTooltip"
             :label="$options.i18n.previewTabTitle"
             class="js-md-preview-button gl-flex-row-reverse gl-items-center !gl-font-normal"
             size="small"
@@ -572,10 +597,10 @@ export default {
             </div>
           </template>
           <div class="gl-flex gl-gap-y-2">
-            <div v-if="!previewMarkdown && editorAiActions.length" class="gl-flex gl-gap-y-2">
+            <div v-if="!previewMarkdown && aiActions.length" class="gl-flex gl-gap-y-2">
               <header-divider v-if="!previewMarkdown" />
               <ai-actions-dropdown
-                :actions="editorAiActions"
+                :actions="aiActions"
                 @input="insertAIAction"
                 @replace="replaceTextarea"
               />

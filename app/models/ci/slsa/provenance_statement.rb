@@ -30,14 +30,22 @@ module Ci
         @predicate_type = "https://slsa.dev/provenance/v1"
       end
 
-      def as_json(options = nil)
-        json = super
-        exceptions = ["_type"]
-        json.deep_transform_keys do |k|
-          next k if exceptions.include?(k)
+      def deep_change_case(json)
+        exceptions = %w[_type variables]
 
-          k.camelize(:lower)
+        new_json = {}
+        json.each do |key, value|
+          key = key.camelize(:lower) if exceptions.exclude?(key)
+          value = deep_change_case(value) if value.is_a?(Hash) && exceptions.exclude?(key)
+
+          new_json[key] = value
         end
+
+        new_json
+      end
+
+      def as_json(options = nil)
+        deep_change_case(super)
       end
 
       def attributes
@@ -52,7 +60,7 @@ module Ci
         def self.from_build(build)
           # TODO: update buildType as part of https://gitlab.com/gitlab-org/gitlab/-/issues/426764
           build_type = "https://gitlab.com/gitlab-org/gitlab/-/issues/546150"
-          external_parameters = { variables: build.variables.map(&:key) }
+          external_parameters = ExternalParameters.from_build(build)
           internal_parameters = {
             architecture: build.runner_manager.architecture,
             executor: build.runner_manager.executor_type,
@@ -91,6 +99,28 @@ module Ci
           }
 
           RunDetails.new(builder: builder, metadata: metadata)
+        end
+      end
+
+      class ExternalParameters
+        include ActiveModel::Model
+
+        attr_accessor :source, :entry_point, :variables
+
+        def self.from_build(build)
+          source = Gitlab::Routing.url_helpers.project_url(build.project)
+          entry_point = build.name
+
+          variables = {}
+          build.variables.each do |variable|
+            variables[variable.key] = if variable.masked?
+                                        '[MASKED]'
+                                      else
+                                        variable.value
+                                      end
+          end
+
+          ExternalParameters.new(source: source, entry_point: entry_point, variables: variables)
         end
       end
 

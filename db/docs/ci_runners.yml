@@ -10,4 +10,5 @@ description: Routing table for CI runners
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/166308
 milestone: '17.6'
 gitlab_schema: gitlab_ci_cell_local
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442395
 table_size: small

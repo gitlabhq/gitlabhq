@@ -143,6 +143,11 @@ export default {
       required: false,
       default: () => [],
     },
+    editorAiActions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     let editingMode;
@@ -399,6 +404,7 @@ export default {
       :new-comment-template-paths="newCommentTemplatePaths"
       :can-attach-file="!disableAttachments"
       :can-suggest="codeSuggestionsConfig.canSuggest"
+      :editor-ai-actions="editorAiActions"
       :line="codeSuggestionsConfig.line"
       :lines="codeSuggestionsConfig.lines"
       :show-suggest-popover="codeSuggestionsConfig.showPopover"
