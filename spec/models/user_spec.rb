@@ -8945,12 +8945,6 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#has_composite_identity?' do
-    it 'is false' do
-      expect(build(:user).has_composite_identity?).to be false
-    end
-  end
-
   describe 'color_mode_id' do
     context 'when theme_id is 11' do
       let(:user) { build(:user, theme_id: 11) }

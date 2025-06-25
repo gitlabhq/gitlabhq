@@ -14,9 +14,12 @@ description: Version control, code storage, Git repositories, and repository mon
 
 {{< /details >}}
 
-A [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository)
-is where you store your code, make changes, and track changes using version control.
-Each [project](../_index.md) contains a repository and a repository cannot exist without a project.
+Your [repository](https://git-scm.com/book/en/v2/Git-Basics-Getting-a-Git-Repository) is a component
+of your GitLab project. You store your code in your repository, and track changes to it with version
+control.
+
+Each repository is part of a [GitLab project](../_index.md), and cannot exist without a GitLab project.
+Your project provides the configuration options for your repository.
 
 ## Create a repository
 

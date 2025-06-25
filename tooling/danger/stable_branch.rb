@@ -146,7 +146,7 @@ module Tooling
       end
 
       def bug_fixes_only?
-        has_bug_label? || has_only_documentation_changes?
+        has_bug_label? || has_only_documentation_changes? || has_flaky_failure_label?
       end
 
       def has_tier_3_label?

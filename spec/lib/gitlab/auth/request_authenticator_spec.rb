@@ -473,4 +473,11 @@ RSpec.describe Gitlab::Auth::RequestAuthenticator, feature_category: :system_acc
       end
     end
   end
+
+  describe '#graphql_authorization_scopes' do
+    it 'includes base scopes' do
+      scopes = subject.send(:graphql_authorization_scopes)
+      expect(scopes).to include(:api, :read_api)
+    end
+  end
 end

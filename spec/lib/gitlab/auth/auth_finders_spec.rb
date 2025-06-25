@@ -765,13 +765,9 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
 
     context 'with composite identity', :request_store do
-      let_it_be(:user) { create(:user, username: 'user-with-composite-identity') }
+      let_it_be(:user) { create(:user, :service_account, composite_identity_enforced: true) }
 
       before do
-        allow_any_instance_of(::User).to receive(:composite_identity_enforced) do |user|
-          user.username == 'user-with-composite-identity'
-        end
-
         set_bearer_token(oauth_access_token.plaintext_token)
       end
 

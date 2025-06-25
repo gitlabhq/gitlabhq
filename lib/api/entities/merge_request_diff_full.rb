@@ -4,11 +4,7 @@ module API
   module Entities
     class MergeRequestDiffFull < MergeRequestDiff
       expose :commits, using: Entities::Commit do |diff, _|
-        if ::Feature.enabled?(:commits_from_gitaly, diff.project)
-          diff.commits(load_from_gitaly: true)
-        else
-          diff.commits
-        end
+        diff.commits(load_from_gitaly: true)
       end
 
       expose :diffs, using: Entities::Diff do |compare, _|

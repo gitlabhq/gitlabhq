@@ -6205,7 +6205,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     before do
       allow(::Ci::JobToken::Jwt).to receive(:encode).with(build).and_return(jwt_token)
       build.set_token(database_token)
-      allow(build).to receive_message_chain(:user, :has_composite_identity?).and_return(composite_identity?)
+      allow(build).to receive_message_chain(:user, :composite_identity_enforced?).and_return(composite_identity?)
       allow(build).to receive_message_chain(:namespace, :root_ancestor, :namespace_settings, :jwt_ci_cd_job_token_enabled?)
         .and_return(jwt_enabled?)
     end

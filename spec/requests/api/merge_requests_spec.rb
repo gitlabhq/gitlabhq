@@ -1788,13 +1788,12 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       expect(json_response.first['parent_ids']).to be_present
     end
 
-    context 'when commits_from_gitaly and optimized_commit_storage feature flags are disabled' do
+    context 'when optimized_commit_storage feature flag is disabled' do
       before do
-        stub_feature_flags(commits_from_gitaly: false)
         stub_feature_flags(optimized_commit_storage: false)
       end
 
-      it 'returns a 200 without parent_ids' do
+      it 'returns a 200 with parent_ids' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/commits", user)
         commit = merge_request.merge_request_diff.last_commit
 
@@ -1802,8 +1801,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(json_response.size).to eq(merge_request.commits.size)
         expect(json_response.first['id']).to eq(commit.id)
         expect(json_response.first['title']).to eq(commit.title)
-
-        expect(json_response.first['parent_ids']).to eq([])
+        expect(json_response.first['parent_ids']).to be_present
       end
     end
 

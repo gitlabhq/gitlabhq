@@ -254,4 +254,20 @@ RSpec.describe GitlabSchema.types['Query'], feature_category: :shared do
       is_expected.to have_graphql_type(Types::IssueType.connection_type)
     end
   end
+
+  describe '.authorization_scopes' do
+    it 'includes :ai_workflows' do
+      expect(described_class.authorization_scopes).to include(:ai_workflows)
+    end
+  end
+
+  describe 'project field scopes' do
+    it 'includes :ai_workflows at the type level' do
+      expect(described_class.authorization.permitted_scopes).to include(:ai_workflows)
+    end
+
+    it 'includes :ai_workflows at the field level' do
+      expect(described_class.fields['project'].instance_variable_get(:@scopes)).to include(:ai_workflows)
+    end
+  end
 end

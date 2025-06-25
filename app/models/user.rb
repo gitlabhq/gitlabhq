@@ -2165,7 +2165,7 @@ class User < ApplicationRecord
   end
 
   def merge_request_dashboard_enabled?
-    Feature.enabled?(:merge_request_dashboard, self, type: :wip)
+    Feature.enabled?(:merge_request_dashboard, self, type: :beta)
   end
 
   def assigned_open_merge_requests_count(force: false)
@@ -2582,15 +2582,6 @@ class User < ApplicationRecord
 
   def supports_saved_replies?
     true
-  end
-
-  def has_composite_identity?
-    # Since this is called in a number of places in both Sidekiq and Web,
-    # be extra paranoid that this column exists before reading it. This check
-    # can be removed in GitLab 17.8 or later.
-    return false unless has_attribute?(:composite_identity_enforced)
-
-    composite_identity_enforced
   end
 
   def uploads_sharding_key

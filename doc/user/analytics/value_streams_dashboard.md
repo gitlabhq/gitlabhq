@@ -106,8 +106,8 @@ in the month-to-date, last month, the month before, and the past 180 days.
 These visualizations help you understand whether the key DevSecOps metrics improve month over month. The Value Stream Dashboard displays three DevSecOps metric comparison panels:
 
 - Lifecycle metrics
-- DORA metrics
-- Security metrics
+- DORA metrics (Ultimate only)
+- Security metrics (Ultimate only)
 
 In each comparison panel, you can:
 
@@ -147,6 +147,12 @@ Only labels that exactly match the specified filters are applied.
 {{< /alert >}}
 
 ### DORA Performers score
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 {{< history >}}
 
@@ -198,6 +204,12 @@ panels:
 If multiple topics are provided, all topics must match for the project to be included in the results.
 
 ### Projects by DORA metric
+
+{{< details >}}
+
+- Tier: Ultimate
+
+{{< /details >}}
 
 {{< history >}}
 

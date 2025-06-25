@@ -19,7 +19,7 @@ module Ci
       private
 
       def success?(status)
-        (200..299).cover?(status)
+        (200..299).cover?(status) || status == 302
       end
     end
   end

@@ -85,7 +85,7 @@ module Gitlab
       end
 
       def composite?
-        @user.has_composite_identity?
+        @user.composite_identity_enforced?
       end
 
       def sidekiq_link!(job)
@@ -113,7 +113,7 @@ module Gitlab
         return true unless composite?
         return false unless linked?
 
-        !scoped_user.has_composite_identity?
+        !scoped_user.composite_identity_enforced?
       end
 
       def scoped_user

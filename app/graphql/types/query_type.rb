@@ -7,6 +7,10 @@ module Types
     # The design management context object needs to implement #issue
     DesignManagementObject = Struct.new(:issue)
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     field :board_list, ::Types::BoardListType,
       null: true,
       resolver: Resolvers::BoardListResolver
@@ -139,7 +143,8 @@ module Types
     field :project, Types::ProjectType,
       null: true,
       resolver: Resolvers::ProjectResolver,
-      description: "Find a project."
+      description: "Find a project.",
+      scopes: [:api, :read_api, :ai_workflows]
     field :projects,
       null: true,
       resolver: Resolvers::ProjectsResolver,

@@ -68,7 +68,7 @@ Now, after the pipeline runs, the quality tool's results are [processed and disp
 
 {{< alert type="warning" >}}
 
-This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 18.0.
+This feature was [deprecated](../../update/deprecations.md#codeclimate-based-code-quality-scanning-will-be-removed) in GitLab 17.3 and is planned for removal in 19.0.
 [Integrate the results from a supported tool directly](#import-code-quality-results-from-a-cicd-job) instead.
 
 {{< /alert >}}

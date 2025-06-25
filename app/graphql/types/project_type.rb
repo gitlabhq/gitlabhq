@@ -10,6 +10,10 @@ module Types
 
     authorize :read_project
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     expose_permissions Types::PermissionTypes::Project
 
     implements Types::TodoableInterface
@@ -17,7 +21,8 @@ module Types
 
     field :id, GraphQL::Types::ID,
       null: false,
-      description: 'ID of the project.'
+      description: 'ID of the project.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :ci_config_path_or_default, GraphQL::Types::String,
       null: false,

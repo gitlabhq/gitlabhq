@@ -77,6 +77,9 @@ export default {
     },
   },
   computed: {
+    avatarLabelLink() {
+      return this.resource.avatarLabelLink || this.resource.webUrl;
+    },
     statsPadding() {
       return this.showIcon ? 'gl-pl-11' : 'gl-pl-8';
     },
@@ -110,7 +113,7 @@ export default {
             :entity-id="resource.id"
             :entity-name="resource.avatarLabel"
             :label="resource.avatarLabel"
-            :label-link="resource.webUrl"
+            :label-link="avatarLabelLink"
             :src="resource.avatarUrl"
             shape="rect"
             :size="32"

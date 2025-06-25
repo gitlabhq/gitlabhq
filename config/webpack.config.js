@@ -217,7 +217,9 @@ const vueLoaderOptions = {
 };
 
 let shouldExcludeFromCompliling = (modulePath) =>
-  /node_modules|vendor[\\/]assets/.test(modulePath) && !/\.vue\.js/.test(modulePath);
+  /node_modules|vendor[\\/]assets/.test(modulePath) &&
+  !/\.vue\.js/.test(modulePath) &&
+  !/graphql-ws/.test(modulePath);
 // We explicitly set VUE_VERSION
 // Use @gitlab-ui from source to allow us to dig differences
 // between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default

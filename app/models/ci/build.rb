@@ -1198,7 +1198,7 @@ module Ci
     strong_memoize_attr :source
 
     def token
-      return encoded_jwt if user&.has_composite_identity? || use_jwt_for_ci_cd_job_token?
+      return encoded_jwt if user&.composite_identity_enforced? || use_jwt_for_ci_cd_job_token?
 
       super
     end

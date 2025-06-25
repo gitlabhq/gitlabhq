@@ -28029,6 +28029,9 @@ msgstr ""
 msgid "Geo|Resync all %{type}"
 msgstr ""
 
+msgid "Geo|Reverification was scheduled successfully"
+msgstr ""
+
 msgid "Geo|Reverify"
 msgstr ""
 
@@ -28153,6 +28156,9 @@ msgid "Geo|There was an error fetching the Sites's Groups"
 msgstr ""
 
 msgid "Geo|There was an error fetching this replicable's details"
+msgstr ""
+
+msgid "Geo|There was an error reverifying this replicable"
 msgstr ""
 
 msgid "Geo|There was an error saving this Geo Site"

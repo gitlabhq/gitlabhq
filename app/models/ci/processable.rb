@@ -166,7 +166,7 @@ module Ci
       # ignore the persisted `scoped_user_id`, because that is propagated
       # together with `options` to cloned jobs.
       # We also handle the case where `user` is `nil` (legacy behavior in specs).
-      return unless user&.has_composite_identity?
+      return unless user&.composite_identity_enforced?
 
       User.find_by_id(options[:scoped_user_id])
     end

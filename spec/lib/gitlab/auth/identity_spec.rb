@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system_access do
-  let_it_be(:primary_user) { create(:user) }
+  let_it_be_with_reload(:primary_user) { create(:user, :service_account) }
   let_it_be(:scoped_user) { create(:user) }
 
   describe '.link_from_oauth_token' do
@@ -14,7 +14,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
     context 'when composite identity is required for the actor' do
       before do
-        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
+        primary_user.update!(composite_identity_enforced: true)
       end
 
       it 'returns an identity' do
@@ -52,11 +52,12 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
       context 'when actor user does not have composite identity enforced' do
         before do
-          allow(primary_user).to receive(:composite_identity_enforced).and_return(false)
+          primary_user.update!(composite_identity_enforced: false)
         end
 
         context 'when token has composite user scope' do
-          it 'returns an identity' do
+          it 'returns a valid, non-composite identity' do
+            expect(identity).to be_valid
             expect(identity).not_to be_composite
             expect(identity).not_to be_linked
           end
@@ -68,18 +69,12 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
             create(:oauth_access_token, user: primary_user, scopes: token_scopes)
           end
 
-          it 'returns an identity' do
+          it 'returns a valid, non-composite identity' do
+            expect(identity).to be_valid
             expect(identity).not_to be_composite
             expect(identity).not_to be_linked
           end
         end
-      end
-    end
-
-    context 'when composite identity is not required for the actor' do
-      it 'fabricates a valid identity' do
-        expect(identity).not_to be_composite
-        expect(identity).to be_valid
       end
     end
   end
@@ -91,7 +86,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
 
     context 'when composite identity is required for the actor' do
       before do
-        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
+        primary_user.update!(composite_identity_enforced: true)
       end
 
       it 'returns an identity' do
@@ -126,7 +121,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
   describe '.link_from_web_request' do
     context 'when service_account has composite identity enforced' do
       before do
-        allow(primary_user).to receive(:composite_identity_enforced).and_return(true)
+        primary_user.update!(composite_identity_enforced: true)
       end
 
       it 'creates and links identity with scope user' do
@@ -154,27 +149,31 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
           end.to raise_error(described_class::IdentityLinkMismatchError)
         end
       end
-    end
 
-    context 'when service_account does not have composite identity enforced' do
-      it 'creates identity without linking' do
-        identity = described_class.link_from_web_request(
-          service_account: primary_user,
-          scoped_user: scoped_user
-        )
+      context 'when service_account does not have composite identity enforced' do
+        before do
+          primary_user.update!(composite_identity_enforced: false)
+        end
 
-        expect(identity).not_to be_linked
-      end
-    end
-
-    context 'when service_account is not present' do
-      it 'raises an error' do
-        expect do
-          described_class.link_from_web_request(
-            service_account: nil,
+        it 'creates identity without linking' do
+          identity = described_class.link_from_web_request(
+            service_account: primary_user,
             scoped_user: scoped_user
           )
-        end.to raise_error(described_class::MissingServiceAccountError)
+
+          expect(identity).not_to be_linked
+        end
+      end
+
+      context 'when service_account is not present' do
+        it 'raises an error' do
+          expect do
+            described_class.link_from_web_request(
+              service_account: nil,
+              scoped_user: scoped_user
+            )
+          end.to raise_error(described_class::MissingServiceAccountError)
+        end
       end
     end
   end
@@ -231,7 +230,7 @@ RSpec.describe Gitlab::Auth::Identity, :request_store, feature_category: :system
       described_class.new(primary_user).sidekiq_link!(job)
 
       expect(job[described_class::COMPOSITE_IDENTITY_SIDEKIQ_ARG])
-        .to eq([primary_user.id, scoped_user.id])
+        .to match_array([primary_user.id, scoped_user.id])
     end
   end
 

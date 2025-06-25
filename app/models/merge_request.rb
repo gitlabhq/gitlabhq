@@ -1679,7 +1679,7 @@ class MergeRequest < ApplicationRecord
   def closes_issues(current_user = self.author)
     if target_branch == project.default_branch
       messages = [title, description]
-      messages.concat(commits(load_from_gitaly: Feature.enabled?(:commits_from_gitaly, target_project)).map(&:safe_message)) if merge_request_diff.persisted?
+      messages.concat(commits(load_from_gitaly: true).map(&:safe_message)) if merge_request_diff.persisted?
 
       Gitlab::ClosingIssueExtractor.new(project, current_user)
         .closed_by_message(messages.join("\n"))
@@ -1701,7 +1701,7 @@ class MergeRequest < ApplicationRecord
     visible_notes = user.can?(:read_internal_note, project) ? notes : notes.not_internal
 
     messages = [title, description, *visible_notes.pluck(:note)]
-    messages += commits(load_from_gitaly: Feature.enabled?(:commits_from_gitaly, target_project)).map(&:safe_message) if merge_request_diff.persisted?
+    messages += commits(load_from_gitaly: true).map(&:safe_message) if merge_request_diff.persisted?
 
     ext = Gitlab::ReferenceExtractor.new(project, user)
     ext.analyze(messages.join("\n"))
@@ -1786,7 +1786,7 @@ class MergeRequest < ApplicationRecord
   # Returns the oldest multi-line commit
   def first_multiline_commit
     strong_memoize(:first_multiline_commit) do
-      recent_commits(load_from_gitaly: Feature.enabled?(:commits_from_gitaly, target_project)).without_merge_commits.reverse_each.find(&:description?)
+      recent_commits(load_from_gitaly: true).without_merge_commits.reverse_each.find(&:description?)
     end
   end
 

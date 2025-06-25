@@ -231,7 +231,6 @@ export default {
     'ee/app/assets/javascripts/admin/subscriptions/show/components/subscription_breakdown.vue',
     'ee/app/assets/javascripts/ai/components/duo_chat_feedback_modal.vue',
     'ee/app/assets/javascripts/ai/components/user_feedback.vue',
-    'ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/data_table.vue',
     'ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/dora_chart.vue',
     'ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/dora_performers_score.vue',
     'ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/usage_overview.vue',

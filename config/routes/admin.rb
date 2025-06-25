@@ -59,7 +59,7 @@ namespace :admin do
 
   resources :groups, only: [:index, :new, :create] do
     collection do
-      get :all, :inactive, to: 'groups#index'
+      get :active, :inactive, to: 'groups#index'
     end
   end
 

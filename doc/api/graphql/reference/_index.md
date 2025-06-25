@@ -47621,7 +47621,8 @@ Category of the work item status.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="workitemstatuscategoryenumcancelled"></a>`CANCELLED` | Cancelled status category. |
+| <a id="workitemstatuscategoryenumcanceled"></a>`CANCELED` | Canceled status category. |
+| <a id="workitemstatuscategoryenumcancelled"></a>`CANCELLED` {{< icon name="warning-solid" >}} | **Deprecated** in GitLab 18.2. This was renamed. Use: `CANCELED`. |
 | <a id="workitemstatuscategoryenumdone"></a>`DONE` | Done status category. |
 | <a id="workitemstatuscategoryenumin_progress"></a>`IN_PROGRESS` | In progress status category. |
 | <a id="workitemstatuscategoryenumto_do"></a>`TO_DO` | To do status category. |

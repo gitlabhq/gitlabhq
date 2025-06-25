@@ -67,6 +67,18 @@ describe('ListItem', () => {
     });
   });
 
+  describe('when resource.avatarLabelLink is defined', () => {
+    const avatarLabelLink = '/foo';
+
+    beforeEach(() => {
+      createComponent({ propsData: { resource: { ...resource, avatarLabelLink } } });
+    });
+
+    it('uses that for labeLink prop', () => {
+      expect(findAvatarLabeled().props('labelLink')).toBe(avatarLabelLink);
+    });
+  });
+
   describe('when avatar label is clicked', () => {
     beforeEach(() => {
       createComponent();

@@ -24,6 +24,7 @@ RSpec.describe Ci::JobToken::Middleware, feature_category: :secrets_management d
       200 | true
       201 | true
       204 | true
+      302 | true
       400 | false
       403 | false
       404 | false

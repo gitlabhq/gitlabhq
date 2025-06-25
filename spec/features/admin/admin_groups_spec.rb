@@ -20,7 +20,19 @@ RSpec.describe 'Admin Groups', :with_current_organization, feature_category: :gr
   end
 
   describe 'list' do
-    it 'renders groups' do
+    context 'when admin_groups_vue feature flag is disabled' do
+      before do
+        stub_feature_flags(admin_groups_vue: false)
+      end
+
+      it 'renders groups' do
+        visit admin_groups_path
+
+        expect(page).to have_content(group.name)
+      end
+    end
+
+    it 'renders groups', :js do
       visit admin_groups_path
 
       expect(page).to have_content(group.name)
