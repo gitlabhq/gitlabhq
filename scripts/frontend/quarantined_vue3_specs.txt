@@ -57,7 +57,6 @@ spec/frontend/cascading_settings/components/lock_tooltip_spec.js
 spec/frontend/ci/artifacts/components/artifacts_bulk_delete_spec.js
 spec/frontend/ci/ci_variable_list/components/ci_variable_shared_spec.js
 spec/frontend/ci/pipeline_editor/components/header/validation_segment_spec.js
-spec/frontend/ci/pipeline_editor/components/job_assistant_drawer/accordion_items/rules_item_spec.js
 spec/frontend/ci/pipeline_editor/components/pipeline_editor_tabs_spec.js
 spec/frontend/ci/pipeline_editor/pipeline_editor_app_spec.js
 spec/frontend/ci/runner/components/registration/runner_instructions/runner_instructions_modal_spec.js

@@ -54,6 +54,14 @@ export default {
         `${this.startInNumber} ${this.startInUnit}${plural}`,
       );
     },
+    onStartInNumberInput($event) {
+      this.startInNumber = $event;
+      this.updateStartIn();
+    },
+    onStartInUnitInput($event) {
+      this.startInUnit = $event;
+      this.updateStartIn();
+    },
     updateWhen(when) {
       this.$emit('update-job', 'rules[0].when', when);
 
@@ -95,23 +103,23 @@ export default {
       >
         <div class="gl-mt-5 gl-flex">
           <gl-form-input
-            v-model="startInNumber"
+            :value="startInNumber"
             class="gl-mr-3 gl-grow gl-basis-1/2"
             data-testid="rules-start-in-number-input"
             type="number"
             :state="isStartValid"
             :class="{ 'gl-invisible': !isDelayed }"
             number
-            @input="updateStartIn"
+            @input="onStartInNumberInput"
           />
           <gl-form-select
-            v-model="startInUnit"
+            :value="startInUnit"
             class="gl-grow gl-basis-1/2"
             data-testid="rules-start-in-unit-select"
             :state="isStartValid"
             :class="{ 'gl-invisible': !isDelayed }"
             :options="$options.unitOptions"
-            @input="updateStartIn"
+            @input="onStartInUnitInput"
           />
         </div>
       </gl-form-group>

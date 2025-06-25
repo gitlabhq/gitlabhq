@@ -7,6 +7,7 @@ import {
   GlTableLite,
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
+import EMPTY_STATE_SVG_URL from '@gitlab/svgs/dist/illustrations/status/status-nothing-md.svg';
 import { isEmpty, isEqual } from 'lodash';
 
 import { s__, __ } from '~/locale';
@@ -23,6 +24,7 @@ import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
 import TimeAgo from '~/vue_shared/components/time_ago_tooltip.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 
 import { isFailed, isImporting } from '../utils';
 import { DEFAULT_ERROR } from '../utils/error_messages';
@@ -53,6 +55,7 @@ export default {
     ImportStatus,
     TimeAgo,
     LocalStorageSync,
+    PageHeading,
   },
 
   directives: {
@@ -263,23 +266,21 @@ export default {
   gitlabLogo: window.gon.gitlab_logo,
   historyPaginationSizePersistKey: HISTORY_PAGINATION_SIZE_PERSIST_KEY,
   BULK_IMPORT_STATIC_ITEMS,
+  EMPTY_STATE_SVG_URL,
 };
 </script>
 
 <template>
   <div>
-    <h1 class="gl-my-0 gl-flex gl-items-center gl-gap-3 gl-py-4 gl-text-size-h1">
-      <img :src="$options.gitlabLogo" :alt="__('GitLab Logo')" class="gl-h-6 gl-w-6" />
-      <span>{{ s__('BulkImport|Migration history') }}</span>
-    </h1>
-
     <gl-loading-icon v-if="loading" size="lg" class="gl-mt-5" />
     <gl-empty-state
       v-else-if="!hasHistoryItems"
+      :svg-path="$options.EMPTY_STATE_SVG_URL"
       :title="s__('BulkImport|No history is available')"
       :description="s__('BulkImport|Your imported groups and projects appear here.')"
     />
     <template v-else>
+      <page-heading :heading="s__('BulkImport|Migration history')" />
       <gl-table-lite :fields="$options.fields" :items="historyItems" class="gl-w-full">
         <template #cell(destination_name)="{ item }">
           <gl-icon

@@ -181,13 +181,19 @@ You can define a devfile in the following locations, relative to your project's 
 
 - `schemaVersion` must be [`2.2.0`](https://devfile.io/docs/2.2.0/devfile-schema).
 - The devfile must have at least one component.
+- The devfile size must not exceed 3 MB.
 - For `components`:
   - Names must not start with `gl-`.
   - Only [`container`](#container-component-type) and `volume` are supported.
-- For `commands`, IDs must not start with `gl-`.
+- For `commands`:
+  - IDs must not start with `gl-`.
+  - Only `exec` and `apply` command types are supported.
+  - For `exec` commands, only the following options are supported: `commandLine`, `component`, `label`, and `hotReloadCapable`.
+  - When `hotReloadCapable` is specified for `exec` commands, it must be set to `false`.
 - For `events`:
   - Names must not start with `gl-`.
-  - Only `preStart` is supported.
+  - Only `preStart` and [`postStart`](#user-defined-poststart-events) are supported.
+  - The Devfile standard only allows exec commands to be linked to `postStart` events. If you want an apply command, you must use a `preStart` event.
 - `parent`, `projects`, and `starterProjects` are not supported.
 - For `variables`, keys must not start with `gl-`, `gl_`, `GL-`, or `GL_`.
 - For `attributes`:
@@ -212,6 +218,19 @@ The `container` component type supports the following schema properties only:
 | `endpoints`    | Port mappings to expose from the container. Names must not start with `gl-`.                                                   |
 | `volumeMounts` | Storage volume to mount in the container.                                                                                      |
 
+### User-defined `postStart` events
+
+You can define custom `postStart` events in your devfile to run commands after the workspace starts. Use this type of event to:
+
+- Set up development dependencies.
+- Configure the workspace environment.
+- Run initialization scripts.
+
+`postStart` event names must not start with `gl-` and can only reference `exec` type commands.
+
+For an example that shows how to configure `postStart` events,
+see the [example configurations](#example-configurations).
+
 ### Example configurations
 
 The following is an example devfile configuration:
@@ -232,13 +251,30 @@ components:
       endpoints:
         - name: http-3000
           targetPort: 3000
+commands:
+  - id: install-dependencies
+    exec:
+      component: tooling-container
+      commandLine: "npm install"
+  - id: setup-environment
+    exec:
+      component: tooling-container
+      commandLine: "echo 'Setting up development environment'"
+events:
+  postStart:
+    - install-dependencies
+    - setup-environment
 ```
+
+{{< alert type="note" >}}
+
+This container image is for demonstration purposes only. To use your own container image,
+see [Arbitrary user IDs](#arbitrary-user-ids).
+
+{{< /alert >}}
 
 For more information, see the [devfile documentation](https://devfile.io/docs/2.2.0/devfile-schema).
 For other examples, see the [`examples` projects](https://gitlab.com/gitlab-org/remote-development/examples).
-
-This container image is for demonstration purposes only.
-To use your own container image, see [Arbitrary user IDs](#arbitrary-user-ids).
 
 ## Workspace container requirements
 

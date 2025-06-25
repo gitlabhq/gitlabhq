@@ -151,6 +151,7 @@ export default {
       workItemNamespace: null,
       previewNote: null,
       workItemNotes: [],
+      notesCached: null,
     };
   },
   computed: {
@@ -207,8 +208,13 @@ export default {
         parentId: this.parentId,
       };
     },
+    // On the first component load, we want to show per-page skeleton notes
+    // On any subsequent refetch, we want to show the cached notes until all notes are loaded
+    notesSource() {
+      return this.notesCached ?? this.workItemNotes;
+    },
     notesArray() {
-      const notes = this.workItemNotes?.nodes || [];
+      const notes = this.notesSource.nodes || [];
 
       let visibleNotes = collapseSystemNotes(notes);
 
@@ -273,7 +279,7 @@ export default {
         });
       }
 
-      const notes = this.workItemNotes?.nodes || [];
+      const notes = this.notesSource?.nodes || [];
       const n = notes.find(matchingNoteId);
       return Boolean(n);
     },
@@ -347,6 +353,7 @@ export default {
           this.fetchMoreNotes();
         } else {
           this.cleanupScrollListener?.();
+          this.notesCached = this.workItemNotes;
         }
       },
       subscribeToMore: [
@@ -575,7 +582,7 @@ export default {
           />
         </ul>
       </div>
-      <work-item-notes-loading v-if="formAtTop && isLoadingMore" />
+      <work-item-notes-loading v-if="formAtTop && isLoadingMore && !notesCached" />
       <ul class="notes main-notes-list timeline">
         <template v-for="discussion in notesArray">
           <system-note
@@ -614,7 +621,7 @@ export default {
 
         <work-item-history-only-filter-note v-if="commentsDisabled" @changeFilter="setFilter" />
       </ul>
-      <work-item-notes-loading v-if="!formAtTop && isLoadingMore" />
+      <work-item-notes-loading v-if="!formAtTop && isLoadingMore && !notesCached" />
       <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note
