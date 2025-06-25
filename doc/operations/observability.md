@@ -45,6 +45,17 @@ For an overview, see [GitLab Experimental Observability (O11y) Introduction](htt
 
 Join the conversation about interesting ways to use GitLab O11y in the GitLab O11y [Discord channel](https://discord.com/channels/778180511088640070/1379585187909861546).
 
+## Why GitLab Observability
+
+- **Cost-effective open source model**: Only pay for compute resources rather than per-seat licensing, making observability accessible for teams of any size. Contribute features and fixes directly, helping ensure the platform evolves to meet your specific needs.
+- **Simplified access management**: New engineers automatically gain access to production observability data when they receive code repository access, helping eliminate lengthy provisioning processes. This unified access model helps ensure team members can immediately contribute to troubleshooting and monitoring efforts without administrative delays.
+- **Enhanced development workflow**: Developers can correlate code changes directly with application performance metrics, helping to more easily identify when deployments introduce issues. This tight integration between code commits and runtime behavior accelerates debugging and reduces mean time to resolution.
+- **Shift-left observability**: Teams can catch performance issues and anomalies earlier in the development cycle, by integrating observability data into their development process. This proactive approach reduces the cost and impact of fixing problems. The open source nature can make it easier and more cost-effective to orchestrate comprehensive staging environments that mirror production observability.
+- **Streamlined incident response**: When issues occur, teams can more quickly have context about recent deployments, code changes, and the developers involved, helping with faster triage and resolution. The integration provides a single pane of glass for both code and operational data.
+- **Data next to decisions**: Real-time performance metrics and user behavior data become accessible in the development environment, helping teams make informed decisions about feature prioritization, technical debt, and optimization efforts.
+- **Compliance and audit trails**: The integration creates comprehensive audit trails that link code changes to system behavior, which can be valuable for compliance requirements and post-incident analysis.
+- **Reduced tool switching**: Your development teams can access monitoring data, alerts, and performance insights without leaving their familiar GitLab environment, helping to improve productivity and reduce cognitive overhead.
+
 ## Set up a GitLab Observability instance
 
 Prerequisites:

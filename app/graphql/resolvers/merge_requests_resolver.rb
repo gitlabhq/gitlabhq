@@ -84,13 +84,6 @@ module Resolvers
       required: false,
       description: 'Limit result to draft merge requests.'
 
-    argument :approved, GraphQL::Types::Boolean,
-      required: false,
-      description: <<~DESC
-               Limit results to approved merge requests.
-               Available only when the feature flag `mr_approved_filter` is enabled.
-      DESC
-
     argument :blob_path, GraphQL::Types::String,
       required: false,
       experiment: { milestone: '17.7' },

@@ -88,40 +88,6 @@ export default (
     IssuableTokenKeys.tokenKeysWithAlternative.push(targetBranchToken, sourceBranchToken);
   }
 
-  const approvedToken = {
-    token: {
-      formattedKey: __('Approved'),
-      key: 'approved',
-      type: 'string',
-      param: '',
-      symbol: '',
-      icon: 'approval',
-      tag: __('Yes or No'),
-      lowercaseValueOnSubmit: true,
-      capitalizeTokenValue: true,
-      hideNotEqual: true,
-    },
-    conditions: [
-      {
-        url: 'approved=yes',
-        tokenKey: 'approved',
-        value: __('Yes'),
-        operator: '=',
-      },
-      {
-        url: 'approved=no',
-        tokenKey: 'approved',
-        value: __('No'),
-        operator: '=',
-      },
-    ],
-  };
-
-  if (gon.features.mrApprovedFilter) {
-    IssuableTokenKeys.tokenKeys.splice(3, 0, approvedToken.token);
-    IssuableTokenKeys.conditions.push(...approvedToken.conditions);
-  }
-
   const approvedBy = {
     token: {
       formattedKey: TOKEN_TITLE_APPROVED_BY,
@@ -167,7 +133,7 @@ export default (
     ],
   };
 
-  const tokenPosition = gon.features.mrApprovedFilter ? 4 : 3;
+  const tokenPosition = 3;
   IssuableTokenKeys.tokenKeys.splice(tokenPosition, 0, approvedBy.token);
   IssuableTokenKeys.tokenKeysWithAlternative.splice(
     tokenPosition,

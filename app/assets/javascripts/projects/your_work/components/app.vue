@@ -88,5 +88,6 @@ export default {
     :tab-counts-query="$options.tabCountsQuery"
     :tab-counts-query-error-message="__('An error occurred loading the project counts.')"
     :pagination-type="$options.PAGINATION_TYPE_KEYSET"
+    user-preferences-sort-key="projectsSort"
   />
 </template>

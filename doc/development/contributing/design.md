@@ -62,18 +62,18 @@ Check these aspects both when _designing_ and _reviewing_ UI changes.
 Check visual design properties using your browser's elements inspector ([Chrome](https://developer.chrome.com/docs/devtools/css/),
 [Firefox](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html)).
 
-- Use recommended [colors](https://design.gitlab.com/product-foundations/color)
-  and [typography](https://design.gitlab.com/product-foundations/type-fundamentals/).
+- The design system provides [design tokens](https://design.gitlab.com/product-foundations/design-tokens/) and [components](https://design.gitlab.com/components) that work in supported modes.
+- Use recommended [colors based on semantic meaning](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens) as part of designing a unified product experience. These color combinations are supported in all modes.
+- Follow [typography guidelines](https://design.gitlab.com/product-foundations/type-fundamentals/).
 - Follow [layout guidelines](https://design.gitlab.com/product-foundations/layout#grid).
 - Use existing [icons](https://gitlab-org.gitlab.io/gitlab-svgs/) and [illustrations](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations/)
   or propose new ones according to [iconography](https://design.gitlab.com/product-foundations/iconography/)
   and [illustration](https://design.gitlab.com/product-foundations/illustration-creation-guide/)
   guidelines.
-- Optional: Consider dark mode. For more information, see [Change the mode](../../user/profile/preferences.md#change-the-mode).
-
-### Dark Mode
-
-When you create a design, review [how to use design tokens](https://design.gitlab.com/product-foundations/design-tokens-using#in-design) and start applying color based on [semantic meaning](https://design.gitlab.com/product-foundations/design-tokens#semantic-design-tokens). This will ensure your design works well in both light mode and dark mode. The [Design System group](https://about.gitlab.com/direction/foundations/design_system/) is working to expand on this guidance ahead of upcoming general availability.
+- Account for all [supported modes](../../user/profile/preferences.md#change-the-mode).
+  - The design system provides [design tokens](https://design.gitlab.com/product-foundations/design-tokens/) and [components](https://design.gitlab.com/components) that work in supported modes.
+  - Take extra care when mode is a primary factor in customer outcomes.
+- Dark mode design must align with the [dark mode principles](https://handbook.gitlab.com/handbook/product/ux/product-designer/#designing-with-modes).
 
 ### States
 

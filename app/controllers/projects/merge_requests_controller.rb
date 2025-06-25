@@ -34,10 +34,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :authenticate_user!, only: [:assign_related_issues]
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
-  before_action only: :index do
-    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-  end
-
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)

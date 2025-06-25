@@ -20324,7 +20324,8 @@ CREATE TABLE plan_limits (
     import_placeholder_user_limit_tier_1 integer DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_2 integer DEFAULT 0 NOT NULL,
     import_placeholder_user_limit_tier_3 integer DEFAULT 0 NOT NULL,
-    import_placeholder_user_limit_tier_4 integer DEFAULT 0 NOT NULL
+    import_placeholder_user_limit_tier_4 integer DEFAULT 0 NOT NULL,
+    ci_max_artifact_size_slsa_provenance_statement bigint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE plan_limits_id_seq

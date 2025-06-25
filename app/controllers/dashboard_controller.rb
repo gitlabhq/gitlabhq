@@ -16,10 +16,6 @@ class DashboardController < Dashboard::ApplicationController
     push_frontend_feature_flag(:frontend_caching)
   end
 
-  before_action only: [:merge_requests, :search_merge_requests] do
-    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-  end
-
   before_action only: [:merge_requests] do
     if request.query_string.present? && current_user.merge_request_dashboard_enabled?
       redirect_to merge_requests_search_dashboard_path(params: request.query_parameters), status: :moved_permanently

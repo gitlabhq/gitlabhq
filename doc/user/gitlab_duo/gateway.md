@@ -7,10 +7,14 @@ title: AI gateway
 
 The AI gateway is a standalone service that gives access to AI-native GitLab Duo features.
 
-GitLab operates an instance of AI gateway that is used by GitLab Self-Managed, GitLab Dedicated, and GitLab.com through the Cloud Connector.
+GitLab operates an instance of the AI gateway that is used by GitLab.com and GitLab
+Dedicated through the [Cloud Connector](../../development/cloud_connector/_index.md).
 
-On GitLab Self-Managed, this GitLab instance of AI gateway applies regardless of whether you are using the
-cloud-based AI gateway hosted by GitLab, or using [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md) to self-host the AI gateway.
+On GitLab Self-Managed, you can use either of the following:
+
+- The GitLab-hosted AI gateway instance, based in the cloud.
+- The self-hosted AI gateway instance with
+  [GitLab Duo Self-Hosted](../../administration/gitlab_duo_self_hosted/_index.md).
 
 This page describes where the AI gateway is deployed, and answers questions about region selection, data routing, and data sovereignty.
 

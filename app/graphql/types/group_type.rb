@@ -358,6 +358,12 @@ module Types
       description: 'Cluster agents associated with projects in the group and its subgroups.',
       resolver: ::Resolvers::Clusters::AgentsResolver
 
+    field :marked_for_deletion, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if group or any ancestor is scheduled to be deleted.',
+      method: :scheduled_for_deletion_in_hierarchy_chain?,
+      experiment: { milestone: '18.2' }
+
     field :marked_for_deletion_on, ::Types::TimeType,
       null: true,
       description: 'Date when group was scheduled to be deleted.',
@@ -369,6 +375,12 @@ module Types
         'For groups not pending deletion, returns a theoretical date based on current settings ' \
         'if marked for deletion today.',
       experiment: { milestone: '16.11' }
+
+    field :is_self_deletion_in_progress, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if group deletion is in progress.',
+      method: :self_deletion_in_progress?,
+      experiment: { milestone: '18.2' }
 
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|

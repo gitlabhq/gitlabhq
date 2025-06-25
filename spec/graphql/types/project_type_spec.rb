@@ -352,7 +352,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         :target_branches,
         :state,
         :draft,
-        :approved,
         :labels,
         :label_name,
         :before,

@@ -42,10 +42,6 @@ class GroupsController < Groups::ApplicationController
     push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
   end
 
-  before_action only: :merge_requests do
-    push_frontend_feature_flag(:mr_approved_filter, type: :ops)
-  end
-
   skip_cross_project_access_check :index, :new, :create, :edit, :update, :destroy
   # When loading show as an atom feed, we render events that could leak cross
   # project information

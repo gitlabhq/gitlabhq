@@ -289,35 +289,6 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect(response).to match_response_schema('public_api/v4/merge_requests')
       end
 
-      context 'with approved param' do
-        let(:approved_mr) { create(:merge_request, target_project: project, source_project: project) }
-
-        before do
-          create(:approval, merge_request: approved_mr)
-        end
-
-        it 'returns only approved merge requests' do
-          path = endpoint_path + '?approved=yes'
-
-          get api(path, user)
-
-          expect_paginated_array_response([approved_mr.id])
-        end
-
-        it 'returns only non-approved merge requests' do
-          path = endpoint_path + '?approved=no'
-
-          get api(path, user)
-
-          expect_paginated_array_response([
-            merge_request_merged.id,
-            merge_request_locked.id,
-            merge_request_closed.id,
-            merge_request.id
-          ])
-        end
-      end
-
       it 'returns an empty array if no issue matches milestone' do
         get api(endpoint_path, user), params: { milestone: '1.0.0' }
 

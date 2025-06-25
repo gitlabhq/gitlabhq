@@ -29300,6 +29300,9 @@ msgstr ""
 msgid "GlobalSearch|Source branch"
 msgstr ""
 
+msgid "GlobalSearch|Target branch"
+msgstr ""
+
 msgid "GlobalSearch|Tasks"
 msgstr ""
 
@@ -29313,6 +29316,9 @@ msgid "GlobalSearch|Tip:"
 msgstr ""
 
 msgid "GlobalSearch|Toggle if results have source branch included or excluded"
+msgstr ""
+
+msgid "GlobalSearch|Toggle if results have target branch included or excluded"
 msgstr ""
 
 msgid "GlobalSearch|Type %{kbdOpen}/%{kbdClose} to search"
@@ -59630,6 +59636,9 @@ msgid "Something went wrong, unable to get projects"
 msgstr ""
 
 msgid "Something went wrong, unable to search projects"
+msgstr ""
+
+msgid "Something went wrong."
 msgstr ""
 
 msgid "Something went wrong. Please try again later"

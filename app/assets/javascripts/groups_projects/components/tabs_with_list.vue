@@ -134,6 +134,11 @@ export default {
         return [PAGINATION_TYPE_KEYSET, PAGINATION_TYPE_OFFSET].includes(value);
       },
     },
+    userPreferencesSortKey: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -388,12 +393,16 @@ export default {
       this.getTabCounts();
     },
     async userPreferencesUpdateMutate(sort) {
+      if (this.userPreferencesSortKey === null) {
+        return;
+      }
+
       try {
         await this.$apollo.mutate({
           mutation: userPreferencesUpdateMutation,
           variables: {
             input: {
-              projectsSort: sort.toUpperCase(),
+              [this.userPreferencesSortKey]: sort.toUpperCase(),
             },
           },
         });

@@ -6,12 +6,6 @@ describe('app/assets/javascripts/pages/dashboard/merge_requests/index.js', () =>
 
   beforeEach(() => {
     IssuableFilteredSearchTokenKeys = createFilteredSearchTokenKeys();
-    window.gon = {
-      ...window.gon,
-      features: {
-        mrApprovedFilter: true,
-      },
-    };
   });
 
   describe.each(['Branch', 'Environment'])('when $filter is disabled', (filter) => {

@@ -54,6 +54,7 @@ describe('YourWorkGroupsApp', () => {
       tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
       shouldUpdateActiveTabCountFromTabQuery: false,
       paginationType: PAGINATION_TYPE_OFFSET,
+      userPreferencesSortKey: null,
     });
   });
 });

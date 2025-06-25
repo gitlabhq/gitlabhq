@@ -385,7 +385,7 @@ describe('TabsWithList', () => {
     describe('when sort is changed', () => {
       let trackEventSpy;
 
-      beforeEach(async () => {
+      const setup = async (propsData = {}) => {
         await createComponent({
           route: {
             ...defaultRoute,
@@ -394,32 +394,51 @@ describe('TabsWithList', () => {
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
+          propsData,
         });
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
         await waitForPromises();
-      });
+      };
 
-      it('updates query string', () => {
+      it('updates query string', async () => {
+        await setup();
+
         expect(router.currentRoute.query).toEqual({
           [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_DESC}`,
         });
       });
 
-      it('calls `userPreferencesUpdate` mutation with correct variables', () => {
-        expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
-          input: { projectsSort: 'LATEST_ACTIVITY_DESC' },
+      describe('when `userPreferencesSortKey` prop is passed', () => {
+        it('calls `userPreferencesUpdate` mutation with correct variables', async () => {
+          await setup({ userPreferencesSortKey: 'projectsSort' });
+
+          expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
+            input: { projectsSort: 'LATEST_ACTIVITY_DESC' },
+          });
         });
       });
 
-      it('does not call Sentry.captureException', () => {
+      describe('when `userPreferencesSortKey` prop is not passed', () => {
+        it('does not call `userPreferencesUpdate` mutation', async () => {
+          await setup();
+
+          expect(userPreferencesUpdateSuccessHandler).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not call Sentry.captureException', async () => {
+        await setup();
+
         expect(Sentry.captureException).not.toHaveBeenCalled();
       });
 
-      it('tracks event', () => {
+      it('tracks event', async () => {
+        await setup();
+
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_sort_on_your_work_projects',
           {
@@ -434,7 +453,7 @@ describe('TabsWithList', () => {
     describe('when sort direction is changed', () => {
       let trackEventSpy;
 
-      beforeEach(async () => {
+      const setup = async (propsData = {}) => {
         await createComponent({
           route: {
             ...defaultRoute,
@@ -443,32 +462,51 @@ describe('TabsWithList', () => {
               [QUERY_PARAM_END_CURSOR]: mockEndCursor,
             },
           },
+          propsData,
         });
 
         trackEventSpy = bindInternalEventDocument(wrapper.element).trackEventSpy;
 
         findFilteredSearchAndSort().vm.$emit('sort-direction-change', true);
         await waitForPromises();
-      });
+      };
 
-      it('updates query string', () => {
+      it('updates query string', async () => {
+        await setup();
+
         expect(router.currentRoute.query).toEqual({
           [defaultPropsData.filteredSearchTermKey]: searchTerm,
           sort: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}`,
         });
       });
 
-      it('calls `userPreferencesUpdate` mutation with correct variables', () => {
-        expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
-          input: { projectsSort: 'CREATED_ASC' },
+      describe('when `userPreferencesSortKey` prop is passed', () => {
+        it('calls `userPreferencesUpdate` mutation with correct variables', async () => {
+          await setup({ userPreferencesSortKey: 'projectsSort' });
+
+          expect(userPreferencesUpdateSuccessHandler).toHaveBeenCalledWith({
+            input: { projectsSort: 'CREATED_ASC' },
+          });
         });
       });
 
-      it('does not call Sentry.captureException', () => {
+      describe('when `userPreferencesSortKey` prop is not passed', () => {
+        it('does not call `userPreferencesUpdate` mutation', async () => {
+          await setup();
+
+          expect(userPreferencesUpdateSuccessHandler).not.toHaveBeenCalled();
+        });
+      });
+
+      it('does not call Sentry.captureException', async () => {
+        await setup();
+
         expect(Sentry.captureException).not.toHaveBeenCalled();
       });
 
-      it('tracks event', () => {
+      it('tracks event', async () => {
+        await setup();
+
         expect(trackEventSpy).toHaveBeenCalledWith(
           'click_sort_on_your_work_projects',
           {
@@ -485,7 +523,10 @@ describe('TabsWithList', () => {
     const error = new Error();
 
     beforeEach(async () => {
-      await createComponent({ userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error) });
+      await createComponent({
+        userPreferencesUpdateHandler: jest.fn().mockRejectedValue(error),
+        propsData: { userPreferencesSortKey: 'projectsSort' },
+      });
 
       findFilteredSearchAndSort().vm.$emit('sort-by-change', SORT_OPTION_UPDATED.value);
       await waitForPromises();
