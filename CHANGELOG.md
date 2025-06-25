@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.11.5 (2025-06-24)
+
+### Changed (2 changes)
+
+- [Revert "Merge branch 'backport-bugfix-restrict-LFS-download--17-11' into '17-11-stable-ee'"](https://gitlab.com/gitlab-org/security/gitlab/-/commit/78ea1e4f6d7b628fb092a67f93706a69f86266d6)
+- [Restrict LFS file download to project-bound objects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b0243e257c03c029c260e7c767ddf00a60cb0992)
+
+### Security (5 changes)
+
+- [Fix guest permissions for incident hierarchy updates](https://gitlab.com/gitlab-org/security/gitlab/-/commit/eab51ce5967c0bbf102d71331c8eb8f0d7df80e0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5080))
+- [Fix the validation logic for IDP Certificate Fingerprint](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4abfb6d8f7ae7cbc42d86c98a6b1b11bca29e7ce) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5083))
+- [Checking if framework and project have same namespace](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2947a696bb9db9aaeee4598daa60bfb389c4073a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5067))
+- [Fix incorrect role grant after a user access_request](https://gitlab.com/gitlab-org/security/gitlab/-/commit/de70d6b13d8c0f359c25a3c9aead4850732e7ee6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5056))
+- [Prevent anonymous users from creating uploads](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c96e37a82f781967214e76f8f348039e2bf46398) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5064))
+
 ## 17.11.4 (2025-06-11)
 
 ### Fixed (2 changes)

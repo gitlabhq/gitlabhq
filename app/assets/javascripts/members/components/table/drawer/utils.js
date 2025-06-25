@@ -10,11 +10,11 @@ import {
 export const getRoleDropdownItems = roleDropdownItems;
 export const getMemberRole = initialSelectedRole;
 
-// The API to update members uses different property names for the access level, depending on if it's a user or a group.
-// Users use 'access_level', groups use 'group_access'.
+// The API to update members uses different property names for the access level, depending on each member's namespace
 const ACCESS_LEVEL_PROPERTY_NAME = {
   [MEMBERS_TAB_TYPES.user]: MEMBER_ACCESS_LEVEL_PROPERTY_NAME,
   [MEMBERS_TAB_TYPES.group]: GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
+  [MEMBERS_TAB_TYPES.accessRequest]: MEMBER_ACCESS_LEVEL_PROPERTY_NAME,
 };
 
 export const callRoleUpdateApi = async (member, role) => {
