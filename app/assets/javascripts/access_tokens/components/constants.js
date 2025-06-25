@@ -57,6 +57,7 @@ export const FIELDS = [
     key: 'lastUsedIps',
     label: __('Last Used IPs'),
     sortable: false,
+    tdClass: 'gl-break-all gl-min-w-20',
   },
   {
     key: 'expiresAt',

@@ -68,7 +68,6 @@ spec/frontend/clusters/components/remove_cluster_confirmation_spec.js
 spec/frontend/clusters_list/components/delete_agent_button_spec.js
 spec/frontend/content_editor/components/wrappers/paragraph_spec.js
 spec/frontend/design_management/components/design_notes/design_reply_form_spec.js
-spec/frontend/design_management/components/design_overlay_spec.js
 spec/frontend/design_management/pages/design/index_spec.js
 spec/frontend/design_management/pages/index_spec.js
 spec/frontend/editor/components/source_editor_toolbar_spec.js

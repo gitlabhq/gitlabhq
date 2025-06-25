@@ -29,6 +29,8 @@
   - 1
 - - admin_emails
   - 1
+- - ai_knowledge_graph_indexing_task
+  - 1
 - - ai_repository_xray_scan_dependencies
   - 1
 - - analytics_code_review_metrics

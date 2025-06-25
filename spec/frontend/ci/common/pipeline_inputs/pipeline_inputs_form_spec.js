@@ -7,6 +7,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import InputsTableSkeletonLoader from '~/ci/common/pipeline_inputs/pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 import PipelineInputsForm from '~/ci/common/pipeline_inputs/pipeline_inputs_form.vue';
 import PipelineInputsTable from '~/ci/common/pipeline_inputs/pipeline_inputs_table/pipeline_inputs_table.vue';
@@ -93,11 +94,12 @@ describe('PipelineInputsForm', () => {
   const findSkeletonLoader = () => wrapper.findComponent(InputsTableSkeletonLoader);
   const findInputsTable = () => wrapper.findComponent(PipelineInputsTable);
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
-  const findEmptyState = () => wrapper.findByText('There are no inputs for this configuration.');
+  const findEmptyState = () => wrapper.findByTestId('no-inputs-empty-state');
   const findEmptySelectionState = () => wrapper.findByTestId('empty-selection-state');
   const findInputsSelector = () => wrapper.findComponent(GlCollapsibleListbox);
   const findPreviewButton = () => wrapper.findComponent(GlButton);
   const findPreviewDrawer = () => wrapper.findComponent(PipelineInputsPreviewDrawer);
+  const findHelpPageLink = () => wrapper.findComponent(HelpPageLink);
 
   const selectInputs = async (inputs = ['deploy_environment', 'api_token', 'tags']) => {
     findInputsSelector().vm.$emit('select', inputs);
@@ -122,15 +124,6 @@ describe('PipelineInputsForm', () => {
     it('renders a loading state', () => {
       expect(findSkeletonLoader().exists()).toBe(true);
     });
-
-    it('renders preview button', () => {
-      expect(findPreviewButton().exists()).toBe(true);
-      expect(findPreviewButton().text()).toBe('Preview inputs');
-    });
-
-    it('renders preview drawer', () => {
-      expect(findPreviewDrawer().exists()).toBe(true);
-    });
   });
 
   describe('GraphQL query', () => {
@@ -146,7 +139,6 @@ describe('PipelineInputsForm', () => {
           headerText: 'Inputs',
           searchPlaceholder: 'Search input name',
           resetButtonLabel: 'Clear',
-          disabled: false,
         });
       });
 
@@ -309,8 +301,8 @@ describe('PipelineInputsForm', () => {
       });
 
       describe('inputs preview', () => {
-        it('enables preview button', () => {
-          expect(findPreviewButton().props('disabled')).toBe(false);
+        it('renders preview button', () => {
+          expect(findPreviewButton().exists()).toBe(true);
         });
 
         it('opens drawer when preview button is clicked', async () => {
@@ -341,8 +333,12 @@ describe('PipelineInputsForm', () => {
         await createComponent();
       });
 
-      it('renders input selector listbox as disabled', () => {
-        expect(findInputsSelector().props('disabled')).toBe(true);
+      it('does not render the input selector listbox', () => {
+        expect(findInputsSelector().exists()).toBe(false);
+      });
+
+      it('does not render the inputs preview button', () => {
+        expect(findPreviewButton().exists()).toBe(false);
       });
 
       it('does not render a table', () => {
@@ -351,18 +347,17 @@ describe('PipelineInputsForm', () => {
 
       it('displays the empty state message', () => {
         expect(findEmptyState().exists()).toBe(true);
+        expect(findEmptyState().text()).toContain('There are no inputs for this configuration.');
+      });
+
+      it('displays the help page link', () => {
+        expect(findHelpPageLink().exists()).toBe(true);
+        expect(findHelpPageLink().props('href')).toBe('ci/inputs/_index.md');
+        expect(findHelpPageLink().text()).toBe('How do I use inputs?');
       });
 
       it('does not display the empty selection state message', () => {
         expect(findEmptySelectionState().exists()).toBe(false);
-      });
-
-      it('disables inputs selector', () => {
-        expect(findInputsSelector().props('disabled')).toBe(true);
-      });
-
-      it('disables preview button', () => {
-        expect(findPreviewButton().props('disabled')).toBe(true);
       });
     });
 

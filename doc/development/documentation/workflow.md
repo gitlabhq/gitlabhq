@@ -650,12 +650,6 @@ Remember:
 The documentation under `/doc/solutions` is created, maintained, copy edited,
 and merged by the Solutions Architect team.
 
-## AI-generated content
-
-Community members can make AI-generated contributions to GitLab documentation, provided they follow the guidelines in our [DCO or our CLA terms](https://about.gitlab.com/community/contribute/dco-cla/).
-
-GitLab team members must follow the guidelines documented in the [internal handbook](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/legal_restrictions/).
-
 ## Related topics
 
 - [Technical Writing assignments](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)

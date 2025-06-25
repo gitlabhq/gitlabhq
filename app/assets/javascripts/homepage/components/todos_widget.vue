@@ -2,11 +2,13 @@
 import { computed } from 'vue';
 import { GlButton, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
+import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
 import {
   TABS_INDICES,
   TODO_ACTION_TYPE_BUILD_FAILED,
   TODO_ACTION_TYPE_DIRECTLY_ADDRESSED,
+  TODO_ACTION_TYPE_ASSIGNED,
   TODO_ACTION_TYPE_MENTIONED,
   TODO_ACTION_TYPE_REVIEW_REQUESTED,
   TODO_ACTION_TYPE_UNMERGEABLE,
@@ -21,6 +23,10 @@ const FILTER_OPTIONS = [
   {
     value: null,
     text: s__('Todos|All'),
+  },
+  {
+    value: TODO_ACTION_TYPE_ASSIGNED,
+    text: s__('Todos|Assigned'),
   },
   {
     value: `${TODO_ACTION_TYPE_MENTIONED};${TODO_ACTION_TYPE_DIRECTLY_ADDRESSED}`,
@@ -85,6 +91,7 @@ export default {
     },
   },
   emptyTodosAllDoneSvg,
+  emptyTodosFilteredSvg,
   FILTER_OPTIONS,
 };
 </script>
@@ -126,6 +133,7 @@ export default {
       v-else-if="!$apollo.queries.todos.loading && !todos.length && filter"
       class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
     >
+      <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosFilteredSvg" />
       <span>{{ __('Sorry, your filter produced no results') }}</span>
     </div>
     <div v-else>

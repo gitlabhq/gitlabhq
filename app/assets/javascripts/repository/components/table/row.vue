@@ -244,7 +244,7 @@ export default {
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>
       </template>
-      <!-- The z-index of the lock must be higher than tree-item-link::before in files.scss -->
+      <!-- The z-index of the lock must be the same (or higher) as tree-item-link::before in files.scss -->
       <gl-icon
         v-if="hasLockLabel"
         v-gl-tooltip

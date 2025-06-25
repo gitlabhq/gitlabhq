@@ -24,7 +24,7 @@ RSpec/BeEq:
     - 'ee/spec/features/admin/admin_emails_spec.rb'
     - 'ee/spec/features/admin/users/users_spec.rb'
     - 'ee/spec/features/groups/settings/reporting_spec.rb'
-    - 'ee/spec/features/issues/user_bulk_edits_issues_spec.rb'
+    - 'ee/spec/features/issues/list/user_bulk_edits_issues_spec.rb'
     - 'ee/spec/features/projects/new_project_spec.rb'
     - 'ee/spec/features/projects/quality/test_case_show_spec.rb'
     - 'ee/spec/features/projects/settings/ee/repository_mirrors_settings_spec.rb'

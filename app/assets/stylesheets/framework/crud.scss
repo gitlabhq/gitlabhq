@@ -35,9 +35,12 @@ $crud-header-min-height: px-to-rem(49px);
         border-right-style: none;
       }
 
+      > [data-label]::before {
+        text-align: left;
+      }
+
       > th {
         border-top-width: $gl-border-size-1;
-        border-bottom-width: 0;
       }
 
       &::after {

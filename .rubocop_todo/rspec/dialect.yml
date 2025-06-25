@@ -24,7 +24,7 @@ RSpec/Dialect:
     - 'spec/benchmarks/banzai_benchmark.rb'
     - 'spec/controllers/projects/pipelines_controller_spec.rb'
     - 'spec/factories/projects/ci_feature_usages.rb'
-    - 'spec/features/issues/user_bulk_edits_issues_labels_spec.rb'
+    - 'spec/features/issues/list/user_bulk_edits_issues_labels_spec.rb'
     - 'spec/features/projects/labels/subscription_spec.rb'
     - 'spec/features/projects/labels/update_prioritization_spec.rb'
     - 'spec/lib/feature_spec.rb'

@@ -988,20 +988,6 @@ module ProjectsHelper
   end
 
   def project_permissions_data(project, target_form_id = nil)
-    data = visibility_confirm_modal_data(project, target_form_id)
-    cascading_settings_data = project_cascading_namespace_settings_tooltip_data(
-      :duo_features_enabled,
-      project,
-      method(:edit_group_path)
-    ).to_json
-    data.merge!(
-      {
-        cascading_settings_data: cascading_settings_data
-      }
-    )
-  end
-
-  def visibility_confirm_modal_data(project, target_form_id = nil)
     {
       target_form_id: target_form_id,
       button_testid: 'reduce-project-visibility-button',
@@ -1011,6 +997,16 @@ module ProjectsHelper
       additional_information: _('Note: current forks will keep their visibility level.'),
       html_confirmation_message: true.to_s,
       show_visibility_confirm_modal: show_visibility_confirm_modal?(project).to_s
+    }
+  end
+
+  def gitlab_duo_settings_data(project)
+    {
+      cascadingSettingsData: project_cascading_namespace_settings_tooltip_data(
+        :duo_features_enabled,
+        project,
+        method(:edit_group_path)
+      )
     }
   end
 

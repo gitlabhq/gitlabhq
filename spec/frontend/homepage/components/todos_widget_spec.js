@@ -221,13 +221,13 @@ describe('TodosWidget', () => {
       createComponent();
       todosQuerySuccessHandler.mockClear();
 
-      await findFilterDropdown().vm.$emit('select', 'build_failed');
+      await findFilterDropdown().vm.$emit('select', 'assigned');
       await waitForPromises();
 
       expect(todosQuerySuccessHandler).toHaveBeenCalledWith({
         first: 5,
         state: ['pending'],
-        action: ['build_failed'],
+        action: ['assigned'],
       });
     });
 

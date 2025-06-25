@@ -23515,8 +23515,7 @@ CREATE TABLE software_license_policies (
     custom_software_license_id bigint,
     approval_policy_rule_id bigint,
     software_license_spdx_identifier text,
-    CONSTRAINT check_986c4e5c59 CHECK ((char_length(software_license_spdx_identifier) <= 255)),
-    CONSTRAINT check_9ba23ae4c3 CHECK ((num_nonnulls(custom_software_license_id, software_license_id) > 0))
+    CONSTRAINT check_986c4e5c59 CHECK ((char_length(software_license_spdx_identifier) <= 255))
 );
 
 CREATE SEQUENCE software_license_policies_id_seq
@@ -36746,7 +36745,7 @@ CREATE UNIQUE INDEX index_p_knowledge_graph_enabled_namespaces_on_namespace_id O
 
 CREATE INDEX index_p_knowledge_graph_enabled_namespaces_on_state ON ONLY p_knowledge_graph_enabled_namespaces USING btree (state);
 
-CREATE UNIQUE INDEX index_p_knowledge_graph_replicas_on_namespace_id ON ONLY p_knowledge_graph_replicas USING btree (namespace_id);
+CREATE INDEX index_p_knowledge_graph_replicas_on_namespace_id ON ONLY p_knowledge_graph_replicas USING btree (namespace_id);
 
 CREATE INDEX index_p_knowledge_graph_replicas_on_state ON ONLY p_knowledge_graph_replicas USING btree (state);
 

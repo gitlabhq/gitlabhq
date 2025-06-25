@@ -6,6 +6,7 @@ import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
 import { reportToSentry } from '~/ci/utils';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.vue';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import InputsTableSkeletonLoader from './pipeline_inputs_table/inputs_table_skeleton_loader.vue';
 import PipelineInputsTable from './pipeline_inputs_table/pipeline_inputs_table.vue';
@@ -23,6 +24,7 @@ export default {
     GlCollapsibleListbox,
     GlButton,
     PipelineInputsPreviewDrawer,
+    HelpPageLink,
   },
   inject: ['projectPath'],
   props: {
@@ -112,6 +114,9 @@ export default {
     hasInputs() {
       return Boolean(this.inputs.length);
     },
+    hasSelectedInputs() {
+      return Boolean(this.selectedInputNames.length);
+    },
     inputsToEmit() {
       return this.emitModifiedOnly ? this.modifiedInputs : this.inputs;
     },
@@ -163,7 +168,7 @@ export default {
         return this.searchFilteredInputs;
       }
 
-      if (this.selectedInputNames.length === 0) {
+      if (!this.hasSelectedInputs) {
         return this.inputsList;
       }
 
@@ -288,12 +293,11 @@ export default {
     "
     :title="s__('Pipelines|Inputs')"
   >
-    <template #actions>
+    <template v-if="hasInputs" #actions>
       <gl-button
         category="secondary"
         variant="confirm"
         size="small"
-        :disabled="!hasInputs"
         @click="showPreviewDrawer = true"
       >
         {{ s__('Pipelines|Preview inputs') }}
@@ -307,7 +311,6 @@ export default {
         :search-placeholder="s__('Pipelines|Search input name')"
         :show-select-all-button-label="__('Select all')"
         :reset-button-label="__('Clear')"
-        :disabled="!hasInputs"
         searchable
         multiple
         placement="bottom-end"
@@ -317,18 +320,24 @@ export default {
         @select-all="selectAll"
         @search="handleSearch"
       />
-    </template>
-    <inputs-table-skeleton-loader v-if="isLoading" />
-    <template v-else>
-      <pipeline-inputs-table
-        v-if="selectedInputNames.length"
-        :inputs="inputs"
-        @update="handleInputsUpdated"
-      />
 
+      <pipeline-inputs-preview-drawer
+        :open="showPreviewDrawer"
+        :inputs="inputs"
+        @close="showPreviewDrawer = false"
+      />
+    </template>
+
+    <inputs-table-skeleton-loader v-if="isLoading" />
+    <pipeline-inputs-table
+      v-else-if="hasSelectedInputs"
+      :inputs="inputs"
+      @update="handleInputsUpdated"
+    />
+    <template v-if="!hasSelectedInputs && !isLoading" #empty>
       <div
-        v-else-if="hasInputs"
-        class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-p-4 gl-text-subtle"
+        v-if="hasInputs"
+        class="gl-flex gl-flex-col gl-items-center gl-justify-center gl-p-2"
         data-testid="empty-selection-state"
       >
         <img
@@ -338,15 +347,13 @@ export default {
         />
         {{ emptySelectionText }}
       </div>
-      <div v-else class="gl-flex gl-justify-center gl-text-subtle">
+      <div v-else class="gl-text-center" data-testid="no-inputs-empty-state">
         {{ s__('Pipelines|There are no inputs for this configuration.') }}
+
+        <help-page-link href="ci/inputs/_index.md">
+          {{ s__('Pipelines|How do I use inputs?') }}
+        </help-page-link>
       </div>
     </template>
-
-    <pipeline-inputs-preview-drawer
-      :open="showPreviewDrawer"
-      :inputs="inputs"
-      @close="showPreviewDrawer = false"
-    />
   </crud-component>
 </template>

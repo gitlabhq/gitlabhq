@@ -529,35 +529,21 @@ RSpec.describe Projects::UpdateService, feature_category: :groups_and_projects d
           )
       end
 
-      context 'when the destroy_fork_network_on_archive feature flag is enabled' do
-        context 'when project is being archived' do
-          it 'calls UnlinkForkService' do
-            project.update!(archived: false)
+      context 'when project is being archived' do
+        it 'calls UnlinkForkService' do
+          project.update!(archived: false)
 
-            expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(unlink_fork_service)
+          expect(Projects::UnlinkForkService).to receive(:new).with(project, user).and_return(unlink_fork_service)
 
-            update_project(project, user, archived: true)
-          end
-        end
-
-        context 'when project is not being archived' do
-          it 'does not call UnlinkForkService' do
-            expect(Projects::UnlinkForkService).not_to receive(:new)
-
-            update_project(project, user, archived: false)
-          end
+          update_project(project, user, archived: true)
         end
       end
 
-      context 'when the destroy_fork_network_on_archive feature flag is disabled' do
-        before do
-          stub_feature_flags(destroy_fork_network_on_archive: false)
-        end
-
+      context 'when project is not being archived' do
         it 'does not call UnlinkForkService' do
           expect(Projects::UnlinkForkService).not_to receive(:new)
 
-          update_project(project, user, archived: true)
+          update_project(project, user, archived: false)
         end
       end
     end

@@ -12,8 +12,8 @@ title: Users API
 
 {{< /details >}}
 
-Use this API to interact with user accounts on GitLab. These endpoints can help manage [your account](../user/profile/_index.md) or
-[accounts for other users](../administration/administer_users.md).
+Use this API to interact with user accounts on GitLab. These endpoints can help manage [your account](../user/profile/_index.md)
+or [accounts for other users](../administration/administer_users.md).
 
 ## List users
 
@@ -756,8 +756,8 @@ Prerequisites:
 {{< alert type="note" >}}
 
 `private_profile` defaults to the value of the
-[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default) setting.
-`bio` defaults to `""` instead of `null`.
+[Set profiles of new users to private by default](../administration/settings/account_and_limit_settings.md#set-profiles-of-new-users-to-private-by-default)
+setting. `bio` defaults to `""` instead of `null`.
 
 {{< /alert >}}
 
@@ -772,7 +772,7 @@ Supported attributes:
 | `username`                           | Yes      | The username of the user    |
 | `name`                               | Yes      | The name of the user        |
 | `email`                              | Yes      | The email of the user       |
-| `password`                           | Conditionally       | The password for the user. Required if `force_random_password` or `reset_password` are not defined. If either force_random_password` or `reset_password` are defined, those settings take priority.   |
+| `password`                           | Conditionally | The password for the user. Required if `force_random_password` or `reset_password` are not defined. If either `force_random_password` or `reset_password` are defined, those settings take priority. |
 | `admin`                              | No       | User is an administrator. Valid values are `true` or `false`. Defaults to false. |
 | `auditor`                            | No       | User is an auditor. Valid values are `true` or `false`. Defaults to false. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/366404) in GitLab 15.3. Premium and Ultimate only. |
 | `avatar`                             | No       | Image file for user's avatar |
@@ -844,7 +844,7 @@ Supported attributes:
 | `can_create_group`                   | No       | User can create groups - true or false |
 | `color_scheme_id`                    | No       | User's color scheme for the file viewer (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-syntax-highlighting-theme) for more information) |
 | `commit_email`                       | No       | User's commit email. Set to `_private` to use the private commit email. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375148) in GitLab 15.5. |
-| `email`                              | No       | The email of the user       |
+| `email`                              | No       | The email of the user |
 | `extern_uid`                         | No       | External UID |
 | `external`                           | No       | Flags the user as external - true or false (default) |
 | `extra_shared_runners_minutes_limit` | No       | Can be set by administrators only. Additional compute minutes for this user. Premium and Ultimate only. |
@@ -852,10 +852,10 @@ Supported attributes:
 | `id`                                 | Yes      | ID of the user |
 | `linkedin`                           | No       | LinkedIn    |
 | `location`                           | No       | User's location |
-| `name`                               | No       | The name of the user        |
+| `name`                               | No       | The name of the user |
 | `note`                               | No       | Administration notes for this user |
 | `organization`                       | No       | Organization name |
-| `password`                           | No       | The password for the user    |
+| `password`                           | No       | The password for the user |
 | `private_profile`                    | No       | User's profile is private - true or false. |
 | `projects_limit`                     | No       | Limit projects each user can create |
 | `pronouns`                           | No       | Pronouns    |
@@ -868,7 +868,7 @@ Supported attributes:
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |
 | `github`                             | No       | GitHub username |
-| `username`                           | No       | The username of the user    |
+| `username`                           | No       | The username of the user |
 | `view_diffs_file_by_file`            | No       | Flag indicating the user sees only one file diff per page |
 | `website_url`                        | No       | Website URL |
 
@@ -1103,7 +1103,7 @@ Supported attributes:
 To upload an avatar from your file system, use the `--form` argument. This causes
 cURL to post data using the header `Content-Type: multipart/form-data`. The
 `file=` parameter must point to an image file on your file system and be
-preceded by `@`. For example:
+preceded by `@`.
 
 Example request:
 
@@ -1474,8 +1474,7 @@ Supported attributes:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040)
-in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -1518,8 +1517,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040)
-in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -1561,8 +1559,7 @@ Example response:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040)
-in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175040) in GitLab 17.8.
 
 {{< /history >}}
 
@@ -1595,9 +1592,9 @@ Example response:
 
 Supported attributes:
 
-| Attribute              | Type     | Required | Description |
-|:-----------------------|:---------|:---------|:------------|
-| `id`             | integer   | yes       | ID of user account |
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `id`      | integer | yes      | ID of user account |
 
 ## Revoke a Support PIN for a user
 
@@ -1610,8 +1607,7 @@ Supported attributes:
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187657)
-in GitLab 17.11.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/187657) in GitLab 17.11.
 
 {{< /history >}}
 
@@ -1640,6 +1636,6 @@ If successful, returns `202 Accepted`.
 
 Supported attributes:
 
-| Attribute    | Type      | Required | Description         |
-|:-------------|:----------|:---------|:--------------------|
-| `id`         | integer   | yes      | ID of a user  |
+| Attribute | Type    | Required | Description |
+|:----------|:--------|:---------|:------------|
+| `id`      | integer | yes      | ID of a user |

@@ -1,4 +1,4 @@
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -149,7 +149,7 @@ describe('Design overlay component', () => {
               },
             });
 
-            await nextTick();
+            await waitForPromises();
             expect(findBadgeAtIndex(0).props('isInactive')).toBe(false);
           },
         );
@@ -166,7 +166,7 @@ describe('Design overlay component', () => {
             },
           });
 
-          await nextTick();
+          await waitForPromises();
           expect(findSecondBadge().props('isInactive')).toBe(true);
           expect(findFirstBadge().props('isInactive')).toBe(false);
         });
@@ -313,7 +313,7 @@ describe('Design overlay component', () => {
           newCoordinates,
         );
 
-        findOverlay().vm.$emit('mouseleave');
+        findOverlay().trigger('mouseleave');
         expect(wrapper.emitted('openCommentForm')).toEqual([[newCoordinates]]);
       });
 

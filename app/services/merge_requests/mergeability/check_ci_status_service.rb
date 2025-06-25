@@ -3,6 +3,8 @@
 module MergeRequests
   module Mergeability
     class CheckCiStatusService < CheckBaseService
+      include Gitlab::Utils::StrongMemoize
+
       identifier :ci_must_pass
       description 'Checks whether CI has passed'
 
@@ -12,6 +14,8 @@ module MergeRequests
 
         if mergeable_ci_state?
           success
+        elsif pipeline_pending?
+          checking
         else
           failure
         end
@@ -29,11 +33,15 @@ module MergeRequests
 
       def mergeable_ci_state?
         return true unless pipeline_must_succeed?
-        return false unless merge_request.diff_head_pipeline
+        return false unless head_pipeline
         return false if merge_request.pipeline_creating?
         return true if can_skip_diff_head_pipeline?
 
-        merge_request.diff_head_pipeline.success?
+        head_pipeline.success?
+      end
+
+      def pipeline_pending?
+        merge_request.pipeline_creating? || head_pipeline&.active?
       end
 
       def pipeline_must_succeed?
@@ -44,8 +52,13 @@ module MergeRequests
 
       def can_skip_diff_head_pipeline?
         merge_request.project.allow_merge_on_skipped_pipeline?(inherit_group_setting: true) &&
-          merge_request.diff_head_pipeline.skipped?
+          head_pipeline.skipped?
       end
+
+      def head_pipeline
+        merge_request.diff_head_pipeline
+      end
+      strong_memoize_attr :head_pipeline
     end
   end
 end

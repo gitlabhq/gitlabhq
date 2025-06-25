@@ -12,7 +12,7 @@ module RuboCop
         MESSAGE = 'A file with a top-level `describe` must end in _spec.rb.'
 
         def on_top_level_example_group(node)
-          return if acceptable_file_path?(processed_source.buffer.name)
+          return if acceptable_file_path?(processed_source.file_path)
 
           add_offense(node.send_node, message: MESSAGE)
         end

@@ -49,8 +49,8 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
           allow(Ci::PipelineCreation::Requests).to receive(:pipeline_creating_for_merge_request?).and_return(true)
         end
 
-        it 'is failure' do
-          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
+        it 'is checking' do
+          expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
         end
       end
 
@@ -91,7 +91,21 @@ RSpec.describe MergeRequests::Mergeability::CheckCiStatusService, feature_catego
           end
         end
 
-        context 'when the diff head pipeline is not skipped or successful' do
+        context 'when the diff head pipeline is active' do
+          before do
+            pipeline.update_attribute(:status, :running)
+          end
+
+          it 'is checking' do
+            expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::CHECKING_STATUS
+          end
+        end
+
+        context 'when the diff head pipeline is failed' do
+          before do
+            pipeline.update_attribute(:status, :failed)
+          end
+
           it 'is failed' do
             expect(result.status).to eq Gitlab::MergeRequests::Mergeability::CheckResult::FAILED_STATUS
           end

@@ -3628,6 +3628,11 @@ class Project < ApplicationRecord
   end
   strong_memoize_attr :job_token_policies_enabled?
 
+  # Overridden for EE
+  def licensed_ai_features_available?
+    false
+  end
+
   private
 
   def with_redis(&block)

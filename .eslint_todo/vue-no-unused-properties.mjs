@@ -271,7 +271,6 @@ export default {
     'ee/app/assets/javascripts/dependencies/components/dependency_project_count.vue',
     'ee/app/assets/javascripts/environments_dashboard/components/dashboard/dashboard.vue',
     'ee/app/assets/javascripts/environments_dashboard/components/dashboard/environment.vue',
-    'ee/app/assets/javascripts/external_issues_show/components/note.vue',
     'ee/app/assets/javascripts/geo_sites/components/header/geo_site_last_updated.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/add_edit_schedule_form.vue',
     'ee/app/assets/javascripts/oncall_schedules/components/oncall_schedule.vue',

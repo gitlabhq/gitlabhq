@@ -52,6 +52,10 @@ RSpec.describe ::MergeRequests::Mergeability::DetailedMergeStatusService, featur
   context 'when merge checks are a success' do
     let(:merge_request) { create(:merge_request) }
 
+    before do
+      merge_request.project.update!(only_allow_merge_if_pipeline_succeeds: false)
+    end
+
     it 'returns :mergeable' do
       expect(detailed_merge_status).to eq(:mergeable)
     end

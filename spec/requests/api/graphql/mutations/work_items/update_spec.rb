@@ -865,6 +865,62 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
         end
       end
+
+      context 'when updating hierarchy for incident' do
+        let_it_be(:incident) { create(:work_item, :incident, project: project) }
+        let_it_be(:child_item) { create(:work_item, :task, project: project) }
+        let(:mutation_work_item) { incident }
+
+        let(:input) do
+          { 'hierarchyWidget' => { 'childrenIds' => [child_item.to_global_id.to_s] } }
+        end
+
+        context 'when user is a guest' do
+          let(:current_user) { guest }
+
+          it 'returns an error and does not update' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              incident.reload
+            end.not_to change { incident.work_item_children.count }
+
+            expect(mutation_response['workItem']).to be_nil
+            expect(mutation_response['errors']).to include(
+              "No matching work item found. Make sure that you are adding a valid work item ID."
+            )
+          end
+        end
+
+        context 'when user is an admin' do
+          let_it_be(:admin) { create(:admin) }
+          let(:current_user) { admin }
+
+          it 'successfully updates the incident hierarchy' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              incident.reload
+            end.to change { incident.work_item_children.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']).not_to be_nil
+          end
+        end
+
+        context 'when guest updates hierarchy for non-incident work item' do
+          let(:current_user) { guest }
+          let(:mutation_work_item) { work_item } # regular work item, not incident
+
+          it 'successfully updates the work item hierarchy' do
+            expect do
+              post_graphql_mutation(mutation, current_user: current_user)
+              work_item.reload
+            end.to change { work_item.work_item_children.count }.by(1)
+
+            expect(response).to have_gitlab_http_status(:success)
+            expect(mutation_response['workItem']).not_to be_nil
+          end
+        end
+      end
     end
 
     context 'when updating assignees' do
