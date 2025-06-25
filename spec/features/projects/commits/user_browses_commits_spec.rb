@@ -67,7 +67,7 @@ RSpec.describe 'User browses commits', feature_category: :source_code_management
       visit project_commit_path(project, sample_commit.id)
       wait_for_requests
 
-      expect(page).to have_selector('.js-commit-box-pipeline-summary')
+      expect(page).to have_selector('#js-commit-box-pipeline-summary')
     end
   end
 

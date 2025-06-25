@@ -87,13 +87,11 @@ module Packages
       strong_memoize_attr :temp_package
 
       def package
-        package = temp_package.project
-                                .packages
-                                .rubygems
-                                .with_name(gemspec.name)
-                                .with_version(gemspec.version.to_s)
-                                .not_pending_destruction
-                                .last
+        package = ::Packages::Rubygems::Package.for_projects(temp_package.project)
+                                               .with_name(gemspec.name)
+                                               .with_version(gemspec.version.to_s)
+                                               .not_pending_destruction
+                                               .last
         package || temp_package
       end
       strong_memoize_attr :package

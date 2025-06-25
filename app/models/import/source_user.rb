@@ -179,7 +179,22 @@ module Import
     private
 
     def bypass_placeholder_confirmation_allowed?
+      admin_bypass_placeholder_confirmation_allowed? || enterprise_bypass_placeholder_confirmation_allowed?
+    end
+
+    def admin_bypass_placeholder_confirmation_allowed?
       Import::UserMapping::AdminBypassAuthorizer.new(reassigned_by_user).allowed?
     end
+
+    # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
+    # :nocov:
+    # Overridden in EE
+    def enterprise_bypass_placeholder_confirmation_allowed?
+      false
+    end
+    # :nocov:
+    # rubocop:enable Gitlab/NoCodeCoverageComment
   end
 end
+
+Import::SourceUser.prepend_mod

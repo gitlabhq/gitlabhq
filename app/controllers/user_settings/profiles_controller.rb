@@ -62,7 +62,6 @@ module UserSettings
         :pronouns,
         :pronunciation,
         :public_email,
-        :skype,
         :timezone,
         :twitter,
         :username,

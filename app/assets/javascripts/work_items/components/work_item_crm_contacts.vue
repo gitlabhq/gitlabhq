@@ -113,7 +113,9 @@ export default {
         return !this.searchStarted;
       },
       update(data) {
-        return data.group?.contacts?.nodes;
+        return data.group?.contacts?.nodes.filter(
+          (contact) => contact.active || this.selectedItemIds.includes(contact.id),
+        );
       },
       error() {
         this.$emit(

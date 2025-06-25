@@ -204,7 +204,6 @@ module Users
         :public_email,
         :remember_me,
         :skip_confirmation,
-        :skype,
         :theme_id,
         :twitter,
         :user_type,

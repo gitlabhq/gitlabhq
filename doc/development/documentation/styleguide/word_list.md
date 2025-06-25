@@ -2769,7 +2769,7 @@ For example:
 - Use code review analytics to view merge request data.
 - Create a board to organize your team tasks.
 - Configure variables to restrict pushes to a repository.
-- Add links to external accounts you have, like Skype and Twitter.
+- Add links to external accounts you have, like Discord and Twitter.
 
 Use **you can** for optional actions. For example:
 

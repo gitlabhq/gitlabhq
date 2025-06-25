@@ -11,6 +11,10 @@ module Types
 
     authorize :read_user
 
+    def self.authorization_scopes
+      super + [:ai_workflows]
+    end
+
     present_using UserPresenter
   end
 end

@@ -28,7 +28,6 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
   end
 
   it 'changes user profile' do
-    fill_in 'user_skype', with: 'testskype'
     fill_in 'user_linkedin', with: 'testlinkedin'
     fill_in 'user_twitter', with: 'testtwitter'
     fill_in 'user_website_url', with: 'http://testurl.com'
@@ -39,7 +38,6 @@ RSpec.describe 'User edit profile', feature_category: :user_profile do
     submit_settings
 
     expect(user.reload).to have_attributes(
-      skype: 'testskype',
       linkedin: 'testlinkedin',
       twitter: 'testtwitter',
       website_url: 'http://testurl.com',

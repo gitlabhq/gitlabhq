@@ -89,7 +89,6 @@
             = s_("Profiles|Enter how your name is pronounced to help people address you correctly.")
         = render_if_exists 'profiles/extra_settings', form: f
         = render_if_exists 'user_settings/profiles/email_settings', form: f
-
         .form-group.gl-form-group
           = f.label :website_url, s_('Profiles|Website URL')
           = f.text_field :website_url, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|https://website.com")
@@ -123,9 +122,6 @@
         = render ::Layouts::CrudComponent.new(s_('Profiles|Social accounts')) do |c|
           - c.with_body do
             %ul.content-list
-              %li.form-group.gl-form-group
-                = f.label :skype
-                = f.text_field :skype, class: 'gl-form-input form-control gl-md-form-input-lg', placeholder: s_("Profiles|username")
               %li.form-group.gl-form-group
                 = f.label :linkedin
                 = f.text_field :linkedin,

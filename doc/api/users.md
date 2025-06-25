@@ -207,7 +207,6 @@ Example response:
     "is_admin": false,
     "bio": "",
     "location": null,
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "discord": "",
@@ -252,7 +251,6 @@ Example response:
     "is_admin": false,
     "bio": "",
     "location": null,
-    "skype": "",
     "linkedin": "",
     "twitter": "",
     "discord": "",
@@ -407,7 +405,6 @@ Example response:
   "bot": false,
   "location": null,
   "public_email": "john@example.com",
-  "skype": "",
   "linkedin": "",
   "twitter": "",
   "discord": "",
@@ -469,7 +466,6 @@ Example response:
   "bio": "",
   "location": null,
   "public_email": "john@example.com",
-  "skype": "",
   "linkedin": "",
   "twitter": "",
   "discord": "",
@@ -608,7 +604,6 @@ Example response:
   "bio": "",
   "location": null,
   "public_email": "john@example.com",
-  "skype": "",
   "linkedin": "",
   "twitter": "",
   "discord": "",
@@ -688,7 +683,6 @@ Supported attributes:
   "bio": "",
   "location": null,
   "public_email": "john@example.com",
-  "skype": "",
   "linkedin": "",
   "twitter": "",
   "discord": "",
@@ -797,7 +791,6 @@ Supported attributes:
 | `reset_password`                     | No       | If `true`, sends the user a link to reset their password. Can be used with `force_random_password`. Takes priority over `password`. |
 | `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited), or `> 0`. Premium and Ultimate only. |
 | `skip_confirmation`                  | No       | Skip confirmation - true or false (default) |
-| `skype`                              | No       | Skype ID    |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-navigation-theme) for more information) |
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |
@@ -863,7 +856,6 @@ Supported attributes:
 | `public_email`                       | No       | Public email of the user (must be already verified) |
 | `shared_runners_minutes_limit`       | No       | Can be set by administrators only. Maximum number of monthly compute minutes for this user. Can be `nil` (default; inherit system default), `0` (unlimited) or `> 0`. Premium and Ultimate only. |
 | `skip_reconfirmation`                | No       | Skip reconfirmation - true or false (default) |
-| `skype`                              | No       | Skype ID    |
 | `theme_id`                           | No       | GitLab theme for the user (for more information, see the [user preference documentation](../user/profile/preferences.md#change-the-navigation-theme) for more information) |
 | `twitter`                            | No       | X (formerly Twitter) account |
 | `discord`                            | No       | Discord account |

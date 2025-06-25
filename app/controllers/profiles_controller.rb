@@ -98,7 +98,6 @@ class ProfilesController < Profiles::ApplicationController
       :pronunciation,
       :public_email,
       :role,
-      :skype,
       :timezone,
       :twitter,
       :username,

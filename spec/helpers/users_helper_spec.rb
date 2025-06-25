@@ -15,7 +15,7 @@ RSpec.describe UsersHelper, feature_category: :user_management do
   describe 'has_contact_info?' do
     subject { helper.has_contact_info?(user) }
 
-    context 'when user has skype profile' do
+    context 'when user has bluesky profile' do
       let_it_be(:user) { create(:user, bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz') }
 
       it { is_expected.to be true }

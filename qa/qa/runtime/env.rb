@@ -106,6 +106,10 @@ module QA
         enabled?(ENV['SELECTIVE_EXECUTION_IMPROVED'], default: false)
       end
 
+      def frontend_selective_execution_enabled?
+        enabled?(ENV['FRONTEND_SELECTIVE_EXECUTION'], default: false)
+      end
+
       def mr_targeting_stable_branch?
         /^[\d-]+-stable(-ee|-jh)?$/.match?(ENV['CI_MERGE_REQUEST_TARGET_BRANCH_NAME'] || "")
       end

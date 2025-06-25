@@ -401,7 +401,6 @@ class Admin::UsersController < Admin::ApplicationController
       :projects_limit,
       :provider,
       :remember_me,
-      :skype,
       :theme_id,
       :twitter,
       :username,

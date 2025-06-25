@@ -8,5 +8,5 @@ description: User mentions in commit messages
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19009
 milestone: '12.6'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/444222
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550692
 table_size: small

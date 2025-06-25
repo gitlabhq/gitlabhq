@@ -9,4 +9,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/63669
 milestone: '14.1'
 gitlab_schema: gitlab_main_cell
 table_size: small
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/502766
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/526725

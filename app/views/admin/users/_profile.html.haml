@@ -10,10 +10,6 @@
         %li
           %span.light= _('E-mail:')
           %strong= link_to user.public_email, "mailto:#{user.public_email}"
-      - unless user.skype.blank?
-        %li
-          %span.light= _('Skype:')
-          %strong= link_to user.skype, "skype:#{user.skype}"
       - unless user.linkedin.blank?
         %li
           %span.light= _('LinkedIn:')

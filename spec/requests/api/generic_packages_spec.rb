@@ -385,13 +385,13 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           headers = workhorse_headers.merge(auth_header)
 
           expect { upload_file(params, headers) }
-            .to change { project.packages.generic.count }.by(1)
+            .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
 
           aggregate_failures do
             expect(response).to have_gitlab_http_status(:created)
 
-            package = project.packages.generic.last
+            package = ::Packages::Generic::Package.for_projects(project).last
             expect(package.name).to eq('mypackage')
             expect(package.status).to eq('default')
             expect(package.version).to eq('0.0.1')
@@ -491,7 +491,9 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
               subject { upload_file(params, headers, package_version: version) }
 
               it "returns the #{params[:expected_status]}", :aggregate_failures do
-                expect { subject }.to change { project.packages.generic.count }.by(expected_package_diff_count)
+                expect { subject }
+                  .to change { ::Packages::Generic::Package.for_projects(project).count }
+                  .by(expected_package_diff_count)
 
                 expect(response).to have_gitlab_http_status(expected_status)
               end
@@ -508,7 +510,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             upload_file(params, headers)
 
             aggregate_failures do
-              package = project.packages.generic.last
+              package = ::Packages::Generic::Package.for_projects(project).last
               expect(response).to have_gitlab_http_status(:created)
               expect(package.package_files.last.file_name).to eq('path%2Fto%2Fmyfile.tar.gz')
             end
@@ -522,7 +524,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
             upload_file(params, headers, file_name: 'my+file.tar.gz')
 
             aggregate_failures do
-              package = project.packages.generic.last
+              package = ::Packages::Generic::Package.for_projects(project).last
               expect(response).to have_gitlab_http_status(:created)
               expect(package.package_files.last.file_name).to eq('my+file.tar.gz')
             end
@@ -601,7 +603,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it 'does not create a new package' do
           expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
-            .to not_change { project.packages.generic.count }
+            .to not_change { ::Packages::Generic::Package.for_projects(project).count }
             .and change { Packages::PackageFile.count }.by(1)
 
           expect(response).to have_gitlab_http_status(:created)
@@ -687,7 +689,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           it 'does create a new package' do
             existing_package.pending_destruction!
             expect { upload_file(params, headers, package_name: package_name, package_version: package_version) }
-              .to change { project.packages.generic.count }.by(1)
+              .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
               .and change { Packages::PackageFile.count }.by(1)
 
             expect(response).to have_gitlab_http_status(:created)
@@ -789,7 +791,7 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it 'creates a package and package file' do
           expect { send_upload_file }
-            .to change { project.packages.generic.count }.by(1)
+            .to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
             .and change { Packages::PackageFile.count }.by(1)
         end
       end

@@ -54,7 +54,6 @@ module API
         # rubocop: enable CodeReuse/ActiveRecord
 
         params :optional_attributes do
-          optional :skype, type: String, desc: 'The Skype username'
           optional :linkedin, type: String, desc: 'The LinkedIn username'
           optional :twitter, type: String, desc: 'The Twitter username'
           optional :discord, type: String, desc: 'The Discord user ID'

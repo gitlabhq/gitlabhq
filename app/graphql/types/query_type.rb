@@ -115,6 +115,7 @@ module Types
     end
     field :namespace, Types::NamespaceType,
       null: true,
+      scopes: [:api, :read_api, :ai_workflows],
       resolver: Resolvers::NamespaceResolver,
       description: "Find a namespace."
     field :note,

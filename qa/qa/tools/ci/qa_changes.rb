@@ -129,7 +129,7 @@ module QA
         #
         # @return [Array]
         def selective_tests_from_code_paths_mapping
-          logger.info("Fetching tests to execute based on code paths mapping")
+          logger.info("Fetching tests to execute based on backend code paths mapping")
 
           unless code_paths_map
             logger.warn("Failed to obtain code mappings for test selection!")
@@ -142,7 +142,36 @@ module QA
             hsh[name] = (hsh[name] + mappings).uniq
           end
 
-          clean_map
+          tests_from_frontend_mapping = []
+          tests_from_backend_mapping = clean_map
+            .select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
+            .keys
+
+          if QA::Runtime::Env.frontend_selective_execution_enabled?
+            tests_from_frontend_mapping =
+              tests_from_frontend_code_paths_mapping
+          end
+
+          (tests_from_frontend_mapping + tests_from_backend_mapping).uniq
+        end
+
+        def tests_from_frontend_code_paths_mapping
+          logger.info("Fetching tests from frontend code paths mapping")
+
+          unless frontend_code_paths_map
+            logger.warn("Failed to obtain code mappings for test selection!")
+            return []
+          end
+
+          clean_e2e_frontend_map = frontend_code_paths_map.each_with_object(Hash.new { |h, k| h[k] = [] }) do
+          |(example_id, mappings), hsh|
+            name = example_id.gsub("./", "").split(":").first
+            cleaned_up_mappings = mappings.map { |path| path.gsub('/builds/gitlab-org/gitlab', '.') }
+
+            hsh[name] = (hsh[name] + cleaned_up_mappings).uniq
+          end
+
+          clean_e2e_frontend_map
             .select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }
             .keys
         end
@@ -152,6 +181,15 @@ module QA
         # @return [Hash]
         def code_paths_map
           @code_paths_map ||= QA::Tools::Ci::CodePathsMapping.new.import("master", "e2e-test-on-gdk")
+        end
+
+        # Get the frontend mapping hash from GCP storage
+        #
+        # @return [Hash]
+        def frontend_code_paths_map
+          @frontend_code_paths_map ||= QA::Tools::Ci::CodePathsMapping
+                                         .new.import("master", "e2e-test-on-gdk",
+                                           file_name: "js-coverage-by-example-merged-pipeline")
         end
       end
     end

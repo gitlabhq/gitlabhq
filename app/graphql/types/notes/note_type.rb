@@ -13,6 +13,10 @@ module Types
 
       implements Types::Notes::BaseNoteInterface
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       present_using NotePresenter
 
       field :max_access_level_of_author, GraphQL::Types::String,
@@ -21,6 +25,7 @@ module Types
         method: :human_max_access
 
       field :id, ::Types::GlobalIDType[::Note],
+        scopes: [:api, :read_api, :ai_workflows],
         null: false,
         description: 'ID of the note.'
 

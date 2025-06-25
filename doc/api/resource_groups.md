@@ -113,7 +113,6 @@ Example of response
       "bio": "",
       "location": null,
       "public_email": null,
-      "skype": "",
       "linkedin": "",
       "twitter": "",
       "website_url": "",

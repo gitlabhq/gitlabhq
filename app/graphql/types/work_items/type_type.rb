@@ -7,14 +7,20 @@ module Types
 
       authorize :read_work_item_type
 
+      def self.authorization_scopes
+        super + [:ai_workflows]
+      end
+
       field :icon_name, GraphQL::Types::String,
         null: true,
         description: 'Icon name of the work item type.'
       field :id, ::Types::GlobalIDType[::WorkItems::Type],
         null: false,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'Global ID of the work item type.'
       field :name, GraphQL::Types::String,
         null: false,
+        scopes: [:api, :read_api, :ai_workflows],
         description: 'Name of the work item type.'
       field :widget_definitions, [::Types::WorkItems::WidgetDefinitionInterface],
         null: true,

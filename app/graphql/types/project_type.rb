@@ -61,6 +61,7 @@ module Types
 
     field :full_path, GraphQL::Types::ID,
       null: false,
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Full path of the project.'
 
     field :path, GraphQL::Types::String,
@@ -317,6 +318,7 @@ module Types
       Types::WorkItemType.connection_type,
       null: true,
       experiment: { milestone: '15.1' },
+      scopes: [:api, :read_api, :ai_workflows],
       description: 'Work items of the project.',
       extras: [:lookahead],
       resolver: Resolvers::WorkItemsResolver

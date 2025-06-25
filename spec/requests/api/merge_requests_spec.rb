@@ -3174,48 +3174,71 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
   end
 
   shared_examples 'merging with auto merge strategies' do
-    it 'does not merge if auto merge request is passed and the pipeline has failed' do
-      create(:ci_pipeline,
-        :failed,
-        sha: merge_request.diff_head_sha,
-        merge_requests_as_head_pipeline: [merge_request])
+    context 'when only_allow_merge_if_pipeline_succeeds is true' do
+      before do
+        project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
+      end
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+      it 'sets auto merge when the pipeline has failed' do
+        create(:ci_pipeline,
+          :failed,
+          sha: merge_request.diff_head_sha,
+          merge_requests_as_head_pipeline: [merge_request])
 
-      expect(response).to have_gitlab_http_status(:method_not_allowed)
-      expect(merge_request.reload.state).to eq('opened')
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+        expect(merge_request.reload.state).to eq('opened')
+      end
+
+      it "sets auto merge when the pipeline is active" do
+        allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
+        allow(pipeline).to receive(:active?).and_return(true)
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['title']).to eq('Test')
+        expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+      end
+
+      it 'merges when then pipeline is succeed' do
+        create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request])
+
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['state']).to eq('merged')
+      end
     end
 
-    it 'merges if the head pipeline already succeeded and auto merge request is passed' do
-      create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request])
+    context 'when only_allow_merge_if_pipeline_succeeds is false' do
+      before do
+        project.update_attribute(:only_allow_merge_if_pipeline_succeeds, false)
+      end
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+      it 'merges when the pipeline has failed' do
+        create(:ci_pipeline,
+          :failed,
+          sha: merge_request.diff_head_sha,
+          merge_requests_as_head_pipeline: [merge_request])
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['state']).to eq('merged')
-    end
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
-    it "enables auto merge if the pipeline is active" do
-      allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
-      allow(pipeline).to receive(:active?).and_return(true)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(merge_request.reload.state).to eq('merged')
+      end
 
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
+      it "merges when the pipeline is active" do
+        allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
+        allow(pipeline).to receive(:active?).and_return(true)
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['title']).to eq('Test')
-      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
-    end
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
 
-    it "enables auto merge if the pipeline is active and only_allow_merge_if_pipeline_succeeds is true" do
-      allow_any_instance_of(MergeRequest).to receive_messages(head_pipeline: pipeline, diff_head_pipeline: pipeline)
-      allow(pipeline).to receive(:active?).and_return(true)
-      project.update_attribute(:only_allow_merge_if_pipeline_succeeds, true)
-
-      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), params: params
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(json_response['title']).to eq('Test')
-      expect(json_response['merge_when_pipeline_succeeds']).to eq(true)
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(merge_request.reload.state).to eq('merged')
+      end
     end
   end
 
@@ -3257,15 +3280,15 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
       end
     end
 
-    it "returns 422 if branch can't be merged" do
+    it "returns 405 if branch can't be merged" do
       allow_next_found_instance_of(MergeRequest) do |merge_request|
-        allow(merge_request).to receive(:can_be_merged?).and_return(false)
+        allow(merge_request).to receive(:mergeable?).and_return(false)
       end
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
-      expect(json_response['message']).to eq('Branch cannot be merged')
+      expect(response).to have_gitlab_http_status(:method_not_allowed)
+      expect(json_response['message']).to eq('405 Method Not Allowed')
     end
 
     it "returns 405 if merge_request is not open" do

@@ -150,9 +150,6 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:twitter).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:twitter=).to(:user_detail).with_arguments(:args).allow_nil }
 
-    it { is_expected.to delegate_method(:skype).to(:user_detail).allow_nil }
-    it { is_expected.to delegate_method(:skype=).to(:user_detail).with_arguments(:args).allow_nil }
-
     it { is_expected.to delegate_method(:orcid).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:orcid=).to(:user_detail).with_arguments(:args).allow_nil }
 
@@ -338,7 +335,6 @@ RSpec.describe User, feature_category: :user_profile do
       it_behaves_like 'delegated field', :bio
       it_behaves_like 'delegated field', :linkedin
       it_behaves_like 'delegated field', :twitter
-      it_behaves_like 'delegated field', :skype
       it_behaves_like 'delegated field', :location
       it_behaves_like 'delegated field', :organization
 
@@ -4609,7 +4605,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe '#sanitize_attrs' do
-    let(:user) { build(:user, name: 'test & user', skype: 'test&user') }
+    let(:user) { build(:user, name: 'test & user', linkedin: 'test&user') }
 
     it 'does not encode HTML entities in the name attribute' do
       expect { user.sanitize_attrs }.not_to change { user.name }

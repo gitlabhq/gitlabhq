@@ -8,5 +8,5 @@ description: Separate table for dependency proxy manifest verification states
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/102908
 milestone: '15.6'
 gitlab_schema: gitlab_main_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550701
 table_size: small

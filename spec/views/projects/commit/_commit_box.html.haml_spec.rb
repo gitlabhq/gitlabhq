@@ -32,7 +32,7 @@ RSpec.describe 'projects/commit/_commit_box.html.haml' do
       it 'shows pipeline stages in vue' do
         render
 
-        expect(rendered).to have_selector('.js-commit-box-pipeline-summary')
+        expect(rendered).to have_selector('#js-commit-box-pipeline-summary')
       end
     end
   end

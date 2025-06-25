@@ -8,7 +8,7 @@ module API
       include Gitlab::Utils::StrongMemoize
 
       expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
-      expose :bio, :location, :skype, :linkedin, :twitter, :discord, :website_url, :github, :organization, :job_title, :pronouns
+      expose :bio, :location, :linkedin, :twitter, :discord, :website_url, :github, :organization, :job_title, :pronouns
       expose :bot?, as: :bot
       expose :work_information do |user|
         work_information(user)

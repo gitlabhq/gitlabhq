@@ -12,6 +12,10 @@ module Types
 
         implements ::Types::WorkItems::WidgetInterface
 
+        def self.authorization_scopes
+          super + [:ai_workflows]
+        end
+
         field :discussion_locked, GraphQL::Types::Boolean,
           null: true,
           description: 'Discussion lock attribute of the work item.'
@@ -26,6 +30,7 @@ module Types
           resolver: Resolvers::WorkItems::WorkItemDiscussionsResolver,
           connection_extension: Gitlab::Graphql::Extensions::ForwardOnlyExternallyPaginatedArrayExtension
         field :notes, ::Types::Notes::NoteType.connection_type,
+          scopes: [:api, :read_api, :ai_workflows],
           null: false,
           description: "Notes on this work item.",
           resolver: Resolvers::Noteable::NotesResolver

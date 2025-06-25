@@ -8,5 +8,5 @@ feature_categories:
 classes:
 - Geo::GroupWikiRepositoryState
 gitlab_schema: gitlab_main_cell_local
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/493768
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550702
 table_size: small

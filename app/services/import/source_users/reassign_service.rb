@@ -34,7 +34,7 @@ module Import
           return ServiceResponse.error(payload: import_source_user, message: import_source_user.errors.full_messages)
         end
 
-        if admin_bypass_confirmation?
+        if bypass_confirmation?
           Import::ReassignPlaceholderUserRecordsWorker.perform_async(import_source_user.id)
           track_reassignment_event('reassign_placeholder_user_without_confirmation')
         else
@@ -53,7 +53,7 @@ module Import
         import_source_user.reassign_to_user = assignee_user
         import_source_user.reassigned_by_user = current_user
 
-        return import_source_user.reassign_without_confirmation if admin_bypass_confirmation?
+        return import_source_user.reassign_without_confirmation if bypass_confirmation?
 
         import_source_user.reassign
       end
@@ -70,6 +70,7 @@ module Import
         s_("UserMapping|You cannot reassign user contributions of imports to a personal namespace.")
       end
 
+      # overridden in EE
       def run_validations
         return error_invalid_permissions unless current_user.can?(:admin_import_source_user, import_source_user)
         return error_namespace_type if root_namespace.user_namespace?
@@ -111,10 +112,23 @@ module Import
         ::Gitlab::CurrentSettings.allow_contribution_mapping_to_admins?
       end
 
+      def bypass_confirmation?
+        admin_bypass_confirmation? || enterprise_bypass_confirmation?
+      end
+
       def admin_bypass_confirmation?
         Import::UserMapping::AdminBypassAuthorizer.new(current_user).allowed?
       end
       strong_memoize_attr :admin_bypass_confirmation?
+
+      # rubocop:disable Gitlab/NoCodeCoverageComment -- method is tested in EE
+      # :nocov:
+      # Overridden in EE
+      def enterprise_bypass_confirmation?
+        false
+      end
+      # :nocov:
+      # rubocop:enable Gitlab/NoCodeCoverageComment
     end
   end
 end

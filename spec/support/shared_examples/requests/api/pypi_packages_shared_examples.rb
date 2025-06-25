@@ -9,7 +9,7 @@ RSpec.shared_examples 'PyPI package creation' do |user_type, status, add_member 
           .and change { Packages::Pypi::Metadatum.count }.by(1)
       expect(response).to have_gitlab_http_status(status)
 
-      package = project.reload.packages.pypi.last
+      package = ::Packages::Pypi::Package.for_projects(project).last
 
       expect(package.name).to eq params[:name]
       expect(package.version).to eq params[:version]

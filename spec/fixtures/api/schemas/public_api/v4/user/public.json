@@ -11,7 +11,6 @@
     "created_at",
     "bio",
     "location",
-    "skype",
     "linkedin",
     "twitter",
     "website_url",
@@ -72,9 +71,6 @@
         "string",
         "null"
       ]
-    },
-    "skype": {
-      "type": "string"
     },
     "linkedin": {
       "type": "string"

@@ -18,9 +18,8 @@ module Packages
       private
 
       def candidates
-        @project
-          .packages
-          .golang
+        ::Packages::Go::Package
+          .for_projects(@project)
           .installable
           .with_name(@module_name)
           .with_version(@module_version)

@@ -141,6 +141,77 @@ RSpec.describe QA::Tools::Ci::QaChanges do
           expect(qa_changes.qa_tests(from_code_path_mapping: true)).to be_empty
         end
       end
+
+      context "with frontend selective execution" do
+        let(:frontend_code_paths_mapping_data) do
+          {
+            "./qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb:123" =>
+              %w[/builds/gitlab-org/gitlab/app/assets/javascripts/projects/new/index.js /builds/gitlab-org/
+                gitlab/app/views/projects/new.html.haml],
+            "./qa/specs/features/browser_ui/2_plan/issue/create_issue_spec.rb:45" => [
+              "/builds/gitlab-org/gitlab/app/assets/javascripts/issues/new/index.js"
+            ]
+          }
+        end
+
+        let(:backend_code_paths_mapping_data) do
+          {
+            "./qa/specs/features/api/test_spec.rb:23" => ["./lib/model.rb"],
+            "./qa/specs/features/ui/test_spec_2.rb:11" => ["./app/controller.rb"]
+          }
+        end
+
+        let(:frontend_code_paths_mapping) do
+          instance_double(QA::Tools::Ci::CodePathsMapping, import: frontend_code_paths_mapping_data)
+        end
+
+        let(:backend_code_paths_mapping) do
+          instance_double(QA::Tools::Ci::CodePathsMapping, import: backend_code_paths_mapping_data)
+        end
+
+        before do
+          stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', 'gcs-creds')
+          stub_env('FRONTEND_SELECTIVE_EXECUTION', 'true')
+          allow(QA::Tools::Ci::CodePathsMapping).to receive(:new).and_return(backend_code_paths_mapping,
+            frontend_code_paths_mapping)
+        end
+
+        context "with frontend file changes" do
+          let(:mr_diff) { [{ path: 'app/assets/javascripts/projects/new/index.js' }] }
+
+          it "returns frontend-related specs from code paths mapping" do
+            result = qa_changes.qa_tests(from_code_path_mapping: true)
+            expect(result).to include("qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb")
+          end
+        end
+
+        context "with backend file changes" do
+          let(:mr_diff) { [{ path: 'lib/model.rb' }] }
+
+          it "returns backend-related specs from code paths mapping" do
+            result = qa_changes.qa_tests(from_code_path_mapping: true)
+            expect(result).to include("qa/specs/features/api/test_spec.rb")
+          end
+        end
+
+        context "with both frontend and backend file changes" do
+          let(:mr_diff) do
+            [
+              { path: 'app/assets/javascripts/projects/new/index.js' },
+              { path: 'lib/model.rb' }
+            ]
+          end
+
+          it "returns both frontend and backend specs without duplicates" do
+            result = qa_changes.qa_tests(from_code_path_mapping: true)
+            expect(result).to include(
+              "qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb",
+              "qa/specs/features/api/test_spec.rb"
+            )
+            expect(result.uniq.length).to eq(result.length)
+          end
+        end
+      end
     end
   end
 

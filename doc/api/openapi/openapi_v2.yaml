@@ -45777,8 +45777,6 @@ definitions:
         type: string
       location:
         type: string
-      skype:
-        type: string
       linkedin:
         type: string
       twitter:
@@ -50181,8 +50179,6 @@ definitions:
       bio:
         type: string
       location:
-        type: string
-      skype:
         type: string
       linkedin:
         type: string
@@ -65474,8 +65470,6 @@ definitions:
       bio:
         type: string
       location:
-        type: string
-      skype:
         type: string
       linkedin:
         type: string

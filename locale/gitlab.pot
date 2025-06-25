@@ -5371,9 +5371,6 @@ msgstr ""
 msgid "AdminUsers|Send email to users"
 msgstr ""
 
-msgid "AdminUsers|Skype"
-msgstr ""
-
 msgid "AdminUsers|Stop monitoring %{username} for possible spam?"
 msgstr ""
 
@@ -59093,9 +59090,6 @@ msgid "Skipped"
 msgstr ""
 
 msgid "Skipped deployment to"
-msgstr ""
-
-msgid "Skype:"
 msgstr ""
 
 msgid "Slack logo"

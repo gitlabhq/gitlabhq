@@ -126,6 +126,28 @@ export const mockCrmContacts = [
     active: true,
     organization: null,
   },
+  {
+    __typename: 'CustomerRelationsContact',
+    id: 'gid://gitlab/CustomerRelations::Contact/233',
+    firstName: 'Inactive',
+    lastName: 'Contact',
+    email: 'inactive-contact@example.org',
+    phone: null,
+    description: 'Inactive contact for testing',
+    active: false,
+    organization: null,
+  },
+  {
+    __typename: 'CustomerRelationsContact',
+    id: 'gid://gitlab/CustomerRelations::Contact/234',
+    firstName: 'Another Inactive',
+    lastName: 'Contact',
+    email: 'second-inactive-contact@example.org',
+    phone: null,
+    description: 'Second inactive contact for testing',
+    active: false,
+    organization: null,
+  },
 ];
 
 export const mockMilestone = {

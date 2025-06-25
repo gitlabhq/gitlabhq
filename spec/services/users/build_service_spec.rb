@@ -132,7 +132,6 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
             projects_limit: 1,
             remember_me: 1,
             skip_confirmation: 1,
-            skype: 1,
             theme_id: 1,
             twitter: 1,
             username: 1,
