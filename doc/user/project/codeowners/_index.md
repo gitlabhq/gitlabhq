@@ -76,6 +76,19 @@ Your project contains sensitive and important information in a `config/` directo
 With this configuration, merge requests that change files in the `config/`directory and target the `main` branch
 require approval from the designated Code Owners before merging.
 
+### Allowed to push and merge to a protected branch
+
+Users who are **Allowed to push and merge** can choose to create a merge request
+for their changes, or push the changes directly to a branch. If the user
+skips the merge request process, the protected branch features
+and Code Owner approvals built into merge requests are also skipped.
+
+This permission is often granted to accounts associated with
+automation ([internal users](../../../administration/internal_users.md))
+and release tooling.
+
+All changes from users without the **Allowed to push** permission must be routed through a merge request.
+
 ## View Code Owners of a file or directory
 
 To view the Code Owners of a file or directory:
@@ -121,19 +134,6 @@ all others are ignored:
 1. In the `.gitlab` directory: `./.gitlab/CODEOWNERS`.
 
 For more information, see [`CODEOWNERS` syntax](reference.md) and [Advanced `CODEOWNERS` configuration](advanced.md).
-
-## Allowed to push
-
-Users who are **Allowed to push** can choose to create a merge request
-for their changes, or push the changes directly to a branch. If the user
-skips the merge request process, the protected branch features
-and Code Owner approvals built into merge requests are also skipped.
-
-This permission is often granted to accounts associated with
-automation ([internal users](../../../administration/internal_users.md))
-and release tooling.
-
-All changes from users without the **Allowed to push** permission must be routed through a merge request.
 
 ## Related topics
 

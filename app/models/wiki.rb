@@ -531,6 +531,17 @@ class Wiki
   end
 
   def find_matched_file(title, version)
+    # This method is invoked when:
+    #  - Determining how the Wiki button should be rendered on the Repository page (based on whether the wiki exists).
+    #  - A Wiki is created, because it implicitly checks if we're trying to create a duplicate page.
+    # in addition to other places.
+    #
+    # This method will eventually execute Gitaly's SearchFilesByName RPC, which will error if the repository being
+    # searched is empty. The errors are swallowed by callers here, but they're still prominently logged by Gitaly.
+    # Before we fire off a search query, let's first check if the repository has any content. has_visible_content?
+    # is aliased to has_local_branches?, which returns false on empty Wiki repositories.
+    return unless repository.has_visible_content?
+
     find_file_by_title(title, version) ||
       find_file_by_title(sluggified_title(title), version)
   end

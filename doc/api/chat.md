@@ -6,7 +6,10 @@ description: Documentation for the REST API for Duo Chat.
 title: GitLab Duo Chat completions API
 ---
 
-This API is used to generate responses for [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md). This API is for internal use only.
+This API is used to generate responses for [GitLab Duo Chat](../user/gitlab_duo_chat/_index.md):
+
+- On GitLab.com, this API is for internal use only.
+- On GitLab Self-Managed, you can enable this API [with a feature flag](../administration/feature_flags/_index.md) named `access_rest_chat`.
 
 Prerequisites:
 

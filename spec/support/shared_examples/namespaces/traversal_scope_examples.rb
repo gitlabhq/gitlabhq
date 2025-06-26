@@ -276,4 +276,85 @@ RSpec.shared_examples 'namespace traversal scopes' do
       it { is_expected.to contain_exactly(group_1, nested_group_1, deep_nested_group_1) }
     end
   end
+
+  shared_examples '.within' do
+    context 'with a root group traversal_ids' do
+      subject { described_class.where(id: groups).within(group_1.traversal_ids) }
+
+      it 'returns the group and all its descendants' do
+        is_expected.to contain_exactly(group_1, nested_group_1, deep_nested_group_1)
+      end
+
+      it 'excludes groups from other hierarchies' do
+        is_expected.not_to include(group_2, nested_group_2, deep_nested_group_2)
+      end
+    end
+
+    context 'with a nested group traversal_ids' do
+      subject { described_class.where(id: groups).within(nested_group_1.traversal_ids) }
+
+      it 'returns the nested group and its descendants' do
+        is_expected.to contain_exactly(nested_group_1, deep_nested_group_1)
+      end
+
+      it 'excludes the parent group' do
+        is_expected.not_to include(group_1)
+      end
+
+      it 'excludes groups from other hierarchies' do
+        is_expected.not_to include(group_2, nested_group_2, deep_nested_group_2)
+      end
+    end
+
+    context 'with multiple sibling groups' do
+      let!(:nested_group_1b) { create(:group, parent: group_1) }
+      let!(:deep_nested_group_1b) { create(:group, parent: nested_group_1b) }
+      let(:all_groups) { groups + [nested_group_1b, deep_nested_group_1b] }
+
+      subject { described_class.where(id: all_groups).within(group_1.traversal_ids) }
+
+      it 'returns all descendants within the hierarchy' do
+        is_expected.to contain_exactly(
+          group_1, nested_group_1, deep_nested_group_1, nested_group_1b, deep_nested_group_1b)
+      end
+    end
+
+    context 'with offset and limit' do
+      subject do
+        described_class
+          .where(id: [group_1, nested_group_1, deep_nested_group_1])
+          .order(:traversal_ids)
+          .limit(2)
+          .within(group_1.traversal_ids)
+      end
+
+      it 'respects the limit while maintaining within logic' do
+        expect(subject.count).to eq(2)
+        is_expected.to be_all { |group| [group_1, nested_group_1, deep_nested_group_1].include?(group) }
+      end
+    end
+
+    context 'with empty result set' do
+      subject { described_class.where(id: groups).within([999, 999]) }
+
+      it 'returns empty result' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'SQL injection prevention' do
+      it 'raises ArgumentError for malicious SQL input' do
+        expect { described_class.within(["1'; DROP TABLE namespaces; --"]) }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe '.within' do
+    include_examples '.within'
+
+    it 'does not make recursive queries' do
+      expect { described_class.where(id: [nested_group_1]).within(nested_group_1.traversal_ids).load }
+        .not_to make_queries_matching(/WITH RECURSIVE/)
+    end
+  end
 end

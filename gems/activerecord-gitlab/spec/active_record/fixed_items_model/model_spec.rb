@@ -27,6 +27,15 @@ RSpec.describe ActiveRecord::FixedItemsModel::Model, feature_category: :shared d
       expect(item.name).to eq('Item 2')
     end
 
+    it 'returns the correct item by id string' do
+      item = TestStaticModel.find('2')
+      expect(item.name).to eq('Item 2')
+    end
+
+    it 'returns nil for non-numeric string id' do
+      expect(TestStaticModel.find('invalid')).to be_nil
+    end
+
     it 'returns nil for non-existent id' do
       expect(TestStaticModel.find(999)).to be_nil
     end

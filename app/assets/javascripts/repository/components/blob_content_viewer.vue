@@ -399,6 +399,7 @@ export default {
         :project-path="projectPath"
         :project-id="projectId"
         :is-using-lfs="isUsingLfs"
+        :current-ref="currentRef"
         @viewer-changed="handleViewerChanged"
         @copy="onCopy"
         @edit="editBlob"

@@ -10,42 +10,42 @@ module Gitlab
           def initialize(structure_file_path, schema_name = DEFAULT_SCHEMA)
             @structure_file_path = structure_file_path
             @schema_name = schema_name
+            @table_map = to_map(tables)
+            @index_map = to_map(indexes)
+            @trigger_map = to_map(triggers)
+            @foreign_key_map = to_map(foreign_keys)
           end
 
-          def index_exists?(index_name)
-            index = indexes.find { |index| index.name == index_name }
-
-            return false if index.nil?
-
-            true
+          def fetch_index_by_name(index_name)
+            index_map[index_name]
           end
 
-          def trigger_exists?(trigger_name)
-            trigger = triggers.find { |trigger| trigger.name == trigger_name }
-
-            return false if trigger.nil?
-
-            true
+          def fetch_trigger_by_name(trigger_name)
+            trigger_map[trigger_name]
           end
 
-          def foreign_key_exists?(foreign_key_name)
-            foreign_key = foreign_keys.find { |fk| fk.name == foreign_key_name }
-
-            return false if foreign_key.nil?
-
-            true
-          end
-
-          def table_exists?(table_name)
-            table = fetch_table_by_name(table_name)
-
-            return false if table.nil?
-
-            true
+          def fetch_foreign_key_by_name(foreign_key_name)
+            foreign_key_map[foreign_key_name]
           end
 
           def fetch_table_by_name(table_name)
-            tables.find { |table| table.name == table_name }
+            table_map[table_name]
+          end
+
+          def index_exists?(index_name)
+            !!fetch_index_by_name(index_name)
+          end
+
+          def trigger_exists?(trigger_name)
+            !!fetch_trigger_by_name(trigger_name)
+          end
+
+          def foreign_key_exists?(foreign_key_name)
+            !!fetch_foreign_key_by_name(foreign_key_name)
+          end
+
+          def table_exists?(table_name)
+            !!fetch_table_by_name(table_name)
           end
 
           def indexes
@@ -80,7 +80,13 @@ module Gitlab
 
           private
 
-          attr_reader :structure_file_path, :schema_name
+          attr_reader :structure_file_path, :schema_name, :table_map, :index_map, :trigger_map, :foreign_key_map
+
+          def to_map(array)
+            array.each_with_object({}) do |entry, hash| # rubocop:disable Rails/IndexBy -- This gem does not depend on ActiveSupport.
+              hash[entry.name] = entry
+            end
+          end
 
           def index_statements
             statements.filter_map { |s| s.stmt.index_stmt }

@@ -18572,7 +18572,7 @@ CREATE TABLE oauth_applications (
     uid character varying NOT NULL,
     secret character varying NOT NULL,
     redirect_uri text NOT NULL,
-    scopes character varying DEFAULT ''::character varying NOT NULL,
+    scopes text DEFAULT ''::text NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     owner_id bigint,
