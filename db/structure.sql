@@ -423,7 +423,6 @@ CREATE TABLE users (
     otp_secret_expires_at timestamp with time zone,
     onboarding_in_progress boolean DEFAULT false NOT NULL,
     color_mode_id smallint DEFAULT 1 NOT NULL,
-    last_access_from_pipl_country_at timestamp with time zone,
     composite_identity_enforced boolean DEFAULT false NOT NULL,
     CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
@@ -19481,6 +19480,7 @@ CREATE TABLE packages_debian_group_component_files (
     file text NOT NULL,
     file_sha256 bytea NOT NULL,
     group_id bigint,
+    CONSTRAINT check_6d7454a717 CHECK ((group_id IS NOT NULL)),
     CONSTRAINT check_839e1685bc CHECK ((char_length(file) <= 255))
 );
 

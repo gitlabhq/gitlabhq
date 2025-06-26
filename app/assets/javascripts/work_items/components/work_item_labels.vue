@@ -14,7 +14,7 @@ import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 import {
   findLabelsWidget,
   formatLabelForListbox,
@@ -32,7 +32,12 @@ export default {
     WorkItemSidebarDropdownWidget,
   },
   mixins: [Tracking.mixin()],
-  inject: ['canAdminLabel', 'issuesListPath', 'labelsManagePath'],
+  inject: {
+    canAdminLabel: 'canAdminLabel',
+    issuesListPath: 'issuesListPath',
+    labelsManagePath: 'labelsManagePath',
+    epicsListPath: { default: '' },
+  },
   props: {
     fullPath: {
       type: String,
@@ -82,6 +87,9 @@ export default {
       return this.isCreateFlow
         ? newWorkItemFullPath(this.fullPath, this.workItemType)
         : this.fullPath;
+    },
+    isEpic() {
+      return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
     },
     // eslint-disable-next-line vue/no-unused-properties
     tracking() {
@@ -299,7 +307,7 @@ export default {
       return this.allowsScopedLabels && isScopedLabel(label);
     },
     labelFilterUrl(label) {
-      return `${this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
+      return `${this.isEpic ? this.epicsListPath : this.issuesListPath}?label_name[]=${encodeURIComponent(label.title)}`;
     },
     handleLabelCreated(label) {
       this.showLabelForm = false;

@@ -8,14 +8,6 @@ description: Debian group-level component files
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/52885
 milestone: '13.9'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: component_id
-        table: packages_debian_group_components
-        sharding_key: group_id
-        belongs_to: component
+sharding_key:
+  group_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name: BackfillPackagesDebianGroupComponentFilesGroupId

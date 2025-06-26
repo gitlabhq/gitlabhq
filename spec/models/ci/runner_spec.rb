@@ -1885,6 +1885,55 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     end
   end
 
+  describe '#ensure_manager' do
+    subject(:ensure_manager) { runner.ensure_manager(system_xid) }
+
+    let(:system_xid) { 'r_system_id' }
+
+    context 'with instance runner' do
+      let_it_be_with_refind(:runner) { create(:ci_runner) }
+
+      it 'populates nil organization_id' do
+        expect { ensure_manager }
+          .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
+            .from([]).to([nil])
+      end
+    end
+
+    shared_examples 'group or project runner initializing organization_id' do
+      it 'populates organization_id from runner' do
+        expect { ensure_manager }
+          .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
+            .from([]).to([runner.organization_id])
+      end
+
+      context 'when organization_id is not present' do
+        before do
+          # Simulate a pre-existing record with a NULL organization_id value
+          runner.update_columns(organization_id: nil)
+        end
+
+        it 'populates organization_id from owner' do
+          expect { ensure_manager }
+            .to change { runner.runner_managers.with_system_xid(system_xid).pluck(:organization_id) }
+              .from([]).to([runner.owner.organization_id])
+        end
+      end
+    end
+
+    context 'with group runner' do
+      let_it_be_with_refind(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it_behaves_like 'group or project runner initializing organization_id'
+    end
+
+    context 'with project runner' do
+      let_it_be_with_refind(:runner) { create(:ci_runner, :project, projects: [project]) }
+
+      it_behaves_like 'group or project runner initializing organization_id'
+    end
+  end
+
   describe '#ensure_token' do
     let(:runner) { build(:ci_runner, registration_type: registration_type) }
     let(:token) { 'an_existing_secret_token' }

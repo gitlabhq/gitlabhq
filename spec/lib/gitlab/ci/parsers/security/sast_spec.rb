@@ -12,9 +12,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Sast do
 
     context "when passing valid report" do
       # rubocop: disable Layout/LineLength
-      where(:report_format, :report_version, :scanner_length, :finding_length, :identifier_length, :file_path, :start_line, :end_line, :primary_identifiers_length) do
-        :sast                               | '15.0.0' | 1 | 5  | 6  | 'groovy/src/main/java/com/gitlab/security_products/tests/App.groovy' | 47 | 47  | nil
-        :sast_semgrep_for_multiple_findings | '15.0.4' | 1 | 2  | 6  | 'app/app.py'                                                         | 39 | nil | 2
+      where(:report_format, :report_version, :finding_length, :identifier_length, :file_path, :start_line, :end_line, :primary_identifiers_length) do
+        :sast                               | '15.0.0' | 5  | 6  | 'groovy/src/main/java/com/gitlab/security_products/tests/App.groovy' | 47 | 47  | nil
+        :sast_semgrep_for_multiple_findings | '15.0.4' | 2  | 6  | 'app/app.py'                                                         | 39 | nil | 2
       end
       # rubocop: enable Layout/LineLength
 
@@ -36,11 +36,10 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Sast do
         it "parses all identifiers and findings" do
           expect(report.findings.length).to eq(finding_length)
           expect(report.identifiers.length).to eq(identifier_length)
-          expect(report.scanners.length).to eq(scanner_length)
 
           if primary_identifiers_length
             expect(
-              report.scanners.each_value.first.primary_identifiers.length
+              report.scanner.primary_identifiers.length
             ).to eq(primary_identifiers_length)
           end
         end

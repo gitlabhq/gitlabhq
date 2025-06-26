@@ -550,6 +550,8 @@ module Ci
     def ensure_manager(system_xid)
       # rubocop: disable Performance/ActiveRecordSubtransactionMethods -- This is used only in API endpoints outside of transactions
       RunnerManager.safe_find_or_create_by!(runner_id: id, system_xid: system_xid.to_s) do |m|
+        ensure_organization_id # TODO: Remove in https://gitlab.com/gitlab-org/gitlab/-/issues/523850
+
         m.runner_type = runner_type
         m.sharding_key_id = sharding_key_id
         m.organization_id = organization_id
@@ -625,10 +627,11 @@ module Ci
         .min&.from_now
     end
 
+    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
     def ensure_organization_id
-      return if !instance_type? && owner.nil?
+      return if instance_type?
 
-      self.organization_id = instance_type? ? nil : owner.organization_id
+      self.organization_id ||= owner&.organization_id
     end
 
     def cleanup_runner_queue

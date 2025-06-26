@@ -28291,6 +28291,7 @@ GPG signature for a signed commit.
 | <a id="groupcomplianceframeworkcoveragesummary"></a>`complianceFrameworkCoverageSummary` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageSummary`](#complianceframeworkcoveragesummary) | **Introduced** in GitLab 18.1. **Status**: Experiment. Summary of compliance framework coverage in a group and its subgroups. |
 | <a id="groupcomplianceframeworkscoveragedetails"></a>`complianceFrameworksCoverageDetails` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageDetailConnection`](#complianceframeworkcoveragedetailconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Detailed compliance framework coverage for each framework in the group. |
 | <a id="groupcompliancerequirementcontrolcoverage"></a>`complianceRequirementControlCoverage` {{< icon name="warning-solid" >}} | [`RequirementControlCoverage`](#requirementcontrolcoverage) | **Introduced** in GitLab 18.1. **Status**: Experiment. Compliance control status summary showing count of passed, failed, and pending controls. |
+| <a id="groupcompliancerequirementcoverage"></a>`complianceRequirementCoverage` {{< icon name="warning-solid" >}} | [`RequirementCoverage`](#requirementcoverage) | **Introduced** in GitLab 18.2. **Status**: Experiment. Compliance requirement coverage statistics for the group. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |
 | <a id="groupcontainslockedprojects"></a>`containsLockedProjects` | [`Boolean`](#boolean) | Includes at least one project where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="groupcreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the group creation. |
@@ -39551,6 +39552,18 @@ Compliance control coverage statistics across all requirements.
 | <a id="requirementcontrolcoveragefailed"></a>`failed` | [`Int!`](#int) | Number of controls that failed compliance checks. |
 | <a id="requirementcontrolcoveragepassed"></a>`passed` | [`Int!`](#int) | Number of controls that passed compliance checks. |
 | <a id="requirementcontrolcoveragepending"></a>`pending` | [`Int!`](#int) | Number of controls pending evaluation. |
+
+### `RequirementCoverage`
+
+Coverage statistics requirements.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="requirementcoveragefailed"></a>`failed` | [`Int!`](#int) | Count of failed requirements. |
+| <a id="requirementcoveragepassed"></a>`passed` | [`Int!`](#int) | Count of passed requirements. |
+| <a id="requirementcoveragepending"></a>`pending` | [`Int!`](#int) | Count of pending requirements. |
 
 ### `RequirementPermissions`
 

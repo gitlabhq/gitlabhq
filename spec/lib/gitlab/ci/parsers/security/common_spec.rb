@@ -253,17 +253,17 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
 
         describe 'top-level scanner' do
           it 'is the primary scanner' do
-            expect(report.primary_scanner.external_id).to eq('gemnasium')
-            expect(report.primary_scanner.name).to eq('Gemnasium top-level')
-            expect(report.primary_scanner.vendor).to eq('GitLab')
-            expect(report.primary_scanner.version).to eq('2.18.0')
+            expect(report.scanner.external_id).to eq('gemnasium')
+            expect(report.scanner.name).to eq('Gemnasium top-level')
+            expect(report.scanner.vendor).to eq('GitLab')
+            expect(report.scanner.version).to eq('2.18.0')
           end
 
           it 'returns nil report has no scanner' do
             empty_report = Gitlab::Ci::Reports::Security::Report.new(artifact.file_type, pipeline, 2.weeks.ago)
             described_class.parse!({}.to_json, empty_report)
 
-            expect(empty_report.primary_scanner).to be_nil
+            expect(empty_report.scanner).to be_nil
           end
         end
 

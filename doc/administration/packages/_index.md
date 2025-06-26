@@ -238,16 +238,15 @@ packages.
 For more information, see how to use the
 [consolidated object storage settings](../object_storage.md#configure-a-single-storage-connection-for-all-object-types-consolidated-form).
 
-### Migrate local packages to object storage
+### Migrate packages between object storage and local storage
 
-After [configuring the object storage](#use-object-storage), use the following task to
-migrate existing packages from the local storage to the remote storage.
-The processing is done in a background worker and requires **no downtime**.
+After configuring object storage, you can use the following tasks to migrate packages between local and remote storage. The processing is done in a background worker and requires **no downtime**.
 
-1. Migrate the packages.
+#### Migrate to object storage
+
+1. Migrate the packages to object storage:
 
    {{< tabs >}}
-
    {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
@@ -255,7 +254,6 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
-
    {{< tab title="Self-compiled (source)" >}}
 
    ```shell
@@ -263,14 +261,11 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
-
    {{< /tabs >}}
 
-1. Track the progress and verify that all packages migrated successfully using
-   the PostgreSQL console.
+1. Track the progress and verify that all packages migrated successfully using the PostgreSQL console:
 
    {{< tabs >}}
-
    {{< tab title="Linux package (Omnibus) 14.1 and earlier" >}}
 
    ```shell
@@ -278,7 +273,6 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
-
    {{< tab title="Linux package (Omnibus) 14.2 and later" >}}
 
    ```shell
@@ -286,7 +280,6 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
-
    {{< tab title="Self-compiled (source)" >}}
 
    ```shell
@@ -294,15 +287,20 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
-
    {{< /tabs >}}
 
-1. Verify that all packages migrated to object storage with the following SQL
-   query. The number of `objectstg` should be the same as `total`:
+1. Verify that all packages migrated to object storage with the following SQL query. The number of `objectstg` should be the same as `total`:
 
-   ```shell
-   gitlabhq_production=# SELECT count(*) AS total, sum(case when file_store = '1' then 1 else 0 end) AS filesystem, sum(case when file_store = '2' then 1 else 0 end) AS objectstg FROM packages_package_files;
+   ```sql
+   SELECT count(*) AS total, 
+          sum(case when file_store = '1' then 1 else 0 end) AS filesystem, 
+          sum(case when file_store = '2' then 1 else 0 end) AS objectstg 
+   FROM packages_package_files;
+   ```
 
+   Example output:
+
+   ```plaintext
    total | filesystem | objectstg
    ------+------------+-----------
     34   |          0 |        34
@@ -311,7 +309,6 @@ The processing is done in a background worker and requires **no downtime**.
 1. Finally, verify that there are no files on disk in the `packages` directory:
 
    {{< tabs >}}
-
    {{< tab title="Linux package (Omnibus)" >}}
 
    ```shell
@@ -319,7 +316,6 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
-
    {{< tab title="Self-compiled (source)" >}}
 
    ```shell
@@ -327,5 +323,87 @@ The processing is done in a background worker and requires **no downtime**.
    ```
 
    {{< /tab >}}
+   {{< /tabs >}}
 
+#### Migrate from object storage to local storage
+
+1. Migrate the packages from object storage to local storage:
+
+   {{< tabs >}}
+   {{< tab title="Linux package (Omnibus)" >}}
+
+   ```shell
+   sudo gitlab-rake "gitlab:packages:migrate[local]"
+   ```
+
+   {{< /tab >}}
+   {{< tab title="Self-compiled (source)" >}}
+
+   ```shell
+   RAILS_ENV=production sudo -u git -H bundle exec rake "gitlab:packages:migrate[local]"
+   ```
+
+   {{< /tab >}}
+   {{< /tabs >}}
+
+1. Track the progress and verify that all packages migrated successfully using the PostgreSQL console:
+
+   {{< tabs >}}
+   {{< tab title="Linux package (Omnibus) 14.1 and earlier" >}}
+
+   ```shell
+   sudo gitlab-rails dbconsole
+   ```
+
+   {{< /tab >}}
+   {{< tab title="Linux package (Omnibus) 14.2 and later" >}}
+
+   ```shell
+   sudo gitlab-rails dbconsole --database main
+   ```
+
+   {{< /tab >}}
+   {{< tab title="Self-compiled (source)" >}}
+
+   ```shell
+   RAILS_ENV=production sudo -u git -H psql -d gitlabhq_production
+   ```
+
+   {{< /tab >}}
+   {{< /tabs >}}
+
+1. Verify that all packages migrated to local storage with the following SQL query. The number of `filesystem` should be the same as `total`:
+
+   ```sql
+   SELECT count(*) AS total, 
+          sum(case when file_store = '1' then 1 else 0 end) AS filesystem, 
+          sum(case when file_store = '2' then 1 else 0 end) AS objectstg 
+   FROM packages_package_files;
+   ```
+
+   Example output:
+
+   ```plaintext
+   total | filesystem | objectstg
+   ------+------------+-----------
+    34   |         34 |         0
+   ```
+
+1. Finally, verify that the files exist in the `packages` directory:
+
+   {{< tabs >}}
+   {{< tab title="Linux package (Omnibus)" >}}
+
+   ```shell
+   sudo find /var/opt/gitlab/gitlab-rails/shared/packages -type f | grep -v tmp | wc -l
+   ```
+
+   {{< /tab >}}
+   {{< tab title="Self-compiled (source)" >}}
+
+   ```shell
+   sudo -u git find /home/git/gitlab/shared/packages -type f | grep -v tmp | wc -l
+   ```
+
+   {{< /tab >}}
    {{< /tabs >}}

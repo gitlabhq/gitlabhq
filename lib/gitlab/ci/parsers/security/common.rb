@@ -186,7 +186,7 @@ module Gitlab
           def create_scan
             return unless scan_data.is_a?(Hash)
 
-            report.add_scan(::Gitlab::Ci::Reports::Security::Scan.new(scan_data))
+            report.scan = ::Gitlab::Ci::Reports::Security::Scan.new(scan_data)
           end
 
           def set_report_version
@@ -211,13 +211,12 @@ module Gitlab
           def create_scanner(scanner_data)
             return unless scanner_data.is_a?(Hash)
 
-            report.add_scanner(
-              ::Gitlab::Ci::Reports::Security::Scanner.new(
-                external_id: scanner_data['id'],
-                name: scanner_data['name'],
-                vendor: scanner_data.dig('vendor', 'name'),
-                version: scanner_data['version'],
-                primary_identifiers: create_scan_primary_identifiers))
+            report.scanner = ::Gitlab::Ci::Reports::Security::Scanner.new(
+              external_id: scanner_data['id'],
+              name: scanner_data['name'],
+              vendor: scanner_data.dig('vendor', 'name'),
+              version: scanner_data['version'],
+              primary_identifiers: create_scan_primary_identifiers)
           end
 
           # TODO: primary_identifiers should be initialized on the

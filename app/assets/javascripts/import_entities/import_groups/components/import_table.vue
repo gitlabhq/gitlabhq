@@ -16,6 +16,7 @@ import {
 } from '@gitlab/ui';
 import { debounce, isNumber, isUndefined } from 'lodash';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import { createAlert } from '~/alert';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
@@ -74,6 +75,7 @@ export default {
     PaginationBar,
     HelpPopover,
     PageHeading,
+    EmptyResult,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -753,11 +755,7 @@ export default {
 
     <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
     <template v-else>
-      <gl-empty-state
-        v-if="hasEmptyFilter"
-        :title="__('Sorry, your filter produced no results')"
-        :description="__('To widen your search, change or remove filters above.')"
-      />
+      <empty-result v-if="hasEmptyFilter" type="search" />
       <gl-empty-state v-else-if="!hasGroups" :title="$options.i18n.NO_GROUPS_FOUND">
         <template #description>
           <gl-sprintf

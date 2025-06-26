@@ -23,11 +23,22 @@ export default {
         return FILTER_OPTIONS_CREDENTIALS_INVENTORY.filter(({ type }) => type === 'filter');
       }
 
-      return FILTER_OPTIONS_CREDENTIALS_INVENTORY;
+      // If personal access tokens is selected, show all tokens including owner_type
+      if (this.hasPersonalAccessTokens) {
+        return FILTER_OPTIONS_CREDENTIALS_INVENTORY;
+      }
+
+      // If no filter is selected or other credential types, exclude owner_type
+      return FILTER_OPTIONS_CREDENTIALS_INVENTORY.filter(({ type }) => type !== 'owner_type');
     },
     hasKey() {
       return this.tokens.some(
         ({ type, value }) => type === 'filter' && ['ssh_keys', 'gpg_keys'].includes(value.data),
+      );
+    },
+    hasPersonalAccessTokens() {
+      return this.tokens.some(
+        ({ type, value }) => type === 'filter' && value.data === 'personal_access_tokens',
       );
     },
   },
@@ -38,6 +49,9 @@ export default {
       // Once SSH or GPG key is selected, discard the rest of the tokens
       if (this.hasKey) {
         this.tokens = this.tokens.filter(({ type }) => type === 'filter');
+      } else if (!this.hasPersonalAccessTokens) {
+        // If personal access tokens is not selected, remove owner_type tokens
+        this.tokens = this.tokens.filter(({ type }) => type !== 'owner_type');
       }
     },
     search(tokens) {

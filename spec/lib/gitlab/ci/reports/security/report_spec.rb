@@ -12,22 +12,6 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
   it { expect(report.type).to eq('sast') }
   it { is_expected.to delegate_method(:project_id).to(:pipeline) }
 
-  describe '#add_scanner' do
-    let(:scanner) { create(:ci_reports_security_scanner, external_id: 'find_sec_bugs') }
-
-    subject { report.add_scanner(scanner) }
-
-    it 'stores given scanner params in the map' do
-      subject
-
-      expect(report.scanners).to eq({ 'find_sec_bugs' => scanner })
-    end
-
-    it 'returns the added scanner' do
-      expect(subject).to eq(scanner)
-    end
-  end
-
   describe '#add_identifier' do
     let(:identifier) { create(:ci_reports_security_identifier) }
 
@@ -59,7 +43,6 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
       create(
         :ci_reports_security_report,
         findings: [create(:ci_reports_security_finding)],
-        scanners: [create(:ci_reports_security_scanner)],
         identifiers: [create(:ci_reports_security_identifier)]
       )
     end
@@ -71,7 +54,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
       expect(clone.pipeline).to eq(report.pipeline)
       expect(clone.created_at).to eq(report.created_at)
       expect(clone.findings).to eq([])
-      expect(clone.scanners).to eq({})
+      expect(clone.scanner).to be_nil
       expect(clone.identifiers).to eq({})
     end
   end
@@ -81,7 +64,6 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
       create(
         :ci_reports_security_report,
         findings: [create(:ci_reports_security_finding)],
-        scanners: [create(:ci_reports_security_scanner)],
         identifiers: [create(:ci_reports_security_identifier)]
       )
     end
@@ -90,7 +72,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
       create(
         :ci_reports_security_report,
         findings: [create(:ci_reports_security_finding)],
-        scanners: [create(:ci_reports_security_scanner, external_id: 'other_scanner', name: 'Other Scanner')],
+        scanner: create(:ci_reports_security_scanner, external_id: 'other_scanner', name: 'Other Scanner'),
         identifiers: [create(:ci_reports_security_identifier, external_id: 'other_id', name: 'other_scanner')]
       )
     end
@@ -101,7 +83,7 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
 
     it 'replaces report contents with other reports contents' do
       expect(report.findings).to eq(other_report.findings)
-      expect(report.scanners).to eq(other_report.scanners)
+      expect(report.scanner).to eq(other_report.scanner)
       expect(report.identifiers).to eq(other_report.identifiers)
     end
   end
@@ -126,20 +108,6 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
     end
   end
 
-  describe '#primary_scanner' do
-    let(:scanner_1) { create(:ci_reports_security_scanner, external_id: 'external_id_1') }
-    let(:scanner_2) { create(:ci_reports_security_scanner, external_id: 'external_id_2') }
-
-    subject { report.primary_scanner }
-
-    before do
-      report.add_scanner(scanner_1)
-      report.add_scanner(scanner_2)
-    end
-
-    it { is_expected.to eq(scanner_1) }
-  end
-
   describe '#primary_identifiers' do
     it 'returns matching identifiers' do
       scanner_with_identifiers = create(
@@ -147,12 +115,8 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
         external_id: 'external_id_1',
         primary_identifiers: [create(:ci_reports_security_identifier, external_id: 'other_id', name: 'other_scanner')]
       )
-      scanner_without_identifiers = create(
-        :ci_reports_security_scanner,
-        external_id: 'external_id_2')
 
-      report.add_scanner(scanner_with_identifiers)
-      report.add_scanner(scanner_without_identifiers)
+      report.scanner = scanner_with_identifiers
 
       expect(report.primary_identifiers).to eq(scanner_with_identifiers.primary_identifiers)
     end
@@ -218,48 +182,48 @@ RSpec.describe Gitlab::Ci::Reports::Security::Report, feature_category: :vulnera
     end
   end
 
-  describe '#primary_scanner_order_to' do
+  describe '#scanner_order_to' do
     let(:scanner_1) { build(:ci_reports_security_scanner) }
     let(:scanner_2) { build(:ci_reports_security_scanner) }
     let(:report_1) { described_class.new('sast', pipeline, created_at) }
     let(:report_2) { described_class.new('sast', pipeline, created_at) }
 
-    subject(:compare_based_on_primary_scanners) { report_1.primary_scanner_order_to(report_2) }
+    subject(:compare_based_on_scanner) { report_1.scanner_order_to(report_2) }
 
-    context 'when the primary scanner of the receiver is nil' do
-      context 'when the primary scanner of the other is nil' do
+    context 'when the scanner of the receiver is nil' do
+      context 'when the scanner of the other is nil' do
         it { is_expected.to be(1) }
       end
 
-      context 'when the primary scanner of the other is not nil' do
+      context 'when the scanner of the other is not nil' do
         before do
-          report_2.add_scanner(scanner_2)
+          report_2.scanner = scanner_2
         end
 
         it { is_expected.to be(1) }
       end
     end
 
-    context 'when the primary scanner of the receiver is not nil' do
+    context 'when the scanner of the receiver is not nil' do
       before do
-        report_1.add_scanner(scanner_1)
+        report_1.scanner = scanner_1
       end
 
-      context 'when the primary scanner of the other is nil' do
+      context 'when the scanner of the other is nil' do
         let(:scanner_2) { nil }
 
         it { is_expected.to be(-1) }
       end
 
-      context 'when the primary scanner of the other is not nil' do
+      context 'when the scanner of the other is not nil' do
         before do
-          report_2.add_scanner(scanner_2)
+          report_2.scanner = scanner_2
 
           allow(scanner_1).to receive(:<=>).and_return(0)
         end
 
         it 'compares two scanners' do
-          expect(compare_based_on_primary_scanners).to be(0)
+          expect(compare_based_on_scanner).to be(0)
           expect(scanner_1).to have_received(:<=>).with(scanner_2)
         end
       end

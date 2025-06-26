@@ -63,24 +63,6 @@ module API
             }
           end
 
-          desc 'Gets project info' do
-            detail 'Retrieves project info (if authorized)'
-          end
-          route_setting :authentication, cluster_agent_token_allowed: true
-          get '/project_info', feature_category: :deployment_management, urgency: :low do
-            project = find_project(params[:id])
-
-            not_found! unless agent_has_access_to_project?(project)
-
-            status 200
-            {
-              project_id: project.id,
-              gitaly_info: gitaly_info(project),
-              gitaly_repository: gitaly_repository(project),
-              default_branch: project.default_branch_or_main
-            }
-          end
-
           desc 'Verify agent access to a project' do
             detail 'Verifies if the agent (owning the token) is authorized to access the given project'
           end

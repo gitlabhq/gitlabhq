@@ -185,7 +185,7 @@ supported by the consolidated form, refer to the following guides:
 | [LFS objects](lfs/_index.md#storing-lfs-objects-in-remote-object-storage) | {{< icon name="check-circle" >}} Yes |
 | [Uploads](uploads.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
 | [Merge request diffs](merge_request_diffs.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
-| [Packages](packages/_index.md#use-object-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
+| [Packages](packages/_index.md#migrate-packages-between-object-storage-and-local-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
 | [Dependency Proxy](packages/dependency_proxy.md#using-object-storage) (optional feature) | {{< icon name="check-circle" >}} Yes |
 | [Terraform state files](terraform_state.md#using-object-storage) | {{< icon name="check-circle" >}} Yes |
 | [Pages content](pages/_index.md#object-storage-settings) | {{< icon name="check-circle" >}} Yes |
@@ -1103,7 +1103,7 @@ To migrate existing local data to object storage see the following guides:
 - [LFS objects](lfs/_index.md#migrating-to-object-storage)
 - [Uploads](raketasks/uploads/migrate.md#migrate-to-object-storage)
 - [Merge request diffs](merge_request_diffs.md#using-object-storage)
-- [Packages](packages/_index.md#migrate-local-packages-to-object-storage) (optional feature)
+- [Packages](packages/_index.md#migrate-packages-between-object-storage-and-local-storage) (optional feature)
 - [Dependency Proxy](packages/dependency_proxy.md#migrate-local-dependency-proxy-blobs-and-manifests-to-object-storage)
 - [Terraform state files](terraform_state.md#migrate-to-object-storage)
 - [Pages content](pages/_index.md#migrate-pages-deployments-to-object-storage)
@@ -1520,7 +1520,7 @@ Proceed as follows to properly delete potential leftovers:
    | Terraform state files    | `Terraform::StateVersion`                               |
    | Pages content            | `PagesDeployment`                                       |
 
-1. Start a [Rails console](operations/rails_console.md). When using Geo, run it on the primary site.
+1. Start a [Rails console](operations/rails_console.md).
 1. Query for all "files" which are still stored locally (instead of in object storage) based on the model name of the previous step. In this case, as uploads are affected, the model name `Upload` is used. Observe how `openbao.png` is still stored locally:
 
    ```ruby

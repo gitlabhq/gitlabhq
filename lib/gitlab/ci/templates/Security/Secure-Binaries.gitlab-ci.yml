@@ -18,7 +18,7 @@ variables:
   # (SAST, Dependency Scanning, ...)
   SECURE_ANALYZERS_PREFIX: "$CI_TEMPLATE_REGISTRY_HOST/security-products"
   SECURE_BINARIES_ANALYZERS: >-
-    bandit, brakeman, gosec, gitlab-advanced-sast, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python,
+    bandit, brakeman, gosec, gitlab-advanced-sast, spotbugs, flawfinder, phpcs-security-audit, security-code-scan, nodejs-scan, eslint, secrets, sobelow, pmd-apex, kics, kubesec, semgrep, gemnasium, gemnasium-maven, gemnasium-python, dependency-scanning,
     license-finder,
     dast, dast-runner-validation, api-security
 
@@ -200,6 +200,13 @@ gemnasium-python:
     SECURE_BINARIES_ANALYZER_VERSION: "6"
   rules:
     - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bgemnasium-python\b/'
+
+dependency-scanning:
+  extends: .download_images
+  variables:
+    SECURE_BINARIES_ANALYZER_VERSION: "v0"
+  rules:
+    - if: '$SECURE_BINARIES_DOWNLOAD_IMAGES == "true" && $SECURE_BINARIES_ANALYZERS =~ /\bdependency-scanning\b/'
 
 #
 # License Scanning

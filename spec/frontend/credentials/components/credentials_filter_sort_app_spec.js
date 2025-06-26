@@ -73,6 +73,53 @@ describe('CredentialsFilterSortApp', () => {
     ]);
   });
 
+  it('shows owner_type token only when personal access tokens is selected', async () => {
+    createComponent();
+    const filteredSearch = findFilteredSearch();
+
+    // Initially, without any filter, owner_type should not be available (6 tokens: filter + 5 base tokens)
+    expect(filteredSearch.props('availableTokens')).toHaveLength(6);
+    expect(
+      filteredSearch.props('availableTokens').some((token) => token.type === 'owner_type'),
+    ).toBe(false);
+
+    // When personal_access_tokens is selected, owner_type should be available (7 tokens)
+    filteredSearch.vm.$emit('input', [
+      { type: 'filter', value: { data: 'personal_access_tokens', operator: '=' } },
+    ]);
+    await nextTick();
+
+    expect(filteredSearch.props('availableTokens')).toHaveLength(7);
+    expect(
+      filteredSearch.props('availableTokens').some((token) => token.type === 'owner_type'),
+    ).toBe(true);
+  });
+
+  it('removes owner_type tokens when switching away from personal access tokens', async () => {
+    createComponent();
+    const filteredSearch = findFilteredSearch();
+
+    // Start with personal access tokens and owner_type filter
+    filteredSearch.vm.$emit('input', [
+      { type: 'filter', value: { data: 'personal_access_tokens', operator: '=' } },
+      { type: 'owner_type', value: { data: 'human', operator: '=' } },
+    ]);
+    await nextTick();
+
+    expect(findFilteredSearch().props('value')).toHaveLength(2);
+
+    // Switch to resource access tokens - should remove owner_type token
+    filteredSearch.vm.$emit('input', [
+      { type: 'filter', value: { data: 'resource_access_tokens', operator: '=' } },
+      { type: 'owner_type', value: { data: 'human', operator: '=' } },
+    ]);
+    await nextTick();
+
+    expect(findFilteredSearch().props('value')).toHaveLength(1);
+    expect(findFilteredSearch().props('value')[0].type).toBe('filter');
+    expect(findFilteredSearch().props('value')[0].value.data).toBe('resource_access_tokens');
+  });
+
   it('removes all available tokens if ssh or gpg keys are chosen', async () => {
     createComponent();
     const filteredSearch = findFilteredSearch();

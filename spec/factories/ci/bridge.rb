@@ -9,6 +9,8 @@ FactoryBot.define do
     name { 'bridge' }
     created_at { '2013-10-29 09:50:00 CET' }
     status { :created }
+    # We default options to a non-blank value so that `Ci::Metadatable.degenerated?` is false
+    options { { trigger: {} } }
 
     trait :variables do
       yaml_variables do

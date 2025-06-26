@@ -19164,6 +19164,9 @@ msgstr ""
 msgid "CredentialsInventory|No credentials found"
 msgstr ""
 
+msgid "CredentialsInventory|Owner type"
+msgstr ""
+
 msgid "CredentialsInventory|Personal access tokens"
 msgstr ""
 
@@ -28066,6 +28069,15 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+msgid "Geo|Shows general information about this registry including the various ways it may be referenced."
+msgstr ""
+
+msgid "Geo|Shows the current replication status of this registry and whether it has encountered any issues during the replication process."
+msgstr ""
+
+msgid "Geo|Shows the current verification status between the Primary and Secondary Geo site for this registry and whether it has encountered any issues during the verification process."
+msgstr ""
+
 msgid "Geo|Site name can't be blank"
 msgstr ""
 
@@ -31495,6 +31507,9 @@ msgid "How the job limiter handles jobs exceeding the thresholds specified below
 msgstr ""
 
 msgid "HttpDestinationValidator validates only http external audit event destinations."
+msgstr ""
+
+msgid "Human"
 msgstr ""
 
 msgid "I agree that GitLab can contact me by email or telephone about its product, services, or events."

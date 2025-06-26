@@ -45,15 +45,20 @@ module Gitlab
           ::Gitlab::ApplicationContext.with_context(project: project) do
             attributes = ::Gitlab::ApplicationContext.current.merge(
               class: self.class.name.to_s,
+              graphql: graphql_operation_names,
               project_id: project.id,
               pipeline_id: pipeline.id,
               pipeline_age: pipeline.age_in_minutes,
               archived: archived?
             )
 
-            attributes.stringify_keys!
+            attributes.deep_stringify_keys!
             destination.info(attributes)
           end
+        end
+
+        def graphql_operation_names
+          RequestStore.store[:graphql_logs].to_a.map { |log| log.slice(:operation_name) }
         end
 
         def log_access?

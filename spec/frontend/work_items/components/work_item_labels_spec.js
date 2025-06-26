@@ -81,6 +81,7 @@ describe('WorkItemLabels component', () => {
       provide: {
         canAdminLabel: true,
         issuesListPath: 'test-project-path/issues',
+        epicsListPath: 'groups/some-group/-/epics',
         labelsManagePath: 'test-project-path/labels',
       },
       propsData: {

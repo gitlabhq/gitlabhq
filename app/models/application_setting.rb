@@ -13,9 +13,6 @@ class ApplicationSetting < ApplicationRecord
 
   ignore_column :pre_receive_secret_detection_enabled, remove_with: '17.9', remove_after: '2025-02-15'
 
-  ignore_columns %i[
-    security_policy_scheduled_scans_max_concurrency
-  ], remove_with: '17.11', remove_after: '2025-04-17'
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
     'Admin area > Settings > Metrics and profiling > Metrics - Grafana'

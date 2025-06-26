@@ -4970,77 +4970,8 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     end
   end
 
-  describe '#degenerated?' do
-    context 'when build is degenerated' do
-      subject { create(:ci_build, :degenerated, pipeline: pipeline) }
-
-      it { is_expected.to be_degenerated }
-    end
-
-    context 'when build is valid' do
-      subject { create(:ci_build, pipeline: pipeline) }
-
-      it { is_expected.not_to be_degenerated }
-
-      context 'and becomes degenerated' do
-        before do
-          subject.degenerate!
-        end
-
-        it { is_expected.to be_degenerated }
-      end
-    end
-  end
-
-  describe 'degenerate!' do
-    let(:build) { create(:ci_build, pipeline: pipeline) }
-
-    subject { build.degenerate! }
-
-    before do
-      build.ensure_metadata
-      build.needs.create!(name: 'another-job')
-    end
-
-    it 'drops metadata' do
-      subject
-
-      expect(build.reload).to be_degenerated
-      expect(build.metadata).to be_nil
-      expect(build.needs).to be_empty
-    end
-  end
-
-  describe '#archived?' do
-    before do
-      pipeline.update!(created_at: 1.day.ago)
-    end
-
-    context 'when build is degenerated' do
-      subject { build_stubbed(:ci_build, :degenerated, pipeline: pipeline) }
-
-      it { is_expected.to be_archived }
-    end
-
-    context 'for old pipelines' do
-      subject { build_stubbed(:ci_build, pipeline: pipeline) }
-
-      context 'when archive_builds_in is set' do
-        before do
-          stub_application_setting(archive_builds_in_seconds: 3600)
-        end
-
-        it { is_expected.to be_archived }
-      end
-
-      context 'when archive_builds_in is not set' do
-        before do
-          stub_application_setting(archive_builds_in_seconds: nil)
-        end
-
-        it { is_expected.not_to be_archived }
-      end
-    end
+  it_behaves_like 'a degenerable job' do
+    subject(:job) { create(:ci_build, pipeline: pipeline) }
   end
 
   describe '#read_metadata_attribute' do

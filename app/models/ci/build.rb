@@ -496,10 +496,6 @@ module Ci
       end
     end
 
-    def archived?(...)
-      degenerated? || super(...)
-    end
-
     def playable?
       action? && !archived? && (manual? || scheduled? || retryable?)
     end

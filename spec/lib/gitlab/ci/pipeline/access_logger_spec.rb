@@ -32,6 +32,30 @@ RSpec.describe Gitlab::Ci::Pipeline::AccessLogger, feature_category: :continuous
 
         logger.log
       end
+
+      context 'when there is GraphQL info stored in the request store', :request_store do
+        before do
+          RequestStore.store[:graphql_logs] = [
+            {
+              complexity: 63,
+              depth: 5,
+              used_fields: ['Project.id'],
+              operation_name: 'getPipelineHeaderData'
+            }
+          ]
+        end
+
+        it 'creates a log entry' do
+          graphql_data = { 'graphql' => [{ 'operation_name' => 'getPipelineHeaderData' }] }
+
+          expect(Gitlab::AppJsonLogger)
+            .to receive(:info)
+            .with(a_hash_including(expected_data.merge(graphql_data)))
+            .and_call_original
+
+          logger.log
+        end
+      end
     end
 
     context 'when the pipeline is tentatively archived' do

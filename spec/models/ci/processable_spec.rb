@@ -342,6 +342,45 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
+  it_behaves_like 'a degenerable job' do
+    subject(:job) { create(:ci_bridge, pipeline: pipeline) }
+  end
+
+  describe '#archived?' do
+    shared_examples 'an archivable job' do
+      it { is_expected.not_to be_archived }
+
+      context 'when job is degenerated' do
+        before do
+          job.degenerate!
+        end
+
+        it { is_expected.to be_archived }
+      end
+
+      context 'when pipeline is archived' do
+        before do
+          pipeline.update!(created_at: 1.day.ago)
+          stub_application_setting(archive_builds_in_seconds: 3600)
+        end
+
+        it { is_expected.to be_archived }
+      end
+    end
+
+    context 'when job is a build' do
+      subject(:job) { create(:ci_build, pipeline: pipeline) }
+
+      it_behaves_like 'an archivable job'
+    end
+
+    context 'when job is a bridge' do
+      subject(:job) { create(:ci_bridge, pipeline: pipeline) }
+
+      it_behaves_like 'an archivable job'
+    end
+  end
+
   describe '#aggregated_needs_names' do
     let(:with_aggregated_needs) { pipeline.processables.select_with_aggregated_needs(project) }
 

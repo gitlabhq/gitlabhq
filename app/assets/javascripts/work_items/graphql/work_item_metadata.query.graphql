@@ -13,5 +13,14 @@ query workItemMetadata($fullPath: ID!) {
       hasLinkedItemsEpicsFeature
       hasIssueDateFilterFeature
     }
+    linkPaths {
+      issuesList
+      contributionGuidePath
+      labelsManage
+      newProject
+      register
+      reportAbuse
+      signIn
+    }
   }
 }

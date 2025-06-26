@@ -178,6 +178,10 @@ module Ci
       success? || failed? || canceled? || canceling?
     end
 
+    def archived?(...)
+      degenerated? || super
+    end
+
     def aggregated_needs_names
       read_attribute(:aggregated_needs_names)
     end

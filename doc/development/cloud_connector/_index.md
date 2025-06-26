@@ -149,16 +149,6 @@ To decide if the service is available or visible to the end user, we need to:
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.
 
-- On GitLab.com and GitLab Self-Managed, if the service is not accessible for free, check if the add-on bundled with this service has been purchased by the customer (for the group/namespace)
-
-  ```ruby
-    # Returns true if at least one add-on that is bundled with the service is purchased.
-    #
-    # - For provided namespace, it will check if add-on is purchased for the provided group/project or its ancestors.
-    # - For SM, it would ignore namespace as AddOns are not purchased per namespace for GitLab Self-Managed customers.
-    CloudConnector::AvailableServices.find_by_name(:new_feature).purchased?(namespace)
-  ```
-
 - On GitLab.com and GitLab Self-Managed, check if the customer's end-user has been assigned to the proper seat.
 
   ```ruby

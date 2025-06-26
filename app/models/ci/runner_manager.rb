@@ -203,6 +203,7 @@ module Ci
       errors.add(:runner_manager, 'cannot have organization_id assigned') if organization_id
     end
 
+    # TODO: Remove with https://gitlab.com/gitlab-org/gitlab/-/issues/523851
     def ensure_organization_id
       self.organization_id = runner.organization_id
     end
