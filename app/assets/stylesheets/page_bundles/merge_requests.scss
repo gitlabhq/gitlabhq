@@ -474,7 +474,8 @@ $diff-file-header-top: 11px;
   }
 
   > .mr-widget-section {
-    &:first-child {
+    &:first-child,
+    .widget-merge-status {
       border-top-left-radius: $gl-border-radius-lg-inner;
       border-top-right-radius: $gl-border-radius-lg-inner;
     }

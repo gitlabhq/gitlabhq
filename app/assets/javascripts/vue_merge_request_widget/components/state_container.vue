@@ -58,8 +58,8 @@ export default {
   },
   computed: {
     wrapperClasses() {
-      if (this.status === STATUS_MERGED) return 'gl-bg-feedback-info';
-      if (this.status === STATUS_CLOSED) return 'gl-bg-feedback-danger';
+      if (this.status === STATUS_MERGED) return 'gl-bg-feedback-info widget-merge-status';
+      if (this.status === STATUS_CLOSED) return 'gl-bg-feedback-danger widget-merge-status';
       return null;
     },
     hasActionsSlot() {

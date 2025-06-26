@@ -1463,19 +1463,6 @@ RSpec.describe API::Commits, feature_category: :source_code_management do
           expect(response).to have_gitlab_http_status(:ok)
         end
       end
-
-      context 'when feature flag "containing_commits_limit" is disabled' do
-        before do
-          stub_feature_flags(containing_commits_limit: false)
-        end
-
-        it 'does not limit Gitaly calls' do
-          expect(Gitlab::Repositories::ContainingCommitFinder).not_to receive(:new)
-
-          get api(route, current_user), params: { type: 'all', per_page: 50 }
-          expect(response).to have_gitlab_http_status(:ok)
-        end
-      end
     end
   end
 

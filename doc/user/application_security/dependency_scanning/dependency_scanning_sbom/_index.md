@@ -58,8 +58,338 @@ Enable the Dependency Scanning using SBOM feature with one of the following opti
 - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
 - Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
 
-The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
-To enable the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#getting-started).
+You should use the new Dependency Scanning analyzer. For details, see [Enabling the analyzer](#enabling-the-analyzer).
+If instead you use the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#getting-started).
+
+### Enabling the analyzer
+
+The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
+application can't generate such a report, you can use the GitLab analyzer to produce one.
+
+Share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
+
+Prerequisites:
+
+- A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
+  must exist in the repository or must be passed as an artifact to the `dependency-scanning` job.
+- The component's [stage](https://gitlab.com/explore/catalog/components/dependency-scanning) is required in the `.gitlab-ci.yml` file.
+- With self-managed runners you need a GitLab Runner with the
+  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
+  - If you're using SaaS runners on GitLab.com, this is enabled by default.
+
+To enable the analyzer, you must:
+
+- Use either the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml`
+and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+
+  ```yaml
+    include:
+      - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+
+    variables:
+      DS_ENFORCE_NEW_ANALYZER: 'true'
+  ```
+
+- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
+- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
+
+  ```yaml
+    include:
+      - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+  ```
+
+#### Language-specific instructions
+
+If your project doesn't have a supported lock file dependency graph committed to its
+repository, you need to provide one.
+
+The examples below show how to create a file that is supported by the GitLab analyzer for popular
+languages and package managers.
+
+##### Go
+
+If your project provides only a `go.mod` file, the Dependency Scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available. Additionally, you might encounter false positives if there are multiple versions of the same module.
+
+To benefit from improved component detection and feature coverage, you should provide a `go.graph` file generated using the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go toolchain.
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component with [dependency path](../../dependency_list/_index.md#dependency-paths)
+support on a Go project. The dependency graph is output as a job artifact in the `build`
+stage, before dependency scanning runs.
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+go:build:
+  stage: build
+  image: "golang:latest"
+  script:
+    - "go mod tidy"
+    - "go build ./..."
+    - "go mod graph > go.graph"
+  artifacts:
+    when: on_success
+    access: developer
+    paths: ["**/go.graph"]
+
+```
+
+##### Gradle
+
+For Gradle projects use either of the following methods to create a dependency graph.
+
+- Nebula Gradle Dependency Lock Plugin
+- Gradle's HtmlDependencyReportTask
+
+###### Dependency Lock Plugin
+
+This method gives information about dependencies which are direct.
+
+To enable the CI/CD component on a Gradle project:
+
+1. Edit the `build.gradle` or `build.gradle.kts` to use the
+   [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example).
+1. Configure the `.gitlab-ci.yml` file to generate the `dependencies.lock` artifacts, and pass them
+   to the `dependency-scanning` job.
+
+The following example demonstrates how to configure the component
+for a Gradle project.
+
+```yaml
+stages:
+  - build
+  - test
+
+# Define the image that contains Java and Gradle
+image: gradle:8.0-jdk11
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the dependencies.lock artifacts.
+  stage: build
+  script:
+    - gradle generateLock saveLock
+    - gradle assemble
+  # generateLock saves the lock file in the build/ directory of a project
+  # and saveLock copies it into the root of a project. To avoid duplicates
+  # and get an accurate location of the dependency, use find to remove the
+  # lock files in the build/ directory only.
+  after_script:
+    - find . -path '*/build/dependencies.lock' -print -delete
+  # Collect all dependencies.lock artifacts and pass them onto jobs
+  # in sequential stages.
+  artifacts:
+    paths:
+      - "**/dependencies.lock"
+
+```
+
+###### HtmlDependencyReportTask
+
+This method gives information about dependencies which are both transitive and direct.
+
+The [HtmlDependencyReportTask](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)
+is an alternative way to get the list of dependencies for a Gradle project (tested with `gradle`
+versions 4 through 8). To enable use of this method with dependency scanning the artifact from running the
+`gradle htmlDependencyReport` task needs to be available.
+
+```yaml
+stages:
+  - build
+  - test
+
+# Define the image that contains Java and Gradle
+image: gradle:8.0-jdk11
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  stage: build
+  script:
+    - gradle --init-script report.gradle htmlDependencyReport
+  # The gradle task writes the dependency report as a javascript file under
+  # build/reports/project/dependencies. Because the file has an un-standardized
+  # name, the after_script finds and renames the file to
+  # `gradle-html-dependency-report.js` copying it to the  same directory as
+  # `build.gradle`
+  after_script:
+    - |
+      reports_dir=build/reports/project/dependencies
+      while IFS= read -r -d '' src; do
+        dest="${src%%/$reports_dir/*}/gradle-html-dependency-report.js"
+        cp $src $dest
+      done < <(find . -type f -path "*/${reports_dir}/*.js" -not -path "*/${reports_dir}/js/*" -print0)
+  # Pass html report artifact to subsequent dependency scanning stage.
+  artifacts:
+    paths:
+      - "**/gradle-html-dependency-report.js"
+
+```
+
+The command above uses the `report.gradle` file and can be supplied through `--init-script` or its contents can be added to `build.gradle` directly:
+
+```kotlin
+allprojects {
+    apply plugin: 'project-report'
+}
+```
+
+{{< alert type="note" >}}
+
+The dependency report may indicate that dependencies for some configurations `FAILED` to be
+resolved. In this case dependency scanning logs a warning but does not fail the job. If you prefer
+to have the pipeline fail if resolution failures are reported, add the following extra steps to the
+`build` example above.
+
+{{< /alert >}}
+
+```shell
+while IFS= read -r -d '' file; do
+  grep --quiet -E '"resolvable":\s*"FAILED' $file && echo "Dependency report has dependencies with FAILED resolution status" && exit 1
+done < <(find . -type f -path "*/gradle-html-dependency-report.js -print0)
+```
+
+##### Maven
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component on a Maven project. The dependency graph is output as a job artifact
+in the `build` stage, before dependency scanning runs.
+
+Requirement: use at least version `3.7.0` of the maven-dependency-plugin.
+
+```yaml
+stages:
+  - build
+  - test
+
+image: maven:3.9.9-eclipse-temurin-21
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  # Running in the build stage ensures that the dependency-scanning job
+  # receives the maven.graph.json artifacts.
+  stage: build
+  script:
+    - mvn install
+    - mvn org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree -DoutputType=json -DoutputFile=maven.graph.json
+  # Collect all maven.graph.json artifacts and pass them onto jobs
+  # in sequential stages.
+  artifacts:
+    paths:
+      - "**/*.jar"
+      - "**/maven.graph.json"
+
+```
+
+##### pip
+
+If your project provides a `requirements.txt` lock file generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/), the Dependency Scanning analyzer can extract the list of components and the dependency graph information, which provides support for the [dependency path](../../dependency_list/_index.md#dependency-paths) feature.
+
+Alternatively, your project can provide a `pipdeptree.json` dependency graph export generated by the [`pipdeptree --json` command line utility](https://pypi.org/project/pipdeptree/).
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component with [dependency path](../../dependency_list/_index.md#dependency-paths)
+support on a pip project. The `build` stage outputs the dependency graph as a job artifact
+before dependency scanning runs.
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  stage: build
+  image: "python:latest"
+  script:
+    - "pip install -r requirements.txt"
+    - "pip install pipdeptree"
+    - "pipdeptree --json > pipdeptree.json"
+  artifacts:
+    when: on_success
+    access: developer
+    paths: ["**/pipdeptree.json"]
+
+```
+
+##### Pipenv
+
+If your project provides only a `Pipfile.lock` file, the Dependency Scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available.
+
+To benefit from improved feature coverage, you should provide a `pipenv.graph.json` file generated by the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph).
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component with [dependency path](../../dependency_list/_index.md#dependency-paths)
+support on a Pipenv project. The `build` stage outputs the dependency graph as a job artifact
+before dependency scanning runs.
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  stage: build
+  image: "python:3.12"
+  script:
+    - "pip install pipenv"
+    - "pipenv install"
+    - "pipenv graph --json-tree > pipenv.graph.json"
+  artifacts:
+    when: on_success
+    access: developer
+    paths: ["**/pipenv.graph.json"]
+
+```
+
+##### sbt
+
+To enable the CI/CD component on an sbt project:
+
+- Edit the `plugins.sbt` to use the
+  [sbt-dependency-graph plugin](https://github.com/sbt/sbt-dependency-graph/blob/master/README.md#usage-instructions).
+
+The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
+component with [dependency path](../../dependency_list/_index.md#dependency-paths)
+support in an sbt project. The `build` stage outputs the dependency graph as a job artifact
+before dependency scanning runs.
+
+```yaml
+stages:
+  - build
+  - test
+
+include:
+  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+
+build:
+  stage: build
+  image: "sbtscala/scala-sbt:eclipse-temurin-17.0.13_11_1.10.7_3.6.3"
+  script:
+    - "sbt dependencyDot"
+  artifacts:
+    when: on_success
+    access: developer
+    paths: ["**/dependencies-compile.dot"]
+
+```
 
 ## Understanding the results
 
@@ -156,7 +486,7 @@ To exclude files or directories from being scanned, use `DS_EXCLUDED_PATHS` with
 
 ### Define the max depth to look for files
 
-To optmize the analyzer behavior you may set a max depth value through the `DS_MAX_DEPTH` environment variable. A value of `-1` scans all directories regardless of depth. The default is `2`.
+To optimize the analyzer behavior you may set a max depth value through the `DS_MAX_DEPTH` environment variable. A value of `-1` scans all directories regardless of depth. The default is `2`.
 
 ## Roll out
 
@@ -170,7 +500,7 @@ After you are confident in the Dependency Scanning with SBOM results for a singl
 For the security analysis to be effective, the components listed in your SBOM report must have corresponding
 entries in the [GitLab Advisory Database](../../gitlab_advisory_database/_index.md).
 
-The GitLab SBOM Vulnerablity Scanner can report Dependency Scanning vulnerabilities for components with the
+The GitLab SBOM Vulnerability Scanner can report Dependency Scanning vulnerabilities for components with the
 following [PURL types](https://github.com/package-url/purl-spec/blob/346589846130317464b677bc4eab30bf5040183a/PURL-TYPES.rst):
 
 - `cargo`
@@ -182,352 +512,6 @@ following [PURL types](https://github.com/package-url/purl-spec/blob/34658984613
 - `npm`
 - `nuget`
 - `pypi`
-
-## Configuration
-
-Enable the Dependency Scanning using SBOM feature with one of the following options:
-
-- Use the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml` to enable a GitLab provided analyzer.
-  - The (deprecated) Gemnasium analyzer is used by default.
-  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template to enable a GitLab provided analyzer.
-  - The (deprecated) Gemnasium analyzer is used by default.
-  - To enable the new Dependency Scanning analyzer, set the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning) to enable the new Dependency Scanning analyzer.
-- Provide your own CycloneDX SBOM document as [a CI/CD artifact report](../../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline.
-
-The preferred method is to use the new Dependency Scanning analyzer and this is what is documented in the next section.
-To enable the (deprecated) Gemnasium analyzer, refer to the enablement instructions for the [legacy Dependency Scanning feature](../_index.md#getting-started).
-
-## Enabling the analyzer
-
-The Dependency Scanning analyzer produces a CycloneDX SBOM report compatible with GitLab. If your
-application can't generate such a report, you can use the GitLab analyzer to produce one.
-
-Share any feedback on the new Dependency Scanning analyzer in this [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/523458).
-
-Prerequisites:
-
-- A [supported lock file or dependency graph](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning/#supported-files)
-  must exist in the repository or must be passed as an artifact to the `dependency-scanning` job.
-- The component's [stage](https://gitlab.com/explore/catalog/components/dependency-scanning) is required in the `.gitlab-ci.yml` file.
-- With self-managed runners you need a GitLab Runner with the
-  [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-  - If you're using SaaS runners on GitLab.com, this is enabled by default.
-
-To enable the analyzer, you must:
-
-- Use either the `latest` Dependency Scanning CI/CD template `Dependency-Scanning.latest.gitlab-ci.yml`
-and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-
-  ```yaml
-    include:
-      - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
-
-    variables:
-      DS_ENFORCE_NEW_ANALYZER: 'true'
-  ```
-
-- Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
-- Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
-
-  ```yaml
-    include:
-      - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-  ```
-
-### Language-specific instructions
-
-If your project doesn't have a supported lock file dependency graph committed to its
-repository, you need to provide one.
-
-The examples below show how to create a file that is supported by the GitLab analyzer for popular
-languages and package managers.
-
-#### Go
-
-If your project provides only a `go.mod` file, the Dependency Scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available. Additionally, you might encounter false positives if there are multiple versions of the same module.
-
-To benefit from improved component detection and feature coverage, you should provide a `go.graph` file generated using the [`go mod graph` command](https://go.dev/ref/mod#go-mod-graph) from the Go toolchain.
-
-The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
-component with [dependency path](../../dependency_list/_index.md#dependency-paths)
-support on a Go project. The dependency graph is output as a job artifact in the `build`
-stage, before dependency scanning runs.
-
-```yaml
-stages:
-  - build
-  - test
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-go:build:
-  stage: build
-  image: "golang:latest"
-  script:
-    - "go mod tidy"
-    - "go build ./..."
-    - "go mod graph > go.graph"
-  artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/go.graph"]
-
-```
-
-#### Gradle
-
-For Gradle projects use either of the following methods to create a dependency graph.
-
-- Nebula Gradle Dependency Lock Plugin
-- Gradle's HtmlDependencyReportTask
-
-##### Dependency Lock Plugin
-
-This method gives information about dependencies which are direct.
-
-To enable the CI/CD component on a Gradle project:
-
-1. Edit the `build.gradle` or `build.gradle.kts` to use the
-   [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example).
-1. Configure the `.gitlab-ci.yml` file to generate the `dependencies.lock` artifacts, and pass them
-   to the `dependency-scanning` job.
-
-The following example demonstrates how to configure the component
-for a Gradle project.
-
-```yaml
-stages:
-  - build
-  - test
-
-# Define the image that contains Java and Gradle
-image: gradle:8.0-jdk11
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-build:
-  # Running in the build stage ensures that the dependency-scanning job
-  # receives the dependencies.lock artifacts.
-  stage: build
-  script:
-    - gradle generateLock saveLock
-    - gradle assemble
-  # generateLock saves the lock file in the build/ directory of a project
-  # and saveLock copies it into the root of a project. To avoid duplicates
-  # and get an accurate location of the dependency, use find to remove the
-  # lock files in the build/ directory only.
-  after_script:
-    - find . -path '*/build/dependencies.lock' -print -delete
-  # Collect all dependencies.lock artifacts and pass them onto jobs
-  # in sequential stages.
-  artifacts:
-    paths:
-      - "**/dependencies.lock"
-
-```
-
-##### HtmlDependencyReportTask
-
-This method gives information about dependencies which are both transitive and direct.
-
-The [HtmlDependencyReportTask](https://docs.gradle.org/current/dsl/org.gradle.api.reporting.dependencies.HtmlDependencyReportTask.html)
-is an alternative way to get the list of dependencies for a Gradle project (tested with `gradle`
-versions 4 through 8). To enable use of this method with dependency scanning the artifact from running the
-`gradle htmlDependencyReport` task needs to be available.
-
-```yaml
-stages:
-  - build
-  - test
-
-# Define the image that contains Java and Gradle
-image: gradle:8.0-jdk11
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-build:
-  stage: build
-  script:
-    - gradle --init-script report.gradle htmlDependencyReport
-  # The gradle task writes the dependency report as a javascript file under
-  # build/reports/project/dependencies. Because the file has an un-standardized
-  # name, the after_script finds and renames the file to
-  # `gradle-html-dependency-report.js` copying it to the  same directory as
-  # `build.gradle`
-  after_script:
-    - |
-      reports_dir=build/reports/project/dependencies
-      while IFS= read -r -d '' src; do
-        dest="${src%%/$reports_dir/*}/gradle-html-dependency-report.js"
-        cp $src $dest
-      done < <(find . -type f -path "*/${reports_dir}/*.js" -not -path "*/${reports_dir}/js/*" -print0)
-  # Pass html report artifact to subsequent dependency scanning stage.
-  artifacts:
-    paths:
-      - "**/gradle-html-dependency-report.js"
-
-```
-
-The command above uses the `report.gradle` file and can be supplied through `--init-script` or its contents can be added to `build.gradle` directly:
-
-```kotlin
-allprojects {
-    apply plugin: 'project-report'
-}
-```
-
-{{< alert type="note" >}}
-
-The dependency report may indicate that dependencies for some configurations `FAILED` to be
-resolved. In this case dependency scanning logs a warning but does not fail the job. If you prefer
-to have the pipeline fail if resolution failures are reported, add the following extra steps to the
-`build` example above.
-
-{{< /alert >}}
-
-```shell
-while IFS= read -r -d '' file; do
-  grep --quiet -E '"resolvable":\s*"FAILED' $file && echo "Dependency report has dependencies with FAILED resolution status" && exit 1
-done < <(find . -type f -path "*/gradle-html-dependency-report.js -print0)
-```
-
-#### Maven
-
-The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
-component on a Maven project. The dependency graph is output as a job artifact
-in the `build` stage, before dependency scanning runs.
-
-Requirement: use at least version `3.7.0` of the maven-dependency-plugin.
-
-```yaml
-stages:
-  - build
-  - test
-
-image: maven:3.9.9-eclipse-temurin-21
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-build:
-  # Running in the build stage ensures that the dependency-scanning job
-  # receives the maven.graph.json artifacts.
-  stage: build
-  script:
-    - mvn install
-    - mvn org.apache.maven.plugins:maven-dependency-plugin:3.8.1:tree -DoutputType=json -DoutputFile=maven.graph.json
-  # Collect all maven.graph.json artifacts and pass them onto jobs
-  # in sequential stages.
-  artifacts:
-    paths:
-      - "**/*.jar"
-      - "**/maven.graph.json"
-
-```
-
-#### pip
-
-If your project provides a `requirements.txt` lock file generated by the [pip-compile command line tool](https://pip-tools.readthedocs.io/en/latest/cli/pip-compile/), the Dependency Scanning analyzer can extract the list of components and the dependency graph information, which provides support for the [dependency path](../../dependency_list/_index.md#dependency-paths) feature.
-
-Alternatively, your project can provide a `pipdeptree.json` dependency graph export generated by the [`pipdeptree --json` command line utility](https://pypi.org/project/pipdeptree/).
-
-The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
-component with [dependency path](../../dependency_list/_index.md#dependency-paths)
-support on a pip project. The `build` stage outputs the dependency graph as a job artifact
-before dependency scanning runs.
-
-```yaml
-stages:
-  - build
-  - test
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-build:
-  stage: build
-  image: "python:latest"
-  script:
-    - "pip install -r requirements.txt"
-    - "pip install pipdeptree"
-    - "pipdeptree --json > pipdeptree.json"
-  artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/pipdeptree.json"]
-
-```
-
-#### Pipenv
-
-If your project provides only a `Pipfile.lock` file, the Dependency Scanning analyzer can still extract the list of components. However, [dependency path](../../dependency_list/_index.md#dependency-paths) information is not available.
-
-To benefit from improved feature coverage, you should provide a `pipenv.graph.json` file generated by the [`pipenv graph` command](https://pipenv.pypa.io/en/latest/cli.html#graph).
-
-The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
-component with [dependency path](../../dependency_list/_index.md#dependency-paths)
-support on a Pipenv project. The `build` stage outputs the dependency graph as a job artifact
-before dependency scanning runs.
-
-```yaml
-stages:
-  - build
-  - test
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-build:
-  stage: build
-  image: "python:3.12"
-  script:
-    - "pip install pipenv"
-    - "pipenv install"
-    - "pipenv graph --json-tree > pipenv.graph.json"
-  artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/pipenv.graph.json"]
-
-```
-
-#### sbt
-
-To enable the CI/CD component on an sbt project:
-
-- Edit the `plugins.sbt` to use the
-  [sbt-dependency-graph plugin](https://github.com/sbt/sbt-dependency-graph/blob/master/README.md#usage-instructions).
-
-The following example `.gitlab-ci.yml` demonstrates how to enable the CI/CD
-component with [dependency path](../../dependency_list/_index.md#dependency-paths)
-support in an sbt project. The `build` stage outputs the dependency graph as a job artifact
-before dependency scanning runs.
-
-```yaml
-stages:
-  - build
-  - test
-
-include:
-  - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
-
-build:
-  stage: build
-  image: "sbtscala/scala-sbt:eclipse-temurin-17.0.13_11_1.10.7_3.6.3"
-  script:
-    - "sbt dependencyDot"
-  artifacts:
-    when: on_success
-    access: developer
-    paths: ["**/dependencies-compile.dot"]
-
-```
 
 ## Customizing analyzer behavior
 
@@ -620,6 +604,58 @@ and can be seen in the [vulnerability report](../../vulnerability_report/_index.
 If the SBOM report is declared by a CI/CD job on a non-default branch: security findings are created,
 and can be seen in the [security tab of the pipeline view](../../vulnerability_report/pipeline.md) and MR security widget.
 This functionality is behind a feature flag and tracked in [Epic 14636](https://gitlab.com/groups/gitlab-org/-/epics/14636).
+
+## Offline support
+
+{{< details >}}
+
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
+
+{{< /details >}}
+
+For instances in an environment with limited, restricted, or intermittent access
+to external resources through the internet, you need to make some adjustments to run dependency scanning jobs successfully.
+For more information, see [offline environments](../../offline_deployments/_index.md).
+
+### Requirements
+
+To run dependency scanning in an offline environment you must have:
+
+- A GitLab Runner with the `docker` or `kubernetes` executor.
+- Local copies of the dependency scanning analyzer images.
+- Access to the [Package Metadata Database](../../../../topics/offline/quick_start_guide.md#enabling-the-package-metadata-database). Required to have license and advisory data for your dependencies.
+
+### Local copies of analyzer images
+
+To use the dependency scanning analyzer:
+
+1. Import the following default dependency scanning analyzer images from `registry.gitlab.com` into
+   your [local Docker container registry](../../../packages/container_registry/_index.md):
+
+   ```plaintext
+   registry.gitlab.com/security-products/dependency-scanning:v0
+   ```
+
+   The process for importing Docker images into a local offline Docker registry depends on
+   **your network security policy**. Consult your IT staff to find an accepted and approved
+   process by which external resources can be imported or temporarily accessed.
+   These scanners are [periodically updated](../../detect/vulnerability_scanner_maintenance.md)
+   with new definitions, and you may want to download them regularly. In case your offline instance
+   has access to the GitLab registry you can use the [Security-Binaries template](../../offline_deployments/_index.md#using-the-official-gitlab-template) to download the latest dependency scanning analyzer image.
+
+1. Configure GitLab CI/CD to use the local analyzers.
+
+   Set the value of the CI/CD variable `SECURE_ANALYZERS_PREFIX` to your local Docker registry - in
+   this example, `docker-registry.example.com`.
+
+   ```yaml
+   include:
+     - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+
+   variables:
+     SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
+   ```
 
 ## Troubleshooting
 

@@ -1,6 +1,6 @@
 ---
-stage: Foundations
-group: Import and Integrate
+stage: Plan
+group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
 title: GitLab for Jira Cloud app development
 ---
@@ -125,7 +125,7 @@ If you use Gitpod and you get an error about Jira not being able to access the d
 
 ## Setting up a Jira Connect Proxy
 
-When a self-managed instance [installs the GitLab for Jira app from the Atlassian Marketplace](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace), the self-managed instance must use GitLab.com as a Jira Connect proxy. You can emulate this setup if you need to develop or test features such as the [handling of Jira lifecycle events](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events) and [branch creation](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-branch-creation). 
+When a self-managed instance [installs the GitLab for Jira app from the Atlassian Marketplace](../../administration/settings/jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace), the self-managed instance must use GitLab.com as a Jira Connect proxy. You can emulate this setup if you need to develop or test features such as the [handling of Jira lifecycle events](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-app-lifecycle-events) and [branch creation](../../administration/settings/jira_cloud_app.md#gitlabcom-handling-of-branch-creation).
 
 To set up a development Jira Connect Proxy:
 

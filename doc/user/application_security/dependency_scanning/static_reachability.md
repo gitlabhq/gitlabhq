@@ -35,7 +35,7 @@ Prerequisites:
 - Only Python projects are supported.
 - [Dependency Scanning analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/dependency-scanning)
   version 0.23.0 and later.
-- Enable [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md#configuration).
+- Enable [Dependency Scanning by using SBOM](dependency_scanning_sbom/_index.md#getting-started).
   [Gemnasium](https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium) analyzers are not
   supported.
 

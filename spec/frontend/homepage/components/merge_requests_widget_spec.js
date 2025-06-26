@@ -15,6 +15,7 @@ jest.mock('~/alert');
 describe('MergeRequestsWidget', () => {
   Vue.use(VueApollo);
 
+  const MOCK_DUO_CODE_REVIEW_BOT_USERNAME = 'GitLabDuo';
   const MOCK_REVIEW_REQUESTED_PATH = '/review/requested/path';
   const MOCK_ASSIGNED_TO_YOU_PATH = '/assigned/to/you/path';
   const MOCK_CURRENT_TIME = new Date('2025-06-12T18:13:25Z');
@@ -43,6 +44,7 @@ describe('MergeRequestsWidget', () => {
     ]);
     wrapper = shallowMountExtended(MergeRequestsWidget, {
       apolloProvider: mockApollo,
+      provide: { duoCodeReviewBotUsername: MOCK_DUO_CODE_REVIEW_BOT_USERNAME },
       propsData: {
         reviewRequestedPath: MOCK_REVIEW_REQUESTED_PATH,
         assignedToYouPath: MOCK_ASSIGNED_TO_YOU_PATH,

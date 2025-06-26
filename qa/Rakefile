@@ -92,6 +92,12 @@ task :delete_user_projects, [:dry_run] do |_, args|
   QA::Tools::DeleteUserProjects.new(dry_run: args[:dry_run]).run
 end
 
+desc "Deletes user groups"
+task :delete_user_groups, [:dry_run, :exclude_groups] do |_, args|
+  args.with_defaults(dry_run: false, exclude_groups: nil)
+  QA::Tools::DeleteUserGroups.new(dry_run: args[:dry_run], exclude_groups: args[:exclude_groups]).run
+end
+
 desc "Revokes user's personal access tokens"
 task :revoke_user_pats, [:dry_run] do |_, args|
   args.with_defaults(dry_run: false)

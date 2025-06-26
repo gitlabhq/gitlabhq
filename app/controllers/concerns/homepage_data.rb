@@ -2,13 +2,15 @@
 
 module HomepageData
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   private
 
   def homepage_app_data(user)
     {
       review_requested_path: review_requested_path(user),
-      assigned_to_you_path: assigned_to_you_path(user)
+      assigned_to_you_path: assigned_to_you_path(user),
+      duo_code_review_bot_username: duo_code_review_bot.username
     }
   end
 
@@ -23,4 +25,9 @@ module HomepageData
 
     merge_requests_dashboard_path(assignee_username: user.username)
   end
+
+  def duo_code_review_bot
+    ::Users::Internal.duo_code_review_bot
+  end
+  strong_memoize_attr :duo_code_review_bot
 end

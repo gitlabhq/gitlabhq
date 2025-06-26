@@ -13,6 +13,7 @@ export default {
     GlBadge,
   },
   mixins: [timeagoMixin],
+  inject: ['duoCodeReviewBotUsername'],
   props: {
     reviewRequestedPath: {
       type: String,
@@ -32,6 +33,11 @@ export default {
   apollo: {
     metadata: {
       query: mergeRequestsWidgetMetadataQuery,
+      variables() {
+        return {
+          duoCodeReviewBotUsername: this.duoCodeReviewBotUsername,
+        };
+      },
       update({ currentUser }) {
         return currentUser;
       },

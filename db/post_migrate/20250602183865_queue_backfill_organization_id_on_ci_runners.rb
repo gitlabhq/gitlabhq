@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class QueueBackfillOrganizationIdOnCiRunners < Gitlab::Database::Migration[2.3]
-  milestone '18.1'
+  milestone '18.2'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
 

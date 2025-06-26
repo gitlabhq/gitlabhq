@@ -36,7 +36,7 @@ GitLab does not limit the number of private projects you can create.
 - [Code intelligence](code_intelligence.md)
 - [Import and migrate](import/_index.md)
 - [System notes](system_notes.md)
-- [Transfer a project to another namespace](import/_index.md)
+- [Transfer projects](settings/migrate_projects.md)
 - [Use a project as a Go package](use_project_as_go_package.md)
 - [Tutorial: Build a protected workflow for your project](../../tutorials/protected_workflow/_index.md)
 - [Troubleshooting](troubleshooting.md)

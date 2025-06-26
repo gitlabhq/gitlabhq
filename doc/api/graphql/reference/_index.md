@@ -1175,6 +1175,18 @@ Returns [`Project`](#project).
 | ---- | ---- | ----------- |
 | <a id="queryprojectfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the project. For example, `gitlab-org/gitlab-foss`. |
 
+### `Query.projectComplianceViolation`
+
+Find a project compliance violation.
+
+Returns [`ProjectComplianceViolation`](#projectcomplianceviolation).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryprojectcomplianceviolationid"></a>`id` | [`ComplianceManagementProjectsComplianceViolationID!`](#compliancemanagementprojectscomplianceviolationid) | Global ID of the project compliance violation. |
+
 ### `Query.projectSecret`
 
 View a specific project secret.
@@ -41673,6 +41685,7 @@ Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
 | <a id="valuestreamstagemetricsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Milestone applied to the issue or the merge request. |
 | <a id="valuestreamstagemetricsmyreactionemoji"></a>`myReactionEmoji` | [`String`](#string) | Filter by reaction emoji applied by the current user. |
 | <a id="valuestreamstagemetricsnot"></a>`not` | [`NegatedValueStreamAnalyticsIssuableFilterInput`](#negatedvaluestreamanalyticsissuablefilterinput) | Argument used for adding negated filters. |
+| <a id="valuestreamstagemetricsprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | Filter for projects. Only available for group value streams. |
 | <a id="valuestreamstagemetricstimeframe"></a>`timeframe` | [`Timeframe!`](#timeframe) | Aggregation timeframe. Filters the issue or the merge request creation time for FOSS projects, and the end event timestamp for licensed projects or groups. |
 | <a id="valuestreamstagemetricsweight"></a>`weight` | [`Int`](#int) | Weight applied to the issue. Using the filter is not supported for stages based on merge requests. |
 
@@ -48073,6 +48086,12 @@ An example `ComplianceManagementComplianceFrameworkComplianceRequirementsControl
 A `ComplianceManagementFrameworkID` is a global ID. It is encoded as a string.
 
 An example `ComplianceManagementFrameworkID` is: `"gid://gitlab/ComplianceManagement::Framework/1"`.
+
+### `ComplianceManagementProjectsComplianceViolationID`
+
+A `ComplianceManagementProjectsComplianceViolationID` is a global ID. It is encoded as a string.
+
+An example `ComplianceManagementProjectsComplianceViolationID` is: `"gid://gitlab/ComplianceManagement::Projects::ComplianceViolation/1"`.
 
 ### `ContainerRegistryProtectionRuleID`
 

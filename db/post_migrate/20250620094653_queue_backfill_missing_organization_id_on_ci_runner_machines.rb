@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class QueueBackfillOrganizationIdOnCiRunnerMachines < Gitlab::Database::Migration[2.3]
+class QueueBackfillMissingOrganizationIdOnCiRunnerMachines < Gitlab::Database::Migration[2.3]
   milestone '18.2'
 
   restrict_gitlab_migration gitlab_schema: :gitlab_ci
 
-  MIGRATION = "BackfillOrganizationIdOnCiRunnerMachines"
+  MIGRATION = "BackfillMissingOrganizationIdOnCiRunnerMachines"
   DELAY_INTERVAL = 2.minutes
   BATCH_SIZE = 1000
   SUB_BATCH_SIZE = 100

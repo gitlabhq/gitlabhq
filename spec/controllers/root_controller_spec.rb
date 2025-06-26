@@ -183,6 +183,8 @@ RSpec.describe RootController, feature_category: :shared do
       end
 
       context 'who has customized their dashboard setting for personal homepage' do
+        let_it_be(:duo_code_review_bot) { create(:user, :duo_code_review_bot) }
+
         before do
           user.dashboard = 'homepage'
         end
@@ -208,7 +210,8 @@ RSpec.describe RootController, feature_category: :shared do
 
               expect(assigns[:homepage_app_data]).to eq({
                 review_requested_path: "/dashboard/merge_requests",
-                assigned_to_you_path: "/dashboard/merge_requests"
+                assigned_to_you_path: "/dashboard/merge_requests",
+                duo_code_review_bot_username: duo_code_review_bot.username
               })
             end
           end
@@ -223,7 +226,8 @@ RSpec.describe RootController, feature_category: :shared do
 
               expect(assigns[:homepage_app_data]).to eq({
                 review_requested_path: "/dashboard/merge_requests?reviewer_username=#{user.username}",
-                assigned_to_you_path: "/dashboard/merge_requests?assignee_username=#{user.username}"
+                assigned_to_you_path: "/dashboard/merge_requests?assignee_username=#{user.username}",
+                duo_code_review_bot_username: duo_code_review_bot.username
               })
             end
           end

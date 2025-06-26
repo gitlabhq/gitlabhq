@@ -12,10 +12,13 @@ export default () => {
     return false;
   }
 
-  const { reviewRequestedPath, assignedToYouPath } = el.dataset;
+  const { reviewRequestedPath, assignedToYouPath, duoCodeReviewBotUsername } = el.dataset;
 
   return new Vue({
     el,
+    provide: {
+      duoCodeReviewBotUsername,
+    },
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(),
     }),

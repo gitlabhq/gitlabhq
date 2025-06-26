@@ -356,7 +356,8 @@ positives.
 | `CS_TRIVY_JAVA_DB`                       | `"registry.gitlab.com/gitlab-org/security-products/dependencies/trivy-java-db"` | Specify an alternate location for the [trivy-java-db](https://github.com/aquasecurity/trivy-java-db) vulnerability database.                                                                                                                                                                                                                                                                  |
 | `CS_TRIVY_DETECTION_PRIORITY`            | `"precise"`                                                                     | Scan using the defined Trivy [detection priority](https://trivy.dev/latest/docs/scanner/vulnerability/#detection-priority). The following values are allowed: `precise` or `comprehensive`.                                                                                                                                                                                                   |
 | `SECURE_LOG_LEVEL`                       | `info`                                                                          | Set the minimum logging level. Messages of this logging level or higher are output. From highest to lowest severity, the logging levels are: `fatal`, `error`, `warn`, `info`, `debug`.                                                                                                                                                                                                       |
-| `TRIVY_TIMEOUT`                          | `5m0s`                                                                          | Set the timeout for the scan.                                                                                                                                                                                                                                                                                                                                                                 |
+| `TRIVY_TIMEOUT`                          | `5m0s`                                                                          | Set the timeout for the scan.                                                                                                                                                                                                                                                                                                                                                               |
+| `TRIVY_PLATFORM`                         | `linux/amd64`                                                                   | Set platform in the format `os/arch` if image is multi-platform capable.                                                                                                                     |
 
 **Footnotes**:
 
@@ -442,6 +443,20 @@ container_scanning:
 ```
 
 The `ADDITIONAL_CA_CERT_BUNDLE` value can also be configured as a [custom variable in the UI](../../../ci/variables/_index.md#for-a-project), either as a `file`, which requires the path to the certificate, or as a variable, which requires the text representation of the certificate.
+
+### Scanning a multi-arch image
+
+You can use the `TRIVY_PLATFORM` CI/CD variable to configure the container scan to run against a specific
+operating system and architecture. For example, to configure this value in the `.gitlab-ci.yml` file, use
+the following:
+
+```yaml
+container_scanning:
+  # Use an arm64 SaaS runner to scan this natively
+  tags: ["saas-linux-small-arm64"]
+  variables:
+    TRIVY_PLATFORM: "linux/arm64"
+```
 
 ### Vulnerability allowlisting
 

@@ -65,7 +65,7 @@ export default {
     }, badgePreviewDelayInMilliseconds);
   },
   methods: {
-    ...mapActions(['addBadge', 'renderBadge', 'saveBadge', 'stopEditing', 'updateBadgeInForm']),
+    ...mapActions(['addBadge', 'renderBadge', 'saveBadge', 'updateBadgeInForm']),
     onFormFieldsInput(fieldValues) {
       const badge = this.badge || createEmptyBadge();
       this.updateBadgeInForm({

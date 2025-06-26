@@ -7,8 +7,6 @@ export default {
     'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
     'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
     'app/assets/javascripts/admin/statistics_panel/components/app.vue',
-    'app/assets/javascripts/badges/components/badge.vue',
-    'app/assets/javascripts/badges/components/badge_form.vue',
     'app/assets/javascripts/batch_comments/components/draft_note.vue',
     'app/assets/javascripts/batch_comments/components/preview_item.vue',
     'app/assets/javascripts/behaviors/components/json_table.vue',
