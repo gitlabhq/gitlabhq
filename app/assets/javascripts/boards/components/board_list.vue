@@ -685,7 +685,10 @@ export default {
         });
       } finally {
         this.addItemToListInProgress = false;
-        this.setActiveWorkItem(issuable);
+        // Only open the drawer if issue creation was successful (default iid of '-1' indicates failure)
+        if (issuable && issuable?.iid !== '-1') {
+          this.setActiveWorkItem(issuable);
+        }
       }
     },
     setActiveWorkItem(boardItem) {

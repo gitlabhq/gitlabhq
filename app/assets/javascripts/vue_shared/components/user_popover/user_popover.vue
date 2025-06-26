@@ -208,7 +208,6 @@ export default {
     :delay="$options.USER_POPOVER_DELAY"
     :placement="placement"
     :container="container"
-    boundary="viewport"
     triggers="hover focus manual"
     data-testid="user-popover"
   >

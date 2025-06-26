@@ -73,30 +73,25 @@ export const PODS_TABLE_FIELDS = [
   {
     key: 'name',
     label: s__('KubernetesDashboard|Name'),
-    tdClass: 'md:gl-w-1/4 gl-break-anywhere',
+    tdClass: 'lg:gl-w-1/4 gl-break-anywhere',
   },
   {
     key: 'status',
     label: s__('KubernetesDashboard|Status'),
-    tdClass: 'md:gl-w-1/6',
+    tdClass: 'lg:gl-w-1/6',
   },
   {
     key: 'namespace',
     label: s__('KubernetesDashboard|Namespace'),
-    tdClass: 'md:gl-w-1/4 gl-break-anywhere',
+    tdClass: 'lg:gl-w-1/4 gl-break-anywhere',
   },
   {
     key: 'age',
     label: s__('KubernetesDashboard|Age'),
   },
   {
-    key: 'logs',
-    label: s__('KubernetesDashboard|Logs'),
-    sortable: false,
-  },
-  {
     key: 'actions',
-    label: '',
+    label: s__('KubernetesDashboard|Actions'),
     sortable: false,
   },
 ];

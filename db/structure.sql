@@ -441,11 +441,29 @@ BEGIN
 END;
 $$;
 
+CREATE FUNCTION function_for_trigger_03be0f8add7e() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."all_unarchived_project_ids" := NEW."all_active_project_ids";
+  RETURN NEW;
+END
+$$;
+
 CREATE FUNCTION function_for_trigger_1baf8c8e1f66() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
 BEGIN
   NEW."pre_receive_secret_detection_enabled" := NEW."secret_push_protection_available";
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_7d6a4f5b82c2() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  NEW."all_active_project_ids" := NEW."all_unarchived_project_ids";
   RETURN NEW;
 END
 $$;
@@ -503,6 +521,22 @@ BEGIN
 
   IF NEW."secret_push_protection_enabled" IS NOT DISTINCT FROM 'false' AND NEW."pre_receive_secret_detection_enabled" IS DISTINCT FROM 'false' THEN
     NEW."secret_push_protection_enabled" = NEW."pre_receive_secret_detection_enabled";
+  END IF;
+
+  RETURN NEW;
+END
+$$;
+
+CREATE FUNCTION function_for_trigger_de99bb993511() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+  IF NEW."all_active_project_ids" IS NOT DISTINCT FROM '{}' AND NEW."all_unarchived_project_ids" IS DISTINCT FROM '{}' THEN
+    NEW."all_active_project_ids" = NEW."all_unarchived_project_ids";
+  END IF;
+
+  IF NEW."all_unarchived_project_ids" IS NOT DISTINCT FROM '{}' AND NEW."all_active_project_ids" IS DISTINCT FROM '{}' THEN
+    NEW."all_unarchived_project_ids" = NEW."all_active_project_ids";
   END IF;
 
   RETURN NEW;
@@ -6799,7 +6833,9 @@ CREATE TABLE namespace_descendants (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 )
 PARTITION BY HASH (namespace_id);
 
@@ -6810,7 +6846,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_00 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_01 (
@@ -6820,7 +6858,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_01 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_02 (
@@ -6830,7 +6870,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_02 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_03 (
@@ -6840,7 +6882,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_03 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_04 (
@@ -6850,7 +6894,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_04 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_05 (
@@ -6860,7 +6906,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_05 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_06 (
@@ -6870,7 +6918,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_06 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_07 (
@@ -6880,7 +6930,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_07 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_08 (
@@ -6890,7 +6942,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_08 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_09 (
@@ -6900,7 +6954,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_09 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_10 (
@@ -6910,7 +6966,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_10 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_11 (
@@ -6920,7 +6978,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_11 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_12 (
@@ -6930,7 +6990,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_12 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_13 (
@@ -6940,7 +7002,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_13 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_14 (
@@ -6950,7 +7014,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_14 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_15 (
@@ -6960,7 +7026,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_15 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_16 (
@@ -6970,7 +7038,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_16 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_17 (
@@ -6980,7 +7050,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_17 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_18 (
@@ -6990,7 +7062,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_18 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_19 (
@@ -7000,7 +7074,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_19 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_20 (
@@ -7010,7 +7086,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_20 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_21 (
@@ -7020,7 +7098,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_21 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_22 (
@@ -7030,7 +7110,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_22 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_23 (
@@ -7040,7 +7122,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_23 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_24 (
@@ -7050,7 +7134,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_24 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_25 (
@@ -7060,7 +7146,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_25 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_26 (
@@ -7070,7 +7158,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_26 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_27 (
@@ -7080,7 +7170,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_27 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_28 (
@@ -7090,7 +7182,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_28 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_29 (
@@ -7100,7 +7194,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_29 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_30 (
@@ -7110,7 +7206,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_30 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
@@ -7120,7 +7218,9 @@ CREATE TABLE gitlab_partitions_static.namespace_descendants_31 (
     traversal_ids bigint[] DEFAULT ARRAY[]::bigint[] NOT NULL,
     outdated_at timestamp with time zone,
     calculated_at timestamp with time zone,
-    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL
+    all_active_project_ids bigint[] DEFAULT '{}'::bigint[] NOT NULL,
+    all_unarchived_project_ids bigint[] DEFAULT '{}'::bigint[],
+    CONSTRAINT check_60ae9ef706 CHECK ((all_unarchived_project_ids IS NOT NULL))
 );
 
 CREATE TABLE virtual_registries_packages_maven_cache_entries (
@@ -8116,6 +8216,28 @@ CREATE SEQUENCE ai_agents_id_seq
     CACHE 1;
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
+
+CREATE TABLE ai_catalog_items (
+    id bigint NOT NULL,
+    organization_id bigint NOT NULL,
+    project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    item_type smallint NOT NULL,
+    description text NOT NULL,
+    name text NOT NULL,
+    CONSTRAINT check_7e02a4805b CHECK ((char_length(description) <= 1024)),
+    CONSTRAINT check_edddd6e1fe CHECK ((char_length(name) <= 255))
+);
+
+CREATE SEQUENCE ai_catalog_items_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_items_id_seq OWNED BY ai_catalog_items.id;
 
 CREATE SEQUENCE ai_code_suggestion_events_id_seq
     START WITH 1
@@ -27188,6 +27310,8 @@ ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_code_suggestion_events ALTER COLUMN id SET DEFAULT nextval('ai_code_suggestion_events_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_conversation_messages ALTER COLUMN id SET DEFAULT nextval('ai_conversation_messages_id_seq'::regclass);
@@ -29223,6 +29347,9 @@ ALTER TABLE ONLY ai_agent_versions
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_items
+    ADD CONSTRAINT ai_catalog_items_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_code_suggestion_events
     ADD CONSTRAINT ai_code_suggestion_events_pkey PRIMARY KEY (id, "timestamp");
@@ -34232,6 +34359,12 @@ CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btre
 CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
+
+CREATE INDEX index_ai_catalog_items_on_item_type ON ai_catalog_items USING btree (item_type);
+
+CREATE INDEX index_ai_catalog_items_on_organization_id ON ai_catalog_items USING btree (organization_id);
+
+CREATE INDEX index_ai_catalog_items_on_project_id ON ai_catalog_items USING btree (project_id);
 
 CREATE INDEX index_ai_code_suggestion_events_on_organization_id ON ONLY ai_code_suggestion_events USING btree (organization_id);
 
@@ -41667,6 +41800,8 @@ CREATE TRIGGER trigger_02450faab875 BEFORE INSERT OR UPDATE ON vulnerability_occ
 
 CREATE TRIGGER trigger_038fe84feff7 BEFORE INSERT OR UPDATE ON approvals FOR EACH ROW EXECUTE FUNCTION trigger_038fe84feff7();
 
+CREATE TRIGGER trigger_03be0f8add7e BEFORE UPDATE OF all_active_project_ids ON namespace_descendants FOR EACH ROW EXECUTE FUNCTION function_for_trigger_03be0f8add7e();
+
 CREATE TRIGGER trigger_05cc4448a8aa BEFORE INSERT OR UPDATE ON protected_branch_merge_access_levels FOR EACH ROW EXECUTE FUNCTION trigger_05cc4448a8aa();
 
 CREATE TRIGGER trigger_05ce163deddf BEFORE INSERT OR UPDATE ON status_check_responses FOR EACH ROW EXECUTE FUNCTION trigger_05ce163deddf();
@@ -41871,6 +42006,8 @@ CREATE TRIGGER trigger_7b21c87a1f91 BEFORE INSERT OR UPDATE ON bulk_import_failu
 
 CREATE TRIGGER trigger_7b378a0c402b BEFORE INSERT OR UPDATE ON issue_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_7b378a0c402b();
 
+CREATE TRIGGER trigger_7d6a4f5b82c2 BEFORE UPDATE OF all_unarchived_project_ids ON namespace_descendants FOR EACH ROW EXECUTE FUNCTION function_for_trigger_7d6a4f5b82c2();
+
 CREATE TRIGGER trigger_7de792ddbc05 BEFORE INSERT OR UPDATE ON dast_site_validations FOR EACH ROW EXECUTE FUNCTION trigger_7de792ddbc05();
 
 CREATE TRIGGER trigger_7e2eed79e46e BEFORE INSERT OR UPDATE ON abuse_reports FOR EACH ROW EXECUTE FUNCTION trigger_7e2eed79e46e();
@@ -42031,6 +42168,8 @@ CREATE TRIGGER trigger_dc13168b8025 BEFORE INSERT OR UPDATE ON vulnerability_fla
 
 CREATE TRIGGER trigger_de59b81d3044 BEFORE INSERT OR UPDATE ON bulk_import_export_batches FOR EACH ROW EXECUTE FUNCTION trigger_de59b81d3044();
 
+CREATE TRIGGER trigger_de99bb993511 BEFORE INSERT ON namespace_descendants FOR EACH ROW EXECUTE FUNCTION function_for_trigger_de99bb993511();
+
 CREATE TRIGGER trigger_delete_project_namespace_on_project_delete AFTER DELETE ON projects FOR EACH ROW WHEN ((old.project_namespace_id IS NOT NULL)) EXECUTE FUNCTION delete_associated_project_namespace();
 
 CREATE TRIGGER trigger_dfad97659d5f BEFORE INSERT OR UPDATE ON issuable_severities FOR EACH ROW EXECUTE FUNCTION trigger_dfad97659d5f();
@@ -42163,6 +42302,9 @@ ALTER TABLE ONLY namespace_deletion_schedules
 
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_01a033a308 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ai_catalog_items
+    ADD CONSTRAINT fk_01a07cc378 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_0250c0ad51 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
@@ -42346,6 +42488,9 @@ ALTER TABLE ONLY cluster_agent_migrations
 
 ALTER TABLE ONLY namespace_cluster_agent_mappings
     ADD CONSTRAINT fk_124d8167c5 FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ai_catalog_items
+    ADD CONSTRAINT fk_128a8d1e59 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY cluster_agent_url_configurations
     ADD CONSTRAINT fk_12d4a33b65 FOREIGN KEY (created_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

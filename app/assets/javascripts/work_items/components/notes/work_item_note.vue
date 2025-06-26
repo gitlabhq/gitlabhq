@@ -1,5 +1,5 @@
 <script>
-import { isEmpty } from 'lodash';
+import { uniqueId, isEmpty } from 'lodash';
 import { GlAvatarLink, GlAvatar } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import toast from '~/vue_shared/plugins/global_toast';
@@ -129,6 +129,7 @@ export default {
   },
   data() {
     return {
+      userPopoverId: uniqueId('user-popover-'),
       isEditing: false,
       isUpdating: false,
       workItem: {},
@@ -368,19 +369,21 @@ export default {
 <template>
   <timeline-entry-item :id="noteAnchorId" :class="entryClass">
     <div :key="note.id" class="timeline-avatar gl-float-left">
-      <gl-avatar-link
-        :href="author.webUrl"
-        :data-user-id="authorId"
-        :data-username="author.username"
-        class="js-user-link"
-      >
-        <gl-avatar
-          :src="author.avatarUrl"
-          :entity-name="author.username"
-          :alt="author.name"
-          :size="32"
-        />
-      </gl-avatar-link>
+      <span :id="userPopoverId" class="gl-relative">
+        <gl-avatar-link
+          :href="author.webUrl"
+          :data-user-id="authorId"
+          :data-username="author.username"
+          class="js-user-link"
+        >
+          <gl-avatar
+            :src="author.avatarUrl"
+            :entity-name="author.username"
+            :alt="author.name"
+            :size="32"
+          />
+        </gl-avatar-link>
+      </span>
     </div>
     <div class="timeline-content">
       <div data-testid="note-wrapper">

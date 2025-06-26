@@ -8,12 +8,19 @@ export const initUploadFileTrigger = () => {
 
   if (!uploadFileTriggerEl) return false;
 
-  const { targetBranch, originalBranch, canPushCode, canPushToBranch, path, projectPath } =
-    uploadFileTriggerEl.dataset;
+  const {
+    targetBranch,
+    originalBranch,
+    canPushCode,
+    canPushToBranch,
+    path,
+    projectPath,
+    fullName,
+  } = uploadFileTriggerEl.dataset;
 
   return new Vue({
     el: uploadFileTriggerEl,
-    router: createRouter(projectPath, originalBranch),
+    router: createRouter(projectPath, originalBranch, fullName),
     provide: {
       targetBranch,
       originalBranch,

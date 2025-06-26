@@ -10,7 +10,9 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   ADMIN_GROUPS_TABS,
+  FIRST_TAB_ROUTE_NAMES,
 } from '~/admin/groups/index/constants';
+import adminGroupCountsQuery from '~/admin/groups/index/graphql/queries/group_counts.query.graphql';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
@@ -43,6 +45,9 @@ describe('AdminGroupsApp', () => {
       initialSort: '',
       shouldUpdateActiveTabCountFromTabQuery: true,
       paginationType: PAGINATION_TYPE_KEYSET,
+      tabCountsQuery: adminGroupCountsQuery,
+      tabCountsQueryErrorMessage: 'An error occurred loading the group counts.',
+      firstTabRouteNames: FIRST_TAB_ROUTE_NAMES,
     });
   });
 });

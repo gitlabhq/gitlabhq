@@ -246,14 +246,6 @@ export default {
       return this.filter.length > 0 && !this.hasGroups;
     },
 
-    statusMessage() {
-      return this.filter.length === 0
-        ? s__('BulkImport|Showing %{start}-%{end} of %{total} that you own from %{link}')
-        : s__(
-            'BulkImport|Showing %{start}-%{end} of %{total} that you own matching filter "%{filter}" from %{link}',
-          );
-    },
-
     paginationInfo() {
       const { page, perPage, total } = this.bulkImportSourceGroups?.pageInfo ?? {
         page: 1,
@@ -679,18 +671,21 @@ export default {
         </gl-button>
       </template>
       <template #description>
-        {{ s__('BulkImport|Select the groups and projects you want to import.') }}
         <gl-sprintf
           :message="
-            s__('BulkImport|Importing projects is a %{docsLinkStart}beta%{docsLinkEnd} feature.')
+            s__(
+              'BulkImport|Only groups that you have the %{role} role for from %{source} are listed for import.',
+            )
           "
         >
-          <template #docsLink="{ content }"
-            ><gl-link :href="$options.betaFeatureHelpPath" target="_blank">{{
-              content
-            }}</gl-link></template
-          >
+          <template #role>
+            <gl-link :href="$options.permissionsHelpPath" target="_blank">{{
+              $options.i18n.OWNER
+            }}</gl-link>
+          </template>
+          <template #source>{{ sourceUrl }}</template>
         </gl-sprintf>
+        {{ s__('BulkImport|Select the groups you want to import.') }}
       </template>
     </page-heading>
 
@@ -745,41 +740,9 @@ export default {
         </template>
       </gl-sprintf>
     </gl-alert>
-    <div class="gl-border-0 gl-border-b-1 gl-border-solid gl-border-b-default gl-py-5">
-      <span v-if="!$apollo.loading && hasGroups">
-        <gl-sprintf :message="statusMessage">
-          <template #start>
-            <strong>{{ paginationInfo.start }}</strong>
-          </template>
-          <template #end>
-            <strong>{{ paginationInfo.end }}</strong>
-          </template>
-          <template #total>
-            <strong>{{ groupsCount(paginationInfo.total) }}</strong>
-          </template>
-          <template #filter>
-            <strong>{{ filter }}</strong>
-          </template>
-          <template #link>
-            {{ sourceUrl }}
-          </template>
-        </gl-sprintf>
-        <help-popover :options="$options.popoverOptions">
-          <gl-sprintf
-            :message="
-              s__('BulkImport|Only groups you have the %{role} role for are listed for import.')
-            "
-          >
-            <template #role>
-              <gl-link class="gl-text-sm" :href="$options.permissionsHelpPath" target="_blank">{{
-                $options.i18n.OWNER
-              }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </help-popover>
-      </span>
-    </div>
-    <div class="gl-flex gl-flex-col gl-gap-3 gl-bg-subtle gl-p-5 gl-pb-4">
+    <div
+      class="gl-flex gl-flex-col gl-gap-3 gl-border-t-1 gl-border-t-default gl-bg-subtle gl-p-5 gl-pb-4 gl-border-t-solid"
+    >
       <gl-search-box-by-click
         data-testid="filter-groups"
         :placeholder="s__('BulkImport|Filter by source group')"

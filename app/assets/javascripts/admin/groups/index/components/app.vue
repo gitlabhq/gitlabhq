@@ -6,6 +6,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import adminGroupCountsQuery from '../graphql/queries/group_counts.query.graphql';
 import {
   ADMIN_GROUPS_TABS,
   SORT_OPTIONS,
@@ -13,6 +14,7 @@ import {
   SORT_OPTION_CREATED,
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
+  FIRST_TAB_ROUTE_NAMES,
 } from '../constants';
 
 export default {
@@ -22,11 +24,13 @@ export default {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
   RECENT_SEARCHES_STORAGE_KEY_GROUPS,
+  FIRST_TAB_ROUTE_NAMES,
   timestampTypeMap: {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,
     [SORT_OPTION_UPDATED.value]: TIMESTAMP_TYPE_UPDATED_AT,
   },
   PAGINATION_TYPE_KEYSET,
+  tabCountsQuery: adminGroupCountsQuery,
   name: 'AdminGroupsApp',
   components: { TabsWithList },
 };
@@ -44,5 +48,8 @@ export default {
     :timestamp-type-map="$options.timestampTypeMap"
     initial-sort=""
     :pagination-type="$options.PAGINATION_TYPE_KEYSET"
+    :tab-counts-query="$options.tabCountsQuery"
+    :tab-counts-query-error-message="__('An error occurred loading the group counts.')"
+    :first-tab-route-names="$options.FIRST_TAB_ROUTE_NAMES"
   />
 </template>

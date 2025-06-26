@@ -33,6 +33,7 @@ export const ACTIVE_TAB = {
   text: __('Active'),
   value: 'active',
   variables: { active: true },
+  countsQueryPath: 'active',
 };
 
 export const INACTIVE_TAB = {
@@ -40,6 +41,7 @@ export const INACTIVE_TAB = {
   text: __('Inactive'),
   value: 'inactive',
   variables: { active: false },
+  countsQueryPath: 'inactive',
 };
 
 export const SORT_OPTION_NAME = {
@@ -74,6 +76,8 @@ export const ADMIN_GROUPS_TABS = [ACTIVE_TAB, INACTIVE_TAB];
 export const BASE_ROUTE = '/admin/groups';
 
 export const ADMIN_GROUPS_ROUTE_NAME = 'admin-groups';
+
+export const FIRST_TAB_ROUTE_NAMES = [ADMIN_GROUPS_ROUTE_NAME];
 
 export const FILTERED_SEARCH_TERM_KEY = 'search';
 export const FILTERED_SEARCH_NAMESPACE = 'admin-groups';

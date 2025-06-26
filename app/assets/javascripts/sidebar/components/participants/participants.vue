@@ -1,5 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
+import { uniqueId } from 'lodash';
 import { GlButton, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { __, n__, sprintf } from '~/locale';
@@ -85,6 +86,9 @@ export default {
     getParticipantId(participantId) {
       return getIdFromGraphQLId(participantId);
     },
+    userPopoverId() {
+      return uniqueId('user-popover-');
+    },
   },
 };
 </script>
@@ -99,23 +103,24 @@ export default {
       <gl-loading-icon v-if="loading" inline />
     </div>
     <div class="gl-flex gl-flex-wrap gl-gap-3">
-      <a
-        v-for="participant in visibleParticipants"
-        :key="participant.id"
-        :href="participant.web_url || participant.webUrl"
-        :data-user-id="getParticipantId(participant.id)"
-        :data-username="participant.username"
-        class="author-link js-user-link gl-inline-block gl-rounded-full"
-      >
-        <user-avatar-image
-          :lazy="lazy"
-          :img-src="participant.avatar_url || participant.avatarUrl"
-          :size="24"
-          :img-alt="participant.name"
-          css-classes="!gl-mr-0"
-          tooltip-placement="bottom"
-        />
-      </a>
+      <span v-for="participant in visibleParticipants" :id="userPopoverId()" :key="participant.id">
+        <a
+          :key="participant.id"
+          :href="participant.web_url || participant.webUrl"
+          :data-user-id="getParticipantId(participant.id)"
+          :data-username="participant.username"
+          class="author-link js-user-link gl-inline-block gl-rounded-full"
+        >
+          <user-avatar-image
+            :lazy="lazy"
+            :img-src="participant.avatar_url || participant.avatarUrl"
+            :size="24"
+            :img-alt="participant.name"
+            css-classes="!gl-mr-0"
+            tooltip-placement="bottom"
+          />
+        </a>
+      </span>
     </div>
     <gl-button
       v-if="hasMoreParticipants"

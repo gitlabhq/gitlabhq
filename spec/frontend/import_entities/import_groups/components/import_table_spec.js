@@ -565,24 +565,6 @@ describe('import table', () => {
         expect.anything(),
       );
     });
-
-    it('updates status text when page is changed', async () => {
-      const REQUESTED_PAGE = 2;
-      bulkImportSourceGroupsQueryMock.mockResolvedValue({
-        nodes: [FAKE_GROUP],
-        pageInfo: {
-          page: 2,
-          total: 38,
-          perPage: 20,
-          totalPages: 2,
-        },
-        versionValidation: FAKE_VERSION_VALIDATION,
-      });
-      wrapper.findComponent(PaginationLinks).props().change(REQUESTED_PAGE);
-      await waitForPromises();
-
-      expect(wrapper.text()).toContain('Showing 21-21 of 38 groups that you own from');
-    });
   });
 
   describe('filters', () => {
@@ -620,21 +602,6 @@ describe('import table', () => {
         expect.objectContaining({ filter: FILTER_VALUE }),
         expect.anything(),
         expect.anything(),
-      );
-    });
-
-    it('updates status string when search box is submitted', async () => {
-      createComponent({
-        bulkImportSourceGroups: bulkImportSourceGroupsQueryMock,
-      });
-      await waitForPromises();
-
-      const FILTER_VALUE = 'foo';
-      await setFilter(FILTER_VALUE);
-      await waitForPromises();
-
-      expect(wrapper.text()).toContain(
-        'Showing 1-1 of 40 groups that you own matching filter "foo" from',
       );
     });
 

@@ -7,12 +7,8 @@
     = sprite_icon('chevron-lg-right', size: 12)
   = gl_tabs_nav({ class: %w[scrolling-tabs js-milestone-tabs] }) do
     = gl_tab_link_to '#tab-issues', item_active: true, data: { endpoint: milestone_tab_path(milestone, 'issues', show_project_name: show_project_name) } do
-      - if @group&.work_item_epic_milestones_feature_flag_enabled?
-        = _('Work items')
-        = gl_tab_counter_badge milestone.sorted_issues(current_user).length
-      - else
-        = _('Issues')
-        = gl_tab_counter_badge milestone.issues_visible_to_user(current_user).size
+      = _('Work items')
+      = gl_tab_counter_badge milestone.sorted_issues(current_user).length
     - if milestone.merge_requests_enabled?
       = gl_tab_link_to '#tab-merge-requests', data: { endpoint: milestone_tab_path(milestone, 'merge_requests', show_project_name: show_project_name) } do
         = _('Merge requests')

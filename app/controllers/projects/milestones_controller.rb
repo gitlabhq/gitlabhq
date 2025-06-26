@@ -19,10 +19,6 @@ class Projects::MilestonesController < Projects::ApplicationController
   # Allow to promote milestone
   before_action :authorize_promote_milestone!, only: :promote
 
-  before_action do
-    push_force_frontend_feature_flag(:work_item_epic_milestones, !!@project&.work_item_epic_milestones_feature_flag_enabled?)
-  end
-
   respond_to :html
 
   feature_category :team_planning

@@ -1101,10 +1101,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def work_item_epic_milestones_feature_flag_enabled?
-    ::Feature.enabled?(:work_item_epic_milestones, root_ancestor, type: :beta)
-  end
-
   def work_item_status_feature_available?
     feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :wip) &&
       licensed_feature_available?(:work_item_status)

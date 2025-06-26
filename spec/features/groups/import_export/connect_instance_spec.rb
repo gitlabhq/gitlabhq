@@ -29,7 +29,6 @@ RSpec.describe 'Import/Export - Connect to another instance', :js, feature_categ
 
         click_on 'Connect instance'
 
-        expect(page).to have_content 'Showing 1-1 of 42 groups that you own from %{url}' % { url: source_url }
         expect(page).to have_content 'stub-group'
 
         visit '/'

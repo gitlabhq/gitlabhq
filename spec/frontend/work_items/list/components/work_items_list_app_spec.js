@@ -320,63 +320,29 @@ describeSkipVue3(skipReason, () => {
     });
 
     describe('when epics list', () => {
-      describe('when workItemEpicMilestones is disabled', () => {
-        it('does not render "Priority", "Milestone due date", "Label priority", and "Weight" sort options', async () => {
-          mountComponent({
-            provide: {
-              glFeatures: {
-                workItemEpicMilestones: false,
-              },
-              hasBlockedIssuesFeature: true,
-              hasIssuableHealthStatusFeature: true,
-              hasIssueWeightsFeature: true,
-              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-            },
-          });
-          await waitForPromises();
-
-          expect(findIssuableList().props('sortOptions')).toEqual([
-            expect.objectContaining({ title: 'Created date' }),
-            expect.objectContaining({ title: 'Updated date' }),
-            expect.objectContaining({ title: 'Closed date' }),
-            expect.objectContaining({ title: 'Due date' }),
-            expect.objectContaining({ title: 'Popularity' }),
-            expect.objectContaining({ title: 'Title' }),
-            expect.objectContaining({ title: 'Start date' }),
-            expect.objectContaining({ title: 'Health' }),
-            expect.objectContaining({ title: 'Blocking' }),
-          ]);
+      it('does not render "Priority", "Label priority", and "Weight" sort options', async () => {
+        mountComponent({
+          provide: {
+            hasBlockedIssuesFeature: true,
+            hasIssuableHealthStatusFeature: true,
+            hasIssueWeightsFeature: true,
+            workItemType: WORK_ITEM_TYPE_NAME_EPIC,
+          },
         });
-      });
+        await waitForPromises();
 
-      describe('when workItemEpicMilestones is enabled', () => {
-        it('does not render "Priority", "Label priority", and "Weight" sort options', async () => {
-          mountComponent({
-            provide: {
-              glFeatures: {
-                workItemEpicMilestones: true,
-              },
-              hasBlockedIssuesFeature: true,
-              hasIssuableHealthStatusFeature: true,
-              hasIssueWeightsFeature: true,
-              workItemType: WORK_ITEM_TYPE_NAME_EPIC,
-            },
-          });
-          await waitForPromises();
-
-          expect(findIssuableList().props('sortOptions')).toEqual([
-            expect.objectContaining({ title: 'Created date' }),
-            expect.objectContaining({ title: 'Updated date' }),
-            expect.objectContaining({ title: 'Closed date' }),
-            expect.objectContaining({ title: 'Milestone due date' }),
-            expect.objectContaining({ title: 'Due date' }),
-            expect.objectContaining({ title: 'Popularity' }),
-            expect.objectContaining({ title: 'Title' }),
-            expect.objectContaining({ title: 'Start date' }),
-            expect.objectContaining({ title: 'Health' }),
-            expect.objectContaining({ title: 'Blocking' }),
-          ]);
-        });
+        expect(findIssuableList().props('sortOptions')).toEqual([
+          expect.objectContaining({ title: 'Created date' }),
+          expect.objectContaining({ title: 'Updated date' }),
+          expect.objectContaining({ title: 'Closed date' }),
+          expect.objectContaining({ title: 'Milestone due date' }),
+          expect.objectContaining({ title: 'Due date' }),
+          expect.objectContaining({ title: 'Popularity' }),
+          expect.objectContaining({ title: 'Title' }),
+          expect.objectContaining({ title: 'Start date' }),
+          expect.objectContaining({ title: 'Health' }),
+          expect.objectContaining({ title: 'Blocking' }),
+        ]);
       });
     });
   });

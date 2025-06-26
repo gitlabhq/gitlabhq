@@ -1,4 +1,5 @@
 import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
+import { GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import mockDeploymentFixture from 'test_fixtures/graphql/deployments/graphql/queries/deployment.query.graphql.json';
 import mockEnvironmentFixture from 'test_fixtures/graphql/deployments/graphql/queries/environment.query.graphql.json';
@@ -64,7 +65,7 @@ describe('~/deployments/components/deployment_aside.vue', () => {
     });
 
     it('shows a link to the triggerer', () => {
-      const link = wrapper.findByTestId('deployment-triggerer');
+      const link = wrapper.findByTestId('deployment-triggerer').findComponent(GlLink);
 
       expect(link.attributes('href')).toBe(deployment.triggerer.webUrl);
       expect(link.text()).toContain(deployment.triggerer.name);

@@ -1,0 +1,12 @@
+---
+table_name: ai_catalog_items
+classes:
+  - Ai::Catalog::Item
+feature_categories:
+  - workflow_catalog
+description: AI catalog items
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195391
+milestone: "18.2"
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations

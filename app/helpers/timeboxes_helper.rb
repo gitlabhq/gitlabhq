@@ -295,13 +295,8 @@ module TimeboxesHelper
     limit = Milestone::DISPLAY_ISSUES_LIMIT
     link_options = { milestone_title: @milestone.title }
 
-    if @project.work_item_epic_milestones_feature_flag_enabled?
-      message = _('Showing %{limit} of %{total_count} items. ') % { limit: limit, total_count: total_count }
-      message += link_to(_('View all'), milestones_issues_path(link_options))
-    else
-      message = _('Showing %{limit} of %{total_count} issues. ') % { limit: limit, total_count: total_count }
-      message += link_to(_('View all issues'), milestones_issues_path(link_options))
-    end
+    message = _('Showing %{limit} of %{total_count} items. ') % { limit: limit, total_count: total_count }
+    message += link_to(_('View all'), milestones_issues_path(link_options))
 
     message.html_safe
   end

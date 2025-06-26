@@ -17,7 +17,7 @@ module QA
               job:
                 tags:
                   - #{executor}
-                script: echo $PROTECTED_VARIABLE
+                script: echo $PROTECTED_VARIABLE && echo "Is branch protected? $CI_COMMIT_REF_PROTECTED"
             YAML
           }
         ])

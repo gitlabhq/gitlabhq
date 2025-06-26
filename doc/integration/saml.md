@@ -1105,6 +1105,9 @@ Example configuration:
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
                idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
+               # or
+               # idp_cert: '-----BEGIN CERTIFICATE-----\n ... \n-----END CERTIFICATE-----',
+
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1134,6 +1137,8 @@ Example configuration:
    args:
      assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback'
      idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6'
+     # or
+     # idp_cert: '-----BEGIN CERTIFICATE-----\n ... \n-----END CERTIFICATE-----',
      idp_sso_target_url: 'https://login.example.com/idp'
      issuer: 'https://gitlab.example.com'
      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1269,6 +1274,9 @@ Example configuration:
        args: {
                assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
                idp_cert_fingerprint: '2f:cb:19:57:68:c3:9e:9a:94:ce:c2:c2:e3:2c:59:c0:aa:d7:a3:36:5c:10:89:2e:81:16:b5:d8:3d:40:96:b6',
+               # or
+               # idp_cert: '-----BEGIN CERTIFICATE-----\n ... \n-----END CERTIFICATE-----',
+
                idp_sso_target_url: 'https://login.example.com/idp',
                issuer: 'https://gitlab.example.com',
                name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
@@ -1776,7 +1784,7 @@ membership is required.
 
 ### Using `idp_cert_fingerprint`
 
-You configure the response signature validation using `idp_cert_fingerprint`.
+You can configure the response signature validation using `idp_cert_fingerprint`.
 An example configuration:
 
 {{< tabs >}}
@@ -1922,8 +1930,7 @@ An example configuration:
 
 ### Using `idp_cert`
 
-If your IdP does not support configuring this using `idp_cert_fingerprint`, you
-can instead configure GitLab directly using `idp_cert`.
+You can also configure GitLab directly using `idp_cert`.
 An example configuration:
 
 {{< tabs >}}

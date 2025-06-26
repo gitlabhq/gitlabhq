@@ -67,11 +67,12 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 ### Lifecycle metrics
 
-- [**Cycle time**](../group/value_stream_analytics/_index.md#lifecycle-metrics)
 - [**Lead time**](../group/value_stream_analytics/_index.md#lifecycle-metrics)
+- [**Median time to merge**](merge_request_analytics.md)
 - [**Deployment frequency**](dora_metrics.md#deployment-frequency)
-- [**Change failure rate**](dora_metrics.md#change-failure-rate)
+- [**Merge request throughput**](merge_request_analytics.md#view-the-number-of-merge-requests-in-a-date-range)
 - [**Critical vulnerabilities over time**](../application_security/vulnerability_report/_index.md)
+- [**Contributor count**](../profile/contributions_calendar.md#user-contribution-events)
 
 ### AI usage metrics
 

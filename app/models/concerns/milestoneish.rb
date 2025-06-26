@@ -65,9 +65,7 @@ module Milestoneish
     work_items_finder_params = issues_finder_params
     work_items_finder_params[:include_descendants] = true if work_items_finder_params[:include_subgroups]
 
-    container = project || group
-    work_items_finder_params[:issue_types] =
-      container.work_item_epic_milestones_feature_flag_enabled? ? %w[issue epic task] : %w[issue task]
+    work_items_finder_params[:issue_types] = %w[issue epic task]
 
     work_item_ids = ::WorkItems::WorkItemsFinder.new(user, work_items_finder_params)
     .execute.preload_associated_models

@@ -17,6 +17,7 @@ GEM
     benchmark-malloc (0.2.0)
     benchmark-perf (0.6.0)
     benchmark-trend (0.4.0)
+    bigdecimal (3.2.2)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
     coderay (1.1.3)
@@ -30,7 +31,9 @@ GEM
       rubocop-performance (~> 1.15)
       rubocop-rails (~> 2.17)
       rubocop-rspec (~> 2.22)
-    google-protobuf (3.23.3)
+    google-protobuf (4.31.1)
+      bigdecimal
+      rake (>= 13)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
     json (2.6.3)
@@ -41,8 +44,8 @@ GEM
       ast (~> 2.4.1)
       racc
     pg (1.5.3)
-    pg_query (4.2.1)
-      google-protobuf (>= 3.22.3)
+    pg_query (6.1.0)
+      google-protobuf (>= 3.25.3)
     proc_to_ast (0.1.0)
       coderay
       parser
@@ -53,6 +56,7 @@ GEM
     racc (1.7.1)
     rack (3.1.8)
     rainbow (3.1.1)
+    rake (13.3.0)
     regexp_parser (2.8.1)
     rexml (3.3.9)
     rspec (3.12.0)
@@ -141,6 +145,7 @@ CHECKSUMS
   benchmark-malloc (0.2.0) sha256=37c68f0435261634026f584d79956a35325a3027e3e6b4cc8d7575aa10537e6b
   benchmark-perf (0.6.0) sha256=fe2b01959f3de0f9dd34820d54ef881eb4f3589fccb7d17b63068ac92d7f9621
   benchmark-trend (0.4.0) sha256=de5a02a9f443babefbbd97784759820decee8554a0c273d859c02a0990845d81
+  bigdecimal (3.2.2) sha256=39085f76b495eb39a79ce07af716f3a6829bc35eb44f2195e2753749f2fa5adc
   binding_of_caller (1.0.0) sha256=3aad25d1d538fc6e7972978f9bf512ccd992784009947c81633bea776713161d
   coderay (1.1.3) sha256=dc530018a4684512f8f38143cd2a096c9f02a1fc2459edcfe534787a7fc77d4b
   concurrent-ruby (1.2.2) sha256=3879119b8b75e3b62616acc256c64a134d0b0a7a9a3fcba5a233025bcde22c4f
@@ -149,7 +154,7 @@ CHECKSUMS
   diffy (3.4.2) sha256=36b42ffbe5138ddc56182107c24ad8d6b066ecfd2876829f391e3a4993d89ae1
   gitlab-schema-validation (0.1.0)
   gitlab-styles (10.1.0) sha256=f42745f5397d042fe24cf2d0eb56c995b37f9f43d8fb79b834d197a1cafdc84a
-  google-protobuf (3.23.3) sha256=4dbc0a28db959cd37ccbb040da5c54b7bd672ef3b923d0dd0a99ea26cbdf9fa9
+  google-protobuf (4.31.1) sha256=022bc82931a0860a7f2ace41bd48e904c8e65032c1d5eefc33294b5edf9741f8
   i18n (1.14.1) sha256=9d03698903547c060928e70a9bc8b6b87fda674453cda918fc7ab80235ae4a61
   json (2.6.3) sha256=86aaea16adf346a2b22743d88f8dcceeb1038843989ab93cda44b5176c845459
   method_source (1.0.0) sha256=d779455a2b5666a079ce58577bfad8534f571af7cec8107f4dce328f0981dede
@@ -157,12 +162,13 @@ CHECKSUMS
   parallel (1.23.0) sha256=27154713ad6ef32fa3dcb7788a721d6c07bca77e72443b4c6080a14145288c49
   parser (3.2.2.3) sha256=10685f358ab36ffea2252dc4952e5b8fad3a297a8152a85f59adc982747b91eb
   pg (1.5.3) sha256=6b9ee5e2d5aee975588232c41f8203e766157cf71dba54ee85b343a45ced9bfd
-  pg_query (4.2.1) sha256=b04820a9d1c0c1608e3240b7d84baabbee1b95a7302f29fdd0f00e901c604833
+  pg_query (6.1.0) sha256=8b005229e209f12c5887c34c60d0eb2a241953b9475b53a9840d24578532481e
   proc_to_ast (0.1.0) sha256=92a73fa66e2250a83f8589f818b0751bcf227c68f85916202df7af85082f8691
   pry (0.14.2) sha256=c4fe54efedaca1d351280b45b8849af363184696fcac1c72e0415f9bdac4334d
   racc (1.7.1) sha256=af64124836fdd3c00e830703d7f873ea5deabde923f37006a39f5a5e0da16387
   rack (3.1.8) sha256=d3fbcbca43dc2b43c9c6d7dfbac01667ae58643c42cea10013d0da970218a1b1
   rainbow (3.1.1) sha256=039491aa3a89f42efa1d6dec2fc4e62ede96eb6acd95e52f1ad581182b79bc6a
+  rake (13.3.0) sha256=96f5092d786ff412c62fde76f793cc0541bd84d2eb579caa529aa8a059934493
   regexp_parser (2.8.1) sha256=83f63e2bfae3db38f988c66f114485140ff1791321fd827480bc75aa42cacb8c
   rexml (3.3.9) sha256=d71875b85299f341edf47d44df0212e7658cbdf35aeb69cefdb63f57af3137c9
   rspec (3.12.0) sha256=ccc41799a43509dc0be84070e3f0410ac95cbd480ae7b6c245543eb64162399c
