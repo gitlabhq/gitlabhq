@@ -163,7 +163,7 @@ The following settings pages are available for configuring GitLab Duo on GitLab.
 ##### Admin Level
 
 - `/admin/gitlab_duo`
-  - Onboard GitLab Duo Workflow
+  - Onboard GitLab Duo Agent Platform
 
 ##### Top-Level Group Settings
 

@@ -16,7 +16,7 @@ title: Pipeline secret detection
 
 Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 
-After you [enable pipeline secret detection](#enable-the-analyzer), scans run in a CI/CD job named `secret_detection`.
+After you [enable pipeline secret detection](#getting-started), scans run in a CI/CD job named `secret_detection`.
 You can run scans and view [pipeline secret detection JSON report artifacts](../../../../ci/yaml/artifacts_reports.md#artifactsreportssecret_detection) in any GitLab tier.
 
 With GitLab Ultimate, pipeline secret detection results are also processed so you can:
@@ -49,27 +49,9 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | [Customize analyzer rulesets](configure.md#customize-analyzer-rulesets)                                          | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 | [Enable security policies](../../policies/_index.md)                                                  | {{< icon name="dotted-circle" >}} No | {{< icon name="check-circle" >}} Yes |
 
-## Getting Started
+## Getting started
 
-You can implement pipeline secret detection incrementally.
-Start with a small-scale pilot to understand the tool's behavior before rolling out the feature across your organization.
-
-Follow these guidelines when you implement pipeline secret detection:
-
-1. Choose a pilot project. Suitable projects have:
-   - Active development with regular commits.
-   - A manageable codebase size.
-   - A team familiar with GitLab CI/CD.
-   - Willingness to iterate on configuration.
-1. Start simple. Enable pipeline secret detection with default settings on your pilot project.
-1. Monitor results. Run the analyzer for one or two weeks to understand typical findings.
-1. Address detected secrets. Remediate any legitimate secrets found.
-1. Tune your configuration. Adjust settings based on initial results.
-1. Document the implementation. Record common false positives and remediation patterns.
-
-## Enable the Analyzer
-
-Enable the analyzer to use pipeline secret detection.
+To get started with pipeline secret detection, select a pilot project and enable the analyzer.
 
 Prerequisites:
 
@@ -311,6 +293,24 @@ Before applying optimizations organization-wide:
 1. Track false positive reduction and scan performance improvements.
 1. Maintain records of effective optimization patterns.
 
+## Roll out
+
+You should implement pipeline secret detection incrementally.
+Start with a small-scale pilot to understand the tool's behavior before rolling out the feature across your organization.
+
+Follow these guidelines when you roll out pipeline secret detection:
+
+1. Choose a pilot project. Suitable projects have:
+   - Active development with regular commits.
+   - A manageable codebase size.
+   - A team familiar with GitLab CI/CD.
+   - Willingness to iterate on configuration.
+1. Start simple. Enable pipeline secret detection with default settings on your pilot project.
+1. Monitor results. Run the analyzer for one or two weeks to understand typical findings.
+1. Address detected secrets. Remediate any legitimate secrets found.
+1. Tune your configuration. Adjust settings based on initial results.
+1. Document the implementation. Record common false positives and remediation patterns.
+
 ## FIPS-enabled images
 
 {{< history >}}
@@ -393,7 +393,7 @@ the `secret-detection` job on.
 
 #### `exec /bin/sh: exec format error` message in job log
 
-The GitLab pipeline secret detection analyzer [only supports](#enable-the-analyzer) running on the `amd64` CPU architecture.
+The GitLab pipeline secret detection analyzer [only supports](#getting-started) running on the `amd64` CPU architecture.
 This message indicates that the job is being run on a different architecture, such as `arm`.
 
 #### Error: `fatal: detected dubious ownership in repository at '/builds/<project dir>'`

@@ -55,4 +55,4 @@ They require a Premium or Ultimate subscription and one of the available add-ons
 | [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | N/A |
 | [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | {{< icon name="dash-circle" >}} No | Beta |
 
-[GitLab Duo Workflow](../duo_workflow/_index.md) is in private beta, does not require an add-on, and is not supported for GitLab Duo Self-Hosted.
+[GitLab Duo Agent Platform](../duo_agent_platform/_index.md) is in private beta, does not require an add-on, and is not supported for GitLab Duo Self-Hosted.

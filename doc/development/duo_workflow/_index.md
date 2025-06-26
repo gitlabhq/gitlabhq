@@ -2,10 +2,16 @@
 stage: AI-powered
 group: Duo Workflow
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/development/development_processes/#development-guidelines-review.
-title: Development of GitLab Duo Workflow
+title: Development of GitLab Duo Agent Platform
 ---
 
-How to set up the local development environment to run [GitLab Duo Workflow](../../user/duo_workflow/_index.md).
+{{< history >}}
+
+- [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) from `Workflow` to `Agent Platform` in GitLab 18.2. 
+
+{{< /history >}}
+
+How to set up the local development environment to run [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md).
 
 ## Prerequisites
 
@@ -25,18 +31,18 @@ Workflow consists of four separate services:
 
 ### Development Setup for Backend Components
 
-You should [set up GitLab Duo Workflow with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md)
+You should [set up GitLab Duo Agent Platform with the GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/duo_workflow.md)
 to run local versions of GitLab, Duo Workflow Service, and Executor.
 
 This setup can be used as-is with the [publicly available version of the VS Code Extension](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow).
 
 ### Development Setup for Frontend Components
 
-There is no need to set up the backend components of Duo Workflow to test changes for the GitLab Duo Workflow UI.
+There is no need to set up the backend components of the Agent Platform to test changes for the Agent Platform UI in the IDE.
 
 A local build of the UI is required if you are making Duo Workflow UI changes that you need to view locally. A local build is also required if you want to use a version of the UI that has not been released yet.
 
-Refer to the [GitLab Duo Workflow README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Workflow UI.
+Refer to the [GitLab Duo Workflow README](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/blob/main/packages/webview_duo_workflow/README.md) file in the Language Server project to get started with local development of GitLab Duo Agent Platform UI in the IDE.
 
 ## Development settings
 

@@ -134,7 +134,7 @@ Because Agentic Chat requires network access to retrieve resources, network rest
 might impact its functionality.
 
 To help resolve Agentic Chat networking issues, see the
-[GitLab Duo Workflow network issue troubleshooting documentation](../duo_workflow/troubleshooting.md#network-issues).
+[GitLab Duo Agent Platform network issue troubleshooting documentation](../duo_agent_platform/troubleshooting.md#network-issues).
 
 ### Slow response times
 

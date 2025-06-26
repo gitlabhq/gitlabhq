@@ -107,7 +107,7 @@ For more examples of a question you can ask, see
 | Feature                                                                                                        | Available on GitLab Duo Self-Hosted         | GitLab version         | Status |
 | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | ---------------------- | --- |
 | [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli)                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
-| [GitLab Duo Workflow](../../user/duo_workflow/_index.md)                                                       | {{< icon name="dash-circle" >}} No  | GitLab 17.4 and later  | Not applicable |
+| [GitLab Duo Agent Platform](../../user/duo_agent_platform/_index.md)                                                       | {{< icon name="dash-circle" >}} No  | GitLab 17.4 and later  | Not applicable |
 | [Vulnerability Resolution](../../user/application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 | [AI Impact Dashboard](../../user/analytics/ai_impact_analytics.md)                                             | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Beta |
 

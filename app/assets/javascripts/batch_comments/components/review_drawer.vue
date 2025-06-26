@@ -50,9 +50,6 @@ export default {
         };
       },
       update: (data) => data.project?.mergeRequest?.userPermissions,
-      skip() {
-        return !this.drawerOpened;
-      },
     },
   },
   components: {

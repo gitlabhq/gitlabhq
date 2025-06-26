@@ -406,8 +406,21 @@ export default {
     selectedWorkItemType() {
       return this.workItemTypes?.find((item) => item.id === this.selectedWorkItemTypeId);
     },
+    allowedParentTypesForSelectedType() {
+      if (this.workItemTypes.length) {
+        const widgetDefinitionsForCurrentType =
+          this.workItemTypes.find((workItemType) => workItemType.id === this.selectedWorkItemTypeId)
+            ?.widgetDefinitions || [];
+
+        return (
+          widgetDefinitionsForCurrentType.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
+            ?.allowedParentTypes?.nodes || []
+        );
+      }
+      return [];
+    },
     selectedWorkItemTypeName() {
-      return this.selectedWorkItemType?.name;
+      return this.selectedWorkItemType?.name || '';
     },
     selectedWorkItemTypeIconName() {
       return this.selectedWorkItemType?.iconName;
@@ -1104,6 +1117,7 @@ export default {
               :full-path="selectedProjectFullPath"
               :parent="workItemParent"
               :is-group="isGroup"
+              :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
               @error="$emit('error', $event)"
               @parentMilestone="onParentMilestone"
             />

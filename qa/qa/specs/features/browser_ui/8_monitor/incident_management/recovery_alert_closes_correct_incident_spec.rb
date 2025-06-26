@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Monitor', product_group: :respond, quarantine: {
+  RSpec.describe 'Monitor', product_group: :platform_insights, quarantine: {
     type: :bug,
     issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/395512'
   } do

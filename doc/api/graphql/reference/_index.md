@@ -7956,6 +7956,36 @@ Input type: `MarkAsSpamSnippetInput`
 | <a id="mutationmarkasspamsnippeterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationmarkasspamsnippetsnippet"></a>`snippet` | [`Snippet`](#snippet) | Snippet after mutation. |
 
+### `Mutation.mavenUpstreamCreate`
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `MavenUpstreamCreateInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmavenupstreamcreatecachevalidityhours"></a>`cacheValidityHours` | [`Int!`](#int) | Cache validity period. Defaults to 24 hours. |
+| <a id="mutationmavenupstreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmavenupstreamcreatedescription"></a>`description` | [`String`](#string) | Description of the upstream registry. |
+| <a id="mutationmavenupstreamcreateid"></a>`id` | [`VirtualRegistriesPackagesMavenRegistryID!`](#virtualregistriespackagesmavenregistryid) | ID of the upstream registry. |
+| <a id="mutationmavenupstreamcreatename"></a>`name` | [`String!`](#string) | Name of upstream registry. |
+| <a id="mutationmavenupstreamcreatepassword"></a>`password` | [`String`](#string) | Password of the upstream registry. |
+| <a id="mutationmavenupstreamcreateurl"></a>`url` | [`String!`](#string) | URL of the upstream registry. |
+| <a id="mutationmavenupstreamcreateusername"></a>`username` | [`String`](#string) | Username of the upstream registry. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmavenupstreamcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmavenupstreamcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationmavenupstreamcreateupstream"></a>`upstream` | [`MavenUpstream`](#mavenupstream) | Maven upstream after the mutation. |
+
 ### `Mutation.memberRoleAdminCreate`
 
 {{< details >}}
@@ -48931,6 +48961,12 @@ An example `UserID` is: `"gid://gitlab/User/1"`.
 A `UsersSavedReplyID` is a global ID. It is encoded as a string.
 
 An example `UsersSavedReplyID` is: `"gid://gitlab/Users::SavedReply/1"`.
+
+### `VirtualRegistriesPackagesMavenRegistryID`
+
+A `VirtualRegistriesPackagesMavenRegistryID` is a global ID. It is encoded as a string.
+
+An example `VirtualRegistriesPackagesMavenRegistryID` is: `"gid://gitlab/VirtualRegistries::Packages::Maven::Registry/1"`.
 
 ### `VulnerabilitiesExternalIssueLinkID`
 

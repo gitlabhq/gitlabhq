@@ -150,6 +150,26 @@ If you encounter timeout errors, use:
 COMPOSE_HTTP_TIMEOUT=300 docker-compose up -d
 ```
 
+### Optional: Use an external ClickHouse database
+
+If you'd prefer, you can use your own ClickHouse database.
+
+Prerequisites:
+
+- Ensure your external ClickHouse instance is accessible and properly configured with
+  any required authentication credentials.
+
+Before you run `docker-compose up -d`, complete the following steps:
+
+1. Open `docker-compose.yml` file.
+1. Open `docker-compose.yml` and comment out:
+   - The `clickhouse` and `zookeeper` services.
+   - The `x-clickhouse-defaults` and `x-clickhouse-depend` sections.
+1. Replace all occurrences of `clickhouse:9000` with your relevant ClickHouse endpoint and TCP port (for example, `my-clickhouse.example.com:9000`) in the following files. If your ClickHouse instance requires authentication, you may also need to update connection strings to include credentials:
+   - `docker-compose.yml`
+   - `otel-collector-config.yaml`
+   - `prometheus-config.yml`
+
 ### Configure network access for GitLab Observability
 
 To properly receive telemetry data, you need to open specific ports in your GitLab O11y instance's security group:

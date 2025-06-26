@@ -1169,6 +1169,12 @@ the following are the names of GitLab Duo features:
 Excluding GitLab Duo Self-Hosted, after the first use, use the feature name
 without **GitLab Duo**.
 
+## GitLab Duo Agent Platform
+
+Use **GitLab Duo Agent Platform**. After first use, use **Agent Platform**.
+
+Do not use **Duo Agent Platform** by itself.
+
 ## GitLab Duo Enterprise
 
 Always use **GitLab Duo Enterprise** for the add-on. Do not use **Duo Enterprise** unless approved by legal.
@@ -1190,12 +1196,6 @@ and in title case, unless you are
 [referring to a language model that's hosted by a customer, rather than GitLab](#self-hosted-model).
 
 Do not use **Self-Hosted** by itself.
-
-## GitLab Duo Workflow
-
-Use **GitLab Duo Workflow**. After first use, use **Workflow**.
-
-Do not use **Duo Workflow** by itself.
 
 ## GitLab Flavored Markdown
 

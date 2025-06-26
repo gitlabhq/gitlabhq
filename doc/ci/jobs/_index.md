@@ -270,7 +270,7 @@ The source attribute can have the following values:
 - `api`: Job initiated by a REST call to the Jobs API.
 - `chat`: Job initiated by a chat command using GitLab ChatOps.
 - `container_registry_push`: Job initiated by container registry push.
-- `duo_workflow`: Job initiated by GitLab Duo Workflow.
+- `duo_workflow`: Job initiated by GitLab Duo Agent Platform.
 - `external`: Job initiated by an event in an external repository integrated with GitLab. This does not include pull request events.
 - `external_pull_request_event`: Job initiated by a pull request event in an external repository.
 - `merge_request_event`: Job initiated by a merge request event.

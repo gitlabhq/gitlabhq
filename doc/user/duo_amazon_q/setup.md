@@ -270,8 +270,11 @@ With the condition key, you can limit who can use CMK for encrypting or decrypti
             "AWS": "arn:aws:iam::<awsAccountId>:role/<rolename>"
          },
          "Action": [
-            "kms:GenerateDataKeyWithoutPlaintext",
             "kms:Decrypt",
+            "kms:DescribeKey",
+            "kms:Encrypt",
+            "kms:GenerateDataKey",
+            "kms:GenerateDataKeyWithoutPlaintext",
             "kms:ReEncryptFrom",
             "kms:ReEncryptTo"
          ],

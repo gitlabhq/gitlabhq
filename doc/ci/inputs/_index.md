@@ -383,11 +383,9 @@ trigger-job:
 trigger-job:
   trigger:
     strategy: depend
-    include:
-      - project: project-group/my-downstream-project
-        file: ".gitlab-ci.yml"
-        inputs:
-          job-name: "defined"
+    project: project-group/my-downstream-project
+    inputs:
+      job-name: "defined"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 ```
