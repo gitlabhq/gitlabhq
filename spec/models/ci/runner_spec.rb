@@ -128,6 +128,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
     it { is_expected.to validate_presence_of(:runner_type) }
     it { is_expected.to validate_presence_of(:registration_type) }
     it { is_expected.to validate_presence_of(:sharding_key_id) }
+    it { is_expected.to validate_presence_of(:organization_id).on([:create, :update]) }
 
     context 'when runner is instance type' do
       let(:runner) { build(:ci_runner, :instance_type) }
@@ -140,6 +141,15 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
         it 'is invalid' do
           expect(runner).to be_invalid
           expect(runner.errors.full_messages).to contain_exactly('Runner cannot have sharding_key_id assigned')
+        end
+      end
+
+      context 'when organization_id is present' do
+        let(:runner) { build(:ci_runner, :instance_type, organization_id: non_existing_record_id) }
+
+        it 'is invalid' do
+          expect(runner).to be_invalid
+          expect(runner.errors.full_messages).to contain_exactly('Runner cannot have organization_id assigned')
         end
       end
     end

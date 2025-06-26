@@ -551,8 +551,11 @@ export default {
         </p>
       </div>
     </div>
-    <div class="issuable-meta">
-      <ul v-if="showIssuableMeta" class="controls gl-gap-3">
+    <div class="issuable-meta gl-max-w-2/8 md:gl-max-w-3/8">
+      <ul
+        v-if="showIssuableMeta"
+        class="controls gl-flex gl-max-w-full gl-flex-wrap-reverse gl-justify-end gl-gap-3 gl-gap-y-2"
+      >
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
           <gl-badge
@@ -618,9 +621,7 @@ export default {
         <li v-else-if="detailLoading" class="!gl-mr-0">
           <gl-skeleton-loader :width="45" :lines="1" equal-width-lines />
         </li>
-        <li class="!gl-mr-0 empty:gl-hidden">
-          <slot name="custom-status"></slot>
-        </li>
+        <slot name="custom-status"></slot>
       </ul>
       <div
         class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"

@@ -397,6 +397,9 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`direct_transfer_relation_export_batch_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194872) | Direct Transfer relation export batch downloaded | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/441977) | Group, Project |
+| [`direct_transfer_relation_export_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194872) | Direct Transfer relation export downloaded | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/441977) | Group, Project |
+| [`direct_transfer_relations_export_initiated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194872) | Direct Transfer relations export initiated | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/441977) | Group, Project |
 | [`group_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | A group file export is created | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Group |
 | [`project_export_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/TODO) | A project file export is created | {{< icon name="check-circle" >}} Yes | GitLab [17.0](https://gitlab.com/gitlab-org/gitlab/-/issues/294168) | Project |
 

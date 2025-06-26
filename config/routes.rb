@@ -172,7 +172,7 @@ InitializerConnections.raise_if_new_database_connection do
       draw :organizations
 
       Gitlab.ee do
-        draw :remote_development
+        draw 'remote_development/resources'
         draw :security
         draw :smartcard
         draw :trial_registration

@@ -2,9 +2,13 @@ query aiCatalogAgents {
   aiCatalogAgents @client {
     nodes {
       id
+      type
       name
       description
       model
+      verified
+      version
+      releasedAt
     }
   }
 }

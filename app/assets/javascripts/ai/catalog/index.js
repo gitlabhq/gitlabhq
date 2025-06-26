@@ -32,15 +32,23 @@ export const initAiCatalog = (selector = '#js-ai-catalog') => {
         nodes: [
           {
             id: 1,
+            type: 'agent',
             name: 'Claude Sonnet 4',
             description: 'Smart, efficient model for everyday user',
             model: 'claude-sonnet-4-20250514',
+            verified: true,
+            version: 'v4.2',
+            releasedAt: new Date(),
           },
           {
             id: 2,
+            type: 'agent',
             name: 'Claude Opus 4',
             description: 'Powerful, large model for complex challenges',
             model: 'claude-opus-4-20250514',
+            verified: true,
+            version: 'v4.2',
+            releasedAt: new Date(),
           },
         ],
       },

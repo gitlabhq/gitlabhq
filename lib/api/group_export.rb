@@ -8,6 +8,7 @@ module API
 
     feature_category :importers
     urgency :low
+    helpers Helpers::BulkImports::AuditHelpers
 
     params do
       requires :id, type: String, desc: 'The ID of a group'
@@ -94,6 +95,13 @@ module API
             .execute
 
           if response.success?
+            log_direct_transfer_audit_event(
+              ::Import::BulkImports::Audit::Events::EXPORT_INITIATED,
+              'Direct Transfer relations export initiated',
+              current_user,
+              user_group
+            )
+
             accepted!
           else
             render_api_error!(message: 'Group relations export could not be started.')
@@ -132,12 +140,26 @@ module API
             break render_api_error!('Batch not found', 404) unless batch
             break render_api_error!('Batch file not found', 404) unless batch_file
 
+            log_direct_transfer_audit_event(
+              ::Import::BulkImports::Audit::Events::EXPORT_BATCH_DOWNLOADED,
+              'Direct Transfer relation export batch downloaded',
+              current_user,
+              user_group
+            )
+
             present_carrierwave_file!(batch_file)
           else
             file = export&.upload&.export_file
 
             break render_api_error!('Export is batched', 400) if export.batched?
             break render_api_error!('Export file not found', 404) unless file
+
+            log_direct_transfer_audit_event(
+              ::Import::BulkImports::Audit::Events::EXPORT_DOWNLOADED,
+              'Direct Transfer relation export downloaded',
+              current_user,
+              user_group
+            )
 
             present_carrierwave_file!(file)
           end

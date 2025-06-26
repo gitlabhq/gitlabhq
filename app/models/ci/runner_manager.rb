@@ -58,6 +58,7 @@ module Ci
     validates :runner_type, presence: true, on: :create
     validates :system_xid, presence: true, length: { maximum: 64 }
     validates :sharding_key_id, presence: true, on: :create, unless: :instance_type?
+    validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :version, length: { maximum: 2048 }
     validates :revision, length: { maximum: 255 }
     validates :platform, length: { maximum: 255 }
@@ -67,6 +68,7 @@ module Ci
     validates :runtime_features, json_schema: { filename: 'ci_runner_runtime_features' }
 
     validate :no_sharding_key_id, if: :instance_type?
+    validate :no_organization_id, if: :instance_type?
 
     cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at,
       :executor_type, :creation_state
@@ -195,6 +197,10 @@ module Ci
 
     def no_sharding_key_id
       errors.add(:runner_manager, 'cannot have sharding_key_id assigned') if sharding_key_id
+    end
+
+    def no_organization_id
+      errors.add(:runner_manager, 'cannot have organization_id assigned') if organization_id
     end
 
     def ensure_organization_id

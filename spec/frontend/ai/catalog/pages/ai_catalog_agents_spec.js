@@ -1,9 +1,8 @@
-import { GlLink, GlSkeletonLoader } from '@gitlab/ui';
-
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import AiCatalogAgents from '~/ai/catalog/pages/ai_catalog_agents.vue';
+import AiCatalogList from '~/ai/catalog/components/ai_catalog_list.vue';
 
 describe('AiCatalogAgents', () => {
   let wrapper;
@@ -11,22 +10,33 @@ describe('AiCatalogAgents', () => {
   const mockAgentsData = [
     {
       id: 1,
-      name: 'Test Agent 1',
-      description: 'Description for agent 1',
+      name: 'Test AI Agent 1',
+      model: 'gpt-4',
+      type: 'Assistant',
+      version: 'v1.2.0',
+      description: 'A helpful AI assistant for testing purposes',
+      releasedAt: '2024-01-15T10:30:00Z',
+      verified: true,
     },
     {
       id: 2,
-      name: 'Test Agent 2',
-      description: 'Description for agent 2',
+      name: 'Test AI Agent 2',
+      model: 'claude-3',
+      type: 'Chatbot',
+      version: 'v1.0.0',
+      description: 'Another AI assistant',
+      releasedAt: '2024-02-10T14:20:00Z',
+      verified: false,
     },
     {
       id: 3,
-      name: 'Test Agent 3',
-      description: 'Description for agent 3',
+      name: 'Test AI Agent 3',
+      model: 'gemini-pro',
+      type: 'Helper',
+      version: 'v2.1.0',
+      verified: true,
     },
   ];
-
-  const emptyAgentsData = [];
 
   const createComponent = ({ loading = false, mockData = mockAgentsData } = {}) => {
     wrapper = shallowMountExtended(AiCatalogAgents, {
@@ -47,21 +57,36 @@ describe('AiCatalogAgents', () => {
     return waitForPromises();
   };
 
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
-  const findAllListItems = () => wrapper.findAll('li');
+  const findAiCatalogList = () => wrapper.findComponent(AiCatalogList);
 
-  describe('loading state', () => {
-    it('shows skeleton loader when loading', () => {
-      createComponent({ loading: true });
-
-      expect(findSkeletonLoader().exists()).toBe(true);
-      expect(findAllListItems()).toHaveLength(0);
+  describe('component rendering', () => {
+    beforeEach(async () => {
+      await createComponent();
     });
 
-    it('does not show agent content when loading', () => {
-      createComponent({ loading: true });
+    it('renders AiCatalogList component', () => {
+      const catalogList = findAiCatalogList();
 
-      expect(findAllListItems()).toHaveLength(0);
+      expect(catalogList.exists()).toBe(true);
+    });
+
+    it('passes correct props to AiCatalogList', () => {
+      const catalogList = findAiCatalogList();
+
+      expect(catalogList.props('items')).toEqual(mockAgentsData);
+      expect(catalogList.props('isLoading')).toBe(false);
+    });
+  });
+
+  describe('loading state', () => {
+    beforeEach(async () => {
+      await createComponent({ loading: true });
+    });
+
+    it('passes loading state to AiCatalogList', () => {
+      const catalogList = findAiCatalogList();
+
+      expect(catalogList.props('isLoading')).toBe(true);
     });
   });
 
@@ -70,42 +95,17 @@ describe('AiCatalogAgents', () => {
       await createComponent();
     });
 
-    it('displays agent names and descriptions correctly', () => {
-      const listItems = findAllListItems();
+    it('passes agent data to AiCatalogList', () => {
+      const catalogList = findAiCatalogList();
 
-      expect(listItems).toHaveLength(3);
-
-      const listItem0 = listItems.at(0);
-      const listItem1 = listItems.at(1);
-      const listItem2 = listItems.at(2);
-
-      // Check agent names
-      expect(listItem0.findComponent(GlLink).text()).toBe('Test Agent 1');
-      expect(listItem1.findComponent(GlLink).text()).toBe('Test Agent 2');
-      expect(listItem2.findComponent(GlLink).text()).toBe('Test Agent 3');
-
-      // Check agent descriptions
-      expect(listItem0.find('p').text()).toBe('Description for agent 1');
-      expect(listItem1.find('p').text()).toBe('Description for agent 2');
-      expect(listItem2.find('p').text()).toBe('Description for agent 3');
+      expect(catalogList.props('items')).toEqual(mockAgentsData);
+      expect(catalogList.props('items')).toHaveLength(3);
     });
 
-    it('does not show skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(false);
-    });
-  });
+    it('passes isLoading as false when not loading', () => {
+      const catalogList = findAiCatalogList();
 
-  describe('with empty agent data', () => {
-    beforeEach(async () => {
-      await createComponent({ mockData: emptyAgentsData });
-    });
-
-    it('renders no agent list items', () => {
-      expect(findAllListItems()).toHaveLength(0);
-    });
-
-    it('does not show skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(false);
+      expect(catalogList.props('isLoading')).toBe(false);
     });
   });
 });

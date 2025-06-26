@@ -244,6 +244,7 @@ module Ci
 
     validate :tag_constraints
     validates :sharding_key_id, presence: true, unless: :instance_type?
+    validates :organization_id, presence: true, on: [:create, :update], unless: :instance_type?
     validates :name, length: { maximum: 256 }, if: :name_changed?
     validates :description, length: { maximum: 1024 }, if: :description_changed?
     validates :access_level, presence: true
@@ -252,6 +253,7 @@ module Ci
 
     validate :no_projects, unless: :project_type?
     validate :no_sharding_key_id, if: :instance_type?
+    validate :no_organization_id, if: :instance_type?
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
@@ -624,7 +626,7 @@ module Ci
     end
 
     def ensure_organization_id
-      return unless instance_type? || owner.present?
+      return if !instance_type? && owner.nil?
 
       self.organization_id = instance_type? ? nil : owner.organization_id
     end
@@ -660,6 +662,10 @@ module Ci
 
     def no_sharding_key_id
       errors.add(:runner, 'cannot have sharding_key_id assigned') if sharding_key_id
+    end
+
+    def no_organization_id
+      errors.add(:runner, 'cannot have organization_id assigned') if organization_id
     end
 
     def no_projects
