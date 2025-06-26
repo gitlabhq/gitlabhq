@@ -6,9 +6,10 @@ let issuesClientPromise;
 
 async function getIssuesClient() {
   if (issuesClientPromise) return issuesClientPromise;
-  issuesClientPromise = gon.features?.frontendCaching
-    ? createApolloClientWithCaching(resolvers, { localCacheKey: 'issues_list', ...config })
-    : Promise.resolve(defaultClient);
+  issuesClientPromise = createApolloClientWithCaching(resolvers, {
+    localCacheKey: 'issues_list',
+    ...config,
+  });
   return issuesClientPromise;
 }
 

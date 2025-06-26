@@ -708,30 +708,11 @@ describe('CE ServiceDeskListApp', () => {
   });
 
   describe('When providing token for labels', () => {
-    it('passes function to fetchLatestLabels property if frontend caching is enabled', async () => {
-      wrapper = createComponent({
-        provide: {
-          glFeatures: {
-            frontendCaching: true,
-          },
-        },
-      });
+    it('passes function to fetchLatestLabels property', async () => {
+      wrapper = createComponent();
       await waitForPromises();
 
       expect(typeof findLabelsToken().fetchLatestLabels).toBe('function');
-    });
-
-    it('passes null to fetchLatestLabels property if frontend caching is disabled', async () => {
-      wrapper = createComponent({
-        provide: {
-          glFeatures: {
-            frontendCaching: false,
-          },
-        },
-      });
-      await waitForPromises();
-
-      expect(findLabelsToken().fetchLatestLabels).toBe(null);
     });
   });
 });

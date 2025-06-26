@@ -45,7 +45,7 @@ module DesignManagement
     end
 
     def uploads_sharding_key
-      { namespace_id: design&.namespace_id }
+      { namespace_id: namespace_id }
     end
   end
 end

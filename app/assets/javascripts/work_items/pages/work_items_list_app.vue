@@ -338,7 +338,9 @@ export default {
       if (this.glFeatures.workItemViewForIssues) {
         return true;
       }
-      return this.isEpicsList ? this.glFeatures.epicsListDrawer : this.glFeatures.issuesListDrawer;
+      return this.isEpicsList
+        ? this.glFeatures?.epicsListDrawer
+        : this.glFeatures?.issuesListDrawer;
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
@@ -419,7 +421,7 @@ export default {
           token: LabelToken,
           operators: OPERATORS_IS_NOT_OR,
           fetchLabels: this.fetchLabels,
-          fetchLatestLabels: this.glFeatures.frontendCaching ? this.fetchLatestLabels : null,
+          fetchLatestLabels: this.fetchLatestLabels,
           recentSuggestionsStorageKey: `${this.rootPageFullPath}-issues-recent-tokens-label`,
         },
         {

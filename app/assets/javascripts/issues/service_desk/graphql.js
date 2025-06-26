@@ -1,4 +1,4 @@
-import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphql';
+import { createApolloClientWithCaching } from '~/lib/graphql';
 
 let client;
 
@@ -14,11 +14,9 @@ const typePolicies = {
 
 export async function gqlClient() {
   if (client) return client;
-  client = gon.features?.frontendCaching
-    ? await createApolloClientWithCaching(
-        {},
-        { localCacheKey: 'service_desk_list', cacheConfig: { typePolicies } },
-      )
-    : createDefaultClient({}, { cacheConfig: { typePolicies } });
+  client = await createApolloClientWithCaching(
+    {},
+    { localCacheKey: 'service_desk_list', cacheConfig: { typePolicies } },
+  );
   return client;
 }

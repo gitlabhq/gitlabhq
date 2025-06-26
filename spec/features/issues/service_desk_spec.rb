@@ -48,10 +48,6 @@ RSpec.describe 'Service Desk Issue Tracker', :js, feature_category: :service_des
 
   describe 'issues list' do
     context 'when service desk is supported' do
-      before do
-        stub_feature_flags(frontend_caching: true)
-      end
-
       context 'when there are no issues' do
         describe 'service desk empty state' do
           it 'displays the large empty state, documentation, and the email address' do

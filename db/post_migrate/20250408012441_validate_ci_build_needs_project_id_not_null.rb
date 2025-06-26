@@ -4,7 +4,7 @@ class ValidateCiBuildNeedsProjectIdNotNull < Gitlab::Database::Migration[2.2]
   milestone '18.0'
 
   def up
-    validate_not_null_constraint :ci_build_needs, :project_id, constraint_name: 'check_4fab85ecdc'
+    # no-op due to issue https://gitlab.com/gitlab-org/gitlab/-/issues/548685
   end
 
   def down

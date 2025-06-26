@@ -113,8 +113,30 @@ Run through the following steps sequentially on each component's node to perform
 
    ```shell
    sudo gitlab-ctl reconfigure
+   ```
+
+   {{< tabs >}}
+
+   {{< tab title="For PostgreSQL nodes only" >}}
+   
+   Restart the Consul client first, then restart all other services to ensure PostgreSQL failover occurs gracefully:
+
+   ```shell
+   sudo gitlab-ctl restart consul
+   sudo gitlab-ctl restart-except consul
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="For all other component nodes" >}}
+
+   ```shell
    sudo gitlab-ctl restart
    ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}
 
 ### Gitaly
 

@@ -39,6 +39,9 @@ RSpec.describe BulkImports::ExportUpload, type: :model, feature_category: :impor
 
   describe '#uploads_sharding_key' do
     it 'returns project_id or group_id' do
+      bulk_import_export.save!
+      bulk_import_export.reload
+
       expect(bulk_import_export.uploads_sharding_key).to eq(
         project_id: export.project_id,
         namespace_id: export.group_id
