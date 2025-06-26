@@ -605,7 +605,7 @@ Support for creating a retention policy for job logs is proposed in [issue 37471
 
 ### Delete old pipelines
 
-Pipelines do not add to the overall storage usage, but if required you can automate their deletion.
+Pipelines do not add to the overall storage usage, but if required you can [automate their deletion](../ci/pipelines/settings.md#automatic-pipeline-cleanup).
 
 To delete pipelines based on a specific date, specify the `created_at` key.
 You can use the date to calculate the difference between the current date and
@@ -801,8 +801,6 @@ the `created_at` attribute to implement a similar algorithm that compares the jo
 {{< /tab >}}
 
 {{< /tabs >}}
-
-Automatic deletion of old pipelines is proposed in [issue 338480](https://gitlab.com/gitlab-org/gitlab/-/issues/338480).
 
 ### List expiry settings for job artifacts
 

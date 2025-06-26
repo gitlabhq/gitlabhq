@@ -51,7 +51,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
 
       click_button 'Bulk edit'
 
-      expect(page).not_to have_button 'Select status'
+      expect(page).not_to have_button 'Select state'
     end
   end
 
@@ -115,7 +115,7 @@ RSpec.describe 'Merge requests > User mass updates', :js, feature_category: :cod
   def change_status(text)
     click_button 'Bulk edit'
     check 'Select all'
-    select_from_listbox(text, from: 'Select status')
+    select_from_listbox(text, from: 'Select state')
     click_update_merge_requests_button
   end
 

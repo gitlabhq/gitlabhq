@@ -19,13 +19,13 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
     sign_in(user)
   end
 
-  context 'status' do
+  context 'state' do
     it 'sets to closed', :js do
       visit project_issues_path(project)
 
       click_button 'Bulk edit'
       check 'Select all'
-      select_from_listbox('Closed', from: 'Select status')
+      select_from_listbox('Closed', from: 'Select state')
 
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)
@@ -37,7 +37,7 @@ RSpec.describe 'Multiple issue updating from issues#index', :js, feature_categor
 
       click_button 'Bulk edit'
       check 'Select all'
-      select_from_listbox('Open', from: 'Select status')
+      select_from_listbox('Open', from: 'Select state')
 
       click_update_issues_button
       expect(page).to have_selector('.issue', count: 0)

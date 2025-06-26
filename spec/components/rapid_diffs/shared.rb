@@ -24,6 +24,7 @@ RSpec.shared_context "with diff file component tests" do
     render_component
     expect(page).to have_selector(web_component_selector)
     expect(page).to have_selector("#{web_component_selector}-mounted")
+    expect(page).to have_selector("details[data-file-body]")
   end
 
   it "renders server data" do

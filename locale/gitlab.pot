@@ -12501,7 +12501,7 @@ msgstr ""
 msgid "Change severity"
 msgstr ""
 
-msgid "Change status"
+msgid "Change state"
 msgstr ""
 
 msgid "Change subscription"

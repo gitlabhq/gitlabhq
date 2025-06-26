@@ -73,11 +73,19 @@ export default class IssuableBulkUpdateSidebar {
     // runtime this block won't execute.
     if (IS_EE) {
       import('ee_else_ce/sidebar/mount_sidebar')
-        .then(({ mountEpicDropdown, mountHealthStatusDropdown, mountIterationDropdown }) => {
-          mountEpicDropdown();
-          mountHealthStatusDropdown();
-          mountIterationDropdown();
-        })
+        .then(
+          ({
+            mountEpicDropdown,
+            mountHealthStatusDropdown,
+            mountIterationDropdown,
+            mountSidebarCustomStatusWidget,
+          }) => {
+            mountEpicDropdown();
+            mountHealthStatusDropdown();
+            mountIterationDropdown();
+            mountSidebarCustomStatusWidget();
+          },
+        )
         .catch(() => {});
     }
   }

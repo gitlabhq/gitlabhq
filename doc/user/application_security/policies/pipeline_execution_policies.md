@@ -809,8 +809,6 @@ To ensure that both pipeline execution policies and scan execution policies are 
 - Consider using a different strategy for pipeline execution policies, such as `inject_policy`.
 - If you must use `override_project_ci`, include the scanner templates that you require in your pipeline execution policy to maintain the desired security scans.
 
-Support for improvements in the integration between these policy types is proposed in [issue 504434](https://gitlab.com/gitlab-org/gitlab/-/issues/504434).
-
 ## Examples
 
 These examples demonstrate what you can achieve with pipeline execution policies.

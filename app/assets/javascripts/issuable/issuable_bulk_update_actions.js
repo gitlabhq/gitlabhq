@@ -44,6 +44,7 @@ export default {
 
   getFormDataAsObject() {
     const assigneeIds = this.form.find('input[name="update[assignee_ids][]"]').val();
+    const statusId = this.form.find('input[name="update[status]"]')?.val();
     const formData = {
       update: {
         state_event: this.form.find('input[name="update[state_event]"]').val(),
@@ -58,6 +59,12 @@ export default {
         confidential: this.form.find('input[name="update[confidentiality]"]').val(),
       },
     };
+
+    if (statusId) {
+      // when the FF is disabled or license check fails the status dropdown is not visible
+      formData.update.status = statusId;
+    }
+
     if (assigneeIds) {
       formData.update.assignee_ids = [assigneeIds];
     }

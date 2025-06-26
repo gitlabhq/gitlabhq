@@ -206,7 +206,7 @@ not be replicated.
 {{< /alert >}}
 
 These instructions help set up a single PostgreSQL database, which creates a single point of failure. To avoid this, you can configure your own clustered
-PostgreSQL. Support for PostgreSQL replication and failover using the Linux package is proposed in [epic 7814](https://gitlab.com/groups/gitlab-org/-/epics/7814).
+PostgreSQL.
 Clustered database support for other databases (for example, Praefect and Geo databases) is proposed in
 [issue 7292](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/7292).
 

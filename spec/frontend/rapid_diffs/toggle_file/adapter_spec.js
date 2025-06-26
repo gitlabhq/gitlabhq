@@ -37,7 +37,7 @@ describe('Diff File Toggle Behavior', () => {
             <button data-opened="" data-click="toggleFile" aria-label="Hide file contents" type="button"></button>
             <button data-closed="" data-click="toggleFile" aria-label="Show file contents" type="button"></button>
           </div>
-          <div data-file-body=""><!-- body content --></div>
+          <details open data-file-body=""><summary></summary><div><!-- body content --></div></details>
         </div>
       </diff-file>
     `;
@@ -67,19 +67,19 @@ describe('Diff File Toggle Behavior', () => {
 
     delegatedClick(hide);
 
-    expect(body.hidden).toEqual(true);
+    expect(body.open).toEqual(false);
     expect(document.activeElement).toEqual(show);
   });
 
   it('collapses file', () => {
     get('file').trigger(COLLAPSE_FILE);
-    expect(get('body').hidden).toEqual(true);
+    expect(get('body').open).toEqual(false);
     expect(get('file').diffElement.dataset.collapsed).toEqual('true');
   });
 
   it('expands file', () => {
     get('file').trigger(EXPAND_FILE);
-    expect(get('body').hidden).toEqual(false);
+    expect(get('body').open).toEqual(true);
     expect(get('file').diffElement.dataset.collapsed).not.toEqual('true');
   });
 
@@ -98,5 +98,11 @@ describe('Diff File Toggle Behavior', () => {
     expect(get('hide').style.transition).toBe('none');
     tick();
     expect(get('hide').style.transition).toBe('');
+  });
+
+  it('removes events listeners from body', () => {
+    const spy = jest.spyOn(get('body'), 'removeEventListener');
+    get('file').remove();
+    expect(spy).toHaveBeenCalledWith('toggle', expect.any(Function));
   });
 });
