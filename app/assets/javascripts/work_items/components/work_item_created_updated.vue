@@ -1,5 +1,4 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlAvatarLink, GlSprintf, GlLoadingIcon } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
@@ -40,7 +39,6 @@ export default {
   data() {
     return {
       workItem: {},
-      userPopoverId: uniqueId('user-popover-'),
     };
   },
   computed: {
@@ -128,7 +126,7 @@ export default {
       show-text
       icon-class="gl-fill-icon-subtle"
     />
-    <span :id="userPopoverId" data-testid="work-item-created" class="gl-align-middle">
+    <span data-testid="work-item-created" class="gl-align-middle">
       <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />

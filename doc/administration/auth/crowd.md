@@ -28,15 +28,15 @@ this provider also allows Crowd authentication for Git-over-https requests.
    - Linux package installations:
 
      ```shell
-       sudo editor /etc/gitlab/gitlab.rb
+     sudo editor /etc/gitlab/gitlab.rb
      ```
 
    - Self-compiled installations:
 
      ```shell
-       cd /home/git/gitlab
+     cd /home/git/gitlab
 
-       sudo -u git -H editor config/gitlab.yml
+     sudo -u git -H editor config/gitlab.yml
      ```
 
 1. Configure the [common settings](../../integration/omniauth.md#configure-common-settings)

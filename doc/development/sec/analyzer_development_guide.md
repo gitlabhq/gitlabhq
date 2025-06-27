@@ -395,10 +395,10 @@ Assuming the current analyzer release is `v{N}`:
    - Merge non-breaking changes to the `default` branch (aka `master` or `main`)
    - Merge breaking changes to the `v{N+1}` branch, and create a separate `release candidate` entry in the `CHANGELOG.md` file for each change:
 
-      ```markdown
-      ## v{N+1}.0.0-rc.0
-      - some breaking change (!123)
-      ```
+     ```markdown
+     ## v{N+1}.0.0-rc.0
+     - some breaking change (!123)
+     ```
 
       Using `release candidates` allows us to release **all breaking changes in a single major version bump**, which follows the [semver guidance](https://semver.org) of only making breaking changes in a major version update.
 

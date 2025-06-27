@@ -352,20 +352,20 @@ scheduled after the background migration has completed, which could be several r
    Run the command `\d+ table_name` and ensure that `NOT VALID` has been removed from the check constraint definition.
    - Add the migration to validate the `NOT NULL` constraint:
 
-      ```ruby
-      # db/post_migrate/
-      class ValidateMergeRequestDiffsProjectIdNullConstraint < Gitlab::Database::Migration[2.2]
-        milestone '16.10'
+     ```ruby
+     # db/post_migrate/
+     class ValidateMergeRequestDiffsProjectIdNullConstraint < Gitlab::Database::Migration[2.2]
+       milestone '16.10'
 
-        def up
-          validate_not_null_constraint :merge_request_diffs, :project_id
-        end
+       def up
+         validate_not_null_constraint :merge_request_diffs, :project_id
+       end
 
-        def down
-          # no-op
-        end
-      end
-      ```
+       def down
+         # no-op
+       end
+     end
+     ```
 
 For these cases, consult the database team early in the update cycle. The `NOT NULL`
 constraint may not be required or other options could exist that do not affect really large

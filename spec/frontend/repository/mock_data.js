@@ -338,8 +338,12 @@ export const createCommitData = ({ pipelineEdges = defaultPipelineEdges, signatu
             descriptionHtml: '',
             message: '',
             webPath: '/commit/123',
+            committerName: 'Test Committer',
+            committerEmail: 'testcommitter@example.com',
+            committedDate: '2019-02-02',
             authoredDate: '2019-01-01',
             authorName: 'Test',
+            authorEmail: 'testauthor@example.com',
             authorGravatar: 'https://test.com',
             author: {
               __typename: 'UserCore',

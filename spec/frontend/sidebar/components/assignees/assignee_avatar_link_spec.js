@@ -28,7 +28,7 @@ describe('AssigneeAvatarLink component', () => {
   it('has the root url present in the assigneeUrl method', () => {
     createComponent();
 
-    expect(wrapper.findComponent(GlLink).attributes().href).toEqual(userDataMock().web_url);
+    expect(wrapper.attributes().href).toEqual(userDataMock().web_url);
   });
 
   it('renders assignee avatar', () => {

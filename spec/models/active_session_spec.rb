@@ -11,7 +11,7 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
   end
 
   let(:rack_session) { Rack::Session::SessionId.new('6919a6f1bb119dd7396fadc38fd18d0d') }
-  let(:session) { instance_double(ActionDispatch::Request::Session, id: rack_session, '[]': {}) }
+  let(:session) { instance_double(ActionDispatch::Request::Session, id: rack_session, '[]': {}, dig: {}) }
 
   let(:request) do
     double(:request, {
@@ -234,6 +234,8 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
   end
 
   describe '.set' do
+    subject(:set_request) { described_class.set(user, request) }
+
     it 'sets a new redis entry for the user session and a lookup entry' do
       described_class.set(user, request)
 
@@ -262,7 +264,8 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
           device_name: 'iPhone 6',
           device_type: 'smartphone',
           created_at: eq(time),
-          updated_at: eq(time)
+          updated_at: eq(time),
+          step_up_authenticated: false
         )
       end
     end
@@ -284,6 +287,38 @@ RSpec.describe ActiveSession, :clean_gitlab_redis_sessions, feature_category: :s
           created_at: eq(created_at),
           updated_at: eq(updated_at)
         )
+      end
+    end
+
+    context 'when the request session is step-up authenticated' do
+      it 'sets step_up_authenticated in the active_user_session' do
+        expect(::Gitlab::Auth::Oidc::StepUpAuthentication)
+          .to receive(:succeeded?).with(session).and_return(true)
+
+        set_request
+
+        new_session = described_class.list(user).first
+
+        expect(new_session).to have_attributes(step_up_authenticated: true)
+      end
+
+      context 'for session key step_up_authenticated' do
+        context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+          before do
+            stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+          end
+
+          it 'does not set the step-up authenticated' do
+            allow(::Gitlab::Auth::Oidc::StepUpAuthentication)
+              .to receive(:succeeded?).with(session).and_return(true)
+
+            set_request
+
+            new_session = described_class.list(user).first
+
+            expect(new_session).to have_attributes(step_up_authenticated: false)
+          end
+        end
       end
     end
   end

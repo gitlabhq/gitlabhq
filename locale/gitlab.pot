@@ -629,6 +629,12 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
+msgid "%{author} authored %{authoredDate}"
+msgstr ""
+
+msgid "%{author} authored %{authoredDate} and %{committer} committed %{committedDate}"
+msgstr ""
+
 msgid "%{author} commented %{time}"
 msgstr ""
 
@@ -3476,6 +3482,9 @@ msgid "Active pipeline trigger tokens"
 msgstr ""
 
 msgid "Active project access tokens"
+msgstr ""
+
+msgid "ActiveSessions|with Step-up Authentication"
 msgstr ""
 
 msgid "Activity"
@@ -23392,7 +23401,7 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Agent Flow"
+msgid "DuoAgentsPlatform|Agent flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Agents"
@@ -23408,6 +23417,12 @@ msgid "DuoAgentsPlatform|Failed to fetch workflows"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Fetching logs..."
+msgstr ""
+
+msgid "DuoAgentsPlatform|ID"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Name"
 msgstr ""
 
 msgid "DuoAgentsPlatform|New"
@@ -23447,6 +23462,9 @@ msgid "DuoAgentsPlatform|Start Agent Flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Unknown"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Updated"
@@ -27616,6 +27634,9 @@ msgid_plural "Geo|%d shards selected"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Geo|%{actionName} was scheduled successfully"
+msgstr ""
+
 msgid "Geo|%{label} %{timeAgo}"
 msgstr ""
 
@@ -28054,9 +28075,6 @@ msgstr ""
 msgid "Geo|Resync all %{type}"
 msgstr ""
 
-msgid "Geo|Reverification was scheduled successfully"
-msgstr ""
-
 msgid "Geo|Reverify"
 msgstr ""
 
@@ -28177,6 +28195,9 @@ msgstr ""
 msgid "Geo|There was an error deleting the Geo Site"
 msgstr ""
 
+msgid "Geo|There was an error executing the %{actionName} mutation"
+msgstr ""
+
 msgid "Geo|There was an error fetching the %{replicableType}. The GraphQL API call to the secondary may have failed."
 msgstr ""
 
@@ -28190,9 +28211,6 @@ msgid "Geo|There was an error fetching the Sites's Groups"
 msgstr ""
 
 msgid "Geo|There was an error fetching this replicable's details"
-msgstr ""
-
-msgid "Geo|There was an error reverifying this replicable"
 msgstr ""
 
 msgid "Geo|There was an error saving this Geo Site"

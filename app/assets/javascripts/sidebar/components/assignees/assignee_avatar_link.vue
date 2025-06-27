@@ -1,5 +1,4 @@
 <script>
-import { uniqueId } from 'lodash';
 import { GlTooltipDirective, GlLink } from '@gitlab/ui';
 import { TYPE_ISSUE, TYPE_MERGE_REQUEST } from '~/issues/constants';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -24,11 +23,6 @@ export default {
       required: false,
     },
   },
-  data() {
-    return {
-      userPopoverId: uniqueId('user-popover-'),
-    };
-  },
   computed: {
     isMergeRequest() {
       return this.issuableType === TYPE_MERGE_REQUEST;
@@ -49,20 +43,18 @@ export default {
 
 <template>
   <!-- must be `gl-inline-block` or parent flex-basis causes width issues -->
-  <span :id="userPopoverId" class="gl-inline-block">
-    <gl-link
-      :href="assigneeUrl"
-      :data-user-id="assigneeId"
-      :data-username="user.username"
-      :data-cannot-merge="cannotMerge"
-      data-placement="left"
-      class="js-user-link"
-    >
-      <!-- use gl-flex so that slot can be appropriately styled -->
-      <span class="gl-flex">
-        <assignee-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
-        <slot></slot>
-      </span>
-    </gl-link>
-  </span>
+  <gl-link
+    :href="assigneeUrl"
+    :data-user-id="assigneeId"
+    :data-username="user.username"
+    :data-cannot-merge="cannotMerge"
+    data-placement="left"
+    class="js-user-link gl-inline-block"
+  >
+    <!-- use gl-flex so that slot can be appropriately styled -->
+    <span class="gl-flex">
+      <assignee-avatar :user="user" :img-size="24" :issuable-type="issuableType" />
+      <slot></slot>
+    </span>
+  </gl-link>
 </template>

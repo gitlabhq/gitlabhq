@@ -88,15 +88,15 @@ sequenceDiagram
    - `elapsed` - Amount of time which passed since Service Ping report process started and moment of error occurrence
    - `message` - Error message
 
-    ```ruby
-    {
-      "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
-      "hostname"=>"127.0.0.1",
-      "version"=>"14.7.0-pre",
-      "elapsed"=>0.006946,
-      "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
-    }
-    ```
+     ```ruby
+     {
+       "uuid"=>"02333324-1cd7-4c3b-a45b-a4993f05fb1d",
+       "hostname"=>"127.0.0.1",
+       "version"=>"14.7.0-pre",
+       "elapsed"=>0.006946,
+       "message"=>'PG::UndefinedColumn: ERROR:  column \"non_existent_attribute\" does not exist\nLINE 1: SELECT COUNT(non_existent_attribute) FROM \"issues\" /*applica...'
+     }
+     ```
 
 1. Finally, the timing metadata information that is used for diagnostic purposes is submitted to the Versions application. It consists of a list of metric identifiers and the time it took to calculate the metrics:
 

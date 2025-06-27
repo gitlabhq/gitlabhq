@@ -144,7 +144,7 @@ To decide if the service is available or visible to the end user, we need to:
   ```ruby
     # Returns whether the service is free to access (no addon purchases is required)
     CloudConnector::AvailableServices.find_by_name(:new_feature).free_access?
-   ```
+  ```
 
 - Optional. If the service has free access, this usually means that the experimental features are subject to the [Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
   - For GitLab Duo features, the customer needs to enable [experimental toggle](../../user/gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) in order to use experimental features for free.

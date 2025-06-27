@@ -153,3 +153,86 @@ GitLab 18.0, you should move to Raspberry Pi OS (64 bit) and use the
 
 For information on backing up data on a 32-bit OS and restoring it to a 64-bit
 OS, see [Upgrading operating systems for PostgreSQL](../../administration/postgresql/upgrading_os.md).
+
+## Uninstall the Linux package
+
+To uninstall the Linux package, you can opt to either keep your data (repositories,
+database, configuration) or remove all of them:
+
+1. Optional. To remove
+   [all users and groups created by the Linux package](https://docs.gitlab.com/omnibus/settings/configuration/#disable-user-and-group-account-management)
+   before removing the package:
+
+   ```shell
+   sudo gitlab-ctl stop && sudo gitlab-ctl remove-accounts
+   ```
+
+   {{< alert type="note" >}}
+
+   If you have a problem removing accounts or groups, run `userdel` or `groupdel` manually
+   to delete them. You might also want to manually remove the leftover user home directories
+   from `/home/`.
+
+   {{< /alert >}}
+
+1. Choose whether to keep your data or remove all of them:
+
+   - To preserve your data (repositories, database, configuration), stop GitLab and
+     remove its supervision process:
+
+     ```shell
+     sudo systemctl stop gitlab-runsvdir
+     sudo systemctl disable gitlab-runsvdir
+     sudo rm /usr/lib/systemd/system/gitlab-runsvdir.service
+     sudo systemctl daemon-reload
+     sudo systemctl reset-failed
+     sudo gitlab-ctl uninstall
+     ```
+
+   - To remove all data:
+
+     ```shell
+     sudo gitlab-ctl cleanse && sudo rm -r /opt/gitlab
+     ```
+
+1. Uninstall the package (replace with `gitlab-ce` if you have GitLab FOSS installed):
+
+   {{< tabs >}}
+
+   {{< tab title="apt" >}}
+
+   ```shell
+   # Debian/Ubuntu
+   sudo apt remove gitlab-ee
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="dnf" >}}
+
+   ```shell
+   # AlmaLinux/RHEL/Oracle Linux/Amazon Linux 2023
+   sudo dnf remove gitlab-ee
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="zypper" >}}
+
+   ```shell
+   # OpenSUSE Leap/SLES
+   sudo zypper remove gitlab-ee
+   ```
+
+   {{< /tab >}}
+
+   {{< tab title="yum" >}}
+
+   ```shell
+   # Amazon Linux 2
+   sudo yum remove gitlab-ee
+   ```
+
+   {{< /tab >}}
+
+   {{< /tabs >}}

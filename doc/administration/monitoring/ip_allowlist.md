@@ -42,7 +42,9 @@ gitlab:
       monitoring:
          # Monitoring IP allowlist
          ipWhitelist:
-         - 0.0.0.0/0 # Default
+         # Defaults
+         - 0.0.0.0/0
+         - ::/0
 ```
 
 {{< /tab >}}

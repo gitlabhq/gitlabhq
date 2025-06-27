@@ -84,19 +84,19 @@ To enable the analyzer, you must:
 and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 
   ```yaml
-    include:
-      - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+  include:
+    - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
 
-    variables:
-      DS_ENFORCE_NEW_ANALYZER: 'true'
+  variables:
+    DS_ENFORCE_NEW_ANALYZER: 'true'
   ```
 
 - Use the [Scan Execution Policies](../../policies/scan_execution_policies.md) with the `latest` template and enforce the new Dependency Scanning analyzer by setting the CI/CD variable `DS_ENFORCE_NEW_ANALYZER` to `true`.
 - Use the [Dependency Scanning CI/CD component](https://gitlab.com/explore/catalog/components/dependency-scanning)
 
   ```yaml
-    include:
-      - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
+  include:
+    - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
   ```
 
 #### Language-specific instructions
@@ -190,7 +190,6 @@ build:
   artifacts:
     paths:
       - "**/dependencies.lock"
-
 ```
 
 ###### HtmlDependencyReportTask
@@ -233,7 +232,6 @@ build:
   artifacts:
     paths:
       - "**/gradle-html-dependency-report.js"
-
 ```
 
 The command above uses the `report.gradle` file and can be supplied through `--init-script` or its contents can be added to `build.gradle` directly:
@@ -290,7 +288,6 @@ build:
     paths:
       - "**/*.jar"
       - "**/maven.graph.json"
-
 ```
 
 ##### pip
@@ -323,7 +320,6 @@ build:
     when: on_success
     access: developer
     paths: ["**/pipdeptree.json"]
-
 ```
 
 ##### Pipenv
@@ -356,7 +352,6 @@ build:
     when: on_success
     access: developer
     paths: ["**/pipenv.graph.json"]
-
 ```
 
 ##### sbt
@@ -388,7 +383,6 @@ build:
     when: on_success
     access: developer
     paths: ["**/dependencies-compile.dot"]
-
 ```
 
 ## Understanding the results
@@ -546,7 +540,7 @@ The following variables allow configuration of global dependency scanning settin
 
 To override a job definition declare a new job with the same name as the one to override.
 Place this new job after the template inclusion and specify any additional keys under it.
-For example, this configures the  `dependencies: []` attribute for the dependency-scanning job:
+For example, this configures the `dependencies: []` attribute for the dependency-scanning job:
 
 ```yaml
 include:
@@ -565,11 +559,11 @@ When using the Dependency Scanning CI/CD component, the analyzer can be customiz
 The dependency scanning using SBOM approach relies on two distinct phases:
 
 - First, the dependency detection phase that focuses solely on creating a comprehensive inventory of your
-project’s dependencies and their relationship (dependency graph). This inventory is captured in an SBOM (Software Bill of Materials)
-document.
+  project's dependencies and their relationship (dependency graph). This inventory is captured in an SBOM (Software Bill of Materials)
+  document.
 - Second, after the CI/CD pipeline completes, the GitLab platform processes your SBOM report and performs
-a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. It is the same scanner
-that provides [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
+  a thorough security analysis using the built-in GitLab SBOM Vulnerability Scanner. It is the same scanner
+  that provides [Continuous Vulnerability Scanning](../../continuous_vulnerability_scanning/_index.md).
 
 This separation of concerns and the modularity of this architecture allows to better support customers through expansion
 of language support, a tighter integration and experience within the GitLab platform, and a shift towards industry standard

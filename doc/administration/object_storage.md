@@ -1452,6 +1452,19 @@ ENV['DEBUG'] = "1"
 
 {{< /tabs >}}
 
+### Reset the Geo tracking database to ensure full objects consistency
+
+Assume the following Geo scenario:
+
+- An environment consists of a Geo primary and secondary node.
+- You [migrated to object storage](#migrate-to-object-storage) on the primary.
+  - The secondary uses separate object storage buckets.
+  - The option "Allow this secondary site to replicate content on Object Storage" is activated.
+
+Such migrations can cause objects to be marked as synced in the tracking database while being physically missing from object storage.
+In that case, [Reset your Geo secondary site replication](geo/replication/troubleshooting/synchronization_verification.md#resetting-geo-secondary-site-replication)
+to ensure objects state remains consistent post migration.
+
 ### Inconsistencies after migrating to object storage
 
 Data inconsistencies can occur when migrating from local to object storage.

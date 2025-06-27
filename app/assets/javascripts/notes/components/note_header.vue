@@ -156,21 +156,20 @@ export default {
         data-testid="author-name"
         v-text="authorName"
       ></span>
-      <span v-else>
-        <a
-          ref="authorNameLink"
-          :href="authorHref"
-          :class="authorLinkClasses"
-          :data-user-id="authorId"
-          :data-username="author.username"
-        >
-          <span
-            class="note-header-author-name gl-font-bold"
-            data-testid="author-name"
-            v-text="authorName"
-          ></span>
-        </a>
-      </span>
+      <a
+        v-else
+        ref="authorNameLink"
+        :href="authorHref"
+        :class="authorLinkClasses"
+        :data-user-id="authorId"
+        :data-username="author.username"
+      >
+        <span
+          class="note-header-author-name gl-font-bold"
+          data-testid="author-name"
+          v-text="authorName"
+        ></span>
+      </a>
       <span
         v-if="!isSystemNote && !emailParticipant"
         class="text-nowrap author-username -gl-m-2 gl-mr-0 gl-hidden gl-truncate gl-p-2 md:gl-inline"

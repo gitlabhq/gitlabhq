@@ -275,7 +275,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           limit: 10
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 10 elements' do
@@ -294,7 +294,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           limit: 10
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 10 elements' do
@@ -314,7 +314,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           offset: 1
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 3 elements' do
@@ -335,7 +335,7 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
           offset: 1
         )
 
-        commits.map { |c| c.id }
+        commits.map(&:id)
       end
 
       it 'has 3 elements' do

@@ -293,6 +293,56 @@ RSpec.describe Admin::SessionsController, :do_not_mock_admin_mode, feature_categ
         expect(response).to redirect_to(root_path)
         expect(controller.current_user_mode.admin_mode?).to be(false)
       end
+
+      context 'for step-up authenticated admin users' do
+        let(:session_with_step_up_auth_data) do
+          {
+            'omniauth_step_up_auth' => {
+              'openid_connect' => {
+                'admin_mode' => { 'state' => 'succeeded' },
+                'other_scope' => { 'state' => 'succeeded' }
+              },
+              'other_provider' => {
+                'admin_mode' => { 'state' => 'failed' }
+              }
+            }
+          }
+        end
+
+        subject(:response) { delete :destroy, session: session_with_step_up_auth_data }
+
+        before do
+          get :new
+
+          post :create, params: { user: { password: user.password } }
+        end
+
+        it 'calls disable_step_up_authentication! for OIDC step-up' do
+          expect(::Gitlab::Auth::Oidc::StepUpAuthentication)
+            .to receive(:disable_step_up_authentication!).and_call_original
+
+          response
+
+          expect(request.session.dig('omniauth_step_up_auth', 'openid_connect')).not_to have_key('admin_mode')
+        end
+
+        it { is_expected.to redirect_to(root_path) }
+
+        context 'when feature flag :omniauth_step_up_auth_for_admin_mode is disabled' do
+          before do
+            stub_feature_flags(omniauth_step_up_auth_for_admin_mode: false)
+          end
+
+          it 'does not call disable_step_up_authentication!' do
+            expect(::Gitlab::Auth::Oidc::StepUpAuthentication)
+              .not_to receive(:disable_step_up_authentication!).and_call_original
+
+            response
+
+            expect(request.session.dig('omniauth_step_up_auth', 'openid_connect')).to have_key('admin_mode')
+          end
+        end
+      end
     end
   end
 end

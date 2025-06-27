@@ -1,4 +1,4 @@
-import { GlAvatar, GlIcon, GlLink } from '@gitlab/ui';
+import { GlAvatar, GlIcon } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
 import { trimText } from 'helpers/text_helper';
 import UsersMockHelper from 'helpers/user_mock_data_helper';
@@ -6,8 +6,6 @@ import Assignee from '~/sidebar/components/assignees/assignees.vue';
 import AssigneeAvatarLink from '~/sidebar/components/assignees/assignee_avatar_link.vue';
 import CollapsedAssigneeList from '~/sidebar/components/assignees/collapsed_assignee_list.vue';
 import UsersMock from '../../mock_data';
-
-jest.mock('lodash/uniqueId', () => (x) => `${x}1`);
 
 describe('Assignee component', () => {
   const getDefaultProps = () => ({
@@ -184,11 +182,6 @@ describe('Assignee component', () => {
 
       expect(userItems).toHaveLength(3);
       expect(userItems.at(0).attributes()).toMatchObject({
-        class: 'gl-inline-block gl-break-anywhere',
-        id: 'user-popover-1',
-      });
-
-      expect(userItems.at(0).findComponent(GlLink).attributes()).toMatchObject({
         'data-user-id': `${users[2].id}`,
         'data-username': users[2].username,
       });

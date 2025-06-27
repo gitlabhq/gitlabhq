@@ -226,43 +226,43 @@ and run the image:
 
    - If you are not on SELinux, run this command:
 
-      ```shell
-      sudo docker run --detach \
-        --hostname gitlab.example.com \
-        --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com'" \
-        --publish 443:443 --publish 80:80 --publish 22:22 \
-        --name gitlab \
-        --restart always \
-        --volume $GITLAB_HOME/config:/etc/gitlab \
-        --volume $GITLAB_HOME/logs:/var/log/gitlab \
-        --volume $GITLAB_HOME/data:/var/opt/gitlab \
-        --shm-size 256m \
-        gitlab/gitlab-ee:<version>-ee.0
-      ```
+     ```shell
+     sudo docker run --detach \
+       --hostname gitlab.example.com \
+       --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com'" \
+       --publish 443:443 --publish 80:80 --publish 22:22 \
+       --name gitlab \
+       --restart always \
+       --volume $GITLAB_HOME/config:/etc/gitlab \
+       --volume $GITLAB_HOME/logs:/var/log/gitlab \
+       --volume $GITLAB_HOME/data:/var/opt/gitlab \
+       --shm-size 256m \
+       gitlab/gitlab-ee:<version>-ee.0
+     ```
 
-      This command downloads and starts a GitLab container, and
-      [publishes ports](https://docs.docker.com/network/#published-ports) needed to
-      access SSH, HTTP and HTTPS. All GitLab data are stored as subdirectories of
-      `$GITLAB_HOME`. The container automatically restarts after a system reboot.
+     This command downloads and starts a GitLab container, and
+     [publishes ports](https://docs.docker.com/network/#published-ports) needed to
+     access SSH, HTTP and HTTPS. All GitLab data are stored as subdirectories of
+     `$GITLAB_HOME`. The container automatically restarts after a system reboot.
 
    - If you are on SELinux, then run this instead:
 
      ```shell
-      sudo docker run --detach \
-        --hostname gitlab.example.com \
-        --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com'" \
-        --publish 443:443 --publish 80:80 --publish 22:22 \
-        --name gitlab \
-        --restart always \
-        --volume $GITLAB_HOME/config:/etc/gitlab:Z \
-        --volume $GITLAB_HOME/logs:/var/log/gitlab:Z \
-        --volume $GITLAB_HOME/data:/var/opt/gitlab:Z \
-        --shm-size 256m \
-        gitlab/gitlab-ee:<version>-ee.0
-      ```
+     sudo docker run --detach \
+       --hostname gitlab.example.com \
+       --env GITLAB_OMNIBUS_CONFIG="external_url 'http://gitlab.example.com'" \
+       --publish 443:443 --publish 80:80 --publish 22:22 \
+       --name gitlab \
+       --restart always \
+       --volume $GITLAB_HOME/config:/etc/gitlab:Z \
+       --volume $GITLAB_HOME/logs:/var/log/gitlab:Z \
+       --volume $GITLAB_HOME/data:/var/opt/gitlab:Z \
+       --shm-size 256m \
+       gitlab/gitlab-ee:<version>-ee.0
+     ```
 
-      This command ensures that the Docker process has enough permissions to create the configuration
-      files in the mounted volumes.
+     This command ensures that the Docker process has enough permissions to create the configuration
+     files in the mounted volumes.
 
 1. If you're using the [Kerberos integration](../../integration/kerberos.md),
 you must also publish your Kerberos port (for example, `--publish 8443:8443`).
