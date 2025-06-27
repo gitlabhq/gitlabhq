@@ -2,7 +2,7 @@ import renderGlqlNodes from '~/glql';
 import { stubCrypto } from 'helpers/crypto';
 
 jest.mock('~/lib/graphql');
-jest.mock('~/glql/core/parser/query');
+jest.mock('~/glql/core/parser');
 
 describe('renderGlqlNodes', () => {
   stubCrypto();

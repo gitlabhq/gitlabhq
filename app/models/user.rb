@@ -696,6 +696,14 @@ class User < ApplicationRecord
     project_bot.joins(:user_detail).where(user_detail: { bot_namespace_id: namespace_ids })
   end
 
+  scope :with_incoming_email_token, ->(token_values) do
+    where(incoming_email_token: Array.wrap(token_values))
+  end
+
+  scope :with_feed_token, ->(token_values) do
+    where(feed_token: Array.wrap(token_values))
+  end
+
   def self.supported_keyset_orderings
     {
       id: [:asc, :desc],

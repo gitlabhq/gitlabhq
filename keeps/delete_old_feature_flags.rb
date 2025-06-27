@@ -50,23 +50,46 @@ module Keeps
     end
 
     def can_remove_ff?(feature_flag, identifiers, latest_feature_flag_status)
-      intended_to_rollout_by_date = feature_flag.intended_to_rollout_by
-      if intended_to_rollout_by_date.present?
-        rollout_date = parse_date(intended_to_rollout_by_date)
-        if !rollout_date.nil? && rollout_date.future?
-          @logger.puts "#{feature_flag.name} cannot be removed, intended rollout date is #{intended_to_rollout_by_date}"
-          return false
-        elsif rollout_date.nil?
-          message = "#{feature_flag.name} intended_to_rollout_by #{intended_to_rollout_by_date}"
-          @logger.puts "#{message}, is ignored as it cannot be parsed."
-        end
+      return false unless valid_feature_flag_status?(feature_flag, latest_feature_flag_status)
+
+      # Check if feature flag has ready for removal label - this bypasses most validation checks
+      if has_ready_for_removal_label?(feature_flag)
+        @logger.puts "#{feature_flag.name} has 'feature flag::ready for removal' label, bypassing validation checks"
+        return true
       end
 
-      if feature_flag.milestone.nil?
-        @logger.puts "#{feature_flag.name} has no milestone set!"
+      return false unless valid_rollout_date?(feature_flag)
+      return false unless valid_milestone?(feature_flag)
+      return false unless within_milestone_cutoff?(feature_flag, latest_feature_flag_status)
+      return false unless matches_filter_identifiers?(identifiers)
+
+      true
+    end
+
+    def valid_rollout_date?(feature_flag)
+      intended_to_rollout_by_date = feature_flag.intended_to_rollout_by
+      return true unless intended_to_rollout_by_date.present?
+
+      rollout_date = parse_date(intended_to_rollout_by_date)
+      if rollout_date.nil?
+        message = "#{feature_flag.name} intended_to_rollout_by #{intended_to_rollout_by_date}"
+        @logger.puts "#{message}, is ignored as it cannot be parsed."
+      elsif rollout_date.future?
+        @logger.puts "#{feature_flag.name} cannot be removed, intended rollout date is #{intended_to_rollout_by_date}"
         return false
       end
 
+      true
+    end
+
+    def valid_milestone?(feature_flag)
+      return true unless feature_flag.milestone.nil?
+
+      @logger.puts "#{feature_flag.name} has no milestone set!"
+      false
+    end
+
+    def valid_feature_flag_status?(feature_flag, latest_feature_flag_status)
       if latest_feature_flag_status.nil?
         @logger.puts "#{feature_flag.name} cannot be removed as we cannot get the status from the rollout issue."
         return false
@@ -77,29 +100,43 @@ module Keeps
         return false
       end
 
+      true
+    end
+
+    def within_milestone_cutoff?(feature_flag, latest_feature_flag_status)
       cutoff = if latest_feature_flag_status == :disabled
                  CUTOFF_MILESTONE_FOR_DISABLED_FLAG
                else
                  CUTOFF_MILESTONE_FOR_ENABLED_FLAG
                end
 
-      unless milestones_helper.before_cuttoff?(milestone: feature_flag.milestone, milestones_ago: cutoff)
-        @logger.puts "#{feature_flag.name} cannot be removed as it is after the cutoff."
-        return false
-      end
+      return true if milestones_helper.before_cuttoff?(milestone: feature_flag.milestone, milestones_ago: cutoff)
 
-      unless matches_filter_identifiers?(identifiers)
-        @logger.puts "#{feature_flag.name} cannot be removed as it is not matching passed filter."
-        return false
-      end
-
-      true
+      @logger.puts "#{feature_flag.name} cannot be removed as it is after the cutoff."
+      false
     end
 
     # rubocop:disable Gitlab/DocumentationLinks/HardcodedUrl -- Not running inside rails application
     def build_description(feature_flag, latest_feature_flag_status)
+      ready_for_removal = has_ready_for_removal_label?(feature_flag)
+
+      introduction_text = if ready_for_removal
+                            "This feature flag was introduced in #{feature_flag.milestone} and has been " \
+                              "marked as ready for removal with the `~\"feature flag::ready for removal\"` " \
+                              "label, bypassing the standard milestone cutoff requirements."
+                          else
+                            cutoff_count = if latest_feature_flag_status == :enabled
+                                             CUTOFF_MILESTONE_FOR_ENABLED_FLAG
+                                           else
+                                             CUTOFF_MILESTONE_FOR_DISABLED_FLAG
+                                           end
+
+                            "This feature flag was introduced in #{feature_flag.milestone}, which is " \
+                              "more than #{cutoff_count} milestones ago."
+                          end
+
       <<~MARKDOWN
-      This feature flag was introduced in #{feature_flag.milestone}, which is more than #{latest_feature_flag_status == :enabled ? CUTOFF_MILESTONE_FOR_ENABLED_FLAG : CUTOFF_MILESTONE_FOR_DISABLED_FLAG} milestones ago.
+      #{introduction_text}
 
       As part of our process we want to ensure [feature flags don't stay too long in the codebase](https://docs.gitlab.com/ee/development/feature_flags/#types-of-feature-flags).
 
@@ -118,7 +155,8 @@ module Keeps
       It is possible that this MR will still need some changes to remove references to the feature flag in the code.
       At the moment the `gitlab-housekeeper` is not always capable of removing all references so you must check the diff and pipeline failures to confirm if there are any issues.
       It is the responsibility of ~"#{feature_flag.group}" to push those changes to this branch.
-      If they are already removing this feature flag in another merge request then they can just close this merge request and add `intended_to_rollout_by` date in the yml file.
+
+      **Note:** If you do not want to remove this feature flag at this time, you can add an `intended_to_rollout_by_date` attribute in the feature flag YAML file to prevent automated removal.
 
       ## TODO for the reviewers before merging this MR
       - [ ] See the status of the rollout by checking #{feature_flag_rollout_issue_url(feature_flag)}, #{format(FEATURE_FLAG_LOG_ISSUES_URL, feature_flag_name: feature_flag.name)}
@@ -139,6 +177,7 @@ module Keeps
       change.changelog_type = 'removed'
       change.title = "Delete the `#{feature_flag.name}` feature flag"
       change.identifiers = identifiers
+      change.description = build_description(feature_flag, latest_feature_flag_status)
 
       FileUtils.rm(feature_flag.path)
       change.changed_files = [feature_flag.path]
@@ -151,8 +190,6 @@ module Keeps
         change.abort!
         return change
       end
-
-      change.description = build_description(feature_flag, latest_feature_flag_status)
 
       change.labels = [
         'automation:feature-flag-removal',
@@ -208,7 +245,6 @@ module Keeps
 
         unless user_message
           @logger.puts "#{feature_flag.name}: No prompt generated for #{file}, skipping"
-          failed_files << file
           next
         end
 
@@ -230,7 +266,6 @@ module Keeps
       end
 
       if failed_files.any?
-        @logger.puts "#{feature_flag.name}: Successfully processed #{success_count} files"
         @logger.puts "failed on #{failed_files.size} files"
         @logger.puts "Failed files: #{failed_files.join(', ')}"
       end
@@ -293,12 +328,27 @@ module Keeps
       )
       # rubocop:enable Gitlab/HttpV2
 
-      unless (200..299).cover?(response.code)
-        raise Error,
+      unless response.success?
+        @logger.puts(
           "Get URL: #{rollout_issue_url} Failed with response code: #{response.code} and body:\n#{response.body}"
+        )
+        return
       end
 
       Gitlab::Json.parse(response.body, symbolize_names: true)
+    end
+
+    def has_ready_for_removal_label?(feature_flag)
+      rollout_issue_url = feature_flag_rollout_issue_url(feature_flag)
+      return false if rollout_issue_url == MISSING_URL_PLACEHOLDER
+
+      rollout_issue = get_rollout_issue(rollout_issue_url)
+      return false unless rollout_issue
+
+      rollout_issue[:labels].any?('feature flag::ready for removal')
+    rescue StandardError => e
+      @logger.puts "Error checking ready for removal label for #{feature_flag.name}: #{e.message}"
+      false
     end
 
     def get_latest_feature_flag_status(feature_flag)

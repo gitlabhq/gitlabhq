@@ -142,12 +142,7 @@
   z-index: constants.$diff-file-line-number-z-index;
 }
 
-.rd-line-number:target,
-.rd-line-number:target ~ .rd-line-number {
-  --rd-adjacent-line-border-color: var(--rd-line-border-color);
-}
-
-.rd-hunk-lines:has(> .rd-line-number:target) {
+.rd-hunk-lines:target {
   --rd-line-background-color-override: var(--code-highlighted-line-background-color);
   // handle empty cells
   --code-line-number-background-color: var(--code-highlighted-line-background-color);
@@ -157,6 +152,10 @@
   border-radius: 0 0 var(--rd-row-bottom-right-radius) var(--rd-row-bottom-left-radius);
   outline: 1px solid var(--code-highlighted-line-border-color);
   z-index: constants.$diff-file-highlighted-line-number-z-index;
+}
+
+.rd-hunk-lines:target .rd-line-number {
+  --rd-adjacent-line-border-color: var(--rd-line-border-color);
 }
 
 // child combinator improves performance of the selector

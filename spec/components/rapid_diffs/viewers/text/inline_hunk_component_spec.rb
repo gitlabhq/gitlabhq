@@ -7,12 +7,7 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
   let(:lines) { diff_file.diff_lines_with_match_tail }
   let(:old_line) { lines.find { |line| line.type == 'old' } }
   let(:new_line) { lines.find { |line| line.type == 'new' } }
-  let(:hunk) do
-    Gitlab::Diff::ViewerHunk.new(
-      header: Gitlab::Diff::ViewerHunkHeader.new(lines.first, 0, 0),
-      lines: lines.drop(1)
-    )
-  end
+  let(:hunk) { diff_file.viewer_hunks.first }
 
   it "renders header" do
     render_component
@@ -27,20 +22,13 @@ RSpec.describe RapidDiffs::Viewers::Text::InlineHunkComponent, type: :component,
     end
   end
 
-  it "renders line id" do
-    old_line_id = old_line.id(diff_file.file_hash, :old)
-    new_line_id = new_line.id(diff_file.file_hash, :new)
+  it "renders line links" do
     render_component
-    expect(page).to have_selector("##{old_line_id}")
-    expect(page).to have_selector("##{new_line_id}")
-  end
-
-  it "renders line link" do
-    old_line_id = old_line.id(diff_file.file_hash, :old)
-    new_line_id = new_line.id(diff_file.file_hash, :new)
-    render_component
-    expect(page).to have_selector("a[href='##{old_line_id}']")
-    expect(page).to have_selector("a[href='##{new_line_id}']")
+    hunk.lines.each do |line|
+      id = line.id(diff_file.file_hash)
+      expect(page).to have_selector("a[href='##{id}']")
+      expect(page).to have_selector("##{id}")
+    end
   end
 
   it "renders expand up" do

@@ -136,12 +136,14 @@ module Gitlab
         rich_text ? rich_text[1..] : text(prefix: false)
       end
 
-      def id(file_hash, side)
+      def id(file_hash)
         return if meta?
 
-        prefix = side == :old ? "L" : "R"
-        position = side == :old ? old_pos : new_pos
-        "line_#{file_hash[0..8]}_#{prefix}#{position}"
+        hash = file_hash[0..8]
+
+        return "line_#{hash}_A#{new_pos}" if added?
+
+        "line_#{hash}_#{old_pos}"
       end
 
       def legacy_id(file_path)

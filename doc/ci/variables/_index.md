@@ -596,7 +596,6 @@ You can specify a pipeline variable when you:
 - Use [push options](../../topics/git/commit.md#push-options-for-gitlab-cicd).
 - Pass variables to a downstream pipeline by using either the [`variables` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline),
   [`trigger:forward` keyword](../yaml/_index.md#triggerforward) or [`dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
-- Specify variables when [running a manual job](../pipelines/_index.md#run-a-pipeline-manually).
 
 These variables have [higher precedence](#cicd-variable-precedence) and can override
 other defined variables, including [predefined variables](predefined_variables.md).

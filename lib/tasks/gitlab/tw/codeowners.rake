@@ -54,7 +54,7 @@ namespace :tw do
       CodeOwnerRule.new('Gitaly', '@eread'),
       CodeOwnerRule.new('Global Search', '@ashrafkhamis'),
       CodeOwnerRule.new('Remote Development', '@brendan777'),
-      CodeOwnerRule.new('Import and Integrate', '@ashrafkhamis'),
+      CodeOwnerRule.new('Import', '@ashrafkhamis'),
       CodeOwnerRule.new('Knowledge', '@msedlakjakubowski'),
       # CodeOwnerRule.new('MLOps', ''),
       # CodeOwnerRule.new('Mobile Devops', ''),

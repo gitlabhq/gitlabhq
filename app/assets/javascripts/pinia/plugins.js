@@ -31,7 +31,12 @@ export const globalAccessorPlugin = (context) => {
  */
 // use this only for component migration
 export const syncWithVuex = (context) => {
+  let unsubPreviousVuex;
+  let unsubPreviousPinia;
+
   const syncWith = (config) => {
+    unsubPreviousVuex?.();
+    unsubPreviousPinia?.();
     const {
       store: vuexStore,
       name: vuexName,
@@ -48,7 +53,7 @@ export const syncWithVuex = (context) => {
 
     let committing = false;
 
-    vuexStore.subscribe(
+    unsubPreviousVuex = vuexStore.subscribe(
       (mutation) => {
         if (committing) return;
         const { payload, type } = mutation;
@@ -64,7 +69,7 @@ export const syncWithVuex = (context) => {
       { prepend: true },
     );
 
-    context.store.$onAction(({ name: mutationName, args }) => {
+    unsubPreviousPinia = context.store.$onAction(({ name: mutationName, args }) => {
       if (committing) return;
       const fullMutationName = namespaced ? `${vuexName}/${mutationName}` : mutationName;
       // eslint-disable-next-line no-underscore-dangle

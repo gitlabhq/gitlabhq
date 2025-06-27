@@ -71,7 +71,7 @@ export default {
     :count="items.length"
     is-collapsible
     persist-collapsed-state
-    class="!gl-mt-5"
+    class="!gl-my-5"
     :body-class="{ '!gl-m-0 !gl-p-0': items.length || isPreview }"
     @collapsed="isCollapsed = true"
     @expanded="isCollapsed = false"

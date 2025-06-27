@@ -211,6 +211,7 @@ export default {
       showSidebar: true,
       truncationEnabled: true,
       lastRealtimeUpdatedAt: new Date(),
+      isRefetching: false,
     };
   },
   apollo: {
@@ -242,6 +243,10 @@ export default {
         return data.workspace.workItem ?? {};
       },
       error() {
+        if (this.isRefetching) {
+          this.isRefetching = false;
+          return;
+        }
         this.setEmptyState();
       },
       result(res) {
@@ -869,6 +874,7 @@ export default {
       const now = new Date();
       const staleThreshold = 5 * 60 * 1000; // 5 minutes in milliseconds
       if (now - this.lastRealtimeUpdatedAt > staleThreshold) {
+        this.isRefetching = true;
         this.$apollo.queries.workItem.refetch();
         this.lastRealtimeUpdatedAt = now;
       }

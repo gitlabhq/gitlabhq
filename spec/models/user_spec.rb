@@ -1662,6 +1662,38 @@ RSpec.describe User, feature_category: :user_profile do
           .to contain_exactly(user_with_group, user_with_project)
       end
     end
+
+    describe '.with_incoming_email_token' do
+      let_it_be(:user) { create(:user, incoming_email_token: 'test_token') }
+
+      it 'returns user with matching single token' do
+        expect(described_class.with_incoming_email_token('test_token')).to contain_exactly(user)
+      end
+
+      it 'returns user with matching token in array' do
+        expect(described_class.with_incoming_email_token(%w[test_token other_token])).to contain_exactly(user)
+      end
+
+      it 'returns empty relation when no match found' do
+        expect(described_class.with_incoming_email_token('nonexistent')).to be_empty
+      end
+    end
+
+    describe '.with_feed_token' do
+      let_it_be(:user) { create(:user, feed_token: 'test_feed_token') }
+
+      it 'returns user with matching single token' do
+        expect(described_class.with_feed_token('test_feed_token')).to contain_exactly(user)
+      end
+
+      it 'returns user with matching token in array' do
+        expect(described_class.with_feed_token(%w[test_feed_token other_token])).to contain_exactly(user)
+      end
+
+      it 'returns empty relation when no match found' do
+        expect(described_class.with_feed_token('nonexistent')).to be_empty
+      end
+    end
   end
 
   context 'strip attributes' do

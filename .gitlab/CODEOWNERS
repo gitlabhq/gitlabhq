@@ -1006,7 +1006,7 @@ lib/gitlab/checks/
 /doc/integration/diffblue_cover.md @lyspin
 /doc/integration/elasticsearch/troubleshooting/ @ashrafkhamis
 /doc/integration/exact_code_search/ @ashrafkhamis
-/doc/integration/external-issue-tracker.md @ashrafkhamis
+/doc/integration/external-issue-tracker.md @msedlakjakubowski
 /doc/integration/gitpod.md @brendan777
 /doc/integration/gmail_action_buttons_for_gitlab.md @ashrafkhamis
 /doc/integration/jenkins.md @lyspin
@@ -1014,7 +1014,7 @@ lib/gitlab/checks/
 /doc/integration/mattermost/ @axil @eread
 /doc/integration/snowflake.md @eread
 /doc/integration/sourcegraph.md @brendan777
-/doc/integration/trello_power_up.md @ashrafkhamis
+/doc/integration/trello_power_up.md @msedlakjakubowski
 /doc/operations/ @lciutacu
 /doc/policy/ @axil @eread
 /doc/security/ @idurham
@@ -1150,14 +1150,23 @@ lib/gitlab/checks/
 /doc/user/project/import/jira_migration_options.md @msedlakjakubowski
 /doc/user/project/insights/ @lciutacu
 /doc/user/project/integrations/ @ashrafkhamis
+/doc/user/project/integrations/asana.md @msedlakjakubowski
 /doc/user/project/integrations/bamboo.md @lyspin
 /doc/user/project/integrations/beyond_identity.md @brendan777
+/doc/user/project/integrations/bugzilla.md @msedlakjakubowski
+/doc/user/project/integrations/clickup.md @msedlakjakubowski
 /doc/user/project/integrations/confluence.md @msedlakjakubowski
+/doc/user/project/integrations/custom_issue_tracker.md @msedlakjakubowski
+/doc/user/project/integrations/ewm.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @brendan777
 /doc/user/project/integrations/github.md @lyspin
 /doc/user/project/integrations/google_artifact_management.md @z_painter
 /doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/matrix.md @sselhorn
+/doc/user/project/integrations/phorge.md @msedlakjakubowski
+/doc/user/project/integrations/pivotal_tracker.md @msedlakjakubowski
+/doc/user/project/integrations/redmine.md @msedlakjakubowski
+/doc/user/project/integrations/youtrack.md @msedlakjakubowski
 /doc/user/project/issue_board.md @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @ashrafkhamis

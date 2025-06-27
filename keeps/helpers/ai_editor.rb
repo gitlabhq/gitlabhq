@@ -79,8 +79,8 @@ module Keeps
         changes = extract_changes_from_blocks(ai_response)
 
         if changes.empty?
-          puts "No valid code blocks found in AI response for #{file}"
-          return false
+          puts "No valid code blocks found in AI response for #{file} assuming no fixes needed."
+          return true
         end
 
         changes.each do |change|

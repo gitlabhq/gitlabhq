@@ -81,7 +81,7 @@ export default {
     :count="items.length"
     persist-collapsed-state
     is-collapsible
-    class="!gl-mt-5"
+    class="!gl-my-5"
     @collapsed="isCollapsed = true"
     @expanded="isCollapsed = false"
   >

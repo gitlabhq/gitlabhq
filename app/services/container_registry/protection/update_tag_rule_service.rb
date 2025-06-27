@@ -23,8 +23,6 @@ module ContainerRegistry
       end
 
       def execute
-        return service_response_error(message: _('Operation not allowed')) if container_protection_tag_rule.immutable?
-
         unless can?(current_user, :admin_container_image, container_protection_tag_rule.project)
           return service_response_error(message: _('Unauthorized to update a protection rule for container image tags'))
         end
@@ -55,3 +53,5 @@ module ContainerRegistry
     end
   end
 end
+
+ContainerRegistry::Protection::UpdateTagRuleService.prepend_mod

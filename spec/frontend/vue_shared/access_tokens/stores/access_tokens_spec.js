@@ -586,6 +586,14 @@ describe('useAccessTokens store', () => {
   });
 
   describe('getters', () => {
+    describe('params', () => {
+      it('returns correct value', () => {
+        store.page = 2;
+
+        expect(store.params).toEqual({ page: 2 });
+      });
+    });
+
     describe('sort', () => {
       it('returns correct value', () => {
         expect(store.sort).toBe('expires_asc');
@@ -593,6 +601,18 @@ describe('useAccessTokens store', () => {
         store.sorting = { value: 'name', isAsc: false };
 
         expect(store.sort).toBe('name_desc');
+      });
+    });
+
+    describe('urlParmas', () => {
+      it('return correct value', () => {
+        store.page = 2;
+        store.sorting = { value: 'name', isAsc: false };
+
+        expect(store.urlParams).toEqual({
+          page: 2,
+          sort: 'name_desc',
+        });
       });
     });
   });

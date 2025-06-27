@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import { pinia } from '~/pinia/instance';
 
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
@@ -14,6 +15,7 @@ import TokensApp from './components/tokens_app.vue';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from './constants';
 
 Vue.use(Translate);
+Vue.use(VueRouter);
 
 export const initAccessTokenTableApp = () => {
   const el = document.querySelector('#js-access-token-table-app');
@@ -148,9 +150,12 @@ export const initSharedAccessTokenApp = () => {
     accessTokenShow,
   } = el.dataset;
 
+  const router = new VueRouter({ mode: 'history' });
+
   return new Vue({
     el,
     name: 'AccessTokensRoot',
+    router,
     pinia,
     provide: {
       accessTokenAvailableScopes: JSON.parse(accessTokenAvailableScopes),

@@ -1140,10 +1140,10 @@ Settings.cell.database['skip_sequence_alteration'] ||= false
 # NOTE: `topology_service_client` is the configuration to use going forward as per https://docs.gitlab.com/administration/cells/#configuration
 #   We continue to be backwards compatible and support `topology_service` as a top-level key.
 Settings.cell['topology_service_client'] ||= Settings.respond_to?(:topology_service) ? Settings.topology_service || {} : {}
-Settings.cell.topology_service_client['address'] ||= 'topology-service.gitlab.example.com:443'
-Settings.cell.topology_service_client['ca_file'] ||= '/home/git/gitlab/config/topology-service-ca.pem'
-Settings.cell.topology_service_client['certificate_file'] ||= '/home/git/gitlab/config/topology-service-cert.pem'
-Settings.cell.topology_service_client['private_key_file'] ||= '/home/git/gitlab/config/topology-service-key.pem'
+Settings.cell.topology_service_client['address'] ||= 'topology-service.example.com:443'
+Settings.cell.topology_service_client['ca_file'] ||= nil
+Settings.cell.topology_service_client['certificate_file'] ||= nil
+Settings.cell.topology_service_client['private_key_file'] ||= nil
 
 #
 # GitLab KAS

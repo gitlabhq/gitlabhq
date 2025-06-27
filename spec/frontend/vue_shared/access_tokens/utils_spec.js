@@ -2,14 +2,7 @@ import {
   defaultDate,
   serializeParams,
   update15DaysFromNow,
-  updateUrlWithQueryParams,
 } from '~/vue_shared/access_tokens/utils';
-import { getBaseURL, updateHistory } from '~/lib/utils/url_utility';
-
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  updateHistory: jest.fn(),
-}));
 
 // Current date, `new Date()`, for these tests is 2020-07-06
 describe('defaultDate', () => {
@@ -95,16 +88,5 @@ describe('update2WeekFromNow', () => {
     const result = update15DaysFromNow(param);
     expect(result).not.toBe(param);
     expect(result[0].filters).not.toBe(param[0].filters);
-  });
-});
-
-describe('updateUrlWithQueryParams', () => {
-  it('calls updateHistory with correct parameters', () => {
-    updateUrlWithQueryParams({ params: { page: 1, revoked: 'true' }, sort: 'name_asc' });
-
-    expect(updateHistory).toHaveBeenCalledWith({
-      url: `${getBaseURL()}/?page=1&revoked=true&sort=name_asc`,
-      replace: true,
-    });
   });
 });

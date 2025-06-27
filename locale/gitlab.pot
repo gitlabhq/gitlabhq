@@ -4067,6 +4067,9 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Feature"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|Features"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|GitLab Default"
 msgstr ""
 
@@ -4080,6 +4083,9 @@ msgid "AdminAIPoweredFeatures|Other GitLab Duo features"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Select a self-hosted model"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|Select the model for the feature"
 msgstr ""
 
 msgid "AdminAiPoweredFeatures|%{selected_model} is incompatible with the %{title} feature"
@@ -16069,6 +16075,9 @@ msgstr ""
 msgid "ComplianceReport|Show old report"
 msgstr ""
 
+msgid "ComplianceReport|There was a problem fetching compliance frameworks."
+msgstr ""
+
 msgid "ComplianceReport|This compliance framework's compliance pipeline has been migrated to a pipeline execution policy."
 msgstr ""
 
@@ -26824,9 +26833,6 @@ msgstr ""
 msgid "Fetching incoming email"
 msgstr ""
 
-msgid "Field alias must be of type `String`."
-msgstr ""
-
 msgid "File"
 msgstr ""
 
@@ -27478,9 +27484,6 @@ msgid "Full"
 msgstr ""
 
 msgid "Full log"
-msgstr ""
-
-msgid "Function `labels` can only take a maximum of 10 parameters."
 msgstr ""
 
 msgid "Fuzz testing"
@@ -36020,9 +36023,7 @@ msgid "LFSStatus|Enabled"
 msgstr ""
 
 msgid "Label"
-msgid_plural "Labels"
-msgstr[0] ""
-msgstr[1] ""
+msgstr ""
 
 msgid "Label %{labelName} was not found"
 msgstr ""
@@ -44657,12 +44658,6 @@ msgstr ""
 msgid "Parent item set successfully."
 msgstr ""
 
-msgid "Parse error: Expected `%{expected}`, but got `%{got}`."
-msgstr ""
-
-msgid "Parse error: Unexpected input near `%{input}`."
-msgstr ""
-
 msgid "Participants"
 msgstr ""
 
@@ -47695,6 +47690,9 @@ msgid "Profiles|Full name"
 msgstr ""
 
 msgid "Profiles|Generate New PIN"
+msgstr ""
+
+msgid "Profiles|GitHub"
 msgstr ""
 
 msgid "Profiles|GitLab is unable to verify your identity automatically. For security purposes, you must set a password by %{openingTag}resetting your password%{closingTag} to delete your account."
@@ -65936,13 +65934,7 @@ msgstr ""
 msgid "Unknown format"
 msgstr ""
 
-msgid "Unknown function: %{name}"
-msgstr ""
-
 msgid "Unknown user"
-msgstr ""
-
-msgid "Unknown value type: %{type}"
 msgstr ""
 
 msgid "Unless otherwise agreed to in writing with GitLab, by selecting \"Add License\" you agree that your use of GitLab Software is subject to the %{eula_link_start}Terms of Service%{eula_link_end}."
@@ -66059,9 +66051,6 @@ msgid "Unsubscribed from notifications."
 msgstr ""
 
 msgid "Unsubscribes from notifications."
-msgstr ""
-
-msgid "Unsupported node type for alias: %{type}"
 msgstr ""
 
 msgid "Unsupported options '%{options}' for exec command '%{command}'. Only '%{supported_options}' are supported."
@@ -73681,9 +73670,6 @@ msgstr ""
 msgid "features adopted"
 msgstr ""
 
-msgid "field name"
-msgstr ""
-
 msgid "file"
 msgid_plural "files"
 msgstr[0] ""
@@ -73707,9 +73693,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "frontmatter"
-msgstr ""
-
-msgid "function name"
 msgstr ""
 
 msgid "group"
@@ -75038,9 +75021,6 @@ msgstr ""
 msgid "snippet"
 msgstr ""
 
-msgid "something to parse"
-msgstr ""
-
 msgid "source"
 msgstr ""
 
@@ -75066,9 +75046,6 @@ msgid "started on %{timebox_start_date}"
 msgstr ""
 
 msgid "starts on %{timebox_start_date}"
-msgstr ""
-
-msgid "string"
 msgstr ""
 
 msgid "structure is too large. Maximum size is %{max_size} characters"

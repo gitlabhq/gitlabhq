@@ -5,6 +5,8 @@ module Keeps
     class RemoveFeatureFlags
       attr_reader :logger
 
+      SKIP_PATTERNS_FOR_MARKDOWN = ['doc-locale/', 'changelog', 'graphql/reference/_index.md'].freeze
+
       def initialize(logger)
         @logger = logger
       end
@@ -26,6 +28,7 @@ module Keeps
           prompt_vue(feature_flag, file, flag_enabled)
         else
           logger.puts("Unexpected file extension in #{file} referencing feature flag #{feature_flag.name}. Skipping.")
+          nil
         end
       end
 
@@ -756,7 +759,7 @@ module Keeps
       def skip_markdown_file?(file)
         file_path = file.to_s.downcase
 
-        file_path.include?('doc-locale')
+        SKIP_PATTERNS_FOR_MARKDOWN.any? { |pattern| file_path.include?(pattern) }
       end
     end
   end

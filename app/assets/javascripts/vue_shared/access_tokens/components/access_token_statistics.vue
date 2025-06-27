@@ -13,13 +13,14 @@ export default {
     GlSingleStat,
   },
   computed: {
-    ...mapState(useAccessTokens, ['statistics']),
+    ...mapState(useAccessTokens, ['statistics', 'urlParams']),
   },
   methods: {
     ...mapActions(useAccessTokens, ['fetchTokens', 'setFilters', 'setPage']),
     handleFilter(filters) {
       this.setFilters(filters);
       this.setPage(1);
+      this.$router.push({ query: this.urlParams });
       this.fetchTokens();
     },
     slugifyStat(stat) {

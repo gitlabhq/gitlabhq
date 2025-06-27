@@ -184,9 +184,19 @@ RSpec.describe 'GraphQL', feature_category: :shared do
 
   context 'when batching mutations and queries' do
     let(:batched) do
+      single_query = "query A #{graphql_query_for('echo', text: 'Hello world')}"
+      multipart_query = <<-QUERY
+        query B #{graphql_query_for('echo', text: 'Hello world')}
+        mutation C { echoCreate(input: { messages: [\"hello\", \"world\"] }) { echoes } }
+      QUERY
       [
-        { query: "query A #{graphql_query_for('echo', text: 'Hello world')}" },
-        { query: 'mutation B { echoCreate(input: { messages: ["hello", "world"] }) { echoes } }' }
+        {
+          query: single_query
+        },
+        {
+          query: multipart_query,
+          operationName: "C"
+        }
       ]
     end
 

@@ -3,9 +3,10 @@
     %td.rd-hunk-header-buttons= render RapidDiffs::Viewers::Text::ExpandLinesComponent.new(directions: @diff_hunk.header.expand_directions)
     %td.rd-hunk-header-content{ colspan: '3' }= @diff_hunk.header.text
 
-- @diff_hunk.parallel_lines.each do |pair|
-  %tr.rd-hunk-lines.rd-hunk-lines-parallel{ data: { testid: 'hunk-lines-parallel', hunk_lines: true } }
-    - sides(pair).each do |side|
-      - line, position = side.values_at(:line, :position)
-      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(file_hash: @file_hash, file_path: @file_path, **side)
+- line_pairs.each do |pair|
+  - line_id, sides = pair.values_at(:line_id, :sides)
+  %tr.rd-hunk-lines.rd-hunk-lines-parallel{ id: line_id, data: { testid: 'hunk-lines-parallel', hunk_lines: true } }
+    - sides.each do |side|
+      - line, position, border = side.values_at(:line, :position, :border)
+      = render RapidDiffs::Viewers::Text::LineNumberComponent.new(line: line, line_id: line_id, position: position, border: border)
       = render RapidDiffs::Viewers::Text::LineContentComponent.new(line: line, position: position)

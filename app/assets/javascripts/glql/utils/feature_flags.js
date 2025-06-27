@@ -6,3 +6,7 @@ export const glqlWorkItemsFeatureFlagEnabled = () => {
 
   return Boolean(gon.features?.glqlWorkItems);
 };
+
+export const glqlFeatureFlags = () => ({
+  glqlWorkItems: glqlWorkItemsFeatureFlagEnabled(),
+});

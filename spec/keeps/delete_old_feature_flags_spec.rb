@@ -36,6 +36,8 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
 
   before do
     stub_request(:get, Keeps::Helpers::Groups::GROUPS_JSON_URL).to_return(status: 200, body: groups.to_json)
+    stub_request(:get, format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123'))
+      .to_return(status: 200, body: { labels: [] }.to_json)
 
     allow(keep).to receive(:all_feature_flag_files).and_return([feature_flag_file])
     allow(keep).to receive(:milestones_helper).and_return(milestones_helper)
@@ -256,6 +258,125 @@ RSpec.describe Keeps::DeleteOldFeatureFlags, feature_category: :tooling do
       it 'returns true when other conditions are met' do
         expect(keep.send(:parse_date, '2020')).to be_nil
         expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+      end
+    end
+
+    context 'when feature flag has ready for removal label' do
+      let(:feature_flag) do
+        instance_double(
+          Feature::Definition,
+          name: feature_flag_name,
+          milestone: nil, # This would normally fail validation
+          rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123',
+          default_enabled: false,
+          group: groups.dig(:foo, :label),
+          path: feature_flag_file,
+          intended_to_rollout_by: (Time.zone.today + 30).to_s # Future date would normally fail validation
+        )
+      end
+
+      before do
+        stub_request(:get,
+          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        ).to_return(status: 200, body: { labels: ['feature flag::ready for removal'] }.to_json)
+
+        # Make milestone cutoff check fail to prove it's bypassed
+        allow(milestones_helper)
+          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+            milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
+          .and_return(false)
+      end
+
+      it 'bypasses rollout date, milestone, and cutoff checks and returns true' do
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be true
+      end
+    end
+
+    context 'when feature flag does not have ready for removal label' do
+      before do
+        stub_request(:get,
+          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        ).to_return(status: 200, body: { labels: ['some other label'] }.to_json)
+
+        # Make milestone cutoff check fail
+        allow(milestones_helper)
+          .to receive(:before_cuttoff?).with(milestone: feature_flag_milestone,
+            milestones_ago: described_class::CUTOFF_MILESTONE_FOR_ENABLED_FLAG)
+          .and_return(false)
+      end
+
+      it 'respects milestone cutoff check and returns false' do
+        expect(keep.send(:can_remove_ff?, feature_flag, identifiers, :enabled)).to be false
+      end
+    end
+  end
+
+  describe '#has_ready_for_removal_label?' do
+    let(:feature_flag) do
+      instance_double(
+        Feature::Definition,
+        name: feature_flag_name,
+        rollout_issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/123'
+      )
+    end
+
+    before do
+      allow(keep).to receive(:logger).and_return(double.as_null_object)
+      allow(keep).to receive(:feature_flag_rollout_issue_url).and_return(feature_flag.rollout_issue_url)
+    end
+
+    context 'when rollout issue has ready for removal label' do
+      before do
+        stub_request(:get,
+          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        ).to_return(status: 200, body: { labels: ['feature flag::ready for removal',
+          'other label'] }.to_json)
+      end
+
+      it 'returns true' do
+        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be true
+      end
+    end
+
+    context 'when rollout issue does not have ready for removal label' do
+      before do
+        stub_request(:get,
+          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123')
+        ).to_return(status: 200, body: { labels: ['some other label'] }.to_json)
+      end
+
+      it 'returns false' do
+        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be false
+      end
+    end
+
+    context 'when rollout issue URL is missing' do
+      let(:feature_flag) do
+        instance_double(
+          Feature::Definition,
+          name: feature_flag_name,
+          rollout_issue_url: nil
+        )
+      end
+
+      before do
+        allow(keep).to receive(:feature_flag_rollout_issue_url).and_return('(missing URL)')
+      end
+
+      it 'returns false' do
+        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be false
+      end
+    end
+
+    context 'when API request fails' do
+      before do
+        stub_request(:get,
+          format(described_class::API_ISSUE_URL, project_path: 'gitlab-org%2Fgitlab', issue_iid: '123'))
+          .to_return(status: 404)
+      end
+
+      it 'returns false' do
+        expect(keep.send(:has_ready_for_removal_label?, feature_flag)).to be false
       end
     end
   end

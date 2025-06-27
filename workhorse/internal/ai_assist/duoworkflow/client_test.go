@@ -99,9 +99,6 @@ func TestExecuteWorkflow(t *testing.T) {
 		workflowStream, err := client.ExecuteWorkflow(ctx)
 		require.NoError(t, err)
 
-		err = workflowStream.Send([]byte(`{"type":"test_event"}`))
-		require.NoError(t, err)
-
 		_, err = workflowStream.Recv()
 		require.Error(t, err)
 		require.Equal(t, codes.Internal, status.Code(err))

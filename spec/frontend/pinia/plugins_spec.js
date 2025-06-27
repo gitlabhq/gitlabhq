@@ -124,6 +124,8 @@ describe('Pinia plugins', () => {
           createPiniaStore(undefined);
           setActivePinia(createPinia().use(syncWithVuex));
           usePiniaStore().syncWith(createSyncWithConfig());
+          // attach twice to test proper unsubscribe
+          usePiniaStore().syncWith(createSyncWithConfig());
         },
       ],
     ])('%s', (caseName, setupFn) => {
@@ -138,57 +140,73 @@ describe('Pinia plugins', () => {
 
       describe('primitives', () => {
         it('syncs Pinia with Vuex', () => {
+          const spy = jest.spyOn(usePiniaStore(), 'setPrimitive');
           vuexStore.commit(getVuexName('setPrimitive'), 'newValue');
           expect(usePiniaStore().primitive).toBe('newValue');
+          expect(spy).toHaveBeenCalledTimes(1);
         });
 
         it('syncs Vuex with Pinia', () => {
+          const spy = jest.spyOn(vuexStore, 'commit');
           usePiniaStore().setPrimitive('newValue');
           expect(getVuexState().primitive).toBe('newValue');
+          expect(spy).toHaveBeenCalledTimes(1);
         });
       });
 
       describe('root objects', () => {
         it('syncs Pinia with Vuex', () => {
+          const spy = jest.spyOn(usePiniaStore(), 'setObject');
           const obj = { foo: 1 };
           vuexStore.commit(getVuexName('setObject'), obj);
           expect(usePiniaStore().object).toStrictEqual(obj);
+          expect(spy).toHaveBeenCalledTimes(1);
         });
 
         it('syncs Vuex with Pinia after Pinia is initialized', () => {
+          const spy = jest.spyOn(vuexStore, 'commit');
           usePiniaStore();
           const obj = { foo: 1 };
           vuexStore.commit(getVuexName('setObject'), obj);
           expect(usePiniaStore().object).toStrictEqual(obj);
+          expect(spy).toHaveBeenCalledTimes(1);
         });
 
         it('syncs Vuex with Pinia', () => {
+          const spy = jest.spyOn(vuexStore, 'commit');
           const obj = { foo: 1 };
           usePiniaStore().setObject(obj);
           expect(getVuexState().object).toStrictEqual(obj);
+          expect(spy).toHaveBeenCalledTimes(1);
         });
       });
 
       describe('nested objects', () => {
         it('syncs Pinia with Vuex', async () => {
+          const spy = jest.spyOn(usePiniaStore(), 'setDeepNested');
           const obj = { foo: 1 };
           vuexStore.commit(getVuexName('setDeepNested'), obj);
           await waitForPromises();
           expect(usePiniaStore().nested.object).toStrictEqual(obj);
+          expect(spy).toHaveBeenCalledTimes(1);
         });
 
         it('syncs Pinia with Vuex after Pinia is initialized', async () => {
           usePiniaStore();
+          const spy = jest.spyOn(usePiniaStore(), 'setDeepNested');
           const obj = { foo: 1 };
           vuexStore.commit(getVuexName('setDeepNested'), obj);
           await waitForPromises();
           expect(usePiniaStore().nested.object).toStrictEqual(obj);
+          expect(spy).toHaveBeenCalledTimes(1);
         });
 
         it('syncs Vuex with Pinia', () => {
+          const spy = jest.spyOn(vuexStore, 'commit');
           const obj = { foo: 1 };
           usePiniaStore().setDeepNested(obj);
           expect(getVuexState().nested.object).toStrictEqual(obj);
+          expect(spy).toHaveBeenCalledTimes(1);
         });
       });
     });
