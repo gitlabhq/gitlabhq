@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class CreateCiBuildNamesTable < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
-
   milestone '16.11'
 
   PRIMARY_KEY = [:build_id, :partition_id]

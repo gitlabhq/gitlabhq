@@ -3,8 +3,6 @@
 class AddSearchVectorToPCiBuildNames < Gitlab::Database::Migration[2.2]
   milestone '16.11'
 
-  enable_lock_retries!
-
   def up
     execute <<~SQL
       ALTER TABLE p_ci_build_names

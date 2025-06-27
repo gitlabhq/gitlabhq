@@ -2,7 +2,6 @@
 
 class ChangeTimeEstimateDefaultFromNullToZeroOnIssues < Gitlab::Database::Migration[2.2]
   milestone '17.4'
-  enable_lock_retries!
 
   TABLE_NAME = :issues
   COLUMN_NAME = :time_estimate

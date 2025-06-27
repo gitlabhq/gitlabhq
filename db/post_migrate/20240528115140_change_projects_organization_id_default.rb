@@ -3,8 +3,6 @@
 class ChangeProjectsOrganizationIdDefault < Gitlab::Database::Migration[2.2]
   milestone '17.1'
 
-  enable_lock_retries!
-
   def up
     change_column_default(:projects, :organization_id, nil)
   end

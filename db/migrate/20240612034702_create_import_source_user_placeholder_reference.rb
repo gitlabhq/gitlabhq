@@ -3,8 +3,6 @@
 class CreateImportSourceUserPlaceholderReference < Gitlab::Database::Migration[2.2]
   milestone '17.2'
 
-  enable_lock_retries!
-
   INDEX_NAME = 'index_import_source_user_placeholder_references_on_source_user_'
 
   def change

@@ -5,8 +5,6 @@ class EnsureUniqueIdForPCiBuildTags < Gitlab::Database::Migration[2.2]
 
   milestone '17.3'
 
-  enable_lock_retries!
-
   TABLE_NAME = :p_ci_build_tags
   SEQ_NAME = :p_ci_build_tags_id_seq
 

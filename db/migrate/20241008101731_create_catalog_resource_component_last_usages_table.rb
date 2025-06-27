@@ -3,8 +3,6 @@
 class CreateCatalogResourceComponentLastUsagesTable < Gitlab::Database::Migration[2.2]
   milestone '17.6'
 
-  enable_lock_retries!
-
   CATALOG_RESOURCE_INDEX_NAME = 'idx_cpmt_last_usages_on_catalog_resource_id'
   UNIQUE_INDEX_NAME = 'idx_usages_on_cmpt_used_by_project_cmpt_and_last_used_date'
   PROJECT_INDEX_NAME = 'idx_catalog_resource_cpmt_last_usages_on_cpmt_project_id'

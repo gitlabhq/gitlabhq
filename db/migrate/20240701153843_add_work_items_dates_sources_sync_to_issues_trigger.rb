@@ -5,8 +5,6 @@ class AddWorkItemsDatesSourcesSyncToIssuesTrigger < Gitlab::Database::Migration[
 
   include Gitlab::Database::SchemaHelpers
 
-  enable_lock_retries!
-
   WORK_ITEM_DATES_SOURCE_TABLE_NAME = 'work_item_dates_sources'
 
   TRIGGER_FUNCTION_NAME = 'sync_issues_dates_with_work_item_dates_sources'

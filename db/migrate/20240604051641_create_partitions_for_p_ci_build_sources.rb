@@ -3,8 +3,6 @@
 class CreatePartitionsForPCiBuildSources < Gitlab::Database::Migration[2.2]
   milestone '17.1'
 
-  enable_lock_retries!
-
   def up
     connection.execute(<<~SQL)
       LOCK TABLE p_ci_builds IN SHARE ROW EXCLUSIVE MODE;

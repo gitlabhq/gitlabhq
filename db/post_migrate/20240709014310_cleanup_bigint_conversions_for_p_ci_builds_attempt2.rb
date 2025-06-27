@@ -5,8 +5,6 @@ class CleanupBigintConversionsForPCiBuildsAttempt2 < Gitlab::Database::Migration
 
   milestone '17.3'
 
-  enable_lock_retries!
-
   TABLE_NAME = :p_ci_builds
   TRIGGER_NAME = :trigger_10ee1357e825
   COLUMN_NAMES = %i[

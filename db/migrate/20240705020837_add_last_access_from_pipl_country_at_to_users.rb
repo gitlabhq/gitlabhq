@@ -2,7 +2,6 @@
 
 class AddLastAccessFromPiplCountryAtToUsers < Gitlab::Database::Migration[2.2]
   milestone '17.3'
-  enable_lock_retries!
 
   # This column prevents additional queries (e.g. 'SELECT ... FROM
   # country_access_logs ...') when checking if the user's access from a specific

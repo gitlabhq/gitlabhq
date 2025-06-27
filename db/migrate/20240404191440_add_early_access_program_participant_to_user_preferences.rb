@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class AddEarlyAccessProgramParticipantToUserPreferences < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
   milestone '17.0'
 
   def up

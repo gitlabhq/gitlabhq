@@ -3,8 +3,6 @@
 class CreateTablePCiBuildTags < Gitlab::Database::Migration[2.2]
   milestone '17.3'
 
-  enable_lock_retries!
-
   OPTIONS = {
     if_not_exists: true,
     options: 'PARTITION BY LIST (partition_id)',

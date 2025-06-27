@@ -2,7 +2,6 @@
 
 class CreateAuditEventsStreamingInstanceNamespaceFilters < Gitlab::Database::Migration[2.2]
   milestone '17.0'
-  enable_lock_retries!
 
   UNIQ_INDEX_NAME = 'uniq_idx_streaming_destination_id_and_namespace_id'
   NAMESPACE_INDEX_NAME = 'idx_streaming_instance_namespace_filters_on_namespace_id'

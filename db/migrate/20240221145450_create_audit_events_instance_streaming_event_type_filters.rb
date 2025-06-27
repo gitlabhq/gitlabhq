@@ -2,7 +2,6 @@
 
 class CreateAuditEventsInstanceStreamingEventTypeFilters < Gitlab::Database::Migration[2.2]
   milestone '16.11'
-  enable_lock_retries!
 
   INDEX_NAME = 'uniq_audit_instance_event_filters_destination_id_and_event_type'
 

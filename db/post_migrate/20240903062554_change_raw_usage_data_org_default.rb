@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class ChangeRawUsageDataOrgDefault < Gitlab::Database::Migration[2.2]
-  enable_lock_retries!
   milestone '17.4'
 
   def change
