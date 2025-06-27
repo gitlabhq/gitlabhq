@@ -20,7 +20,7 @@ You should break out these shared issues into a single one per table, and update
 ## Update unresolved, closed issues
 
 Some of the issues linked in the database YAML docs have been closed, sometimes in favor of new issues, but the YAML files still point to the original URL.
-You should update these to point to the correct items to ensure we’re accurately measuring progress.
+You should update these to point to the correct items to ensure we're accurately measuring progress.
 
 ## Add more information to sharding issues
 

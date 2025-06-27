@@ -138,18 +138,18 @@ Here we'll explore a step-by-step process for finding files and finding where th
 
 If you already know the file you are going to work on and now you want to find where it is rendered:
 
-1. Start by gathering clues to understand the file’s purpose. Look for relevant information within the file itself, such as keywords or specific content that might indicate its context.
+1. Start by gathering clues to understand the file's purpose. Look for relevant information within the file itself, such as keywords or specific content that might indicate its context.
 1. You can also examine the file path (or folder structure) to gain insights into where the file might be rendered.
    A lot of routing in GitLab is very similar to the folder structure.
 1. If you can work out which feature (or one of the features) that this component is used in, you can then leverage the GitLab user documentation to find out how to go to the feature page.
 1. Follow the component hierarchy, do a global search for the filename to identify the parent component that renders the component.
    Continue to follow the hierarchy of components to trace back to a feature you recognize or can search for in the GitLab user docs.
 1. You can use `git blame` with an extension like GitLens to find a recent MR where this file was changed.
-   Most MR’s have a "How to validate" section that you can follow, if the MR doesn't have one, look for the previous change and until you find one that have validation steps.
+   Most MR's have a "How to validate" section that you can follow, if the MR doesn't have one, look for the previous change and until you find one that have validation steps.
 
 If you know which page you need to fix and you want to find the file path, here are some things you can try:
 
-- Look for content that is unique and doesn’t contain variables so that you can search for the translation variable.
+- Look for content that is unique and doesn't contain variables so that you can search for the translation variable.
 - Try using Vue Dev Tools to find the component name.
 - Look for unique identifiers like a `data-testid`,`id` or a unique looking CSS class in the HTML of the component and then search globally the codebase for those identifying strings.
 
@@ -169,7 +169,7 @@ When writing a merge request there are some important things to be aware of:
 - At least 2 other engineers are going to review your code. For the sake of efficiency (much like the code itself you have written) it is best to take a little while longer to get your MR right so that it is quicker and easier for others to read.
 - The MRs that you create on GitLab are available to the public. This means you can add a link to MRs you are particularly proud of to your portfolio page when looking for a job.
 - Since an MR is a technical document, you should try to implement a technical writing style.
-  If you don’t know what that is, here is a highly recommended short course from [Google on Technical writing](https://developers.google.com/tech-writing/one).
+  If you don't know what that is, here is a highly recommended short course from [Google on Technical writing](https://developers.google.com/tech-writing/one).
   If you are also contributing to the documentation at GitLab, there is a [Technical Writing Fundamentals course available here from GitLab](https://university.gitlab.com/courses/gitlab-technical-writing-fundamentals).
 
 ## Live coding

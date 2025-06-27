@@ -38,6 +38,14 @@ const defaultMocks = {
   $router,
 };
 
+beforeEach(() => {
+  gon.features = { hideIncidentManagementFeatures: false };
+});
+
+afterEach(() => {
+  window.gon.features = {};
+});
+
 describe('Incident Tabs component', () => {
   let wrapper;
 
@@ -207,6 +215,17 @@ describe('Incident Tabs component', () => {
       await nextTick();
       expect(findActiveTabs()).toHaveLength(1);
       expect(findActiveTabs().at(0).text()).toBe(incidentTabsI18n.metricsTitle);
+    });
+  });
+
+  describe('when hideIncidentManagementFeatures feature flag is enabled', () => {
+    beforeEach(() => {
+      gon.features = { hideIncidentManagementFeatures: true };
+      mountComponent();
+    });
+
+    it('does not render the timeline tab', () => {
+      expect(findTimelineTab().exists()).toBe(false);
     });
   });
 });

@@ -211,7 +211,7 @@ To update the Gitaly certificates after initial configuration:
 {{< tab title="Linux package (Omnibus)" >}}
 
 If the content of your SSL certificates under the `/etc/gitlab/ssl` directory have been updated, but no configuration changes have been made to
-`/etc/gitlab/gitlab.rb`, then reconfiguring GitLab doesn’t affect Gitaly. Instead, you must restart Gitaly manually for the certificates to be loaded
+`/etc/gitlab/gitlab.rb`, then reconfiguring GitLab doesn't affect Gitaly. Instead, you must restart Gitaly manually for the certificates to be loaded
 by the Gitaly process:
 
 ```shell

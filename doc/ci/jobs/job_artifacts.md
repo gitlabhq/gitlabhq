@@ -389,7 +389,7 @@ By default, artifacts are always kept for the most recent successful pipeline on
 
 When a new pipeline on the same ref completes successfully, the previous pipeline's artifacts are deleted according to the `expire_in` configuration. The artifacts of the new pipeline are kept automatically.
 
-A pipeline’s artifacts are only deleted according to the `expire_in` configuration if a new pipeline runs for the same ref and:
+A pipeline's artifacts are only deleted according to the `expire_in` configuration if a new pipeline runs for the same ref and:
 
 - Succeeds.
 - Stops running due to being blocked by a manual job.

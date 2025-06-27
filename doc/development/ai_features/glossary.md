@@ -180,7 +180,7 @@ A **goal-oriented, structured graph** that orchestrates agents and tools to deli
 - **Input** - Each Flow must have an input. Inputs set the context for the Flow run and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
 - **Run** – One execution of an flow; runs carry user-specific goals and data  
 
-> **Analogy:** *competency / job description* – the “what & when” of getting work done.
+> **Analogy:** *competency / job description* – the "what & when" of getting work done.
 
 ### Agent
 
@@ -222,7 +222,7 @@ Tools expose data or side-effects; they themselves perform **no reasoning**.
 | **Task** | A formal object representing a unit of work inside a run. At present only the *Executor* agent persists tasks, but the concept is extensible. |
 | **Trigger** | An event that starts an flow run (e.g., slash command, schedule, issue label). |
 | **Agent Handover** | Node type that packages context from one agent and passes it to another. |
-| **Supervisor Agent** | An agent node that monitors other agents’ progress and enforces run-level constraints (timeout, max tokens, etc.). |
+| **Supervisor Agent** | An agent node that monitors other agents' progress and enforces run-level constraints (timeout, max tokens, etc.). |
 | **Subagent** | Shorthand for an agent that operates under a Supervisor within the same run. |
 | **Autonomous Agent** | Historical term for an agent that can loop without human approval. In GitLab, autonomy level is governed by flow design, not by a separate agent type. |
 | **Framework** | A platform for building multi-agent systems. GitLab Duo Agent Platform uses **LangGraph**, an extension to LangChain that natively models agent graphs. |
@@ -238,9 +238,9 @@ Flows are executed in the following ways:
 
 | Layer | Human Analogy | Key Question Answered |
 | ----- | ------------- | --------------------- |
-| **Tool** | Capability | “What concrete action can I perform?” |
-| **Agent** | Skill / Specialist | “How do I use my tools to reach my goal?” |
-| **Flow** | Competency / Job | “When and in what order should skills be applied to deliver value?” |
+| **Tool** | Capability | "What concrete action can I perform?" |
+| **Agent** | Skill / Specialist | "How do I use my tools to reach my goal?" |
+| **Flow** | Competency / Job | "When and in what order should skills be applied to deliver value?" |
 
 ## AI Context Terminology
 

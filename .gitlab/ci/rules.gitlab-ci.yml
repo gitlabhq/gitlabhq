@@ -1036,6 +1036,8 @@
 
 .db:rules:invalidate-old-pipeline-results:
   rules:
+    - <<: *if-not-canonical-namespace
+      when: never
     - <<: *if-merge-request
       changes: *db-patterns
       when: always

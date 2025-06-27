@@ -2309,7 +2309,6 @@ RSpec/ContextWording:
     - 'spec/services/clusters/kubernetes/create_or_update_service_account_service_spec.rb'
     - 'spec/services/clusters/management/validate_management_project_permissions_service_spec.rb'
     - 'spec/services/clusters/update_service_spec.rb'
-    - 'spec/services/commits/tag_service_spec.rb'
     - 'spec/services/compare_service_spec.rb'
     - 'spec/services/concerns/merge_requests/assigns_merge_params_spec.rb'
     - 'spec/services/concerns/rate_limited_service_spec.rb'

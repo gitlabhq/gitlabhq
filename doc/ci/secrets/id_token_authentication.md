@@ -190,6 +190,6 @@ echo $OIDC_TOKEN | cut -d '.' -f2 | base64 -d | jq .
 
 Make sure that:
 
-- `aud` (audience) matches the expected audience (for example, the external service’s URL).
-- `sub` (subject) is mapped in the service’s Identity Provider settings.
+- `aud` (audience) matches the expected audience (for example, the external service's URL).
+- `sub` (subject) is mapped in the service's Identity Provider settings.
 - `preferred_username` is not present by default in GitLab ID tokens.

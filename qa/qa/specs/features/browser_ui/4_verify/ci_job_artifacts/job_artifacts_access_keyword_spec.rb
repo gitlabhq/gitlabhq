@@ -31,8 +31,18 @@ module QA
           create_mr
         end
 
+        before do
+          # Ensure clean browser state
+          if defined?(Capybara.current_session) && Capybara.current_session.driver.browser
+            Capybara.current_session.reset!
+            Support::WaitForRequests.wait_for_requests
+          end
+        end
+
         it "verifies artifact access for developer user with #{access_level} access", testcase: member_testcase do
-          Flow::Login.sign_in(as: developer_user)
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Flow::Login.sign_in(as: developer_user)
+          end
 
           merge_request.visit!
 
@@ -42,6 +52,9 @@ module QA
             end
 
             if developer_access
+              Support::Waiter.wait_until(max_duration: 30) do
+                show.has_artifacts_dropdown?
+              end
               expect(show).to have_artifacts_dropdown
             else
               expect(show).to have_no_artifacts_dropdown
@@ -50,7 +63,9 @@ module QA
         end
 
         it "verifies artifact access for non-member user with #{access_level} access", testcase: non_member_testcase do
-          Flow::Login.sign_in(as: non_member_user)
+          Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
+            Flow::Login.sign_in(as: non_member_user)
+          end
 
           merge_request.visit!
 
@@ -60,6 +75,9 @@ module QA
             end
 
             if non_member_access
+              Support::Waiter.wait_until(max_duration: 30) do
+                show.has_artifacts_dropdown?
+              end
               expect(show).to have_artifacts_dropdown
             else
               expect(show).to have_no_artifacts_dropdown

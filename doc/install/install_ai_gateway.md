@@ -383,11 +383,11 @@ These tests are performed for offline environments:
 
 ## Does the AI gateway need to autoscale?
 
-Autoscaling is not mandatory but is recommended for environments with variable workloads, high concurrency requirements, or unpredictable usage patterns. In GitLab’s production environment:
+Autoscaling is not mandatory but is recommended for environments with variable workloads, high concurrency requirements, or unpredictable usage patterns. In the GitLab production environment:
 
 - Baseline setup: A single AI gateway instance with 2 CPU cores and 8 GB RAM can handle approximately 40 concurrent requests.
 - Scaling guidelines: For larger setups, such as an AWS t3.2xlarge instance (8 vCPUs, 32 GB RAM), the gateway can handle up to 160 concurrent requests, equivalent to 4x the baseline setup.
-- Request throughput: GitLab.com’s observed usage suggests that 7 RPS (requests per second) per 1000 active users is a reasonable metric for planning.
+- Request throughput: GitLab.com's observed usage suggests that 7 RPS (requests per second) per 1000 active users is a reasonable metric for planning.
 - Autoscaling options: Use Kubernetes Horizontal Pod Autoscalers (HPA) or similar mechanisms to dynamically adjust the number of instances based on metrics like CPU, memory utilization, or request latency thresholds.
 
 ## Configuration examples by deployment size

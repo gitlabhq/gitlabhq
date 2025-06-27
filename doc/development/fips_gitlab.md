@@ -91,7 +91,7 @@ module selection per CSP10 is as follows:
 Third party assessment organizations (3PAOs) validate the use of a FIPS-validated CM by:
 
 1. Checking the certificate number.
-1. Validating that the CM is configured in an approved mode and only uses algorithms listed as approved in the CM’s security policy.
+1. Validating that the CM is configured in an approved mode and only uses algorithms listed as approved in the CM's security policy.
 
 GitLab also does internal continuous monitoring and, in the past, has contracted independent auditors to audit our software against the FIPS 140 standard.
 Results are available in the Trust Center.

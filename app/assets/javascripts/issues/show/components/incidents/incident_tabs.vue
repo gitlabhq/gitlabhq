@@ -31,7 +31,7 @@ export default {
     GlTab,
     GlTabs,
     HighlightBar,
-    TimelineTab,
+    ...(gon.features?.hideIncidentManagementFeatures ? {} : { TimelineTab }),
     IncidentMetricTab: () =>
       import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
   },
@@ -69,6 +69,9 @@ export default {
       const { tabId } = this.$route.params;
       return tabId ? this.tabMapping.tabNamesToIndex[tabId] : 0;
     },
+    showIncidentManagementFeatures() {
+      return !gon.features.hideIncidentManagementFeatures;
+    },
     tabMapping() {
       const availableTabs = [TAB_NAMES.SUMMARY];
 
@@ -79,7 +82,9 @@ export default {
         availableTabs.push(TAB_NAMES.ALERTS);
       }
 
-      availableTabs.push(TAB_NAMES.TIMELINE);
+      if (this.showIncidentManagementFeatures) {
+        availableTabs.push(TAB_NAMES.TIMELINE);
+      }
 
       const tabNamesToIndex = {};
       const tabIndexToName = {};
@@ -167,7 +172,12 @@ export default {
       >
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
-      <gl-tab :title="$options.i18n.timelineTitle" data-testid="timeline-tab">
+      <gl-tab
+        v-if="showIncidentManagementFeatures"
+        :title="$options.i18n.timelineTitle"
+        data-testid="timeline-tab"
+      >
+        <!-- eslint-disable-next-line vue/no-undef-components -->
         <timeline-tab />
       </gl-tab>
     </gl-tabs>

@@ -24,7 +24,7 @@ Testing-backed architectural qualification is a fundamental concept behind Cloud
 
 ## AWS known issues list
 
-Known issues are gathered from within GitLab and from customer reported issues. Customers successfully implement GitLab with a variety of “as a Service” components that GitLab has not specifically been designed for, nor has ongoing testing for. While GitLab does take partner technologies very seriously, the highlighting of known issues here is a convenience for implementers and it does not imply that GitLab has targeted compatibility with, nor carries any type of guarantee of running on the partner technology where the issues occur. Consult individual issues to understand the GitLab stance and plans on any given known issue.
+Known issues are gathered from within GitLab and from customer reported issues. Customers successfully implement GitLab with a variety of "as a Service" components that GitLab has not specifically been designed for, nor has ongoing testing for. While GitLab does take partner technologies very seriously, the highlighting of known issues here is a convenience for implementers and it does not imply that GitLab has targeted compatibility with, nor carries any type of guarantee of running on the partner technology where the issues occur. Consult individual issues to understand the GitLab stance and plans on any given known issue.
 
 See the [GitLab AWS known issues list](https://gitlab.com/gitlab-com/alliances/aws/public-tracker/-/issues?label_name[]=AWS+Known+Issue) for a complete list.
 

@@ -8970,6 +8970,12 @@ msgstr ""
 msgid "Attribute 'pod-overrides' is not yet supported"
 msgstr ""
 
+msgid "Audit Event Author Placeholder"
+msgstr ""
+
+msgid "Audit Event Details placeholder"
+msgstr ""
+
 msgid "Audit events"
 msgstr ""
 
@@ -15946,6 +15952,9 @@ msgstr ""
 msgid "ComplianceManagement|Requirement"
 msgstr ""
 
+msgid "ComplianceReport|Action"
+msgstr ""
+
 msgid "ComplianceReport|Apply frameworks to selected projects"
 msgstr ""
 
@@ -15955,7 +15964,13 @@ msgstr ""
 msgid "ComplianceReport|Approved by committer"
 msgstr ""
 
+msgid "ComplianceReport|Audit Event"
+msgstr ""
+
 msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policies instead. %{linkStart}Pipeline execution policies%{linkEnd} provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance enforcement in pipelines."
+msgstr ""
+
+msgid "ComplianceReport|Change status"
 msgstr ""
 
 msgid "ComplianceReport|Choose one bulk action"
@@ -15973,6 +15988,12 @@ msgstr ""
 msgid "ComplianceReport|Create policy"
 msgstr ""
 
+msgid "ComplianceReport|Date detected"
+msgstr ""
+
+msgid "ComplianceReport|Details"
+msgstr ""
+
 msgid "ComplianceReport|Dismiss"
 msgstr ""
 
@@ -15980,6 +16001,9 @@ msgid "ComplianceReport|Do you want to refresh the filtered results to include y
 msgstr ""
 
 msgid "ComplianceReport|Edit the framework"
+msgstr ""
+
+msgid "ComplianceReport|Failed to update violation status. Please try again."
 msgstr ""
 
 msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policies%{linkEnd}."
@@ -16064,6 +16088,9 @@ msgid "ComplianceReport|Update result"
 msgstr ""
 
 msgid "ComplianceReport|View the framework details"
+msgstr ""
+
+msgid "ComplianceReport|Violated control and framework"
 msgstr ""
 
 msgid "ComplianceReport|We are replacing the violations report with a new version that includes enhanced features for your compliance workflow."
@@ -55622,7 +55649,7 @@ msgstr ""
 msgid "SecurityInventory|Load more"
 msgstr ""
 
-msgid "SecurityInventory|Manage security configuration"
+msgid "SecurityInventory|Manage tool coverage"
 msgstr ""
 
 msgid "SecurityInventory|No projects found"
@@ -55664,7 +55691,13 @@ msgstr ""
 msgid "SecurityInventory|Tool coverage: %{coverage}"
 msgstr ""
 
+msgid "SecurityInventory|View project"
+msgstr ""
+
 msgid "SecurityInventory|View security coverage and vulnerabilities for all the projects in this group."
+msgstr ""
+
+msgid "SecurityInventory|View subgroup"
 msgstr ""
 
 msgid "SecurityInventory|View vulnerability report"

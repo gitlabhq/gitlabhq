@@ -239,7 +239,7 @@ For the FastAPI, consider the following information:
 
 - **How many job profiles do I need to cover?** We only have one job profile with the following characteristics: `1 CPU` and `303 Mi` of memory. As explained in [Analyzing the metrics collected](#analyzing-the-metrics-collected) sections, we change those raw values to the following:
   - `400 Mi` for the memory limit instead of `303 Mi` to avoid any job failure due to the memory limits.
-  - `0.20` for the CPU instead of `1 CPU`. We don’t mind our job taking more time to complete. We prioritize accuracy and quality over speed when completing tasks.
+  - `0.20` for the CPU instead of `1 CPU`. We don't mind our job taking more time to complete. We prioritize accuracy and quality over speed when completing tasks.
 - **How many GitLab Runner Managers do I need to run?** Only one GitLab Runner Manager is enough for our tests.
 - **What is the expected Workload?** We want to be able to run up to 20 jobs simultaneously at any time.
 
@@ -431,7 +431,7 @@ node_pools = {
 
 #### GitLab Runner configuration
 
-The current implementation of GRIT doesn’t allow the installation of more than one runner at the time. The `config_template` provided doesn't set configurations like `node_selection` and other limits, as done in the previous example. A simple configuration allows the maximum allowed overwrite value for CPU-intensive jobs and sets the correct values in the `.gitlab-ci.yml` file. The resulting GitLab Runner configuration looks similar to this:
+The current implementation of GRIT doesn't allow the installation of more than one runner at the time. The `config_template` provided doesn't set configurations like `node_selection` and other limits, as done in the previous example. A simple configuration allows the maximum allowed overwrite value for CPU-intensive jobs and sets the correct values in the `.gitlab-ci.yml` file. The resulting GitLab Runner configuration looks similar to this:
 
 ```terraform
 gitlab_pat         = "glpat-REDACTED"

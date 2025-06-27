@@ -1303,7 +1303,7 @@ Use `scope_to` **only when the scoped column is indexed**, and ideally, the batc
 
 A strong indicator of good performance is the absence of the `Rows Removed by Filter` line in the query plan.
 
-Let’s improve performance by indexing the `theme_id` column:
+Let's improve performance by indexing the `theme_id` column:
 
 ```sql
 CREATE INDEX idx_users_theme_id ON users (theme_id);
