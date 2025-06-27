@@ -32,6 +32,7 @@ import {
 } from '~/work_items/constants';
 import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
+import { updateDraftWorkItemType } from '~/work_items/utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -48,6 +49,12 @@ jest.mock('~/alert');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
   setNewWorkItemCache: jest.fn(),
 }));
+jest.mock('~/work_items/utils', () => {
+  return {
+    ...jest.requireActual('~/work_items/utils'),
+    updateDraftWorkItemType: jest.fn(),
+  };
+});
 
 Vue.use(VueApollo);
 
@@ -377,6 +384,24 @@ describe('Create work item component', () => {
       });
 
       expect(wrapper.emitted('changeType')).toBeDefined();
+    });
+
+    it('sets selected work item type in localStorage draft', async () => {
+      createComponent({ props: { preselectedWorkItemType: null } });
+      await waitForPromises();
+      const mockId = 'Issue';
+
+      findSelect().vm.$emit('change', mockId);
+      await nextTick();
+
+      expect(updateDraftWorkItemType).toHaveBeenCalledWith({
+        fullPath: 'full-path',
+        workItemType: {
+          id: 'gid://gitlab/WorkItems::Type/1',
+          name: mockId,
+          iconName: 'issue-type-issue',
+        },
+      });
     });
 
     it('hides title if set', async () => {

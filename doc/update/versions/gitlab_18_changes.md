@@ -24,7 +24,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ### Geo installations 18.1.0
 
-- GitLab versions 18.0 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.0.3 or later.
+- GitLab version 18.1.0 has a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.1.1 or later.
 
 ## 18.0.0
 
@@ -51,7 +51,7 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   | ----------------------- | ----------------------- | -------- |
   | 18.0                    |  18.0.0 - 18.0.1        | 18.0.2   |
 
-- GitLab versions 18.0 through 18.1 have a known issue where Git operations proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.0.3 or later.
+- GitLab versions 18.0 through 18.0.2 have a known issue where Git operations that are proxied from a secondary Geo site fail with HTTP 500 errors. To resolve, upgrade to GitLab 18.0.3 or later.
 
 ### PRNG is not seeded error on Docker installations
 

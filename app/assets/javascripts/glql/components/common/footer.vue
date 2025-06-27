@@ -17,7 +17,12 @@ export default {
     <gl-icon class="gl-mb-1 gl-mr-1" :size="12" name="tanuki" />
     <gl-sprintf :message="__('%{linkStart}View%{linkEnd} powered by GLQL')">
       <template #link="{ content }">
-        <gl-link :href="$options.docsPath" target="_blank">{{ content }}</gl-link>
+        <gl-link
+          :href="$options.docsPath"
+          target="_blank"
+          data-event-tracking="click_glql_info_link"
+          >{{ content }}</gl-link
+        >
       </template>
     </gl-sprintf>
   </div>

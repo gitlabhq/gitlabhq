@@ -22,32 +22,37 @@ const MOCK_GROUP = {
 
 const MOCK_GROUP_WITH_DELAY_DELETION = {
   ...MOCK_GROUP,
-  markedForDeletionOn: null,
+  markedForDeletion: false,
   permanentDeletionDate: '2024-03-31',
 };
 
 const MOCK_GROUP_PENDING_DELETION = {
   ...MOCK_GROUP,
-  markedForDeletionOn: '2024-03-24',
+  markedForDeletion: true,
   permanentDeletionDate: '2024-03-31',
 };
 
 describe('availableGraphQLGroupActions', () => {
   describe.each`
-    userPermissions                                              | markedForDeletionOn | availableActions
-    ${{ viewEditPage: false, removeGroup: false }}               | ${null}             | ${[]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${null}             | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeGroup: true }}                | ${null}             | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${null}             | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${'2024-12-31'}     | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${'2024-12-31'}     | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${'2024-12-31'}     | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE]}
+    userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | availableActions
+    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${[]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${[ACTION_EDIT]}
+    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${[ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${[ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${[ACTION_EDIT]}
   `(
     'availableGraphQLGroupActions',
-    ({ userPermissions, markedForDeletionOn, availableActions }) => {
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletionOn is ${markedForDeletionOn}, then availableActions = [${availableActions}] and is sorted correctly`, () => {
+    ({ userPermissions, markedForDeletion, isSelfDeletionInProgress, availableActions }) => {
+      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, then availableActions = [${availableActions}] and is sorted correctly`, () => {
         expect(
-          availableGraphQLGroupActions({ userPermissions, markedForDeletionOn }),
+          availableGraphQLGroupActions({
+            userPermissions,
+            markedForDeletion,
+            isSelfDeletionInProgress,
+          }),
         ).toStrictEqual(availableActions);
       });
     },

@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     isMarkedForDeletion() {
-      return Boolean(this.group.markedForDeletionOn);
+      return Boolean(this.group.markedForDeletion);
     },
     canBeMarkedForDeletion() {
       return !this.isMarkedForDeletion;

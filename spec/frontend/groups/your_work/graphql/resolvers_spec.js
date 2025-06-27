@@ -73,7 +73,7 @@ describe('your work groups resolver', () => {
       visibility: 'public',
       createdAt: mockGroup.created_at,
       updatedAt: mockGroup.updated_at,
-      markedForDeletionOn: mockGroup.marked_for_deletion_on,
+      markedForDeletion: mockGroup.marked_for_deletion,
       isLinkedToSubscription: mockGroup.is_linked_to_subscription,
       permanentDeletionDate: mockGroup.permanent_deletion_date,
       userPermissions: {

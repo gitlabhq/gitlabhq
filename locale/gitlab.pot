@@ -31425,6 +31425,12 @@ msgstr ""
 msgid "Home page URL"
 msgstr ""
 
+msgid "HomePageWorkItemsWidget|Assigned to you"
+msgstr ""
+
+msgid "HomePageWorkItemsWidget|Authored by you"
+msgstr ""
+
 msgid "Homepage"
 msgstr ""
 

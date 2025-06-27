@@ -225,6 +225,7 @@ describe('work items graphql resolvers', () => {
         }
       }
       widgets.TITLE = queryResult.title;
+      widgets.TYPE = queryResult.workItemType;
 
       expect(localStorage.setItem).toHaveBeenCalledTimes(2);
       expect(localStorage.setItem).toHaveBeenNthCalledWith(

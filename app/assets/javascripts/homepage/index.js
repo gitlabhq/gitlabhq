@@ -12,7 +12,13 @@ export default () => {
     return false;
   }
 
-  const { reviewRequestedPath, assignedToYouPath, duoCodeReviewBotUsername } = el.dataset;
+  const {
+    reviewRequestedPath,
+    assignedMergeRequestsPath,
+    assignedWorkItemsPath,
+    authoredWorkItemsPath,
+    duoCodeReviewBotUsername,
+  } = el.dataset;
 
   return new Vue({
     el,
@@ -26,7 +32,9 @@ export default () => {
       return createElement(HomepageApp, {
         props: {
           reviewRequestedPath,
-          assignedToYouPath,
+          assignedMergeRequestsPath,
+          assignedWorkItemsPath,
+          authoredWorkItemsPath,
         },
       });
     },

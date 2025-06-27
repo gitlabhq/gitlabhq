@@ -31,6 +31,7 @@ import {
   getDisplayReference,
   getNewWorkItemAutoSaveKey,
   getNewWorkItemWidgetsAutoSaveKey,
+  updateDraftWorkItemType,
   newWorkItemFullPath,
 } from '~/work_items/utils';
 import {
@@ -300,6 +301,17 @@ export default {
         }
 
         const selectedWorkItemType = this.findWorkItemType(this.preselectedWorkItemType);
+
+        if (selectedWorkItemType) {
+          updateDraftWorkItemType({
+            fullPath: this.selectedProjectFullPath,
+            workItemType: {
+              id: selectedWorkItemType.id,
+              name: selectedWorkItemType.name,
+              iconName: selectedWorkItemType.iconName,
+            },
+          });
+        }
 
         if (selectedWorkItemType) {
           this.selectedWorkItemTypeId = selectedWorkItemType?.id;
@@ -689,6 +701,16 @@ export default {
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
       });
+
+      updateDraftWorkItemType({
+        fullPath: this.selectedProjectFullPath,
+        workItemType: {
+          id: this.selectedWorkItemTypeId,
+          name: this.selectedWorkItemTypeName,
+          iconName: this.selectedWorkItemTypeIconName,
+        },
+      });
+
       this.$emit('changeType', this.selectedWorkItemTypeName);
     },
     async updateDraftData(type, value) {

@@ -69,7 +69,7 @@ export const initWorkItemsRoot = ({ workItemType, workspaceType, withTabs } = {}
   } = el.dataset;
 
   const isGroup = workspaceType === WORKSPACE_GROUP;
-  const router = createRouter({ fullPath, workspaceType, defaultBranch, isGroup });
+  const router = createRouter({ fullPath, workspaceType, defaultBranch });
   let listPath = issuesListPath;
 
   const breadcrumbParams = { workItemType, isGroup };

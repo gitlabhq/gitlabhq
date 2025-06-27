@@ -27,6 +27,7 @@ For more information, see:
 - [Linux package](package/_index.md)
 - [Reference architectures](../administration/reference_architectures/_index.md)
 - [System requirements](requirements.md)
+- [Supported Linux operating systems](package/_index.md#supported-platforms)
 
 ## Helm chart
 

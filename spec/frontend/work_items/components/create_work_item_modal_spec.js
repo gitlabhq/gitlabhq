@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import { GlDisclosureDropdownItem, GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import {
@@ -24,6 +25,7 @@ import CreateWorkItemCancelConfirmationModal from '~/work_items/components/creat
 const showToast = jest.fn();
 
 describe('CreateWorkItemModal', () => {
+  useLocalStorageSpy();
   Vue.use(VueRouter);
   let wrapper;
   const router = new VueRouter({
@@ -75,6 +77,23 @@ describe('CreateWorkItemModal', () => {
       router,
     });
   };
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('renders create-work-item component with preselectedWorkItemType prop set from localStorage draft', async () => {
+    localStorage.setItem(
+      'autosave/new-full-path-widgets-draft',
+      JSON.stringify({ TYPE: { name: WORK_ITEM_TYPE_NAME_ISSUE } }),
+    );
+
+    createComponent();
+
+    await waitForPromises();
+
+    expect(findForm().props('preselectedWorkItemType')).toBe(WORK_ITEM_TYPE_NAME_ISSUE);
+  });
 
   it('shows toast on workItemCreated', async () => {
     createComponent();

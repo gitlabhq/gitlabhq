@@ -210,7 +210,9 @@ RSpec.describe RootController, feature_category: :shared do
 
               expect(assigns[:homepage_app_data]).to eq({
                 review_requested_path: "/dashboard/merge_requests",
-                assigned_to_you_path: "/dashboard/merge_requests",
+                assigned_merge_requests_path: "/dashboard/merge_requests",
+                assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
+                authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
                 duo_code_review_bot_username: duo_code_review_bot.username
               })
             end
@@ -226,7 +228,9 @@ RSpec.describe RootController, feature_category: :shared do
 
               expect(assigns[:homepage_app_data]).to eq({
                 review_requested_path: "/dashboard/merge_requests?reviewer_username=#{user.username}",
-                assigned_to_you_path: "/dashboard/merge_requests?assignee_username=#{user.username}",
+                assigned_merge_requests_path: "/dashboard/merge_requests?assignee_username=#{user.username}",
+                assigned_work_items_path: "/dashboard/issues?assignee_username=#{user.username}",
+                authored_work_items_path: "/dashboard/issues?author_username=#{user.username}",
                 duo_code_review_bot_username: duo_code_review_bot.username
               })
             end

@@ -3,6 +3,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { joinPaths, queryToObject } from '~/lib/utils/url_utility';
 import AccessorUtilities from '~/lib/utils/accessor';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import { getDraft, updateDraft } from '~/lib/utils/autosave';
 import { TYPE_EPIC, TYPE_ISSUE } from '~/issues/constants';
 import {
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
@@ -400,7 +401,12 @@ export const makeDrawerUrlParam = (activeItem, fullPath, issuableType = TYPE_ISS
 };
 
 export const getAutosaveKeyQueryParamString = () => {
-  const allowedKeysInQueryParamString = ['vulnerability_id', 'discussion_to_resolve'];
+  const allowedKeysInQueryParamString = [
+    'vulnerability_id',
+    'discussion_to_resolve',
+    'issue[issue_type]',
+    'issuable_template',
+  ];
   const queryParams = new URLSearchParams(window.location.search);
   // Remove extra params from queryParams
   const allKeys = Array.from(queryParams.keys());
@@ -445,8 +451,26 @@ export const getWorkItemWidgets = (draftData) => {
     }
   }
   widgets.TITLE = draftData.workspace.workItem.title;
+  widgets.TYPE = draftData.workspace.workItem.workItemType;
 
   return widgets;
+};
+
+export const updateDraftWorkItemType = ({ fullPath, workItemType }) => {
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+    fullPath,
+  });
+  const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
+  sharedCacheWidgets.TYPE = workItemType;
+  updateDraft(widgetsAutosaveKey, JSON.stringify(sharedCacheWidgets));
+};
+
+export const getDraftWorkItemType = ({ fullPath }) => {
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+    fullPath,
+  });
+  const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
+  return sharedCacheWidgets.TYPE;
 };
 
 export const isItemDisplayable = (item, showClosed) => {

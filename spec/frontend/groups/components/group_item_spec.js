@@ -205,7 +205,7 @@ describe('GroupItemComponent', () => {
 
     describe('for a group pending deletion', () => {
       beforeEach(() => {
-        group = { ...mockParentGroupItem, pendingRemoval: true };
+        group = { ...mockParentGroupItem, markedForDeletion: true };
         wrapper = createComponent({ group });
       });
 
@@ -219,7 +219,7 @@ describe('GroupItemComponent', () => {
 
     describe('for a group not scheduled for deletion', () => {
       beforeEach(() => {
-        group = { ...mockParentGroupItem, pendingRemoval: false };
+        group = { ...mockParentGroupItem, markedForDeletion: false };
         wrapper = createComponent({ group });
       });
 

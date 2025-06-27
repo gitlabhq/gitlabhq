@@ -25,6 +25,7 @@ describe('LockTooltip', () => {
       },
       stubs: {
         GlSprintf,
+        GlTooltip,
       },
     });
   };

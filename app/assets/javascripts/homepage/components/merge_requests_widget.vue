@@ -94,7 +94,7 @@ export default {
     <ul class="gl-list-none gl-p-0">
       <li>
         <gl-link
-          class="gl-flex gl-items-center gl-gap-3 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+          class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="reviewRequestedPath"
         >
@@ -104,7 +104,7 @@ export default {
             <span
               v-if="reviewRequestedLastUpdatedAt"
               data-testid="review-requested-last-updated-at"
-              class="gl-ml-auto gl-text-subtle"
+              class="gl-ml-auto gl-text-sm gl-text-subtle"
               >{{ timeFormatted(reviewRequestedLastUpdatedAt) }}</span
             >
           </template>
@@ -112,7 +112,7 @@ export default {
       </li>
       <li>
         <gl-link
-          class="gl-flex gl-items-center gl-gap-3 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
+          class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="assignedToYouPath"
         >
@@ -122,7 +122,7 @@ export default {
             <span
               v-if="assignedLastUpdatedAt"
               data-testid="assigned-last-updated-at"
-              class="gl-ml-auto gl-text-subtle"
+              class="gl-ml-auto gl-text-sm gl-text-subtle"
               >{{ timeFormatted(assignedLastUpdatedAt) }}</span
             >
           </template>

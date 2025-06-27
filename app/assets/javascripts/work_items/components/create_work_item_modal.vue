@@ -3,7 +3,7 @@ import { GlButton, GlModal, GlDisclosureDropdownItem, GlTooltipDirective } from 
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, s__ } from '~/locale';
 import { isMetaClick } from '~/lib/utils/common_utils';
-import { newWorkItemPath, canRouterNav } from '~/work_items/utils';
+import { newWorkItemPath, canRouterNav, getDraftWorkItemType } from '~/work_items/utils';
 import {
   NAME_TO_TEXT_LOWERCASE_MAP,
   sprintfWorkItem,
@@ -99,10 +99,12 @@ export default {
     },
   },
   data() {
+    const draftWorkItemType = getDraftWorkItemType({ fullPath: this.fullPath })?.name;
+
     return {
       isCreateModalVisible: false,
       isConfirmationModalVisible: false,
-      selectedWorkItemTypeName: this.preselectedWorkItemType,
+      selectedWorkItemTypeName: draftWorkItemType || this.preselectedWorkItemType,
       shouldDiscardDraft: false,
     };
   },
@@ -171,10 +173,6 @@ export default {
     hideCreateModal() {
       this.$emit('hideModal');
       this.isCreateModalVisible = false;
-      this.resetSelectedWorkItemType();
-    },
-    resetSelectedWorkItemType() {
-      this.selectedWorkItemTypeName = this.preselectedWorkItemType;
     },
     showCreateModal(event) {
       if (Boolean(event) && isMetaClick(event)) {
@@ -207,8 +205,6 @@ export default {
       this.hideConfirmationModal();
     },
     handleDiscardDraft(modal) {
-      this.resetSelectedWorkItemType();
-
       if (modal === 'createModal') {
         // This is triggered on the create modal when the user didn't update the form,
         // so we just hide the create modal as there's no draft to discard
