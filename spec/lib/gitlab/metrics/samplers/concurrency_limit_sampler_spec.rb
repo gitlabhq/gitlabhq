@@ -18,6 +18,10 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
   it_behaves_like 'metrics sampler', 'CONCURRENCY_LIMIT_SAMPLER'
 
   describe '#sample' do
+    before do
+      allow(sampler).to receive(:running).and_return(true)
+    end
+
     context 'when lease can be obtained' do
       before do
         allow(Gitlab::SidekiqMiddleware::ConcurrencyLimit::WorkersMap)
@@ -83,6 +87,21 @@ RSpec.describe Gitlab::Metrics::Samplers::ConcurrencyLimitSampler, :clean_gitlab
         it 'report metrics while lease exists and afterwards reset the metrics' do
           expect(sampler).to receive(:report_metrics).exactly(3).times
           expect(Kernel).to receive(:sleep).exactly(3).times
+          expect(sampler).to receive(:reset_metrics).once
+
+          sample
+        end
+      end
+
+      context 'when sampler thread stops running' do
+        before do
+          allow(sampler).to receive(:running).and_return(true, true, false)
+          allow(sampler.exclusive_lease).to receive(:same_uuid?).and_return(true)
+        end
+
+        it 'reports metrics once and resets the metrics' do
+          expect(sampler).to receive(:report_metrics).once
+          expect(Kernel).to receive(:sleep).once
           expect(sampler).to receive(:reset_metrics).once
 
           sample
