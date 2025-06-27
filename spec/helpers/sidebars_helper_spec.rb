@@ -764,6 +764,16 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
     end
   end
 
+  describe '#compare_plans_url' do
+    before do
+      allow(helper).to receive(:promo_url).and_return('https://about.gitlab.com')
+    end
+
+    it 'always returns the pricing page URL' do
+      expect(helper.compare_plans_url(user: nil, group: nil, project: nil)).to eq('https://about.gitlab.com/pricing')
+    end
+  end
+
   describe '#project_sidebar_context_data' do
     # Testing this private method because:
     # 1. This helper is just so complex that it isn't feasible to test everything through the few public methods.

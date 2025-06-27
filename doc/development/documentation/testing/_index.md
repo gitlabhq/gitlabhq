@@ -101,6 +101,15 @@ content in the `/doc-locale/` or `/docs-locale/` directories.
 | Charts | [`/doc`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/charts/gitlab/-/tree/master/doc-locale) | `check_docs_i18n_content` <br/> `check_docs_i18n_markdown` |
 | Operator | [`/doc`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc) | [`/doc-locale`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc-locale) | `docs-i18n-lint content` <br/> `docs-i18n-lint markdown` |
 
+### Path verification of orphaned translation Files
+
+The `docs-i18n-lint paths` job fails if translated files in `/doc-locale` have no corresponding English source files. The job runs when:
+
+- Files in `/doc-locale` are modified
+- The path verification script changes
+
+When orphaned translation files are detected, localization team members handle the necessary deletions. English fallback content provides coverage until new translations are available.
+
 ## Install documentation linters
 
 To help adhere to the [documentation style guidelines](../styleguide/_index.md), and

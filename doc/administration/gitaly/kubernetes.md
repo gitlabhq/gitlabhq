@@ -65,6 +65,7 @@ When running Gitaly in Kubernetes, you must:
 - [Address pod disruption](#address-pod-disruption).
 - [Address resource contention and saturation](#address-resource-contention-and-saturation).
 - [Optimize pod rotation time](#optimize-pod-rotation-time).
+- [Monitor disk usage](#monitor-disk-usage)
 
 ### Enable cgroup_writable field in Containerd
 
@@ -295,3 +296,8 @@ gitlab:
   gitaly:
     gracefulRestartTimeout: 1
 ```
+
+### Monitor disk usage
+
+Monitor disk usage regularly for long-running Gitaly containers because log file growth can cause storage issues if
+[log rotation is not enabled](https://docs.gitlab.com/charts/charts/globals/#log-rotation).

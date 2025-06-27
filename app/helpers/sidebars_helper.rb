@@ -45,6 +45,7 @@ module SidebarsHelper
   def super_sidebar_logged_out_context(panel:, panel_type:)
     super_sidebar_instance_version_data.merge(super_sidebar_whats_new_data).merge({
       is_logged_in: false,
+      compare_plans_url: compare_plans_url,
       context_switcher_links: context_switcher_links,
       current_menu_items: panel.super_sidebar_menu_items,
       current_context_header: panel.super_sidebar_context_header,
@@ -94,9 +95,8 @@ module SidebarsHelper
       sign_out_link: destroy_user_session_path,
       issues_dashboard_path: issues_dashboard_path(assignee_username: user.username),
       merge_request_dashboard_path: user.merge_request_dashboard_enabled? ? merge_requests_dashboard_path : nil,
-
       todos_dashboard_path: dashboard_todos_path,
-
+      compare_plans_url: compare_plans_url(user: user, project: project, group: group),
       create_new_menu_groups: create_new_menu_groups(group: group, project: project),
       merge_request_menu: create_merge_request_menu(user),
       projects_path: dashboard_projects_path,
@@ -226,6 +226,10 @@ module SidebarsHelper
       project_files_url: project_files_path(project, current_ref || project.default_branch, format: :json),
       project_blob_url: project_blob_path(project, current_ref || project.default_branch)
     }
+  end
+
+  def compare_plans_url(*)
+    "#{promo_url}/pricing"
   end
 
   private

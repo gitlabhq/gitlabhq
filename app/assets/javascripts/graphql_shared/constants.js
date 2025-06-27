@@ -22,6 +22,7 @@ export const TYPENAME_EPIC_BOARD = 'Boards::EpicBoard';
 export const TYPENAME_FEATURE_FLAG = 'FeatureFlag';
 export const TYPENAME_GROUP = 'Group';
 export const TYPENAME_ISSUE = 'Issue';
+export const TYPENAME_TASK = 'Task';
 export const TYPENAME_ITERATION = 'Iteration';
 export const TYPENAME_ITERATIONS_CADENCE = 'Iterations::Cadence';
 export const TYPENAME_LABEL = 'Label';

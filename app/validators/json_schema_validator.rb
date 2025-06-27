@@ -7,7 +7,7 @@
 # Create a json schema within the json_schemas directory
 #
 #   class Project < ActiveRecord::Base
-#     validates :data, json_schema: { filename: "file" }
+#     validates :data, json_schema: { filename: "file", size_limit: 64.kilobytes }
 #   end
 #
 class JsonSchemaValidator < ActiveModel::EachValidator
@@ -20,6 +20,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
     raise FilenameError, "Must be a valid 'filename'" unless options[:filename].match?(FILENAME_ALLOWED)
 
     @base_directory = options.delete(:base_directory) || BASE_DIRECTORY
+    @size_limit = options.delete(:size_limit)
 
     super(options)
   end
@@ -27,6 +28,11 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     value = Gitlab::Json.parse(Gitlab::Json.dump(value)) if options[:hash_conversion] == true
     value = Gitlab::Json.parse(value.to_s) if options[:parse_json] == true && !value.nil?
+
+    if size_limit && !valid_size?(value)
+      record.errors.add(attribute, size_error_message)
+      return
+    end
 
     if options[:detail_errors]
       schema.validate(value).each do |error|
@@ -44,7 +50,20 @@ class JsonSchemaValidator < ActiveModel::EachValidator
 
   private
 
-  attr_reader :base_directory
+  attr_reader :base_directory, :size_limit
+
+  def valid_size?(value)
+    json_size(value) <= size_limit
+  end
+
+  def json_size(value)
+    Gitlab::Json.dump(value).bytesize
+  end
+
+  def size_error_message
+    human_size = ActiveSupport::NumberHelper.number_to_human_size(size_limit)
+    format(_("is too large. Maximum size allowed is %{size}"), size: human_size)
+  end
 
   def format_error_message(error)
     case error['type']

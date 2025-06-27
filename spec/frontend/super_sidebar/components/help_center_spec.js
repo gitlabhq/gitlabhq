@@ -26,10 +26,9 @@ describe('HelpCenter component', () => {
   const findButton = (name) => withinComponent().getByRole('button', { name });
   const findNotificationDot = () => wrapper.findByTestId('notification-dot');
 
-  // eslint-disable-next-line no-shadow
-  const createWrapper = (sidebarData, provide = {}) => {
+  const createWrapper = (sidebarDataOverride = sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
-      propsData: { sidebarData },
+      propsData: { sidebarData: sidebarDataOverride },
       stubs: { GlEmoji },
       provide: {
         isSaas: false,
@@ -53,21 +52,21 @@ describe('HelpCenter component', () => {
     extraAttrs: trackingAttrs('privacy'),
   };
 
-  const DEFAULT_HELP_ITEMS = [
+  const getDefaultHelpItems = (customSidebarData = sidebarData) => [
     { text: HelpCenter.i18n.help, href: helpPagePath(), extraAttrs: trackingAttrs('help') },
     {
       text: HelpCenter.i18n.support,
-      href: sidebarData.support_path,
+      href: customSidebarData.support_path,
       extraAttrs: trackingAttrs('support'),
     },
     {
       text: HelpCenter.i18n.docs,
-      href: sidebarData.docs_path,
+      href: customSidebarData.docs_path,
       extraAttrs: trackingAttrs('gitlab_documentation'),
     },
     {
       text: HelpCenter.i18n.plans,
-      href: `${PROMO_URL}/pricing`,
+      href: customSidebarData.compare_plans_url,
       extraAttrs: trackingAttrs('compare_gitlab_plans'),
     },
     {
@@ -87,15 +86,13 @@ describe('HelpCenter component', () => {
     },
   ];
 
-  const ALL_HELP_ITEMS = [...DEFAULT_HELP_ITEMS, PRIVACY_HELP_ITEM];
-
   describe('default', () => {
     beforeEach(() => {
-      createWrapper(sidebarData);
+      createWrapper();
     });
 
     it('renders menu items', () => {
-      expect(findDropdownGroup(0).props('group').items).toEqual(DEFAULT_HELP_ITEMS);
+      expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
 
       expect(findDropdownGroup(1).props('group').items).toEqual([
         expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
@@ -103,16 +100,44 @@ describe('HelpCenter component', () => {
       ]);
     });
 
-    it('doesn`t render privacy item if not in `SaaS` mode', () => {
-      createWrapper({ ...sidebarData }, { isSaas: false });
+    it('does not render privacy item if not in SaaS mode', () => {
+      createWrapper(sidebarData, { isSaas: false });
 
-      expect(findDropdownGroup(0).props('group').items).toEqual(DEFAULT_HELP_ITEMS);
+      expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
     });
 
-    it('renders privacy item if in `SaaS` mode', () => {
-      createWrapper({ ...sidebarData }, { isSaas: true });
+    it('renders privacy item if in SaaS mode', () => {
+      createWrapper(sidebarData, { isSaas: true });
 
-      expect(findDropdownGroup(0).props('group').items).toEqual(ALL_HELP_ITEMS);
+      expect(findDropdownGroup(0).props('group').items).toEqual([
+        ...getDefaultHelpItems(),
+        PRIVACY_HELP_ITEM,
+      ]);
+    });
+
+    describe('compare plans URL', () => {
+      it('uses the compare_plans_url provided in sidebarData', () => {
+        const customSidebarData = {
+          ...sidebarData,
+          compare_plans_url: '/custom/billing/path',
+        };
+
+        createWrapper(customSidebarData);
+
+        const helpItems = findDropdownGroup(0).props('group').items;
+        const plansItem = helpItems.find((item) => item.text === HelpCenter.i18n.plans);
+
+        expect(plansItem.href).toBe('/custom/billing/path');
+      });
+
+      it('uses the compare_plans_url from sidebarData', () => {
+        createWrapper();
+
+        const helpItems = findDropdownGroup(0).props('group').items;
+        const plansItem = helpItems.find((item) => item.text === HelpCenter.i18n.plans);
+
+        expect(plansItem.href).toBe(sidebarData.compare_plans_url);
+      });
     });
 
     it('passes custom offset to the dropdown', () => {
@@ -121,9 +146,12 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('with Gitlab version check feature enabled', () => {
+    describe('with GitLab version check feature enabled', () => {
       beforeEach(() => {
-        createWrapper({ ...sidebarData, show_version_check: true });
+        createWrapper({
+          ...sidebarData,
+          show_version_check: true,
+        });
       });
 
       it('shows version information as first item', () => {
@@ -138,12 +166,17 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('if Terms of Service and Data Privacy is set', () => {
+    describe('when Terms of Service and Data Privacy is set', () => {
       it('shows link to Terms of Service and Data Privacy', () => {
-        createWrapper({ ...sidebarData, terms: '/-/users/terms' });
+        const customSidebarData = {
+          ...sidebarData,
+          terms: '/-/users/terms',
+        };
+
+        createWrapper(customSidebarData);
 
         expect(findDropdownGroup(0).props('group').items).toEqual([
-          ...DEFAULT_HELP_ITEMS,
+          ...getDefaultHelpItems(customSidebarData),
           expect.objectContaining({
             text: HelpCenter.i18n.terms,
             href: '/-/users/terms',
@@ -155,18 +188,26 @@ describe('HelpCenter component', () => {
       });
 
       it('does not show link to Terms of Service and Data Privacy on SaaS even if it is set', () => {
-        createWrapper({ ...sidebarData, terms: '/-/users/terms' }, { isSaas: true });
+        const customSidebarData = {
+          ...sidebarData,
+          terms: '/-/users/terms',
+        };
+
+        createWrapper(customSidebarData, { isSaas: true });
 
         expect(findDropdownGroup(0).props('group').items).toEqual([
-          ...DEFAULT_HELP_ITEMS,
+          ...getDefaultHelpItems(customSidebarData),
           PRIVACY_HELP_ITEM,
         ]);
       });
     });
 
-    describe('If Terms of Service and Data Privacy is undefined', () => {
+    describe('when Terms of Service and Data Privacy is undefined', () => {
       beforeEach(() => {
-        createWrapper({ ...sidebarData, terms: undefined });
+        createWrapper({
+          ...sidebarData,
+          terms: undefined,
+        });
       });
 
       it('does not show link to Terms of Service and Data Privacy', () => {
@@ -177,7 +218,7 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('showKeyboardShortcuts', () => {
+    describe('keyboard shortcuts', () => {
       let button;
 
       beforeEach(() => {
@@ -185,12 +226,10 @@ describe('HelpCenter component', () => {
       });
 
       it('shows the keyboard shortcuts modal', () => {
-        // This relies on the event delegation set up by the Shortcuts class in
-        // ~/behaviors/shortcuts/shortcuts.js.
         expect(button.classList.contains('js-shortcuts-modal-trigger')).toBe(true);
       });
 
-      it('should have Snowplow tracking attributes', () => {
+      it('has Snowplow tracking attributes', () => {
         expect(findButton('Keyboard shortcuts').dataset).toEqual(
           expect.objectContaining({
             trackAction: 'click_button',
@@ -201,25 +240,31 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('showWhatsNew', () => {
+    describe("What's new", () => {
       beforeEach(() => {
-        createWrapper({ ...sidebarData, show_version_check: true });
+        createWrapper({
+          ...sidebarData,
+          show_version_check: true,
+        });
 
         findButton("What's new").click();
       });
 
-      it('shows the "What\'s new" slideout', () => {
+      it("shows the What's new slideout", () => {
         expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(sidebarData.whats_new_version_digest);
       });
 
-      it('shows the existing "What\'s new" slideout instance on subsequent clicks', () => {
+      it("shows the existing What's new slideout instance on subsequent clicks", () => {
         findButton("What's new").click();
         expect(toggleWhatsNewDrawer).toHaveBeenCalledTimes(2);
         expect(toggleWhatsNewDrawer).toHaveBeenLastCalledWith();
       });
 
-      it('should have Snowplow tracking attributes', () => {
-        createWrapper({ ...sidebarData, display_whats_new: true });
+      it('has Snowplow tracking attributes', () => {
+        createWrapper({
+          ...sidebarData,
+          display_whats_new: true,
+        });
 
         expect(findButton("What's new").dataset).toEqual(
           expect.objectContaining({
@@ -231,10 +276,13 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('shouldShowWhatsNewNotification', () => {
+    describe("What's new notification", () => {
       describe('when setting is disabled', () => {
         beforeEach(() => {
-          createWrapper({ ...sidebarData, display_whats_new: false });
+          createWrapper({
+            ...sidebarData,
+            display_whats_new: false,
+          });
         });
 
         it('does not render notification dot', () => {
@@ -246,14 +294,17 @@ describe('HelpCenter component', () => {
         useLocalStorageSpy();
 
         beforeEach(() => {
-          createWrapper({ ...sidebarData, display_whats_new: true });
+          createWrapper({
+            ...sidebarData,
+            display_whats_new: true,
+          });
         });
 
         it('renders notification dot', () => {
           expect(findNotificationDot().exists()).toBe(true);
         });
 
-        describe('when "What\'s new" drawer got opened', () => {
+        describe("when What's new drawer is opened", () => {
           beforeEach(() => {
             findButton("What's new").click();
           });
@@ -266,7 +317,10 @@ describe('HelpCenter component', () => {
         describe('with matching version digest in local storage', () => {
           beforeEach(() => {
             window.localStorage.setItem(STORAGE_KEY, 1);
-            createWrapper({ ...sidebarData, display_whats_new: true });
+            createWrapper({
+              ...sidebarData,
+              display_whats_new: true,
+            });
           });
 
           it('does not render notification dot', () => {
@@ -276,8 +330,8 @@ describe('HelpCenter component', () => {
       });
     });
 
-    describe('toggle dropdown', () => {
-      it('should track Snowplow event when dropdown is shown', () => {
+    describe('dropdown toggle', () => {
+      it('tracks Snowplow event when dropdown is shown', () => {
         findDropdown().vm.$emit('shown');
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_toggle', {
           label: 'show_help_dropdown',
@@ -285,7 +339,7 @@ describe('HelpCenter component', () => {
         });
       });
 
-      it('should track Snowplow event when dropdown is hidden', () => {
+      it('tracks Snowplow event when dropdown is hidden', () => {
         findDropdown().vm.$emit('hidden');
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'click_toggle', {
           label: 'hide_help_dropdown',

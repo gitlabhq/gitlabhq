@@ -72,7 +72,7 @@ export default {
             },
             {
               text: this.$options.i18n.plans,
-              href: `${PROMO_URL}/pricing`,
+              href: this.sidebarData.compare_plans_url,
               extraAttrs: {
                 ...this.trackingAttrs('compare_gitlab_plans'),
               },
