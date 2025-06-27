@@ -28,9 +28,17 @@ module Gitlab
         def sample
           try_obtain_lease do
             # Keep reporting the metrics while the lease is valid
-            # to ensure we have continuous data
-            while exclusive_lease.exists?
+            # to ensure we have continuous data. Also check if the
+            # sampler is still running because a SIGTERM will cause
+            # the sleep to be interrupted and the loop to run again
+            # until the condition is false.
+            while running && exclusive_lease.same_uuid?
               report_metrics
+
+              # Ensure that we don't sleep if the state changed
+              # after reporting metrics.
+              break unless running
+
               Kernel.sleep(DEFAULT_SAMPLING_INTERVAL_SECONDS)
             end
 
