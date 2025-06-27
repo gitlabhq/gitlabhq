@@ -56,3 +56,22 @@ first attempt to load balance the connection across the replica hosts.
 It looks for the next `online` replica host and yields a connection from the host's connection pool.
 A replica host is considered `online` if it is up-to-date with the primary, based on
 either the replication lag size or time. The thresholds for these requirements are configurable.
+
+## Deployment Strategy
+
+When rolling out changes via feature flag, consider deploying exclusively to Sidekiq pods initially to minimize risk. 
+
+Why Sidekiq-first deployment:
+
+- Keeps the API pods stable ensuring ChatOps remains available to disable feature flags in worst case scenario.
+- Background jobs can retry automatically without any intervention.
+
+Implementation example:
+
+```ruby
+if feature_flag_enabled? && Gitlab::Runtime.sidekiq?
+   new_changes
+else
+   existing_changes
+end
+```

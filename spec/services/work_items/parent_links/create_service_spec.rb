@@ -111,7 +111,7 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       let(:params) { { issuable_references: [task1, task2] } }
 
       it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
-        let(:trigger_call_counter) { 2 }
+        let(:trigger_call_counter) { 4 }
 
         subject(:execute_service) { described_class.new(work_item, user, params).execute }
       end
@@ -242,6 +242,8 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
 
         it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
           subject(:execute_service) { described_class.new(work_item, user, params).execute }
+
+          let(:trigger_call_counter) { 2 }
         end
 
         it 'creates links only for non related tasks', :aggregate_failures do

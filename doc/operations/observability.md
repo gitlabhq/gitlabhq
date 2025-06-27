@@ -58,6 +58,8 @@ Join the conversation about interesting ways to use GitLab O11y in the GitLab O1
 
 ## Set up a GitLab Observability instance
 
+Observability data is collected in a separate application outside of your GitLab.com instance. Problems with your GitLab instance do not impact collecting or viewing your observability data and vice-versa.
+
 Prerequisites:
 
 - You must have an EC2 instance or similar virtual machine with:

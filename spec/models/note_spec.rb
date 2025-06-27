@@ -2118,4 +2118,62 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
   end
+
+  describe '#trigger_work_item_updated_subscription' do
+    let(:issue) { create(:issue) }
+    let(:note) { build(:note, noteable: issue, system: true, project: issue.project) }
+
+    before do
+      allow(note).to receive(:for_issue?).and_return(true)
+    end
+
+    context 'when note contains metadata with specific action' do
+      %w[branch relate cross_reference].each do |action|
+        it "triggers subscription for note with '#{action}' action" do
+          build(:system_note_metadata, note: note, action: action)
+
+          expect(GraphqlTriggers).to receive(:work_item_updated).with(issue)
+
+          note.save!
+        end
+      end
+    end
+
+    context 'when note contains metadata with non-actionable action' do
+      %w[label visible assignee].each do |action|
+        it "does not trigger subscription for note with '#{action}' action" do
+          build(:system_note_metadata, note: note, action: action)
+
+          expect(GraphqlTriggers).not_to receive(:work_item_updated)
+
+          note.save!
+        end
+      end
+    end
+
+    context 'when noteable is not an issue' do
+      let(:merge_request) { create(:merge_request) }
+      let(:note) { build(:note, noteable: merge_request, system: true, note: 'merge request created', project: merge_request.project) }
+
+      before do
+        allow(note).to receive(:for_issue?).and_return(false)
+      end
+
+      it 'does not trigger subscription' do
+        expect(GraphqlTriggers).not_to receive(:work_item_updated)
+
+        note.save!
+      end
+    end
+
+    context 'when noteable is not a system note' do
+      let(:note) { build(:note, noteable: issue, system: false, note: 'merge request created', project: issue.project) }
+
+      it 'does not trigger subscription' do
+        expect(GraphqlTriggers).not_to receive(:work_item_updated)
+
+        note.save!
+      end
+    end
+  end
 end

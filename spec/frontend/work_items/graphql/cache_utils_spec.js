@@ -8,7 +8,7 @@ import {
   updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidget, findNotesWidget, getWorkItemWidgets } from '~/work_items/utils';
+import { findHierarchyWidget, findNotesWidget } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
@@ -20,9 +20,7 @@ import {
   workItemResponseFactory,
   mockCreateWorkItemDraftData,
   mockNewWorkItemCache,
-  mockNewWorkItemIssueCache,
   restoredDraftDataWidgets,
-  restoredDraftDataWidgetsForIssue,
   restoredDraftDataWidgetsEmpty,
 } from '../mock_data';
 
@@ -50,10 +48,6 @@ describe('work items graphql cache utils', () => {
       ],
     },
   };
-  // This looks like an odd pattern but is something we do already in several places
-  // across our codebase to run tests conditionally, often to quarantine tests.
-  // Here we're utilizing it skip test based on feature flag.
-  const itif = (condition) => (condition ? it : it.skip);
 
   beforeEach(() => {
     window.gon.features = {};
@@ -268,13 +262,6 @@ describe('work items graphql cache utils', () => {
           `autosave/new-gitlab-org-epic-draft`,
           JSON.stringify(mockCreateWorkItemDraftData),
         );
-
-        if (window.gon.features.workItemsAlpha) {
-          localStorage.setItem(
-            `autosave/new-gitlab-org-widgets-draft`,
-            JSON.stringify(getWorkItemWidgets(mockCreateWorkItemDraftData)),
-          );
-        }
       });
 
       afterEach(() => {
@@ -326,27 +313,6 @@ describe('work items graphql cache utils', () => {
           );
         },
       );
-
-      itif(workItemsAlpha)('shares widget data between work item types', async () => {
-        await setNewWorkItemCache(mockNewWorkItemIssueCache);
-
-        await waitForPromises();
-
-        expect(mockWriteQuery).toHaveBeenCalledWith(
-          expect.objectContaining({
-            data: expect.objectContaining({
-              workspace: expect.objectContaining({
-                workItem: expect.objectContaining({
-                  // The title was originally set for Epic type in beforeEach call above
-                  title: mockCreateWorkItemDraftData.workspace.workItem.title,
-                  // The widgets data is shared
-                  widgets: expect.arrayContaining(restoredDraftDataWidgetsForIssue),
-                }),
-              }),
-            }),
-          }),
-        );
-      });
     },
   );
 

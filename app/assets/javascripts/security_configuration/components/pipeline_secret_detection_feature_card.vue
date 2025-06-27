@@ -3,7 +3,6 @@ import { GlCard, GlIcon, GlLink, GlButton, GlToggle, GlAlert } from '@gitlab/ui'
 import { s__ } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import SetValidityChecks from '~/security_configuration/graphql/set_validity_checks.graphql';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export default {
@@ -18,8 +17,12 @@ export default {
     GlAlert,
     ManageViaMr,
   },
-  mixins: [glFeatureFlagsMixin()],
-  inject: ['projectFullPath', 'validityChecksEnabled', 'validityChecksAvailable'],
+  inject: [
+    'projectFullPath',
+    'userIsProjectAdmin',
+    'validityChecksEnabled',
+    'validityChecksAvailable',
+  ],
   props: {
     feature: {
       type: Object,
@@ -63,11 +66,12 @@ export default {
     showManageViaMr() {
       return ManageViaMr.canRender(this.feature);
     },
-    shouldRenderValidityChecks() {
-      return this.glFeatures.validityChecks;
-    },
     isToggleDisabled() {
-      return !this.validityChecksAvailable || !this.pipelineSecretDetectionEnabled;
+      return (
+        !this.validityChecksAvailable ||
+        !this.pipelineSecretDetectionEnabled ||
+        !this.userIsProjectAdmin
+      );
     },
   },
   methods: {
@@ -161,7 +165,7 @@ export default {
         </gl-button>
       </div>
 
-      <div v-if="shouldRenderValidityChecks" class="gl-mt-6" data-testid="validity-checks-section">
+      <div v-if="validityChecksAvailable" class="gl-mt-6" data-testid="validity-checks-section">
         <gl-alert
           v-if="shouldShowAlert"
           class="gl-mb-5"
@@ -195,13 +199,6 @@ export default {
             :disabled="isToggleDisabled"
             @change="onValidityChecksToggle"
           />
-          <span class="gl-ml-3 gl-text-sm">
-            {{
-              localValidityChecksEnabled
-                ? s__('SecurityConfiguration|Enabled')
-                : s__('SecurityConfiguration|Not enabled')
-            }}
-          </span>
         </div>
       </div>
     </template>

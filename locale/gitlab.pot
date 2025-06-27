@@ -33533,9 +33533,6 @@ msgstr ""
 msgid "Interactive mode"
 msgstr ""
 
-msgid "Interested parties can even contribute by pushing commits if they want to."
-msgstr ""
-
 msgid "Internal"
 msgstr ""
 
@@ -37206,6 +37203,9 @@ msgstr ""
 msgid "Maintenance mode"
 msgstr ""
 
+msgid "Make a merge request to propose changes to this project."
+msgstr ""
+
 msgid "Make adjustments to how your GitLab instance is set up."
 msgstr ""
 
@@ -38689,9 +38689,6 @@ msgid "Merge request was set to auto-merge"
 msgstr ""
 
 msgid "Merge requests"
-msgstr ""
-
-msgid "Merge requests are a place to propose changes you've made to a project and discuss those changes with others"
 msgstr ""
 
 msgid "Merge requests awaiting your review."
@@ -43601,6 +43598,9 @@ msgid "Other versions"
 msgstr ""
 
 msgid "Other visibility settings have been disabled by the administrator."
+msgstr ""
+
+msgid "Others can contribute by pushing commits to the same branch."
 msgstr ""
 
 msgid "Otherwise, click the link below to complete the process."

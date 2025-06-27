@@ -58,6 +58,20 @@ _quarantine:
 # Test jobs
 # ------------------------------------------
 
+# ========== Network limiting setup ===========
+# Only run a subset of smoke suite
+airgapped:
+  extends:
+    - .parallel
+    - .omnibus-e2e
+    - .with-ignored-runtime-data
+  variables:
+    QA_SCENARIO: Test::Instance::Airgapped
+    QA_RSPEC_TAGS: --tag smoke --tag ~github --tag ~external_api_calls --tag ~skip_live_env
+  rules:
+    - !reference [.rules:test:omnibus-base, rules]
+    - if: $QA_SUITES =~ /Test::Instance::Airgapped/
+
 # Execute smallest test suite to validate omnibus package in dependency update merge request pipelines
 health-check:
   extends:
@@ -250,6 +264,20 @@ registry:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Integration::Registry/
 
+# ========== Relative url ===========
+# Only run a subset of smoke suite
+relative-url:
+  extends:
+    - .parallel
+    - .omnibus-e2e
+    - .with-ignored-runtime-data
+  variables:
+    QA_SCENARIO: Test::Instance::RelativeUrl
+    QA_RSPEC_TAGS: --tag smoke --tag ~orchestrated --tag ~skip_live_env
+  rules:
+    - !reference [.rules:test:omnibus-base, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
+
 repository-storage:
   extends:
     - .omnibus-e2e
@@ -258,6 +286,40 @@ repository-storage:
   rules:
     - !reference [.rules:test:omnibus-base, rules]
     - if: $QA_SUITES =~ /Test::Instance::RepositoryStorage/
+
+# ========== Object Storage with MiniO ===========
+object-storage:
+  extends:
+    - .omnibus-e2e
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_RSPEC_TAGS: --tag object_storage
+    GITLAB_QA_OPTS: --omnibus-config object_storage
+  rules:
+    - !reference [.rules:test:omnibus-base, rules]
+    - if: $QA_SUITES =~ /Test::Instance::ObjectStorage/
+
+# ========== Object Storage with AWS ===========
+object-storage-aws:
+  extends:
+    - object-storage
+  variables:
+    AWS_S3_ACCESS_KEY: $QA_AWS_S3_ACCESS_KEY
+    AWS_S3_BUCKET_NAME: $QA_AWS_S3_BUCKET_NAME
+    AWS_S3_KEY_ID: $QA_AWS_S3_KEY_ID
+    AWS_S3_REGION: $QA_AWS_S3_REGION
+    GITLAB_QA_OPTS: --omnibus-config object_storage_aws
+
+# ========== Object Storage with GCS ===========
+object-storage-gcs:
+  extends:
+    - object-storage
+  variables:
+    GCS_BUCKET_NAME: $QA_GCS_BUCKET_NAME
+    GOOGLE_PROJECT: $QA_GOOGLE_PROJECT
+    GOOGLE_JSON_KEY: $QA_GOOGLE_JSON_KEY
+    GOOGLE_CLIENT_EMAIL: $QA_GOOGLE_CLIENT_EMAIL
+    GITLAB_QA_OPTS: --omnibus-config object_storage_gcs
 
 service-ping-disabled:
   extends:

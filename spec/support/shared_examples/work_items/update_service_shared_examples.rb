@@ -12,6 +12,8 @@ RSpec.shared_examples 'update service that triggers GraphQL work_item_updated su
   let(:trigger_call_counter) { 1 }
 
   it 'triggers graphql subscription workItemUpdated' do
+    allow(GraphqlTriggers).to receive(:work_item_updated).and_call_original
+
     expect(GraphqlTriggers)
       .to receive(:work_item_updated)
       .with(update_subject)

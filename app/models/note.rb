@@ -191,6 +191,7 @@ class Note < ApplicationRecord
   after_commit :trigger_note_subscription_update, on: :update
   after_commit :trigger_note_subscription_destroy, on: :destroy
   after_commit :broadcast_noteable_notes_changed, unless: :importing?
+  after_commit :trigger_work_item_updated_subscription, on: :create, if: :system?
 
   def trigger_note_subscription_create
     return unless trigger_note_subscription?
@@ -219,6 +220,13 @@ class Note < ApplicationRecord
     }
 
     GraphqlTriggers.work_item_note_deleted(noteable.to_work_item_global_id, deleted_note_data)
+  end
+
+  def trigger_work_item_updated_subscription
+    return unless trigger_note_subscription?
+    return unless system_note_work_item_reference?
+
+    GraphqlTriggers.work_item_updated(noteable)
   end
 
   class << self
@@ -834,6 +842,10 @@ class Note < ApplicationRecord
 
   def set_internal_flag
     self.internal = confidential if confidential
+  end
+
+  def system_note_work_item_reference?
+    note.present? && system_note_metadata&.about_relation?
   end
 end
 

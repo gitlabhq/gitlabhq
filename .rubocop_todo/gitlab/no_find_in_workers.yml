@@ -83,6 +83,5 @@ Gitlab/NoFindInWorkers:
     - 'ee/app/workers/groups/update_repository_storage_worker.rb'
     - 'ee/app/workers/namespaces/cascade_duo_features_enabled_worker.rb'
     - 'ee/app/workers/namespaces/storage_usage_export_worker.rb'
-    - 'ee/app/workers/repository_update_mirror_worker.rb'
     - 'ee/app/workers/requirements_management/import_requirements_csv_worker.rb'
     - 'ee/app/workers/work_items/rolledup_dates/bulk_update_handler.rb'

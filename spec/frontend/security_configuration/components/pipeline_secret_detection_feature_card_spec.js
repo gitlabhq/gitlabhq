@@ -44,7 +44,6 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
       provide: {
         projectFullPath: 'group/project',
         userIsProjectAdmin: true,
-        glFeatures: { validityChecks: true },
         validityChecksEnabled: false,
         validityChecksAvailable: true,
         ...provide,
@@ -240,145 +239,151 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
   });
 
   describe('validity checks section', () => {
-    beforeEach(() => {
-      feature = makeFeature({ available: true });
-    });
+    it.each`
+      validityChecksAvailable | shouldRender
+      ${true}                 | ${true}
+      ${false}                | ${false}
+    `(
+      'should render $shouldRender when validityChecksAvailable=$validityChecksAvailable',
+      ({ validityChecksAvailable, shouldRender }) => {
+        feature = makeFeature({ available: true });
+        createComponent({}, { validityChecksAvailable });
 
-    it('is shown when feature flag is enabled', () => {
-      createComponent({}, { glFeatures: { validityChecks: true } });
-      expect(findValidityChecksSection().exists()).toBe(true);
-    });
+        expect(findValidityChecksSection().exists()).toBe(shouldRender);
+      },
+    );
 
-    it('is not shown when feature flag is disabled', () => {
-      createComponent({}, { glFeatures: { validityChecks: false } });
-      expect(findValidityChecksSection().exists()).toBe(false);
-    });
-
-    it('is not shown when feature is unavailable', () => {
-      feature = makeFeature({ available: false });
-      createComponent({}, { glFeatures: { validityChecks: true } });
-      expect(findValidityChecksSection().exists()).toBe(false);
-    });
-
-    describe('validity checks toggle', () => {
-      it('has the correct default value when validityChecksEnabled is true', () => {
-        createComponent({}, { validityChecksEnabled: true });
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('value')).toBe(true);
-      });
-
-      it('has the correct default value when validityChecksEnabled is false', () => {
-        createComponent({}, { validityChecksEnabled: false });
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('value')).toBe(false);
-      });
-
-      it('is unlocked when validityChecksAvailable is true and pipeline secret detection is configured', () => {
-        feature = makeFeature({ available: true, configured: true });
-        createComponent({}, { validityChecksAvailable: true });
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('disabled')).toBe(false);
-      });
-
-      it('is locked when validityChecksAvailable is false', () => {
-        feature = makeFeature({ available: true, configured: true });
-        createComponent({}, { validityChecksAvailable: false });
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('disabled')).toBe(true);
-      });
-
-      it('is locked when pipeline secret detection is not configured', () => {
-        feature = makeFeature({ available: true, configured: false });
-        createComponent({}, { validityChecksAvailable: true });
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('disabled')).toBe(true);
-      });
-
-      it('calls mutation on toggle change with correct payload', async () => {
-        feature = makeFeature({ available: true, configured: true });
-        createComponent();
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('value')).toBe(false);
-        toggle.vm.$emit('change', true);
-
-        expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
-          input: {
-            namespacePath: 'group/project',
-            enable: true,
-          },
-        });
-
-        await waitForPromises();
-
-        expect(toggle.props('value')).toBe(true);
-        expect(wrapper.text()).toContain('Enabled');
-      });
-
-      it('shows success toast when toggle succeeds', async () => {
-        feature = makeFeature({ available: true, configured: true });
-        createComponent();
-
-        const toggle = findValidityChecksToggle();
-        expect(toggle.props('value')).toBe(false);
-
-        toggle.vm.$emit('change', true);
-
-        expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
-          input: {
-            namespacePath: 'group/project',
-            enable: true,
-          },
-        });
-
-        await waitForPromises();
-
-        expect(toggle.props('value')).toBe(true);
-        expect(mockToastShow).toHaveBeenCalledWith('Validity checks enabled');
-      });
-
-      it('shows error alert when an error message is set', async () => {
-        feature = makeFeature({ available: true, configured: true });
-        createComponent();
-
-        requestHandlers.setMutationHandler.mockReset();
-        requestHandlers.setMutationHandler.mockResolvedValue({
-          data: {
-            setValidityChecks: {
-              validityChecksEnabled: null,
-              errors: ['data response with errors'],
+    describe('toggle state', () => {
+      it.each`
+        available | configured | userIsProjectAdmin | shouldBeDisabled
+        ${true}   | ${true}    | ${true}            | ${false}
+        ${true}   | ${false}   | ${true}            | ${true}
+        ${true}   | ${true}    | ${false}           | ${true}
+        ${true}   | ${false}   | ${false}           | ${true}
+      `(
+        'disabled=$shouldBeDisabled when available=$available, configured=$configured, userIsProjectAdmin=$userIsProjectAdmin',
+        ({ available, configured, userIsProjectAdmin, shouldBeDisabled }) => {
+          feature = makeFeature({ available, configured });
+          createComponent(
+            {},
+            {
+              validityChecksAvailable: true,
+              userIsProjectAdmin,
             },
-          },
-        });
+          );
 
-        const toggle = findValidityChecksToggle();
-        toggle.vm.$emit('change', true);
+          expect(findValidityChecksToggle().props('disabled')).toBe(shouldBeDisabled);
+        },
+      );
+    });
 
-        await waitForPromises();
+    describe('toggle value', () => {
+      it.each`
+        validityChecksEnabled | expectedValue
+        ${true}               | ${true}
+        ${false}              | ${false}
+      `(
+        'value is $expectedValue when validityChecksEnabled=$validityChecksEnabled',
+        ({ validityChecksEnabled, expectedValue }) => {
+          feature = makeFeature({ available: true, configured: true });
+          createComponent(
+            {},
+            {
+              validityChecksAvailable: true,
+              validityChecksEnabled,
+              userIsProjectAdmin: true,
+            },
+          );
 
-        expect(findValidityChecksAlert().exists()).toBe(true);
+          expect(findValidityChecksToggle().props('value')).toBe(expectedValue);
+        },
+      );
+    });
+
+    it('calls mutation on toggle change with correct payload', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+      const toggle = findValidityChecksToggle();
+      expect(toggle.props('value')).toBe(false);
+      toggle.vm.$emit('change', true);
+
+      expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
+        input: {
+          namespacePath: 'group/project',
+          enable: true,
+        },
       });
 
-      it('handles GraphQL mutation errors', async () => {
-        feature = makeFeature({ available: true, configured: true });
-        createComponent();
+      await waitForPromises();
 
-        requestHandlers.setMutationHandler.mockReset();
-        requestHandlers.setMutationHandler.mockRejectedValue(new Error('Network error'));
+      expect(toggle.props('value')).toBe(true);
+      expect(wrapper.text()).toContain('Enabled');
+    });
 
-        const toggle = findValidityChecksToggle();
-        toggle.vm.$emit('change', true);
+    it('shows success toast when toggle succeeds', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
 
-        expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
-          input: {
-            namespacePath: 'group/project',
-            enable: true,
-          },
-        });
+      const toggle = findValidityChecksToggle();
+      expect(toggle.props('value')).toBe(false);
 
-        await waitForPromises();
+      toggle.vm.$emit('change', true);
 
-        expect(findValidityChecksAlert().exists()).toBe(true);
+      expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
+        input: {
+          namespacePath: 'group/project',
+          enable: true,
+        },
       });
+
+      await waitForPromises();
+
+      expect(toggle.props('value')).toBe(true);
+      expect(mockToastShow).toHaveBeenCalledWith('Validity checks enabled');
+    });
+
+    it('shows error alert when an error message is set', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+
+      requestHandlers.setMutationHandler.mockReset();
+      requestHandlers.setMutationHandler.mockResolvedValue({
+        data: {
+          setValidityChecks: {
+            validityChecksEnabled: null,
+            errors: ['data response with errors'],
+          },
+        },
+      });
+
+      const toggle = findValidityChecksToggle();
+      toggle.vm.$emit('change', true);
+
+      await waitForPromises();
+
+      expect(findValidityChecksAlert().exists()).toBe(true);
+    });
+
+    it('handles GraphQL mutation errors', async () => {
+      feature = makeFeature({ available: true, configured: true });
+      createComponent();
+
+      requestHandlers.setMutationHandler.mockReset();
+      requestHandlers.setMutationHandler.mockRejectedValue(new Error('Network error'));
+
+      const toggle = findValidityChecksToggle();
+      toggle.vm.$emit('change', true);
+
+      expect(requestHandlers.setMutationHandler).toHaveBeenCalledWith({
+        input: {
+          namespacePath: 'group/project',
+          enable: true,
+        },
+      });
+
+      await waitForPromises();
+
+      expect(findValidityChecksAlert().exists()).toBe(true);
     });
   });
 

@@ -30,6 +30,8 @@ RSpec.describe WorkItems::ParentLinks::DestroyService, feature_category: :team_p
 
       it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
         subject(:execute_service) { described_class.new(parent_link, user).execute }
+
+        let(:trigger_call_counter) { 2 }
       end
 
       it 'removes relation and creates notes', :aggregate_failures do

@@ -1171,6 +1171,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         it 'triggers a workItemUpdated subscription for all affected records' do
           service = described_class.new(project: project, current_user: user, params: update_params)
           allow(service).to receive(:execute_hooks)
+          allow(GraphqlTriggers).to receive(:work_item_updated).and_call_original
 
           WorkItem.where(id: issues_to_notify).find_each do |work_item|
             expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original

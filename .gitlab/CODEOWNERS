@@ -636,14 +636,11 @@ lib/gitlab/checks/
 /doc/administration/license_file.md @lciutacu
 /doc/administration/load_balancer.md @axil @eread
 /doc/administration/logs/ @axil @eread
-/doc/administration/logs/_index.md @lciutacu
 /doc/administration/maintenance_mode/ @axil
 /doc/administration/merge_request_diffs.md @aqualls
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @lciutacu
-/doc/administration/monitoring/_index.md @lciutacu
 /doc/administration/monitoring/github_imports.md @ashrafkhamis
-/doc/administration/monitoring/performance/ @lciutacu
 /doc/administration/monitoring/prometheus/_index.md @axil @eread
 /doc/administration/monitoring/prometheus/registry_exporter.md @z_painter
 /doc/administration/nfs.md @axil @eread
@@ -665,7 +662,6 @@ lib/gitlab/checks/
 /doc/administration/read_only_gitlab.md @axil @eread
 /doc/administration/redis/ @axil
 /doc/administration/reference_architectures/ @axil @eread
-/doc/administration/reply_by_email.md @lciutacu
 /doc/administration/reply_by_email_postfix_setup.md @axil @eread
 /doc/administration/reporting/ @idurham
 /doc/administration/reporting/spamcheck.md @axil @eread
@@ -687,7 +683,6 @@ lib/gitlab/checks/
 /doc/administration/settings/gitaly_timeouts.md @eread
 /doc/administration/settings/import_and_export_settings.md @ashrafkhamis
 /doc/administration/settings/import_export_rate_limits.md @ashrafkhamis
-/doc/administration/settings/incident_management_rate_limits.md @lciutacu
 /doc/administration/settings/instance_template_repository.md @brendan777
 /doc/administration/settings/jira_cloud_app.md @msedlakjakubowski
 /doc/administration/settings/jira_cloud_app_troubleshooting.md @msedlakjakubowski
@@ -725,7 +720,6 @@ lib/gitlab/checks/
 /doc/api/access_requests.md @idurham
 /doc/api/admin/ @idurham
 /doc/api/admin_sidekiq_queues.md @axil @eread
-/doc/api/alert_management_alerts.md @lciutacu
 /doc/api/api_resources.md @ashrafkhamis
 /doc/api/appearance.md @idurham
 /doc/api/applications.md @idurham
@@ -750,7 +744,6 @@ lib/gitlab/checks/
 /doc/api/epic_issues.md @msedlakjakubowski
 /doc/api/epic_links.md @msedlakjakubowski
 /doc/api/epics.md @msedlakjakubowski
-/doc/api/error_tracking.md @lciutacu
 /doc/api/external_controls.md @eread
 /doc/api/geo_nodes.md @axil
 /doc/api/geo_sites.md @axil
@@ -1015,7 +1008,6 @@ lib/gitlab/checks/
 /doc/integration/snowflake.md @eread
 /doc/integration/sourcegraph.md @brendan777
 /doc/integration/trello_power_up.md @msedlakjakubowski
-/doc/operations/ @lciutacu
 /doc/policy/ @axil @eread
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
@@ -1023,7 +1015,8 @@ lib/gitlab/checks/
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
-/doc/subscriptions/gitlab_com/ @lyspin
+/doc/subscriptions/gitlab_com/ @lciutacu
+/doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
 /doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/topics/ @msedlakjakubowski
 /doc/topics/git/ @brendan777
@@ -1051,8 +1044,6 @@ lib/gitlab/checks/
 /doc/tutorials/left_sidebar/ @sselhorn
 /doc/tutorials/merge_requests/ @aqualls
 /doc/tutorials/move_personal_project_to_group/ @phillipwells
-/doc/tutorials/observability/ @lciutacu
-/doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/reviews/ @aqualls
 /doc/tutorials/scan_execution_policy/ @rlehmann1
@@ -1095,7 +1086,6 @@ lib/gitlab/checks/
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @idurham
 /doc/user/get_started/get_started_managing_code.md @brendan777
-/doc/user/get_started/get_started_monitoring.md @lciutacu
 /doc/user/get_started/get_started_planning_work.md @msedlakjakubowski
 /doc/user/get_started/get_started_projects.md @phillipwells
 /doc/user/get_started/getting_started_gitlab_duo.md @sselhorn

@@ -21,6 +21,19 @@ class SystemNoteMetadata < ApplicationRecord
     cloned
   ].freeze
 
+  WORK_ITEMS_CROSS_REFERENCE = %w[
+    branch
+    commit
+    cross_reference
+    merge
+    relate
+    unrelate
+    unrelate_from_parent
+    unrelate_from_child
+    relate_to_parent
+    relate_to_child
+  ].freeze
+
   ICON_TYPES = %w[
     commit description merge confidential visible label assignee cross_reference
     designs_added designs_modified designs_removed designs_discussion_added
@@ -43,6 +56,10 @@ class SystemNoteMetadata < ApplicationRecord
 
   def declarative_policy_delegate
     note
+  end
+
+  def about_relation?
+    action.in?(WORK_ITEMS_CROSS_REFERENCE)
   end
 
   def icon_types

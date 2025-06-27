@@ -7248,88 +7248,6 @@ export const mockNewWorkItemCache = {
   workItemTypeIconName: 'issue-type-epic',
 };
 
-export const mockNewWorkItemIssueCache = {
-  fullPath: 'gitlab-org',
-  widgetDefinitions: [
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'AWARD_EMOJI',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'CURRENT_USER_TODOS',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'DESCRIPTION',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'HEALTH_STATUS',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionHierarchy',
-      type: 'HIERARCHY',
-      allowedChildTypes: {
-        __typename: 'WorkItemTypeConnection',
-        nodes: [
-          {
-            __typename: 'WorkItemType',
-            id: 'gid://gitlab/WorkItems::Type/5',
-            name: 'Task',
-          },
-        ],
-      },
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionLabels',
-      type: 'LABELS',
-      allowsScopedLabels: true,
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'LINKED_ITEMS',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'NOTES',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'NOTIFICATIONS',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'PARTICIPANTS',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'START_AND_DUE_DATE',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'STATUS',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionGeneric',
-      type: 'TIME_TRACKING',
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionWeight',
-      type: 'WEIGHT',
-      editable: false,
-      rollUp: true,
-    },
-    {
-      __typename: 'WorkItemWidgetDefinitionCustomFields',
-      type: WIDGET_TYPE_CUSTOM_FIELDS,
-    },
-  ],
-  workItemType: 'Issue',
-  workItemTypeId: 'gid://gitlab/WorkItems::Type/2',
-  workItemTypeIconName: 'issue-type-issue',
-};
-
 export const restoredDraftDataWidgets = [
   {
     type: 'DESCRIPTION',
@@ -7449,29 +7367,6 @@ export const restoredDraftDataWidgets = [
     __typename: 'WorkItemWidgetTimeTracking',
   },
 ];
-
-export const restoredDraftDataWidgetsForIssue = restoredDraftDataWidgets
-  // Drop any unsupported widget for Issue type
-  .filter((widget) => !['COLOR'].includes(widget.type))
-  // Override specific widgets for Issue type
-  .map((widget) => {
-    if (widget.type === 'HIERARCHY') {
-      return {
-        type: 'HIERARCHY',
-        hasChildren: false,
-        hasParent: false,
-        parent: null,
-        depthLimitReachedByType: [],
-        rolledUpCountsByType: [],
-        children: {
-          nodes: [],
-          __typename: 'WorkItemConnection',
-        },
-        __typename: 'WorkItemWidgetHierarchy',
-      };
-    }
-    return { ...widget };
-  });
 
 export const restoredDraftDataWidgetsEmpty = [
   {

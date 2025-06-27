@@ -507,15 +507,32 @@ export const getNewWorkItemSharedCache = ({
       }
 
       if (widgetName === WIDGET_TYPE_HIERARCHY) {
+        // Get parent value from shared widget localStorage entry.
+        const cachedParent = sharedCacheWidgets[WIDGET_TYPE_HIERARCHY]?.parent || null;
+        // Get parent value from type-specific localStorage entry.
+        const typeSpecificParent =
+          workItemTypeSpecificWidgets[WIDGET_TYPE_HIERARCHY]?.parent || null;
+
+        // Set fallback parent value
+        let parent = workItemTypeSpecificWidgets[WIDGET_TYPE_HIERARCHY] ? typeSpecificParent : null;
+
+        if (cachedParent) {
+          // Set parent from cached parent only if it is compatible
+          // with current work item type, fall back to type-specific parent otherwise.
+          const allowedParentTypes =
+            widgetDefinitions.find((widget) => widget.type === WIDGET_TYPE_HIERARCHY)
+              ?.allowedParentTypes?.nodes || [];
+
+          parent = allowedParentTypes.some((type) => type.id === cachedParent.workItemType.id)
+            ? cachedParent
+            : typeSpecificParent;
+        }
+
         widgets.push({
           type: 'HIERARCHY',
           hasChildren: false,
           hasParent: false,
-          // We're not using `sharedCacheWidgets` for hierarchy parent as
-          // each work item type can have its own allowed hierarchy parent types.
-          parent: workItemTypeSpecificWidgets[WIDGET_TYPE_HIERARCHY]
-            ? workItemTypeSpecificWidgets[WIDGET_TYPE_HIERARCHY]?.parent || null
-            : null,
+          parent,
           depthLimitReachedByType: [],
           rolledUpCountsByType: [],
           children: {
@@ -540,17 +557,57 @@ export const getNewWorkItemSharedCache = ({
       }
 
       if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
+        // Get available custom fields for this work item type
         const customFieldsWidgetData = widgetDefinitions.find(
           (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
         );
+        const availableCustomFieldValues = customFieldsWidgetData.customFieldValues;
+        // Get custom fields with set values from shared widget localStorage entry.
+        const cachedCustomFieldValues =
+          sharedCacheWidgets[WIDGET_TYPE_CUSTOM_FIELDS]?.customFieldValues;
+        // Get custom fields with set values from type-specific localStorage entry.
+        const typeSpecificCustomFieldValues =
+          workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]?.customFieldValues || [];
+
+        // Set fallback custom fields value.
+        let customFieldValues = workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]
+          ? typeSpecificCustomFieldValues
+          : customFieldsWidgetData?.customFieldValues ?? [];
+
+        if (cachedCustomFieldValues && availableCustomFieldValues) {
+          // Create a merged list of custom fields and its values from shared cache & type-specific cache
+          customFieldValues = availableCustomFieldValues.map((availableField) => {
+            const cachedField = cachedCustomFieldValues.find(
+              (cached) => cached.customField.id === availableField.customField.id,
+            );
+            const typeSpecificField = typeSpecificCustomFieldValues.find(
+              (typeField) => typeField.customField.id === availableField.customField.id,
+            );
+
+            // Grab appropriate field value
+            let fieldValue = {};
+            if (cachedField?.selectedOptions || typeSpecificField?.selectedOptions) {
+              fieldValue = {
+                selectedOptions: cachedField?.selectedOptions || typeSpecificField?.selectedOptions,
+              };
+            } else if (cachedField?.value || typeSpecificField?.value) {
+              fieldValue = { value: cachedField?.value || typeSpecificField?.value };
+            }
+
+            // Set field value only if present, return empty field otherwise
+            if (Object.keys(fieldValue).length) {
+              return {
+                ...availableField,
+                ...fieldValue,
+              };
+            }
+            return { ...availableField };
+          });
+        }
 
         widgets.push({
           type: WIDGET_TYPE_CUSTOM_FIELDS,
-          // We're not using `sharedCacheWidgets` for custom fields as
-          // each work item type can have its own allowed custom fields.
-          customFieldValues: workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]
-            ? workItemTypeSpecificWidgets[WIDGET_TYPE_CUSTOM_FIELDS]?.customFieldValues || []
-            : customFieldsWidgetData?.customFieldValues ?? [],
+          customFieldValues,
           __typename: 'WorkItemWidgetCustomFields',
         });
       }
@@ -613,7 +670,7 @@ export const setNewWorkItemCache = async ({
   let draftDescription = '';
 
   // Experimental support for shared widget data across work item types
-  if (gon.features.workItemsAlpha) {
+  if (gon.features.workItemsBeta) {
     const sharedCache = getNewWorkItemSharedCache({
       workItemAttributesWrapperOrder,
       widgetDefinitions,

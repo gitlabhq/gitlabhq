@@ -11,7 +11,6 @@ module QA
         # @return [Array] scenarios that never run in test-on-omnibus pipeline
         IGNORED_SCENARIOS = [
           "QA::EE::Scenario::Test::Geo",
-          "QA::Scenario::Test::Instance::Airgapped",
           "QA::Scenario::Test::Sanity::Selectors"
         ].freeze
 
