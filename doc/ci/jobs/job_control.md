@@ -391,6 +391,56 @@ The jobs have three paths of execution:
   `mac:build: [vultr, data]` jobs finish, without waiting for `linux:build` to finish.
 - The `production` job runs as soon as all previous jobs finish.
 
+## Specify needs between parallelized jobs
+
+You can further define the order of each parallel matrix job using [`needs:parallel:matrix`](../yaml/_index.md#needsparallelmatrix).
+
+For example:
+
+```yaml
+build_job:
+  stage: build
+  script:
+    # ensure that other parallel job other than build_job [1, A] runs longer
+    - '[[ "$VERSION" == "1" && "$MODE" == "A" ]] || sleep 30'
+    - echo build $VERSION $MODE
+  parallel:
+    matrix:
+      - VERSION: [1,2]
+        MODE: [A, B]
+
+deploy_job:
+  stage: deploy
+  script: echo deploy $VERSION $MODE
+  parallel:
+    matrix:
+      - VERSION: [3,4]
+        MODE: [C, D]
+
+'deploy_job: [3, D]':
+  stage: deploy
+  script: echo something
+  needs: 
+  - 'build_job: [1, A]'
+```
+
+This example generates several jobs. The parallel jobs each have different values
+for `VERSION` and `MODE`.
+
+- 4 parallel `build_job` jobs:
+  - `build_job: [1, A]`
+  - `build_job: [1, B]`
+  - `build_job: [2, A]`
+  - `build_job: [2, B]`
+- 4 parallel `deploy_job` jobs:
+  - `deploy_job: [3, C]`
+  - `deploy_job: [3, D]`
+  - `deploy_job: [4, C]`
+  - `deploy_job: [4, D]`
+
+The `deploy_job: [3, D]` job runs as soon as `build_job: [1, A]` job finishes, 
+without waiting for the other `build_job` jobs to finish.
+
 ## Troubleshooting
 
 ### Inconsistent user assignment when running manual jobs

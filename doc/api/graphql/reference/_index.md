@@ -9813,6 +9813,7 @@ Input type: `ProjectSettingsUpdateInput`
 | <a id="mutationprojectsettingsupdateduocontextexclusionsettings"></a>`duoContextExclusionSettings` | [`DuoContextExclusionSettingsInput`](#duocontextexclusionsettingsinput) | Settings for excluding files from Duo context. |
 | <a id="mutationprojectsettingsupdateduofeaturesenabled"></a>`duoFeaturesEnabled` | [`Boolean`](#boolean) | Indicates whether GitLab Duo features are enabled for the project. |
 | <a id="mutationprojectsettingsupdatefullpath"></a>`fullPath` | [`ID!`](#id) | Full Path of the project the settings belong to. |
+| <a id="mutationprojectsettingsupdatewebbasedcommitsigningenabled"></a>`webBasedCommitSigningEnabled` | [`Boolean`](#boolean) | Indicates whether web-based commit signing is enabled for the project. |
 
 #### Fields
 
@@ -36133,6 +36134,7 @@ Project-level settings for product analytics provider.
 | <a id="projectmaxaccesslevel"></a>`maxAccessLevel` | [`AccessLevel!`](#accesslevel) | Maximum access level of the current user in the project. |
 | <a id="projectmergecommittemplate"></a>`mergeCommitTemplate` | [`String`](#string) | Template used to create merge commit message in merge requests. |
 | <a id="projectmergerequesttitleregex"></a>`mergeRequestTitleRegex` | [`String`](#string) | Regex used to validate the title of merge requests. |
+| <a id="projectmergerequesttitleregexdescription"></a>`mergeRequestTitleRegexDescription` | [`String`](#string) | Description of the regex used to validate the title of merge requests. |
 | <a id="projectmergerequestsaccesslevel"></a>`mergeRequestsAccessLevel` | [`ProjectFeatureAccess`](#projectfeatureaccess) | Access level required for merge requests access. |
 | <a id="projectmergerequestsdisablecommittersapproval"></a>`mergeRequestsDisableCommittersApproval` | [`Boolean!`](#boolean) | Indicates that committers of the given merge request cannot approve. |
 | <a id="projectmergerequestsenabled"></a>`mergeRequestsEnabled` | [`Boolean`](#boolean) | Indicates if Merge requests are enabled for the current user. |
@@ -38857,6 +38859,7 @@ Represents the source of a security policy belonging to a project.
 | <a id="projectsettingduocontextexclusionsettings"></a>`duoContextExclusionSettings` | [`DuoContextExclusionSettings`](#duocontextexclusionsettings) | Settings for excluding files from Duo context. |
 | <a id="projectsettingduofeaturesenabled"></a>`duoFeaturesEnabled` | [`Boolean`](#boolean) | Indicates whether GitLab Duo features are enabled for the project. |
 | <a id="projectsettingproject"></a>`project` | [`Project`](#project) | Project the settings belong to. |
+| <a id="projectsettingwebbasedcommitsigningenabled"></a>`webBasedCommitSigningEnabled` | [`Boolean!`](#boolean) | Indicates whether web-based commit signing is enabled for the project. |
 
 ### `ProjectStatistics`
 

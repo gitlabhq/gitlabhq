@@ -85,7 +85,7 @@ RSpec.describe "Compare", :js, feature_category: :source_code_management do
         )
       end
 
-      it 'compares branches' do
+      it 'compares branches', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/547867' do
         visit project_compare_index_path(project)
 
         select_using_dropdown('from', 'master')

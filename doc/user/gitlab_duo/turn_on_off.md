@@ -16,7 +16,7 @@ Depending on your add-on, you can turn GitLab Duo on and off for a group, projec
 
 {{< history >}}
 
-- [Introduced](https://link-to-issue) in GitLab 18.0.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538857) in GitLab 18.0.
 
 {{< /history >}}
 

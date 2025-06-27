@@ -162,6 +162,7 @@ module API
       expose :printing_merge_request_link_enabled, documentation: { type: 'boolean' }
       expose :merge_method, documentation: { type: 'string', example: 'merge' }
       expose :merge_request_title_regex, documentation: { type: 'string', example: '/Title of merge request/' }
+      expose :merge_request_title_regex_description, documentation: { type: 'string', example: 'This requires the title to include a Jira label' }
       expose :squash_option, documentation: { type: 'string', example: 'default_off' }
       expose :enforce_auth_checks_on_uploads, documentation: { type: 'boolean' }
       expose :suggestion_commit_message, documentation: { type: 'string', example: 'Suggestion message' }

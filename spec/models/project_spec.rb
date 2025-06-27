@@ -1558,6 +1558,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         enforce_auth_checks_on_uploads
         enforce_auth_checks_on_uploads?
         merge_request_title_regex
+        merge_request_title_regex_description
         web_based_commit_signing_enabled
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).allow_nil }
@@ -1570,6 +1571,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         warn_about_potentially_unwanted_characters=
         enforce_auth_checks_on_uploads=
         merge_request_title_regex=
+        merge_request_title_regex_description=
         web_based_commit_signing_enabled=
       ].each do |method|
         it { is_expected.to delegate_method(method).to(:project_setting).with_arguments(:args).allow_nil }

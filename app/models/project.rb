@@ -88,6 +88,7 @@ class Project < ApplicationRecord
   MAX_SUGGESTIONS_TEMPLATE_LENGTH = 255
   MAX_COMMIT_TEMPLATE_LENGTH = 500
   MAX_MERGE_REQUEST_TITLE_REGEX = 255
+  MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION = 255
 
   INSTANCE_RUNNER_RUNNING_JOBS_MAX_BUCKET = 5
 
@@ -599,6 +600,7 @@ class Project < ApplicationRecord
       delegate :duo_features_enabled, :duo_features_enabled=
       delegate :model_prompt_cache_enabled, :model_prompt_cache_enabled=
       delegate :merge_request_title_regex, :merge_request_title_regex=
+      delegate :merge_request_title_regex_description, :merge_request_title_regex_description=
       delegate :web_based_commit_signing_enabled, :web_based_commit_signing_enabled=
     end
   end

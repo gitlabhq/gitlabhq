@@ -82,6 +82,7 @@ module API
         optional :mr_default_target_self, type: Boolean, desc: 'Merge requests of this forked project targets itself by default'
         optional :warn_about_potentially_unwanted_characters, type: Boolean, desc: 'Warn about potentially unwanted characters'
         optional :merge_request_title_regex, type: String, desc: 'The regex the Merge Request must adhere to'
+        optional :merge_request_title_regex_description, type: String, desc: 'The description for the regex the Merge Request must adhere to'
       end
 
       params :optional_project_params_ee do
@@ -178,6 +179,7 @@ module API
           :merge_trains_enabled,
           :merge_method,
           :merge_request_title_regex,
+          :merge_request_title_regex_description,
           :name,
           :only_allow_merge_if_all_discussions_are_resolved,
           :only_allow_merge_if_pipeline_succeeds,

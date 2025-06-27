@@ -687,6 +687,10 @@ module Types
       null: true,
       description: 'Regex used to validate the title of merge requests.'
 
+    field :merge_request_title_regex_description, GraphQL::Types::String,
+      null: true,
+      description: 'Description of the regex used to validate the title of merge requests.'
+
     field :labels, Types::LabelType.connection_type,
       null: true,
       description: 'Labels available on this project.',

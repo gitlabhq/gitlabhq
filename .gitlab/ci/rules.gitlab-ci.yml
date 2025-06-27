@@ -1036,7 +1036,7 @@
 
 .db:rules:invalidate-old-pipeline-results:
   rules:
-    - <<: *if-not-canonical-namespace
+    - if: '$GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN == null'
       when: never
     - <<: *if-merge-request
       changes: *db-patterns
@@ -1219,6 +1219,9 @@
     # but in fact, the cache package is only uploaded for gitlab.com/gitlab-org/gitlab and jihulab.com/gitlab-cn/gitlab
     - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
+      changes: *assets-compilation-patterns
+    # push assets for stable branches (canonical & security)
+    - <<: *if-sync-changes-on-stable-branches
       changes: *assets-compilation-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:

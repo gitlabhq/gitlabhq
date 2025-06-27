@@ -29713,6 +29713,11 @@ paths:
         type: string
         required: false
       - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
         name: override_params[only_allow_merge_if_all_status_checks_passed]
         description: Blocks merge requests from merging unless all status checks have
           passed
@@ -30365,6 +30370,11 @@ paths:
       - in: formData
         name: override_params[merge_request_title_regex]
         description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
         type: string
         required: false
       - in: formData
@@ -31099,6 +31109,11 @@ paths:
       - in: formData
         name: override_params[merge_request_title_regex]
         description: The regex the Merge Request must adhere to
+        type: string
+        required: false
+      - in: formData
+        name: override_params[merge_request_title_regex_description]
+        description: The description for the regex the Merge Request must adhere to
         type: string
         required: false
       - in: formData
@@ -45428,6 +45443,9 @@ definitions:
       merge_request_title_regex:
         type: string
         example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -60301,6 +60319,9 @@ definitions:
       merge_request_title_regex:
         type: string
         description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -60710,6 +60731,9 @@ definitions:
       merge_request_title_regex:
         type: string
         description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have
@@ -61097,6 +61121,9 @@ definitions:
       merge_request_title_regex:
         type: string
         example: "/Title of merge request/"
+      merge_request_title_regex_description:
+        type: string
+        example: This requires the title to include a Jira label
       squash_option:
         type: string
         example: default_off
@@ -61583,6 +61610,9 @@ definitions:
       merge_request_title_regex:
         type: string
         description: The regex the Merge Request must adhere to
+      merge_request_title_regex_description:
+        type: string
+        description: The description for the regex the Merge Request must adhere to
       only_allow_merge_if_all_status_checks_passed:
         type: boolean
         description: Blocks merge requests from merging unless all status checks have

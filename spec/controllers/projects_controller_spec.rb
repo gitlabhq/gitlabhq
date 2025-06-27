@@ -1038,7 +1038,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
           id: project.path,
           project: {
             project_setting_attributes: {
-              merge_request_title_regex: 'aaa'
+              merge_request_title_regex: 'aaa',
+              merge_request_title_regex_description: 'Test description'
             }
           }
         }
@@ -1046,6 +1047,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
         project.reload
 
         expect(project.merge_request_title_regex).to eq('aaa')
+        expect(project.merge_request_title_regex_description).to eq('Test description')
       end
     end
 

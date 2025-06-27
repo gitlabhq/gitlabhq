@@ -496,6 +496,7 @@ class ProjectsController < Projects::ApplicationController
       warn_about_potentially_unwanted_characters
       enforce_auth_checks_on_uploads
       merge_request_title_regex
+      merge_request_title_regex_description
       emails_enabled
     ]
 
@@ -545,6 +546,7 @@ class ProjectsController < Projects::ApplicationController
       :merge_commit_template_or_default,
       :squash_commit_template_or_default,
       :merge_request_title_regex,
+      :merge_request_title_regex_description,
       { project_setting_attributes: project_setting_attributes,
         project_feature_attributes: project_feature_attributes }
     ]

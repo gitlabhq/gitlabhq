@@ -16893,6 +16893,9 @@ msgstr ""
 msgid "ComplianceViolations|Your Compliance Violations CSV export for the group %{group_link} has been attached to this email."
 msgstr ""
 
+msgid "ComplianceViolation|Audit event captured"
+msgstr ""
+
 msgid "ComplianceViolation|Detected"
 msgstr ""
 
@@ -16900,6 +16903,9 @@ msgid "ComplianceViolation|Dismissed"
 msgstr ""
 
 msgid "ComplianceViolation|In review"
+msgstr ""
+
+msgid "ComplianceViolation|Registered event IP"
 msgstr ""
 
 msgid "ComplianceViolation|Resolved"
@@ -23408,6 +23414,9 @@ msgid "DuoAgentsPlatform|Agents"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Convert Jenkins to CI"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Could not display logs. Please try again"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Enter the path to your Jenkinsfile."
@@ -72852,6 +72861,12 @@ msgid "already shared with this group"
 msgstr ""
 
 msgid "and"
+msgstr ""
+
+msgid "and regex description must be either both set, or neither."
+msgstr ""
+
+msgid "and regex must be either both set, or neither."
 msgstr ""
 
 msgid "any-approver for the group already exists"

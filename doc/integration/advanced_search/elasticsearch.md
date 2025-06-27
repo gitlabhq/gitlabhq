@@ -555,6 +555,7 @@ The following Elasticsearch settings are available:
 | `Client request timeout` | Elasticsearch HTTP client request timeout value in seconds. `0` means using the system default timeout value, which depends on the libraries that GitLab application is built upon. |
 | `Code indexing concurrency` | Maximum number of Elasticsearch code indexing background jobs allowed to run concurrently. This only applies to repository indexing operations. |
 | `Retry on failure` | Maximum number of possible retries for Elasticsearch search requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/486935) in GitLab 17.6. |
+| `Index prefix` | Custom prefix for Elasticsearch index names. Defaults to `gitlab`. When changed, all indices will use this prefix instead of `gitlab` (for example, `custom-production-issues` instead of `gitlab-production-issues`). Must be 1-100 characters, contain only lowercase alphanumeric characters, hyphens, and underscores, and cannot start or end with a hyphen or underscore. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3421) in GitLab 18.2. |
 
 {{< alert type="warning" >}}
 

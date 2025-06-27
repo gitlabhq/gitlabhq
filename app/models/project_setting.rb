@@ -44,6 +44,8 @@ class ProjectSetting < ApplicationRecord
   validates :issue_branch_template, length: { maximum: Issue::MAX_BRANCH_TEMPLATE }
   validates :target_platforms, inclusion: { in: ALLOWED_TARGET_PLATFORMS }
   validates :suggested_reviewers_enabled, inclusion: { in: [true, false] }
+  validates :merge_request_title_regex_description, length: { maximum:
+                                                              Project::MAX_MERGE_REQUEST_TITLE_REGEX_DESCRIPTION }
   validates :merge_request_title_regex, untrusted_regexp: true,
     length: { maximum: Project::MAX_MERGE_REQUEST_TITLE_REGEX }
 
@@ -52,6 +54,8 @@ class ProjectSetting < ApplicationRecord
     presence: { if: :require_unique_domain? }
 
   validate :validates_mr_default_target_self
+  validate :presence_of_merge_request_title_regex_settings,
+    if: -> { Feature.enabled?(:merge_request_title_regex, project) }
 
   validate :pages_unique_domain_availability, if: :pages_unique_domain_changed?
 
@@ -98,6 +102,14 @@ class ProjectSetting < ApplicationRecord
   end
 
   private
+
+  def presence_of_merge_request_title_regex_settings
+    # Either both are present, or neither
+    if merge_request_title_regex.present? != merge_request_title_regex_description.present?
+      errors.add :merge_request_title_regex, _('and regex description must be either both set, or neither.')
+      errors.add :merge_request_title_regex_description, _('and regex must be either both set, or neither.')
+    end
+  end
 
   def validates_mr_default_target_self
     if mr_default_target_self_changed? && !project.forked?

@@ -19291,7 +19291,8 @@ CREATE TABLE packages_composer_metadata (
     target_sha bytea NOT NULL,
     composer_json jsonb DEFAULT '{}'::jsonb NOT NULL,
     version_cache_sha bytea,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_250f62a87a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE packages_packages (
@@ -21799,7 +21800,9 @@ CREATE TABLE project_settings (
     model_prompt_cache_enabled boolean,
     web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
     duo_context_exclusion_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    merge_request_title_regex_description text,
     CONSTRAINT check_1a30456322 CHECK ((char_length(pages_unique_domain) <= 63)),
+    CONSTRAINT check_237486989c CHECK ((char_length(merge_request_title_regex_description) <= 255)),
     CONSTRAINT check_3a03e7557a CHECK ((char_length(previous_default_branch) <= 4096)),
     CONSTRAINT check_3ca5cbffe6 CHECK ((char_length(issue_branch_template) <= 255)),
     CONSTRAINT check_4b142e71f3 CHECK ((char_length(product_analytics_data_collector_host) <= 255)),

@@ -682,6 +682,7 @@ Audit event types belong to the following product categories.
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
+| [`add_ssh_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195379) | An SSH key is added to a user's profile. Group scope is only available for enterprise users. | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/361778) | User, Group |
 | [`email_confirmation_sent`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129261) | Users add or change an email address and it must be confirmed | {{< icon name="dotted-circle" >}} No | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/377625) | User |
 | [`remove_ssh_key`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65615) | An SSH key is removed from a user's profile. Group scope was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195390) for enterprise users in GitLab 18.2. | {{< icon name="check-circle" >}} Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/220127) | User, Group |
 | [`user_admin_status_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/65168) | A user is either made an administrator or removed as an administrator | {{< icon name="check-circle" >}} Yes | GitLab [14.1](https://gitlab.com/gitlab-org/gitlab/-/issues/323905) | User |

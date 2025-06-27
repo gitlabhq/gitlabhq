@@ -14,8 +14,12 @@ async function getIssuesClient() {
 }
 
 export async function getApolloProvider() {
-  const client = ['projects:issues:index', 'groups:issues'].includes(document.body.dataset.page)
-    ? await getIssuesClient()
-    : defaultClient;
+  // for now, we only enabled caching for legacy issues list so we use defaultClient for work items list
+  // when we add caching to work items list, we can remove the query selector check
+  const client =
+    ['projects:issues:index', 'groups:issues'].includes(document.body.dataset.page) &&
+    !document.querySelector('#js-work-items, [data-testid="work-item-router-view"]')
+      ? await getIssuesClient()
+      : defaultClient;
   return new VueApollo({ defaultClient: client });
 }

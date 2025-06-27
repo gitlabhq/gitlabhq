@@ -693,6 +693,7 @@ Project:
 - squash_commit_template
 - issue_branch_template
 - merge_request_title_regex
+- merge_request_title_regex_description
 Author:
 - name
 ProjectFeature:
