@@ -85,7 +85,8 @@ Agentic Chat extends Chat capabilities with the following features:
 - **Resource Retrieval**: Can automatically retrieve detailed information about
   issues, merge requests, and pipeline logs of your current project.
 - **Multi-source Analysis**: Can combine information from multiple sources to
-  provide more complete answers to complex questions.
+  provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect Agentic Chat to
+  external data sources and tools.
 
 ### Chat feature comparison
 

@@ -19614,6 +19614,7 @@ CREATE TABLE packages_debian_project_component_files (
     file text NOT NULL,
     file_sha256 bytea NOT NULL,
     project_id bigint,
+    CONSTRAINT check_4eafc9503d CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_e5af03fa2d CHECK ((char_length(file) <= 255))
 );
 

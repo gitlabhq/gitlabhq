@@ -241,11 +241,13 @@ To request acceleration of a feature, check if an issue already exists in [epic 
 
 ## Disable secondary site HTTP proxying
 
-Secondary site HTTP proxying is enabled by default on a secondary site when it uses a unified URL, meaning, it is configured with the same `external_url` as the primary site. Disabling proxying in this case tends not to be helpful due to completely different behavior being served at the same URL, depending on routing.
+Secondary site HTTP proxying is enabled by default on a secondary site when it uses a unified URL, meaning, it is configured with the same `external_url` as the primary site. Disabling proxying in this case tends not to be helpful due to completely different behavior being served at the same URL, depending on routing. When HTTP proxying is disabled on a secondary Geo site, the site operates in read-only mode, with several important limitations you should be aware of.
 
 ### What happens if you disable secondary proxying
 
-Disabling the proxying feature flag has the following general effects:
+Disabling the proxying feature flag has the following general effects.
+
+#### HTTP and Git requests
 
 - The secondary site does not proxy HTTP requests to the primary site. Instead, it attempts to serve them itself, or fail.
 - Git requests generally succeed. Git pushes are redirected or proxied to the primary site.
@@ -271,7 +273,24 @@ Disabling the proxying feature flag has the following general effects:
 
 You should use the feature flag over using the `GEO_SECONDARY_PROXY` environment variable.
 
-HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even without a unified URL. If proxying needs to be disabled on all secondary sites, it is easiest to disable the feature flag:
+HTTP proxying is enabled by default in GitLab 15.1 on a secondary site even without a unified URL.
+
+#### Terms of service acceptance
+
+When proxying is disabled, users who access only the secondary site cannot properly accept terms of service or other legal agreements. This creates the following issues:
+
+- **No record of acceptance**: If an employee only logs into the secondary site, their acceptance of terms and conditions is not recorded in the primary database because write operations (including terms acceptance) are not proxied when secondary proxying is disabled, even though they may be presented with the terms message.
+- **Legal compliance concerns**: Organizations may lack proper legal coverage if employees use GitLab services through a secondary-only access pattern, since there's no verifiable record of their agreement to the terms and conditions.
+ 
+As a workaround, you must access the primary site at least once to properly accept terms and conditions. After accepted on the primary, this information is replicated to secondary sites through normal Geo synchronization.
+
+{{< alert type="note" >}}
+This limitation affects organizations that require documented acceptance of terms and conditions for compliance or legal purposes. Ensure users have access to the primary site for the initial terms acceptance.
+{{< /alert >}}
+
+### Disable proxy on all secondary sites
+
+If you need to disable proxying on all secondary sites, it is easiest to disable the feature flag:
 
 {{< tabs >}}
 

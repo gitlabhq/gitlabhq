@@ -5045,24 +5045,6 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#use_merge_base_pipeline_for_comparison?' do
-    let(:project) { create(:project, :public, :repository) }
-    let(:merge_request) { create(:merge_request, :with_codequality_reports, source_project: project) }
-    let(:service_class) { Ci::CompareReportsBaseService }
-
-    subject { merge_request.use_merge_base_pipeline_for_comparison?(service_class) }
-
-    it { is_expected.to eq(true) }
-
-    context 'when use_merge_base_for_all_report_comparisons is disabled' do
-      before do
-        stub_feature_flags(use_merge_base_for_all_report_comparisons: false)
-      end
-
-      it { is_expected.to eq(false) }
-    end
-  end
-
   describe '#comparison_base_pipeline' do
     subject(:pipeline) { merge_request.comparison_base_pipeline(service_class) }
 
@@ -5078,90 +5060,44 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
-    before do
-      allow(merge_request).to receive(:use_merge_base_pipeline_for_comparison?)
-        .with(service_class).and_return(uses_merge_base)
-    end
-
-    context 'when service class uses merge base pipeline' do
-      let(:uses_merge_base) { true }
-
-      context 'when merge request has a merge request pipeline' do
-        let(:merge_request) do
-          create(:merge_request, :with_merge_request_pipeline, source_project: project)
-        end
-
-        let!(:merge_base_pipeline) do
-          create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
-        end
-
-        before do
-          merge_request.update_head_pipeline
-        end
-
-        it 'returns the merge_base_pipeline' do
-          expect(pipeline).to eq(merge_base_pipeline)
-        end
+    context 'when merge request has a merge request pipeline' do
+      let(:merge_request) do
+        create(:merge_request, :with_merge_request_pipeline, source_project: project)
       end
 
-      it 'returns the base_pipeline when merge does not have a merge request pipeline' do
-        expect(pipeline).to eq(base_pipeline)
+      let!(:merge_base_pipeline) do
+        create(:ci_pipeline, project: project, ref: merge_request.target_branch, sha: merge_request.target_branch_sha)
       end
 
-      context 'when there is no base pipeline' do
-        let!(:start_pipeline) do
-          create(:ci_pipeline,
-            :success,
-            project: project,
-            ref: merge_request.target_branch,
-            sha: merge_request.diff_start_sha
-          )
-        end
+      before do
+        merge_request.update_head_pipeline
+      end
 
-        before do
-          base_pipeline.destroy!
-        end
-
-        it 'returns the start pipeline' do
-          expect(pipeline).to eq(start_pipeline)
-        end
+      it 'returns the merge_base_pipeline' do
+        expect(pipeline).to eq(merge_base_pipeline)
       end
     end
 
-    context 'when service_class does not use merge base pipeline' do
-      let(:uses_merge_base) { false }
+    it 'returns the base_pipeline when merge does not have a merge request pipeline' do
+      expect(pipeline).to eq(base_pipeline)
+    end
 
-      it 'returns the base_pipeline' do
-        expect(pipeline).to eq(base_pipeline)
+    context 'when there is no base pipeline' do
+      let!(:start_pipeline) do
+        create(:ci_pipeline,
+          :success,
+          project: project,
+          ref: merge_request.target_branch,
+          sha: merge_request.diff_start_sha
+        )
       end
 
-      context 'when merge request has a merge request pipeline' do
-        let(:merge_request) do
-          create(:merge_request, :with_merge_request_pipeline, source_project: project)
-        end
-
-        it 'returns the base pipeline' do
-          expect(pipeline).to eq(base_pipeline)
-        end
+      before do
+        base_pipeline.destroy!
       end
 
-      context 'when there is no base pipeline' do
-        let!(:start_pipeline) do
-          create(:ci_pipeline,
-            :success,
-            project: project,
-            ref: merge_request.target_branch,
-            sha: merge_request.diff_start_sha
-          )
-        end
-
-        before do
-          base_pipeline.destroy!
-        end
-
-        it 'returns the start pipeline' do
-          expect(pipeline).to eq(start_pipeline)
-        end
+      it 'returns the start pipeline' do
+        expect(pipeline).to eq(start_pipeline)
       end
     end
   end

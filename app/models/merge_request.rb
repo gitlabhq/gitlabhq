@@ -2316,16 +2316,9 @@ class MergeRequest < ApplicationRecord
     end
   end
 
-  # Overridden in EE
-  def use_merge_base_pipeline_for_comparison?(_)
-    return true if Feature.enabled?(:use_merge_base_for_all_report_comparisons, project)
-
-    false
-  end
-
   def comparison_base_pipeline(service_class)
     target_shas = [
-      (diff_head_pipeline&.target_sha if use_merge_base_pipeline_for_comparison?(service_class)),
+      diff_head_pipeline&.target_sha,
       diff_base_sha,
       diff_start_sha
     ]

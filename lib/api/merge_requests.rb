@@ -128,12 +128,18 @@ module API
       end
 
       def automatically_mergeable?(auto_merge, merge_request)
-        return unless auto_merge
-
         available_strategies = AutoMergeService.new(merge_request.project,
           current_user).available_strategies(merge_request)
 
-        available_strategies.include?(merge_request.default_auto_merge_strategy)
+        auto_merge && available_strategies.include?(merge_request.default_auto_merge_strategy)
+      end
+
+      def immediately_mergeable?(auto_merge, merge_request)
+        if auto_merge
+          merge_request.diff_head_pipeline_success?
+        else
+          merge_request.mergeable_state?
+        end
       end
 
       def serializer_options_for(merge_requests)
@@ -751,7 +757,7 @@ module API
 
         auto_merge = to_boolean(params[:merge_when_pipeline_succeeds]) || to_boolean(params[:auto_merge])
         automatically_mergeable = automatically_mergeable?(auto_merge, merge_request)
-        immediately_mergeable = merge_request.mergeable?
+        immediately_mergeable = immediately_mergeable?(auto_merge, merge_request)
 
         not_allowed! if !immediately_mergeable && !automatically_mergeable
 
