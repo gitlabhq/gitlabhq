@@ -61,10 +61,11 @@ module Gitlab
         return yield unless Gitlab::SafeRequestStore.active?
 
         begin
+          prev = Gitlab::SafeRequestStore[:disable_net_http_decompression]
           Gitlab::SafeRequestStore[:disable_net_http_decompression] = true
           yield
         ensure
-          Gitlab::SafeRequestStore[:disable_net_http_decompression] = false
+          Gitlab::SafeRequestStore[:disable_net_http_decompression] = prev
         end
       end
 
