@@ -9,6 +9,9 @@ require_relative 'validation/pg_types'
 
 require_relative 'validation/validators/base'
 
+require_relative 'validation/fixers/base'
+require_relative 'validation/fixers/missing_index'
+
 require_relative 'validation/validators/different_definition_indexes'
 require_relative 'validation/validators/extra_indexes'
 require_relative 'validation/validators/missing_indexes'
