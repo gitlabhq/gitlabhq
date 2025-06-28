@@ -81,12 +81,12 @@ export default {
     </template>
     <div class="gl-table-shadow">
       <table class="!gl-my-0 gl-overflow-y-hidden">
-        <thead class="gl-text-sm">
+        <thead class="!gl-border-b gl-text-sm dark:!gl-border-b-default">
           <tr>
             <th-resizable
               v-for="(field, fieldIndex) in fields"
               :key="field.key"
-              class="gl-whitespace-nowrap !gl-border-default !gl-bg-subtle !gl-px-5 !gl-py-3 !gl-text-subtle dark:!gl-bg-strong"
+              class="gl-whitespace-nowrap !gl-bg-subtle !gl-px-5 !gl-py-3 !gl-text-subtle gl-text-subtle dark:!gl-border-default dark:!gl-bg-strong"
             >
               <div
                 :data-testid="`column-${fieldIndex}`"
@@ -108,11 +108,7 @@ export default {
               <td
                 v-for="field in fields"
                 :key="field.key"
-                class="!gl-border-default !gl-px-5 !gl-py-3 gl-transition-colors"
-                :class="{
-                  'gl-bg-subtle dark:gl-bg-strong': i % 2 === 1,
-                  'dark:gl-bg-subtle': i % 2 === 0,
-                }"
+                class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
               >
                 <gl-skeleton-loader :width="120" :lines="1" />
               </td>
@@ -127,14 +123,10 @@ export default {
               <td
                 v-for="field in fields"
                 :key="field.key"
-                class="!gl-border-default !gl-px-5 !gl-py-3 gl-transition-colors"
-                :class="{
-                  'gl-bg-subtle dark:gl-bg-strong': itemIndex % 2 === 1,
-                  'dark:gl-bg-subtle': itemIndex % 2 === 0,
-                }"
+                class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
               >
                 <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
-                <component :is="presenter.forField(item, field.key, { displayAsLink: true })" />
+                <component :is="presenter.forField(item, field.key)" />
               </td>
             </tr>
           </template>

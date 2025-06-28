@@ -63,12 +63,12 @@ export default {
 };
 </script>
 <template>
-  <th :style="headerStyle" class="gl-relative">
+  <th :style="headerStyle" class="!gl-border-r gl-relative">
     <slot></slot>
     <div
-      class="gl-absolute gl-right-0 gl-top-0 gl-z-1 gl-w-2 gl-cursor-col-resize gl-select-none gl-transition-colors hover:gl-bg-neutral-700"
+      class="gl-absolute gl-right-0 gl-top-0 gl-z-1 gl-w-0 gl-cursor-col-resize gl-select-none gl-border-y-0 gl-border-l-[4px] gl-border-r-2 gl-border-solid gl-border-transparent gl-transition-colors hover:gl-border-r-blue-500"
       data-testid="resize-handle"
-      :class="{ 'gl-bg-strong dark:gl-bg-neutral-700': isResizing }"
+      :class="{ 'gl-border-r-blue-500': isResizing }"
       :style="{ height: `${tableHeight}px` }"
       @mouseover="updateTableHeight"
       @mousedown="onMouseDown"

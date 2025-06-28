@@ -99,7 +99,7 @@ $crud-header-min-height: px-to-rem(49px);
 
   td:last-of-type,
   th:last-of-type {
-    @apply gl-border-r-0;
+    @apply gl-border-r-0 #{!important};
   }
 
   tr:first-of-type th {

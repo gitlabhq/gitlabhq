@@ -748,11 +748,6 @@ msgid_plural "%{count} active projects"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%{count} approval required from %{name}"
-msgid_plural "%{count} approvals required from %{name}"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%{count} approvals from %{name}"
 msgstr ""
 
@@ -8250,23 +8245,8 @@ msgstr ""
 msgid "Approval settings"
 msgstr ""
 
-msgid "ApprovalRuleRemove|%d member"
-msgid_plural "ApprovalRuleRemove|%d members"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{strongStart}%{count} member%{strongEnd}. Approvals from this member are not revoked."
 msgid_plural "ApprovalRuleRemove|You are about to remove the %{name} approver group which has %{strongStart}%{count} members%{strongEnd}. Approvals from these members are not revoked."
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ApprovalRuleSummary|%d member"
-msgid_plural "ApprovalRuleSummary|%d members"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "ApprovalRuleSummary|%{count} approval required from %{membersCount}"
-msgid_plural "ApprovalRuleSummary|%{count} approvals required from %{membersCount}"
 msgstr[0] ""
 msgstr[1] ""
 
