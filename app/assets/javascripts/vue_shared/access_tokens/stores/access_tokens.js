@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import { createAlert } from '~/alert';
-import Api from '~/api';
 import { smoothScrollTop } from '~/behaviors/smooth_scroll';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -72,7 +71,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.alert = null;
       this.busy = true;
       try {
-        const url = Api.buildUrl(this.urlCreate.replace(':id', this.id));
+        const url = this.urlCreate.replace(':id', this.id);
         const { data } = await axios.post(url, {
           name,
           description,
@@ -102,7 +101,7 @@ export const useAccessTokens = defineStore('accessTokens', {
         this.statistics = await Promise.all(
           updatedFilters.map(async (stat) => {
             const params = serializeParams(stat.filters);
-            const url = Api.buildUrl(this.urlShow.replace(':id', this.id));
+            const url = this.urlShow.replace(':id', this.id);
             const { total } = await fetchTokens({
               url,
               params,
@@ -131,7 +130,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       }
       this.busy = true;
       try {
-        const url = Api.buildUrl(this.urlShow.replace(':id', this.id));
+        const url = this.urlShow.replace(':id', this.id);
         const { data, perPage, total } = await fetchTokens({
           url,
           params: this.params,
@@ -158,7 +157,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.busy = true;
       this.showCreateForm = false;
       try {
-        const url = Api.buildUrl(this.urlRevoke.replace(':id', this.id));
+        const url = this.urlRevoke.replace(':id', this.id);
         await axios.delete(joinPaths(url, `${tokenId}`));
         this.alert = createAlert({
           message: s__('AccessTokens|The token was revoked successfully.'),
@@ -190,7 +189,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.busy = true;
       this.showCreateForm = false;
       try {
-        const url = Api.buildUrl(this.urlRotate.replace(':id', this.id));
+        const url = this.urlRotate.replace(':id', this.id);
         const { data } = await axios.post(joinPaths(url, `${tokenId}`, 'rotate'), {
           expires_at: expiresAt,
         });

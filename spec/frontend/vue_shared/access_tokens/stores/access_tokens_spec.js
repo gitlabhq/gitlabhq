@@ -61,10 +61,13 @@ describe('useAccessTokens store', () => {
     const id = 235;
     const page = 1;
     const sorting = DEFAULT_SORT;
-    const urlCreate = '/api/v4/groups/1/service_accounts/:id/personal_access_tokens';
-    const urlRevoke = '/api/v4/groups/2/service_accounts/:id/personal_access_tokens';
-    const urlRotate = '/api/v4/groups/3/service_accounts/:id/personal_access_tokens';
-    const urlShow = '/api/v4/personal_access_tokens?user_id=:id';
+    const urlCreate =
+      'http://localhost/api/v4/groups/1/service_accounts/:id/personal_access_tokens';
+    const urlRevoke =
+      'http://localhost/api/v4/groups/2/service_accounts/:id/personal_access_tokens';
+    const urlRotate =
+      'http://localhost/api/v4/groups/3/service_accounts/:id/personal_access_tokens';
+    const urlShow = 'http://localhost/api/v4/personal_access_tokens?user_id=:id';
 
     const headers = {
       'X-Page': 1,
@@ -106,7 +109,7 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.post[0]).toEqual(
           expect.objectContaining({
             data: '{"name":"dummy-name","description":"dummy-description","expires_at":"2020-01-01","scopes":["dummy-scope"]}',
-            url: '/api/v4/groups/1/service_accounts/235/personal_access_tokens',
+            url: 'http://localhost/api/v4/groups/1/service_accounts/235/personal_access_tokens',
           }),
         );
       });
@@ -193,7 +196,7 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0]).toEqual(
           expect.objectContaining({
-            url: '/api/v4/personal_access_tokens?user_id=235',
+            url: 'http://localhost/api/v4/personal_access_tokens?user_id=235',
             params: {
               page: 1,
               sort: 'expires_asc',
@@ -284,7 +287,7 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.get).toHaveLength(1);
         expect(mockAxios.history.get[0]).toEqual(
           expect.objectContaining({
-            url: '/api/v4/personal_access_tokens?user_id=235',
+            url: 'http://localhost/api/v4/personal_access_tokens?user_id=235',
             params: {
               page: 1,
               sort: 'expires_asc',
@@ -327,7 +330,7 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.delete).toHaveLength(1);
         expect(mockAxios.history.delete[0]).toEqual(
           expect.objectContaining({
-            url: '/api/v4/groups/2/service_accounts/235/personal_access_tokens/1',
+            url: 'http://localhost/api/v4/groups/2/service_accounts/235/personal_access_tokens/1',
           }),
         );
       });
@@ -448,7 +451,7 @@ describe('useAccessTokens store', () => {
         expect(mockAxios.history.post[0]).toEqual(
           expect.objectContaining({
             data: '{"expires_at":"2025-01-01"}',
-            url: '/api/v4/groups/3/service_accounts/235/personal_access_tokens/1/rotate',
+            url: 'http://localhost/api/v4/groups/3/service_accounts/235/personal_access_tokens/1/rotate',
           }),
         );
       });
