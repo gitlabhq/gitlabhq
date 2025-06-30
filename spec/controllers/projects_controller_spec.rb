@@ -456,6 +456,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
         expect(response).to have_gitlab_http_status(:found)
         expect(response).to redirect_to(project_path(public_project, ref: 'master', path: '/.gitlab-ci.yml'))
+        expect(response.body).to match(/You.are.being.+redirected/)
       end
     end
 
