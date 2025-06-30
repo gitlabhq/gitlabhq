@@ -12,9 +12,7 @@
   #js-fork-info{ data: vue_fork_divergence_data(project, ref) }
 
 .info-well
-  .well-segment
-    %ul.blob-commit-info
-      = render 'projects/commits/commit', commit: @last_commit, project: @project, ref: @ref, show_legacy_ci_icon: false, is_blob_page: true
+  #js-last-commit{ data: { history_link: project_commits_path(project, ref)} }
 
   .gl-hidden.sm:gl-block
     - if project.licensed_feature_available?(:code_owners)
