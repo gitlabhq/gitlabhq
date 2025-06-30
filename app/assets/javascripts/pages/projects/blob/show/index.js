@@ -30,6 +30,9 @@ import { initFindFileShortcut } from '~/projects/behaviors';
 import initHeaderApp from '~/repository/init_header_app';
 import createRouter from '~/repository/router';
 import initFileTreeBrowser from '~/repository/file_tree_browser';
+import LastCommit from '~/repository/components/last_commit.vue';
+import projectPathQuery from '~/repository/queries/project_path.query.graphql';
+import refsQuery from '~/repository/queries/ref.query.graphql';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -69,6 +72,31 @@ const initRefSwitcher = () => {
   });
 };
 
+const initLastCommitApp = (router) => {
+  const lastCommitEl = document.getElementById('js-last-commit');
+  if (!lastCommitEl) return null;
+
+  return new Vue({
+    el: lastCommitEl,
+    router,
+    apolloProvider,
+    render(h) {
+      const historyUrl = generateHistoryUrl(
+        lastCommitEl.dataset.historyLink,
+        this.$route.params.path,
+        this.$route.meta.refType || this.$route.query.ref_type,
+      );
+      return h(LastCommit, {
+        props: {
+          currentPath: this.$route.params.path,
+          refType: this.$route.meta.refType || this.$route.query.ref_type,
+          historyUrl: historyUrl.href,
+        },
+      });
+    },
+  });
+};
+
 initRefSwitcher();
 initAmbiguousRefModal();
 initFindFileShortcut();
@@ -83,13 +111,28 @@ if (viewBlobEl) {
     userId,
     explainCodeAvailable,
     refType,
+    escapedRef,
     canDownloadCode,
     showDuoWorkflowAction,
     duoWorkflowInvokePath,
     ...dataset
   } = viewBlobEl.dataset;
+
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: projectPathQuery,
+    data: {
+      projectPath,
+    },
+  });
+
+  apolloProvider.clients.defaultClient.cache.writeQuery({
+    query: refsQuery,
+    data: { ref: originalBranch, escapedRef },
+  });
+
   const router = createRouter(projectPath, originalBranch);
   initFileTreeBrowser(router);
+  initLastCommitApp(router);
 
   initHeaderApp({ router, isBlobView: true });
 
