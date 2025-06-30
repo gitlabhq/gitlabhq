@@ -270,7 +270,9 @@ To create an approval rule which requires more than one approval:
 
 - When you [create](#add-an-approval-rule) or [edit](#edit-an-approval-rule) a rule, set **Approvals required** to `2` or more.
 
-To require multiple approvals for a rule, you can also [use the API](../../../../api/merge_request_approvals.md#update-merge-request-rule) to set the `approvals_required` attribute to `2` or more.
+To require multiple approvals for a rule, you can also
+[use the API](../../../../api/merge_request_approvals.md#update-an-approval-rule-for-a-project)
+to set the `approvals_required` attribute to `2` or more.
 
 ## Configure optional approval rules
 
@@ -279,7 +281,9 @@ appreciated, but not required. To make an approval rule optional:
 
 - When you [create or edit a rule](#edit-an-approval-rule), set **Approvals required** to `0`.
 
-To make an approval rule optional, you can also [use the API](../../../../api/merge_request_approvals.md#update-merge-request-rule) to set the `approvals_required` attribute to `0`.
+To make an approval rule optional, you can also use the API to
+[update an approval rule for a project](../../../../api/merge_request_approvals.md#update-an-approval-rule-for-a-project),
+and set the `approvals_required` attribute to `0`.
 
 ## Approvals for protected branches
 
@@ -332,8 +336,8 @@ These policies are both created and edited in the [security policy editor](../..
 As a workaround for this validation error, you can delete the approval rule through
 the API.
 
-1. [GET a rule set for a project](../../../../api/merge_request_approvals.md#get-all-approval-rules-for-project).
-1. [DELETE the rule](../../../../api/merge_request_approvals.md#delete-project-approval-rule).
+1. [List all approval rules for the project](../../../../api/merge_request_approvals.md#list-all-approval-rules-for-a-project).
+1. [DELETE the rule](../../../../api/merge_request_approvals.md#delete-an-approval-rule-for-a-project).
 
 For more information about this validation error, read
 [issue 285129](https://gitlab.com/gitlab-org/gitlab/-/issues/285129).

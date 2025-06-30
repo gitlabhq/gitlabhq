@@ -74,7 +74,7 @@ Breaking change. [Related issue](https://gitlab.com/gitlab-org/gitlab/-/issues/3
 The endpoint to get the configuration of approvals for a project returns
 empty arrays for `approvers` and `approval_groups`.
 These fields were deprecated in favor of the endpoint to
-[get project approval rules](../merge_request_approvals.md#get-all-approval-rules-for-project)
+[list all approval rules](../merge_request_approvals.md#list-all-approval-rules-for-a-merge-request)
 for a merge request. API users are encouraged to switch to this endpoint instead.
 
 These fields will be removed from the `get configuration` endpoint in v5 of the GitLab REST API.

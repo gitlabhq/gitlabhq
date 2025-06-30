@@ -579,6 +579,34 @@ curl --request DELETE \
 
 If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
 
+### Purge cache entries for an upstream registry
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/538327) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `maven_virtual_registry`. Disabled by default.
+
+{{< /history >}}
+
+Purges all cache entries for a specific upstream registry in a Maven virtual registry.
+
+```plaintext
+DELETE /virtual_registries/packages/maven/upstreams/:id/cache
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer | yes | The ID of the upstream registry. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+     --header "Accept: application/json" \
+     --url "https://gitlab.example.com/api/v4/virtual_registries/packages/maven/upstreams/1/cache"
+```
+
+If successful, returns a [`204 No Content`](rest/troubleshooting.md#status-codes) status code.
+
 ## Manage cache entries
 
 Use the following endpoints to manage cache entries for a Maven virtual registry.

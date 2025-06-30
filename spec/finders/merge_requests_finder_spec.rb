@@ -57,6 +57,16 @@ RSpec.describe MergeRequestsFinder, feature_category: :code_review_workflow do
           end
         end
 
+        context 'using a group handle' do
+          let_it_be(:issuable_parent) { create(:project) }
+          let_it_be(:issuable_attributes) { { source_project: issuable_parent, target_project: issuable_parent } }
+          let_it_be(:issuable_factory) { :merge_request }
+          let_it_be(:factory_params) { [:simple, :unique_branches] }
+          let_it_be(:search_params) { { project_id: issuable_parent.id } }
+
+          it_behaves_like 'filterable by group handle'
+        end
+
         context 'filters by author or assignee' do
           let_it_be(:merge_request6) do
             create(

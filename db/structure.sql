@@ -17829,45 +17829,6 @@ CREATE SEQUENCE merge_trains_id_seq
 
 ALTER SEQUENCE merge_trains_id_seq OWNED BY merge_trains.id;
 
-CREATE TABLE metrics_dashboard_annotations (
-    id bigint NOT NULL,
-    starting_at timestamp with time zone NOT NULL,
-    ending_at timestamp with time zone,
-    environment_id bigint,
-    cluster_id bigint,
-    dashboard_path character varying(255) NOT NULL,
-    panel_xid character varying(255),
-    description text NOT NULL
-);
-
-CREATE SEQUENCE metrics_dashboard_annotations_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE metrics_dashboard_annotations_id_seq OWNED BY metrics_dashboard_annotations.id;
-
-CREATE TABLE metrics_users_starred_dashboards (
-    id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    project_id bigint NOT NULL,
-    user_id bigint NOT NULL,
-    dashboard_path text NOT NULL,
-    CONSTRAINT check_79a84a0f57 CHECK ((char_length(dashboard_path) <= 255))
-);
-
-CREATE SEQUENCE metrics_users_starred_dashboards_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE metrics_users_starred_dashboards_id_seq OWNED BY metrics_users_starred_dashboards.id;
-
 CREATE TABLE milestone_releases (
     milestone_id bigint NOT NULL,
     release_id bigint NOT NULL,
@@ -28063,10 +28024,6 @@ ALTER TABLE ONLY merge_requests_compliance_violations ALTER COLUMN id SET DEFAUL
 
 ALTER TABLE ONLY merge_trains ALTER COLUMN id SET DEFAULT nextval('merge_trains_id_seq'::regclass);
 
-ALTER TABLE ONLY metrics_dashboard_annotations ALTER COLUMN id SET DEFAULT nextval('metrics_dashboard_annotations_id_seq'::regclass);
-
-ALTER TABLE ONLY metrics_users_starred_dashboards ALTER COLUMN id SET DEFAULT nextval('metrics_users_starred_dashboards_id_seq'::regclass);
-
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
 
 ALTER TABLE ONLY ml_candidate_metadata ALTER COLUMN id SET DEFAULT nextval('ml_candidate_metadata_id_seq'::regclass);
@@ -30703,12 +30660,6 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY merge_trains
     ADD CONSTRAINT merge_trains_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY metrics_dashboard_annotations
-    ADD CONSTRAINT metrics_dashboard_annotations_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY metrics_users_starred_dashboards
-    ADD CONSTRAINT metrics_users_starred_dashboards_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY milestone_releases
     ADD CONSTRAINT milestone_releases_pkey PRIMARY KEY (milestone_id, release_id);
@@ -33917,8 +33868,6 @@ CREATE INDEX idx_merge_requests_on_source_project_and_branch_state_opened ON mer
 
 CREATE INDEX idx_merge_requests_on_unmerged_state_id ON merge_requests USING btree (id) WHERE (state_id <> 3);
 
-CREATE UNIQUE INDEX idx_metrics_users_starred_dashboard_on_user_project_dashboard ON metrics_users_starred_dashboards USING btree (user_id, project_id, dashboard_path);
-
 CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON merge_request_context_commit_diff_files USING btree (merge_request_context_commit_id, sha);
 
 CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests USING btree (target_project_id, state_id, created_at, id);
@@ -36478,14 +36427,6 @@ CREATE UNIQUE INDEX index_merge_trains_on_merge_request_id ON merge_trains USING
 CREATE INDEX index_merge_trains_on_pipeline_id ON merge_trains USING btree (pipeline_id);
 
 CREATE INDEX index_merge_trains_on_user_id ON merge_trains USING btree (user_id);
-
-CREATE INDEX index_metrics_dashboard_annotations_on_cluster_id_and_3_columns ON metrics_dashboard_annotations USING btree (cluster_id, dashboard_path, starting_at, ending_at) WHERE (cluster_id IS NOT NULL);
-
-CREATE INDEX index_metrics_dashboard_annotations_on_environment_id_and_3_col ON metrics_dashboard_annotations USING btree (environment_id, dashboard_path, starting_at, ending_at) WHERE (environment_id IS NOT NULL);
-
-CREATE INDEX index_metrics_dashboard_annotations_on_timespan_end ON metrics_dashboard_annotations USING btree (COALESCE(ending_at, starting_at));
-
-CREATE INDEX index_metrics_users_starred_dashboards_on_project_id ON metrics_users_starred_dashboards USING btree (project_id);
 
 CREATE INDEX index_migration_jobs_on_migration_id_and_cursor_max_value ON batched_background_migration_jobs USING btree (batched_background_migration_id, max_cursor) WHERE (max_cursor IS NOT NULL);
 
@@ -44047,9 +43988,6 @@ ALTER TABLE ONLY catalog_resource_versions
 ALTER TABLE ONLY resource_link_events
     ADD CONSTRAINT fk_bd4ae15ce4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY metrics_users_starred_dashboards
-    ADD CONSTRAINT fk_bd6ae32fac FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY workspaces
     ADD CONSTRAINT fk_bdb0b31131 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -44250,9 +44188,6 @@ ALTER TABLE ONLY agent_activity_events
 
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_d7653ef780 FOREIGN KEY (revoked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
-
-ALTER TABLE ONLY metrics_users_starred_dashboards
-    ADD CONSTRAINT fk_d76a2b9a8c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dependency_proxy_manifest_states
     ADD CONSTRAINT fk_d79f184865 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -45066,9 +45001,6 @@ ALTER TABLE ONLY packages_terraform_module_metadata
 
 ALTER TABLE ONLY container_registry_protection_tag_rules
     ADD CONSTRAINT fk_rails_343879fca2 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY metrics_dashboard_annotations
-    ADD CONSTRAINT fk_rails_345ab51043 FOREIGN KEY (cluster_id) REFERENCES clusters(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_features
     ADD CONSTRAINT fk_rails_356514082b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
@@ -46044,9 +45976,6 @@ ALTER TABLE ONLY duo_workflows_events
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_rails_ae5da3409b FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY metrics_dashboard_annotations
-    ADD CONSTRAINT fk_rails_aeb11a7643 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_build_trace_metadata
     ADD CONSTRAINT fk_rails_aebc78111f_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;

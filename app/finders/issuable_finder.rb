@@ -19,7 +19,7 @@
 #     milestone_wildcard_id: 'none', 'any', 'upcoming', 'started' (cannot be simultaneously used with milestone_title)
 #     release_tag: string
 #     author_id: integer
-#     author_username: string
+#     author_username: username string or a group handle (e.g., '@group/subgroup')
 #     assignee_id: integer or 'None' or 'Any'
 #     closed_by_id: integer
 #     assignee_username: string
@@ -414,6 +414,7 @@ class IssuableFinder
 
   def by_author(items)
     Issuables::AuthorFilter.new(
+      current_user: current_user,
       params: original_params
     ).filter(items)
   end

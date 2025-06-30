@@ -251,6 +251,7 @@ func createTempFile(t *testing.T, contents []byte) string {
 func TestCircuitBreakerConfig(t *testing.T) {
 	config := `
 [circuit_breaker]
+enabled = true
 timeout = 90
 interval = 360
 max_requests = 2
@@ -263,6 +264,7 @@ consecutive_failures = 10
 	require.NotNil(t, cfg.CircuitBreakerConfig, "Expected circuit breaker config")
 
 	expected := CircuitBreakerConfig{
+		Enabled:             true,
 		Timeout:             90,
 		Interval:            360,
 		MaxRequests:         2,

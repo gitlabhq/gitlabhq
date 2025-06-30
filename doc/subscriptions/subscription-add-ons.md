@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Provision
+group: Seat Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Seat assignment, GitLab Duo subscription add-on.
 title: GitLab Duo add-ons
@@ -169,7 +169,7 @@ Prerequisites:
 The user is sent a confirmation email.
 
 After you assign seats,
-[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md). 
+[ensure GitLab Duo is set up for your GitLab Self-Managed instance](../user/gitlab_duo/setup.md).
 
 ## Assign and remove GitLab Duo seats in bulk
 

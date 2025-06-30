@@ -82,6 +82,7 @@ const initCodeDropdown = () => {
     newWorkspacePath,
     projectId,
     projectPath,
+    organizationId,
   } = codeDropdownEl.dataset;
 
   const { gitpodEnabled, showWebIdeButton, showGitpodButton, webIdeUrl, gitpodUrl } =
@@ -93,7 +94,7 @@ const initCodeDropdown = () => {
 
   return new Vue({
     el: codeDropdownEl,
-    provide: { newWorkspacePath },
+    provide: { newWorkspacePath, organizationId },
     apolloProvider,
     render(createElement) {
       return createElement(CodeDropdownComponent, {

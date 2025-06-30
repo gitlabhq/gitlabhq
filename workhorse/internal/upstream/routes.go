@@ -16,6 +16,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/artifacts"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/builds"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/channel"
+	"gitlab.com/gitlab-org/gitlab/workhorse/internal/circuitbreaker"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
@@ -479,6 +480,8 @@ func configureRoutes(u *upstream) {
 		u.route("GET", newRoute(apiProjectPattern+`/observability/v1/services`, "api_observability_services", railsBackend), gob.WithProjectAuth("/read/services")),
 
 		// Explicitly proxy API requests
+		u.route("POST", newRoute(apiPattern+`v4/internal/allowed`, "api_internal_allowed", railsBackend), allowedProxy(proxy, dependencyProxyInjector, u)),
+
 		u.route("",
 			newRoute(apiPattern, "api", railsBackend), proxy),
 
@@ -617,4 +620,14 @@ func corsMiddleware(next http.Handler, allowOriginRegex *regexp.Regexp) http.Han
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func allowedProxy(proxy http.Handler, dependencyProxyInjector *dependencyproxy.Injector, u *upstream) http.Handler {
+	if u.Config.CircuitBreakerConfig.Enabled {
+		roundTripperCircuitBreaker := circuitbreaker.NewRoundTripper(u.RoundTripper, &u.CircuitBreakerConfig, u.Config.Redis)
+
+		return buildProxy(u.Backend, u.Version, roundTripperCircuitBreaker, u.Config, dependencyProxyInjector)
+	}
+
+	return proxy
 }

@@ -122,6 +122,7 @@ class MergeRequestsFinder < IssuableFinder
 
   def by_author(items)
     MergeRequests::AuthorFilter.new(
+      current_user: current_user,
       params: params
     ).filter(items)
   end

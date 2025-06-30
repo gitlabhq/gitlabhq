@@ -22,11 +22,12 @@ module Authn
       return unless Feature.enabled?(:cleanup_access_tokens, :instance)
 
       runtime_limiter = Gitlab::Metrics::RuntimeLimiter.new(MAX_RUNTIME)
+      deleted_count = 0
 
       OauthAccessToken.each_batch(of: BATCH_SIZE) do |batch|
         batch.each_batch(of: SUB_BATCH_SIZE) do |sub_batch|
           # rubocop: disable CodeReuse/ActiveRecord -- We don't want to expose this as a scope since there is no index on these columns, and it should not be used outside of this worker.
-          sub_batch.where("created_at + \(expires_in * INTERVAL'1 SECOND'\) < NOW()").delete_all
+          deleted_count += sub_batch.where("created_at + \(expires_in * INTERVAL'1 SECOND'\) < NOW()").delete_all
           # rubocop: enable CodeReuse/ActiveRecord
 
           sleep ITERATION_DELAY
@@ -34,6 +35,8 @@ module Authn
 
         self.class.perform_in(REQUEUE_DELAY) && break if runtime_limiter.over_time?
       end
+
+      log_extra_metadata_on_done(:result, { over_time: runtime_limiter.was_over_time?, deleted_count: deleted_count })
     end
   end
 end
