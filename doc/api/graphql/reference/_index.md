@@ -6495,6 +6495,7 @@ Input type: `GoogleCloudLoggingConfigurationUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationgooglecloudloggingconfigurationupdateactive"></a>`active` | [`Boolean`](#boolean) | Active status of the destination. |
 | <a id="mutationgooglecloudloggingconfigurationupdateclientemail"></a>`clientEmail` | [`String`](#string) | Email address associated with the service account that will be used to authenticate and interact with the Google Cloud Logging service. This is part of the IAM credentials. |
 | <a id="mutationgooglecloudloggingconfigurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgooglecloudloggingconfigurationupdategoogleprojectidname"></a>`googleProjectIdName` | [`String`](#string) | Unique identifier of the Google Cloud project to which the logging configuration belongs. |
@@ -7132,6 +7133,7 @@ Input type: `InstanceGoogleCloudLoggingConfigurationUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationinstancegooglecloudloggingconfigurationupdateactive"></a>`active` | [`Boolean`](#boolean) | Active status of the destination. |
 | <a id="mutationinstancegooglecloudloggingconfigurationupdateclientemail"></a>`clientEmail` | [`String`](#string) | Email address associated with the service account that will be used to authenticate and interact with the Google Cloud Logging service. This is part of the IAM credentials. |
 | <a id="mutationinstancegooglecloudloggingconfigurationupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationinstancegooglecloudloggingconfigurationupdategoogleprojectidname"></a>`googleProjectIdName` | [`String`](#string) | Unique identifier of the Google Cloud project to which the logging configuration belongs. |
@@ -28335,6 +28337,7 @@ Stores Google Cloud Logging configurations associated with IAM service accounts,
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="googlecloudloggingconfigurationtypeactive"></a>`active` | [`Boolean!`](#boolean) | Active status of the destination. |
 | <a id="googlecloudloggingconfigurationtypeclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
 | <a id="googlecloudloggingconfigurationtypegoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
 | <a id="googlecloudloggingconfigurationtypegroup"></a>`group` | [`Group!`](#group) | Group the configuration belongs to. |
@@ -30905,6 +30908,7 @@ Stores instance level Google Cloud Logging configurations associated with IAM se
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="instancegooglecloudloggingconfigurationtypeactive"></a>`active` | [`Boolean!`](#boolean) | Active status of the destination. |
 | <a id="instancegooglecloudloggingconfigurationtypeclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
 | <a id="instancegooglecloudloggingconfigurationtypegoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
 | <a id="instancegooglecloudloggingconfigurationtypeid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
@@ -49712,6 +49716,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="googlecloudloggingconfigurationinterfaceactive"></a>`active` | [`Boolean!`](#boolean) | Active status of the destination. |
 | <a id="googlecloudloggingconfigurationinterfaceclientemail"></a>`clientEmail` | [`String!`](#string) | Client email. |
 | <a id="googlecloudloggingconfigurationinterfacegoogleprojectidname"></a>`googleProjectIdName` | [`String!`](#string) | Google project ID. |
 | <a id="googlecloudloggingconfigurationinterfaceid"></a>`id` | [`ID!`](#id) | ID of the configuration. |
