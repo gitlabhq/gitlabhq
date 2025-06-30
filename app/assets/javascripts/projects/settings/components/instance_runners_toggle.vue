@@ -1,18 +1,10 @@
 <script>
 import { GlAlert, GlLink, GlToggle, GlSprintf } from '@gitlab/ui';
 import axios from '~/lib/utils/axios_utils';
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import { IDENTITY_VERIFICATION_REQUIRED_ERROR } from '../constants';
 
-const DEFAULT_ERROR_MESSAGE = __('An error occurred while updating the configuration.');
-const REQUIRES_IDENTITY_VERIFICATION_TEXT = s__(
-  `IdentityVerification|Before you can use GitLab-hosted runners, we need to verify your account.`,
-);
-
 export default {
-  i18n: {
-    REQUIRES_IDENTITY_VERIFICATION_TEXT,
-  },
   components: {
     GlAlert,
     GlLink,
@@ -48,7 +40,7 @@ export default {
   data() {
     return {
       isLoading: false,
-      isSharedRunnerEnabled: this.isEnabled,
+      isEnabledValue: this.isEnabled,
       errorMessage: null,
     };
   },
@@ -64,7 +56,7 @@ export default {
     },
   },
   methods: {
-    toggleSharedRunners() {
+    onChange() {
       this.isLoading = true;
       this.errorMessage = null;
 
@@ -72,11 +64,13 @@ export default {
         .post(this.updatePath)
         .then(() => {
           this.isLoading = false;
-          this.isSharedRunnerEnabled = !this.isSharedRunnerEnabled;
+          this.isEnabledValue = !this.isEnabledValue;
         })
         .catch((error) => {
           this.isLoading = false;
-          this.errorMessage = error.response?.data?.error || DEFAULT_ERROR_MESSAGE;
+          this.errorMessage =
+            error.response?.data?.error ||
+            __('An error occurred while updating the configuration.');
         });
     },
   },
@@ -87,7 +81,11 @@ export default {
   <div>
     <identity-verification-required-alert
       v-if="identityVerificationRequiredError"
-      :title="$options.i18n.REQUIRES_IDENTITY_VERIFICATION_TEXT"
+      :title="
+        s__(
+          'IdentityVerification|Before you can use GitLab-hosted runners, we need to verify your account.',
+        )
+      "
       class="gl-mb-5"
     />
 
@@ -102,13 +100,12 @@ export default {
     </gl-alert>
 
     <gl-toggle
-      ref="sharedRunnersToggle"
       :disabled="isDisabledAndUnoverridable"
       :is-loading="isLoading"
       label-position="left"
-      :value="isSharedRunnerEnabled"
-      data-testid="toggle-shared-runners"
-      @change="toggleSharedRunners"
+      :value="isEnabledValue"
+      data-testid="instance-runners-toggle"
+      @change="onChange"
     >
       <template #label>
         <span class="gl-text-sm gl-font-normal gl-text-subtle">{{

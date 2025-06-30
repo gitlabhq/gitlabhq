@@ -209,13 +209,32 @@ To auto-format this table, use the VS Code Markdown Table formatter: `https://do
 | `/unsubscribe`                                                  | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | {{< icon name="check-circle" >}} Yes | Unsubscribe to notifications. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/420796) in GitLab 16.4 |
 | `/weight <value>`                                             | {{< icon name="check-circle" >}} Yes | {{< icon name="dotted-circle" >}} No | {{< icon name="dotted-circle" >}} No | Set weight. Valid options for `<value>` include `0`, `1`, and `2`. |
 
-## Commit messages
+## Commit comments
 
-The following quick actions are applicable for commit messages:
+You can use quick actions when commenting on individual commits. These quick actions work only in
+commit comment threads, not in commit messages or other GitLab contexts.
+
+To use quick actions in commit comments:
+
+1. Go to a commit page by selecting a commit from the commits list, merge request,
+   or other commit links.
+1. In the comment form at the bottom of the commit page, enter your quick action.
+1. Select **Comment**.
+
+The following quick actions are applicable for commit comments:
 
 | Command                 | Action                                    |
 |:----------------------- |:------------------------------------------|
-| `/tag v1.2.3 <message>` | Tags the commit with an optional message. |
+| `/tag v1.2.3 <message>` | Creates a Git tag pointing to the commented commit, with an optional message. |
+
+Here is an example Git tag:
+
+```plaintext
+Ready for release after security fix.
+/tag v2.1.1 Security patch release
+
+This comment creates a Git tag named `v2.1.1` pointing to the commit, with the
+message "Security patch release".
 
 ## Troubleshooting
 

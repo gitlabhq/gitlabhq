@@ -5,20 +5,20 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
-import SharedRunnersToggleComponent from '~/projects/settings/components/shared_runners_toggle.vue';
+import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
 
-const TEST_UPDATE_PATH = '/test/update_shared_runners';
+const TEST_UPDATE_PATH = '/test/update_instance_runners';
 const mockParentName = 'My group';
 const mockGroupSettingsPath = '/groups/my-group/-/settings/ci_cd';
 
 jest.mock('~/alert');
 
-describe('projects/settings/components/shared_runners', () => {
+describe('InstanceRunnersToggle', () => {
   let wrapper;
   let mockAxios;
 
   const createComponent = (props = {}) => {
-    wrapper = shallowMountExtended(SharedRunnersToggleComponent, {
+    wrapper = shallowMountExtended(InstanceRunnersToggle, {
       propsData: {
         isEnabled: false,
         isDisabledAndUnoverridable: false,
@@ -34,10 +34,10 @@ describe('projects/settings/components/shared_runners', () => {
 
   const findErrorAlert = () => wrapper.findByTestId('error-alert');
   const findUnoverridableAlert = () => wrapper.findByTestId('unoverridable-alert');
-  const findSharedRunnersToggle = () => wrapper.findComponent(GlToggle);
-  const getToggleValue = () => findSharedRunnersToggle().props('value');
-  const isToggleLoading = () => findSharedRunnersToggle().props('isLoading');
-  const isToggleDisabled = () => findSharedRunnersToggle().props('disabled');
+  const findInstanceRunnersToggle = () => wrapper.findComponent(GlToggle);
+  const getToggleValue = () => findInstanceRunnersToggle().props('value');
+  const isToggleLoading = () => findInstanceRunnersToggle().props('isLoading');
+  const isToggleDisabled = () => findInstanceRunnersToggle().props('disabled');
 
   beforeEach(() => {
     mockAxios = new MockAxiosAdapter(axios);
@@ -60,7 +60,7 @@ describe('projects/settings/components/shared_runners', () => {
     });
 
     it('renders text explaining why the toggle is disabled', () => {
-      expect(findSharedRunnersToggle().text()).toContain(
+      expect(findInstanceRunnersToggle().text()).toContain(
         'Instance runners are disabled in the group settings.',
       );
     });
@@ -75,11 +75,11 @@ describe('projects/settings/components/shared_runners', () => {
       });
 
       it('renders link to enable', () => {
-        expect(findSharedRunnersToggle().text()).toContain(
+        expect(findInstanceRunnersToggle().text()).toContain(
           `Go to ${mockParentName} to enable them.`,
         );
 
-        const link = findSharedRunnersToggle().findComponent(GlLink);
+        const link = findInstanceRunnersToggle().findComponent(GlLink);
         expect(link.text()).toBe(mockParentName);
         expect(link.attributes('href')).toBe(mockGroupSettingsPath);
       });
@@ -101,7 +101,7 @@ describe('projects/settings/components/shared_runners', () => {
       expect(findUnoverridableAlert().exists()).toBe(false);
     });
 
-    describe('with shared runners DISABLED', () => {
+    describe('with instance runners DISABLED', () => {
       beforeEach(() => {
         createComponent();
       });
@@ -111,7 +111,7 @@ describe('projects/settings/components/shared_runners', () => {
       });
 
       it('can enable toggle', async () => {
-        findSharedRunnersToggle().vm.$emit('change', true);
+        findInstanceRunnersToggle().vm.$emit('change', true);
         await waitForPromises();
 
         expect(mockAxios.history.post[0].data).toEqual(undefined);
@@ -121,7 +121,7 @@ describe('projects/settings/components/shared_runners', () => {
       });
     });
 
-    describe('with shared runners ENABLED', () => {
+    describe('with instance runners ENABLED', () => {
       beforeEach(() => {
         createComponent({ isEnabled: true });
       });
@@ -131,7 +131,7 @@ describe('projects/settings/components/shared_runners', () => {
       });
 
       it('can disable toggle', async () => {
-        findSharedRunnersToggle().vm.$emit('change', true);
+        findInstanceRunnersToggle().vm.$emit('change', true);
         await waitForPromises();
 
         expect(mockAxios.history.post[0].data).toEqual(undefined);
@@ -146,7 +146,7 @@ describe('projects/settings/components/shared_runners', () => {
         createComponent();
         expect(isToggleLoading()).toBe(false);
 
-        findSharedRunnersToggle().vm.$emit('change', true);
+        findInstanceRunnersToggle().vm.$emit('change', true);
         await nextTick();
         expect(isToggleLoading()).toBe(true);
 
@@ -163,7 +163,7 @@ describe('projects/settings/components/shared_runners', () => {
         createComponent();
         expect(getToggleValue()).toBe(false);
 
-        findSharedRunnersToggle().vm.$emit('change', true);
+        findInstanceRunnersToggle().vm.$emit('change', true);
         await waitForPromises();
 
         expect(findErrorAlert().text()).toBe('Custom API Error message');
@@ -175,7 +175,7 @@ describe('projects/settings/components/shared_runners', () => {
         createComponent();
         expect(getToggleValue()).toBe(false);
 
-        findSharedRunnersToggle().vm.$emit('change', true);
+        findInstanceRunnersToggle().vm.$emit('change', true);
         await waitForPromises();
 
         expect(findErrorAlert().text()).toBe('An error occurred while updating the configuration.');

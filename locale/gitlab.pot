@@ -15476,6 +15476,9 @@ msgstr ""
 msgid "Compliance Center|Compliance status"
 msgstr ""
 
+msgid "Compliance Center|Dashboard"
+msgstr ""
+
 msgid "Compliance Center|Frameworks"
 msgstr ""
 
@@ -15492,6 +15495,42 @@ msgid "Compliance framework settings have moved."
 msgstr ""
 
 msgid "Compliance frameworks"
+msgstr ""
+
+msgid "Compliance report|%{count} projects are not covered by %{framework}"
+msgstr ""
+
+msgid "Compliance report|%{count} projects have at least one framework"
+msgstr ""
+
+msgid "Compliance report|%{count} projects have framework: %{framework}"
+msgstr ""
+
+msgid "Compliance report|%{count} projects have no framework at all"
+msgstr ""
+
+msgid "Compliance report|%{percent}%% coverage"
+msgstr ""
+
+msgid "Compliance report|%{percent}%% coverage for %{framework}"
+msgstr ""
+
+msgid "Compliance report|All frameworks"
+msgstr ""
+
+msgid "Compliance report|Click to check all projects"
+msgstr ""
+
+msgid "Compliance report|Projects covered by frameworks"
+msgstr ""
+
+msgid "Compliance report|Projects not covered by frameworks"
+msgstr ""
+
+msgid "Compliance report|Start by adding a compliance framework to your group."
+msgstr ""
+
+msgid "Compliance report|There are no compliance frameworks."
 msgstr ""
 
 msgid "Compliance requirement control successfully deleted"
@@ -15974,6 +16013,9 @@ msgstr ""
 msgid "ComplianceReport|Compliance framework"
 msgstr ""
 
+msgid "ComplianceReport|Compliance framework coverage"
+msgstr ""
+
 msgid "ComplianceReport|Compliance pipelines are deprecated"
 msgstr ""
 
@@ -15998,6 +16040,12 @@ msgstr ""
 msgid "ComplianceReport|Edit the framework"
 msgstr ""
 
+msgid "ComplianceReport|Failed controls"
+msgstr ""
+
+msgid "ComplianceReport|Failed requirements"
+msgstr ""
+
 msgid "ComplianceReport|Failed to update violation status. Please try again."
 msgstr ""
 
@@ -16008,6 +16056,9 @@ msgid "ComplianceReport|For more information, see %{linkStart}how to migrate fro
 msgstr ""
 
 msgid "ComplianceReport|Frameworks have been successfully updated."
+msgstr ""
+
+msgid "ComplianceReport|Frameworks needs attention"
 msgstr ""
 
 msgid "ComplianceReport|Full target branch name"
@@ -71798,6 +71849,9 @@ msgstr ""
 msgid "You cannot invite a new member to %{strong_start}%{project_name}%{strong_end}. User invitations are disabled by the %{actor}."
 msgstr ""
 
+msgid "You cannot modify security policy project for group designated as CSP."
+msgstr ""
+
 msgid "You cannot play this scheduled pipeline at the moment. Please wait a minute."
 msgstr ""
 
@@ -71805,6 +71859,9 @@ msgid "You cannot rename an environment after it's created."
 msgstr ""
 
 msgid "You cannot set yourself to awaiting"
+msgstr ""
+
+msgid "You cannot unassign security policy project for group designated as CSP."
 msgstr ""
 
 msgid "You cannot verify %{value} because it is a popular public email domain."

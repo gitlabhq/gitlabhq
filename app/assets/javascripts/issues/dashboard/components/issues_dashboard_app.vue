@@ -566,11 +566,7 @@ export default {
 
     <template #custom-status="{ issuable = {} }">
       <div v-if="showStatusBadge(issuable)" class="gl-max-w-20">
-        <work-item-status-badge
-          :name="issuable.status.name"
-          :icon-name="issuable.status.iconName"
-          :color="issuable.status.color"
-        />
+        <work-item-status-badge :item="issuable.status" />
       </div>
     </template>
 

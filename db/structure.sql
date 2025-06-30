@@ -8216,6 +8216,28 @@ CREATE SEQUENCE ai_agents_id_seq
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
 
+CREATE TABLE ai_catalog_item_versions (
+    id bigint NOT NULL,
+    release_date timestamp with time zone,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    organization_id bigint NOT NULL,
+    ai_catalog_item_id bigint NOT NULL,
+    schema_version smallint NOT NULL,
+    version text NOT NULL,
+    definition jsonb NOT NULL,
+    CONSTRAINT check_8cabb46fa3 CHECK ((char_length(version) <= 50))
+);
+
+CREATE SEQUENCE ai_catalog_item_versions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_item_versions_id_seq OWNED BY ai_catalog_item_versions.id;
+
 CREATE TABLE ai_catalog_items (
     id bigint NOT NULL,
     organization_id bigint NOT NULL,
@@ -27317,6 +27339,8 @@ ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_catalog_item_versions ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_versions_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_code_suggestion_events ALTER COLUMN id SET DEFAULT nextval('ai_code_suggestion_events_id_seq'::regclass);
@@ -29354,6 +29378,9 @@ ALTER TABLE ONLY ai_agent_versions
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_item_versions
+    ADD CONSTRAINT ai_catalog_item_versions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_catalog_items
     ADD CONSTRAINT ai_catalog_items_pkey PRIMARY KEY (id);
@@ -33705,6 +33732,8 @@ CREATE INDEX idx_addon_purchases_on_last_refreshed_at_desc_nulls_last ON subscri
 
 CREATE INDEX idx_ai_active_context_code_enabled_namespaces_namespace_id ON ONLY p_ai_active_context_code_enabled_namespaces USING btree (namespace_id);
 
+CREATE UNIQUE INDEX idx_ai_catalog_item_version_unique ON ai_catalog_item_versions USING btree (ai_catalog_item_id, version);
+
 CREATE INDEX idx_ai_code_repository_project_id_state ON ONLY p_ai_active_context_code_repositories USING btree (project_id, state);
 
 CREATE UNIQUE INDEX idx_ai_usage_events_unique_tuple ON ONLY ai_usage_events USING btree (namespace_id, user_id, event, "timestamp");
@@ -34366,6 +34395,8 @@ CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btre
 CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
+
+CREATE INDEX index_ai_catalog_item_versions_on_organization_id ON ai_catalog_item_versions USING btree (organization_id);
 
 CREATE INDEX index_ai_catalog_items_on_item_type ON ai_catalog_items USING btree (item_type);
 
@@ -43804,6 +43835,9 @@ ALTER TABLE ONLY snippet_statistics
 ALTER TABLE ONLY merge_requests_closing_issues
     ADD CONSTRAINT fk_a8703820ae FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_versions
+    ADD CONSTRAINT fk_a98456de32 FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_a989e2acd0 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -44265,6 +44299,9 @@ ALTER TABLE ONLY merge_request_context_commit_diff_files
 
 ALTER TABLE ONLY work_item_dates_sources
     ADD CONSTRAINT fk_dbbe8917ee FOREIGN KEY (due_date_sourcing_work_item_id) REFERENCES issues(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ai_catalog_item_versions
+    ADD CONSTRAINT fk_dc274ddac4 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY boards_epic_board_positions
     ADD CONSTRAINT fk_dc62428d81 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;

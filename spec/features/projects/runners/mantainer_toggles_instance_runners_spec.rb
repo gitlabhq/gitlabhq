@@ -20,8 +20,8 @@ RSpec.describe 'Maintainer toggles instance runners', feature_category: :fleet_v
       let_it_be(:project) { create(:project, shared_runners_enabled: true) }
 
       it 'instance runners toggle is on' do
-        expect(page).to have_selector('[data-testid="toggle-shared-runners"]')
-        expect(page).to have_selector('[data-testid="toggle-shared-runners"] .is-checked')
+        expect(page).to have_selector('[data-testid="instance-runners-toggle"]')
+        expect(page).to have_selector('[data-testid="instance-runners-toggle"] .is-checked')
       end
     end
 
@@ -29,7 +29,7 @@ RSpec.describe 'Maintainer toggles instance runners', feature_category: :fleet_v
       let_it_be(:project) { create(:project, shared_runners_enabled: false) }
 
       it 'instance runners toggle is off' do
-        expect(page).not_to have_selector('[data-testid="toggle-shared-runners"] .is-checked')
+        expect(page).not_to have_selector('[data-testid="instance-runners-toggle"] .is-checked')
       end
     end
   end

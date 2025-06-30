@@ -347,7 +347,7 @@ When a user tries to sign in with Group SSO, GitLab attempts to find or create a
 
 {{< alert type="note" >}}
 
-If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#returning-users-automatic-identity-relinking). This allows GitLab to link the SAML account to the existing account.
+If the user is an [enterprise user](../../enterprise_user/_index.md) of that group, the following steps do not apply. The enterprise user must instead [sign in with a SAML account that has the same email as the GitLab account](#automatic-identity-linking-for-enterprise-users). This allows GitLab to link the SAML account to the existing account.
 
 {{< /alert >}}
 
@@ -519,10 +519,12 @@ To disable password authentication for enterprise users:
 1. Under **Configuration**, select **Disable password authentication for enterprise users**.
 1. Select **Save changes**.
 
-#### Returning users (Automatic Identity Relinking)
+#### Automatic Identity Linking for enterprise users
 
 If an enterprise user is removed from the group and then returns, they can sign in with their enterprise SSO account.
 As long as the user's email address in the identity provider remains the same as the email address on the existing GitLab account, the SSO identity is automatically linked to the account and the user can sign in without any issues.
+
+This functionality also applies to existing users that have been claimed as an enterprise user but who may not have yet signed into the group.
 
 ### Block user access
 

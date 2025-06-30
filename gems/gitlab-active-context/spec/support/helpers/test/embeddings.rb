@@ -1,9 +1,12 @@
 # frozen_string_literal: true
 
-module ActiveContext
-  class Embeddings
+module Test
+  class Embeddings < ::ActiveContext::Embeddings
     def self.generate_embeddings(_content, _unit_primitive:, _model: nil, _user: nil)
-      raise NoMethodError, "`generate_embeddings` must be defined by the child class"
+      [
+        [1, 2, 3, 4, 5],
+        [6, 7, 8, 9]
+      ]
     end
   end
 end

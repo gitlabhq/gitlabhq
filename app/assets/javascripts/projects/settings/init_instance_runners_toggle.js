@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
-import SharedRunnersToggle from '~/projects/settings/components/shared_runners_toggle.vue';
+import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
 
-export default (containerId = 'toggle-shared-runners-form') => {
+export const initInstanceRunnersToggle = (containerId = 'instance-runners-toggle-container') => {
   const containerEl = document.getElementById(containerId);
   if (!containerEl) {
     return null;
@@ -32,7 +32,7 @@ export default (containerId = 'toggle-shared-runners-form') => {
       identityVerificationRequired: true,
     },
     render(createElement) {
-      return createElement(SharedRunnersToggle, {
+      return createElement(InstanceRunnersToggle, {
         props: {
           isDisabledAndUnoverridable: parseBoolean(isDisabledAndUnoverridable),
           isEnabled: parseBoolean(isEnabled),

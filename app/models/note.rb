@@ -423,6 +423,7 @@ class Note < ApplicationRecord
     project&.team&.contributor?(self.author_id)
   end
 
+  # overridden in ee
   def human_max_access
     project&.team&.human_max_access(self.author_id)
   end

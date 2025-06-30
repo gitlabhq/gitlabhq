@@ -426,13 +426,7 @@ export default {
           :target-id="targetId"
         />
         <div class="gl-max-w-20">
-          <work-item-status-badge
-            v-if="showStatus"
-            class="gl-isolate"
-            :name="item.status.name"
-            :icon-name="item.status.iconName"
-            :color="item.status.color"
-          />
+          <work-item-status-badge v-if="showStatus" class="gl-isolate" :item="item.status" />
         </div>
       </div>
     </div>

@@ -604,6 +604,12 @@ format `field operator value`.
 
 ### Epic
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/issues/30) in GitLab 18.1.
@@ -811,6 +817,12 @@ format `field operator value`.
   ```
 
 ### Iteration
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
 
 {{< history >}}
 

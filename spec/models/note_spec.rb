@@ -2119,6 +2119,24 @@ RSpec.describe Note, feature_category: :team_planning do
     end
   end
 
+  describe '#human_max_access' do
+    let_it_be(:user) { create(:user) }
+
+    subject { note.human_max_access }
+
+    context 'when parent is a project' do
+      let_it_be(:project) { create(:project) }
+      let_it_be(:noteable) { create(:wiki_page_meta, project: project) }
+      let(:note) { create(:note, project: project, author: user, noteable: noteable) }
+
+      before do
+        project.add_developer(user)
+      end
+
+      it { is_expected.to be('Developer') }
+    end
+  end
+
   describe '#trigger_work_item_updated_subscription' do
     let(:issue) { create(:issue) }
     let(:note) { build(:note, noteable: issue, system: true, project: issue.project) }

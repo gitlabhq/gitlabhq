@@ -7,8 +7,8 @@ title: Policy settings API
 
 {{< details >}}
 
-- Tier: Premium, Ultimate
-- Offering: GitLab Self-Managed, GitLab Dedicated
+- Tier: Ultimate
+- Offering: GitLab Self-Managed
 
 {{< /details >}}
 

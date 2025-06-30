@@ -24666,8 +24666,8 @@ Framework coverage details for a specific compliance framework.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkcoveragedetailcoveredcount"></a>`coveredCount` | [`Int!`](#int) | Number of projects covered by the framework. |
+| <a id="complianceframeworkcoveragedetailframework"></a>`framework` | [`ComplianceFramework!`](#complianceframework) | Compliance framework associated with the coverage detail. |
 | <a id="complianceframeworkcoveragedetailid"></a>`id` | [`ID!`](#id) | ID of the framework. |
-| <a id="complianceframeworkcoveragedetailname"></a>`name` | [`String!`](#string) | Name of the framework. |
 
 ### `ComplianceFrameworkCoverageSummary`
 
