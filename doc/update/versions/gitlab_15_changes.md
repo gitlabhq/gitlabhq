@@ -1032,7 +1032,7 @@ A [license caching issue](https://gitlab.com/gitlab-org/gitlab/-/issues/376706) 
   [Fault tolerant and Geo installations require additional steps and planning](../../administration/postgresql/replication_and_failover.md#upgrading-postgresql-major-version-in-a-patroni-cluster).
 
   Because of underlying structural changes, the running PostgreSQL process
-  **_must_** be restarted when it is upgraded before running database
+  must be restarted when it is upgraded before running database
   migrations. If automatic restart is skipped, you must run the following
   command before migrations are run:
 

@@ -19346,6 +19346,7 @@ CREATE TABLE packages_conan_file_metadata (
     package_revision_id bigint,
     package_reference_id bigint,
     project_id bigint,
+    CONSTRAINT check_7a4526796d CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_conan_file_metadata_ref_null_for_recipe_files CHECK ((NOT ((conan_file_type = 1) AND (package_reference_id IS NOT NULL))))
 );
 

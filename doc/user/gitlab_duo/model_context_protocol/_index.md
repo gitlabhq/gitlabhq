@@ -42,8 +42,8 @@ To use a GitLab Duo AI-native feature with MCP:
 
 Before you can use an AI-native feature with MCP, you must:
 
-- [Install Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
-- [Set up the GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup).
+- Install [Visual Studio Code](https://code.visualstudio.com/download) (VS Code).
+- Set up the [GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). MCP requires version 6.28.2 and later.
 - Meet the following AI-native feature prerequisites:
   - [Agentic Chat prerequisites](../../gitlab_duo_chat/agentic_chat.md#use-agentic-chat-in-vs-code).
 
@@ -84,12 +84,21 @@ the feature can use that tool:
 
    Review the tool and select **Approve** or **Deny**.
 
+   You must review a tool every time an AI-native feature tries to connect
+   to that tool, even if you have previously reviewed that tool.
+
    - If you approve the tool, the feature connects to the tool and
    generates an answer.
 
    - If you deny the tool, the **Provide Rejection Reason** dialog appears.
      Optional: Enter a rejection reason into the text box and select
      **Submit Rejection**.
+
+## Feedback
+
+Because this is an experimental feature, your feedback is valuable in helping us
+to improve it. Share your experiences, suggestions, or issues in
+[issue 552164](https://gitlab.com/gitlab-org/gitlab/-/issues/552164).
 
 ## Related topics
 

@@ -53184,7 +53184,7 @@ msgstr ""
 msgid "Runners|No jobs have been run by instance runners in the past 3 hours."
 msgstr ""
 
-msgid "Runners|No project runners found, you can create one by selecting \"New project runner\"."
+msgid "Runners|No project runners found"
 msgstr ""
 
 msgid "Runners|No spot. Default choice for Windows Shell executor."
@@ -53622,6 +53622,9 @@ msgid "Runners|This runner has not run any jobs"
 msgstr ""
 
 msgid "Runners|This runner is outdated, an upgrade is recommended"
+msgstr ""
+
+msgid "Runners|To add them, select %{strongStart}Create project runner%{strongEnd}."
 msgstr ""
 
 msgid "Runners|To install Runner in Kubernetes follow the instructions described in the GitLab documentation."
@@ -63671,6 +63674,9 @@ msgid "This project does not have %{service_desk_link_start}Service Desk%{servic
 msgstr ""
 
 msgid "This project does not have a wiki homepage yet"
+msgstr ""
+
+msgid "This project does not have any project runners yet."
 msgstr ""
 
 msgid "This project does not include diff previews in email notifications."

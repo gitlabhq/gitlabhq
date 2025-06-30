@@ -78,7 +78,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def rapid_diffs
-    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+    return render_404 unless ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
       ::Feature.enabled?(:rapid_diffs_on_compare_show, current_user, type: :wip)
 
     @rapid_diffs_presenter = ::RapidDiffs::ComparePresenter.new(

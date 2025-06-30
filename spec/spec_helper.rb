@@ -550,12 +550,12 @@ RSpec.configure do |config|
     Users::Internal.clear_memoization(:support_bot_id)
   end
 
-  # Clear cached state in Cloud Connector; different tests can otherwise leak state
-  # into each other, causing tests to fail.
   config.before do
-    ::Gitlab::CloudConnector::DataModel::Base.descendants.each do |clazz|
-      clazz.instance_variable_set(:@data_loader, nil)
-    end
+    # Reconfigures the Cloud Connector data loader to use YamlDataLoader as the default
+    # instead of the DatabaseDataLoader. This is because specs should not rely on
+    # database contents. But this can be overridden to use DatabaseDataLoader by explicitly specifying the
+    # data loader class in the context.
+    Gitlab::CloudConnector::Configuration.data_loader_class = Gitlab::CloudConnector::DataModel::YamlDataLoader
   end
 end
 

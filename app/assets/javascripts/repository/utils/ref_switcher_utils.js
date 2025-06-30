@@ -7,7 +7,7 @@ import { joinPaths } from '~/lib/utils/url_utility';
  * Group 2:  blob
  * Group 3: /test/spec/utils_spec.js
  */
-const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree))/${ref}/(.*)`);
+const getNamespaceTargetRegex = (ref) => new RegExp(`(/-/(blob|tree)|/blob)/${ref}/(.*)`);
 
 /**
  * Generates a ref destination path based on the selected ref and current path.

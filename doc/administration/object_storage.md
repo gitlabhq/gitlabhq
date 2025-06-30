@@ -1579,3 +1579,34 @@ Proceed as follows to properly delete potential leftovers:
    ```
 
 Repeat the steps for all affected object storage types.
+
+### Job logs are missing in a multi-node GitLab instance
+
+On GitLab instances with more than one Rails node (servers running the web services or Sidekiq)
+there needs to be a mechanism to make job logs available to all nodes after they have
+been sent from the Runner. Jobs logs can be stored on local disk or in object storage.
+
+If NFS is not being used, and the
+[incremental logging feature](cicd/job_logs.md#incremental-logging)
+has not been enabled, then job logs can be lost:
+
+1. The node which receives the log from the runner writes the log to local disk.
+1. When GitLab tries to archive the log, often the job runs on a different server which cannot access the log.
+1. Uploading to object storage fails.
+
+The following error might also be logged to `/var/log/gitlab/gitlab-rails/exceptions_json.log`:
+
+```yaml
+{
+  "severity": "ERROR",
+  "exception.class": "Ci::AppendBuildTraceService::TraceRangeError",
+  "extra.build_id": 425187,
+  "extra.body_end": 12955,
+  "extra.stream_size": 720,
+  "extra.stream_class": {},
+  "extra.stream_range": "0-12954"
+}
+```
+
+If CI artifacts are written to object storage in a multi-node environment, you must
+[enable the incremental logging feature](cicd/job_logs.md#configure-incremental-logging).

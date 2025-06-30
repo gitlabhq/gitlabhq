@@ -186,7 +186,7 @@ module QA
           # After clicking the button, wait for the review bar to disappear
           # before moving on to the next part of the test
           wait_until(reload: false) do
-            has_no_element?('review-bar-content')
+            has_no_element?('draft-note')
           end
         end
 

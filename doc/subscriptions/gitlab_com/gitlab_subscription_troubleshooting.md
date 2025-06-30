@@ -54,8 +54,8 @@ To resolve this issue, try the following:
 - For cards issued in India: Process your transaction through an authorized local reseller.
   Reach out to one of the following GitLab partners in India:
 
-  - [Datamato Technologies Private Limited](https://partners.gitlab.com/english/directory/partner/1345598/datamato-technologies-private-limited)
-  - [FineShift Software Private Limited](https://partners.gitlab.com/English/directory/partner/1737250/fineshift-software-private-limited)
+  - [Datamato Technologies Private Limited](https://about.gitlab.com/partners/channel-partners/#/1345598)
+  - [FineShift Software Private Limited](https://about.gitlab.com/partners/channel-partners/#/1737250)
 
 - For cards issued outside of the United States: Ensure your card is enabled for international use, and verify if there are country-specific restrictions.
 - Contact your financial institution: Ask for the reason why your transaction was declined, and request that your card is enabled for this type of transaction.

@@ -5,6 +5,7 @@ import RunnersTab from './runners_tab.vue';
 import RunnerToggleAssignButton from './runner_toggle_assign_button.vue';
 import GroupRunnersToggle from './group_runners_toggle.vue';
 import GroupRunnersTabEmptyState from './group_runners_tab_empty_state.vue';
+import ProjectRunnersTabEmptyState from './project_runners_tab_empty_state.vue';
 
 export default {
   name: 'RunnersTabs',
@@ -13,6 +14,7 @@ export default {
     RunnersTab,
     GroupRunnersToggle,
     GroupRunnersTabEmptyState,
+    ProjectRunnersTabEmptyState,
     RunnerToggleAssignButton,
   },
   inject: {
@@ -64,11 +66,7 @@ export default {
       @error="onError"
     >
       <template #empty>
-        {{
-          s__(
-            'Runners|No project runners found, you can create one by selecting "New project runner".',
-          )
-        }}
+        <project-runners-tab-empty-state />
       </template>
       <template #other-runner-actions="{ runner }">
         <runner-toggle-assign-button

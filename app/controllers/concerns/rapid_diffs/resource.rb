@@ -53,7 +53,7 @@ module RapidDiffs
     private
 
     def rapid_diffs_enabled?
-      ::Feature.enabled?(:rapid_diffs, current_user, type: :wip)
+      ::Feature.enabled?(:rapid_diffs, current_user, type: :beta)
     end
 
     def diffs_resource(options = {})

@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, chunk } from 'lodash';
 import { createAlert } from '~/alert';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { __ } from '~/locale';
@@ -97,6 +97,34 @@ export function publishReview(noteData = {}) {
 
       throw e.response;
     });
+}
+
+export async function publishReviewInBatches(noteData = {}, batchSize = 20) {
+  this[types.REQUEST_PUBLISH_REVIEW]();
+
+  const chunks = chunk(this.drafts, batchSize);
+  const { note, reviewer_state, approve, approval_password, ...draftNotesData } = noteData;
+
+  const chunksLen = chunks.length - 1;
+  for (const [i, draftNoteChunk] of chunks.entries()) {
+    const ids = draftNoteChunk.map((d) => d.id);
+
+    // The publish calls need to happen in the specified order
+    // so that the order of the notes when created matches the order of the draft notes.
+    // eslint-disable-next-line no-await-in-loop
+    await service
+      .publish(
+        this.getNotesData.draftsPublishPath,
+        i === chunksLen ? { ids, ...noteData } : { ids, ...draftNotesData },
+      )
+      .then(() => {
+        this.drafts = this.drafts.filter((d) => !draftNoteChunk.find((draft) => draft.id === d.id));
+
+        if (i === chunksLen) {
+          this[types.RECEIVE_PUBLISH_REVIEW_SUCCESS]();
+        }
+      });
+  }
 }
 
 export function updateDraft({

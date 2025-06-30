@@ -9,6 +9,7 @@ import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/compo
 
 import GroupRunnersToggle from '~/ci/runner/project_runners_settings/components/group_runners_toggle.vue';
 import GroupRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/group_runners_tab_empty_state.vue';
+import ProjectRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/project_runners_tab_empty_state.vue';
 
 import { projectRunnersData } from 'jest/ci/runner/mock_data';
 
@@ -81,9 +82,7 @@ describe('RunnersTabs', () => {
         runnerType: PROJECT_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(0).text()).toBe(
-        'No project runners found, you can create one by selecting "New project runner".',
-      );
+      expect(findRunnerTabAt(0).findComponent(ProjectRunnersTabEmptyState).exists()).toBe(true);
     });
 
     it('renders unassign button', () => {

@@ -177,24 +177,39 @@ export const formattedChangeInPercent = (firstY, lastY, { nonFiniteResult = '-' 
 };
 
 /**
- * Checks whether a value is numerical in nature by converting it using parseInt
+ * Checks whether a value is a number or a string representation of a number.
  *
  * Example outcomes:
  *   - isNumeric(100) = true
  *   - isNumeric('100') = true
  *   - isNumeric(1.0) = true
  *   - isNumeric('1.0') = true
+ *   - isNumeric('  100   ') = true
  *   - isNumeric('abc100') = false
+ *   - isNumeric('abc 100') = false
+ *   - isNumeric('100abc') = false
+ *   - isNumeric('100 abc') = false
  *   - isNumeric('abc') = false
  *   - isNumeric(true) = false
  *   - isNumeric(undefined) = false
  *   - isNumeric(null) = false
+ *   - isNumeric('   ') = false
+ *   - isNumeric(Infinity) = false
+ *   - isNumeric(-Infinity) = false
+ *   - isNumeric(NaN) = false
  *
  * @param value
  * @returns {boolean}
  */
 export const isNumeric = (value) => {
-  return !Number.isNaN(parseInt(value, 10));
+  if (typeof value === 'number') {
+    return Number.isFinite(value);
+  }
+  if (typeof value === 'string') {
+    return value.trim().length === 0 ? false : Number.isFinite(Number(value));
+  }
+
+  return false;
 };
 
 const numberRegex = /^[0-9]+$/;

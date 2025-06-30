@@ -775,7 +775,7 @@ Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
 Settings.cron_jobs['authn_oauth_access_token_cleanup_worker'] ||= {}
-Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['cron'] ||= '0 0 1 * *'
+Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['cron'] ||= '0 9 2 * *'
 Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['job_class'] = 'Authn::OauthAccessTokenCleanupWorker'
 
 Gitlab.ee do

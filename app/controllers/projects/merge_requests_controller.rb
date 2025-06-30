@@ -38,6 +38,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
+    push_frontend_feature_flag(:mr_review_batch_submit, current_user)
   end
 
   around_action :allow_gitaly_ref_name_caching, only: [:index, :show, :diffs, :rapid_diffs, :discussions]
@@ -710,7 +711,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def rapid_diffs_page_enabled?
-    ::Feature.enabled?(:rapid_diffs, current_user, type: :wip) &&
+    ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
       ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
       params[:rapid_diffs] == 'true'
   end
