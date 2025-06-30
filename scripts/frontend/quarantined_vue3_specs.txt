@@ -35,7 +35,6 @@ ee/spec/frontend/oncall_schedule/schedule/components/preset_days/days_header_sub
 ee/spec/frontend/related_items_tree/components/related_items_tree_body_spec.js
 ee/spec/frontend/related_items_tree/components/tree_root_spec.js
 ee/spec/frontend/roadmap/components/roadmap_shell_spec.js
-ee/spec/frontend/roles_and_permissions/components/role_selector_spec.js
 ee/spec/frontend/sidebar/components/sidebar_dropdown_widget_spec.js
 ee/spec/frontend/status_checks/mount_spec.js
 ee/spec/frontend/usage_quotas/transfer/components/usage_by_month_spec.js

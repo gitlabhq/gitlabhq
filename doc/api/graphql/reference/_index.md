@@ -151,6 +151,21 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="queryadminmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
+### `Query.aiCatalogItems`
+
+List of AI Catalog items.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`AiCatalogItemConnection!`](#aicatalogitemconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.aiChatContextPresets`
 
 Get available GitLab Duo Chat context presets for the current user for a specific URL.
@@ -13646,6 +13661,30 @@ The edge type for [`AiAgent`](#aiagent).
 | <a id="aiagentedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aiagentedgenode"></a>`node` | [`AiAgent`](#aiagent) | The item at the end of the edge. |
 
+#### `AiCatalogItemConnection`
+
+The connection type for [`AiCatalogItem`](#aicatalogitem).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="aicatalogitemconnectionedges"></a>`edges` | [`[AiCatalogItemEdge]`](#aicatalogitemedge) | A list of edges. |
+| <a id="aicatalogitemconnectionnodes"></a>`nodes` | [`[AiCatalogItem]`](#aicatalogitem) | A list of nodes. |
+| <a id="aicatalogitemconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiCatalogItemEdge`
+
+The edge type for [`AiCatalogItem`](#aicatalogitem).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aicatalogitemedgenode"></a>`node` | [`AiCatalogItem`](#aicatalogitem) | The item at the end of the edge. |
+
 #### `AiConversationsThreadConnection`
 
 The connection type for [`AiConversationsThread`](#aiconversationsthread).
@@ -21566,6 +21605,20 @@ Version of an AI Agent.
 | <a id="aiagentversionid"></a>`id` | [`ID!`](#id) | ID of the agent version. |
 | <a id="aiagentversionmodel"></a>`model` | [`String!`](#string) | Model of the agent. |
 | <a id="aiagentversionprompt"></a>`prompt` | [`String!`](#string) | Prompt of the agent. |
+
+### `AiCatalogItem`
+
+An AI catalog item.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogitemdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogitemid"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogitemitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
+| <a id="aicatalogitemname"></a>`name` | [`String!`](#string) | Name of the item. |
 
 ### `AiConversationsThread`
 
@@ -43742,6 +43795,14 @@ The category of the additional context.
 | <a id="aiadditionalcontextcategoryrepository"></a>`REPOSITORY` | Repository content category. |
 | <a id="aiadditionalcontextcategorysnippet"></a>`SNIPPET` | Snippet content category. |
 | <a id="aiadditionalcontextcategoryterminal"></a>`TERMINAL` | Terminal content category. |
+
+### `AiCatalogItemType`
+
+Possible item types for AI items.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="aicatalogitemtypeagent"></a>`AGENT` | Agent. |
 
 ### `AiConversationsThreadsConversationType`
 
