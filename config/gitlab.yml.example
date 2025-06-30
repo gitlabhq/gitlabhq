@@ -130,7 +130,7 @@ production: &base
     ## Default theme ID
     ##   1 - Indigo
     ##   2 - Gray
-    ##   3 - Light Gray
+    ##   3 - Neutral
     ##   4 - Blue
     ##   5 - Green
     ##   6 - Light Indigo
@@ -138,7 +138,6 @@ production: &base
     ##   8 - Light Green
     ##   9 - Red
     ##   10 - Light Red
-    ##   11 - Dark Mode (alpha)
     # default_theme: 1 # default: 1
     ## Default color mode ID
     ##   1 - Light
