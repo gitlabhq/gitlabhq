@@ -1212,6 +1212,9 @@
     - <<: *if-schedule-maintenance
     - <<: *if-dot-com-gitlab-org-default-branch
       changes: *assets-compilation-patterns
+    # push assets for stable branches (canonical & security)
+    - <<: *if-sync-changes-on-stable-branches
+      changes: *assets-compilation-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
       changes:
         - ".gitlab/ci/caching.gitlab-ci.yml"
