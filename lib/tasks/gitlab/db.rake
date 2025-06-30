@@ -598,6 +598,20 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | DB | Check for PostgreSQL collation mismatches and list affected indexes'
+    task collation_checker: :environment do
+      Gitlab::Database::CollationChecker.run(logger: Logger.new($stdout))
+    end
+
+    namespace :collation_checker do
+      each_database(databases) do |database_name|
+        desc "GitLab | DB | Check for PostgreSQL collation mismatches on the #{database_name} database"
+        task database_name => :environment do
+          Gitlab::Database::CollationChecker.run(database_name: database_name, logger: Logger.new($stdout))
+        end
+      end
+    end
+
     namespace :dictionary do
       desc 'Generate database docs yaml'
       task generate: :environment do

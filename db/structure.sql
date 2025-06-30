@@ -19795,7 +19795,8 @@ CREATE TABLE packages_helm_file_metadata (
     channel text NOT NULL,
     metadata jsonb,
     project_id bigint,
-    CONSTRAINT check_06e8d100af CHECK ((char_length(channel) <= 255))
+    CONSTRAINT check_06e8d100af CHECK ((char_length(channel) <= 255)),
+    CONSTRAINT check_109d878e47 CHECK ((project_id IS NOT NULL))
 );
 
 CREATE TABLE packages_maven_metadata (
@@ -19858,6 +19859,7 @@ CREATE TABLE packages_nuget_dependency_link_metadata (
     dependency_link_id bigint NOT NULL,
     target_framework text NOT NULL,
     project_id bigint,
+    CONSTRAINT check_1c3e07cfff CHECK ((project_id IS NOT NULL)),
     CONSTRAINT packages_nuget_dependency_link_metadata_target_framework_constr CHECK ((char_length(target_framework) <= 255))
 );
 
@@ -29750,6 +29752,9 @@ ALTER TABLE ONLY instance_type_ci_runners
 
 ALTER TABLE ONLY project_type_ci_runners
     ADD CONSTRAINT check_619c71f3a2 UNIQUE (id);
+
+ALTER TABLE oauth_applications
+    ADD CONSTRAINT check_75750847b8 CHECK ((char_length(scopes) <= 2048)) NOT VALID;
 
 ALTER TABLE ONLY group_type_ci_runners
     ADD CONSTRAINT check_81b90172a6 UNIQUE (id);

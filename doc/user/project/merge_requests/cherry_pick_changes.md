@@ -111,7 +111,7 @@ when you view that file in your project's Git repository:
 
 When you cherry-pick a merge commit in the GitLab UI or API, GitLab adds a [system note](../system_notes.md)
 to the related merge request thread. The format is {{< icon name="cherry-pick-commit" >}}
-`[USER]` **picked the changes into the branch** `[BRANCHNAME]` with commit** `[SHA]` `[DATE]`:
+`[USER]` **picked the changes into the branch** `[BRANCHNAME]` with commit `[SHA]` `[DATE]`:
 
 ![Cherry-pick tracking in merge request timeline](img/cherry_pick_mr_timeline_v15_4.png)
 

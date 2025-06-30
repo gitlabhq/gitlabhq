@@ -72,7 +72,7 @@
     - c.with_description do
       = s_('Preferences|Customize the behavior of the system layout and default views.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'behavior'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .form-group
         = f.label :keyboard_shortcuts_enabled, class: 'label-bold' do
@@ -147,11 +147,11 @@
     - c.with_description do
       = _('Customize language and region related settings.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'localization'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .js-listbox-input{ data: { label: _('Language'), description: s_('Preferences|This feature is experimental and translations are not yet complete.'), name: 'user[preferred_language]', items: language_choices.to_json, value: current_user.preferred_language, block: true.to_s, toggle_class: 'gl-form-input-xl' } }
       %p.-gl-mt-5
-        = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap', target: '_blank', rel: 'noopener noreferrer' do
+        = link_to help_page_url('development/i18n/translation.md'), class: 'text-nowrap gl-link-inline', target: '_blank', rel: 'noopener noreferrer' do
           = _("Help translate GitLab into your language")
           %span{ aria: { label: _('Open new window') } }
             = sprite_icon('external-link')
@@ -166,7 +166,7 @@
     - c.with_description do
       = s_('Preferences|Configure how dates and times display for you.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/preferences.md', anchor: 'show-exact-times-instead-of-relative-times'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .form-group
         = f.gitlab_ui_checkbox_component :time_display_relative,
@@ -185,7 +185,7 @@
     - c.with_description do
       = s_('Preferences|Turns on or off the ability to follow or be followed by other users.')
       = succeed '.' do
-        = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer'
+        = link_to _('Learn more'), help_page_path('user/profile/_index.md', anchor: 'follow-users'), target: '_blank', rel: 'noopener noreferrer', class: 'gl-link-inline'
     - c.with_body do
       .form-group
         = f.gitlab_ui_checkbox_component :enabled_following,

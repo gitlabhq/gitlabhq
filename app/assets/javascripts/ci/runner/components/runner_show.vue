@@ -13,7 +13,6 @@ import { saveAlertToLocalStorage } from '../local_storage_alert/save_alert_to_lo
 import RunnerHeader from './runner_header.vue';
 import RunnerHeaderActions from './runner_header_actions.vue';
 import RunnerDetails from './runner_details.vue';
-import RunnerJobs from './runner_jobs.vue';
 
 export default {
   name: 'RunnerShow',
@@ -21,7 +20,6 @@ export default {
     RunnerHeader,
     RunnerHeaderActions,
     RunnerDetails,
-    RunnerJobs,
   },
   props: {
     runnerId: {
@@ -83,7 +81,6 @@ export default {
       </template>
     </runner-header>
 
-    <runner-details :runner="runner" />
-    <runner-jobs :runner-id="runnerId" :show-access-help="showAccessHelp" />
+    <runner-details :runner-id="runnerId" :runner="runner" :show-access-help="showAccessHelp" />
   </div>
 </template>

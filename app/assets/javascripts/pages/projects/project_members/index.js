@@ -7,13 +7,11 @@ import initImportProjectMembersTrigger from '~/invite_members/init_import_projec
 import initImportProjectMembersModal from '~/invite_members/init_import_project_members_modal';
 import initInviteGroupTrigger from '~/invite_members/init_invite_group_trigger';
 import initInviteGroupsModal from '~/invite_members/init_invite_groups_modal';
-import { initPlannerRoleBanner } from '~/planner_role_banner';
 import { s__ } from '~/locale';
 import { initMembersApp } from '~/members';
 import { groupLinkRequestFormatter } from '~/members/utils';
 import { projectMemberRequestFormatter } from '~/projects/members/utils';
 
-initPlannerRoleBanner();
 initImportProjectMembersModal();
 initInviteGroupsModal();
 initInviteGroupTrigger();

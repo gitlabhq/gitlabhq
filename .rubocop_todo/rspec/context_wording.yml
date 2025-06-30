@@ -2708,7 +2708,6 @@ RSpec/ContextWording:
     - 'spec/tasks/gitlab/dependency_proxy/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/gitaly_rake_spec.rb'
     - 'spec/tasks/gitlab/lfs/migrate_rake_spec.rb'
-    - 'spec/tasks/gitlab/packages/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/terraform/migrate_rake_spec.rb'
     - 'spec/tasks/gitlab/workhorse_rake_spec.rb'
     - 'spec/tooling/lib/tooling/parallel_rspec_runner_spec.rb'

@@ -575,6 +575,72 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  describe 'collation_checker' do
+    context 'with a single database' do
+      before do
+        skip_if_multiple_databases_are_setup
+      end
+
+      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
+        logger_double = instance_double(Logger, level: nil, info: nil, warn: nil, error: nil)
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+
+        expect(Gitlab::Database::CollationChecker).to receive(:run)
+          .with(logger: logger_double)
+
+        run_rake_task('gitlab:db:collation_checker')
+      end
+    end
+
+    context 'with multiple databases' do
+      let(:logger_double) { instance_double(Logger, level: nil, info: nil, warn: nil, error: nil) }
+
+      before do
+        skip_if_multiple_databases_not_setup(:ci)
+
+        allow(Logger).to receive(:new).with($stdout).and_return(logger_double)
+      end
+
+      it 'calls Gitlab::Database::CollationChecker with correct arguments' do
+        expect(Gitlab::Database::CollationChecker).to receive(:run)
+          .with(logger: logger_double)
+
+        run_rake_task('gitlab:db:collation_checker')
+      end
+
+      context 'when the single database task is used' do
+        before do
+          skip_if_shared_database(:ci)
+        end
+
+        it 'calls Gitlab::Database::CollationChecker with the main database' do
+          expect(Gitlab::Database::CollationChecker).to receive(:run)
+            .with(database_name: 'main', logger: logger_double)
+
+          run_rake_task('gitlab:db:collation_checker:main')
+        end
+
+        it 'calls Gitlab::Database::CollationChecker with the ci database' do
+          expect(Gitlab::Database::CollationChecker).to receive(:run)
+            .with(database_name: 'ci', logger: logger_double)
+
+          run_rake_task('gitlab:db:collation_checker:ci')
+        end
+      end
+
+      context 'with geo configured' do
+        before do
+          skip_unless_geo_configured
+        end
+
+        it 'does not create a task for the geo database' do
+          expect { run_rake_task('gitlab:db:collation_checker:geo') }
+            .to raise_error(/Don't know how to build task 'gitlab:db:collation_checker:geo'/)
+        end
+      end
+    end
+  end
+
   describe 'dictionary generate' do
     let(:db_config) { instance_double(ActiveRecord::DatabaseConfigurations::HashConfig, name: 'fake_db') }
 

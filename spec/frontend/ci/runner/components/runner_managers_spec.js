@@ -1,4 +1,4 @@
-import { GlTableLite } from '@gitlab/ui';
+import { GlTableLite, GlEmptyState } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
@@ -20,6 +20,7 @@ describe('RunnerJobs', () => {
   const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findCrudExpandToggle = () => wrapper.findByTestId('crud-collapse-toggle');
   const findRunnerManagersTable = () => wrapper.findComponent(RunnerManagersTable);
+  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
 
   const createComponent = ({ props, mountFn = shallowMountExtended } = {}) => {
     wrapper = mountFn(RunnerManagers, {
@@ -34,7 +35,7 @@ describe('RunnerJobs', () => {
     });
   };
 
-  it('hides if no runners', () => {
+  it('shows an empty state if no runners', () => {
     createComponent({
       props: {
         runner: {
@@ -46,7 +47,12 @@ describe('RunnerJobs', () => {
       },
     });
 
-    expect(findCrudComponent().exists()).toBe(false);
+    expect(findEmptyState().props('title')).toBe('No runners managers found');
+    expect(findEmptyState().text()).toBe(
+      'Runner managers registered under this configuration are listed here. Register and start at least one runner manager.',
+    );
+
+    expect(findRunnerManagersTable().exists()).toBe(false);
   });
 
   describe('Runners count', () => {

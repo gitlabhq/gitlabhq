@@ -4,7 +4,7 @@ class CreateAiCatalogItems < Gitlab::Database::Migration[2.3]
   milestone '18.2'
 
   def change
-    create_table :ai_catalog_items do |t| # rubocop:disable Migration/EnsureFactoryForTable -- False Positive, does exist in ee/spec/factories/ai/catalog/item.rb
+    create_table :ai_catalog_items do |t|
       t.bigint :organization_id, index: true, null: false
       t.bigint :project_id, index: true
       t.timestamps_with_timezone null: false

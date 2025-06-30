@@ -92,7 +92,7 @@ These variables tell the scanner how to authenticate with your application.
 | `DAST_AUTH_PASSWORD` | String | `P@55w0rd!` | The password to authenticate to in the website. |
 | `DAST_AUTH_PASSWORD_FIELD` | [selector](authentication.md#finding-an-elements-selector) | `name:password` | A selector describing the element used to enter the password on the login form. |
 | `DAST_AUTH_SUBMIT_FIELD` | [selector](authentication.md#finding-an-elements-selector) | `css:input[type=submit]` | A selector describing the element clicked on to submit the login form for a single-page login form, or the password form for a multi-page login form. |
-| `DAST_AUTH_SUCCESS_IF_AT_URL` | URL | `https://www.site.com/welcome` | A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted. |
+| `DAST_AUTH_SUCCESS_IF_AT_URL` | URL | `https://www.site.com/welcome*` | A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted. Wildcard `*` can be used to match a dynamic URL. |
 | `DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND` | [selector](authentication.md#finding-an-elements-selector) | `css:.user-avatar` | A selector describing an element whose presence is used to determine if authentication has succeeded after the login form is submitted. |
 | `DAST_AUTH_SUCCESS_IF_NO_LOGIN_FORM` | boolean | `true` | Verifies successful authentication by checking for the absence of a login form after the login form has been submitted. This success check is enabled by default. |
 | `DAST_AUTH_TYPE` | string | `basic-digest` | The authentication type to use. |

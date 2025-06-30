@@ -17,6 +17,7 @@ import RunnerGroups from './runner_groups.vue';
 import RunnerProjects from './runner_projects.vue';
 import RunnerTags from './runner_tags.vue';
 import RunnerManagers from './runner_managers.vue';
+import RunnerJobs from './runner_jobs.vue';
 
 export default {
   components: {
@@ -30,13 +31,23 @@ export default {
     RunnerProjects,
     RunnerTags,
     RunnerManagers,
+    RunnerJobs,
     TimeAgo,
   },
   props: {
+    runnerId: {
+      type: String,
+      required: true,
+    },
     runner: {
       type: Object,
       required: false,
       default: null,
+    },
+    showAccessHelp: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -87,8 +98,10 @@ export default {
 
 <template>
   <div v-if="runner">
-    <div class="gl-pt-4">
-      <dl class="gl-mb-0 gl-grid gl-grid-cols-[auto_1fr]">
+    <div class="md:gl-columns-2">
+      <dl
+        class="gl-mb-0 gl-flex gl-flex-col gl-gap-x-5 gl-gap-y-1 md:gl-grid md:gl-grid-cols-[auto_1fr] md:gl-gap-y-3"
+      >
         <runner-detail :label="s__('Runners|Description')" :value="runner.description" />
         <runner-detail
           :label="s__('Runners|Last contact')"
@@ -143,10 +156,11 @@ export default {
       </dl>
     </div>
 
-    <div class="gl-mt-3 gl-flex gl-flex-col gl-gap-5">
-      <runner-managers :runner="runner" />
+    <div class="gl-mt-6 gl-flex gl-flex-col gl-gap-5">
       <runner-groups v-if="isGroupRunner" :runner="runner" />
       <runner-projects v-if="isProjectRunner" :runner="runner" />
+      <runner-managers :runner="runner" />
+      <runner-jobs :runner-id="runnerId" :show-access-help="showAccessHelp" />
     </div>
   </div>
 </template>

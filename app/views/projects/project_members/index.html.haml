@@ -4,7 +4,6 @@
 - content_for :reload_on_member_invite_success, true
 - content_for :hide_invite_members_button, true
 
-= render_if_exists 'shared/promotions/promote_planner_role'
 - if show_the_header
   = render ::Layouts::PageHeadingComponent.new(_("Project members")) do |c|
     - c.with_description do

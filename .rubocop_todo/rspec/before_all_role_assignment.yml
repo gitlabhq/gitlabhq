@@ -146,7 +146,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/finders/incident_management/oncall_schedules_finder_spec.rb'
     - 'ee/spec/finders/iterations/cadences_finder_spec.rb'
     - 'ee/spec/finders/iterations_finder_spec.rb'
-    - 'ee/spec/finders/merge_requests_finder_spec.rb'
     - 'ee/spec/finders/snippets_finder_spec.rb'
     - 'ee/spec/frontend/fixtures/analytics/charts.rb'
     - 'ee/spec/frontend/fixtures/analytics/contributions_spec.rb'

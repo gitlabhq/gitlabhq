@@ -104,7 +104,6 @@ spec/frontend/projects/settings/components/branch_rule_modal_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/repository/components/table/index_spec.js
 spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js

@@ -46,7 +46,7 @@ describe('TooltipOnTruncate directive', () => {
     });
 
     it('unbinds when destroyed', () => {
-      wrapper.vm.$destroy();
+      wrapper.destroy();
 
       expect(getBinding(wrapper.element, 'gl-tooltip')).toBeUndefined();
       expect(getBinding(wrapper.element, 'gl-resize-observer')).toBeUndefined();

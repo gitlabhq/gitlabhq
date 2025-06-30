@@ -68,9 +68,9 @@ Your `.gitlab-ci.yml` should look similar to this:
 
 ```yaml
 build:
-  image: $CI_REGISTRY/group/project/docker:20.10.16
+  image: $CI_REGISTRY/group/project/docker:24.0.5
   services:
-    - name: $CI_REGISTRY/group/project/docker:20.10.16-dind
+    - name: $CI_REGISTRY/group/project/docker:24.0.5-dind
       alias: docker
   stage: build
   script:
@@ -97,9 +97,9 @@ Your `.gitlab-ci.yml` should look similar to this:
 
 ```yaml
 build:
-  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:20.10.16
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:24.0.5
   services:
-    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:18.09.7-dind
+    - name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/docker:24.0.5-dind
       alias: docker
   stage: build
   script:
@@ -120,10 +120,10 @@ If you're using Docker-in-Docker on your runners, your `.gitlab-ci.yml` file sho
 
 ```yaml
 build:
-  image: docker:20.10.16
+  image: docker:24.0.5
   stage: build
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
   script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
     - docker build -t $CI_REGISTRY/group/project/image:latest .
@@ -134,10 +134,10 @@ You can use [CI/CD variables](../../../ci/variables/_index.md) in your `.gitlab-
 
 ```yaml
 build:
-  image: docker:20.10.16
+  image: docker:24.0.5
   stage: build
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
   script:
@@ -159,9 +159,9 @@ registry and used by subsequent stages, downloading the container image when nee
 
 ```yaml
 default:
-  image: docker:20.10.16
+  image: docker:24.0.5
   services:
-    - docker:20.10.16-dind
+    - docker:24.0.5-dind
   before_script:
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
 

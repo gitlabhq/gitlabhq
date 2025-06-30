@@ -860,6 +860,35 @@ policy::container-security:
     - echo "CS_IMAGE:$CS_IMAGE"
 ```
 
+### Customize enforced jobs using `.gitlab-ci.yml` and artifacts
+
+Because policy pipelines run in isolation, pipeline execution policies cannot read variables from `.gitlab-ci.yml` directly.
+If you want to use the variables in `.gitlab-ci.yml` instead of defining them in the project's CI/CD configuration,
+you can use artifacts to pass variables from the `.gitlab-ci.yml` configuration to the pipeline execution policy's pipeline.
+
+```yaml
+# .gitlab-ci.yml
+
+build-job:
+  stage: build
+  script:
+    - echo "BUILD_VARIABLE=value_from_build_job" >> build.env
+  artifacts:
+    reports:
+      dotenv: build.env
+```
+
+```yaml
+stages:
+- build
+- test
+
+test-job:
+  stage: test
+  script:
+    - echo "$BUILD_VARIABLE" # Prints "value_from_build_job"
+```
+
 ### Customize security scanner's behavior with `before_script` in project configurations
 
 To customize the behavior of a security job enforced by a policy in the project's `.gitlab-ci.yml`, you can override `before_script`.
@@ -901,6 +930,55 @@ secret_detection:
 ```
 
 By using `override_project_ci` and including the project's configuration, it allows for YAML configurations to be merged.
+
+### Configure resource-specific variable control
+
+You can allow teams to set global variables that can override pipeline execution policy variables, while still permitting job-specific overrides. This allows teams to set appropriate defaults for security scans, but use appropriate resources for other jobs.
+
+Include in your `resource-optimized-scans.yml`:
+
+```yaml
+variables:
+  # Default resource settings for all jobs
+  KUBERNETES_MEMORY_REQUEST: 4Gi
+  KUBERNETES_MEMORY_LIMIT: 4Gi
+  # Default values that teams can override via project variables
+  SAST_KUBERNETES_MEMORY_REQUEST: 4Gi
+
+sast:
+  variables:
+    SAST_EXCLUDED_ANALYZERS: 'spotbugs'
+    KUBERNETES_MEMORY_REQUEST: $SAST_KUBERNETES_MEMORY_REQUEST
+    KUBERNETES_MEMORY_LIMIT: $SAST_KUBERNETES_MEMORY_REQUEST
+```
+
+Include in your `policy.yml`:
+
+```yaml
+pipeline_execution_policy:
+- name: Resource-Optimized Security Policy
+  description: Enforces security scans with efficient resource management
+  enabled: true
+  pipeline_config_strategy: inject_ci
+  content:
+    include:
+    - project: security/policy-templates
+      file: resource-optimized-scans.yml
+      ref: main
+
+  variables_override:
+    allowed: false
+    exceptions:
+      # Allow scan-specific resource overrides
+      - SAST_KUBERNETES_MEMORY_REQUEST
+      - SECRET_DETECTION_KUBERNETES_MEMORY_REQUEST
+      - CS_KUBERNETES_MEMORY_REQUEST
+      # Allow necessary scan customization
+      - CS_IMAGE
+      - SAST_EXCLUDED_PATHS
+```
+
+This approach allows teams to set scan-specific resource variables (like `SAST_KUBERNETES_MEMORY_REQUEST`) using variable overrides without affecting all jobs in their pipeline, which provides better resource management for large projects. This example also shows the use of other common scan customization options that you can extend to developers. Make sure you document the available variables so your development teams can leverage them.
 
 ### Use group or project variables in a pipeline execution policy
 
@@ -992,4 +1070,25 @@ include:
           paths:
             - 'Dockerfile'
           project: '$CI_PROJECT_PATH'
+```
+
+To use this approach, the group or project must use the `override_project_ci` strategy.
+
+### Enforce a container scanning `component` using a pipeline execution policy
+
+You can use security scan components to improve the handling and enforcement of versioning.
+
+```yaml
+include:
+  - component: gitlab.com/components/container-scanning/container-scanning@main
+    inputs:
+      cs_image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+
+container_scanning: # override component with additional configuration
+  variables:
+    CS_REGISTRY_USER: $CI_REGISTRY_USER
+    CS_REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+    SECURE_LOG_LEVEL: debug # add for verbose debugging of the container scanner
+  before_script:
+  - echo $CS_IMAGE # optionally add a before_script for additional debugging
 ```

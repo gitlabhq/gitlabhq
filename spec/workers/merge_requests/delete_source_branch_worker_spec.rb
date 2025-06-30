@@ -22,6 +22,7 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker, feature_category: :sourc
 
     context 'with a non-existing merge request' do
       it 'does nothing' do
+        expect(::MergeRequests::RetargetChainService).not_to receive(:new)
         expect(::Projects::DeleteBranchWorker).not_to receive(:new)
 
         worker.perform(non_existing_record_id, sha, user.id)
@@ -30,6 +31,7 @@ RSpec.describe MergeRequests::DeleteSourceBranchWorker, feature_category: :sourc
 
     context 'with a non-existing user' do
       it 'does nothing' do
+        expect(::MergeRequests::RetargetChainService).not_to receive(:new)
         expect(::Projects::DeleteBranchWorker).not_to receive(:new)
 
         worker.perform(merge_request.id, sha, non_existing_record_id)

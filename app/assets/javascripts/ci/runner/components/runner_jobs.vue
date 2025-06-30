@@ -87,7 +87,6 @@ export default {
     icon="pipeline"
     :count="jobs.count"
     :is-loading="loading"
-    class="gl-mt-5"
   >
     <template v-if="showAccessHelp" #count>
       <help-popover>

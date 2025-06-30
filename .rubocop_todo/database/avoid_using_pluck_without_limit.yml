@@ -83,7 +83,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/services/merge_requests/pushed_branches_service.rb'
     - 'app/services/projects/unlink_fork_service.rb'
     - 'ee/app/finders/ee/issuables/label_filter.rb'
-    - 'ee/app/finders/ee/merge_requests_finder.rb'
     - 'ee/app/finders/groups_with_templates_finder.rb'
     - 'ee/app/finders/namespaces/billed_users_finder.rb'
     - 'ee/app/finders/namespaces/free_user_cap/users_without_added_members_finder.rb'

@@ -100,6 +100,11 @@ function factory({
       commits,
     },
     apolloProvider: createMockApolloProvider(ref),
+    data() {
+      return {
+        ref,
+      };
+    },
   });
 }
 

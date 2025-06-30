@@ -15,7 +15,6 @@ import { captureException } from '~/ci/runner/sentry_utils';
 import RunnerHeader from '~/ci/runner/components/runner_header.vue';
 import RunnerHeaderActions from '~/ci/runner/components/runner_header_actions.vue';
 import RunnerDetails from '~/ci/runner/components/runner_details.vue';
-import RunnerJobs from '~/ci/runner/components/runner_jobs.vue';
 
 import RunnerShow from '~/ci/runner/components/runner_show.vue';
 
@@ -41,7 +40,6 @@ describe('RunnerShow', () => {
   const findRunnerHeader = () => wrapper.findComponent(RunnerHeader);
   const findRunnerHeaderActions = () => wrapper.findComponent(RunnerHeaderActions);
   const findRunnerDetails = () => wrapper.findComponent(RunnerDetails);
-  const findRunnerJobs = () => wrapper.findComponent(RunnerJobs);
 
   const createComponent = ({ props = {} } = {}) => {
     mockApollo = createMockApollo([[runnerQuery, runnerQueryHandler]]);
@@ -133,11 +131,5 @@ describe('RunnerShow', () => {
     await createComponent();
 
     expect(findRunnerDetails().props('runner')).toEqual(mockRunner);
-  });
-
-  it('shows runner jobs', () => {
-    createComponent();
-
-    expect(findRunnerJobs().props('runnerId')).toBe(mockRunnerId);
   });
 });

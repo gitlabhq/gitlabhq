@@ -20082,7 +20082,7 @@ msgstr ""
 msgid "DastProfiles|/graphql"
 msgstr ""
 
-msgid "DastProfiles|A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted."
+msgid "DastProfiles|A URL that is compared to the URL in the browser to determine if authentication has succeeded after the login form is submitted. Wildcard `*` can be used to match a dynamic URL."
 msgstr ""
 
 msgid "DastProfiles|A comma-separated list of actions to take after login but before login verification. Supports `click` and `select` actions. See [Taking additional actions after submitting the login form](%{documentation_link})."
@@ -38104,9 +38104,6 @@ msgstr ""
 msgid "MemberRole|Direct users assigned"
 msgstr ""
 
-msgid "MemberRole|Dismiss Planner role promotion"
-msgstr ""
-
 msgid "MemberRole|Edit admin role"
 msgstr ""
 
@@ -38158,9 +38155,6 @@ msgstr ""
 msgid "MemberRole|Learn more about %{linkStart}available custom permissions%{linkEnd}."
 msgstr ""
 
-msgid "MemberRole|Learn more about roles and permissions"
-msgstr ""
-
 msgid "MemberRole|Manage roles"
 msgstr ""
 
@@ -38171,9 +38165,6 @@ msgid "MemberRole|Member role"
 msgstr ""
 
 msgid "MemberRole|Name"
-msgstr ""
-
-msgid "MemberRole|New Planner role"
 msgstr ""
 
 msgid "MemberRole|New role"
@@ -38279,12 +38270,6 @@ msgid "MemberRole|The None role is assigned to the invited group users of a shar
 msgstr ""
 
 msgid "MemberRole|The Owner role is typically assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners."
-msgstr ""
-
-msgid "MemberRole|The Planner role is a hybrid of the existing Guest and Reporter roles but designed for users who need access to planning workflows."
-msgstr ""
-
-msgid "MemberRole|The Planner role is a hybrid of the existing Guest and Reporter roles but designed for users who need access to planning workflows. For more information about the new role, see %{blogLinkStart}our blog%{blogLinkEnd} or %{learnMoreStart}learn more about roles and permissions%{learnMoreEnd}."
 msgstr ""
 
 msgid "MemberRole|The Planner role is suitable for team members who need to manage projects and track work items but do not need to contribute code, such as project managers and scrum masters."
@@ -53238,6 +53223,9 @@ msgstr ""
 msgid "Runners|No project runners found"
 msgstr ""
 
+msgid "Runners|No runners managers found"
+msgstr ""
+
 msgid "Runners|No spot. Default choice for Windows Shell executor."
 msgstr ""
 
@@ -53419,6 +53407,9 @@ msgstr ""
 msgid "Runners|Runner"
 msgstr ""
 
+msgid "Runners|Runner %{name}"
+msgstr ""
+
 msgid "Runners|Runner %{name} was assigned to this project."
 msgstr ""
 
@@ -53483,6 +53474,9 @@ msgid "Runners|Runner is stale; it has never contacted this instance"
 msgstr ""
 
 msgid "Runners|Runner is stale; last contact was %{runner_contact} ago"
+msgstr ""
+
+msgid "Runners|Runner managers registered under this configuration are listed here. Register and start at least one runner manager."
 msgstr ""
 
 msgid "Runners|Runner performance insights"

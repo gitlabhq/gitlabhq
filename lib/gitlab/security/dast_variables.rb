@@ -150,11 +150,11 @@ module Gitlab
               additional: true,
               auth: true,
               type: "URL",
-              example: "https://www.site.com/welcome",
+              example: "https://www.site.com/welcome*",
               name: s_("DastProfiles|Success URL"),
               description: s_(
                 "DastProfiles|A URL that is compared to the URL in the browser to determine if authentication " \
-                  "has succeeded after the login form is submitted."
+                  "has succeeded after the login form is submitted. Wildcard `*` can be used to match a dynamic URL."
               )
             },
             DAST_AUTH_SUCCESS_IF_ELEMENT_FOUND: {

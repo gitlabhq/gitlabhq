@@ -236,16 +236,9 @@ To show the sidebar again:
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/4231) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_items_beta`. Disabled by default. This feature is in [beta](../../../policy/development_stages_support.md#beta).
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/551805) in GitLab 18.2.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 An epic can be assigned to one or more users.
 
@@ -254,10 +247,6 @@ The idea is that the assignees are people responsible for the epic.
 
 If a user is not a member of a group, an epic can only be assigned to them if another group member
 assigns them.
-
-This feature is in [beta](../../../policy/development_stages_support.md).
-If you find a bug, use the
-[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
 
 ### Change assignee on an epic
 

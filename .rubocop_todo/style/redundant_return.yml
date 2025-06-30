@@ -10,7 +10,6 @@ Style/RedundantReturn:
     - 'ee/app/controllers/groups/analytics/cycle_analytics/stages_controller.rb'
     - 'ee/app/controllers/groups/analytics/cycle_analytics/summary_controller.rb'
     - 'ee/app/controllers/groups/analytics/tasks_by_type_controller.rb'
-    - 'ee/app/controllers/groups/epics_controller.rb'
     - 'ee/app/controllers/projects/integrations/jira/issues_controller.rb'
     - 'ee/app/controllers/projects/integrations/zentao/issues_controller.rb'
     - 'ee/app/controllers/projects/on_demand_scans_controller.rb'
