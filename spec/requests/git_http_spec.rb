@@ -166,6 +166,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         it "redirects to the .git suffix version" do
           expect(response).to redirect_to("/#{repository_path}.git/info/refs")
+          expect(response.body).to match(/You.are.being.+redirected/)
         end
       end
 
@@ -178,6 +179,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         it "redirects to the .git suffix version" do
           expect(response).to redirect_to("/#{repository_path}.git/info/refs?service=#{params[:service]}")
+          expect(response.body).to match(/You.are.being.+redirected/)
         end
       end
 
@@ -190,6 +192,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         it "redirects to the .git suffix version" do
           expect(response).to redirect_to("/#{repository_path}.git/info/refs?service=#{params[:service]}")
+          expect(response.body).to match(/You.are.being.+redirected/)
         end
       end
 
@@ -202,6 +205,7 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
 
         it "redirects to the sign-in page" do
           expect(response).to redirect_to(new_user_session_path)
+          expect(response.body).to match(/You.are.being.+redirected/)
         end
       end
     end
