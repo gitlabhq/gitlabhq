@@ -108,9 +108,8 @@ export default {
       :size="size"
       :alt="imgAlt"
       data-testid="user-avatar-image"
-    />
-
-    <gl-tooltip
+    /><!-- this comment eliminates a `whitespace` node, and thus a layout bug: https://gitlab.com/gitlab-org/gitlab/-/issues/507713
+    --><gl-tooltip
       v-if="tooltipText || $scopedSlots.default"
       :target="() => $refs.userAvatar"
       :placement="tooltipPlacement"
