@@ -628,6 +628,12 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
+msgid "%{author} authored %{authoredDate}"
+msgstr ""
+
+msgid "%{author} authored %{authoredDate} and %{committer} committed %{committedDate}"
+msgstr ""
+
 msgid "%{author} commented %{time}"
 msgstr ""
 

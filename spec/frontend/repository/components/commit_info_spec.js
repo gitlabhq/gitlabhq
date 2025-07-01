@@ -1,8 +1,10 @@
 import { nextTick } from 'vue';
-import { GlButton } from '@gitlab/ui';
+import { GlButton, GlSprintf } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CommitInfo from '~/repository/components/commit_info.vue';
+import TimeagoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 let wrapper;
 const commit = {
@@ -18,13 +20,15 @@ const findTextExpander = () => wrapper.findComponent(GlButton);
 const findUserLink = () => wrapper.findByText(commit.author.name);
 const findCommitterWrapper = () => wrapper.findByTestId('committer');
 const findUserAvatarLink = () => wrapper.findComponent(UserAvatarLink);
-const findAuthorName = () => wrapper.findByText(`${commit.authorName} authored`);
+const findUserAvatarImages = () => wrapper.findAllComponents(UserAvatarImage);
+const findTimeagoTooltips = () => wrapper.findAllComponents(TimeagoTooltip);
 const findCommitRowDescription = () => wrapper.find('pre');
 const findTitleHtml = () => wrapper.findByText(commit.titleHtml);
 
 const createComponent = async ({ commitMock = {}, prevBlameLink, span = 3 } = {}) => {
   wrapper = shallowMountExtended(CommitInfo, {
     propsData: { commit: { ...commit, ...commitMock }, prevBlameLink, span },
+    stubs: { GlSprintf },
   });
 
   await nextTick();
@@ -44,7 +48,6 @@ describe('Repository last commit component', () => {
 
     expect(findUserLink().exists()).toBe(false);
     expect(findUserAvatarLink().exists()).toBe(false);
-    expect(findAuthorName().exists()).toBe(true);
   });
 
   it('truncates author name when commit spans less than 3 lines', () => {
@@ -119,5 +122,43 @@ describe('Repository last commit component', () => {
     createComponent({ commitMock: { message: '' } });
 
     expect(findTitleHtml().classes()).toContain('gl-italic');
+  });
+
+  describe('when committer is different from author', () => {
+    const commitMockWithDifferentCommitter = {
+      author: { name: 'John Doe', email: 'john@example.com' },
+      committerName: 'Jane Smith',
+      committerEmail: 'jane@example.com',
+      committerAvatarUrl: 'https://committer-avatar.com/avatar.jpg',
+      committedDate: '2019-02-01',
+    };
+
+    beforeEach(() => createComponent({ commitMock: commitMockWithDifferentCommitter }));
+
+    it('displays committer information when committer differs from author', () => {
+      const text = findCommitterWrapper().text();
+
+      expect(text).toContain('John Doe');
+      expect(text).toContain('authored');
+      expect(text).toContain('and');
+      expect(text).toContain('Jane Smith');
+      expect(text).toContain('committed');
+    });
+
+    it('displays committer avatar when committer avatar URL is provided', () => {
+      expect(findUserAvatarImages().at(0).props()).toMatchObject({
+        size: 16,
+        imgSrc: commitMockWithDifferentCommitter.committerAvatarUrl,
+      });
+    });
+
+    it('displays both authored and committed dates', () => {
+      const timeagoTooltips = findTimeagoTooltips();
+
+      expect(timeagoTooltips.at(0).props('time')).toBe(commit.authoredDate);
+      expect(timeagoTooltips.at(1).props('time')).toBe(
+        commitMockWithDifferentCommitter.committedDate,
+      );
+    });
   });
 });
