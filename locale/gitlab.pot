@@ -57019,10 +57019,16 @@ msgstr ""
 msgid "SecurityOrchestration|all namespaces"
 msgstr ""
 
+msgid "SecurityOrchestration|all projects in the groups"
+msgstr ""
+
 msgid "SecurityOrchestration|all projects in the linked groups"
 msgstr ""
 
 msgid "SecurityOrchestration|all projects in this group"
+msgstr ""
+
+msgid "SecurityOrchestration|all projects in this instance"
 msgstr ""
 
 msgid "SecurityOrchestration|allowlist"

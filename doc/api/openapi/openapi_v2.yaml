@@ -41979,6 +41979,13 @@ paths:
         default: false
         required: false
       - in: query
+        name: full_path_search
+        description: If `true`, the `search` parameter is matched against the full
+          path of the namespaces
+        type: boolean
+        default: false
+        required: false
+      - in: query
         name: page
         description: Current page number
         type: integer

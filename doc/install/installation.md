@@ -203,7 +203,7 @@ can install it with:
 sudo apt-get install -y postfix
 ```
 
-Then select 'Internet Site' and press <kbd>Enter</kbd> to confirm the hostname.
+Then select `Internet Site` and press <kbd>Enter</kbd> to confirm the hostname.
 
 ### ExifTool
 
@@ -1226,7 +1226,7 @@ sudo -u git -H gem install google-protobuf --version 3.2.0 --platform ruby
 ```
 
 Finally, you can test whether `google-protobuf` loads correctly. The
-following should print 'OK'.
+following should print `OK`.
 
 ```shell
 sudo -u git -H bundle exec ruby -rgoogle/protobuf -e 'puts :OK'

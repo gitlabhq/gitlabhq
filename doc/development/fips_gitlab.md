@@ -121,7 +121,8 @@ listed here that also do not work properly in FIPS mode:
 
 Additionally, these package repositories are disabled in FIPS mode:
 
-- [Conan package repository](../user/packages/conan_repository/_index.md).
+- [Conan 1 package repository](../user/packages/conan_1_repository/_index.md).
+- [Conan 2 package repository](../user/packages/conan_2_repository/_index.md).
 - [Debian package repository](../user/packages/debian_repository/_index.md).
 
 ### Development guidelines

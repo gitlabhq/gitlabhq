@@ -33,6 +33,7 @@ class User < ApplicationRecord
   include IgnorableColumns
   include UseSqlFunctionForPrimaryKeyLookups
   include Todoable
+  include Gitlab::InternalEventsTracking
 
   ignore_column :last_access_from_pipl_country_at, remove_after: '2024-11-17', remove_with: '17.7'
   ignore_column %i[role skype], remove_after: '2025-09-18', remove_with: '18.4'
@@ -2096,10 +2097,15 @@ class User < ApplicationRecord
   end
 
   def ci_owned_runners
-    @ci_owned_runners ||= Ci::Runner
-        .from_union([ci_owned_project_runners_from_project_members,
-          ci_owned_project_runners_from_group_members,
-          ci_owned_group_runners])
+    @ci_owned_runners ||= if Feature.enabled?(:optimize_ci_owned_project_runners_query, self)
+                            Ci::Runner.from_union([ci_owned_project_runners, ci_owned_group_runners])
+                          else
+                            Ci::Runner.from_union([
+                              ci_owned_project_runners_from_project_members,
+                              ci_owned_project_runners_from_group_members,
+                              ci_owned_group_runners
+                            ])
+                          end
   end
 
   def owns_runner?(runner)
@@ -2907,6 +2913,27 @@ class User < ApplicationRecord
       .with(cte_project_ids.to_arel)
       .joins(:runner_projects)
       .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
+  end
+
+  def ci_owned_project_runners
+    project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
+
+    # track the size of project_ids to optimise this query further in future
+    track_ci_owned_project_runners_query(project_ids.size)
+
+    # Load all project IDs upfront to handle indirect project access through group invitations
+    # and avoid CTE query when filtering runners for better performance
+    Ci::Runner.belonging_to_project(project_ids)
+  end
+
+  def track_ci_owned_project_runners_query(size_of_project_ids)
+    track_internal_event(
+      'query_ci_owned_project_runners_with_project_ids',
+      user: self,
+      additional_properties: {
+        value: size_of_project_ids
+      }
+    )
   end
 
   def ci_owned_group_runners

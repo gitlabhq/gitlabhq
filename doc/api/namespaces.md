@@ -31,11 +31,12 @@ administrator, this endpoint returns all namespaces in the instance.
 GET /namespaces
 ```
 
-| Attribute        | Type    | Required | Description |
-| ---------------- | ------- | -------- | ----------- |
-| `search`         | string  | no       | Returns only namespaces that contain the specified value in their name or path. |
-| `owned_only`     | boolean | no       | If `true`, only returns namespaces by the current user. |
-| `top_level_only` | boolean | no       | In GitLab 16.8 and later, if `true`, only returns top-level namespaces. |
+| Attribute          | Type    | Required | Description                                                                             |
+|--------------------|---------|----------|-----------------------------------------------------------------------------------------|
+| `search`           | string  | no       | Returns only namespaces that contain the specified value in their name or path.         |
+| `owned_only`       | boolean | no       | If `true`, only returns namespaces by the current user.                                 |
+| `top_level_only`   | boolean | no       | In GitLab 16.8 and later, if `true`, only returns top-level namespaces.                 |
+| `full_path_search` | boolean | no       | If `true`, the `search` parameter is matched against the full path of the namespaces. |
 
 Example request:
 

@@ -786,6 +786,9 @@
   - GITLAB_SHELL_VERSION
   - GITALY_SERVER_VERSION
 
+.gdk-update-patterns: &gdk-update-patterns
+  - .gitlab/ci/gdk.gitlab-ci.yml
+
 .ruby-version-patterns: &ruby-version-patterns
   - ".ruby-version"
   - ".tool-versions"
@@ -3209,6 +3212,23 @@
   rules:
     - <<: *if-default-refs
       changes: *workhorse-patterns
+
+#############
+# GDK rules #
+#############
+.gdk:rules:gdk-update:
+  rules:
+    - <<: *if-not-canonical-namespace
+      when: never
+    - <<: *if-merge-request-labels-pipeline-expedite
+      when: never
+    - <<: *if-default-refs
+      changes: *gdk-update-patterns
+    - <<: *if-default-refs
+      changes: *ruby-version-patterns
+    - !reference [".prevent-tier-2-and-below", "rules"]
+    - <<: *if-default-refs
+      changes: *setup-test-env-patterns
 
 ###################
 # yaml-lint rules #

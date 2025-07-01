@@ -1748,7 +1748,7 @@ GEM
       sorbet-runtime (>= 0.5.10782)
     ruby-lsp-rails (0.3.31)
       ruby-lsp (>= 0.23.0, < 0.24.0)
-    ruby-lsp-rspec (0.1.23)
+    ruby-lsp-rspec (0.1.24)
       ruby-lsp (~> 0.23.19)
     ruby-magic (0.6.0)
       mini_portile2 (~> 2.8)

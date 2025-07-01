@@ -646,7 +646,7 @@
 {"name":"ruby-fogbugz","version":"0.3.0","platform":"ruby","checksum":"5e04cde474648f498a71cf1e1a7ab42c66b953862fbe224f793ec0a7a1d5f657"},
 {"name":"ruby-lsp","version":"0.23.20","platform":"ruby","checksum":"06956135001716b89d08385714c095e01a6b3563452e4a265781899d26fb2769"},
 {"name":"ruby-lsp-rails","version":"0.3.31","platform":"ruby","checksum":"670aed466e54b5632e4907b8dedb91d8b144917c42513e013d656af175bf8c76"},
-{"name":"ruby-lsp-rspec","version":"0.1.23","platform":"ruby","checksum":"d2a915502352e9722cd3d67e1eac6c517983ec4fe580c6de95f56f61844168d3"},
+{"name":"ruby-lsp-rspec","version":"0.1.24","platform":"ruby","checksum":"41ff78b6ddaa588d81a6c6cce7dd151ddc53246c7fe5f2fd9a94a0e30877a222"},
 {"name":"ruby-magic","version":"0.6.0","platform":"ruby","checksum":"7b2138877b7d23aff812c95564eba6473b74b815ef85beb0eb792e729a2b6101"},
 {"name":"ruby-progressbar","version":"1.11.0","platform":"ruby","checksum":"cc127db3866dc414ffccbf92928a241e585b3aa2b758a5563e74a6ee0f57d50a"},
 {"name":"ruby-saml","version":"1.18.0","platform":"ruby","checksum":"de342a55925fd5ce6114d0802651c324428c0fec26e7fe52bf3a7cfa54dbfa6d"},

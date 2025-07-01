@@ -5625,10 +5625,12 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     shared_examples 'project member' do
+      before do
+        add_user # this method has to be defined in the caller block
+      end
+
       context 'when the user is a maintainer' do
-        before do
-          project.add_maintainer(user)
-        end
+        let(:access) { :maintainer }
 
         it 'loads the runners of the project' do
           expect(user.ci_owned_runners).to contain_exactly(project_runner)
@@ -5640,9 +5642,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when the user is a developer' do
-        before do
-          project.add_developer(user)
-        end
+        let(:access) { :developer }
 
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
@@ -5654,9 +5654,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when the user is a reporter' do
-        before do
-          project.add_reporter(user)
-        end
+        let(:access) { :reporter }
 
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
@@ -5668,9 +5666,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context 'when the user is a guest' do
-        before do
-          project.add_guest(user)
-        end
+        let(:access) { :guest }
 
         it 'does not load any runner' do
           expect(user.ci_owned_runners).to be_empty
@@ -5847,7 +5843,127 @@ RSpec.describe User, feature_category: :user_profile do
       context 'when user is member of project' do
         let(:project_runner) { runner }
 
+        def add_user
+          project.add_member(user, access)
+        end
+
         it_behaves_like 'project member'
+      end
+
+      context 'when group member accesses project runner' do
+        let_it_be(:group) { create(:group) }
+
+        it_behaves_like 'group member'
+
+        context "when user's group is invited to project" do
+          let(:project_runner) { runner }
+
+          def add_user
+            group.add_member(user, access)
+            create(:project_group_link, access, group: group, project: project)
+          end
+
+          it_behaves_like 'project member'
+        end
+      end
+    end
+
+    context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
+      before do
+        stub_feature_flags(optimize_ci_owned_project_runners_query: false)
+      end
+
+      it 'returns results from project_members, group_members and group_runners methods' do
+        expect(user).to receive_messages(ci_owned_project_runners_from_project_members: [],
+          ci_owned_project_runners_from_group_members: [],
+          ci_owned_group_runners: []
+        )
+        expect(user).not_to receive(:ci_owned_project_runners)
+
+        user.ci_owned_runners
+      end
+    end
+
+    context 'feature flag behavior' do
+      let(:ff_user) { user }
+
+      before do
+        stub_feature_flags(optimize_ci_owned_project_runners_query: ff_user)
+      end
+
+      it 'respects feature flag scoped to user' do
+        expect(user).to receive(:ci_owned_project_runners).and_return([])
+        expect(user).to receive(:ci_owned_group_runners).and_return([])
+        expect(user).not_to receive(:ci_owned_project_runners_from_project_members)
+        expect(user).not_to receive(:ci_owned_project_runners_from_group_members)
+
+        user.ci_owned_runners
+      end
+
+      context 'when feature flag is only enabled for other user' do
+        let(:ff_user) { build(:user, id: 1) }
+
+        it 'uses old behavior' do
+          expect(user).to receive(:ci_owned_project_runners_from_project_members).and_return([])
+          expect(user).to receive(:ci_owned_project_runners_from_group_members).and_return([])
+          expect(user).to receive(:ci_owned_group_runners).and_return([])
+
+          user.ci_owned_runners
+        end
+      end
+    end
+  end
+
+  describe '#ci_owned_project_runners', feature_category: :runner do
+    let_it_be_with_refind(:user) { create(:user) }
+
+    let_it_be(:project1) { create(:project) }
+    let_it_be(:project2) { create(:project) }
+    let_it_be(:project3) { create(:project) } # no access to project 3
+
+    let_it_be(:runner1) { create(:ci_runner, :project, projects: [project1]) }
+    let_it_be(:runner2) { create(:ci_runner, :project, projects: [project2]) }
+    let_it_be(:runner3) { create(:ci_runner, :project, projects: [project3]) }
+
+    subject(:ci_owned_project_runners) { user.send :ci_owned_project_runners }
+
+    context 'when the user has maintainer access' do
+      before_all do
+        project1.add_maintainer(user)
+        project2.add_maintainer(user)
+      end
+
+      it { is_expected.to include(runner1, runner2) }
+      it { is_expected.not_to include(runner3) }
+    end
+
+    context 'when the user has developer level access in the project' do
+      before_all do
+        project3.add_developer(user)
+      end
+
+      it { is_expected.not_to include(runner3) }
+    end
+
+    context 'with no project authorizations' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'it tracks an internal event' do
+      let!(:project_size) { 100 }
+
+      before do
+        allow(user.project_authorizations).to receive_message_chain(:where, :pluck)
+          .and_return(Array.new(project_size) { |i| i + 1 })
+      end
+
+      it 'with size of project_ids' do
+        expect { ci_owned_project_runners }.to trigger_internal_events('query_ci_owned_project_runners_with_project_ids').with(
+          user: user,
+          additional_properties: {
+            value: project_size
+          }
+        )
       end
     end
   end

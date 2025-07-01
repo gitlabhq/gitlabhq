@@ -63,6 +63,25 @@ Then you can use one of these approaches:
   We do not encourage the use of [pages with lists of links](../topic_types/_index.md#pages-and-topics-to-avoid),
   so only use this option if the recommended options are not feasible.
 
+## Documentation in other languages
+
+Translations of GitLab documentation are done through a semi-autonomous process.
+The [English files](#source-files) are the canonical source files, and the translations
+are in language-specific subdirectories under `doc-locale` or similar. For example, Japanese translations
+are in `/doc-locale/ja-jp/`.
+
+| Project         | Path |
+|-----------------|------|
+| GitLab          | [`/doc-locale`](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc-locale) |
+| GitLab Runner   | [`/docs-locale`](https://gitlab.com/gitlab-org/gitlab-runner/-/tree/main/docs-locale) |
+| Omnibus GitLab  | [`/doc-locale`](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master/doc-locale) |
+| Charts          | [`/doc-locale`](https://gitlab.com/gitlab-org/charts/gitlab/tree/master/doc-locale) |
+| GitLab Operator | [`/doc-locale`](https://gitlab.com/gitlab-org/cloud-native/gitlab-operator/-/tree/master/doc-locale) |
+
+Development documentation under `doc/development` or similar is not translated.
+
+You can contribute to the English source files only. The translated files are updated by automation.
+
 ## Monthly release process (versions)
 
 The docs website supports versions and each month we add the latest one to the list.

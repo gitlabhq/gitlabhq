@@ -55,6 +55,20 @@ When you find an issue you'd like to work on:
 You can try installing and running the [Vale linting tool](testing/vale.md)
 and fixing the resulting issues.
 
+### Translated documentation
+
+To make GitLab documentation easier to use around the world, we plan to have product documentation
+translated and published in other languages.
+
+The [file structure](site_architecture/_index.md#documentation-in-other-languages)
+and initial translations have been created, but this project is not complete.
+
+After the official public release of the translated documentation, we will share details
+on how to help us improve our translations. But while this work is in progress,
+we cannot accept contributions to any translations of product documentation.
+
+Additionally, only localization team members can change localization-related files.
+
 ## Ask for help
 
 Ask for help from the Technical Writing team if you:

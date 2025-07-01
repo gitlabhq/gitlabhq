@@ -28,7 +28,8 @@ The package registry supports the following package manager types:
 | Package type                                      | Status |
 |---------------------------------------------------|--------|
 | [Composer](../composer_repository/_index.md)      | [Beta](https://gitlab.com/groups/gitlab-org/-/epics/6817) |
-| [Conan](../conan_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
+| [Conan 1](../conan_1_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6816) |
+| [Conan 2](../conan_2_repository/_index.md)            | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/8258) |
 | [Debian](../debian_repository/_index.md)          | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/6057) |
 | [Generic packages](../generic_packages/_index.md) | Generally available     |
 | [Go](../go_proxy/_index.md)                       | [Experiment](https://gitlab.com/groups/gitlab-org/-/epics/3043) |
@@ -65,7 +66,8 @@ Packages can be published to your project, group, or instance.
 | [Generic packages](../generic_packages/_index.md)      | Y       | N     | N        |
 | [Terraform](../terraform_module_registry/_index.md)    | Y       | N     | N        |
 | [Composer](../composer_repository/_index.md)           | N       | Y     | N        |
-| [Conan](../conan_repository/_index.md)                 | Y       | N     | Y        |
+| [Conan 1](../conan_1_repository/_index.md)             | Y       | N     | Y        |
+| [Conan 2](../conan_2_repository/_index.md)             | Y       | N     | N        |
 | [Helm](../helm_repository/_index.md)                   | Y       | N     | N        |
 | [Debian](../debian_repository/_index.md)               | Y       | N     | N        |
 | [Go](../go_proxy/_index.md)                            | Y       | N     | N        |
@@ -93,7 +95,8 @@ Packages can be pulled from your project, group, or instance.
 | [Generic packages](../generic_packages/_index.md)      | Y       | N     | N        |
 | [Terraform](../terraform_module_registry/_index.md)    | N       | Y     | N        |
 | [Composer](../composer_repository/_index.md)           | Y       | Y     | N        |
-| [Conan](../conan_repository/_index.md)                 | Y       | N     | Y        |
+| [Conan 1](../conan_1_repository/_index.md)             | Y       | N     | Y        |
+| [Conan 2](../conan_2_repository/_index.md)             | Y       | N     | N        |
 | [Helm](../helm_repository/_index.md)                   | Y       | N     | N        |
 | [Debian](../debian_repository/_index.md)               | Y       | N     | N        |
 | [Go](../go_proxy/_index.md)                            | Y       | N     | Y        |
@@ -131,7 +134,8 @@ To reduce the associated security risks:
 | [Generic packages](../generic_packages/_index.md)      | N                           | N |
 | [Terraform](../terraform_module_registry/_index.md)    | N                           | N |
 | [Composer](../composer_repository/_index.md)           | N                           | N |
-| [Conan](../conan_repository/_index.md)                 | N                           | N |
+| [Conan 1](../conan_1_repository/_index.md)               | N                           | N |
+| [Conan 2](../conan_2_repository/_index.md)               | N                           | N |
 | [Helm](../helm_repository/_index.md)                   | N                           | N |
 | [Debian](../debian_repository/_index.md)               | N                           | N |
 | [Go](../go_proxy/_index.md)                            | N                           | N |
@@ -169,7 +173,8 @@ You can use GitLab pipelines to import packages from other repositories, such as
 | [Generic packages](../generic_packages/_index.md)      | N                   |
 | [Terraform](../terraform_module_registry/_index.md)    | N                   |
 | [Composer](../composer_repository/_index.md)           | N                   |
-| [Conan](../conan_repository/_index.md)                 | N                   |
+| [Conan 1](../conan_1_repository/_index.md)             | N                   |
+| [Conan 2](../conan_2_repository/_index.md)             | N                   |
 | [Helm](../helm_repository/_index.md)                   | N                   |
 | [Debian](../debian_repository/_index.md)               | N                   |
 | [Go](../go_proxy/_index.md)                            | N                   |
@@ -197,7 +202,8 @@ By default, the GitLab package registry either allows or prevents duplicates bas
 | [Generic packages](../generic_packages/_index.md)      | Y (configurable)    |
 | [Terraform](../terraform_module_registry/_index.md)    | N                   |
 | [Composer](../composer_repository/_index.md)           | N                   |
-| [Conan](../conan_repository/_index.md)                 | N                   |
+| [Conan 1](../conan_1_repository/_index.md)             | N                   |
+| [Conan 2](../conan_2_repository/_index.md)             | N                   |
 | [Helm](../helm_repository/_index.md)                   | Y                   |
 | [Debian](../debian_repository/_index.md)               | Y                   |
 | [Go](../go_proxy/_index.md)                            | N                   |
@@ -235,7 +241,8 @@ for a given package manager:
 | [Generic packages](../generic_packages/_index.md)      | Personal access, job tokens, deploy (project or group), project access |
 | [Terraform](../terraform_module_registry/_index.md)    | Personal access, job tokens, deploy (project or group), project access |
 | [Composer](../composer_repository/_index.md)           | Personal access, job tokens, deploy (project or group), project access |
-| [Conan](../conan_repository/_index.md)                 | Personal access, job tokens, project access                            |
+| [Conan 1](../conan_1_repository/_index.md)                 | Personal access, job tokens, project access                            |
+| [Conan 2](../conan_2_repository/_index.md)                 | Personal access, job tokens, project access                            |
 | [Helm](../helm_repository/_index.md)                   | Personal access, job tokens, deploy (project or group)                 |
 | [Debian](../debian_repository/_index.md)               | Personal access, job tokens, deploy (project or group)                 |
 | [Go](../go_proxy/_index.md)                            | Personal access, job tokens, project access                            |
@@ -280,7 +287,8 @@ The following authentication protocols are supported:
 | [Generic packages](../generic_packages/_index.md)      | Basic auth                                                  |
 | [Terraform](../terraform_module_registry/_index.md)    | Token                                                       |
 | [Composer](../composer_repository/_index.md)           | OAuth                                                       |
-| [Conan](../conan_repository/_index.md)                 | OAuth, Basic auth                                           |
+| [Conan 1](../conan_1_repository/_index.md)                 | OAuth, Basic auth                                           |
+| [Conan 2](../conan_2_repository/_index.md)                 | OAuth, Basic auth                                           |
 | [Helm](../helm_repository/_index.md)                   | Basic auth                                                  |
 | [Debian](../debian_repository/_index.md)               | Basic auth                                                  |
 | [Go](../go_proxy/_index.md)                            | Basic auth                                                  |
@@ -309,7 +317,8 @@ The package registry supports the following hash types:
 | [PyPI](../pypi_repository/_index.md)                   | MD5, SHA256                      |
 | [Generic packages](../generic_packages/_index.md)      | SHA256                           |
 | [Composer](../composer_repository/_index.md)           | not applicable                   |
-| [Conan](../conan_repository/_index.md)                 | MD5, SHA1                        |
+| [Conan 1](../conan_1_repository/_index.md)             | MD5, SHA1                        |
+| [Conan 2](../conan_2_repository/_index.md)             | MD5, SHA1                        |
 | [Helm](../helm_repository/_index.md)                   | not applicable                   |
 | [Debian](../debian_repository/_index.md)               | MD5, SHA1, SHA256                |
 | [Go](../go_proxy/_index.md)                            | MD5, SHA1, SHA256                |

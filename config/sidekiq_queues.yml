@@ -29,6 +29,8 @@
   - 1
 - - admin_emails
   - 1
+- - ai_active_context_code_process_pending_enabled_namespace_event
+  - 1
 - - ai_active_context_code_repository_index
   - 1
 - - ai_active_context_code_saas_initial_indexing_event
@@ -36,6 +38,8 @@
 - - ai_knowledge_graph_indexing_task
   - 1
 - - ai_repository_xray_scan_dependencies
+  - 1
+- - analytics_ai_usage_events_backfill
   - 1
 - - analytics_code_review_metrics
   - 1

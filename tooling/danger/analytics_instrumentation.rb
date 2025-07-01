@@ -35,7 +35,7 @@ module Tooling
       MSG
 
       PII_WARNING = <<~MSG
-        Make sure the additional properties don't contain any sensitive information, like customer data or PII.
+        Make sure the additional properties don't contain any sensitive information, like customer data or personal data.
         For more information, see the Data Classification Standard at https://about.gitlab.com/handbook/security/data-classification-standard/
       MSG
 

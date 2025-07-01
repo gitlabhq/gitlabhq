@@ -73,7 +73,8 @@ module Members
       last_group_owner = true
 
       in_lock("delete_members:#{member.source.class}:#{member.source.id}", sleep_sec: 0.1.seconds) do
-        break if member.source.last_owner?(member.user)
+        # Explicitly bypass caching to ensure we're checking against the latest list of owners.
+        break if ApplicationRecord.uncached { member.source.last_owner?(member.user) }
 
         last_group_owner = false
         destroy_member(member)

@@ -1,0 +1,63 @@
+diff --git a/node_modules/highlight.js/es/languages/ruby.js b/node_modules/highlight.js/es/languages/ruby.js
+index 2b1d275..afbd10e 100644
+--- a/node_modules/highlight.js/es/languages/ruby.js
++++ b/node_modules/highlight.js/es/languages/ruby.js
+@@ -227,6 +227,27 @@ function ruby(hljs) {
+     ]
+   };
+ 
++  const REGEXP = {
++    className: 'regexp',
++    contains: [
++      hljs.BACKSLASH_ESCAPE,
++      SUBST,
++      {
++        begin: /\{/, end: /\}/,
++        contains: ['self', hljs.BACKSLASH_ESCAPE, SUBST],
++        relevance: 0
++      }
++    ],
++    illegal: /\n/,
++    variants: [
++      { begin: /%r\{/, end: /\}[a-z]*/ },
++      { begin: '%r\\(', end: '\\)[a-z]*' },
++      { begin: '%r!', end: '![a-z]*' },
++      { begin: '%r\\[', end: '\\][a-z]*' },
++      { begin: '/', end: '/[a-z]*' }
++    ]
++  };
++
+   const PARAMS = {
+     variants: [
+       {
+@@ -324,6 +345,7 @@ function ruby(hljs) {
+     UPPER_CASE_CONSTANT,
+     CLASS_REFERENCE,
+     METHOD_DEFINITION,
++    REGEXP,
+     {
+       // swallow namespace qualifiers before symbols
+       begin: hljs.IDENT_RE + '::' },
+@@ -373,22 +395,6 @@ function ruby(hljs) {
+               begin: '/',
+               end: '/[a-z]*'
+             },
+-            {
+-              begin: /%r\{/,
+-              end: /\}[a-z]*/
+-            },
+-            {
+-              begin: '%r\\(',
+-              end: '\\)[a-z]*'
+-            },
+-            {
+-              begin: '%r!',
+-              end: '![a-z]*'
+-            },
+-            {
+-              begin: '%r\\[',
+-              end: '\\][a-z]*'
+-            }
+           ]
+         }
+       ].concat(IRB_OBJECT, COMMENT_MODES),

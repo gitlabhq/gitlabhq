@@ -57,6 +57,22 @@ projects.each do |p|
 end
 ```
 
+### Transfer a project using console
+
+If transferring a project through the UI or API is not working, you can attempt the transfer in a [Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+
+```ruby
+p = Project.find_by_full_path('<project_path>')
+
+# To set the owner of the project
+current_user = p.creator
+
+# Namespace where you want this to be moved
+namespace = Namespace.find_by_full_path("<new_namespace>")
+
+Projects::TransferService.new(p, current_user).execute(namespace)
+```
+
 ## Delete a project using console
 
 If a project cannot be deleted, you can attempt to delete it through [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session).

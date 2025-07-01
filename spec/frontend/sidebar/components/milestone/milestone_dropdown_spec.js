@@ -35,11 +35,9 @@ describe('MilestoneDropdown component', () => {
   it('renders hidden input', () => {
     createComponent();
 
-    expect(findHiddenInput().attributes()).toEqual({
-      type: 'hidden',
-      name: 'update[milestone_id]',
-      value: undefined,
-    });
+    expect(findHiddenInput().attributes('type')).toBe('hidden');
+    expect(findHiddenInput().attributes('name')).toBe('update[milestone_id]');
+    expect(findHiddenInput().element.value).toBe('');
   });
 
   describe('when milestone ID and title is provided', () => {

@@ -70,21 +70,30 @@ appropriate URL for your project, as described in the [GitLab Maven Repository d
 Then, you need to add a `settings.xml` file and [include your access token](../maven_repository/_index.md#authenticate-to-the-package-registry).
 Now you can [publish Maven packages](../maven_repository/_index.md#publish-a-package) to your project.
 
-### Conan
+### Conan 1
 
-For Conan, you need to add GitLab as a Conan registry remote. Follow the instructions in the
-[GitLab Conan Repository docs](../conan_repository/_index.md#add-the-package-registry-as-a-conan-remote).
+For Conan 1, you must add GitLab as a Conan registry remote. For instructions, see
+[Add the package registry as a Conan remote](../conan_1_repository/_index.md#add-the-package-registry-as-a-conan-remote).
 Then, create your package using the plus-separated (`+`) project path as your Conan user. For example,
 if your project is located at `https://gitlab.com/foo/bar/my-proj`,
-[create your Conan package](../conan_repository/_index.md) using `conan create . foo+bar+my-proj/channel`.
+[create your Conan package](build_packages.md#conan-1) using `conan create . foo+bar+my-proj/channel`.
 `channel` is your package channel (such as `stable` or `beta`).
 
-After you create your package, you're ready to [publish your package](../conan_repository/_index.md#publish-a-conan-package),
+After you create your package, you're ready to [publish your package](../conan_1_repository/_index.md#publish-a-conan-package),
 depending on your final package recipe. For example:
 
 ```shell
 CONAN_LOGIN_USERNAME=<gitlab-username> CONAN_PASSWORD=<personal_access_token> conan upload MyPackage/1.0.0@foo+bar+my-proj/channel --all --remote=gitlab
 ```
+
+### Conan 2
+
+For Conan 2, you must add GitLab as a Conan registry remote. For instructions, see
+[Add the package registry as a Conan remote](../conan_2_repository/_index.md#add-the-package-registry-as-a-conan-remote).
+Then, [create your Conan 2 package](build_packages.md#conan-2).
+
+After you create your package, you're ready to [publish your package](../conan_2_repository/_index.md#publish-a-conan-2-package),
+depending on your final package recipe.
 
 ### Composer
 

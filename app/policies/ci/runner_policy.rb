@@ -31,12 +31,12 @@ module Ci
 
     with_options scope: :user, score: 5
     condition(:any_maintainer_owned_groups_inheriting_shared_runners) do
-      @user.owned_or_maintainers_groups.with_shared_runners_enabled.any?
+      @user.owned_or_maintainers_groups.with_shared_runners_enabled.exists?
     end
 
     with_options scope: :user, score: 5
     condition(:any_maintainer_projects_inheriting_shared_runners) do
-      @user.authorized_projects(Gitlab::Access::MAINTAINER).with_shared_runners_enabled.any?
+      @user.authorized_projects(Gitlab::Access::MAINTAINER).with_shared_runners_enabled.exists?
     end
 
     with_options score: 10
@@ -67,14 +67,14 @@ module Ci
       user_group_ids = @user.owned_or_maintainers_groups.select(:id)
 
       # Check for direct group relationships
-      next true if user_group_ids.id_in(@subject.group_ids).any?
+      next true if user_group_ids.id_in(@subject.group_ids).exists?
 
       # Check for indirect group relationships
       GroupGroupLink
         .with_owner_or_maintainer_access
         .groups_accessible_via(user_group_ids)
         .id_in(@subject.group_ids)
-        .any?
+        .exists?
     end
 
     condition(:belongs_to_multiple_projects, scope: :subject) do

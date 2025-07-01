@@ -104,17 +104,14 @@ spec/frontend/projects/settings/components/branch_rule_modal_spec.js
 spec/frontend/projects/settings_service_desk/components/service_desk_root_spec.js
 spec/frontend/ref/init_ambiguous_ref_modal_spec.js
 spec/frontend/releases/components/asset_links_form_spec.js
-spec/frontend/set_status_modal/user_profile_set_status_wrapper_spec.js
 spec/frontend/sidebar/components/confidential/confidentiality_dropdown_spec.js
 spec/frontend/sidebar/components/confidential/sidebar_confidentiality_widget_spec.js
-spec/frontend/sidebar/components/milestone/milestone_dropdown_spec.js
 spec/frontend/sidebar/components/subscriptions/subscriptions_dropdown_spec.js
 spec/frontend/super_sidebar/components/sidebar_portal_spec.js
 spec/frontend/super_sidebar/components/user_menu_spec.js
 spec/frontend/tooltips/index_spec.js
 spec/frontend/vue_alerts_spec.js
 spec/frontend/vue_popovers_spec.js
-spec/frontend/vue_shared/components/confirm_modal_spec.js
 spec/frontend/vue_shared/components/design_management/design_note_pin_spec.js
 spec/frontend/vue_shared/components/file_tree_spec.js
 spec/frontend/vue_shared/components/filtered_search_bar/tokens/date_token_spec.js

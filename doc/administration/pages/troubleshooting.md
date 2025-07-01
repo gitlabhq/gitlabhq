@@ -339,7 +339,7 @@ this setting needs to be configured on the main GitLab server.
 
 If the wildcard DNS [prerequisite](_index.md#prerequisites) can't be met, you can still use GitLab Pages in a limited fashion:
 
-1. [Move](../../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace)
+1. [Move](../../user/project/working_with_projects.md#transfer-a-project)
    all projects you need to use Pages with into a single group namespace, for example `pages`.
 1. Configure a [DNS entry](_index.md#dns-configuration) without the `*.`-wildcard, for example `pages.example.io`.
 1. Configure `pages_external_url http://example.io/` in your `gitlab.rb` file.

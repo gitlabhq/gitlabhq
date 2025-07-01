@@ -23,7 +23,8 @@ The package registry supports the following formats:
 | Package type                                                       | GitLab version |
 |--------------------------------------------------------------------|----------------|
 | [Composer](../../user/packages/composer_repository/_index.md)      | 13.2+          |
-| [Conan](../../user/packages/conan_repository/_index.md)            | 12.6+          |
+| [Conan 1](../../user/packages/conan_1_repository/_index.md)        | 12.6+          |
+| [Conan 2](../../user/packages/conan_2_repository/_index.md)        | 18.1+          |
 | [Go](../../user/packages/go_proxy/_index.md)                       | 13.1+          |
 | [Maven](../../user/packages/maven_repository/_index.md)            | 11.3+          |
 | [npm](../../user/packages/npm_registry/_index.md)                  | 11.7+          |

@@ -159,7 +159,7 @@ module Tooling
       # @param strategy [Symbol]
       # @return [Hash]
       def generate_metrics_data(changed_files, predicted_test_files, failed_test_files, crystalball_mapping, strategy)
-        all_test_files_from_mapping = crystalball_mapping.values.flatten
+        all_test_files_from_mapping = crystalball_mapping.values.flatten.uniq
         test_files_selected_by_crystalball = changed_files
           .filter_map { |file| crystalball_mapping[file] }
           .flatten

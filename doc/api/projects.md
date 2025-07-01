@@ -2206,7 +2206,7 @@ Supported attributes:
 Transfer a project to a new namespace.
 
 For information on prerequisites for transferring a project, see
-[Transfer a project to another namespace](../user/project/settings/migrate_projects.md#transfer-a-project-to-another-namespace).
+[Transfer a project to another namespace](../user/project/working_with_projects.md#transfer-a-project).
 
 ```plaintext
 PUT /projects/:id/transfer

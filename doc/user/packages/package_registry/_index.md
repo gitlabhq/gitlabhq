@@ -171,7 +171,7 @@ Several known issues exist when you allow anyone to pull from the package regist
 - Terraform module registry endpoints for namespaces are supported.
 - Other group and instance endpoints are not fully supported. Support for group endpoints is proposed in [epic 14234](https://gitlab.com/groups/gitlab-org/-/epics/14234).
 - It does not work with the [Composer](../composer_repository/_index.md#install-a-composer-package), because Composer only has a group endpoint.
-- It works with Conan, but using [`conan search`](../conan_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
+- It works with Conan, but using [`conan search`](../conan_1_repository/_index.md#search-for-conan-packages-in-the-package-registry) does not work.
 
 ## Audit events
 

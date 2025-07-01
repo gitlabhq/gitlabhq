@@ -8,7 +8,7 @@
     .gl-flex.gl-grow
       %h4.gl-text-base.gl-leading-24.gl-m-0= _('Transfer project')
     %p.gl-text-subtle.gl-text-sm.gl-m-0
-      - link = link_to('', help_page_path('user/project/settings/migrate_projects.md', anchor: 'transfer-a-project-to-another-namespace'), target: '_blank', rel: 'noopener noreferrer')
+      - link = link_to('', help_page_path('user/project/working_with_projects.md', anchor: 'transfer-a-project'), target: '_blank', rel: 'noopener noreferrer')
       = safe_format(_("Transfer your project into another namespace. %{link_start}Learn more.%{link_end}"), tag_pair(link, :link_start, :link_end))
 
   - c.with_body do

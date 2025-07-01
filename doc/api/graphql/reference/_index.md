@@ -680,6 +680,7 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryduoworkflowworkflowsenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, e.g., ide or web. |
 | <a id="queryduoworkflowworkflowsprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project containing the workflows. |
 | <a id="queryduoworkflowworkflowssort"></a>`sort` | [`Sort`](#sort) | Sort workflows by the criteria. |
 | <a id="queryduoworkflowworkflowstype"></a>`type` | [`String`](#string) | Type of workflow to filter by (e.g., software_development). |
@@ -27030,6 +27031,7 @@ A Duo Workflow.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workflow was created. |
+| <a id="duoworkflowenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, e.g., ide or web. |
 | <a id="duoworkflowgoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
 | <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the workflow. |
 | <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the workflow. |
@@ -47805,6 +47807,15 @@ Type of a work item widget.
 | <a id="workitemwidgettypeverification_status"></a>`VERIFICATION_STATUS` | Verification Status widget. |
 | <a id="workitemwidgettypevulnerabilities"></a>`VULNERABILITIES` | Vulnerabilities widget. |
 | <a id="workitemwidgettypeweight"></a>`WEIGHT` | Weight widget. |
+
+### `WorkflowEnvironment`
+
+The environment of a workflow.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workflowenvironmentide"></a>`IDE` | Ide environment. |
+| <a id="workflowenvironmentweb"></a>`WEB` | Web environment. |
 
 ### `WorkspaceVariableInputType`
 
