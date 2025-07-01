@@ -2397,7 +2397,19 @@ msgstr ""
 msgid "AICatalog|Edit agent"
 msgstr ""
 
+msgid "AICatalog|Failed to run agent."
+msgstr ""
+
+msgid "AICatalog|Prompt"
+msgstr ""
+
 msgid "AICatalog|Released %{fullDate}"
+msgstr ""
+
+msgid "AICatalog|Run"
+msgstr ""
+
+msgid "AICatalog|Run agent"
 msgstr ""
 
 msgid "AISummary|Generates a summary of this issue"
@@ -4362,6 +4374,9 @@ msgstr ""
 msgid "AdminSelfHostedModels|Apply to all %{mainFeature} sub-features"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Assign a model to %{subFeature} before applying to all"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Assign a model to enable this feature"
 msgstr ""
 
@@ -4465,6 +4480,9 @@ msgid "AdminSelfHostedModels|Successfully connected to the self-hosted model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Successfully updated %{mainFeature} / %{title}"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Successfully updated all %{mainFeature} features"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Test connection"
@@ -70261,6 +70279,12 @@ msgstr ""
 msgid "WorkItem|Add a to-do item"
 msgstr ""
 
+msgid "WorkItem|Add description"
+msgstr ""
+
+msgid "WorkItem|Add status"
+msgstr ""
+
 msgid "WorkItem|Add up to 10 items at a time."
 msgstr ""
 
@@ -70270,7 +70294,16 @@ msgstr ""
 msgid "WorkItem|An error occurred while getting work item counts."
 msgstr ""
 
+msgid "WorkItem|An error occurred while removing the status."
+msgstr ""
+
 msgid "WorkItem|An error occurred while saving the custom field."
+msgstr ""
+
+msgid "WorkItem|An error occurred while saving the status."
+msgstr ""
+
+msgid "WorkItem|An error occurred while updating the status."
 msgstr ""
 
 msgid "WorkItem|Ancestor"
@@ -70315,6 +70348,9 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
 msgstr ""
 
+msgid "WorkItem|Are you sure you want to remove the %{statusName} status?"
+msgstr ""
+
 msgid "WorkItem|Assignee"
 msgstr ""
 
@@ -70340,6 +70376,9 @@ msgid "WorkItem|Blue"
 msgstr ""
 
 msgid "WorkItem|Cancel"
+msgstr ""
+
+msgid "WorkItem|Canceled"
 msgstr ""
 
 msgid "WorkItem|Change appearance for all issues, epics, and tasks"
@@ -70370,6 +70409,9 @@ msgid "WorkItem|Close %{workItemType}"
 msgstr ""
 
 msgid "WorkItem|Closed"
+msgstr ""
+
+msgid "WorkItem|Closed default"
 msgstr ""
 
 msgid "WorkItem|Closing %{workItemType}"
@@ -70465,10 +70507,16 @@ msgstr ""
 msgid "WorkItem|Due"
 msgstr ""
 
+msgid "WorkItem|Duplicate default"
+msgstr ""
+
 msgid "WorkItem|Edit %{fieldName}"
 msgstr ""
 
 msgid "WorkItem|Edit custom field %{fieldName}"
+msgstr ""
+
+msgid "WorkItem|Edit status"
 msgstr ""
 
 msgid "WorkItem|Edit statuses"
@@ -70541,6 +70589,9 @@ msgid "WorkItem|History only"
 msgstr ""
 
 msgid "WorkItem|How do I use custom fields?"
+msgstr ""
+
+msgid "WorkItem|In progress"
 msgstr ""
 
 msgid "WorkItem|Incident"
@@ -70627,6 +70678,15 @@ msgid "WorkItem|Multi select"
 msgstr ""
 
 msgid "WorkItem|Must be a valid hex code"
+msgstr ""
+
+msgid "WorkItem|Must be a valid hex color."
+msgstr ""
+
+msgid "WorkItem|Name is already taken."
+msgstr ""
+
+msgid "WorkItem|Name is required."
 msgstr ""
 
 msgid "WorkItem|Needs attention"
@@ -70716,6 +70776,9 @@ msgstr ""
 msgid "WorkItem|Only 10 items can be added at a time."
 msgstr ""
 
+msgid "WorkItem|Open default"
+msgstr ""
+
 msgid "WorkItem|Options:"
 msgstr ""
 
@@ -70744,6 +70807,9 @@ msgid "WorkItem|Related vulnerabilities"
 msgstr ""
 
 msgid "WorkItem|Remove"
+msgstr ""
+
+msgid "WorkItem|Remove status"
 msgstr ""
 
 msgid "WorkItem|Reopen %{workItemType}"
@@ -70980,6 +71046,9 @@ msgstr ""
 msgid "WorkItem|This %{workItemType} will be closed when the following is merged."
 msgstr ""
 
+msgid "WorkItem|This action cannot be undone."
+msgstr ""
+
 msgid "WorkItem|This group has no active custom fields. Create a custom field to track data that matters to your team."
 msgstr ""
 
@@ -70995,10 +71064,19 @@ msgstr ""
 msgid "WorkItem|Time tracking"
 msgstr ""
 
+msgid "WorkItem|Title"
+msgstr ""
+
+msgid "WorkItem|To do"
+msgstr ""
+
 msgid "WorkItem|To-do item"
 msgstr ""
 
 msgid "WorkItem|Toggle details"
+msgstr ""
+
+msgid "WorkItem|Triage"
 msgstr ""
 
 msgid "WorkItem|Truncate descriptions"
@@ -71029,6 +71107,9 @@ msgid "WorkItem|Usage"
 msgstr ""
 
 msgid "WorkItem|Usage:"
+msgstr ""
+
+msgid "WorkItem|Used on types: %{workItemTypes}. Changes affect all items in all subgroups and projects."
 msgstr ""
 
 msgid "WorkItem|View current version"
