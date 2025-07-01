@@ -36372,6 +36372,9 @@ msgstr ""
 msgid "Loading %{name}"
 msgstr ""
 
+msgid "Loading file actions"
+msgstr ""
+
 msgid "Loading files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 

@@ -1,5 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import { GlLoadingIcon } from '@gitlab/ui';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -139,6 +140,7 @@ describe('Blob controls component', () => {
   const findWebIdeLink = () => wrapper.findComponent(WebIdeLink);
   const findForkSuggestionModal = () => wrapper.findComponent(ForkSuggestionModal);
   const findOverflowMenu = () => wrapper.findComponent(OverflowMenu);
+  const findOverflowMenuLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   beforeEach(async () => {
@@ -444,6 +446,19 @@ describe('Blob controls component', () => {
     });
 
     describe('BlobOverflow dropdown', () => {
+      it('renders a spinner for BlobOverflowMenu when loading repository blob data', async () => {
+        const loadingBlobControlsResolver = jest.fn().mockResolvedValue(new Promise(() => {}));
+        await createComponent({
+          glFeatures: { blobOverflowMenu: true },
+          blobControlsResolver: loadingBlobControlsResolver,
+        });
+        expect(findOverflowMenuLoadingIcon().exists()).toBe(true);
+      });
+
+      it('does not render a spinner for BlobOverflowMenu when not loading repository blob data', () => {
+        expect(findOverflowMenuLoadingIcon().exists()).toBe(false);
+      });
+
       it('renders BlobOverflow component with correct props', () => {
         expect(findOverflowMenu().exists()).toBe(true);
         expect(findOverflowMenu().props()).toEqual({
