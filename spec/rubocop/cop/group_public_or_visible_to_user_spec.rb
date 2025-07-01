@@ -10,10 +10,10 @@ RSpec.describe RuboCop::Cop::GroupPublicOrVisibleToUser do
   end
 
   it 'flags the use of Group.public_or_visible_to_user with a constant receiver' do
-    expect_offense(<<~CODE)
+    expect_offense(<<~RUBY)
       Group.public_or_visible_to_user
       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{msg}
-    CODE
+    RUBY
   end
 
   it 'does not flag the use of public_or_visible_to_user with a constant that is not Group' do

@@ -26026,7 +26026,8 @@ CREATE TABLE wiki_page_slugs (
     updated_at timestamp with time zone NOT NULL,
     slug character varying(2048) NOT NULL,
     project_id bigint,
-    namespace_id bigint
+    namespace_id bigint,
+    CONSTRAINT check_df824eea0a CHECK ((num_nonnulls(namespace_id, project_id) = 1))
 );
 
 CREATE SEQUENCE wiki_page_slugs_id_seq

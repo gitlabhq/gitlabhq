@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/graphql/graphql_name_position'
 
 RSpec.describe RuboCop::Cop::Graphql::GraphqlNamePosition do
   it 'adds an offense when graphql_name is not on the first line' do
-    expect_offense(<<~TYPE)
+    expect_offense(<<~RUBY)
       module Types
         class AType < BaseObject
         ^^^^^^^^^^^^^^^^^^^^^^^^ `graphql_name` should be the first line of the class: https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#naming-conventions
@@ -15,7 +15,7 @@ RSpec.describe RuboCop::Cop::Graphql::GraphqlNamePosition do
           graphql_name 'ATypeName'
         end
       end
-    TYPE
+    RUBY
   end
 
   it 'does not add an offense for classes that have no call to graphql_name' do

@@ -267,6 +267,7 @@ If you must unverify both future and past commits,
   - [OpenPGP Best Practices](https://riseup.net/en/security/message-security/openpgp/best-practices)
   - [Creating a new GPG key with subkeys](https://www.void.gr/kargig/blog/2013/12/02/creating-a-new-gpg-key-with-subkeys/) (advanced)
   - [View GPG keys in your instance](../../../../administration/credentials_inventory.md#view-gpg-keys)
+  - [Beyond Identity integration](../../integrations/beyond_identity.md)
 
 ## Troubleshooting
 

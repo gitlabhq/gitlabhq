@@ -6,7 +6,7 @@ require_relative '../../../../rubocop/cop/graphql/descriptions'
 RSpec.describe RuboCop::Cop::Graphql::Descriptions do
   context 'with fields' do
     it 'adds an offense when there is no description' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -15,13 +15,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               null: false
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description does not end in a period' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -31,11 +31,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of a thing'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'adds an offense when description begins with "A"' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -45,13 +45,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'A description of the thing.'
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description begins with "The"' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -61,13 +61,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'The description of the thing.'
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description contains the demonstrative "this"' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -77,9 +77,9 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of this thing.'
           end
         end
-      TYPE
+      RUBY
 
-      expect_correction(<<~TYPE)
+      expect_correction(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -88,11 +88,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of the thing.'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'does not add an offense when a word does not contain the substring "this"' do
-      expect_no_offenses(<<~TYPE)
+      expect_no_offenses(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -101,7 +101,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of thistle.'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'does not add an offense when description is correct' do
@@ -130,7 +130,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
 
   context 'with arguments' do
     it 'adds an offense when there is no description' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -139,13 +139,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               null: false
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description does not end in a period' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -155,11 +155,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Behold! A description'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'adds an offense when description begins with "A"' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -169,13 +169,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'A description.'
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description begins with "The"' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -185,13 +185,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'The description.'
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description contains the demonstrative "this"' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -201,9 +201,9 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of this thing.'
           end
         end
-      TYPE
+      RUBY
 
-      expect_correction(<<~TYPE)
+      expect_correction(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -212,11 +212,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of the thing.'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'does not add an offense when a word does not contain the substring "this"' do
-      expect_no_offenses(<<~TYPE)
+      expect_no_offenses(<<~RUBY)
         module Types
           class FakeType < BaseObject
             argument :a_thing,
@@ -225,7 +225,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Description of thistle.'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'does not add an offense when description is correct' do
@@ -244,27 +244,27 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
 
   context 'with enum values' do
     it 'adds an offense when there is no description' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeEnum < BaseEnum
             value 'FOO', value: 'foo'
             ^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_NO_DESCRIPTION}
           end
         end
-      TYPE
+      RUBY
 
       expect_no_corrections
     end
 
     it 'adds an offense when description does not end in a period' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeEnum < BaseEnum
             value 'FOO', value: 'foo', description: 'bar'
             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ #{described_class::MSG_NO_PERIOD}
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'adds an offense when description begins with "The"' do
@@ -345,7 +345,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
 
   describe 'autocorrecting periods in descriptions' do
     it 'autocorrects missing periods' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -355,9 +355,9 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Behold! A description'
           end
         end
-      TYPE
+      RUBY
 
-      expect_correction(<<~TYPE)
+      expect_correction(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -366,11 +366,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Behold! A description.'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'does not autocorrect if periods exist' do
-      expect_no_offenses(<<~TYPE)
+      expect_no_offenses(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -379,11 +379,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               description: 'Behold! A description.'
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'autocorrects a heredoc' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -395,9 +395,9 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               DESC
           end
         end
-      TYPE
+      RUBY
 
-      expect_correction(<<~TYPE)
+      expect_correction(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -408,11 +408,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               DESC
           end
         end
-      TYPE
+      RUBY
     end
 
     it 'does not autocorrect a heredoc if periods exist' do
-      expect_no_offenses(<<~TYPE)
+      expect_no_offenses(<<~RUBY)
         module Types
           class FakeType < BaseObject
             field :a_thing,
@@ -423,13 +423,13 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
               DESC
           end
         end
-      TYPE
+      RUBY
     end
   end
 
   describe 'autocorrecting "this" to "the"' do
     it 'autocorrects if "this" is found' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
           module Types
             class FakeType < BaseObject
               field :a_thing,
@@ -439,9 +439,9 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
                 description: 'Description of this thing.'
             end
           end
-      TYPE
+      RUBY
 
-      expect_correction(<<~TYPE)
+      expect_correction(<<~RUBY)
           module Types
             class FakeType < BaseObject
               field :a_thing,
@@ -450,11 +450,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
                 description: 'Description of the thing.'
             end
           end
-      TYPE
+      RUBY
     end
 
     it 'does not autocorrect if "this" is not found' do
-      expect_no_offenses(<<~TYPE)
+      expect_no_offenses(<<~RUBY)
           module Types
             class FakeType < BaseObject
               field :a_thing,
@@ -463,11 +463,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
                 description: 'Description of the thing.'
             end
           end
-      TYPE
+      RUBY
     end
 
     it 'autocorrects a heredoc if "this" is found' do
-      expect_offense(<<~TYPE)
+      expect_offense(<<~RUBY)
           module Types
             class FakeType < BaseObject
               field :a_thing,
@@ -479,9 +479,9 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
                 DESC
             end
           end
-      TYPE
+      RUBY
 
-      expect_correction(<<~TYPE)
+      expect_correction(<<~RUBY)
           module Types
             class FakeType < BaseObject
               field :a_thing,
@@ -492,11 +492,11 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
                 DESC
             end
           end
-      TYPE
+      RUBY
     end
 
     it 'does not autocorrect a heredoc if "this" is not found' do
-      expect_no_offenses(<<~TYPE)
+      expect_no_offenses(<<~RUBY)
           module Types
             class FakeType < BaseObject
               field :a_thing,
@@ -507,7 +507,7 @@ RSpec.describe RuboCop::Cop::Graphql::Descriptions do
                 DESC
             end
           end
-      TYPE
+      RUBY
     end
   end
 end

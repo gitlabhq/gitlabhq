@@ -9,10 +9,10 @@ RSpec.describe RuboCop::Cop::Gitlab::LicenseAvailableUsage, feature_category: :s
 
   describe 'uses license check' do
     it 'registers an offense' do
-      expect_offense(<<~SOURCE)
+      expect_offense(<<~RUBY)
         License.feature_available?(:elastic_search) && super
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Avoid License.feature_available? usage in ApplicationSetting due to possible cyclical dependency issue. For more information see: https://gitlab.com/gitlab-org/gitlab/-/issues/423237
-      SOURCE
+      RUBY
     end
   end
 

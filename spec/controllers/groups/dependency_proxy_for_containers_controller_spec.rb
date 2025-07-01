@@ -664,7 +664,8 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
         let_it_be_with_reload(:manifest) { create(:dependency_proxy_manifest, file_name: file_name, digest: old_digest, group: group) }
 
         it 'updates the existing manifest' do
-          expect { subject }.to change { group.dependency_proxy_manifests.count }.by(0)
+          expect { subject }
+            .to not_change { group.dependency_proxy_manifests.count }
             .and change { manifest.reload.digest }.from(old_digest).to(digest)
         end
 

@@ -490,7 +490,7 @@ RSpec.describe Admin::ClustersController, feature_category: :deployment_manageme
           expect { delete_destroy }
             .to change { Clusters::Cluster.count }.by(-1)
             .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-            .and change { Clusters::Providers::Gcp.count }.by(0)
+            .and not_change { Clusters::Providers::Gcp.count }
 
           expect(response).to redirect_to(admin_clusters_path)
           expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')

@@ -86,7 +86,8 @@ GEM
     domain_name (0.6.20240107)
     drb (2.2.1)
     erubi (1.12.0)
-    excon (0.110.0)
+    excon (1.2.7)
+      logger
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)
     faker (3.5.1)
@@ -101,14 +102,14 @@ GEM
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
-    fog-core (2.1.0)
+    fog-core (2.6.0)
       builder
-      excon (~> 0.58)
-      formatador (~> 0.2)
+      excon (~> 1.0)
+      formatador (>= 0.2, < 2.0)
       mime-types
-    fog-google (1.24.1)
+    fog-google (1.25.0)
       addressable (>= 2.7.0)
-      fog-core (< 2.5)
+      fog-core (~> 2.5)
       fog-json (~> 1.2)
       fog-xml (~> 0.1.0)
       google-apis-compute_v1 (~> 0.53)
@@ -380,8 +381,7 @@ DEPENDENCIES
   factory_bot (~> 6.5.1)
   faker (~> 3.5, >= 3.5.1)
   faraday-retry (~> 2.3, >= 2.3.2)
-  fog-core (= 2.1.0)
-  fog-google (~> 1.24, >= 1.24.1)
+  fog-google (~> 1.25)
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.5.0)
   gitlab-utils!

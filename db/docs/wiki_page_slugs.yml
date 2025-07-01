@@ -8,24 +8,7 @@ description: Stores wiki page slug metadata for when we create events.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26529
 milestone: '13.0'
 gitlab_schema: gitlab_main_cell
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: wiki_page_meta_id
-        table: wiki_page_meta
-        sharding_key: project_id
-        belongs_to: wiki_page_meta
-  namespace_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: wiki_page_meta_id
-        table: wiki_page_meta
-        sharding_key: namespace_id
-        belongs_to: wiki_page_meta
+sharding_key:
+  project_id: projects
+  namespace_id: namespaces
 table_size: small
-desired_sharding_key_migration_job_name:
-- BackfillWikiPageSlugsNamespaceId
-- BackfillWikiPageSlugsProjectId

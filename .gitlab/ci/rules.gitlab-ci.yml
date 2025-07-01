@@ -1038,6 +1038,8 @@
   rules:
     - if: '$GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN == null'
       when: never
+    - <<: *if-fork-merge-request
+      when: never
     - <<: *if-merge-request
       changes: *db-patterns
       when: always

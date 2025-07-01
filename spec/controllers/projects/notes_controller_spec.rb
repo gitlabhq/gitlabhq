@@ -867,8 +867,9 @@ RSpec.describe Projects::NotesController, type: :controller, feature_category: :
           namespace_id: project.namespace
         }
 
-        expect { post :create, params: request_params }.to change { issue.notes.count }.by(1)
-          .and change { locked_issue.notes.count }.by(0)
+        expect { post :create, params: request_params }
+          .to change { issue.notes.count }.by(1)
+          .and not_change { locked_issue.notes.count }
         expect(response).to have_gitlab_http_status(:found)
       end
     end

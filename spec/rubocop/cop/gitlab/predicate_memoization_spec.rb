@@ -59,14 +59,14 @@ RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
       it 'registers an offense' do
         node = "@really ||= true"
 
-        expect_offense(<<~CODE, node: node, msg: msg)
+        expect_offense(<<~RUBY, node: node, msg: msg)
           class C
             def really?
               %{node}
               ^{node} %{msg}
             end
           end
-        CODE
+        RUBY
       end
     end
 
@@ -74,7 +74,7 @@ RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
       it 'registers an offense' do
         node = "@really ||= value"
 
-        expect_offense(<<~CODE, node: node, msg: msg)
+        expect_offense(<<~RUBY, node: node, msg: msg)
           class C
             def really?
               value = true
@@ -82,7 +82,7 @@ RSpec.describe RuboCop::Cop::Gitlab::PredicateMemoization do
               ^{node} %{msg}
             end
           end
-        CODE
+        RUBY
       end
     end
   end

@@ -616,7 +616,7 @@ RSpec.describe Projects::ClustersController, feature_category: :deployment_manag
           expect { go }
             .to change { Clusters::Cluster.count }.by(-1)
             .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-            .and change { Clusters::Providers::Gcp.count }.by(0)
+            .and not_change { Clusters::Providers::Gcp.count }
 
           expect(response).to redirect_to(project_clusters_path(project))
           expect(flash[:notice]).to eq('Kubernetes cluster integration was successfully removed.')

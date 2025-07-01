@@ -5,7 +5,7 @@ require_relative '../../../../rubocop/cop/graphql/enum_values'
 
 RSpec.describe RuboCop::Cop::Graphql::EnumValues do
   it 'adds an offense when enum value is not uppercase' do
-    expect_offense(<<~ENUM)
+    expect_offense(<<~RUBY)
       module Types
         class FakeEnum < BaseEnum
           graphql_name 'Fake'
@@ -14,12 +14,12 @@ RSpec.describe RuboCop::Cop::Graphql::EnumValues do
                 ^^^^^^^^^^ #{described_class::MSG}
         end
       end
-    ENUM
+    RUBY
   end
 
   context 'when values are set dynamically' do
     it 'adds an offense when enum value is set without `:upcase`' do
-      expect_offense(<<~ENUM)
+      expect_offense(<<~RUBY)
         VALUES = ['FOO', 'bar']
 
         module Types
@@ -32,11 +32,11 @@ RSpec.describe RuboCop::Cop::Graphql::EnumValues do
             end
           end
         end
-      ENUM
+      RUBY
     end
 
     it 'adds no offense when enum value is deprecated' do
-      expect_no_offenses(<<~ENUM)
+      expect_no_offenses(<<~RUBY)
         module Types
           class FakeEnum < BaseEnum
             graphql_name 'Fake'
@@ -44,11 +44,11 @@ RSpec.describe RuboCop::Cop::Graphql::EnumValues do
             value 'foo', deprecated: { reason: 'Use something else' }
           end
         end
-      ENUM
+      RUBY
     end
 
     it 'adds no offense when enum value is uppercased literally' do
-      expect_no_offenses(<<~'ENUM')
+      expect_no_offenses(<<~'RUBY')
         module Types
           class FakeEnum < BaseEnum
             graphql_name 'Fake'
@@ -56,11 +56,11 @@ RSpec.describe RuboCop::Cop::Graphql::EnumValues do
             value 'FOO'
           end
         end
-      ENUM
+      RUBY
     end
 
     it 'adds no offense when enum value is calling upcased' do
-      expect_no_offenses(<<~'ENUM')
+      expect_no_offenses(<<~'RUBY')
         VALUES = ['FOO', 'bar']
 
         module Types
@@ -73,7 +73,7 @@ RSpec.describe RuboCop::Cop::Graphql::EnumValues do
             end
           end
         end
-      ENUM
+      RUBY
     end
   end
 end

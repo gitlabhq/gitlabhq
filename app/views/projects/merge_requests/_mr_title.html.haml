@@ -13,7 +13,7 @@
         = _('The source project of this merge request has been removed.')
 
   .detail-page-header.gl-flex.gl-pt-5.gl-gap-3.gl-flex-wrap.sm:gl-flex-nowrap.gl-mb-3.sm:gl-mb-0{ class: ('is-merge-request' unless fluid_layout) }
-    %h1.title.gl-heading-1.gl-self-center.gl-mb-0.gl-flex-1{ data: { testid: 'title-content' } }
+    %h1.title.gl-heading-1.gl-self-center.gl-mb-0.gl-flex-1.gl-wrap-anywhere{ data: { testid: 'title-content' } }
       = markdown_field(@merge_request, :title)
 
     .gl-flex.gl-flex-row.gl-gap-3.gl-w-full.sm:gl-w-auto.js-issuable-actions
