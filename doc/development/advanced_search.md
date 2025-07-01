@@ -900,7 +900,7 @@ Query by `iid` field and document type. Requires `type` and `iid` fields.
 
 #### `by_full_text`
 
-Performs a full text search. This query will use `by_multi_match_query` or `by_simple_query_string` if Advanced search syntax is used in the query string. `by_multi_match_query` is behind the `search_uses_match_queries` feature flag.
+Performs a full text search. This query will use `by_multi_match_query` or `by_simple_query_string` if Advanced search syntax is used in the query string.
 
 #### `by_multi_match_query`
 

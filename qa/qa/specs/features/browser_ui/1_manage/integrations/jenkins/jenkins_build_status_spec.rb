@@ -2,7 +2,7 @@
 
 module QA
   RSpec.describe 'Manage', :requires_admin, :skip_live_env do
-    describe 'Jenkins integration', product_group: :import_and_integrate do
+    describe 'Jenkins integration', product_group: :import do
       let(:jenkins_server) { Service::DockerRun::Jenkins.new }
 
       let(:jenkins_client) do

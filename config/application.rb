@@ -302,7 +302,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/dev_ops_reports.css"
     config.assets.precompile << "page_bundles/editor.css"
     config.assets.precompile << "page_bundles/environments.css"
-    config.assets.precompile << "page_bundles/epics.css"
     config.assets.precompile << "page_bundles/error_tracking_details.css"
     config.assets.precompile << "page_bundles/escalation_policies.css"
     config.assets.precompile << "page_bundles/graph_charts.css"

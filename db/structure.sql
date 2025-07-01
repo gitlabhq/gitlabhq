@@ -22552,7 +22552,8 @@ CREATE TABLE requirements_management_test_reports (
     build_id bigint,
     issue_id bigint,
     uses_legacy_iid boolean DEFAULT true NOT NULL,
-    project_id bigint
+    project_id bigint,
+    CONSTRAINT check_715b56da9a CHECK ((project_id IS NOT NULL))
 );
 
 CREATE SEQUENCE requirements_management_test_reports_id_seq

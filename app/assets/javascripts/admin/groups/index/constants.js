@@ -1,4 +1,5 @@
-import { __ } from '~/locale';
+import groupsEmptyStateIllustration from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
+import { s__, __ } from '~/locale';
 import {
   SORT_LABEL_NAME,
   SORT_LABEL_CREATED,
@@ -7,6 +8,7 @@ import {
 } from '~/groups_projects/constants';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
+import ResourceListsEmptyState from '~/vue_shared/components/resource_lists/empty_state.vue';
 import adminGroupsQuery from './graphql/queries/groups.query.graphql';
 
 const baseTab = {
@@ -24,6 +26,7 @@ const baseTab = {
     listItemClass: 'gl-px-5',
     showGroupIcon: true,
   },
+  emptyStateComponent: ResourceListsEmptyState,
   query: adminGroupsQuery,
   queryPath: 'groups',
 };
@@ -34,6 +37,14 @@ export const ACTIVE_TAB = {
   value: 'active',
   variables: { active: true },
   countsQueryPath: 'active',
+  emptyStateComponentProps: {
+    svgPath: groupsEmptyStateIllustration,
+    title: s__("Groups|You don't have any active groups yet."),
+    description: s__(
+      'Organization|A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
+    ),
+    'data-testid': 'groups-empty-state',
+  },
 };
 
 export const INACTIVE_TAB = {
@@ -42,6 +53,11 @@ export const INACTIVE_TAB = {
   value: 'inactive',
   variables: { active: false },
   countsQueryPath: 'inactive',
+  emptyStateComponentProps: {
+    svgPath: groupsEmptyStateIllustration,
+    title: s__("Groups|You don't have any inactive groups."),
+    description: s__('Groups|Groups that are archived or pending deletion will appear here.'),
+  },
 };
 
 export const SORT_OPTION_NAME = {

@@ -872,6 +872,23 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
+  describe 'rescue_from Gitlab::Auth::TooManyIps' do
+    controller(described_class) do
+      skip_before_action :authenticate_user!
+
+      def index
+        raise Gitlab::Auth::TooManyIps.new(1, '1.2.3.4', 10)
+      end
+    end
+
+    it 'returns a 403' do
+      get :index
+
+      expect(response).to have_gitlab_http_status(:forbidden)
+      expect(response.headers['Retry-After']).to eq(Gitlab::Auth::UniqueIpsLimiter.config.unique_ips_limit_time_window.to_s)
+    end
+  end
+
   describe '#set_current_context' do
     controller(described_class) do
       feature_category :team_planning

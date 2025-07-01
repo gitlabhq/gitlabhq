@@ -1,4 +1,4 @@
-import { GlCard, GlIcon, GlLink, GlButton, GlAlert } from '@gitlab/ui';
+import { GlCard, GlIcon, GlLink, GlButton, GlAlert, GlExperimentBadge } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -84,6 +84,7 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
   const findValidityChecksSection = () => wrapper.findByTestId('validity-checks-section');
   const findValidityChecksToggle = () => wrapper.findByTestId('validity-checks-toggle');
   const findValidityChecksAlert = () => wrapper.findComponent(GlAlert);
+  const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);
 
   afterEach(() => {
     feature = undefined;
@@ -250,6 +251,7 @@ describe('PipelineSecretDetectionFeatureCard component', () => {
         createComponent({}, { validityChecksAvailable });
 
         expect(findValidityChecksSection().exists()).toBe(shouldRender);
+        expect(findExperimentBadge().exists()).toBe(shouldRender);
       },
     );
 

@@ -2,12 +2,14 @@
 import { RUNNER_TYPES } from '../constants';
 import RequiredFields from './runner_create_wizard_required_fields.vue';
 import OptionalFields from './runner_create_wizard_optional_fields.vue';
+import RunnerRegistration from './runner_create_wizard_registration.vue';
 
 export default {
   name: 'RunnerCreateWizard',
   components: {
     RequiredFields,
     OptionalFields,
+    RunnerRegistration,
   },
   props: {
     runnerType: {
@@ -57,5 +59,10 @@ export default {
     :runner-type="runnerType"
     @next="onNext"
     @back="onBack"
+  />
+  <runner-registration
+    v-else-if="currentStep === 3"
+    :current-step="currentStep"
+    :steps-total="$options.stepsTotal"
   />
 </template>

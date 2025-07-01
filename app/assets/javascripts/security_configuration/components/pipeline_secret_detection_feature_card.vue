@@ -1,5 +1,5 @@
 <script>
-import { GlCard, GlIcon, GlLink, GlButton, GlToggle, GlAlert } from '@gitlab/ui';
+import { GlCard, GlIcon, GlLink, GlButton, GlToggle, GlAlert, GlExperimentBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import ManageViaMr from '~/vue_shared/security_configuration/components/manage_via_mr.vue';
 import SetValidityChecks from '~/security_configuration/graphql/set_validity_checks.graphql';
@@ -15,6 +15,7 @@ export default {
     GlButton,
     GlToggle,
     GlAlert,
+    GlExperimentBadge,
     ManageViaMr,
   },
   inject: [
@@ -177,9 +178,10 @@ export default {
 
         <h4 class="gl-mb-3 gl-text-base gl-font-bold">
           {{ s__('SecretDetection|Validity checks') }}
+          <gl-experiment-badge />
         </h4>
 
-        <p class="gl-mb-4 gl-text-secondary">
+        <p class="gl-mb-4 gl-text-base">
           {{
             s__(
               'SecretDetection|Validate tokens using third-party API calls. When the pipeline is complete, your tokens are labeled Active, Possibly active, or Inactive. You must have pipeline secret detection enabled.',

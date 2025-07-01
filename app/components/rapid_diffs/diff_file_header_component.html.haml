@@ -28,18 +28,20 @@
         - if @diff_file.renamed_file?
           - old_path, new_path = helpers.mark_inline_diffs(@diff_file.old_path, @diff_file.new_path)
           %h2.rd-diff-file-title{ id: heading_id, aria: { label: moved_title_label } }><
-            = old_path
-            %span.rd-diff-file-moved>< →
-            = new_path
+            = link_to file_link, { class: 'rd-diff-file-link', target: '_blank' } do
+              = old_path
+              %span.rd-diff-file-moved>< →
+              = new_path
         - else
           %h2.rd-diff-file-title{ id: heading_id }><
-            - chunks = file_title_chunks
-            - chunks[:path_parts].each do |part|
-              = part
-              = '/'
-              -# allow paths to wrap around '/' symbols for better visuals
-              %wbr><
-            = chunks[:filename]
+            = link_to file_link, { class: 'rd-diff-file-link', target: '_blank' } do
+              - chunks = file_title_chunks
+              - chunks[:path_parts].each do |part|
+                = part
+                = '/'
+                -# allow paths to wrap around '/' symbols for better visuals
+                %wbr><
+              = chunks[:filename]
           - if @diff_file.deleted_file?
             %span.rd-diff-file-deleted><= _("deleted")
           = copy_path_button
@@ -52,11 +54,12 @@
         %span.rd-lines-added +#{@diff_file.added_lines}
         %span.rd-lines-removed −#{@diff_file.removed_lines}
       .rd-diff-file-options-menu
-        %div{ data: { options_menu: true } }
-          -# <script> here is likely the most effective way to minimize bytes:
-          -# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
-          -# haml-lint:disable InlineJavaScript
-          %script{ type: "application/json" }
-            = menu_items.map { |item| item.except(:position) }.to_json.html_safe
-          - button_params = { icon: 'ellipsis_v', button_options: { data: { click: 'toggleOptionsMenu' }, aria: { label: s_('RapidDiffs|Show options') } } }
-          = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, **button_params)
+        - unless menu_items.empty?
+          %div{ data: { options_menu: true } }
+            -# <script> here is likely the most effective way to minimize bytes:
+            -# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092
+            -# haml-lint:disable InlineJavaScript
+            %script{ type: "application/json" }
+              = menu_items.map { |item| item.except(:position) }.to_json.html_safe
+            - button_params = { icon: 'ellipsis_v', button_options: { data: { click: 'toggleOptionsMenu' }, aria: { label: s_('RapidDiffs|Show options') } } }
+            = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, **button_params)

@@ -31110,6 +31110,9 @@ msgstr ""
 msgid "Groups|This will create a project %{path} and add a README.md."
 msgstr ""
 
+msgid "Groups|You don't have any active groups yet."
+msgstr ""
+
 msgid "Groups|You don't have any inactive groups."
 msgstr ""
 
@@ -53378,6 +53381,9 @@ msgid "Runners|Register an instance runner"
 msgstr ""
 
 msgid "Runners|Register runner"
+msgstr ""
+
+msgid "Runners|Register your new runner"
 msgstr ""
 
 msgid "Runners|Registration token"

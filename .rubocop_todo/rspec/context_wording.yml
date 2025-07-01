@@ -318,7 +318,6 @@ RSpec/ContextWording:
     - 'ee/spec/lib/gitlab/code_owners/users_loader_spec.rb'
     - 'ee/spec/lib/gitlab/custom_file_templates_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/group_search_results_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/snippet_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
     - 'ee/spec/lib/gitlab/expiring_subscription_message_spec.rb'
     - 'ee/spec/lib/gitlab/geo/cron_manager_spec.rb'
