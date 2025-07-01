@@ -29,6 +29,8 @@
   - 1
 - - admin_emails
   - 1
+- - ai_active_context_code_repository_index
+  - 1
 - - ai_active_context_code_saas_initial_indexing_event
   - 1
 - - ai_knowledge_graph_indexing_task

@@ -1,8 +1,6 @@
 <script>
 import { GlButton, GlSkeletonLoader } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
-import { mapState } from 'pinia';
+import { mapState, mapActions } from 'pinia';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
@@ -13,6 +11,7 @@ import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { isCollapsed } from '~/diffs/utils/diff_file';
 import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 const FIRST_CHAR_REGEX = /^(\+|-| )/;
 
@@ -117,7 +116,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchDiscussionDiffLines']),
+    ...mapActions(useNotes, ['fetchDiscussionDiffLines']),
     fetchDiff() {
       this.error = false;
       this.fetchDiscussionDiffLines(this.discussion)

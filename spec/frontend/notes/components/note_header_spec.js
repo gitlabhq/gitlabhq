@@ -1,18 +1,19 @@
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import waitForPromises from 'helpers/wait_for_promises';
 import NoteHeader from '~/notes/components/note_header.vue';
 import ImportedBadge from '~/vue_shared/components/imported_badge.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
-Vue.use(Vuex);
-
-const actions = {
-  setTargetNoteHash: jest.fn(),
-};
+Vue.use(PiniaVuePlugin);
 
 describe('NoteHeader component', () => {
   let wrapper;
+  let pinia;
 
   const findActionText = () => wrapper.findComponent({ ref: 'actionText' });
   const findTimestampLink = () => wrapper.findComponent({ ref: 'noteTimestampLink' });
@@ -51,12 +52,16 @@ describe('NoteHeader component', () => {
 
   const createComponent = (props) => {
     wrapper = shallowMountExtended(NoteHeader, {
-      store: new Vuex.Store({
-        actions,
-      }),
+      pinia,
       propsData: { ...props },
     });
   };
+
+  beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
+  });
 
   it('renders an author link if author is passed to props', () => {
     createComponent({ author });
@@ -106,14 +111,16 @@ describe('NoteHeader component', () => {
       expect(findActionText().text()).toBe('Test action text');
     });
 
-    it('calls an action when timestamp is clicked', () => {
+    it('calls an action when timestamp is clicked', async () => {
       createComponent({
         createdAt: '2017-08-02T10:51:58.559Z',
         noteId: 123,
       });
       findTimestampLink().vm.$emit('click');
 
-      expect(actions.setTargetNoteHash).toHaveBeenCalled();
+      await waitForPromises();
+
+      expect(useNotes().setTargetNoteHash).toHaveBeenCalled();
     });
   });
 

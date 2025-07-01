@@ -1,7 +1,6 @@
 <script>
 import { GlBadge, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { getActivePinia } from 'pinia';
 import { isGid, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPE_ACTIVITY, TYPE_COMMENT } from '~/import/constants';
 import { s__ } from '~/locale';
@@ -129,11 +128,10 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setTargetNoteHash']),
-    updateTargetNoteHash() {
-      if (this.$store) {
-        this.setTargetNoteHash(this.noteTimestampLink);
-      }
+    async updateTargetNoteHash() {
+      if (!getActivePinia()) return;
+      const { useNotes } = await import('~/notes/store/legacy_notes');
+      useNotes().setTargetNoteHash(this.noteTimestampLink);
     },
     handleUsernameMouseEnter() {
       this.$refs.authorNameLink.dispatchEvent(new Event('mouseenter'));

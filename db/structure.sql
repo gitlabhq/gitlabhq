@@ -26122,7 +26122,7 @@ CREATE TABLE work_item_custom_lifecycles (
     name text NOT NULL,
     created_by_id bigint,
     updated_by_id bigint,
-    CONSTRAINT check_1feff2de99 CHECK ((char_length(name) <= 255))
+    CONSTRAINT check_1feff2de99 CHECK ((char_length(name) <= 64))
 );
 
 CREATE SEQUENCE work_item_custom_lifecycles_id_seq
@@ -26148,7 +26148,7 @@ CREATE TABLE work_item_custom_statuses (
     converted_from_system_defined_status_identifier smallint,
     CONSTRAINT check_4789467800 CHECK ((char_length(color) <= 7)),
     CONSTRAINT check_720a7c4d24 CHECK ((char_length(name) <= 32)),
-    CONSTRAINT check_8ea8b3c991 CHECK ((char_length(description) <= 255)),
+    CONSTRAINT check_8ea8b3c991 CHECK ((char_length(description) <= 128)),
     CONSTRAINT check_ff2bac1606 CHECK ((category > 0))
 );
 

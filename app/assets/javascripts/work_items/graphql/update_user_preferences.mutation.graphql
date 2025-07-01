@@ -1,0 +1,7 @@
+mutation updateWorkItemsDisplaySettings($input: UserPreferencesUpdateInput!) {
+  userPreferencesUpdate(input: $input) {
+    userPreferences {
+      workItemsDisplaySettings
+    }
+  }
+}

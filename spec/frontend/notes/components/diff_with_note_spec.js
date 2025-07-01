@@ -5,17 +5,16 @@ import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import discussionFixture from 'test_fixtures/merge_requests/diff_discussion.json';
 import imageDiscussionFixture from 'test_fixtures/merge_requests/image_diff_discussion.json';
-import { createStore } from '~/mr_notes/stores';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 Vue.use(PiniaVuePlugin);
 
 describe('diff_with_note', () => {
-  let store;
   let pinia;
   let wrapper;
 
@@ -37,7 +36,6 @@ describe('diff_with_note', () => {
   const createComponent = (propsData) => {
     wrapper = shallowMount(DiffWithNote, {
       propsData,
-      store,
       pinia,
     });
   };
@@ -45,15 +43,7 @@ describe('diff_with_note', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    store = createStore();
-    store.replaceState({
-      ...store.state,
-      notes: {
-        noteableData: {
-          current_user: {},
-        },
-      },
-    });
+    useNotes().noteableData = { current_user: {} };
   });
 
   describe('text diff', () => {
@@ -199,7 +189,7 @@ describe('diff_with_note', () => {
       beforeEach(() => {
         wrapper = shallowMount(DiffWithNote, {
           propsData: { discussion: fileDiscussion, diffFile: {} },
-          store,
+          pinia,
         });
       });
 
@@ -218,7 +208,7 @@ describe('diff_with_note', () => {
 
         wrapper = shallowMount(DiffWithNote, {
           propsData: { discussion: fileDiscussion, diffFile: {} },
-          store,
+          pinia,
         });
       });
 

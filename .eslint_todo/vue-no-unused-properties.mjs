@@ -3,7 +3,6 @@
  */
 export default {
   files: [
-    'app/assets/javascripts/add_context_commits_modal/components/add_context_commits_modal_wrapper.vue',
     'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_comment_form.vue',
     'app/assets/javascripts/admin/abuse_report/components/notes/abuse_report_edit_note.vue',
     'app/assets/javascripts/admin/statistics_panel/components/app.vue',

@@ -7252,6 +7252,9 @@ msgstr ""
 msgid "An error occurred while getting merge request counts"
 msgstr ""
 
+msgid "An error occurred while getting work item user preference."
+msgstr ""
+
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
@@ -59713,6 +59716,9 @@ msgstr ""
 msgid "Something went wrong while resolving this discussion. Please try again."
 msgstr ""
 
+msgid "Something went wrong while saving the preference."
+msgstr ""
+
 msgid "Something went wrong while setting %{issuableType} %{dateType} date."
 msgstr ""
 
@@ -70206,6 +70212,15 @@ msgid "WorkItems|An error occurred while fetching children"
 msgstr ""
 
 msgid "WorkItems|Ancestors not available"
+msgstr ""
+
+msgid "WorkItems|Display options"
+msgstr ""
+
+msgid "WorkItems|Open items in side panel"
+msgstr ""
+
+msgid "WorkItems|Your preferences"
 msgstr ""
 
 msgid "WorkItem| %{workItemType}s closed"

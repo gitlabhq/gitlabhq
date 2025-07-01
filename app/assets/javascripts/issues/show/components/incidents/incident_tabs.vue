@@ -26,14 +26,18 @@ export const TAB_NAMES = Object.freeze({
 
 export default {
   components: {
-    AlertDetailsTable,
     DescriptionComponent,
     GlTab,
     GlTabs,
     HighlightBar,
-    ...(gon.features?.hideIncidentManagementFeatures ? {} : { TimelineTab }),
-    IncidentMetricTab: () =>
-      import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
+    ...(gon.features?.hideIncidentManagementFeatures
+      ? {}
+      : {
+          AlertDetailsTable,
+          TimelineTab,
+          IncidentMetricTab: () =>
+            import('ee_component/issues/show/components/incidents/incident_metric_tab.vue'),
+        }),
   },
   inject: ['fullPath', 'iid', 'hasLinkedAlerts', 'uploadMetricsFeatureAvailable'],
   i18n: incidentTabsI18n,
@@ -75,10 +79,10 @@ export default {
     tabMapping() {
       const availableTabs = [TAB_NAMES.SUMMARY];
 
-      if (this.uploadMetricsFeatureAvailable) {
+      if (this.uploadMetricsFeatureAvailable && this.showIncidentManagementFeatures) {
         availableTabs.push(TAB_NAMES.METRICS);
       }
-      if (this.hasLinkedAlerts) {
+      if (this.hasLinkedAlerts && this.showIncidentManagementFeatures) {
         availableTabs.push(TAB_NAMES.ALERTS);
       }
 
@@ -158,18 +162,20 @@ export default {
         <description-component v-bind="$attrs" v-on="$listeners" />
       </gl-tab>
       <gl-tab
-        v-if="uploadMetricsFeatureAvailable"
+        v-if="uploadMetricsFeatureAvailable && showIncidentManagementFeatures"
         :title="$options.i18n.metricsTitle"
         data-testid="metrics-tab"
       >
+        <!-- eslint-disable-next-line vue/no-undef-components -->
         <incident-metric-tab />
       </gl-tab>
       <gl-tab
-        v-if="hasLinkedAlerts"
+        v-if="hasLinkedAlerts && showIncidentManagementFeatures"
         class="alert-management-details"
         :title="$options.i18n.alertsTitle"
         data-testid="alert-details-tab"
       >
+        <!-- eslint-disable-next-line vue/no-undef-components -->
         <alert-details-table :alert="alert" :loading="loading" />
       </gl-tab>
       <gl-tab

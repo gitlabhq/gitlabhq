@@ -6,8 +6,7 @@ import {
   GlDisclosureDropdownItem,
   GlDisclosureDropdownGroup,
 } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import Api from '~/api';
 import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { createAlert } from '~/alert';
@@ -16,6 +15,7 @@ import { __, sprintf } from '~/locale';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import { splitCamelCase } from '~/lib/utils/text_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import { useNotes } from '~/notes/store/legacy_notes';
 import ReplyButton from './note_actions/reply_button.vue';
 import TimelineEventButton from './note_actions/timeline_event_button.vue';
 
@@ -146,8 +146,12 @@ export default {
     };
   },
   computed: {
-    ...mapState(['isPromoteCommentToTimelineEventInProgress']),
-    ...mapGetters(['getUserDataByProp', 'getNoteableData', 'canUserAddIncidentTimelineEvents']),
+    ...mapState(useNotes, [
+      'isPromoteCommentToTimelineEventInProgress',
+      'getUserDataByProp',
+      'getNoteableData',
+      'canUserAddIncidentTimelineEvents',
+    ]),
     shouldShowActionsDropdown() {
       return this.currentUserId;
     },
@@ -204,7 +208,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
+    ...mapActions(useNotes, ['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
     onEdit() {
       this.$emit('handleEdit');
     },

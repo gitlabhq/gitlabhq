@@ -1,7 +1,5 @@
 <script>
 import { GlSprintf, GlIcon, GlButton } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
 import { mapState } from 'pinia';
 import { IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
 import { sprintf, __ } from '~/locale';
@@ -11,6 +9,7 @@ import {
   getLineClasses,
 } from '~/notes/components/multiline_comment_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 import resolvedStatusMixin from '../mixins/resolved_status';
 
 export default {
@@ -28,7 +27,7 @@ export default {
   },
   computed: {
     ...mapState(useLegacyDiffs, ['getDiffFileByHash']),
-    ...mapGetters(['getDiscussion']),
+    ...mapState(useNotes, ['getDiscussion']),
     iconName() {
       return this.isDiffDiscussion || this.draft.line_code ? 'doc-text' : 'comment';
     },

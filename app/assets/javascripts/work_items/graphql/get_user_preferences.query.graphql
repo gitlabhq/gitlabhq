@@ -1,0 +1,8 @@
+query getUserWorkItemsDisplaySettingsPreferences {
+  currentUser {
+    id
+    userPreferences {
+      workItemsDisplaySettings
+    }
+  }
+}

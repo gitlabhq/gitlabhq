@@ -1,7 +1,7 @@
 <script>
 import { GlFormSelect, GlSprintf } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions } from 'vuex';
+import { mapActions } from 'pinia';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { getSymbol, getLineClasses } from './multiline_comment_utils';
 
 export default {
@@ -48,7 +48,7 @@ export default {
     this.setSelectedCommentPosition();
   },
   methods: {
-    ...mapActions(['setSelectedCommentPosition']),
+    ...mapActions(useNotes, ['setSelectedCommentPosition']),
     getSymbol({ type }) {
       return getSymbol(type);
     },

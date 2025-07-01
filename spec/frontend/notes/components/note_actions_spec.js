@@ -5,7 +5,9 @@ import {
 } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import AxiosMockAdapter from 'axios-mock-adapter';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { PiniaVuePlugin } from 'pinia';
+import { createTestingPinia } from '@pinia/testing';
 import { stubComponent } from 'helpers/stub_component';
 import { TEST_HOST } from 'spec/test_constants';
 import axios from '~/lib/utils/axios_utils';
@@ -13,13 +15,17 @@ import noteActions from '~/notes/components/note_actions.vue';
 import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import TimelineEventButton from '~/notes/components/note_actions/timeline_event_button.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
-import createStore from '~/notes/stores';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { globalAccessorPlugin } from '~/pinia/plugins';
 import { userDataMock } from '../mock_data';
+
+Vue.use(PiniaVuePlugin);
 
 describe('noteActions', () => {
   let wrapper;
-  let store;
+  let pinia;
   let props;
   let actions;
   let axiosMock;
@@ -37,20 +43,20 @@ describe('noteActions', () => {
     noteableType,
     isPromotionInProgress = true,
   }) => {
-    store.dispatch('setUserData', {
+    useNotes().setUserData({
       ...userDataMock,
       can_add_timeline_events: userCanAdd,
     });
-    store.state.noteableData = {
-      ...store.state.noteableData,
+    useNotes().noteableData = {
+      ...useNotes().noteableData,
       type: noteableType,
     };
-    store.state.isPromoteCommentToTimelineEventInProgress = isPromotionInProgress;
+    useNotes().isPromoteCommentToTimelineEventInProgress = isPromotionInProgress;
   };
 
   const mountNoteActions = (propsData) => {
     return shallowMount(noteActions, {
-      store,
+      pinia,
       propsData,
       stubs: {
         GlDisclosureDropdown: stubComponent(GlDisclosureDropdown, {
@@ -65,7 +71,10 @@ describe('noteActions', () => {
   };
 
   beforeEach(() => {
-    store = createStore();
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
+    useLegacyDiffs();
+    useNotes().toggleAwardRequest.mockResolvedValue();
+    useNotes().promoteCommentToTimelineEvent.mockResolvedValue();
 
     props = {
       accessLevel: 'Maintainer',
@@ -98,7 +107,7 @@ describe('noteActions', () => {
 
   describe('user is logged in', () => {
     beforeEach(() => {
-      store.dispatch('setUserData', userDataMock);
+      useNotes().setUserData(userDataMock);
 
       wrapper = mountNoteActions(props);
     });
@@ -222,13 +231,13 @@ describe('noteActions', () => {
 
     beforeEach(() => {
       wrapper = mountNoteActions(props);
-      store.state.noteableData = {
+      useNotes().noteableData = {
         current_user: {
           can_set_issue_metadata: true,
         },
       };
-      store.state.userData = userDataMock;
-      store.state.noteableData.targetType = 'issue';
+      useNotes().userData = userDataMock;
+      useNotes().noteableData.targetType = 'issue';
     });
 
     afterEach(() => {
@@ -244,13 +253,13 @@ describe('noteActions', () => {
       wrapper = mountNoteActions(props, {
         targetType: () => 'issue',
       });
-      store.state.noteableData = {
+      useNotes().noteableData = {
         current_user: {
           can_update: true,
           can_set_issue_metadata: false,
         },
       };
-      store.state.userData = userDataMock;
+      useNotes().userData = userDataMock;
     });
 
     afterEach(() => {
@@ -282,7 +291,7 @@ describe('noteActions', () => {
   describe('user is not logged in', () => {
     beforeEach(() => {
       // userData can be null https://gitlab.com/gitlab-org/gitlab/-/issues/379375
-      store.dispatch('setUserData', null);
+      useNotes().setUserData(null);
       wrapper = mountNoteActions({
         ...props,
         canDelete: false,
@@ -333,7 +342,7 @@ describe('noteActions', () => {
 
   describe('Draft notes', () => {
     beforeEach(() => {
-      store.dispatch('setUserData', userDataMock);
+      useNotes().setUserData(userDataMock);
 
       wrapper = mountNoteActions({ ...props, canResolve: true, isDraft: true });
     });
@@ -386,14 +395,11 @@ describe('noteActions', () => {
       });
 
       it('when timeline-event-button emits click-promote-comment-to-event, dispatches action', () => {
-        jest.spyOn(store, 'dispatch').mockImplementation();
-
-        expect(store.dispatch).not.toHaveBeenCalled();
+        expect(useNotes().promoteCommentToTimelineEvent).not.toHaveBeenCalled();
 
         findTimelineButton().vm.$emit('click-promote-comment-to-event');
 
-        expect(store.dispatch).toHaveBeenCalledTimes(1);
-        expect(store.dispatch).toHaveBeenCalledWith('promoteCommentToTimelineEvent');
+        expect(useNotes().promoteCommentToTimelineEvent).toHaveBeenCalledTimes(1);
       });
     });
   });
@@ -403,7 +409,7 @@ describe('noteActions', () => {
 
     describe('when user is not allowed to report abuse', () => {
       beforeEach(() => {
-        store.dispatch('setUserData', userDataMock);
+        useNotes().setUserData(userDataMock);
         wrapper = mountNoteActions({ ...props, canReportAsAbuse: false });
       });
 
@@ -418,7 +424,7 @@ describe('noteActions', () => {
 
     describe('when user is allowed to report abuse', () => {
       beforeEach(() => {
-        store.dispatch('setUserData', userDataMock);
+        useNotes().setUserData(userDataMock);
         wrapper = mountNoteActions({ ...props, canReportAsAbuse: true });
       });
 

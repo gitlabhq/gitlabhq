@@ -442,6 +442,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:reporter_access) }.policy do
     enable :admin_issue_board
+    enable :read_code
     enable :download_code
     enable :read_statistics
     enable :daily_statistics
@@ -896,6 +897,7 @@ class ProjectPolicy < BasePolicy
   rule { repository_disabled }.policy do
     prevent :build_push_code
     prevent :push_code
+    prevent :read_code
     prevent :download_code
     prevent :build_download_code
     prevent :fork_project
@@ -996,6 +998,7 @@ class ProjectPolicy < BasePolicy
     enable :read_deployment
     enable :read_commit_status
     enable :read_container_image
+    enable :read_code
     enable :download_code
     enable :read_release
     enable :download_wiki_code
@@ -1093,6 +1096,7 @@ class ProjectPolicy < BasePolicy
 
   rule { download_code_deploy_key }.policy do
     enable :download_code
+    enable :read_code
   end
 
   rule { push_code_deploy_key }.policy do
@@ -1205,10 +1209,6 @@ class ProjectPolicy < BasePolicy
   rule { can?(:read_project) }.policy do
     enable :read_incident_management_timeline_event_tag
     enable :read_project_metadata
-  end
-
-  rule { can?(:download_code) }.policy do
-    enable :read_code
   end
 
   rule { can?(:developer_access) & namespace_catalog_available }.policy do

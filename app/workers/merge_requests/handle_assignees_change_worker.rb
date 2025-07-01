@@ -13,14 +13,15 @@ class MergeRequests::HandleAssigneesChangeWorker
   idempotent!
 
   def perform(merge_request_id, user_id, old_assignee_ids, options = {})
-    merge_request = MergeRequest.find(merge_request_id)
-    user = User.find(user_id)
+    merge_request = MergeRequest.find_by_id(merge_request_id)
+    user = User.find_by_id(user_id)
+
+    return unless merge_request && user
 
     old_assignees = User.id_in(old_assignee_ids)
 
     ::MergeRequests::HandleAssigneesChangeService
       .new(project: merge_request.target_project, current_user: user)
       .execute(merge_request, old_assignees, options)
-  rescue ActiveRecord::RecordNotFound
   end
 end

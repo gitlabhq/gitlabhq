@@ -613,7 +613,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
         :create_cluster, :read_cluster, :update_cluster, :admin_cluster,
         :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment,
-        :download_code, :build_download_code
+        :download_code, :build_download_code, :read_code
       ]
     end
 
@@ -1530,6 +1530,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         let!(:deploy_keys_project) { create(:deploy_keys_project, project: project, deploy_key: deploy_key) }
 
         it { is_expected.to be_allowed(:download_code) }
+        it { is_expected.to be_allowed(:read_code) }
         it { is_expected.to be_disallowed(:push_code) }
         it { is_expected.to be_disallowed(:read_project) }
       end
@@ -1538,12 +1539,14 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         let!(:deploy_keys_project) { create(:deploy_keys_project, :write_access, project: project, deploy_key: deploy_key) }
 
         it { is_expected.to be_allowed(:download_code) }
+        it { is_expected.to be_allowed(:read_code) }
         it { is_expected.to be_allowed(:push_code) }
         it { is_expected.to be_disallowed(:read_project) }
       end
 
       context 'when the deploy key is not enabled in the project' do
         it { is_expected.to be_disallowed(:download_code) }
+        it { is_expected.to be_disallowed(:read_code) }
         it { is_expected.to be_disallowed(:push_code) }
         it { is_expected.to be_disallowed(:read_project) }
       end
@@ -3690,6 +3693,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
           with_them do
             it do
               expect(subject.can?(:download_code)).to be(allowed)
+              expect(subject.can?(:read_code)).to be(allowed)
             end
           end
         end
@@ -3710,30 +3714,10 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         with_them do
           it do
             expect(subject.can?(:download_code)).to be(allowed)
+            expect(subject.can?(:read_code)).to be(allowed)
           end
         end
       end
-    end
-  end
-
-  describe 'read_code' do
-    let(:current_user) { create(:user) }
-
-    before do
-      allow(subject).to receive(:allowed?).and_call_original
-      allow(subject).to receive(:allowed?).with(:download_code).and_return(can_download_code)
-    end
-
-    context 'when the current_user can download_code' do
-      let(:can_download_code) { true }
-
-      it { expect_allowed(:read_code) }
-    end
-
-    context 'when the current_user cannot download_code' do
-      let(:can_download_code) { false }
-
-      it { expect_disallowed(:read_code) }
     end
   end
 

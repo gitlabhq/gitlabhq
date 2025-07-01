@@ -1,6 +1,8 @@
 import { getByRole } from '@testing-library/dom';
 import { shallowMount, mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { SYSTEM_NOTE } from '~/notes/constants';
@@ -8,6 +10,9 @@ import createStore from '~/notes/stores';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
@@ -20,14 +25,18 @@ const DISCUSSION_WITH_LINE_RANGE = {
   },
 };
 
+Vue.use(PiniaVuePlugin);
+
 describe('DiscussionNotes', () => {
   let store;
+  let pinia;
   let wrapper;
 
   const getList = () => getByRole(wrapper.element, 'list');
   const createComponent = (props, mountingMethod = shallowMount) => {
     wrapper = mountingMethod(DiscussionNotes, {
       store,
+      pinia,
       propsData: {
         discussion: discussionMock,
         isExpanded: false,
@@ -48,6 +57,9 @@ describe('DiscussionNotes', () => {
   };
 
   beforeEach(() => {
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);

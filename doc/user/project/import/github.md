@@ -30,7 +30,7 @@ The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 
 Using the GitLab UI, the GitHub importer always imports from the
 `github.com` domain. If you are importing from a self-hosted GitHub Enterprise Server domain, use the
-[GitLab Import API](#use-the-api) GitHub endpoint.
+[GitLab Import API](#use-the-api) GitHub endpoint with a GitLab access token with the `api` scope.
 
 You can change the target namespace and target repository name before you import.
 

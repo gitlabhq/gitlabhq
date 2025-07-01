@@ -73,7 +73,8 @@ describe('noteable_discussion component', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    useNotes();
+    useNotes().saveNote.mockResolvedValue();
+    useNotes().fetchDiscussionDiffLines.mockResolvedValue();
     useBatchComments();
     axiosMock = new MockAdapter(axios);
     createComponent();

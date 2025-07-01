@@ -91,6 +91,7 @@ import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
+import WorkItemUserPreferences from '../components/shared/work_item_list_preferences.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -102,6 +103,7 @@ import {
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '../constants';
+import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
 
 const EmojiToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
@@ -135,6 +137,7 @@ export default {
     CreateWorkItemModal,
     LocalBoard,
     WorkItemListHeading,
+    WorkItemUserPreferences,
   },
   mixins: [glFeatureFlagMixin()],
   inject: [
@@ -204,9 +207,27 @@ export default {
       initialLoadWasFiltered: false,
       showLocalBoard: false,
       namespaceId: null,
+      displaySettings: {},
     };
   },
   apollo: {
+    displaySettings: {
+      query: getUserWorkItemsDisplaySettingsPreferences,
+      update(data) {
+        return (
+          data?.currentUser?.userPreferences?.workItemsDisplaySettings ?? {
+            shouldOpenItemsInSidePanel: true,
+          }
+        );
+      },
+      skip() {
+        return !this.isSignedIn;
+      },
+      error(error) {
+        this.error = __('An error occurred while getting work item user preference.');
+        Sentry.captureException(error);
+      },
+    },
     workItemsFull: {
       query() {
         return getWorkItemsQuery;
@@ -335,6 +356,8 @@ export default {
       });
     },
     workItemDrawerEnabled() {
+      const shouldOpenItemsInSidePanel = this.displaySettings?.shouldOpenItemsInSidePanel ?? true;
+      if (!shouldOpenItemsInSidePanel) return false;
       if (this.glFeatures.workItemViewForIssues) {
         return true;
       }
@@ -950,6 +973,9 @@ export default {
       this.isInitialLoadComplete = false;
       this.refetchItems({ refetchCounts: true });
     },
+    handleDisplaySettingsChanged(newDisplaySettings) {
+      this.displaySettings = newDisplaySettings;
+    },
   },
 };
 </script>
@@ -1009,7 +1035,14 @@ export default {
         @previous-page="handlePreviousPage"
         @sort="handleSort"
         @select-issuable="handleToggle"
+        @displaySettingsChanged="handleDisplaySettingsChanged"
       >
+        <template #user-preference>
+          <work-item-user-preferences
+            :display-settings="displaySettings"
+            @displaySettingsChanged="handleDisplaySettingsChanged"
+          />
+        </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
           <div class="gl-flex gl-gap-3">
             <gl-button

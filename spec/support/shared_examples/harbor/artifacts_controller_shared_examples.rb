@@ -129,6 +129,22 @@ RSpec.shared_examples 'a harbor artifacts controller' do |args|
 
         it_behaves_like 'responds with 200 status with json'
       end
+
+      context 'with artifacts that have no tags' do
+        let(:mock_artifacts) { [super()[0].merge(tags: nil)] }
+
+        subject do
+          get harbor_artifact_url(container, repository_id), headers: json_header
+        end
+
+        it_behaves_like 'responds with 200 status with json'
+
+        it 'returns empty tags array' do
+          subject
+
+          expect(Gitlab::Json.parse(response.body).first['tags']).to be_empty
+        end
+      end
     end
 
     context 'with invalid params' do

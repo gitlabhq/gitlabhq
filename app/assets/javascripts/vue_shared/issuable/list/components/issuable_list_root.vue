@@ -355,7 +355,11 @@ export default {
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
       @onSort="$emit('sort', $event)"
-    />
+    >
+      <template #user-preference>
+        <slot name="user-preference"></slot>
+      </template>
+    </filtered-search-bar>
     <gl-alert
       v-if="error"
       variant="danger"

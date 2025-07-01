@@ -1,20 +1,25 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlAvatar, GlAvatarLink } from '@gitlab/ui';
+import { createTestingPinia } from '@pinia/testing';
+import { PiniaVuePlugin } from 'pinia';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import diffDiscussionHeader from '~/notes/components/diff_discussion_header.vue';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
-import createStore from '~/notes/stores';
-
 import mockDiffFile from 'jest/diffs/mock_data/diff_discussions';
+import { useNotes } from '~/notes/store/legacy_notes';
+import { globalAccessorPlugin } from '~/pinia/plugins';
+import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { discussionMock } from '../mock_data';
 
+Vue.use(PiniaVuePlugin);
+
 describe('diff_discussion_header component', () => {
-  let store;
+  let pinia;
   let wrapper;
 
   const createComponent = ({ propsData = {} } = {}) => {
     wrapper = shallowMountExtended(diffDiscussionHeader, {
-      store,
+      pinia,
       propsData: {
         discussion: discussionMock,
         ...propsData,
@@ -24,8 +29,9 @@ describe('diff_discussion_header component', () => {
 
   beforeEach(() => {
     window.mrTabs = {};
-    store = createStore();
-
+    pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
+    useLegacyDiffs();
+    useNotes();
     createComponent({ propsData: { discussion: discussionMock } });
   });
 
@@ -60,10 +66,6 @@ describe('diff_discussion_header component', () => {
     let commitElement;
 
     beforeEach(async () => {
-      store.state.diffs = {
-        projectPath: 'something',
-      };
-
       createComponent({
         propsData: {
           discussion: {
@@ -201,6 +203,19 @@ describe('diff_discussion_header component', () => {
         },
       });
       expect(wrapper.findComponent(ToggleRepliesWidget).props('collapsed')).toBe(true);
+    });
+
+    it('toggles discussion', () => {
+      createComponent({
+        propsData: {
+          discussion: {
+            ...discussionMock,
+            expanded: false,
+          },
+        },
+      });
+      wrapper.findComponent(ToggleRepliesWidget).vm.$emit('toggle');
+      expect(useNotes().toggleDiscussion).toHaveBeenCalledWith({ discussionId: discussionMock.id });
     });
   });
 });

@@ -1,3 +1,4 @@
+import { GlAnimatedChevronLgDownUpIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
@@ -11,6 +12,7 @@ import WidgetContentRow from '~/vue_merge_request_widget/components/widget/widge
 import ReportListItem from '~/merge_requests/reports/components/report_list_item.vue';
 import * as logger from '~/lib/logger';
 import axios from '~/lib/utils/axios_utils';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 
 jest.mock('~/vue_merge_request_widget/components/widget/telemetry', () => ({
@@ -28,6 +30,7 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
   const findExpandedSection = () => wrapper.findByTestId('widget-extension-collapsed-section');
   const findActionButtons = () => wrapper.findComponent(ActionButtons);
   const findToggleButton = () => wrapper.findByTestId('toggle-button');
+  const findToggleChevron = () => findToggleButton().findComponent(GlAnimatedChevronLgDownUpIcon);
   const findHelpPopover = () => wrapper.findComponent(HelpPopover);
   const findDynamicScroller = () => wrapper.findByTestId('dynamic-content-scroller');
 
@@ -282,6 +285,27 @@ describe('~/vue_merge_request_widget/components/widget/widget.vue', () => {
       expect(findToggleButton().attributes('aria-label')).toBe('Show details');
     });
 
+    it('displays the chevron correctly when toggle is clicked', async () => {
+      await createComponent({
+        propsData: {
+          isCollapsible: true,
+        },
+        slots: {
+          content: '<b>More complex content</b>',
+        },
+      });
+
+      // Vue compat doesn't know about component props if it extends other component
+      expect(
+        findToggleChevron().props('isOn') ?? parseBoolean(findToggleChevron().attributes('is-on')),
+      ).toBe(false);
+
+      findToggleButton().vm.$emit('click');
+      await nextTick();
+      expect(
+        findToggleChevron().props('isOn') ?? parseBoolean(findToggleChevron().attributes('is-on')),
+      ).toBe(true);
+    });
     it('does not display the content slot until toggle is clicked', async () => {
       await createComponent({
         propsData: {

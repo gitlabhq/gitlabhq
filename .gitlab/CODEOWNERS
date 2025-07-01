@@ -382,6 +382,9 @@ Dangerfile
 /ee/app/models/ee/merge_request.rb
 /ee/app/services/merge_requests/
 /ee/app/services/ee/merge_requests
+!/ee/app/services/merge_requests/merge_audit_event_service.rb
+!/ee/app/services/merge_requests/create_from_vulnerability_data_service.rb
+!/ee/app/services/merge_requests/policy_violations_detected_audit_event_service.rb
 /ee/app/workers/merge_requests/
 /ee/app/workers/ee/merge_requests
 /ee/app/workers/merge_request_reset_approvals_worker.rb

@@ -1,6 +1,6 @@
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters } from 'vuex';
+import { mapState } from 'pinia';
 import { sprintf, s__, __ } from '~/locale';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   props: {
@@ -21,7 +21,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['isDiscussionResolved']),
+    ...mapState(useNotes, ['isDiscussionResolved']),
     resolvedStatusMessage() {
       let message;
       const discussionResolved = this.isDiscussionResolved(

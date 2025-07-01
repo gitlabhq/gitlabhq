@@ -22,7 +22,7 @@ module Integrations
       end
 
       expose :tags do |item|
-        item['tags'].map { |tag| strip_tags(tag['name']) }
+        item['tags'].blank? ? [] : item['tags'].map { |tag| strip_tags(tag['name']) }
       end
 
       private

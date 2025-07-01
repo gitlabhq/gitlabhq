@@ -38,7 +38,6 @@ Gitlab/NoFindInWorkers:
     - 'app/workers/issuable_export_csv_worker.rb'
     - 'app/workers/issues/placement_worker.rb'
     - 'app/workers/members_destroyer/unassign_issuables_worker.rb'
-    - 'app/workers/merge_requests/handle_assignees_change_worker.rb'
     - 'app/workers/merge_worker.rb'
     - 'app/workers/namespaces/root_statistics_worker.rb'
     - 'app/workers/namespaces/schedule_aggregation_worker.rb'

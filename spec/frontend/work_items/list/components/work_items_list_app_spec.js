@@ -23,6 +23,7 @@ import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
+import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
 import { scrollUp } from '~/lib/utils/scroll_utils';
 import { getParameterByName, removeParams, updateHistory } from '~/lib/utils/url_utility';
 import {
@@ -45,6 +46,7 @@ import {
   TOKEN_TYPE_UPDATED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
+import WorkItemUserPreferences from '~/work_items/components/shared/work_item_list_preferences.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
@@ -94,6 +96,11 @@ describeSkipVue3(skipReason, () => {
     .fn()
     .mockResolvedValue(groupWorkItemStateCountsQueryResponse);
   const mutationHandler = jest.fn().mockResolvedValue(setSortPreferenceMutationResponse);
+  const mockPreferencesQueryHandler = jest.fn().mockResolvedValue({
+    data: {
+      currentUser: null,
+    },
+  });
 
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findIssueCardStatistics = () => wrapper.findComponent(IssueCardStatistics);
@@ -105,6 +112,7 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
+  const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 
   const mountComponent = ({
     provide = {},
@@ -112,6 +120,7 @@ describeSkipVue3(skipReason, () => {
     slimQueryHandler = defaultSlimQueryHandler,
     countsQueryHandler = defaultCountsQueryHandler,
     sortPreferenceMutationResponse = mutationHandler,
+    mockPreferencesHandler = mockPreferencesQueryHandler,
     workItemsToggleEnabled = true,
     workItemPlanningView = false,
     props = {},
@@ -131,6 +140,7 @@ describeSkipVue3(skipReason, () => {
         [getWorkItemsSlimQuery, slimQueryHandler],
         [getWorkItemStateCountsQuery, countsQueryHandler],
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
+        [getUserWorkItemsDisplaySettingsPreferences, mockPreferencesHandler],
         ...additionalHandlers,
       ]),
       provide: {
@@ -720,6 +730,47 @@ describeSkipVue3(skipReason, () => {
 
         it('is rendered when feature is enabled', () => {
           expect(findDrawer().exists()).toBe(true);
+        });
+
+        describe('display settings', () => {
+          it('updates displaySettings when displaySettingsChanged event is emitted', async () => {
+            mountComponent();
+            await waitForPromises();
+
+            const newSettings = { shouldOpenItemsInSidePanel: false };
+            findWorkItemUserPreferences().vm.$emit('displaySettingsChanged', newSettings);
+            await nextTick();
+
+            expect(findWorkItemUserPreferences().props('displaySettings')).toEqual(newSettings);
+          });
+
+          describe('workItemDrawerEnabled with display settings', () => {
+            it('returns false when shouldOpenItemsInSidePanel is false', async () => {
+              const mockHandler = jest.fn().mockResolvedValue({
+                data: {
+                  currentUser: {
+                    id: 'gid://gitlab/User/1',
+                    userPreferences: {
+                      workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+                    },
+                  },
+                },
+              });
+
+              mountComponent({
+                mockPreferencesHandler: mockHandler,
+                provide: {
+                  glFeatures: { workItemViewForIssues: true },
+                  isSignedIn: true,
+                },
+              });
+
+              await waitForPromises();
+              await nextTick();
+
+              expect(findIssuableList().props('preventRedirect')).toBe(false);
+            });
+          });
         });
 
         describe('selecting issues', () => {

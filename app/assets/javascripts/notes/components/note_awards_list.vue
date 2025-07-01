@@ -1,9 +1,9 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 export default {
   components: {
@@ -37,13 +37,13 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['getUserData']),
+    ...mapState(useNotes, ['getUserData']),
     isAuthoredByMe() {
       return this.noteAuthorId === this.getUserData.id;
     },
   },
   methods: {
-    ...mapActions(['toggleAwardRequest']),
+    ...mapActions(useNotes, ['toggleAwardRequest']),
     handleAward(awardName) {
       const data = {
         endpoint: this.toggleAwardPath,
