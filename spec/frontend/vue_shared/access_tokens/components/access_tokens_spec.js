@@ -18,10 +18,14 @@ describe('AccessTokens', () => {
   const pinia = createTestingPinia();
   const store = useAccessTokens();
 
-  const accessTokenCreate = '/api/v4/groups/1/service_accounts/:id/personal_access_tokens/';
-  const accessTokenRevoke = '/api/v4/groups/2/service_accounts/:id/personal_access_tokens/';
-  const accessTokenRotate = '/api/v4/groups/3/service_accounts/:id/personal_access_tokens/';
-  const accessTokenShow = '/api/v4/groups/4/service_accounts/:id/personal_access_token';
+  const accessTokenCreate =
+    'http://localhost/api/v4/groups/1/service_accounts/:id/personal_access_tokens/';
+  const accessTokenRevoke =
+    'http://localhost/api/v4/groups/2/service_accounts/:id/personal_access_tokens/';
+  const accessTokenRotate =
+    'http://localhost/api/v4/groups/3/service_accounts/:id/personal_access_tokens/';
+  const accessTokenShow =
+    'http://localhost/api/v4/groups/4/service_accounts/:id/personal_access_token';
   const id = 235;
 
   const createComponent = (props = {}) => {
@@ -61,10 +65,10 @@ describe('AccessTokens', () => {
       page: 1,
       showCreateForm: false,
       sorting: DEFAULT_SORT,
-      urlCreate: '/api/v4/groups/1/service_accounts/:id/personal_access_tokens/',
-      urlRevoke: '/api/v4/groups/2/service_accounts/:id/personal_access_tokens/',
-      urlRotate: '/api/v4/groups/3/service_accounts/:id/personal_access_tokens/',
-      urlShow: '/api/v4/groups/4/service_accounts/:id/personal_access_token',
+      urlCreate: 'http://localhost/api/v4/groups/1/service_accounts/:id/personal_access_tokens/',
+      urlRevoke: 'http://localhost/api/v4/groups/2/service_accounts/:id/personal_access_tokens/',
+      urlRotate: 'http://localhost/api/v4/groups/3/service_accounts/:id/personal_access_tokens/',
+      urlShow: 'http://localhost/api/v4/groups/4/service_accounts/:id/personal_access_token',
     });
     expect(store.fetchTokens).toHaveBeenCalledTimes(1);
   });
