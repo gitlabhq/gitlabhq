@@ -26,7 +26,7 @@ perform actions on your behalf to answer complex questions more comprehensively.
 
 While Chat answers questions based on a single context, Agentic Chat searches,
 retrieves, and combines information from multiple sources across your GitLab projects
-to provide more thorough and relevant answers. Agentic Chat can also create and edit 
+to provide more thorough and relevant answers. Agentic Chat can also create and edit
 files for you.
 
 "Agentic" means that Agentic Chat:
@@ -35,6 +35,9 @@ files for you.
 - Executes a sequence of operations to gather that information.
 - Formulates a response to your questions.
 - Can create and change local files.
+
+For larger problems, like understanding a codebase or generating an implementation
+plan, use the [GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
 
 Agentic Chat is only available in the
 [GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md) version 6.15.1 or later.

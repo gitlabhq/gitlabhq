@@ -28498,6 +28498,7 @@ GPG signature for a signed commit.
 | <a id="grouppendingmemberapprovals"></a>`pendingMemberApprovals` | [`MemberApprovalConnection`](#memberapprovalconnection) | Pending member promotions of the group. (see [Connections](#connections)) |
 | <a id="grouppendingmembers"></a>`pendingMembers` {{< icon name="warning-solid" >}} | [`PendingMemberInterfaceConnection`](#pendingmemberinterfaceconnection) | **Introduced** in GitLab 16.6. **Status**: Experiment. A pending membership of a user within this group. |
 | <a id="grouppermanentdeletiondate"></a>`permanentDeletionDate` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. For groups pending deletion, returns the group's scheduled deletion date. For groups not pending deletion, returns a theoretical date based on current settings if marked for deletion today. |
+| <a id="groupplan"></a>`plan` {{< icon name="warning-solid" >}} | [`NamespacePlan`](#namespaceplan) | **Introduced** in GitLab 18.2. **Status**: Experiment. Subscription plan associated with the namespace. |
 | <a id="groupproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="groupprojectcomplianceviolations"></a>`projectComplianceViolations` {{< icon name="warning-solid" >}} | [`ProjectComplianceViolationConnection`](#projectcomplianceviolationconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Compliance violations for the projects in a group and its subgroups. |
 | <a id="groupprojectcreationlevel"></a>`projectCreationLevel` | [`String`](#string) | Permission level required to create projects in the group. |
@@ -34122,6 +34123,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
 | <a id="namespacepath"></a>`path` | [`String!`](#string) | Path of the namespace. |
+| <a id="namespaceplan"></a>`plan` {{< icon name="warning-solid" >}} | [`NamespacePlan`](#namespaceplan) | **Introduced** in GitLab 18.2. **Status**: Experiment. Subscription plan associated with the namespace. |
 | <a id="namespaceproductanalyticsstoredeventslimit"></a>`productAnalyticsStoredEventsLimit` {{< icon name="warning-solid" >}} | [`Int`](#int) | **Introduced** in GitLab 16.9. **Status**: Experiment. Number of product analytics events namespace is permitted to store per cycle. |
 | <a id="namespacerepositorysizeexcessprojectcount"></a>`repositorySizeExcessProjectCount` | [`Int`](#int) | Number of projects in the root namespace where the repository size exceeds the limit. This only applies to namespaces under Project limit enforcement. |
 | <a id="namespacerequestaccessenabled"></a>`requestAccessEnabled` | [`Boolean`](#boolean) | Indicates if users can request access to namespace. |
@@ -34685,6 +34687,18 @@ Represents a namespace-cluster-agent mapping.
 | <a id="namespacepermissionsreadcrmorganization"></a>`readCrmOrganization` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_crm_organization` on this resource. |
 | <a id="namespacepermissionsreadnamespace"></a>`readNamespace` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_namespace` on this resource. |
 | <a id="namespacepermissionssetnewworkitemmetadata"></a>`setNewWorkItemMetadata` | [`Boolean!`](#boolean) | If `true`, the user can set work item metadata for new work items. |
+
+### `NamespacePlan`
+
+Represents a subscription plan.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceplanispaid"></a>`isPaid` | [`Boolean`](#boolean) | True if plan is paid. |
+| <a id="namespaceplanname"></a>`name` | [`String`](#string) | Name of the plan. |
+| <a id="namespaceplantitle"></a>`title` | [`String`](#string) | Title of the plan. |
 
 ### `NamespaceSidebar`
 

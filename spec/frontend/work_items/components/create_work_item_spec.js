@@ -99,10 +99,9 @@ describe('Create work item component', () => {
 
   const createComponent = ({
     props = {},
+    provide = {},
     mutationHandler = createWorkItemSuccessHandler,
-    preselectedWorkItemType = WORK_ITEM_TYPE_NAME_EPIC,
     isGroupWorkItem = false,
-    workItemPlanningViewEnabled = false,
   } = {}) => {
     const namespaceResponseCopy = cloneDeep(namespaceWorkItemTypesQueryResponse);
     namespaceResponseCopy.data.workspace.id = 'gid://gitlab/Group/33';
@@ -126,7 +125,7 @@ describe('Create work item component', () => {
       propsData: {
         fullPath: 'full-path',
         projectNamespaceFullPath: 'full-path',
-        preselectedWorkItemType,
+        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_EPIC,
         ...props,
       },
       provide: {
@@ -134,7 +133,7 @@ describe('Create work item component', () => {
         hasIssuableHealthStatusFeature: false,
         hasIterationsFeature: true,
         hasIssueWeightsFeature: false,
-        workItemPlanningViewEnabled,
+        ...provide,
       },
       stubs: {
         PageHeading,
@@ -234,7 +233,7 @@ describe('Create work item component', () => {
         const expectedWorkItemTypeData = namespaceWorkItemTypes.find(
           ({ name }) => name === workItemType,
         );
-        createComponent({ preselectedWorkItemType: workItemType });
+        createComponent({ props: { preselectedWorkItemType: workItemType } });
         await waitForPromises();
 
         findCancelButton().vm.$emit('click');
@@ -253,7 +252,7 @@ describe('Create work item component', () => {
 
   describe('When there is no work item type', () => {
     beforeEach(() => {
-      createComponent({ preselectedWorkItemType: null });
+      createComponent({ props: { preselectedWorkItemType: null } });
       return waitForPromises();
     });
 
@@ -291,7 +290,7 @@ describe('Create work item component', () => {
 
   describe('Group/project selector', () => {
     it('renders with the current namespace selected by default', async () => {
-      createComponent({ workItemPlanningViewEnabled: true });
+      createComponent({ provide: { workItemPlanningViewEnabled: true } });
       await waitForPromises();
 
       expect(findGroupProjectSelector().exists()).toBe(true);
@@ -629,7 +628,7 @@ describe('Create work item component', () => {
   describe('Create work item widgets for Issue work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        createComponent({ preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE });
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
         await waitForPromises();
       });
 
@@ -662,7 +661,7 @@ describe('Create work item component', () => {
   describe('Create work item widgets for Incident work item type', () => {
     describe('default', () => {
       beforeEach(async () => {
-        createComponent({ preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT });
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_INCIDENT } });
         await waitForPromises();
       });
 
@@ -814,7 +813,7 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(true);
-      expect(findFormButtons().classes('gl-justify-end')).toBe(true);
+      expect(findFormButtons().classes('gl-items-end')).toBe(true);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Create epic');
     });
@@ -824,9 +823,26 @@ describe('Create work item component', () => {
       await waitForPromises();
 
       expect(findFormButtons().classes('gl-sticky')).toBe(false);
-      expect(findFormButtons().classes('gl-justify-end')).toBe(false);
+      expect(findFormButtons().classes('gl-items-end')).toBe(false);
       expect(findFormButtons().findAllComponents(GlButton).at(0).text()).toBe('Create epic');
       expect(findFormButtons().findAllComponents(GlButton).at(1).text()).toBe('Cancel');
+    });
+
+    it('shows contribution guidelines link when contributing.md exists', async () => {
+      createComponent({ provide: { contributionGuidePath: 'contribution/guide/path' } });
+      await waitForPromises();
+
+      expect(findFormButtons().findComponent(GlLink).text()).toBe('contribution guidelines');
+      expect(findFormButtons().findComponent(GlLink).attributes('href')).toBe(
+        'contribution/guide/path',
+      );
+    });
+
+    it('does not show contribution guidelines link when contributing.md does not exist', async () => {
+      createComponent({ provide: { contributionGuidePath: undefined } });
+      await waitForPromises();
+
+      expect(findFormButtons().findComponent(GlLink).exists()).toBe(false);
     });
   });
 
@@ -907,10 +923,7 @@ describe('Create work item component', () => {
 
   describe('New work item to resolve threads', () => {
     it('when not resolving any thread, does not pass resolve params to mutation', async () => {
-      createComponent({
-        singleWorkItemType: true,
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      });
+      createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -928,10 +941,7 @@ describe('Create work item component', () => {
         '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
       );
 
-      createComponent({
-        singleWorkItemType: true,
-        preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-      });
+      createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
       await waitForPromises();
 
       await updateWorkItemTitle();
@@ -971,10 +981,7 @@ describe('Create work item component', () => {
         setWindowLocation(
           '?discussion_to_resolve=13&merge_request_to_resolve_discussions_of=112&merge_request_id=13',
         );
-        createComponent({
-          singleWorkItemType: true,
-          preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE,
-        });
+        createComponent({ props: { preselectedWorkItemType: WORK_ITEM_TYPE_NAME_ISSUE } });
         await waitForPromises();
       });
 

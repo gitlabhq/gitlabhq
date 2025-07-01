@@ -1146,6 +1146,7 @@ resource_state_events:
   - merge_request
   - source_merge_request
   - epic
+  - namespace
 iteration:
   - group
   - iterations_cadence

@@ -51749,9 +51749,6 @@ msgstr ""
 msgid "Report for the scan has been removed from the database."
 msgstr ""
 
-msgid "Report version not provided, %{report_type} report type supports versions: %{supported_schema_versions}. GitLab will attempt to validate this report against the earliest supported versions of this report type, to show all the errors but will not ingest the report"
-msgstr ""
-
 msgid "Report your license usage data to GitLab"
 msgstr ""
 
@@ -63817,9 +63814,6 @@ msgstr ""
 msgid "This release was created with a date in the past. Evidence collection at the moment of the release is unavailable."
 msgstr ""
 
-msgid "This report uses a supported MAJOR.MINOR schema version but the PATCH version doesn't match any vendored schema version. Validation will be attempted against version %{find_latest_patch_version}"
-msgstr ""
-
 msgid "This repository"
 msgstr ""
 
@@ -68026,9 +68020,6 @@ msgstr ""
 msgid "Version"
 msgstr ""
 
-msgid "Version %{report_version} for report type %{report_type} is unsupported, supported versions for this report type are: %{supported_schema_versions}. GitLab will attempt to validate this report against the earliest supported versions of this report type, to show all the errors but will not ingest the report"
-msgstr ""
-
 msgid "Version %{versionNumber}"
 msgstr ""
 
@@ -70807,6 +70798,9 @@ msgid "WorkItem|Participants"
 msgstr ""
 
 msgid "WorkItem|Pink"
+msgstr ""
+
+msgid "WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} for this project."
 msgstr ""
 
 msgid "WorkItem|Progress"
@@ -75387,9 +75381,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "verify ownership"
-msgstr ""
-
-msgid "version %{report_version} for report type %{report_type} is deprecated. However, GitLab will still attempt to parse and ingest this report. Upgrade the security report to one of the following versions: %{current_schema_versions}."
 msgstr ""
 
 msgid "version %{versionIndex}"

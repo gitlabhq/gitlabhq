@@ -35,4 +35,4 @@ according to the schema version declared in the report:
   validation always fails in this case, but other validation errors may also be present.
 
 For details of the supported and deprecated schema versions, view the
-[schema validator source code](https://gitlab.com/gitlab-org/gitlab/blob/master/lib/gitlab/ci/parsers/security/validators/schema_validator.rb).
+[schema validator source code](https://gitlab.com/gitlab-org/ruby/gems/gitlab-security_report_schemas/-/blob/main/supported_versions).

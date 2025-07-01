@@ -6,13 +6,16 @@ class ResourceStateEvent < ResourceEvent
   include Import::HasImportSource
   include FromUnion
 
-  validate :exactly_one_issuable, unless: :importing?
-
   belongs_to :source_merge_request, class_name: 'MergeRequest', foreign_key: :source_merge_request_id
+  belongs_to :namespace
+
+  validate :exactly_one_issuable, unless: :importing?
+  validates :namespace, presence: true
 
   # state is used for issue and merge request states.
   enum :state, Issue.available_states.merge(MergeRequest.available_states).merge(reopened: 5)
 
+  before_validation :ensure_namespace_id
   after_create :issue_usage_metrics
 
   scope :merged_with_no_event_source, -> do
@@ -36,6 +39,19 @@ class ResourceStateEvent < ResourceEvent
   end
 
   private
+
+  def parent_namespace_id
+    case issuable
+    when Issue
+      issuable.namespace_id
+    when MergeRequest
+      issuable.project.project_namespace_id
+    end
+  end
+
+  def ensure_namespace_id
+    self.namespace_id = parent_namespace_id
+  end
 
   def issue_usage_metrics
     return unless for_issue?

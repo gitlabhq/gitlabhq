@@ -58,19 +58,16 @@ module Gitlab
             schema_validation_passed = schema_validator.valid?
 
             schema_validator.errors.each { |error| report.add_error('Schema', error) }
-            schema_validator.deprecation_warnings.each { |deprecation_warning| report.add_warning('Schema', deprecation_warning) }
             schema_validator.warnings.each { |warning| report.add_warning('Schema', warning) }
 
             schema_validation_passed
           end
 
           def schema_validator
-            @schema_validator ||= ::Gitlab::Ci::Parsers::Security::Validators::SchemaValidator.new(
-              report.type,
+            @schema_validator ||= ::Gitlab::SecurityReportSchemas::Validator.new(
               report_data,
-              report.version,
-              project: @project,
-              scanner: top_level_scanner_data
+              report.type,
+              report.version
             )
           end
 

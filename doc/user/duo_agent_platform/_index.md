@@ -40,9 +40,14 @@ This feature is [a private beta](../../policy/development_stages_support.md) and
 With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, helping you create code,
 research results, and perform tasks simultaneously.
 The agents have full context across your entire software development lifecycle.
+
+Use the Agent Platform to work on large problems, like understanding a codebase or
+generating an implementation plan. For more focused pieces of work, like generating
+or understanding specific code, use [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md) instead.
+
 For more details, [view this blog post](https://about.gitlab.com/blog/gitlab-duo-agent-platform-what-is-next-for-intelligent-devsecops/).
 
-The GitLab Duo Agent Platform is currently available in the VS Code IDE.
+The Agent Platform is currently available in the VS Code IDE.
 
 - It runs in your IDE so that you do not have to switch contexts or tools.
 - It creates and works through a plan, in response to your prompt.
@@ -108,7 +113,7 @@ Now you can use the Agent Platform to help solve your coding tasks.
 
 ## Use the Agent Platform in VS Code
 
-The software development flow is one of many possible flows in the GitLab Duo Agent Platform.
+The software development flow is one of many possible flows in the Agent Platform.
 
 To use the software development flow:
 

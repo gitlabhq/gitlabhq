@@ -22669,8 +22669,9 @@ CREATE TABLE resource_state_events (
     close_auto_resolve_prometheus_alert boolean DEFAULT false NOT NULL,
     source_merge_request_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
-    CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40)),
-    CONSTRAINT state_events_must_belong_to_issue_or_merge_request_or_epic CHECK ((((issue_id <> NULL::bigint) AND (merge_request_id IS NULL) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id <> NULL::bigint) AND (epic_id IS NULL)) OR ((issue_id IS NULL) AND (merge_request_id IS NULL) AND (epic_id <> NULL::integer))))
+    namespace_id bigint NOT NULL,
+    CONSTRAINT check_465d337634 CHECK ((num_nonnulls(epic_id, issue_id, merge_request_id) = 1)),
+    CONSTRAINT check_f0bcfaa3a2 CHECK ((char_length(source_commit) <= 40))
 );
 
 CREATE SEQUENCE resource_state_events_id_seq
@@ -37594,6 +37595,8 @@ CREATE INDEX index_resource_state_events_on_issue_id_and_created_at ON resource_
 
 CREATE INDEX index_resource_state_events_on_merge_request_id ON resource_state_events USING btree (merge_request_id);
 
+CREATE INDEX index_resource_state_events_on_namespace_id ON resource_state_events USING btree (namespace_id);
+
 CREATE INDEX index_resource_state_events_on_source_merge_request_id ON resource_state_events USING btree (source_merge_request_id);
 
 CREATE INDEX index_resource_state_events_on_user_id ON resource_state_events USING btree (user_id);
@@ -42605,6 +42608,9 @@ ALTER TABLE ONLY merge_requests_approval_rules_approver_groups
 
 ALTER TABLE ONLY epics
     ADD CONSTRAINT fk_1fbed67632 FOREIGN KEY (start_date_sourcing_milestone_id) REFERENCES milestones(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY resource_state_events
+    ADD CONSTRAINT fk_20262abeba FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY ghost_user_migrations
     ADD CONSTRAINT fk_202e642a2f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

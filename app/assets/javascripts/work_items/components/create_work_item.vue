@@ -118,6 +118,9 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   inject: {
+    contributionGuidePath: {
+      default: '',
+    },
     groupPath: {
       default: '',
     },
@@ -129,6 +132,9 @@ export default {
     },
   },
   i18n: {
+    contributionGuidelinesText: s__(
+      'WorkItem|Please review the %{linkStart}contribution guidelines%{linkEnd} for this project.',
+    ),
     suggestionTitle: s__('WorkItem|Similar items'),
     similarWorkItemHelpText: s__(
       'WorkItem|These existing items have a similar title and may represent potential duplicates.',
@@ -1014,7 +1020,7 @@ export default {
           />
         </gl-form-group>
       </div>
-      <div v-if="selectedWorkItemTypeId" data-testid="create-work-item">
+      <template v-if="selectedWorkItemTypeId">
         <work-item-title
           ref="title"
           data-testid="title-input"
@@ -1228,11 +1234,43 @@ export default {
               @error="$emit('error', $event)"
             />
           </aside>
-          <div
-            v-if="!stickyFormSubmit"
-            class="gl-col-start-1 gl-flex gl-gap-3 gl-py-3"
-            data-testid="form-buttons"
-          >
+          <div v-if="!stickyFormSubmit" class="gl-col-start-1 gl-py-3" data-testid="form-buttons">
+            <div class="gl-mb-2 gl-flex gl-gap-3">
+              <gl-button
+                variant="confirm"
+                :loading="loading"
+                data-testid="create-button"
+                @click="createWorkItem"
+              >
+                {{ createWorkItemText }}
+              </gl-button>
+              <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+                {{ __('Cancel') }}
+              </gl-button>
+            </div>
+            <gl-sprintf
+              v-if="contributionGuidePath"
+              :message="$options.i18n.contributionGuidelinesText"
+            >
+              <template #link="{ content }">
+                <gl-link class="gl-font-bold" :href="contributionGuidePath">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
+          </div>
+        </div>
+        <!-- stick to bottom and put the Confirm button on the right -->
+        <!-- bg-overlap to match modal bg -->
+        <div
+          v-if="stickyFormSubmit"
+          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-flex-col gl-items-end gl-gap-2 gl-bg-overlap gl-px-5 gl-py-3"
+          data-testid="form-buttons"
+        >
+          <div class="gl-flex gl-gap-3">
+            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+              {{ __('Cancel') }}
+            </gl-button>
             <gl-button
               variant="confirm"
               :loading="loading"
@@ -1241,31 +1279,18 @@ export default {
             >
               {{ createWorkItemText }}
             </gl-button>
-            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-              {{ __('Cancel') }}
-            </gl-button>
+          </div>
+          <div v-if="contributionGuidePath">
+            <gl-sprintf :message="$options.i18n.contributionGuidelinesText">
+              <template #link="{ content }">
+                <gl-link class="gl-font-bold" :href="contributionGuidePath">
+                  {{ content }}
+                </gl-link>
+              </template>
+            </gl-sprintf>
           </div>
         </div>
-        <!-- stick to bottom and put the Confim button on the right -->
-        <!-- bg-overlap to match modal bg -->
-        <div
-          v-if="stickyFormSubmit"
-          class="gl-border-t gl-sticky gl-bottom-0 gl-z-1 -gl-mx-5 gl-flex gl-justify-end gl-gap-3 gl-bg-overlap gl-px-5 gl-py-3"
-          data-testid="form-buttons"
-        >
-          <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-            {{ __('Cancel') }}
-          </gl-button>
-          <gl-button
-            variant="confirm"
-            :loading="loading"
-            data-testid="create-button"
-            @click="createWorkItem"
-          >
-            {{ createWorkItemText }}
-          </gl-button>
-        </div>
-      </div>
+      </template>
     </template>
   </form>
 </template>

@@ -43,7 +43,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/lib/audit_events/strategies/external_destination_strategy_spec.rb'
     - 'ee/spec/lib/ee/gitlab/auth/request_authenticator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/parsers/security/common_spec.rb'
-    - 'ee/spec/lib/ee/gitlab/ci/parsers/security/validators/schema_validator_spec.rb'
     - 'ee/spec/lib/ee/gitlab/gon_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/rack_attack/request_spec.rb'
     - 'ee/spec/lib/elastic/latest/custom_language_analyzers_spec.rb'

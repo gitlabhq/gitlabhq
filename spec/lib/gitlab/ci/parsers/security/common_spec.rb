@@ -41,7 +41,7 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
       end
 
       describe 'schema validation' do
-        let(:validator_class) { Gitlab::Ci::Parsers::Security::Validators::SchemaValidator }
+        let(:validator_class) { Gitlab::SecurityReportSchemas::Validator }
         let(:data) { {}.merge(scanner_data) }
         let(:json_data) { data.to_json }
         let(:parser) { described_class.new(json_data, report, signatures_enabled: signatures_enabled, validate: validate) }
@@ -63,11 +63,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             parse_report
 
             expect(validator_class).not_to have_received(:new).with(
-              report.type,
               data.deep_stringify_keys,
-              report.version,
-              project: pipeline.project,
-              scanner: data.dig(:scan, :scanner).deep_stringify_keys
+              report.type,
+              report.version
             )
           end
 
@@ -105,11 +103,9 @@ RSpec.describe Gitlab::Ci::Parsers::Security::Common, feature_category: :vulnera
             parse_report
 
             expect(validator_class).to have_received(:new).with(
-              report.type,
               data.deep_stringify_keys,
-              report.version,
-              project: pipeline.project,
-              scanner: data.dig(:scan, :scanner).deep_stringify_keys
+              report.type,
+              report.version
             )
           end
 
