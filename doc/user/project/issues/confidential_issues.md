@@ -48,7 +48,7 @@ To create a confidential issue:
 1. On the left sidebar, at the top, select **Create new** ({{< icon name="plus" >}}).
 1. From the dropdown list, select **New issue**.
 1. Complete the [fields](create_issues.md#fields-in-the-new-issue-form).
-   - Select the **This issue is confidential** checkbox.
+   - Select the **Turn on confidentiality** checkbox.
 1. Select **Create issue**.
 
 ### In an existing issue

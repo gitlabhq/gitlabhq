@@ -59,7 +59,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
           .and have_content("Labels")
           .and have_content("Milestone")
           .and have_content("Dates")
-          .and have_unchecked_field("This issue is confidential and should only be visible to users having at least the Planner role")
+          .and have_unchecked_field("Turn on confidentiality: Limit visibility to project members with at least the Planner role.")
       end
     end
 

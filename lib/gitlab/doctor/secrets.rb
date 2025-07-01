@@ -64,7 +64,7 @@ module Gitlab
             # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/190206
             query = query.with_token_present if model == Ci::Build
 
-            query.each_batch do |batch|
+            query.in_batches do |batch| # rubocop:disable Cop/InBatches -- We can't skip callbacks in `each_batch`.
               batch.each do |entry|
                 attributes.each do |attr|
                   failures_per_row[entry.id] << attr unless valid_attribute?(entry, attr)

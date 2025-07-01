@@ -336,7 +336,7 @@ describe('WorkItemLinksForm', () => {
 
         expect(findTooltip().exists()).toBe(false);
         expect(confidentialCheckbox.text()).toBe(
-          'This task is confidential and should only be visible to team members with at least the Planner role',
+          'Turn on confidentiality: Limit visibility to project members with at least the Planner role.',
         );
       });
 

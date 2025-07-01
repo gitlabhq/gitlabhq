@@ -10,6 +10,7 @@ FactoryBot.define do
     entity_path { target_group.full_path }
     target_details { target_group.name }
     ip_address { IPAddr.new '127.0.0.1' }
+    event_name { 'group_project_creation_level_updated' }
     details do
       {
         change: 'project_creation_level',

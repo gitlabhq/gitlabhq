@@ -151,6 +151,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryadminmemberrolesorderby"></a>`orderBy` | [`MemberRolesOrderBy`](#memberrolesorderby) | Ordering column. Default is NAME. |
 | <a id="queryadminmemberrolessort"></a>`sort` | [`SortDirectionEnum`](#sortdirectionenum) | Ordering column. Default is ASC. |
 
+### `Query.aiCatalogItem`
+
+Find an AI Catalog item.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`AiCatalogItem`](#aicatalogitem).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaicatalogitemid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog item to find. |
+
 ### `Query.aiCatalogItems`
 
 List of AI Catalog items.
@@ -22135,6 +22152,30 @@ Represents a vulnerability asset type.
 | <a id="assettypetype"></a>`type` | [`String!`](#string) | Type of the asset. |
 | <a id="assettypeurl"></a>`url` | [`String!`](#string) | URL of the asset. |
 
+### `AuditEvent`
+
+Audit event.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="auditeventauthor"></a>`author` | [`UserCore`](#usercore) | User who triggered the event. |
+| <a id="auditeventcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the audit event was created. |
+| <a id="auditeventdetails"></a>`details` | [`String`](#string) | Additional details of the audit event. |
+| <a id="auditevententityid"></a>`entityId` | [`ID`](#id) | ID of the entity. |
+| <a id="auditevententitypath"></a>`entityPath` | [`String`](#string) | Path of the entity. |
+| <a id="auditevententitytype"></a>`entityType` | [`String`](#string) | Type of the entity. |
+| <a id="auditeventeventname"></a>`eventName` | [`String`](#string) | Name of the event. |
+| <a id="auditeventgroup"></a>`group` | [`Group`](#group) | Group associated with the audit event. |
+| <a id="auditeventid"></a>`id` | [`ID!`](#id) | Audit Event ID. |
+| <a id="auditeventipaddress"></a>`ipAddress` | [`String`](#string) | IP address of the user. |
+| <a id="auditeventproject"></a>`project` | [`Project`](#project) | Project associated with the audit event. |
+| <a id="auditeventtargetdetails"></a>`targetDetails` | [`String`](#string) | Additional details of the target. |
+| <a id="auditeventtargetid"></a>`targetId` | [`ID`](#id) | ID of the target of the audit event. |
+| <a id="auditeventtargettype"></a>`targetType` | [`String`](#string) | Type of the target of the audit event. |
+| <a id="auditeventuser"></a>`user` | [`UserCore`](#usercore) | User associated with the audit event. |
+
 ### `AuditEventDefinition`
 
 Represents the YAML definitions for audit events defined in `ee/config/audit_events/types/<event-type-name>.yml` and `config/audit_events/types/<event-type-name>.yml`.
@@ -38610,6 +38651,7 @@ Compliance violation for a project.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectcomplianceviolationauditevent"></a>`auditEvent` | [`AuditEvent!`](#auditevent) | Audit event related to the violation. |
 | <a id="projectcomplianceviolationcompliancecontrol"></a>`complianceControl` | [`ComplianceRequirementsControl!`](#compliancerequirementscontrol) | Compliance control of the violation. |
 | <a id="projectcomplianceviolationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the violation was detected. |
 | <a id="projectcomplianceviolationid"></a>`id` | [`ID!`](#id) | Compliance violation ID. |
@@ -47873,6 +47915,12 @@ An example `AiAgentID` is: `"gid://gitlab/Ai::Agent/1"`.
 A `AiAgentVersionID` is a global ID. It is encoded as a string.
 
 An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
+
+### `AiCatalogItemID`
+
+A `AiCatalogItemID` is a global ID. It is encoded as a string.
+
+An example `AiCatalogItemID` is: `"gid://gitlab/Ai::Catalog::Item/1"`.
 
 ### `AiConversationThreadID`
 

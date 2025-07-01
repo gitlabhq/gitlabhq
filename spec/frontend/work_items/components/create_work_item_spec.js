@@ -712,6 +712,34 @@ describe('Create work item component', () => {
 
       expect(findConfidentialCheckbox().attributes('checked')).toBeUndefined();
     });
+
+    it('renders confidentiality checkbox for a group', async () => {
+      createComponent({
+        props: {
+          isGroup: true,
+        },
+      });
+
+      await waitForPromises();
+
+      const confidentialCheckbox = findConfidentialCheckbox();
+
+      expect(confidentialCheckbox.text()).toBe(
+        'Turn on confidentiality: Limit visibility to group members with at least the Planner role.',
+      );
+    });
+
+    it('renders confidentiality checkbox for a project', async () => {
+      createComponent();
+
+      await waitForPromises();
+
+      const confidentialCheckbox = findConfidentialCheckbox();
+
+      expect(confidentialCheckbox.text()).toBe(
+        'Turn on confidentiality: Limit visibility to project members with at least the Planner role.',
+      );
+    });
   });
 
   describe('With related item', () => {

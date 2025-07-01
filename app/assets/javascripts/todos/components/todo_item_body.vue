@@ -181,7 +181,7 @@ export default {
 <template>
   <div class="gl-flex gl-items-start gl-px-2" data-testid="todo-item-container">
     <div v-if="showAvatarOnNote" class="gl-mr-3 gl-hidden sm:gl-inline-block">
-      <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1">
+      <gl-avatar-link :href="author.webUrl" aria-hidden="true" tabindex="-1" class="gl-flex">
         <gl-avatar :size="24" :src="author.avatarUrl" role="none" />
       </gl-avatar-link>
     </div>
@@ -201,8 +201,6 @@ export default {
         {{ actionName }}
       </span>
       <span v-if="noteText" v-safe-html="noteText"></span>
-
-      <!-- TODO: AI? Review summary here: https://gitlab.com/gitlab-org/gitlab/-/work_items/483061 -->
     </div>
   </div>
 </template>

@@ -679,6 +679,90 @@ sudo gitlab-rake gitlab:db:deduplicate_tags
 
 To run this command in dry-run mode, set the environment variable `DRY_RUN=true`.
 
+## Detect PostgreSQL collation version mismatches
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195450) in GitLab 18.2.
+
+{{< /history >}}
+
+The PostgreSQL collation checker detects collation version mismatches between the database and
+operating system that can cause index corruption. PostgreSQL uses the operating
+system's `glibc` library for string collation (sorting and comparison rules).
+Run this task after operating system upgrades that change the underlying `glibc` library.
+
+Prerequisites:
+
+- PostgreSQL 13 or later.
+
+To check for PostgreSQL collation mismatches in all databases:
+
+```shell
+sudo gitlab-rake gitlab:db:collation_checker
+```
+
+To check a specific database:
+
+```shell
+# Check main database
+sudo gitlab-rake gitlab:db:collation_checker:main
+
+# Check CI database
+sudo gitlab-rake gitlab:db:collation_checker:ci
+```
+
+### Example output
+
+When no issues are found:
+
+```plaintext
+Checking for PostgreSQL collation mismatches on main database...
+No collation mismatches detected on main.
+```
+
+If mismatches are detected, the task provides remediation steps to fix the affected indexes.
+
+Example output with mismatches:
+
+```plaintext
+Checking for PostgreSQL collation mismatches on main database...
+⚠️ COLLATION MISMATCHES DETECTED on main database!
+2 collation(s) have version mismatches:
+  - en_US.utf8: stored=428.1, actual=513.1
+  - es_ES.utf8: stored=428.1, actual=513.1
+
+Affected indexes that need to be rebuilt:
+  - index_projects_on_name (btree) on table projects
+    • Affected columns: name
+    • Type: UNIQUE
+
+REMEDIATION STEPS:
+1. Put GitLab into maintenance mode
+2. Run the following SQL commands:
+
+# Step 1: Check for duplicate entries in unique indexes
+SELECT name, COUNT(*), ARRAY_AGG(id) FROM projects GROUP BY name HAVING COUNT(*) > 1 LIMIT 1;
+
+# If duplicates exist, you may need to use gitlab:db:deduplicate_tags or similar tasks
+# to fix duplicate entries before rebuilding unique indexes.
+
+# Step 2: Rebuild affected indexes
+# Option A: Rebuild individual indexes with minimal downtime:
+REINDEX INDEX CONCURRENTLY index_projects_on_name;
+
+# Option B: Alternatively, rebuild all indexes at once (requires downtime):
+REINDEX DATABASE main;
+
+# Step 3: Refresh collation versions
+ALTER COLLATION "en_US.utf8" REFRESH VERSION;
+ALTER COLLATION "es_ES.utf8" REFRESH VERSION;
+
+3. Take GitLab out of maintenance mode
+```
+
+For more information about PostgreSQL collation issues and how they affect database indexes, see the [PostgreSQL upgrading OS documentation](../postgresql/upgrading_os.md).
+
 ## Troubleshooting
 
 ### Advisory lock connection information

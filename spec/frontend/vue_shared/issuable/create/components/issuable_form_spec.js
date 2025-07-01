@@ -101,7 +101,7 @@ describe('IssuableForm', () => {
 
       expect(confidentialCheckboxEl.findComponent(GlFormCheckbox).exists()).toBe(true);
       expect(confidentialCheckboxEl.findComponent(GlFormCheckbox).text()).toBe(
-        'This test case is confidential and should only be visible to team members with at least the Planner role.',
+        'Turn on confidentiality: Limit visibility to project members with at least the Planner role.',
       );
     });
 

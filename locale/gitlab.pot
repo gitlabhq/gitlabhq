@@ -63185,9 +63185,6 @@ msgstr ""
 msgid "Third Party Advisory Link"
 msgstr ""
 
-msgid "This %{issuableType} is confidential and should only be visible to team members with at least the Planner role."
-msgstr ""
-
 msgid "This %{issuable} is hidden because its author has been banned."
 msgstr ""
 
@@ -63534,9 +63531,6 @@ msgid "This issue cannot be assigned to a confidential epic because it is public
 msgstr ""
 
 msgid "This issue cannot be made public because it belongs to a confidential epic."
-msgstr ""
-
-msgid "This issue is confidential and should only be visible to team members with at least the Planner role."
 msgstr ""
 
 msgid "This issue is currently blocked by the following issues:"
@@ -65624,6 +65618,9 @@ msgid "Turn on"
 msgstr ""
 
 msgid "Turn on confidentiality"
+msgstr ""
+
+msgid "Turn on confidentiality: Limit visibility to project members with at least the Planner role."
 msgstr ""
 
 msgid "Two-Factor Authentication"
@@ -71052,12 +71049,6 @@ msgstr ""
 msgid "WorkItem|This %{workItemType} has open child items. If you close this %{workItemType}, they will remain open."
 msgstr ""
 
-msgid "WorkItem|This %{workItemType} is confidential and should only be visible to team members with at least the Planner role"
-msgstr ""
-
-msgid "WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role"
-msgstr ""
-
 msgid "WorkItem|This %{workItemType} is currently blocked by the following items:"
 msgstr ""
 
@@ -71107,6 +71098,9 @@ msgid "WorkItem|Turn off confidentiality"
 msgstr ""
 
 msgid "WorkItem|Turn on confidentiality"
+msgstr ""
+
+msgid "WorkItem|Turn on confidentiality: Limit visibility to %{namespace} members with at least the Planner role."
 msgstr ""
 
 msgid "WorkItem|Type"

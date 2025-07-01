@@ -22,6 +22,9 @@ stages:
       - GIT_DEPTH
       - GIT_STRATEGY
 
+.ruby-image:
+  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images/ci/${BUILD_OS}-${OS_VERSION}-slim-ruby-${RUBY_VERSION}:rubygems-${RUBYGEMS_VERSION}-git-${GIT_VERSION}
+
 workflow:
   auto_cancel:
     on_new_commit: none
@@ -38,6 +41,69 @@ release-environments-build-cng:
   needs: ["release-environments-build-cng-env"]
   variables:
     IMAGE_TAG_EXT: "-${CI_COMMIT_SHORT_SHA}"
+
+release-environments-build-omnibus-env:
+  stage: prepare
+  extends:
+    - .ruby-image
+  variables:
+    BUILD_ENV: build.env
+  before_script:
+    - source scripts/utils.sh
+  script:
+    - SECURITY_SOURCES=$([[ ! "$CI_PROJECT_NAMESPACE" =~ ^gitlab-org\/security ]] || echo "true")
+    - echo "SECURITY_SOURCES=${SECURITY_SOURCES:-false}" > $BUILD_ENV
+    - for version_file in *_VERSION; do echo "$version_file=$(cat $version_file)" >> $BUILD_ENV; done
+    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
+    - echo "SHORT_RUBY_VERSION=${RUBY_VERSION}" >> $BUILD_ENV
+    - echo "GITLAB_ASSETS_TAG=$(GLCI_ASSETS_IMAGE_TAG)" >> $BUILD_ENV
+    - echo "EE=$([[ $FOSS_ONLY == '1' ]] && echo 'false' || echo 'true')" >> $BUILD_ENV
+    - define_trigger_branch_in_build_env
+    - echo "Built environment file for omnibus build:"
+    - cat $BUILD_ENV
+  artifacts:
+    expire_in: 3 days
+    reports:
+      dotenv: $BUILD_ENV
+    paths:
+      - $BUILD_ENV
+  # As we are testing, GitLab Omnibus build is allowed to fail
+  # https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21244
+  allow_failure: true
+
+release-environments-build-omnibus:
+  stage: prepare
+  needs:
+    - release-environments-build-omnibus-env
+  inherit:
+    variables: false
+  variables:
+    GITALY_SERVER_VERSION: $GITALY_SERVER_VERSION
+    GITLAB_ELASTICSEARCH_INDEXER_VERSION: $GITLAB_ELASTICSEARCH_INDEXER_VERSION
+    GITLAB_KAS_VERSION: $GITLAB_KAS_VERSION
+    GITLAB_PAGES_VERSION: $GITLAB_PAGES_VERSION
+    GITLAB_SHELL_VERSION: $GITLAB_SHELL_VERSION
+    GITLAB_WORKHORSE_VERSION: $GITLAB_WORKHORSE_VERSION
+    GITLAB_VERSION: $CI_COMMIT_SHA
+    GITLAB_ASSETS_TAG: $GITLAB_ASSETS_TAG
+    IMAGE_TAG: "${CI_COMMIT_SHA}-ruby${SHORT_RUBY_VERSION}"
+    TOP_UPSTREAM_SOURCE_PROJECT: $CI_PROJECT_PATH
+    SECURITY_SOURCES: $SECURITY_SOURCES
+    USE_SPECIFIED_RUBY_VERSION: "true"
+    RUBY_VERSION: $FULL_RUBY_VERSION
+    ee: $EE
+    RELEASE_ENVIRONMENT_BUILD: "true"
+    PARENT_CI_PIPELINE_ID: $CI_PIPELINE_ID
+    PARENT_CI_COMMIT_SHORT_SHA: $CI_COMMIT_SHORT_SHA
+  trigger:
+    project: gitlab-org/security/omnibus-gitlab
+    branch: $TRIGGER_BRANCH
+    strategy: depend
+    inputs:
+      skip_qa_test: true
+  # As we are testing, GitLab Omnibus build is allowed to fail
+  # https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/21244
+  allow_failure: true
 
 release-environments-deploy-env:
   stage: prepare

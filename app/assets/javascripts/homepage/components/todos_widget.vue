@@ -65,11 +65,6 @@ export default {
       todos: [],
     };
   },
-  methods: {
-    onFilterChanged(value) {
-      this.filter = value;
-    },
-  },
   apollo: {
     todos: {
       query: getTodosQuery,
@@ -112,11 +107,7 @@ export default {
         @click="$apollo.queries.todos.refetch()"
       />
 
-      <gl-collapsible-listbox
-        :items="$options.FILTER_OPTIONS"
-        :selected="filter"
-        @select="onFilterChanged"
-      />
+      <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
     </div>
 
     <div

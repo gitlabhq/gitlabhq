@@ -17,7 +17,7 @@ import { clearDraft } from '~/lib/utils/autosave';
 import { isMetaEnterKeyPair, parseBoolean } from '~/lib/utils/common_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
-import { s__, sprintf } from '~/locale';
+import { s__, sprintf, __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { addHierarchyChild, setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { findWidget } from '~/issues/list/utils';
@@ -457,9 +457,9 @@ export default {
     makeConfidentialText() {
       return sprintf(
         s__(
-          'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least the Planner role',
+          'WorkItem|Turn on confidentiality: Limit visibility to %{namespace} members with at least the Planner role.',
         ),
-        { workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.selectedWorkItemTypeName] },
+        { namespace: this.isGroup ? __('group') : __('project') },
       );
     },
     titleText() {

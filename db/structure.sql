@@ -12846,6 +12846,7 @@ CREATE TABLE compliance_management_frameworks (
     color text NOT NULL,
     namespace_id bigint NOT NULL,
     pipeline_configuration_full_path text,
+    source_id bigint,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     CONSTRAINT check_08cd34b2c2 CHECK ((char_length(color) <= 10)),
