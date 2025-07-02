@@ -1305,7 +1305,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="queryprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="queryprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
-| <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="queryprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 | <a id="queryprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 | <a id="queryprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="queryprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
@@ -1700,6 +1700,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |
 | <a id="queryvulnerabilitiesowasptopten2021"></a>`owaspTopTen2021` {{< icon name="warning-solid" >}} | [`[VulnerabilityOwasp2021Top10!]`](#vulnerabilityowasp2021top10) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="queryvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
+| <a id="queryvulnerabilitiesreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
 | <a id="queryvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="queryvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
 | <a id="queryvulnerabilitiesscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -13386,6 +13387,31 @@ Input type: `WorkItemsCsvExportInput`
 | <a id="mutationworkitemscsvexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemscsvexportmessage"></a>`message` | [`String`](#string) | Export request result message. |
 
+### `Mutation.workItemsCsvImport`
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemsCsvImportInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemscsvimportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemscsvimportfile"></a>`file` | [`Upload!`](#upload) | CSV file to import work items from. |
+| <a id="mutationworkitemscsvimportprojectpath"></a>`projectPath` | [`ID!`](#id) | Full project path. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemscsvimportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemscsvimporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitemscsvimportmessage"></a>`message` | [`String`](#string) | Import request result message. |
+
 ### `Mutation.workItemsHierarchyReorder`
 
 Reorder a work item in the hierarchy tree.
@@ -24049,7 +24075,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="cirunnerprojectspersonal"></a>`personal` | [`Boolean`](#boolean) | Return only personal projects. |
 | <a id="cirunnerprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="cirunnerprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
-| <a id="cirunnerprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="cirunnerprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 | <a id="cirunnerprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 
 ### `CiRunnerCloudProvisioningStep`
@@ -30070,6 +30096,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilitiesowasptopten2021"></a>`owaspTopTen2021` {{< icon name="warning-solid" >}} | [`[VulnerabilityOwasp2021Top10!]`](#vulnerabilityowasp2021top10) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="groupvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
+| <a id="groupvulnerabilitiesreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
 | <a id="groupvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="groupvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
 | <a id="groupvulnerabilitiesscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -30164,6 +30191,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="groupvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |
 | <a id="groupvulnerabilityseveritiescountowasptopten2021"></a>`owaspTopTen2021` {{< icon name="warning-solid" >}} | [`[VulnerabilityOwasp2021Top10!]`](#vulnerabilityowasp2021top10) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="groupvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
+| <a id="groupvulnerabilityseveritiescountreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
 | <a id="groupvulnerabilityseveritiescountreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="groupvulnerabilityseveritiescountscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by scanner. |
 | <a id="groupvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -31106,6 +31134,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountowasptopten2021"></a>`owaspTopTen2021` {{< icon name="warning-solid" >}} | [`[VulnerabilityOwasp2021Top10!]`](#vulnerabilityowasp2021top10) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
+| <a id="instancesecuritydashboardvulnerabilityseveritiescountreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by scanner. |
 | <a id="instancesecuritydashboardvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -35006,7 +35035,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="organizationprojectsprogramminglanguagename"></a>`programmingLanguageName` | [`String`](#string) | Filter projects by programming language name (case insensitive). For example: "css" or "ruby". |
 | <a id="organizationprojectssearch"></a>`search` | [`String`](#string) | Search query, which can be for the project name, a path, or a description. |
 | <a id="organizationprojectssearchnamespaces"></a>`searchNamespaces` | [`Boolean`](#boolean) | Include namespace in project search. |
-| <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. |
+| <a id="organizationprojectssort"></a>`sort` | [`String`](#string) | Sort order of results. Format: `<field_name>_<sort_direction>`, for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used. |
 | <a id="organizationprojectstopics"></a>`topics` | [`[String!]`](#string) | Filter projects by topics. |
 | <a id="organizationprojectstrending"></a>`trending` | [`Boolean`](#boolean) | Return only projects that are trending. |
 | <a id="organizationprojectsvisibilitylevel"></a>`visibilityLevel` | [`VisibilityLevelsEnum`](#visibilitylevelsenum) | Filter projects by visibility level. |
@@ -38454,6 +38483,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectvulnerabilitiesowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilitiesowasptopten2021"></a>`owaspTopTen2021` {{< icon name="warning-solid" >}} | [`[VulnerabilityOwasp2021Top10!]`](#vulnerabilityowasp2021top10) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="projectvulnerabilitiesprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
+| <a id="projectvulnerabilitiesreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
 | <a id="projectvulnerabilitiesreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="projectvulnerabilitiesscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by VulnerabilityScanner.externalId. |
 | <a id="projectvulnerabilitiesscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |
@@ -38535,6 +38565,7 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 | <a id="projectvulnerabilityseveritiescountowasptopten"></a>`owaspTopTen` | [`[VulnerabilityOwaspTop10!]`](#vulnerabilityowasptop10) | Filter vulnerabilities by OWASP Top 10 2017 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 values. |
 | <a id="projectvulnerabilityseveritiescountowasptopten2021"></a>`owaspTopTen2021` {{< icon name="warning-solid" >}} | [`[VulnerabilityOwasp2021Top10!]`](#vulnerabilityowasp2021top10) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter vulnerabilities by OWASP Top 10 2021 category. Wildcard value `NONE` is also supported but it cannot be combined with other OWASP top 10 2021 values. To use this argument, you must have Elasticsearch configured and the `advanced_vulnerability_management` feature flag enabled. Not supported on Instance Security Dashboard queries. |
 | <a id="projectvulnerabilityseveritiescountprojectid"></a>`projectId` | [`[ID!]`](#id) | Filter vulnerabilities by project. |
+| <a id="projectvulnerabilityseveritiescountreachability"></a>`reachability` {{< icon name="warning-solid" >}} | [`ReachabilityType`](#reachabilitytype) | **Introduced** in GitLab 18.2. **Status**: Experiment. Filter vulnerabilities by reachability. |
 | <a id="projectvulnerabilityseveritiescountreporttype"></a>`reportType` | [`[VulnerabilityReportType!]`](#vulnerabilityreporttype) | Filter vulnerabilities by report type. |
 | <a id="projectvulnerabilityseveritiescountscanner"></a>`scanner` | [`[String!]`](#string) | Filter vulnerabilities by scanner. |
 | <a id="projectvulnerabilityseveritiescountscannerid"></a>`scannerId` | [`[VulnerabilitiesScannerID!]`](#vulnerabilitiesscannerid) | Filter vulnerabilities by scanner ID. |

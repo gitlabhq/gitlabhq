@@ -87,12 +87,6 @@ RSpec.describe ContainerRegistry::Protection::Concerns::TagRule, feature_categor
 
     subject(:protected_by_rules) { service.protected_for_delete?(project:, current_user:) }
 
-    context 'when project has immutable tag rules' do
-      before_all do
-        create(:container_registry_protection_tag_rule, :immutable, tag_name_pattern: 'a', project: project)
-      end
-
-      it_behaves_like 'checking for mutable tag rules' # immutable rules are ignored
-    end
+    it_behaves_like 'checking for mutable tag rules'
   end
 end

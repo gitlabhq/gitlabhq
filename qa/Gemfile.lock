@@ -90,7 +90,7 @@ GEM
       logger
     factory_bot (6.5.1)
       activesupport (>= 6.1.0)
-    faker (3.5.1)
+    faker (3.5.2)
       i18n (>= 1.8.11, < 2)
     faraday (2.9.2)
       faraday-net_http (>= 2.0, < 3.2)
@@ -140,7 +140,7 @@ GEM
       rainbow (>= 3, < 4)
       table_print (= 1.5.7)
       zeitwerk (>= 2, < 3)
-    gitlab_quality-test_tooling (2.15.1)
+    gitlab_quality-test_tooling (2.15.2)
       activesupport (>= 7.0, < 7.3)
       amatch (~> 0.4.1)
       fog-google (~> 1.24, >= 1.24.1)
@@ -379,13 +379,13 @@ DEPENDENCIES
   capybara-screenshot (~> 1.0.26)
   deprecation_toolkit (~> 2.2.3)
   factory_bot (~> 6.5.1)
-  faker (~> 3.5, >= 3.5.1)
+  faker (~> 3.5, >= 3.5.2)
   faraday-retry (~> 2.3, >= 2.3.2)
   fog-google (~> 1.25)
   gitlab-orchestrator!
   gitlab-qa (~> 15, >= 15.5.0)
   gitlab-utils!
-  gitlab_quality-test_tooling (~> 2.15.1)
+  gitlab_quality-test_tooling (~> 2.15.2)
   googleauth (~> 1.9.0)
   influxdb-client (~> 3.2)
   junit_merge (~> 0.1.2)

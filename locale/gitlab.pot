@@ -3039,6 +3039,9 @@ msgstr ""
 msgid "Access granted"
 msgstr ""
 
+msgid "Access levels should both be present"
+msgstr ""
+
 msgid "Access levels should either both be present or both be nil"
 msgstr ""
 
@@ -28380,6 +28383,9 @@ msgid "Geo|Verification started: %{timeAgo}"
 msgstr ""
 
 msgid "Geo|Verification status"
+msgstr ""
+
+msgid "Geo|Verification: %{status}"
 msgstr ""
 
 msgid "Geo|Verified"
@@ -69095,9 +69101,6 @@ msgid "Vulnerability|Namespace:"
 msgstr ""
 
 msgid "Vulnerability|Possibly active secret"
-msgstr ""
-
-msgid "Vulnerability|Project"
 msgstr ""
 
 msgid "Vulnerability|Project:"

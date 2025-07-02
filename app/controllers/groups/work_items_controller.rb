@@ -17,6 +17,7 @@ module Groups
       push_frontend_feature_flag(:issues_list_drawer, group)
       push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
       push_frontend_feature_flag(:work_item_planning_view, group)
+      push_frontend_feature_flag(:work_items_bulk_edit, group&.root_ancestor)
     end
     before_action :handle_new_work_item_path, only: [:show]
 

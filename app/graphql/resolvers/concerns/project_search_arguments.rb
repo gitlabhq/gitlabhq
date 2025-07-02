@@ -26,9 +26,9 @@ module ProjectSearchArguments
 
     argument :sort, GraphQL::Types::String,
       required: false,
-      default_value: 'id_desc',
+      default_value: nil,
       description: "Sort order of results. Format: `<field_name>_<sort_direction>`, " \
-        "for example: `id_desc` or `name_asc`"
+        "for example: `id_desc` or `name_asc`. Defaults to `id_desc`, or `similarity` if search used."
 
     argument :namespace_path, GraphQL::Types::ID,
       required: false,

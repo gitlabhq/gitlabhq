@@ -73,7 +73,6 @@ Style/SymbolProc:
     - 'ee/spec/features/billings/qrtly_reconciliation_alert_spec.rb'
     - 'ee/spec/helpers/ee/registrations_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/search_results_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/document_reference_spec.rb'
     - 'ee/spec/services/groups/participants_service_spec.rb'
     - 'ee/spec/support/helpers/subscription_portal_helpers.rb'
     - 'ee/spec/support/shared_examples/lib/gitlab/graphql/issuables_lazy_links_aggregate_shared_examples.rb'

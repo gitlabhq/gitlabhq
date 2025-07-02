@@ -10169,9 +10169,8 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#has_container_registry_protected_tag_rules?' do
     let_it_be_with_refind(:project) { create(:project) }
-    let(:include_immutable) { true }
 
-    subject { project.has_container_registry_protected_tag_rules?(action: 'delete', access_level: Gitlab::Access::OWNER, include_immutable: include_immutable) }
+    subject { project.has_container_registry_protected_tag_rules?(action: 'delete', access_level: Gitlab::Access::OWNER) }
 
     it 'returns false when there is no matching tag protection rule' do
       create(:container_registry_protection_tag_rule,
@@ -10194,57 +10193,14 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
       expect(subject).to eq(true)
     end
 
-    context 'with immutable tag rules only' do
-      before_all do
-        create(:container_registry_protection_tag_rule, :immutable, project: project)
-      end
-
-      context 'when include_immutable is true' do
-        let(:include_immutable) { true }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when include_immutable is false' do
-        let(:include_immutable) { false }
-
-        it { is_expected.to be false }
-      end
-    end
-
-    context 'with both mutable and immutable tag rules' do
-      before_all do
-        create(:container_registry_protection_tag_rule, :immutable, project: project)
-        create(
-          :container_registry_protection_tag_rule,
-          project: project,
-          tag_name_pattern: 'mutable',
-          minimum_access_level_for_push: Gitlab::Access::MAINTAINER,
-          minimum_access_level_for_delete: Gitlab::Access::ADMIN
-        )
-      end
-
-      context 'when include_immutable is true' do
-        let(:include_immutable) { true }
-
-        it { is_expected.to be true }
-      end
-
-      context 'when include_immutable is false' do
-        let(:include_immutable) { false }
-
-        it { is_expected.to be true }
-      end
-    end
-
     it 'memoizes calls with the same parameters' do
       allow(project.container_registry_protection_tag_rules).to receive(:for_actions_and_access).and_call_original
 
       2.times do
-        project.has_container_registry_protected_tag_rules?(action: 'push', access_level: :maintainer, include_immutable: true)
+        project.has_container_registry_protected_tag_rules?(action: 'push', access_level: :maintainer)
       end
 
-      expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer, include_immutable: true).once
+      expect(project.container_registry_protection_tag_rules).to have_received(:for_actions_and_access).with(%w[push], :maintainer).once
     end
   end
 

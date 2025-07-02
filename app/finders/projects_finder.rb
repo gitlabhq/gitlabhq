@@ -279,10 +279,14 @@ class ProjectsFinder < UnionFinder
     items
   end
 
-  def sort(items)
-    return items.projects_order_id_desc unless params[:sort]
+  def should_sort_by_similarity?
+    params[:search].present? && (params[:sort].nil? || params[:sort].to_s == 'similarity')
+  end
 
-    return items.sorted_by_similarity_desc(params[:search]) if params[:sort] == 'similarity' && params[:search].present?
+  def sort(items)
+    return items.sorted_by_similarity_desc(params[:search]) if should_sort_by_similarity?
+
+    return items.projects_order_id_desc unless params[:sort]
 
     items.sort_by_attribute(params[:sort])
   end

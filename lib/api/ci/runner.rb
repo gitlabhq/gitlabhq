@@ -395,7 +395,9 @@ module API
           authenticate_job_via_dependent_job!
           authorize_job_token_policies!(current_job.project)
 
-          audit_download(current_job, current_job.artifacts_file&.filename) if current_job.artifacts_file
+          not_found! unless current_job.artifacts_file&.exists?
+
+          audit_download(current_job, current_job.artifacts_file.filename)
           present_artifacts_file!(current_job.artifacts_file, supports_direct_download: params[:direct_download])
         end
       end

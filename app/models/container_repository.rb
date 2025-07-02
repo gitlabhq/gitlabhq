@@ -318,8 +318,7 @@ class ContainerRepository < ApplicationRecord
     # Check for mutable tag protection rules
     return false unless project.has_container_registry_protected_tag_rules?(
       action: 'delete',
-      access_level: project.team.max_member_access(user.id),
-      include_immutable: false
+      access_level: project.team.max_member_access(user.id)
     )
 
     return false unless has_tags?

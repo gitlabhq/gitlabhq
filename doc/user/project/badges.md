@@ -236,7 +236,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat
   ```
 
-  ![Badge flat style](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage&style=flat)
+  ![Badge flat style](img/badge_flat.svg)
 
 - Flat square:
 
@@ -244,7 +244,7 @@ Pipeline badges can be rendered in different styles by adding the `style=style_n
   https://gitlab.example.com/<namespace>/<project>/badges/<branch>/coverage.svg?style=flat-square
   ```
 
-  ![Badge flat square style](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=coverage&style=flat-square)
+  ![Badge flat square style](img/badge_flat_square.svg)
 
 ### Customize badge text
 
@@ -255,7 +255,7 @@ Customize the badge text and width by adding the `key_text=custom_text` and `key
 https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130
 ```
 
-![Badge with custom text and width](https://gitlab.com/gitlab-org/gitlab/badges/main/coverage.svg?job=karma&key_text=Frontend+Coverage&key_width=130)
+![Badge with custom text and width](img/badge_custom_text.svg)
 
 ### Customize badge image
 

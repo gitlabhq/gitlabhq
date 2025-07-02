@@ -1576,11 +1576,6 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     end
 
     before_all do
-      create(:container_registry_protection_tag_rule, :immutable,
-        project: project,
-        tag_name_pattern: 'immutable-1'
-      )
-
       create(:container_registry_protection_tag_rule,
         project: project,
         minimum_access_level_for_push: Gitlab::Access::MAINTAINER,

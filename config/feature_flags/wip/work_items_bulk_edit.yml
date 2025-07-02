@@ -1,0 +1,10 @@
+---
+name: work_items_bulk_edit
+description: Enables GraphQL-based bulk editing for work items instead of the legacy REST API
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11901
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195770
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/551187
+milestone: '18.2'
+group: group::product planning
+type: wip
+default_enabled: false

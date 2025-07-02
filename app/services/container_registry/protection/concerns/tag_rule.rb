@@ -29,8 +29,7 @@ module ContainerRegistry
 
           return false unless project.has_container_registry_protected_tag_rules?(
             action: 'delete',
-            access_level: project.team.max_member_access(current_user.id),
-            include_immutable: false
+            access_level: project.team.max_member_access(current_user.id)
           )
 
           project.has_container_registry_tags?

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'fast_spec_helper'
+require 'tempfile'
 require_relative '../../../scripts/release_environment/construct-release-environments-versions'
 
 RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
@@ -35,7 +36,7 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
 
     context 'when required env vars are missing' do
       it 'returns false' do
-        ENV.delete('DEPLOY_ENV')
+        stub_env('DEPLOY_ENV', nil)
         expect(model.set_required_env_vars?).to be false
       end
     end
@@ -77,6 +78,54 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
 
       it 'returns the environment with -security' do
         expect(model.environment).to eq('15-10-stable-security')
+      end
+    end
+  end
+
+  describe '#omnibus_package_version' do
+    it 'generates the correct omnibus package name' do
+      stub_env('CI_COMMIT_BRANCH', '15-10-stable-ee')
+      stub_env('CI_PIPELINE_ID', '12345')
+      stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')
+
+      expected_package = '15.10+stable.12345.abcdef'
+      expect(model.omnibus_package_version).to eq(expected_package)
+    end
+  end
+
+  describe '#write_deploy_env_file' do
+    let(:temp_file) { Tempfile.new('deploy_env_test') }
+
+    before do
+      stub_env('DEPLOY_ENV', temp_file.path)
+      stub_env('CI_COMMIT_SHORT_SHA', 'abc123')
+      stub_env('CI_COMMIT_REF_NAME', '16-0-stable-ee')
+      stub_env('CI_PROJECT_PATH', 'gitlab-org/gitlab')
+      stub_env('CI_PIPELINE_ID', '98765')
+      stub_env('CI_COMMIT_BRANCH', '16-0-stable-ee')
+    end
+
+    after do
+      temp_file.close
+      temp_file.unlink
+    end
+
+    context 'when all env vars are present' do
+      it 'writes the correct content to the DEPLOY_ENV file' do
+        expect { model.write_deploy_env_file }.to output(/ENVIRONMENT=16-0-stable/).to_stdout
+
+        content = File.read(temp_file.path)
+        expect(content).to include('ENVIRONMENT=16-0-stable')
+        expect(content).to include('VERSIONS={"gitaly":"16-0-stable-abc123"')
+        expect(content).to include('OMNIBUS_PACKAGE_VERSION=16.0+stable.98765.abc123')
+      end
+    end
+
+    context 'when required env vars are missing' do
+      it 'raises an error' do
+        stub_env('DEPLOY_ENV', nil)
+
+        expect { model.write_deploy_env_file }.to raise_error(RuntimeError, "Missing required environment variable.")
       end
     end
   end

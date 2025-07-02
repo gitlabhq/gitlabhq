@@ -234,6 +234,7 @@ module Types
     mount_mutation Mutations::WorkItems::Delete, experiment: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::Update, experiment: { milestone: '15.1' }
     mount_mutation Mutations::WorkItems::CSV::Export, experiment: { milestone: '15.10' }
+    mount_mutation Mutations::WorkItems::CSV::Import, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::Convert, experiment: { milestone: '15.11' }
     mount_mutation Mutations::WorkItems::LinkedItems::Add, experiment: { milestone: '16.3' }
     mount_mutation Mutations::WorkItems::LinkedItems::Remove, experiment: { milestone: '16.3' }

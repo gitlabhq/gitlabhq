@@ -46,6 +46,8 @@ module Ci
       query.select(:last_used)
     end
 
+    scope :with_token, ->(tokens) { where(token: Array.wrap(tokens).compact.reject(&:blank?)) }
+
     def set_default_values
       self.token = "#{TRIGGER_TOKEN_PREFIX}#{SecureRandom.hex(20)}" if self.token.blank?
     end

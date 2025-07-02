@@ -1570,11 +1570,7 @@ RSpec.shared_examples 'a container registry auth service' do
           project: current_project,
           tag_name_pattern: 'admin-only',
           minimum_access_level_for_push: :admin,
-          minimum_access_level_for_delete: :owner),
-        create(:container_registry_protection_tag_rule,
-          :immutable,
-          project: current_project,
-          tag_name_pattern: 'immutable-pattern-not-included')
+          minimum_access_level_for_delete: :owner)
       ]
     end
 

@@ -78,12 +78,7 @@ Teams implement evaluation strategies covering multiple aspects of the quality o
 - Performance testing
 - Security and safety validation
 - [Dataset creation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/guidelines/create_dataset.md) and [management](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/dataset_management.md)
-- [Evaluation (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/#test-2-ai-response-evaluation)
-  - Feature evaluation
-  - Prompt evaluation
-  - Tool evaluation
-  - Model evaluation
-  - Latency evaluation
+- [Evaluation](ai_evaluation_guidelines.md)
 
 #### Resources
 

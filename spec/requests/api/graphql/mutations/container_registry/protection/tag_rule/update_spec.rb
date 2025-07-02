@@ -117,16 +117,16 @@ RSpec.describe 'Updating the container registry tag protection rule', :aggregate
     it_behaves_like 'returning a GraphQL error', /tagNamePattern can't be blank/
   end
 
-  context 'with only `minimumAccessLevelForDelete` blank' do
+  context 'with only `minimumAccessLevelForDelete` blank', unless: Gitlab.ee? do
     let(:input) { super().merge(minimum_access_level_for_delete: nil) }
 
-    it_behaves_like 'returning a mutation error', 'Access levels should either both be present or both be nil'
+    it_behaves_like 'returning a mutation error', 'Access levels should both be present'
   end
 
-  context 'with only `minimumAccessLevelForPush` blank' do
+  context 'with only `minimumAccessLevelForPush` blank', unless: Gitlab.ee? do
     let(:input) { super().merge(minimum_access_level_for_push: nil) }
 
-    it_behaves_like 'returning a mutation error', 'Access levels should either both be present or both be nil'
+    it_behaves_like 'returning a mutation error', 'Access levels should both be present'
   end
 
   include_examples 'when user does not have permission'

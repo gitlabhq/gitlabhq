@@ -3615,9 +3615,9 @@ class Project < ApplicationRecord
     end
   end
 
-  def has_container_registry_protected_tag_rules?(action:, access_level:, include_immutable: true)
-    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level, include_immutable) do
-      container_registry_protection_tag_rules.for_actions_and_access([action], access_level, include_immutable:).exists?
+  def has_container_registry_protected_tag_rules?(action:, access_level:)
+    strong_memoize_with(:has_container_registry_protected_tag_rules, action, access_level) do
+      container_registry_protection_tag_rules.for_actions_and_access([action], access_level).exists?
     end
   end
 

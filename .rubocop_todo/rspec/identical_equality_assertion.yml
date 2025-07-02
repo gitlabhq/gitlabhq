@@ -2,7 +2,6 @@
 RSpec/IdenticalEqualityAssertion:
   Exclude:
     - 'ee/spec/lib/gitlab/ci/reports/license_scanning/license_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/document_reference_spec.rb'
     - 'ee/spec/lib/gitlab/geo/oauth/login_state_spec.rb'
     - 'ee/spec/lib/gitlab/llm/ai_message_spec.rb'
     - 'ee/spec/lib/search/cluster_health_check/elastic_spec.rb'

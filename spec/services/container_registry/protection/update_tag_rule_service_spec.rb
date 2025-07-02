@@ -73,26 +73,22 @@ RSpec.describe ContainerRegistry::Protection::UpdateTagRuleService, '#execute', 
     end
   end
 
-  context 'with invalid params' do
+  context 'with invalid params', unless: Gitlab.ee? do
     using RSpec::Parameterized::TableSyntax
 
     where(:params_invalid, :message_expected) do
       { tag_name_pattern: '' }      | ["Tag name pattern can't be blank"]
       { tag_name_pattern: '*' }     | ['Tag name pattern not valid RE2 syntax: no argument for repetition operator: *']
-      { minimum_access_level_for_delete: nil }  | ['Access levels should either both be present or both be nil']
-      { minimum_access_level_for_push: nil }    | ['Access levels should either both be present or both be nil']
+      { minimum_access_level_for_delete: nil }  | ['Access levels should both be present']
+      { minimum_access_level_for_push: nil }    | ['Access levels should both be present']
       { minimum_access_level_for_delete: 1000 } | "'1000' is not a valid minimum_access_level_for_delete"
       { minimum_access_level_for_push: 1000 }   | "'1000' is not a valid minimum_access_level_for_push"
     end
 
     with_them do
-      let(:params) do
-        super().merge(params_invalid)
-      end
+      let(:params) { super().merge(params_invalid) }
 
       it_behaves_like 'an erroneous service response', message: params[:message_expected]
-
-      it { is_expected.to have_attributes message: message_expected }
     end
   end
 

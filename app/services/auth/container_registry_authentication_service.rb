@@ -161,7 +161,7 @@ module Auth
       return patterns if user.can_admin_all_resources?
 
       user_access_level = project.team.max_member_access(user.id)
-      applicable_rules = rules.for_actions_and_access(actions_to_check, user_access_level, include_immutable: false)
+      applicable_rules = rules.for_actions_and_access(actions_to_check, user_access_level)
 
       applicable_rules.each do |rule|
         if actions_to_check.include?('push') && rule.push_restricted?(user_access_level)

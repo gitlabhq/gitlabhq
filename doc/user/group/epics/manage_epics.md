@@ -20,6 +20,7 @@ to them.
 {{< history >}}
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
+- Ability to assign milestones to epics [introduced](https://gitlab.com/groups/gitlab-org/-/epics/329) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -52,10 +53,10 @@ If you select **Inherited**:
 
 - For the **start date**: GitLab scans all child epics and issues assigned to the epic,
   and sets the start date to match the earliest start date found in the child epics or the milestone
-  assigned to the issues.
+  assigned to the child items.
 - For the **due date**: GitLab scans all child epics and issues assigned to the epic,
   and sets the due date to match the latest due date found in the child epics or the milestone
-  assigned to the issues.
+  assigned to the child items.
 
 These dates are dynamic and recalculated if any of the following occur:
 
@@ -83,6 +84,7 @@ After you create an epic, you can edit the following details:
 - Start date
 - Due date
 - Labels
+- Milestone
 - [Color](#epic-color)
 
 Prerequisites:
@@ -95,10 +97,10 @@ To edit an epic's title or description:
 1. Make your changes.
 1. Select **Save changes**.
 
-To edit an epic's start date, due date, or labels:
+To edit an epic's start date, due date, milestone, or labels:
 
 1. Next to each section in the right sidebar, select **Edit**.
-1. Select the dates or labels for your epic.
+1. Select the dates, milestone, or labels for your epic.
 
 ### Reorder list items in the epic description
 
