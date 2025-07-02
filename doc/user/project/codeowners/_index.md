@@ -2,7 +2,7 @@
 stage: Create
 group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Use Code Owners to define experts for your code base, and set review requirements based on file type or location.
+description: Use Code Owners to define experts for your codebase, and set review requirements based on file type or location.
 title: Code Owners
 ---
 
@@ -50,6 +50,8 @@ For example:
 <figure class="video-container">
   <iframe src="https://www.youtube-nocookie.com/embed/RoyBySTUSB0" frameborder="0" allowfullscreen> </iframe>
 </figure>
+
+For information about who is eligible to approve merge requests as either an approver or Code Owner, see [Approver by membership type](../merge_requests/approvals/rules.md#approver-by-membership-type).
 
 ## Code Owners and protected branches
 
@@ -109,7 +111,7 @@ Prerequisites:
 1. Create a `CODEOWNERS` file in your [preferred location](#codeowners-file).
 1. Define some rules in the file following the [`CODEOWNERS` syntax](reference.md).
    Some suggestions:
-   - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-eligible-approvers) approval rule.
+   - Configure [All eligible approvers](../merge_requests/approvals/rules.md#code-owners-as-approvers) approval rule.
    - [Require Code Owner approval](../repository/branches/protected.md#require-code-owner-approval) on a protected branch.
 1. Commit your changes, and push them up to GitLab.
 

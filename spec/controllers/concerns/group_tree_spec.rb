@@ -3,20 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe GroupTree, feature_category: :groups_and_projects do
-  let(:group) { create(:group, :public) }
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
+  let_it_be(:group) { create(:group, :public, owners: [user]) }
 
   controller(ApplicationController) do
     # `described_class` is not available in this context
     include GroupTree
 
     def index
-      render_group_tree GroupsFinder.new(current_user).execute
+      render_group_tree GroupsFinder.new(current_user, active: safe_params[:active]).execute
     end
   end
 
   before do
-    group.add_owner(user)
     sign_in(user)
   end
 
@@ -76,6 +75,35 @@ RSpec.describe GroupTree, feature_category: :groups_and_projects do
           get :index, params: { filter: 'resu' }, format: :json
 
           expect(assigns(:groups)).to contain_exactly(group, subgroup, search_result)
+        end
+      end
+
+      context 'with active parameter' do
+        let_it_be(:active_ancestor) { group }
+        let_it_be(:inactive_ancestor) { create(:group, :archived, :public) }
+        let_it_be(:active_child) { create(:group, parent: active_ancestor) }
+        let_it_be(:inactive_child) { create(:group, parent: inactive_ancestor) }
+
+        context 'when true' do
+          it 'only loads root group' do
+            allow(GroupsFinder).to receive(:execute).and_return(Group.where(id: active_child.id))
+
+            get :index, params: { active: true }, format: :json
+
+            expect(assigns(:groups)).to include(active_ancestor)
+            expect(assigns(:groups)).not_to include(active_child, inactive_ancestor, inactive_child)
+          end
+        end
+
+        context 'when false' do
+          it 'preloads inactive ancestors' do
+            allow(GroupsFinder).to receive(:execute).and_return(Group.where(id: inactive_child.id))
+
+            get :index, params: { active: false }, format: :json
+
+            expect(assigns(:groups)).to include(inactive_ancestor, inactive_child)
+            expect(assigns(:groups)).not_to include(active_ancestor, active_child)
+          end
         end
       end
 

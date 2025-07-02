@@ -15,7 +15,7 @@ title: Merge request approval rules
 
 Approval rules define how many [approvals](_index.md) a merge request must receive before it can
 be merged, and which users should do the approving. They can be used in conjunction
-with [code owners](#code-owners-as-eligible-approvers) to ensure that changes are
+with [code owners](#code-owners-as-approvers) to ensure that changes are
 reviewed both by the group maintaining the feature, and any groups responsible
 for specific areas of oversight.
 
@@ -119,121 +119,12 @@ reduces the number of approvals left (the **Approvals** column) for all rules th
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Multiple Approvers](https://www.youtube.com/watch?v=8JQJ5821FrA).
 
-## Eligible approvers
-
-To be eligible as an approver for your project, a user must be a direct member of at least one of the following:
-
-- Your project.
-- Your project's group.
-- Any of your project's group's parent groups.
-- Another group that has been [shared with your project](../../members/sharing_projects_groups.md#sharing-projects).
-- Another group that has been [shared with your project's group or any of the group's parents](../../members/sharing_projects_groups.md#sharing-groups).
-- A [group added as approvers](#group-approvers).
-
-Users with the Developer role can approve merge requests if one of the following is true:
-
-- Users added as approvers at the project or merge request level.
-- Users who are [Code owners](#code-owners-as-eligible-approvers) of the files
-  changed in the merge request.
-
-Users with the Reporter role can approve only if all of the following are true:
-
-- The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
-  The group must have at least the Reporter role.
-- The group has been added as merge request approvers.
-- Approval permissions for users with the reporter role [are enabled](#enable-approval-permissions-for-users-with-the-reporter-role).
-
-To show who has participated in the merge request review, the Approvals widget in
-a merge request displays a **Commented by** column. This column lists eligible approvers
-who commented on the merge request. It helps authors and reviewers identify who to
-contact with questions about the merge request's content.
-
-If the number of required approvals is greater than the number of assigned approvers,
-approvals from other users with at least the Developer role
-in the project count toward meeting the required number of approvals, even if the
-users were not explicitly listed in the approval rules.
-
-### Get notified about all merge requests you can approve
+## Get notified about all merge requests you can approve
 
 To get email notifications every time a merge request you're eligible to approve is created:
 
 - [Set your notification level](../../../profile/notifications.md#edit-notification-settings) to **Custom**
 and select the **Merge request you're eligible to approve is created** event.
-
-### Group approvers
-
-You can add a group of users as approvers. All direct members of this group
-can approve the rule. Inherited members cannot approve the rule.
-
-Typically the group is a subgroup in your top-level namespace, unless you are
-collaborating with an external group. If you are collaborating with another group
-and want to use members of that group as approvers, you can either:
-
-- [Share access to the project](../../members/sharing_projects_groups.md#sharing-projects).
-- [Share access to your project's group](../../members/sharing_projects_groups.md#sharing-groups),
-  which gives the external group approval access to all projects in your project's group.
-
-A user's membership in an approver group determines their individual approval permissions
-in the following ways:
-
-- Inherited members are not considered approvers. Only direct members can approve merge requests.
-- A user from a group approver group who is later also added as an individual approver
-  counts as one approver, not two.
-- Merge request authors do not count as eligible approvers on their own merge requests by default.
-  To change this behavior, disable the
-  [**Prevent author approval**](settings.md#prevent-approval-by-author)
-  project setting.
-- By default, committers to merge requests can approve a merge request. To change this behavior, enable
-  the [**Prevent committers approval**](settings.md#prevent-approvals-by-users-who-add-commits)
-  project setting.
-
-### Code owners as eligible approvers
-
-If you add [code owners](../../codeowners/_index.md) to your repository, the owners of files
-become eligible approvers in the project. To enable this merge request approval rule:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
-1. In the **Merge request approvals** section, in the **Approval rules** section, locate the **All eligible users** rule.
-1. In the **Approvals required** column, enter the number of approvals required.
-
-You can also
-[require code owner approval](../../repository/branches/protected.md#require-code-owner-approval)
-for protected branches.
-
-## Enable approval permissions for users with the Reporter role
-
-Before users with the Reporter role can merge to a protected branch, you might have to grant them
-permission to approve merge requests.
-Some users (like managers) might not need permission to push or merge code, but still need
-oversight on proposed work.
-
-Users with the Reporter role can approve merge requests only through regular approval rules.
-Code owner approval rules require users to have at least the Developer role. For more information,
-see [Eligible approvers](#eligible-approvers).
-
-Prerequisites:
-
-- You must select a specific branch, as this method does not work with `All Branches` or `All protected branches` settings.
-- The shared group must be added to an approval rule and not individual users, even when the added user is part of the group.
-
-To enable approval permissions for these users without granting them push access:
-
-1. [Create a protected branch](../../repository/branches/protected.md)
-1. [Create a new group](../../../group/_index.md#create-a-group).
-1. [Add the user to the group](../../../group/_index.md#add-users-to-a-group),
-   and select the Reporter role for the user. Do not assign roles with higher permissions than
-   Reporter due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/492467).
-   Assigning higher roles may result in unexpected behavior.
-1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
-   with at least the Reporter role.
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Merge requests**.
-1. In the **Merge request approvals** section, in the **Approval rules** section:
-   - For a new rule, select **Add approval rule** and target the protected branch.
-   - For an existing rule, select **Edit** and target the protected branch.
-1. On the right sidebar, in **Add approvers**, select the group you created.
-1. Select **Save changes**.
 
 ## Edit or override merge request approval rules
 
@@ -300,6 +191,40 @@ approval rule for certain branches:
 1. To enable this configuration, follow
    [Require Code Owner approval on a protected branch](../../repository/branches/protected.md#require-code-owner-approval).
 
+## Enable approval permissions for users with the Reporter role
+
+Before users with the Reporter role can merge to a protected branch, you might have to grant them
+permission to approve merge requests.
+Some users (like managers) might not need permission to push or merge code, but still need
+oversight on proposed work.
+
+Users with the Reporter role can approve merge requests only through regular approval rules.
+Code owner approval rules require users to have at least the Developer role. For more information,
+see [Eligible approvers](#eligible-approvers).
+
+Prerequisites:
+
+- You must select a specific branch, as this method does not work with `All Branches` or `All protected branches` settings.
+- The shared group must be added to an approval rule and not individual users, even when the added user is part of the group.
+
+To enable approval permissions for these users without granting them push access:
+
+1. [Create a protected branch](../../repository/branches/protected.md)
+1. [Create a new group](../../../group/_index.md#create-a-group).
+1. [Add the user to the group](../../../group/_index.md#add-users-to-a-group),
+   and select the Reporter role for the user. Do not assign roles with higher permissions than
+   Reporter due to a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/492467).
+   Assigning higher roles may result in unexpected behavior.
+1. [Share the project with your group](../../members/sharing_projects_groups.md#invite-a-group-to-a-project),
+   with at least the Reporter role.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, in the **Approval rules** section:
+   - For a new rule, select **Add approval rule** and target the protected branch.
+   - For an existing rule, select **Edit** and target the protected branch.
+1. On the right sidebar, in **Add approvers**, select the group you created.
+1. Select **Save changes**.
+
 ## Security Approvals
 
 {{< details >}}
@@ -328,6 +253,123 @@ on the merge request to indicate which steps are needed to proceed.
 ![Security Approvals](img/security_approvals_v15_0.png)
 
 These policies are both created and edited in the [security policy editor](../../../application_security/policies/_index.md#policy-editor).
+
+## Eligible approvers
+
+To be eligible as an approver for your project, a user must be a direct member of at least one of the following:
+
+- Your project.
+- Your project's group.
+- Any of your project's group's parent groups.
+- Another group that has been [shared with your project](../../members/sharing_projects_groups.md#sharing-projects).
+- Another group that has been [shared with your project's group or any of the group's parents](../../members/sharing_projects_groups.md#sharing-groups).
+- A [group added as approvers](#group-approvers).
+
+Users with the Developer role can approve merge requests if one of the following is true:
+
+- Users added as approvers at the project or merge request level.
+- Users who are [Code owners](#code-owners-as-approvers) of the files
+  changed in the merge request.
+
+Users with the Reporter role can approve only if all of the following are true:
+
+- The users are part of a group that has been [shared](../../members/sharing_projects_groups.md) with the project.
+  The group must have at least the Reporter role.
+- The group has been added as merge request approvers.
+- Approval permissions for users with the reporter role [are enabled](#enable-approval-permissions-for-users-with-the-reporter-role).
+
+To show who has participated in the merge request review, the Approvals widget in
+a merge request displays a **Commented by** column. This column lists eligible approvers
+who commented on the merge request. It helps authors and reviewers identify who to
+contact with questions about the merge request's content.
+
+If the number of required approvals is greater than the number of assigned approvers,
+approvals from other users with at least the Developer role
+in the project count toward meeting the required number of approvals, even if the
+users were not explicitly listed in the approval rules.
+
+### Code owners as approvers
+
+If you add [code owners](../../codeowners/_index.md) to your repository, the owners of files
+become eligible approvers in the project. To enable this merge request approval rule:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Merge requests**.
+1. In the **Merge request approvals** section, in the **Approval rules** section, locate the **All eligible users** rule.
+1. In the **Approvals required** column, enter the number of approvals required.
+
+You can also
+[require code owner approval](../../repository/branches/protected.md#require-code-owner-approval)
+for protected branches.
+
+### Approver by membership type
+
+The following tables show how membership type affects eligibility for both approval rules and
+Code Owners.
+
+#### User eligibility
+
+When you assign individual users as approvers for approval rules or reference users in `CODEOWNERS`
+files, like `@username`:
+
+| Membership type                                                                                                    | Approval rules                              | Code Owners |
+|--------------------------------------------------------------------------------------------------------------------|---------------------------------------------|-------------|
+| Direct member of the project                                                                                       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Direct member of the project's group                                                                               | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Inherited member of the project's group                                                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Direct member of a [group invited to the project](../../members/sharing_projects_groups.md#sharing-projects)       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Inherited member of a group invited to the project                                                                 | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Direct member of a [group invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Inherited member of a group invited to the project's group                                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+| Direct member of a group invited to the project's group's parent groups                                            | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| Inherited member of a group invited to the project's group's parent groups                                         | {{< icon name="dash-circle" >}} No          | {{< icon name="dash-circle" >}} No |
+
+#### Group eligibility
+
+When you assign groups as approvers for approval rules or reference groups in `CODEOWNERS` files,
+like `@group-name`, only direct members of eligible groups can provide approvals:
+
+| Group type | Approval rules | Code Owners |
+|------------|----------------|-------------|
+| [Groups invited to the project](../../members/sharing_projects_groups.md#sharing-projects) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| [Groups invited to the project's group](../../members/sharing_projects_groups.md#sharing-groups) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| Groups invited to a parent of the project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
+| The project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| A parent of the project's group | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+
+{{< alert type="note" >}}
+
+For group-based approvals, only direct members of the group can approve merge requests.
+Inherited members of the eligible groups cannot provide approvals.
+
+{{< /alert >}}
+
+### Group approvers
+
+You can add a group of users as approvers. All direct members of this group
+can approve the rule. Inherited members cannot approve the rule.
+
+Typically the group is a subgroup in your top-level namespace, unless you are
+collaborating with an external group. If you are collaborating with another group
+and want to use members of that group as approvers, you can either:
+
+- [Share access to the project](../../members/sharing_projects_groups.md#sharing-projects).
+- [Share access to your project's group](../../members/sharing_projects_groups.md#sharing-groups),
+  which gives the external group approval access to all projects in your project's group.
+
+A user's membership in an approver group determines their individual approval permissions
+in the following ways:
+
+- Inherited members are not considered approvers. Only direct members can approve merge requests.
+- A user from a group approver group who is later also added as an individual approver
+  counts as one approver, not two.
+- Merge request authors do not count as eligible approvers on their own merge requests by default.
+  To change this behavior, disable the
+  [**Prevent author approval**](settings.md#prevent-approval-by-author)
+  project setting.
+- By default, committers to merge requests can approve a merge request. To change this behavior, enable
+  the [**Prevent committers approval**](settings.md#prevent-approvals-by-users-who-add-commits)
+  project setting.
 
 ## Troubleshooting
 

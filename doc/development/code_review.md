@@ -88,7 +88,7 @@ To find a domain expert:
 
 - In the Merge Request approvals widget, select [View eligible approvers](../user/project/merge_requests/approvals/rules.md#eligible-approvers).
   This widget shows recommended and required approvals per area of the codebase.
-  These rules are defined in [Code Owners](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers).
+  These rules are defined in [Code Owners](../user/project/merge_requests/approvals/rules.md#code-owners-as-approvers).
 - View the list of team members who work in the [stage or group](https://handbook.gitlab.com/handbook/product/categories/#devops-stages) related to the merge request.
 - View team members' domain expertise on the [engineering projects](https://handbook.gitlab.com/handbook/engineering/projects/) page or on the [GitLab team page](https://about.gitlab.com/company/team/). Domains are self-identified, so use your judgment to map the changes on your merge request to a domain.
 - Look for team members who have contributed to the files in the merge request. View the logs by running `git log <file>`.

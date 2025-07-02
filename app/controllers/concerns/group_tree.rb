@@ -8,7 +8,7 @@ module GroupTree
   def render_group_tree(groups)
     groups = groups.sort_by_attribute(@sort = safe_params[:sort])
 
-    groups = if safe_params[:filter].present?
+    groups = if search_descendants?
                filtered_groups_with_ancestors(groups)
              elsif safe_params[:parent_id].present?
                groups.where(parent_id: safe_params[:parent_id]).page(safe_params[:page])
@@ -24,8 +24,12 @@ module GroupTree
       format.json do
         serializer = GroupChildSerializer.new(current_user: current_user)
                        .with_pagination(request, response)
-        serializer.expand_hierarchy if safe_params[:filter].present?
-        render json: serializer.represent(@groups)
+
+        serializer.expand_hierarchy if search_descendants?
+
+        render json: serializer.represent(@groups, {
+          upto_preloaded_ancestors_only: inactive?
+        })
       end
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
@@ -44,9 +48,19 @@ module GroupTree
     #
     # Pagination needs to be applied before loading the ancestors to
     # make sure ancestors are not cut off by pagination.
-    Group.where(id: filtered_groups.select(:id)).self_and_ancestors
+    ancestors = Group.where(id: filtered_groups.select(:id)).self_and_ancestors
+    ancestors = ancestors.self_or_ancestors_inactive if inactive?
+    ancestors
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def inactive?
+    safe_params[:active] == false
+  end
+
+  def search_descendants?
+    safe_params[:filter].present? || inactive?
+  end
 
   def safe_params
     params.merge(

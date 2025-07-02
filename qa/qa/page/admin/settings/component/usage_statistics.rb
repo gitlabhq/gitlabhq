@@ -10,8 +10,9 @@ module QA
               element 'enable-usage-data-checkbox'
             end
 
-            def has_disabled_usage_data_checkbox?
-              has_element?('enable-usage-data-checkbox', disabled: true, visible: false)
+            def has_usage_data_checkbox_checked_and_disabled?
+              checkbox = find_element('enable-usage-data-checkbox', visible: false)
+              checkbox.disabled? && checkbox.checked?
             end
           end
         end

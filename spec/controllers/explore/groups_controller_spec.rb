@@ -37,6 +37,8 @@ RSpec.describe Explore::GroupsController, feature_category: :groups_and_projects
         expect(response).to redirect_to new_user_session_path
       end
     end
+
+    it_behaves_like 'groups controller with active parameter'
   end
 
   it_behaves_like 'explore groups'

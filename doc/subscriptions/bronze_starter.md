@@ -67,7 +67,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Multiple assignees](../user/project/merge_requests/_index.md#assign-a-user-to-a-merge-request)
   - [Approval rule information for reviewers](../user/project/merge_requests/reviews/_index.md#request-a-review)
   - [Required Approvals](../user/project/merge_requests/approvals/_index.md#required-approvals)
-  - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-eligible-approvers)
+  - [Code Owners as eligible approvers](../user/project/merge_requests/approvals/rules.md#code-owners-as-approvers)
   - [Approval rules](../user/project/merge_requests/approvals/rules.md) features
   - [Restricting push and merge access to certain users](../user/project/repository/branches/protected.md)
 - Metrics and analytics:

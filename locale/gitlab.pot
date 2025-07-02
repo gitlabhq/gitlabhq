@@ -15509,6 +15509,9 @@ msgstr ""
 msgid "Compliance Center|Violations"
 msgstr ""
 
+msgid "Compliance and security policy group for this instance"
+msgstr ""
+
 msgid "Compliance center"
 msgstr ""
 
@@ -56566,6 +56569,9 @@ msgstr ""
 msgid "SecurityOrchestration|Save allowlist"
 msgstr ""
 
+msgid "SecurityOrchestration|Save changes"
+msgstr ""
+
 msgid "SecurityOrchestration|Save denylist"
 msgstr ""
 
@@ -56642,6 +56648,9 @@ msgid "SecurityOrchestration|Security scans to execute"
 msgstr ""
 
 msgid "SecurityOrchestration|Select a cadence"
+msgstr ""
+
+msgid "SecurityOrchestration|Select a group"
 msgstr ""
 
 msgid "SecurityOrchestration|Select a project to store your security policies in. %{linkStart}More information.%{linkEnd}"
@@ -56840,6 +56849,9 @@ msgid "SecurityOrchestration|Turn off default mode to edit scope."
 msgstr ""
 
 msgid "SecurityOrchestration|Type in custom variable"
+msgstr ""
+
+msgid "SecurityOrchestration|Unassign group"
 msgstr ""
 
 msgid "SecurityOrchestration|Unknown source"
@@ -57793,6 +57805,9 @@ msgid "Select a day"
 msgstr ""
 
 msgid "Select a group"
+msgstr ""
+
+msgid "Select a group to create, distribute, and manage compliance frameworks and security polices for this GitLab instance. You should select a group without existing compliance frameworks."
 msgstr ""
 
 msgid "Select a label"

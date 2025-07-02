@@ -2238,6 +2238,7 @@ Input type: `AiDuoWorkflowCreateInput`
 | <a id="mutationaiduoworkflowcreateagentprivileges"></a>`agentPrivileges` | [`[Int!]`](#int) | Actions the agent is allowed to perform. |
 | <a id="mutationaiduoworkflowcreateallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | When enabled, Duo Workflow may stop to ask the user questions before proceeding. |
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
 | <a id="mutationaiduoworkflowcreategoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
 | <a id="mutationaiduoworkflowcreatepreapprovedagentprivileges"></a>`preApprovedAgentPrivileges` | [`[Int!]`](#int) | Actions the agent can perform without asking for approval. |
 | <a id="mutationaiduoworkflowcreateprojectid"></a>`projectId` | [`ProjectID`](#projectid) | Global ID of the project the user is acting on. |
