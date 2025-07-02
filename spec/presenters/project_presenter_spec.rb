@@ -678,7 +678,8 @@ RSpec.describe ProjectPresenter do
               "original_branch" => "master",
               "path" => "/#{project.full_path}/-/create/master",
               "project_path" => project.full_path,
-              "target_branch" => "master"
+              "target_branch" => "master",
+              "full_name" => project.name_with_namespace
             }
           )
         end
