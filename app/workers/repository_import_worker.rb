@@ -70,10 +70,6 @@ class RepositoryImportWorker # rubocop:disable Scalability/IdempotentWorker
   def fail_import(message)
     project.import_state.mark_as_failed(message)
   end
-
-  def template_import?
-    project.gitlab_project_import?
-  end
 end
 
 RepositoryImportWorker.prepend_mod_with('RepositoryImportWorker')

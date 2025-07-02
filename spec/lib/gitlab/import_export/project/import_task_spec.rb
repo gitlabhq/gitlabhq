@@ -19,6 +19,10 @@ RSpec.describe Gitlab::ImportExport::Project::ImportTask, :request_store, :silen
     }
   end
 
+  before do
+    stub_application_setting(import_sources: ['gitlab_project'])
+  end
+
   subject { rake_task.import }
 
   context 'when project import is valid' do

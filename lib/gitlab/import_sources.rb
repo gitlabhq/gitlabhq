@@ -16,8 +16,13 @@ module Gitlab
       ImportSource.new('git',              'Repository by URL', nil),
       ImportSource.new('gitlab_project',   'GitLab export',     Gitlab::ImportExport::Importer),
       ImportSource.new('gitea',            'Gitea',             Gitlab::LegacyGithubImport::Importer),
-      ImportSource.new('manifest',         'Manifest file',     nil)
+      ImportSource.new('manifest',         'Manifest file',     nil),
+      ImportSource.new(
+        'gitlab_built_in_project_template', 'GitLab built-in project template', Gitlab::ImportExport::Importer
+      )
     ].freeze
+
+    PROJECT_TEMPLATE_IMPORTERS = ['gitlab_built_in_project_template'].freeze
 
     class << self
       prepend_mod_with('Gitlab::ImportSources') # rubocop: disable Cop/InjectEnterpriseEditionModule
@@ -51,7 +56,7 @@ module Gitlab
       end
 
       def project_template_importers
-        []
+        PROJECT_TEMPLATE_IMPORTERS
       end
     end
   end

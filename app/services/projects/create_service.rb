@@ -113,7 +113,6 @@ module Projects
 
     def validate_import_permissions
       return unless @project.import?
-      return if @project.gitlab_project_import?
 
       # Skip for project template importers, as their permission model is different from other importers
       # See: https://gitlab.com/gitlab-org/gitlab/-/issues/414046#note_1945586449.
@@ -334,9 +333,6 @@ module Projects
       # Skip for project template importers, as their feature availability is not
       # controlled by the `import_sources` application setting.
       return if Gitlab::ImportSources.template?(import_type)
-
-      # Skip validation when creating project from a built in template
-      return if @import_export_upload.present? && import_type == 'gitlab_project'
 
       unless ::Gitlab::CurrentSettings.import_sources&.include?(import_type)
         raise ImportSourceDisabledError, "#{import_type} import source is disabled"

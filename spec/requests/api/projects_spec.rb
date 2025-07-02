@@ -1512,7 +1512,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
 
       project = Project.find(json_response['id'])
       expect(project).to be_saved
-      expect(project.import_type).to eq('gitlab_project')
+      expect(project.import_type).to eq('gitlab_built_in_project_template')
     end
 
     it 'returns 400 for an invalid template' do

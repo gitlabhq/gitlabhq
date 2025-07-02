@@ -453,7 +453,8 @@ class ApplicationSetting < ApplicationRecord
     value&.each do |source|
       # Temporary allow "gitlab_custom_project_template" to avoid validation errors
       # "gitlab_custom_project_template" can be excluded after incorrect values are removed from the database
-      allowed_import_sources = Gitlab::ImportSources.values
+      # Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/550410
+      allowed_import_sources = Gitlab::ImportSources.values - ['gitlab_built_in_project_template']
 
       unless allowed_import_sources.include?(source)
         record.errors.add(attr, format(_("'%{source}' is not a import source"), source: source))

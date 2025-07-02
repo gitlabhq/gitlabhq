@@ -1711,7 +1711,7 @@ class Project < ApplicationRecord
   end
 
   def import?
-    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration?
+    external_import? || forked? || gitlab_project_import? || jira_import? || gitlab_project_migration? || Gitlab::ImportSources.template?(import_type)
   end
 
   def external_import?

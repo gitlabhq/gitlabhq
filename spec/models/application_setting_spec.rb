@@ -925,9 +925,11 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     end
 
     describe 'import_sources' do
-      let(:valid_import_sources) { Gitlab::ImportSources.values }
+      let(:invalid_import_sources) { ['gitlab_built_in_project_template'] }
+      let(:valid_import_sources) { Gitlab::ImportSources.values - invalid_import_sources }
 
       it { is_expected.to allow_value(valid_import_sources).for(:import_sources) }
+      it { is_expected.not_to allow_value(invalid_import_sources).for(:import_sources) }
     end
 
     describe 'default_artifacts_expire_in' do

@@ -56,7 +56,8 @@ module Gitlab
           disable_upload_object_storage do
             service = Projects::GitlabProjectsImportService.new(
               current_user,
-              import_params
+              import_params,
+              import_type: 'gitlab_project'
             )
 
             service.execute

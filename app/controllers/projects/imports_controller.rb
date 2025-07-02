@@ -50,9 +50,15 @@ class Projects::ImportsController < Projects::ApplicationController
     redirect_to project_path(@project) if @project.repository_exists?
   end
 
+  # Project creation by template uses a different permission model to regular imports
+  # https://gitlab.com/gitlab-org/gitlab/-/issues/414046#note_1945586449.
   def require_namespace_project_creation_permission
-    unless can?(current_user, :admin_project, @project) || can?(current_user, :import_projects, @project.namespace)
-      render_404
+    if Gitlab::ImportSources.template?(@project.import_type)
+      render_404 unless can?(current_user, :create_projects, project.namespace)
+    else
+      unless can?(current_user, :admin_project, @project) || can?(current_user, :import_projects, @project.namespace)
+        render_404
+      end
     end
   end
 

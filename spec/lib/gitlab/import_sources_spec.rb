@@ -15,6 +15,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
           gitlab_project
           gitea
           manifest
+          gitlab_built_in_project_template
         ]
 
       expect(described_class.values).to eq(expected)
@@ -31,6 +32,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
           fogbugz
           gitlab_project
           gitea
+          gitlab_built_in_project_template
         ]
 
       without_importer = %w[git manifest doesnotexist]
@@ -55,6 +57,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
       'gitlab_project' => Gitlab::ImportExport::Importer,
       'gitea' => Gitlab::LegacyGithubImport::Importer,
       'manifest' => nil,
+      'gitlab_built_in_project_template' => Gitlab::ImportExport::Importer,
       'doesnotexist' => nil,
       nil => nil
     }
@@ -76,6 +79,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
       'gitlab_project' => 'GitLab export',
       'gitea' => 'Gitea',
       'manifest' => 'Manifest file',
+      'gitlab_built_in_project_template' => 'GitLab built-in project template',
       'doesnotexist' => nil,
       nil => nil
     }
@@ -88,7 +92,7 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   end
 
   describe 'imports_repository? checker' do
-    let(:allowed_importers) { %w[github gitlab_project bitbucket bitbucket_server] }
+    let(:allowed_importers) { %w[github gitlab_project bitbucket bitbucket_server gitlab_built_in_project_template] }
 
     it 'fails if any importer other than the allowed ones implements this method' do
       current_importers = described_class.values.select { |kind| described_class.importer(kind).try(:imports_repository?) }
@@ -125,6 +129,12 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   describe '.template?' do
     subject { described_class.template?(template) }
 
+    context 'when importer is project template importer' do
+      let(:template) { 'gitlab_built_in_project_template' }
+
+      it { is_expected.to be_truthy }
+    end
+
     context 'when importer is not project template importer' do
       let(:template) { 'github' }
 
@@ -145,8 +155,17 @@ RSpec.describe Gitlab::ImportSources, feature_category: :importers do
   end
 
   describe '.project_template_importers' do
-    it 'does not include non-project template importers' do
+    it 'returns names of project template importers' do
+      expect(described_class.project_template_importers).to include('gitlab_built_in_project_template')
       expect(described_class.project_template_importers).not_to include('github')
+    end
+  end
+
+  describe 'gitlab_built_in_project_template' do
+    subject(:importer) { described_class.import_source('gitlab_built_in_project_template') }
+
+    it 'uses Gitlab::ImportExport::Importer' do
+      expect(importer.importer).to eq(Gitlab::ImportExport::Importer)
     end
   end
 end

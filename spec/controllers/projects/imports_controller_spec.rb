@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Projects::ImportsController, feature_category: :importers do
-  let(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
   let(:project) { create(:project) }
 
   before do
@@ -19,6 +19,33 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
         get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    context 'when the developer user has project creation rights' do
+      let_it_be(:group) { create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS) }
+      let_it_be(:project) { create(:project_empty_repo, :import_started, group: group) }
+
+      before_all do
+        group.add_developer(user)
+      end
+
+      it 'returns 404 response' do
+        get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      context 'when import type is gitlab_built_in_project_template' do
+        before do
+          project.update!(import_type: 'gitlab_built_in_project_template')
+        end
+
+        it 'returns 200 response' do
+          get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
+
+          expect(response).to have_gitlab_http_status(:success)
+        end
       end
     end
 
@@ -133,29 +160,6 @@ RSpec.describe Projects::ImportsController, feature_category: :importers do
             get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
 
             expect(response).to redirect_to project_path(project)
-          end
-        end
-      end
-    end
-
-    context 'when project is in group' do
-      let(:project) { create(:project_empty_repo, import_url: 'https://github.com/vim/vim.git', namespace: group) }
-
-      context 'when user has developer access to group and import is in progress' do
-        let(:import_state) { project.import_state }
-
-        before do
-          group.add_developer(user)
-          import_state.update!(status: :started)
-        end
-
-        context 'when group prohibits developers to import projects' do
-          let(:group) { create(:group, project_creation_level: Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
-
-          it 'returns 404 response' do
-            get :show, params: { namespace_id: project.namespace.to_param, project_id: project }
-
-            expect(response).to have_gitlab_http_status(:not_found)
           end
         end
       end

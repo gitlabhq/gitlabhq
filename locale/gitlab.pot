@@ -2394,10 +2394,22 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
+msgid "AICatalog|Create agent"
+msgstr ""
+
+msgid "AICatalog|Description can't be blank."
+msgstr ""
+
 msgid "AICatalog|Edit agent"
 msgstr ""
 
 msgid "AICatalog|Failed to run agent."
+msgstr ""
+
+msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
+msgstr ""
+
+msgid "AICatalog|Modify the agent settings and configuration."
 msgstr ""
 
 msgid "AICatalog|Prompt"
@@ -2410,6 +2422,15 @@ msgid "AICatalog|Run"
 msgstr ""
 
 msgid "AICatalog|Run agent"
+msgstr ""
+
+msgid "AICatalog|Save changes"
+msgstr ""
+
+msgid "AICatalog|System Prompt"
+msgstr ""
+
+msgid "AICatalog|User Prompt"
 msgstr ""
 
 msgid "AISummary|Generates a summary of this issue"

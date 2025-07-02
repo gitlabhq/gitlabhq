@@ -26,7 +26,7 @@ module Projects
         params[:sample_data] = true
       end
 
-      GitlabProjectsImportService.new(current_user, params, override_params).execute
+      GitlabProjectsImportService.new(current_user, params, override_params, import_type: 'gitlab_built_in_project_template').execute
     ensure
       file&.close
     end
