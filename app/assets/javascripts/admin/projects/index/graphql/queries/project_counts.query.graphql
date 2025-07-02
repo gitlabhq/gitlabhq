@@ -1,0 +1,22 @@
+query getAdminProjectCounts(
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $programmingLanguageName: String
+) {
+  active: projects(
+    active: true
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
+  ) {
+    count
+  }
+  inactive: projects(
+    active: false
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
+  ) {
+    count
+  }
+}

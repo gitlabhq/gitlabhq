@@ -335,6 +335,7 @@ module Gitlab
     config.assets.precompile << "page_bundles/operations.css"
     config.assets.precompile << "page_bundles/organizations.css"
     config.assets.precompile << "page_bundles/paginated_table.css"
+    config.assets.precompile << "page_bundles/personal_homepage.css"
     config.assets.precompile << "page_bundles/pipeline.css"
     config.assets.precompile << "page_bundles/pipeline_editor.css"
     config.assets.precompile << "page_bundles/pipelines.css"

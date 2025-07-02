@@ -1,0 +1,34 @@
+#import "~/graphql_shared/fragments/page_info.fragment.graphql"
+#import "~/graphql_shared/fragments/project.fragment.graphql"
+
+query getAdminProjects(
+  $active: Boolean
+  $first: Int
+  $last: Int
+  $before: String
+  $after: String
+  $sort: String
+  $search: String
+  $minAccessLevel: AccessLevelEnum
+  $programmingLanguageName: String
+) {
+  projects(
+    active: $active
+    first: $first
+    last: $last
+    before: $before
+    after: $after
+    sort: $sort
+    search: $search
+    minAccessLevel: $minAccessLevel
+    programmingLanguageName: $programmingLanguageName
+  ) {
+    count
+    nodes {
+      ...Project
+    }
+    pageInfo {
+      ...PageInfo
+    }
+  }
+}

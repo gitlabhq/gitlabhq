@@ -1,0 +1,8 @@
+.event-item > .system-note-image {
+  @apply gl-bg-transparent;
+  top: 19px;
+}
+
+.event-item > .system-note-image > svg {
+  @apply gl-fill-icon-subtle #{!important};
+}

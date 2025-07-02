@@ -31570,6 +31570,9 @@ msgstr ""
 msgid "Homepage"
 msgstr ""
 
+msgid "HomepageActivityWidget|The activity feed is not available. Please refresh the page to try again."
+msgstr ""
+
 msgid "Hook execution failed. %{error}"
 msgstr ""
 
@@ -49763,6 +49766,9 @@ msgid "Projects|An error occurred restoring the project. Please refresh the page
 msgstr ""
 
 msgid "Projects|Delete %{nameWithNamespace}"
+msgstr ""
+
+msgid "Projects|No projects found."
 msgstr ""
 
 msgid "Projects|Projects that are archived or pending deletion will appear here."

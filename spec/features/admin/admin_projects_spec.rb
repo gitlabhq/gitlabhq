@@ -42,15 +42,11 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
   end
 
   describe "GET /admin/projects" do
-    let_it_be(:archived_project) { create :project, :public, :archived }
-
     context 'for an admin' do
       before do
         expect(project).to be_persisted
         visit admin_projects_path
       end
-
-      it_behaves_like 'showing all projects'
 
       context 'for "jh transition banner" part' do
         before do
@@ -65,10 +61,55 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
         end
       end
 
+      it 'renders projects tabs list', :js do
+        expect(page).to have_selector('.gl-tabs')
+        expect(page).to have_selector('.vue-filtered-search-bar-container')
+        expect(page).to have_content(project.name)
+      end
+    end
+
+    context 'when `admin_projects_vue` is disabled' do
+      let_it_be(:archived_project) { create :project, :public, :archived }
+
+      before do
+        stub_feature_flags(admin_projects_vue: false)
+
+        expect(project).to be_persisted
+        visit admin_projects_path
+      end
+
+      it "renders the correct path" do
+        expect(page).to have_current_path(admin_projects_path, ignore_query: true)
+      end
+
+      it 'renders all projects', :js do
+        find(:css, '#sort-projects-dropdown').click
+        click_link 'Show archived projects'
+
+        expect(page).to have_content(project.name)
+        expect(page).to have_content(archived_project.name)
+        expect(page).to have_xpath("//span[@class='gl-badge badge badge-pill badge-info gl-mr-3']", text: 'Archived')
+      end
+
+      it 'renders projects list without archived project' do
+        expect(page).to have_content(project.name)
+        expect(page).not_to have_content(archived_project.name)
+      end
+
       it 'has project edit and delete button' do
         page.within('.project-row') do
           expect(page).to have_link 'Edit'
           expect(page).to have_button 'Delete'
+        end
+      end
+
+      context 'when "Show archived projects only" is clicked' do
+        it 'renders only archived projects', :js do
+          find(:css, '#sort-projects-dropdown').click
+          click_link 'Show archived projects only'
+
+          expect(page).to have_content(archived_project.name)
+          expect(page).not_to have_content(project.name)
         end
       end
     end
@@ -77,13 +118,15 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
   describe "GET /admin/projects/:namespace_id/:id" do
     let_it_be(:access_request) { create(:project_member, :access_request, project: project) }
 
-    context 'for an admin' do
-      before do
-        visit admin_projects_path
-        click_link project.name
+    shared_examples 'renders project edit page' do
+      it "has project info", :aggregate_failures do
+        expect(page).to have_current_path admin_project_path(project), ignore_query: true
+        expect(page).to have_content(project.path)
+        expect(page).to have_content(project.name)
+        expect(page).to have_content(project.full_name)
+        expect(page).to have_content(project.creator.name)
+        expect(page).to have_content(project.id)
       end
-
-      it_behaves_like 'showing project details'
 
       it 'shows access requests with link to manage access' do
         within_testid('access-requests') do
@@ -101,6 +144,27 @@ RSpec.describe "Admin::Projects", feature_category: :groups_and_projects do
         page.within('.content') do
           expect(page).to have_link 'Edit'
         end
+      end
+    end
+
+    context 'for an admin', :js do
+      before do
+        visit admin_projects_path
+        click_link project.name_with_namespace
+      end
+
+      it_behaves_like 'renders project edit page'
+
+      context 'when `admin_projects_vue` is disabled' do
+        before do
+          stub_feature_flags(admin_projects_vue: false)
+
+          expect(project).to be_persisted
+          visit admin_projects_path
+          click_link project.name
+        end
+
+        it_behaves_like 'renders project edit page'
       end
     end
   end

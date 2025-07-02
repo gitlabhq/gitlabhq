@@ -10,6 +10,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   feature_category :source_code_management, [:repository_check]
 
   def index
+    return if Feature.enabled?(:admin_projects_vue, current_user)
+
     params[:sort] ||= 'latest_activity_desc'
     @sort = params[:sort]
 
