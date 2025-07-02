@@ -490,7 +490,7 @@ export const BACKOFF_TIMEOUT = 'BACKOFF_TIMEOUT';
  *        // continue if result is not what we need
  *        next();
  *
- *        // when result is what we need let's stop with the repetions and jump out of the cycle
+ *        // when result is what we need let's stop with the repetitions and jump out of the cycle
  *        stop(result);
  *      })
  *      .catch(function (error) {
