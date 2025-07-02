@@ -8,6 +8,7 @@ RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
   let!(:project) { create(:project) }
   let!(:grafana_integration) { create(:grafana_integration, project: project, token: "test") }
   let!(:integration) { create(:integration, project: project, properties: { test_key: "test_value" }) }
+  let!(:webhook) { create(:project_hook, project: project) }
   let(:logger) { instance_double(Logger).as_null_object }
 
   subject(:doctor_secrets) { described_class.new(logger).run! }
@@ -30,6 +31,7 @@ RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
     it 'detects decryptable secrets' do
       expect(logger).to receive(:info).with(/User failures: 0/)
       expect(logger).to receive(:info).with(/Group failures: 0/)
+      expect(logger).to receive(:info).with(/WebHook failures: 0/)
 
       doctor_secrets
     end
@@ -68,6 +70,19 @@ RSpec.describe Gitlab::Doctor::Secrets, feature_category: :shared do
 
         doctor_secrets
       end
+    end
+  end
+
+  context 'when WebHook values are not decrypting' do
+    before do
+      webhook.encrypted_url_variables = "invalid"
+      webhook.save!
+    end
+
+    it 'marks undecryptable values as bad' do
+      expect(logger).to receive(:info).with(/WebHook failures: 1/)
+
+      doctor_secrets
     end
   end
 
