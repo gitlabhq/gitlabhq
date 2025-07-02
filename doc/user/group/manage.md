@@ -561,7 +561,7 @@ To change this behavior:
 
 ### Prevent merge unless all threads are resolved
 
-You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, child projects in your group display unresolved thread counts in orange on merge requests with at least one unresolved thread.
+You can prevent merge requests from being merged until all threads are resolved. When this setting is enabled, child projects in your group display open thread counts in orange on merge requests with at least one open thread.
 
 Prerequisites:
 

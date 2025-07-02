@@ -4,7 +4,6 @@ ee/spec/frontend/admin/subscriptions/show/components/subscription_breakdown_spec
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_dashboards_breadcrumbs_spec.js
 ee/spec/frontend/analytics/analytics_dashboards/components/analytics_data_explorer_spec.js
 ee/spec/frontend/analytics/cycle_analytics/vsa_settings/components/value_stream_form_content_spec.js
-ee/spec/frontend/analytics/dashboards/ai_impact/components/metric_table_spec.js
 ee/spec/frontend/analytics/devops_reports/devops_adoption/components/devops_adoption_app_spec.js
 ee/spec/frontend/analytics/group_ci_cd_analytics/components/release_stats_card_spec.js
 ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
@@ -91,7 +90,6 @@ spec/frontend/members/components/modals/leave_modal_spec.js
 spec/frontend/members/components/table/max_role_spec.js
 spec/frontend/members/components/table/members_table_spec.js
 spec/frontend/ml/model_registry/components/model_edit_spec.js
-spec/frontend/notes/components/discussion_notes_spec.js
 spec/frontend/packages_and_registries/dependency_proxy/app_spec.js
 spec/frontend/packages_and_registries/infrastructure_registry/components/details/components/app_spec.js
 spec/frontend/packages_and_registries/package_registry/components/details/package_files_spec.js

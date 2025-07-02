@@ -34,6 +34,7 @@ import {
   TOKEN_TYPE_DEPLOYED_AFTER,
   TOKEN_TYPE_DEPLOYED_BEFORE,
   TOKEN_TYPE_SUBSCRIBED,
+  TOKEN_TYPE_SEARCH_WITHIN,
   OPERATOR_IS,
   OPERATOR_NOT,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -329,6 +330,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
           { type: TOKEN_TYPE_SUBSCRIBED },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
     });
@@ -346,6 +348,7 @@ describe('Merge requests list app', () => {
         my_reaction_emoji: '🔥',
         'target_branches[]': 'branch-a',
         'source_branches[]': 'branch-b',
+        in: 'TITLE',
       };
 
       beforeEach(async () => {
@@ -390,6 +393,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_DEPLOYED_BEFORE },
           { type: TOKEN_TYPE_DEPLOYED_AFTER },
           { type: TOKEN_TYPE_SUBSCRIBED },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
 
@@ -406,6 +410,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
+          { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
     });

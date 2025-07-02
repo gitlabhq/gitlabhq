@@ -76,7 +76,7 @@ Each table row groups related information about a merge request together into co
 - **Author** - The author's avatar.
 - **Reviewers** - The reviewers' avatars. Reviewers with a green check mark have approved the merge request.
 - **Checks** - A compact assessment of mergeability.
-  - Number of unresolved threads, for example `0 of 3`.
+  - Number of open threads, for example `0 of 3`.
   - Current required [approval status](../../user/project/merge_requests/approvals/_index.md#in-the-list-of-merge-requests).
   - Most recent pipeline's status.
   - Date of last update.

@@ -377,17 +377,17 @@ sort order by clicking the sort button on the right.
 When you want to finish a conversation in a merge request,
 [resolve a thread](../../discussions/_index.md#resolve-a-thread).
 
-GitLab shows the number of unresolved threads in the top right corner of a
-merge request, like this: `7 unresolved threads`.
+GitLab shows the number of open threads in the top right corner of a
+merge request, like this: `7 open threads`.
 
-### Move all unresolved threads in a merge request to an issue
+### Move all open threads in a merge request to an issue
 
-If you have multiple unresolved threads in a merge request, you can
+If you have multiple open threads in a merge request, you can
 create an issue to resolve them separately:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
-1. In the merge request, in the top right, find the **Unresolved threads**
+1. In the merge request, in the top right, find the **Open threads**
    dropdown list, and select **Thread options** ({{< icon name="ellipsis_v" >}}).
 1. Select **Resolve all with new issue**.
 1. Fill out the fields in the new issue, and select **Create issue**.
@@ -395,9 +395,9 @@ create an issue to resolve them separately:
 GitLab marks all threads as resolved, and adds a link from the merge request to
 the newly created issue.
 
-### Move one unresolved thread in a merge request to an issue
+### Move one open thread in a merge request to an issue
 
-If you have one specific unresolved thread in a merge request, you can
+If you have one specific open thread in a merge request, you can
 create an issue to resolve it separately:
 
 1. On the left sidebar, select **Search or go to** and find your project.
@@ -412,9 +412,9 @@ the newly created issue.
 
 ### Prevent merge unless all threads are resolved
 
-You can prevent merge requests from merging while threads remain unresolved.
-When you enable this setting, the **Unresolved threads** counter in a merge request
-is shown in orange while at least one thread remains unresolved.
+You can prevent merge requests from merging while threads remain open.
+When you enable this setting, the **Open threads** counter in a merge request
+is shown in orange while at least one thread remains open.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Merge requests**.

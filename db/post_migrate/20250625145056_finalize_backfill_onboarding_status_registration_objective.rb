@@ -7,13 +7,11 @@ class FinalizeBackfillOnboardingStatusRegistrationObjective < Gitlab::Database::
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   def up
-    ensure_batched_background_migration_is_finished(
-      job_class_name: 'BackfillOnboardingStatusRegistrationObjective',
-      table_name: :user_details,
-      column_name: :id,
-      job_arguments: [],
-      finalize: true
-    )
+    # no-op
+    # This migration finalization was changed to a no-op because the job arguments did not match
+    # the batched background migration configuration, causing database testing pipeline failures.
+    # Original MR: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195690
+    # Error: Could not find batched background migration for the given configuration with job_arguments: []
   end
 
   def down

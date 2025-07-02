@@ -416,6 +416,11 @@ msgid_plural "%d more comments"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d open thread"
+msgid_plural "%d open threads"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d option"
 msgid_plural "%d options"
 msgstr[0] ""
@@ -518,11 +523,6 @@ msgstr[1] ""
 
 msgid "%d template found"
 msgid_plural "%d templates found"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d unresolved thread"
-msgid_plural "%d unresolved threads"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -22554,6 +22554,9 @@ msgstr ""
 msgid "DesignManagement|Hide comments"
 msgstr ""
 
+msgid "DesignManagement|Reopen thread"
+msgstr ""
+
 msgid "DesignManagement|Requested design version does not exist."
 msgstr ""
 
@@ -22600,9 +22603,6 @@ msgid "DesignManagement|There was an error moving your designs. Please upload yo
 msgstr ""
 
 msgid "DesignManagement|To upload designs, you'll need to enable LFS and have an admin enable hashed storage. %{requirements_link_start}More information%{requirements_link_end}"
-msgstr ""
-
-msgid "DesignManagement|Unresolve thread"
 msgstr ""
 
 msgid "DesignManagement|Unselect the design"
@@ -38968,16 +38968,16 @@ msgstr ""
 msgid "MergeRequests|Squashing not allowed: This project doesn't allow you to squash commits when merging."
 msgstr ""
 
+msgid "MergeRequests|Thread stays open"
+msgstr ""
+
 msgid "MergeRequests|Thread stays resolved"
 msgstr ""
 
-msgid "MergeRequests|Thread stays unresolved"
+msgid "MergeRequests|Thread will be open"
 msgstr ""
 
 msgid "MergeRequests|Thread will be resolved"
-msgstr ""
-
-msgid "MergeRequests|Thread will be unresolved"
 msgstr ""
 
 msgid "MergeRequests|View file @ %{commitId}"
@@ -41139,6 +41139,9 @@ msgstr ""
 msgid "Next file in diff"
 msgstr ""
 
+msgid "Next open thread"
+msgstr ""
+
 msgid "Next scan"
 msgstr ""
 
@@ -41146,9 +41149,6 @@ msgid "Next step"
 msgstr ""
 
 msgid "Next step in review workflow"
-msgstr ""
-
-msgid "Next unresolved thread"
 msgstr ""
 
 msgid "Next update"
@@ -43316,6 +43316,9 @@ msgid "Open new window"
 msgstr ""
 
 msgid "Open raw"
+msgstr ""
+
+msgid "Open threads must be resolved."
 msgstr ""
 
 msgid "Open with"
@@ -47180,10 +47183,10 @@ msgstr ""
 msgid "Previous file in diff"
 msgstr ""
 
-msgid "Previous step"
+msgid "Previous open thread"
 msgstr ""
 
-msgid "Previous unresolved thread"
+msgid "Previous step"
 msgstr ""
 
 msgid "Primary navigation sidebar"
@@ -51736,6 +51739,9 @@ msgid "Reopen milestone"
 msgstr ""
 
 msgid "Reopen this %{quick_action_target}"
+msgstr ""
+
+msgid "Reopen thread"
 msgstr ""
 
 msgid "Reopened this %{quick_action_target}."
@@ -66162,13 +66168,7 @@ msgstr ""
 msgid "Unresolve"
 msgstr ""
 
-msgid "Unresolve thread"
-msgstr ""
-
 msgid "Unresolved"
-msgstr ""
-
-msgid "Unresolved discussions must be resolved."
 msgstr ""
 
 msgid "Unschedule job"
@@ -74507,7 +74507,7 @@ msgstr ""
 msgid "mrWidget|GitLab %{linkStart}CI/CD can automatically build, test, and deploy your application.%{linkEnd} It only takes a few minutes to get started, and we can help you create a pipeline configuration file."
 msgstr ""
 
-msgid "mrWidget|Go to first unresolved thread"
+msgid "mrWidget|Go to first open thread"
 msgstr ""
 
 msgid "mrWidget|If the %{type} branch exists in your local repository, you can merge this merge request manually using the command line."

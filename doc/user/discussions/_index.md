@@ -352,7 +352,7 @@ To resolve a thread:
 Additionally, in merge requests, you can [do more with threads](../project/merge_requests/_index.md#resolve-a-thread),
 such as:
 
-- Move unresolved threads to a new issue.
+- Move open threads to a new issue.
 - Prevent merging until all threads are resolved.
 
 ## Summarize issue discussions with Duo Chat

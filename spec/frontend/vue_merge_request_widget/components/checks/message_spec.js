@@ -16,7 +16,7 @@ describe('Merge request merge checks message component', () => {
     ${'commits_status'}             | ${'Source branch exists and contains commits.'}
     ${'ci_must_pass'}               | ${'Pipeline must succeed.'}
     ${'conflict'}                   | ${'Merge conflicts must be resolved.'}
-    ${'discussions_not_resolved'}   | ${'Unresolved discussions must be resolved.'}
+    ${'discussions_not_resolved'}   | ${'Open threads must be resolved.'}
     ${'draft_status'}               | ${'Merge request must not be draft.'}
     ${'not_open'}                   | ${'Merge request must be open.'}
     ${'need_rebase'}                | ${'Merge request must be rebased, because a fast-forward merge is not possible.'}

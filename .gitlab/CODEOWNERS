@@ -643,7 +643,7 @@ lib/gitlab/checks/
 /doc/administration/merge_request_diffs.md @aqualls
 /doc/administration/merge_requests_approvals.md @brendan777
 /doc/administration/moderate_users.md @lciutacu
-/doc/administration/monitoring/github_imports.md @ashrafkhamis
+/doc/administration/monitoring/ @ashrafkhamis
 /doc/administration/monitoring/prometheus/_index.md @axil @eread
 /doc/administration/monitoring/prometheus/registry_exporter.md @z_painter
 /doc/administration/nfs.md @axil @eread
@@ -830,7 +830,6 @@ lib/gitlab/checks/
 /doc/api/pipelines.md @lyspin
 /doc/api/plan_limits.md @idurham
 /doc/api/policy_settings.md @rlehmann1
-/doc/api/product_analytics.md @lciutacu
 /doc/api/project_access_tokens.md @idurham
 /doc/api/project_aliases.md @brendan777
 /doc/api/project_badges.md @phillipwells
@@ -1018,7 +1017,6 @@ lib/gitlab/checks/
 /doc/solutions/ @jfullam @Darwinjs @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
-/doc/subscriptions/gitlab_com/ @lciutacu
 /doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
 /doc/subscriptions/gitlab_dedicated/ @lyspin
 /doc/topics/ @msedlakjakubowski
@@ -1084,8 +1082,8 @@ lib/gitlab/checks/
 /doc/user/crm/ @msedlakjakubowski
 /doc/user/custom_roles/ @idurham
 /doc/user/discussions/ @aqualls
+/doc/user/duo_agent_platform/ @sselhorn
 /doc/user/duo_amazon_q/ @sselhorn
-/doc/user/duo_workflow/ @sselhorn
 /doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @idurham
 /doc/user/get_started/get_started_managing_code.md @brendan777
@@ -1142,7 +1140,7 @@ lib/gitlab/checks/
 /doc/user/project/import/jira.md @msedlakjakubowski
 /doc/user/project/import/jira_migration_options.md @msedlakjakubowski
 /doc/user/project/insights/ @lciutacu
-/doc/user/project/integrations/ @ashrafkhamis
+/doc/user/project/integrations/_index.md @ashrafkhamis
 /doc/user/project/integrations/asana.md @msedlakjakubowski
 /doc/user/project/integrations/bamboo.md @lyspin
 /doc/user/project/integrations/beyond_identity.md @brendan777
@@ -1150,16 +1148,38 @@ lib/gitlab/checks/
 /doc/user/project/integrations/clickup.md @msedlakjakubowski
 /doc/user/project/integrations/confluence.md @msedlakjakubowski
 /doc/user/project/integrations/custom_issue_tracker.md @msedlakjakubowski
+/doc/user/project/integrations/discord_notifications.md @ashrafkhamis
+/doc/user/project/integrations/emails_on_push.md @brendan777
 /doc/user/project/integrations/ewm.md @msedlakjakubowski
 /doc/user/project/integrations/git_guardian.md @brendan777
 /doc/user/project/integrations/github.md @lyspin
+/doc/user/project/integrations/gitlab_slack_app_troubleshooting.md @ashrafkhamis
+/doc/user/project/integrations/gitlab_slack_application.md @ashrafkhamis
 /doc/user/project/integrations/google_artifact_management.md @z_painter
+/doc/user/project/integrations/hangouts_chat.md @ashrafkhamis
 /doc/user/project/integrations/harbor.md @z_painter
+/doc/user/project/integrations/irker.md @ashrafkhamis
 /doc/user/project/integrations/matrix.md @sselhorn
+/doc/user/project/integrations/mattermost.md @ashrafkhamis
+/doc/user/project/integrations/mattermost_slash_commands.md @ashrafkhamis
+/doc/user/project/integrations/microsoft_teams.md @ashrafkhamis
+/doc/user/project/integrations/mock_ci.md @lyspin
 /doc/user/project/integrations/phorge.md @msedlakjakubowski
+/doc/user/project/integrations/pipeline_status_emails.md @lyspin
 /doc/user/project/integrations/pivotal_tracker.md @msedlakjakubowski
+/doc/user/project/integrations/pumble.md @ashrafkhamis
 /doc/user/project/integrations/redmine.md @msedlakjakubowski
+/doc/user/project/integrations/slack.md @ashrafkhamis
+/doc/user/project/integrations/slack_slash_commands.md @ashrafkhamis
+/doc/user/project/integrations/squash_tm.md @msedlakjakubowski
+/doc/user/project/integrations/telegram.md @ashrafkhamis
+/doc/user/project/integrations/unify_circuit.md @ashrafkhamis
+/doc/user/project/integrations/webex_teams.md @ashrafkhamis
+/doc/user/project/integrations/webhook_events.md @ashrafkhamis
+/doc/user/project/integrations/webhooks.md @ashrafkhamis
+/doc/user/project/integrations/webhooks_troubleshooting.md @ashrafkhamis
 /doc/user/project/integrations/youtrack.md @msedlakjakubowski
+/doc/user/project/integrations/zentao.md @ashrafkhamis
 /doc/user/project/issue_board.md @msedlakjakubowski
 /doc/user/project/issues/ @msedlakjakubowski
 /doc/user/project/issues/csv_import.md @ashrafkhamis
@@ -1287,7 +1307,6 @@ lib/gitlab/checks/
 /app/assets/javascripts/pages/projects/settings/access_tokens/
 /app/assets/javascripts/pages/user_settings/personal_access_tokens/
 /app/assets/javascripts/profile/password_prompt/
-/app/assets/javascripts/projects/settings/topics/components/
 /app/assets/stylesheets/page_bundles/profile_two_factor_auth.scss
 /app/controllers/admin/impersonation_tokens_controller.rb
 /app/controllers/concerns/access_tokens_actions.rb

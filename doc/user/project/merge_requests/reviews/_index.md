@@ -179,20 +179,20 @@ To start your review of a merge request:
 
 Next, submit your review.
 
-### Resolve or unresolve thread with a comment
+### Resolve or reopen thread with a comment
 
-Review comments can also resolve or unresolve [resolvable threads](../_index.md#resolve-a-thread).
-To resolve or unresolve a thread when replying to a comment:
+Review comments can also resolve or reopen [resolvable threads](../_index.md#resolve-a-thread).
+To resolve or reopen a thread when replying to a comment:
 
 1. In the comment text area, write your comment.
-1. Select or clear **Resolve thread**.
+1. Select or clear **Resolve thread** or **Reopen thread**.
 1. Select **Add comment now** or **Add to review**.
 
 Pending comments display information about delayed actions. GitLab does not perform these actions
 until you publish the comment:
 
 - {{< icon name="check-circle-filled" >}} Resolves thread.
-- {{< icon name="check-circle" >}} Thread stays unresolved.
+- {{< icon name="check-circle" >}} Thread stays open.
 
 ## Submit a review
 

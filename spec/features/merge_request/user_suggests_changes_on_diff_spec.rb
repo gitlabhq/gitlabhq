@@ -399,13 +399,13 @@ RSpec.describe 'User comments on a diff', :js, feature_category: :code_review_wo
 
     it 'resolves discussion when applied' do
       page.within("[id='#{hash}']") do
-        expect(page).not_to have_content('Unresolve thread')
+        expect(page).not_to have_content('Reopen thread')
 
         click_button('Apply suggestion')
         click_button('Apply')
         wait_for_requests
 
-        expect(page).to have_content('Unresolve thread')
+        expect(page).to have_content('Reopen thread')
       end
     end
   end

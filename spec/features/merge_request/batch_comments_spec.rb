@@ -314,7 +314,7 @@ RSpec.describe 'Merge request > Batch comments', :js, feature_category: :code_re
       end
 
       if unresolve
-        page.check('Unresolve thread')
+        page.check('Reopen thread')
       end
 
       click_button(button_text)

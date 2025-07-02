@@ -31,9 +31,9 @@ describe('MergeChecksUnresolvedDiscussions component', () => {
     expect(wrapper.findComponent(MergeChecksMessage).props('check')).toEqual(check);
   });
 
-  it('does not show go to first unresolved discussion button with passed state', () => {
+  it('does not show go to first open discussion button with passed state', () => {
     createComponent({ check: { status: 'success', identifier: 'discussions_not_resolved' } });
-    const button = wrapper.findByRole('button', { name: 'Go to first unresolved thread' });
+    const button = wrapper.findByRole('button', { name: 'Go to first open thread' });
     expect(button.exists()).toBe(false);
   });
 
@@ -42,7 +42,7 @@ describe('MergeChecksUnresolvedDiscussions component', () => {
     notesEventHub.$on('jumpToFirstUnresolvedDiscussion', callback);
     createComponent();
 
-    wrapper.findByRole('button', { name: 'Go to first unresolved thread' }).trigger('click');
+    wrapper.findByRole('button', { name: 'Go to first open thread' }).trigger('click');
 
     expect(callback).toHaveBeenCalled();
   });

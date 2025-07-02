@@ -489,13 +489,13 @@ export const MR_TOGGLE_REVIEW = {
 
 export const MR_NEXT_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.nextUnresolvedDiscussion',
-  description: __('Next unresolved thread'),
+  description: __('Next open thread'),
   defaultKeys: ['n'],
 };
 
 export const MR_PREVIOUS_UNRESOLVED_DISCUSSION = {
   id: 'mergeRequests.previousUnresolvedDiscussion',
-  description: __('Previous unresolved thread'),
+  description: __('Previous open thread'),
   defaultKeys: ['p'],
 };
 

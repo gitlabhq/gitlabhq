@@ -158,7 +158,7 @@ Approved merge requests display a green check mark ({{< icon name="check-circle-
 After a merge request receives the required approvals, it is ready to merge, unless it's blocked due to:
 
 - [Merge conflicts](../conflicts.md)
-- [Unresolved threads](../_index.md#prevent-merge-unless-all-threads-are-resolved)
+- [Open threads](../_index.md#prevent-merge-unless-all-threads-are-resolved)
 - [Failed CI/CD pipeline](../auto_merge.md)
 
 ### Prevent author approval

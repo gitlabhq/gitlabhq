@@ -33,6 +33,8 @@ describe('DiscussionNotes', () => {
   let wrapper;
 
   const getList = () => getByRole(wrapper.element, 'list');
+  const findNoteableNotes = () => wrapper.findAllComponents(NoteableNote);
+
   const createComponent = (props, mountingMethod = shallowMount) => {
     wrapper = mountingMethod(DiscussionNotes, {
       store,
@@ -69,49 +71,50 @@ describe('DiscussionNotes', () => {
     it('renders an element for each note in the discussion', () => {
       createComponent();
       const notesCount = discussionMock.notes.length;
-      const els = wrapper.findAllComponents(NoteableNote);
-      expect(els.length).toBe(notesCount);
+      expect(findNoteableNotes().length).toBe(notesCount);
     });
 
     it('renders one element if replies groupping is enabled', () => {
       createComponent({ shouldGroupReplies: true });
-      const els = wrapper.findAllComponents(NoteableNote);
-      expect(els.length).toBe(1);
+      expect(findNoteableNotes().length).toBe(1);
     });
 
-    it('uses proper component to render each note type', () => {
-      const discussion = { ...discussionMock };
-      const notesData = [
-        // PlaceholderSystemNote
-        {
+    it.each([
+      {
+        note: {
           id: 1,
           isPlaceholderNote: true,
           placeholderType: SYSTEM_NOTE,
           notes: [{ body: 'PlaceholderSystemNote' }],
         },
-        // PlaceholderNote
-        {
+        component: PlaceholderSystemNote,
+      },
+      {
+        note: {
           id: 2,
           isPlaceholderNote: true,
           notes: [{ body: 'PlaceholderNote' }],
         },
-        // SystemNote
-        {
+        component: PlaceholderNote,
+      },
+      {
+        note: {
           id: 3,
           system: true,
           note: 'SystemNote',
         },
-        // NoteableNote
-        discussion.notes[0],
-      ];
-      discussion.notes = notesData;
-      createComponent({ discussion, shouldRenderDiffs: true });
-      const notes = wrapper.findAll('.notes > *');
+        component: SystemNote,
+      },
+      {
+        note: discussionMock.notes[0],
+        component: NoteableNote,
+      },
+    ])('uses $component.name to render note', ({ note, component }) => {
+      createComponent({
+        discussion: { ...discussionMock, notes: [note] },
+      });
 
-      expect(notes.at(0).is(PlaceholderSystemNote)).toBe(true);
-      expect(notes.at(1).is(PlaceholderNote)).toBe(true);
-      expect(notes.at(2).is(SystemNote)).toBe(true);
-      expect(notes.at(3).is(NoteableNote)).toBe(true);
+      expect(wrapper.findComponent(component).exists()).toBe(true);
     });
 
     it('renders footer scoped slot with showReplies === true when expanded', () => {
@@ -131,35 +134,27 @@ describe('DiscussionNotes', () => {
   });
 
   describe('events', () => {
-    describe('with groupped notes and replies expanded', () => {
-      const findNoteAtIndex = (index) => {
-        const noteComponents = [NoteableNote, SystemNote, PlaceholderNote, PlaceholderSystemNote];
-        return wrapper
-          .findAll('.notes *')
-          .filter((w) => noteComponents.some((Component) => w.is(Component)))
-          .at(index);
-      };
-
+    describe('with grouped notes and replies expanded', () => {
       beforeEach(() => {
         createComponent({ shouldGroupReplies: true, isExpanded: true });
       });
 
       it('emits deleteNote when first note emits handleDeleteNote', async () => {
-        findNoteAtIndex(0).vm.$emit('handleDeleteNote');
+        findNoteableNotes().at(0).vm.$emit('handleDeleteNote');
 
         await nextTick();
         expect(wrapper.emitted().deleteNote).toHaveLength(1);
       });
 
       it('emits startReplying when first note emits startReplying', async () => {
-        findNoteAtIndex(0).vm.$emit('startReplying');
+        findNoteableNotes().at(0).vm.$emit('startReplying');
 
         await nextTick();
         expect(wrapper.emitted().startReplying).toHaveLength(1);
       });
 
       it('emits deleteNote when second note emits handleDeleteNote', async () => {
-        findNoteAtIndex(1).vm.$emit('handleDeleteNote');
+        findNoteableNotes().at(1).vm.$emit('handleDeleteNote');
 
         await nextTick();
         expect(wrapper.emitted().deleteNote).toHaveLength(1);

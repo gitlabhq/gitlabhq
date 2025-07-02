@@ -273,9 +273,9 @@ To delete a comment from a design:
 
 When you're done discussing part of a design, you can resolve the discussion thread.
 
-To mark a thread as resolved or unresolved, either:
+To mark a thread as resolved or open, either:
 
-- In the upper-right corner of the first comment of the discussion, select **Resolve thread** or **Unresolve thread** ({{< icon name="check-circle" >}}).
+- In the upper-right corner of the first comment of the discussion, select **Resolve thread** or **Reopen thread** ({{< icon name="check-circle" >}}).
 - Add a new comment to the thread and select or clear the **Resolve thread** checkbox.
 
 Resolving a discussion thread also marks any pending [to-do items](../../todos.md) related to notes

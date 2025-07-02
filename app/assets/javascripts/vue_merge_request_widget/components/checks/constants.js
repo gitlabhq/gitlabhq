@@ -26,7 +26,7 @@ export const FAILURE_REASONS = {
   commits_status: __('Source branch exists and contains commits.'),
   ci_must_pass: __('Pipeline must succeed.'),
   conflict: __('Merge conflicts must be resolved.'),
-  discussions_not_resolved: __('Unresolved discussions must be resolved.'),
+  discussions_not_resolved: __('Open threads must be resolved.'),
   draft_status: __('Merge request must not be draft.'),
   not_open: __('Merge request must be open.'),
   need_rebase: __('Merge request must be rebased, because a fast-forward merge is not possible.'),

@@ -444,7 +444,7 @@ export default {
           <label>
             <template v-if="discussionResolved">
               <gl-form-checkbox v-model="isUnresolving" class="js-unresolve-checkbox">
-                {{ __('Unresolve thread') }}
+                {{ __('Reopen thread') }}
               </gl-form-checkbox>
             </template>
             <template v-else>

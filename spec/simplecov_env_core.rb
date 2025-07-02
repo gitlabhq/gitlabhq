@@ -22,7 +22,8 @@ module SimpleCovEnvCore
 
   def configure_profile
     SimpleCov.configure do
-      load_profile 'test_frameworks'
+      # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194688#note_2595596467
+      add_filter %r{^/(ee/|jh/)?spec/}
 
       add_filter %r{^/(ee/)?(bin|gems|vendor)}
       add_filter %r{^/(ee/)?db/fixtures/development}

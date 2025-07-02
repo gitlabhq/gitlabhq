@@ -284,12 +284,12 @@ describe('Design discussions component', () => {
         expect(findReplyPlaceholder().isVisible()).toBe(true);
       });
 
-      it('renders a checkbox with Unresolve thread text in reply form', async () => {
+      it('renders a checkbox with Reopen thread text in reply form', async () => {
         findReplyPlaceholder().vm.$emit('focus');
         wrapper.setProps({ discussionWithOpenForm: defaultMockDiscussion.id });
 
         await nextTick();
-        expect(findResolveCheckbox().text()).toBe('Unresolve thread');
+        expect(findResolveCheckbox().text()).toBe('Reopen thread');
       });
     });
 

@@ -8,6 +8,7 @@ query getGroupMergeRequests(
   $sort: MergeRequestSort
   $state: MergeRequestState
   $search: String
+  $in: [IssuableSearchableField!]
   $approvedBy: [String!]
   $assigneeUsernames: String
   $assigneeWildcardId: AssigneeWildcardId
@@ -39,6 +40,7 @@ query getGroupMergeRequests(
       sort: $sort
       state: $state
       search: $search
+      in: $in
       approvedBy: $approvedBy
       assigneeUsername: $assigneeUsernames
       assigneeWildcardId: $assigneeWildcardId

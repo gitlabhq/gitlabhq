@@ -48,7 +48,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
       it 'shows the link for creating a new issue when unresolving a thread' do
         page.within '.diff-content' do
-          click_button 'Unresolve thread'
+          click_button 'Reopen thread'
         end
 
         expect(page).to have_css resolve_discussion_selector
@@ -87,7 +87,7 @@ RSpec.describe 'Resolve an open thread in a merge request by creating an issue',
 
     it 'shows a notice to ask someone else to resolve the threads' do
       expect(page).to have_content("The thread at #{merge_request.to_reference} "\
-                                   "(discussion #{discussion.first_note.id}) will stay unresolved. "\
+                                   "(discussion #{discussion.first_note.id}) will stay open. "\
                                    "Ask someone with permission to resolve it.")
     end
   end

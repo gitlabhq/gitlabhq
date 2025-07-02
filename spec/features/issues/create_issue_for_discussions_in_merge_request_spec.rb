@@ -77,7 +77,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
         it 'shows a warning that the merge request contains unresolved threads' do
           click_button 'Expand merge checks'
 
-          expect(page).to have_content 'Unresolved discussions must be resolved'
+          expect(page).to have_content 'Open threads must be resolved'
         end
       end
     end
@@ -91,7 +91,7 @@ RSpec.describe 'Resolving all open threads in a merge request from an issue', :j
     end
 
     it 'shows a notice to ask someone else to resolve the threads' do
-      expect(page).to have_content("The threads at #{merge_request.to_reference} will stay unresolved. Ask someone with permission to resolve them.")
+      expect(page).to have_content("The threads at #{merge_request.to_reference} will stay open. Ask someone with permission to resolve them.")
     end
   end
 end
