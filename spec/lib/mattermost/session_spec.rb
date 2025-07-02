@@ -6,7 +6,8 @@ RSpec.describe Mattermost::Session, type: :request do
   include ExclusiveLeaseHelpers
   include StubRequests
 
-  let(:user) { create(:user) }
+  let_it_be(:organization) { create(:organization) }
+  let(:user) { create(:user, organizations: [organization]) }
 
   let(:gitlab_url) { "http://gitlab.com" }
   let(:mattermost_url) { "http://mattermost.com" }
@@ -24,8 +25,6 @@ RSpec.describe Mattermost::Session, type: :request do
   it { is_expected.to respond_to(:strategy) }
 
   describe '#with session' do
-    let_it_be(:organization) { create(:organization, :default) }
-
     let(:location) { 'http://location.tld' }
     let(:cookie_header) { 'MMOAUTH=taskik8az7rq8k6rkpuas7htia; Path=/;' }
     let!(:stub) do
@@ -109,6 +108,13 @@ RSpec.describe Mattermost::Session, type: :request do
           end
 
           expect(result).to eq("value")
+        end
+
+        it 'creates token in the same organization as the user' do
+          expect { subject.with_session {} }
+            .to change { OauthAccessToken.find_by(resource_owner: user)&.organization_id }
+            .from(nil)
+            .to(user.organizations.first.id)
         end
       end
     end

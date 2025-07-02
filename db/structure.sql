@@ -14245,6 +14245,7 @@ CREATE TABLE duo_workflows_checkpoint_writes (
     channel text NOT NULL,
     write_type text NOT NULL,
     data text NOT NULL,
+    namespace_id bigint,
     CONSTRAINT check_38dc205bb2 CHECK ((char_length(data) <= 10000)),
     CONSTRAINT check_c64af76670 CHECK ((char_length(write_type) <= 255)),
     CONSTRAINT check_d66d09c813 CHECK ((char_length(task) <= 255)),
@@ -14271,6 +14272,7 @@ CREATE TABLE duo_workflows_checkpoints (
     parent_ts text,
     checkpoint jsonb NOT NULL,
     metadata jsonb NOT NULL,
+    namespace_id bigint,
     CONSTRAINT check_3dcc551d16 CHECK ((char_length(parent_ts) <= 255)),
     CONSTRAINT check_5d3139b983 CHECK ((char_length(thread_ts) <= 255))
 );
@@ -14294,6 +14296,7 @@ CREATE TABLE duo_workflows_events (
     event_status smallint NOT NULL,
     message text,
     correlation_id_value text,
+    namespace_id bigint,
     CONSTRAINT check_125840165c CHECK ((char_length(message) <= 16384)),
     CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128))
 );
@@ -14321,6 +14324,7 @@ CREATE TABLE duo_workflows_workflows (
     pre_approved_agent_privileges smallint[] DEFAULT '{1,2}'::smallint[] NOT NULL,
     image text,
     environment smallint,
+    namespace_id bigint,
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255))
@@ -35411,17 +35415,25 @@ CREATE INDEX index_draft_notes_on_merge_request_id ON draft_notes USING btree (m
 
 CREATE INDEX index_draft_notes_on_project_id ON draft_notes USING btree (project_id);
 
+CREATE INDEX index_duo_workflows_checkpoint_writes_on_namespace_id ON duo_workflows_checkpoint_writes USING btree (namespace_id);
+
 CREATE INDEX index_duo_workflows_checkpoint_writes_on_project_id ON duo_workflows_checkpoint_writes USING btree (project_id);
 
 CREATE INDEX index_duo_workflows_checkpoint_writes_thread_ts ON duo_workflows_checkpoint_writes USING btree (workflow_id, thread_ts);
 
+CREATE INDEX index_duo_workflows_checkpoints_on_namespace_id ON duo_workflows_checkpoints USING btree (namespace_id);
+
 CREATE INDEX index_duo_workflows_checkpoints_on_project_id ON duo_workflows_checkpoints USING btree (project_id);
+
+CREATE INDEX index_duo_workflows_events_on_namespace_id ON duo_workflows_events USING btree (namespace_id);
 
 CREATE INDEX index_duo_workflows_events_on_project_id ON duo_workflows_events USING btree (project_id);
 
 CREATE INDEX index_duo_workflows_events_on_workflow_id ON duo_workflows_events USING btree (workflow_id);
 
 CREATE UNIQUE INDEX index_duo_workflows_workflow_checkpoints_unique_thread ON duo_workflows_checkpoints USING btree (workflow_id, thread_ts);
+
+CREATE INDEX index_duo_workflows_workflows_on_namespace_id ON duo_workflows_workflows USING btree (namespace_id);
 
 CREATE INDEX index_duo_workflows_workflows_on_project_id ON duo_workflows_workflows USING btree (project_id);
 
@@ -42879,6 +42891,9 @@ ALTER TABLE p_ci_builds
 ALTER TABLE ONLY draft_notes
     ADD CONSTRAINT fk_3ac2bcb746 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_checkpoint_writes
+    ADD CONSTRAINT fk_3ad0964729 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_3af186389b FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
@@ -43233,6 +43248,9 @@ ALTER TABLE ONLY import_placeholder_memberships
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_6661f4f0e8 FOREIGN KEY (resource_group_id) REFERENCES ci_resource_groups(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY duo_workflows_events
+    ADD CONSTRAINT fk_674e493798 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY routes
     ADD CONSTRAINT fk_679ff8213d FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE NOT VALID;
 
@@ -43368,6 +43386,9 @@ ALTER TABLE ONLY scan_result_policy_violations
 ALTER TABLE ONLY approval_project_rules
     ADD CONSTRAINT fk_773289d10b FOREIGN KEY (approval_policy_rule_id) REFERENCES approval_policy_rules(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY duo_workflows_checkpoints
+    ADD CONSTRAINT fk_779e1a4594 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY agent_user_access_project_authorizations
     ADD CONSTRAINT fk_78034b05d8 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -43445,6 +43466,9 @@ ALTER TABLE ONLY namespaces
 
 ALTER TABLE ONLY pages_domain_acme_orders
     ADD CONSTRAINT fk_7fa123c002 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY duo_workflows_workflows
+    ADD CONSTRAINT fk_7fcf81369f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY group_import_states
     ADD CONSTRAINT fk_8053b3ebd6 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

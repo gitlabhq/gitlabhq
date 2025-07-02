@@ -37,14 +37,17 @@ module RuboCop
         GRAPHQL_NAME_MISSING_MSG = "A `graphql_name` must be defined for a GraphQL enum. #{SEE_SG_MSG}".freeze
         GRAPHQL_NAME_WITH_ENUM_MSG = "The `graphql_name` must not contain the string \"Enum\". #{SEE_SG_MSG}".freeze
 
+        # @!method enum_subclass(node)
         def_node_matcher :enum_subclass, <<~PATTERN
           (class $(const nil? _) (const {nil? cbase} /.*Enum$/) ...)
         PATTERN
 
+        # @!method find_graphql_name(node)
         def_node_search :find_graphql_name, <<~PATTERN
           (... `(send nil? :graphql_name $(...)) ...)
         PATTERN
 
+        # @!method declarative_enum?(node)
         def_node_search :declarative_enum?, <<~PATTERN
           (... (send nil? :declarative_enum ...) ...)
         PATTERN

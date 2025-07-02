@@ -20,13 +20,29 @@ RSpec.describe Doorkeeper.configuration do
     subject { controller.instance_exec(&Doorkeeper.configuration.authenticate_resource_owner) }
 
     let(:controller) { double }
+    let(:base_request_params) { {} }
+    let(:mock_request) do
+      instance_double(ActionDispatch::Request,
+        'request',
+        fullpath: '/return-path',
+        query_parameters: base_request_params
+      )
+    end
+
+    let(:resolver) { instance_double(Gitlab::Auth::OAuth::OauthResourceOwnerRedirectResolver) }
 
     before do
-      allow(controller).to receive(:current_user).and_return(current_user)
-      allow(controller).to receive(:session).and_return({})
-      allow(controller).to receive(:request).and_return(double('request', fullpath: '/return-path'))
+      allow(controller).to receive_messages(
+        current_user: current_user,
+        session: {},
+        request: mock_request
+      )
       allow(controller).to receive(:redirect_to)
-      allow(controller).to receive(:new_user_session_url).and_return('/login')
+      allow(::Gitlab::Auth::OAuth::OauthResourceOwnerRedirectResolver)
+        .to receive(:new)
+        .with(nil)
+        .and_return(resolver)
+      allow(resolver).to receive(:resolve_redirect_url).and_return('/login')
     end
 
     context 'with a user present' do

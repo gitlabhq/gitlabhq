@@ -736,4 +736,27 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
       expect(processable.strong_memoized?(:redis_state)).to be(true)
     end
   end
+
+  describe '#enqueue_immediately?', :clean_gitlab_redis_shared_state do
+    let(:processable) { build_stubbed(:ci_processable, pipeline: pipeline) }
+
+    [true, false].each do |value|
+      context "when enqueue_immediately is set to #{value}" do
+        before do
+          processable.redis_state.enqueue_immediately = value
+        end
+
+        it { expect(processable.enqueue_immediately?).to be(value) }
+      end
+    end
+  end
+
+  describe '#set_enqueue_immediately!', :clean_gitlab_redis_shared_state do
+    let(:processable) { build_stubbed(:ci_processable, pipeline: pipeline) }
+
+    it 'changes enqueue_immediately to true' do
+      expect { processable.set_enqueue_immediately! }
+        .to change { processable.enqueue_immediately? }.to(true)
+    end
+  end
 end

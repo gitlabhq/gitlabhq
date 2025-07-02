@@ -18,9 +18,12 @@ module RuboCop
         MSG = 'Tokens should be prefixed. ' \
               'See doc/development/secure_coding_guidelines.md#token-prefixes for more information.'
 
+        # @!method add_authentication_token_field?(node)
         def_node_matcher :add_authentication_token_field?, <<~PATTERN
           (send nil? :add_authentication_token_field ...)
         PATTERN
+
+        # @!method format_with_prefix?(node)
         def_node_matcher :format_with_prefix?, <<~PATTERN
           (send nil? :add_authentication_token_field (sym $_)* (hash <$(pair (sym :format_with_prefix) _) ...>))
         PATTERN

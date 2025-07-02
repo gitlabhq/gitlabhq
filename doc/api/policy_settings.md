@@ -1,90 +1,13 @@
 ---
-stage: Security Risk Management
-group: Security Policies
-info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Policy settings API
+redirect_to: 'compliance_policy_settings.md'
+remove_date: '2025-10-01'
 ---
 
-{{< details >}}
+<!-- markdownlint-disable -->
 
-- Tier: Ultimate
-- Offering: GitLab Self-Managed
+This document was moved to [another location](compliance_policy_settings.md).
 
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://issue-link) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `security_policies_csp`. Disabled by default.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-Use this API to interact with the security policy settings for your GitLab instance.
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-- Your instance must have the Ultimate tier to use security policies.
-
-## Get security policy settings
-
-Gets the current security policy settings for this GitLab instance.
-
-```plaintext
-GET /admin/security/policy_settings
-```
-
-```shell
-curl --request GET \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --url "https://gitlab.example.com/api/v4/admin/security/policy_settings"
-```
-
-Example response:
-
-```json
-{
-  "csp_namespace_id": 42
-}
-```
-
-When no CSP namespace is configured:
-
-```json
-{
-  "csp_namespace_id": null
-}
-```
-
-## Update security policy settings
-
-Updates the security policy settings for this GitLab instance.
-
-```plaintext
-PUT /admin/security/policy_settings
-```
-
-| Attribute         | Type    | Required | Description |
-|:------------------|:--------|:---------|:------------|
-| `csp_namespace_id` | integer | yes     | ID of the group designated to centrally manage security policies. Must be a top-level group. Set to `null` to clear the setting. |
-
-```shell
-curl --request PUT \
-  --header "PRIVATE-TOKEN: <your_access_token>" \
-  --header "Content-Type: application/json" \
-  --data '{"csp_namespace_id": 42}' \
-  --url "https://gitlab.example.com/api/v4/admin/security/policy_settings"
-```
-
-Example response:
-
-```json
-{
-  "csp_namespace_id": 42
-}
-```
+<!-- This redirect file can be deleted after <2025-10-01>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

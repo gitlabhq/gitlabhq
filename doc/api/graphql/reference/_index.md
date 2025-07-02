@@ -16023,6 +16023,17 @@ The edge type for [`Dependency`](#dependency).
 | <a id="dependencyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="dependencyedgenode"></a>`node` | [`Dependency`](#dependency) | The item at the end of the edge. |
 
+#### `DependencyPathEdge`
+
+The edge type for [`DependencyPath`](#dependencypath).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencypathedgecursor"></a>`cursor` | [`String!`](#string) | Cursor for use in pagination. |
+| <a id="dependencypathedgenode"></a>`node` | [`DependencyPath`](#dependencypath) | Dependency path node. |
+
 #### `DependencyProxyBlobConnection`
 
 The connection type for [`DependencyProxyBlob`](#dependencyproxyblob).
@@ -26303,8 +26314,30 @@ Ancestor path of a given dependency.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="dependencypathiscyclic"></a>`isCyclic` | [`Boolean!`](#boolean) | Indicates if the path is cyclic. |
-| <a id="dependencypathmaxdepthreached"></a>`maxDepthReached` | [`Boolean!`](#boolean) | Indicates if the path reached the maximum depth (8). |
 | <a id="dependencypathpath"></a>`path` | [`[DependencyPathPartial!]!`](#dependencypathpartial) | Name of the dependency. |
+
+### `DependencyPathPage`
+
+Paginated dependency paths for SBOM occurrences.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencypathpageedges"></a>`edges` | [`[DependencyPathEdge!]!`](#dependencypathedge) | List of dependency path edges. |
+| <a id="dependencypathpagenodes"></a>`nodes` | [`[DependencyPath!]!`](#dependencypath) | List of dependency paths. |
+| <a id="dependencypathpagepageinfo"></a>`pageInfo` | [`DependencyPathPageInfo!`](#dependencypathpageinfo) | Pagination information for dependency paths. |
+
+### `DependencyPathPageInfo`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencypathpageinfoendcursor"></a>`endCursor` | [`String`](#string) | When paginating forwards, the cursor to continue. |
+| <a id="dependencypathpageinfohasnextpage"></a>`hasNextPage` | [`Boolean!`](#boolean) | When paginating forwards, are there more items?. |
+| <a id="dependencypathpageinfohaspreviouspage"></a>`hasPreviousPage` | [`Boolean!`](#boolean) | When paginating backwards, are there more items?. |
+| <a id="dependencypathpageinfostartcursor"></a>`startCursor` | [`String`](#string) | When paginating backwards, the cursor to continue. |
 
 ### `DependencyPathPartial`
 
@@ -37008,12 +37041,15 @@ Ancestor dependency paths for a dependency used by the project. \
 **Status**: Experiment.
 {{< /details >}}
 
-Returns [`[DependencyPath!]`](#dependencypath).
+Returns [`DependencyPathPage`](#dependencypathpage).
 
 ###### Arguments
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="projectdependencypathsafter"></a>`after` | [`String`](#string) | Fetch paths after the cursor. |
+| <a id="projectdependencypathsbefore"></a>`before` | [`String`](#string) | Fetch paths before the cursor. |
+| <a id="projectdependencypathslimit"></a>`limit` | [`Int`](#int) | Number of paths to fetch. |
 | <a id="projectdependencypathsoccurrence"></a>`occurrence` | [`SbomOccurrenceID!`](#sbomoccurrenceid) | Dependency path for occurrence. |
 
 ##### `Project.deployment`

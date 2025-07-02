@@ -740,6 +740,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         end
 
         it 'triggers GraphQL subscription userMergeRequestUpdated' do
+          expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(merge_request.author, merge_request)
           expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user3, merge_request)
           expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user2, merge_request)
 

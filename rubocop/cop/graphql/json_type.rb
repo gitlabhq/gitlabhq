@@ -21,6 +21,7 @@ module RuboCop
         MSG = 'Avoid using GraphQL::Types::JSON. See: ' \
               'https://docs.gitlab.com/ee/development/api_graphql_styleguide.html#json'
 
+        # @!method has_json_type?(node)
         def_node_matcher :has_json_type?, <<~PATTERN
           (send nil? {:field :argument}
             (sym _)

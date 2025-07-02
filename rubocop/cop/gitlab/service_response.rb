@@ -23,6 +23,7 @@ module RuboCop
         RESTRICT_ON_SEND = %i[error success new].freeze
         METHOD_NAMES = RESTRICT_ON_SEND.map(&:inspect).join(' ').freeze
 
+        # @!method service_response_with_http_status(node)
         def_node_matcher :service_response_with_http_status, <<~PATTERN
           (send
             (const {nil? cbase} :ServiceResponse)

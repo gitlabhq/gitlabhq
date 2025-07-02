@@ -8,6 +8,7 @@ module RuboCop
 
       MSG = 'Include `ApplicationWorker`, not `Sidekiq::Worker`.'
 
+      # @!method includes_sidekiq_worker?(node)
       def_node_matcher :includes_sidekiq_worker?, <<~PATTERN
         (send nil? :include (const (const nil? :Sidekiq) :Worker))
       PATTERN

@@ -289,7 +289,7 @@ module MergeRequests
     end
 
     def trigger_user_merge_request_updated(merge_request)
-      [merge_request.assignees, merge_request.reviewers].flatten.uniq.each do |user|
+      [merge_request.author, *merge_request.assignees, *merge_request.reviewers].uniq.each do |user|
         GraphqlTriggers.user_merge_request_updated(user, merge_request)
       end
     end

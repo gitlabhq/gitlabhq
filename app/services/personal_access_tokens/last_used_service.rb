@@ -43,7 +43,6 @@ module PersonalAccessTokens
 
     def needs_update?
       return false if ::Gitlab::Database.read_only?
-      return true unless Feature.enabled?(:pat_last_used_at_optimization, :request)
 
       last_used_ip_needs_update? || last_used_at_needs_update?
     end

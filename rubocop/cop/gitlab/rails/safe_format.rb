@@ -27,6 +27,7 @@ module RuboCop
 
           RESTRICT_ON_SEND = %i[_ s_ N_ n_].freeze
 
+          # @!method wrapped_by?(node)
           def_node_matcher :wrapped_by?, <<~PATTERN
             ^(send _ %method ...)
           PATTERN

@@ -2394,10 +2394,19 @@ msgstr ""
 msgid "AICatalog|Agents"
 msgstr ""
 
+msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
+msgstr ""
+
+msgid "AICatalog|Choose a memorable name for your AI agent."
+msgstr ""
+
 msgid "AICatalog|Create agent"
 msgstr ""
 
-msgid "AICatalog|Description can't be blank."
+msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
+msgstr ""
+
+msgid "AICatalog|Description is required."
 msgstr ""
 
 msgid "AICatalog|Edit agent"
@@ -2412,7 +2421,16 @@ msgstr ""
 msgid "AICatalog|Modify the agent settings and configuration."
 msgstr ""
 
+msgid "AICatalog|Name is required."
+msgstr ""
+
+msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
+msgstr ""
+
 msgid "AICatalog|Prompt"
+msgstr ""
+
+msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr ""
 
 msgid "AICatalog|Released %{fullDate}"
@@ -2427,10 +2445,19 @@ msgstr ""
 msgid "AICatalog|Save changes"
 msgstr ""
 
-msgid "AICatalog|System Prompt"
+msgid "AICatalog|System Prompt (optional)"
 msgstr ""
 
-msgid "AICatalog|User Prompt"
+msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
+msgstr ""
+
+msgid "AICatalog|User Prompt (optional)"
+msgstr ""
+
+msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."
+msgstr ""
+
+msgid "AICatalog|e.g., Research Assistant, Creative Writer, Code Helper"
 msgstr ""
 
 msgid "AISummary|Generates a summary of this issue"

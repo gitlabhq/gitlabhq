@@ -286,6 +286,14 @@ module Ci
       end
     end
 
+    def enqueue_immediately?
+      redis_state.enqueue_immediately?
+    end
+
+    def set_enqueue_immediately!
+      redis_state.enqueue_immediately = true
+    end
+
     private
 
     def dependencies

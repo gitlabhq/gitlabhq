@@ -62,6 +62,16 @@ The following scopes are available for exact code search:
    On GitLab Self-Managed, an administrator can enable global search
    with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag.
 
+## Use exact code search
+
+To use exact code search:
+
+1. On the left sidebar, select **Search or go to**.
+1. In the search box, enter your search term.
+1. On the left sidebar, select **Code**.
+
+You can also use exact code search in a project or group.
+
 ## Zoekt search API
 
 {{< history >}}

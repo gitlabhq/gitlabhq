@@ -38,6 +38,7 @@ module RuboCop
         STRONG_MEMOIZE_WITH_MSG =
           'Use `strong_memoize_attr`, instead of using `strong_memoize_with` without parameters.'
 
+        # @!method strong_memoize?(node)
         def_node_matcher :strong_memoize?, <<~PATTERN
           (block
             $(send nil? {:strong_memoize | :strong_memoize_with}

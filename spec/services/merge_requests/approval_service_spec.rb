@@ -133,6 +133,7 @@ RSpec.describe MergeRequests::ApprovalService, feature_category: :code_review_wo
 
       it 'triggers GraphQL subscription userMergeRequestUpdated' do
         expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(user, merge_request)
+        expect(GraphqlTriggers).to receive(:user_merge_request_updated).with(merge_request.author, merge_request)
 
         service.execute(merge_request)
       end

@@ -8,6 +8,7 @@ module RuboCop
       class Union < RuboCop::Cop::Base
         MSG = 'Use the `FromUnion` concern, instead of using `Gitlab::SQL::Union` directly'
 
+        # @!method raw_union?(node)
         def_node_matcher :raw_union?, <<~PATTERN
           (send (const (const (const nil? :Gitlab) :SQL) :Union) :new ...)
         PATTERN

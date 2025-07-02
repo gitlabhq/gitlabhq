@@ -16,7 +16,7 @@ title: Version API
 
 We recommend you use the [Metadata API](metadata.md) instead of the Version API.
 It contains additional information and is aligned with the GraphQL metadata endpoint.
-As of GitLab 15.5, the Version API is a mirror of the Metadata API.
+The Version API is a mirror of the Metadata API.
 
 {{< /alert >}}
 
@@ -34,15 +34,4 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ## Example responses
 
-### GitLab 15.5 and later
-
 See [Metadata API](metadata.md) for the response.
-
-### GitLab 15.4 and earlier
-
-```json
-{
-  "version": "8.13.0-pre",
-  "revision": "4e963fe"
-}
-```

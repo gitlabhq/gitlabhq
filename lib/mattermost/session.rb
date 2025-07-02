@@ -72,7 +72,7 @@ module Mattermost
     end
 
     def params
-      { organization_id: Organizations::Organization::DEFAULT_ORGANIZATION_ID }
+      { organization_id: @current_resource_owner.organizations.first.id }
         .merge(Rack::Utils.parse_query(oauth_uri.query).symbolize_keys)
     end
 

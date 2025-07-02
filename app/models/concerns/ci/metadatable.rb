@@ -89,24 +89,6 @@ module Ci
       ensure_metadata.id_tokens = value
     end
 
-    def enqueue_immediately?
-      if Feature.enabled?(:ci_redis_enqueue_immediately, project)
-        redis_state.enqueue_immediately?
-      else
-        !!options[:enqueue_immediately]
-      end
-    end
-
-    def set_enqueue_immediately!
-      if Feature.enabled?(:ci_redis_enqueue_immediately, project)
-        redis_state.enqueue_immediately = true
-      else
-        # ensures that even if `config_options: nil` in the database we set the
-        # new value correctly.
-        self.options = options.merge(enqueue_immediately: true)
-      end
-    end
-
     # TODO: Update this logic when column `p_ci_builds.debug_trace_enabled` is added.
     # See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194954#note_2574776849.
     def debug_trace_enabled?
