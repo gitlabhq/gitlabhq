@@ -606,6 +606,7 @@ the only jobs that run are the pipeline execution policy jobs.
 {{< history >}}
 
 - Updated handling of workflow rules [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/175088) in GitLab 17.8 [with a flag](../../../administration/feature_flags/_index.md) named `policies_always_override_project_ci`. Enabled by default.
+- Updated [handling of `override_project_ci`](https://gitlab.com/gitlab-org/gitlab/-/issues/504434) to allow scan execution policies to run together with pipeline execution policies, in GitLab 17.9.
 - Updated handling of workflow rules [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/512877) in GitLab 17.10. Feature flag `policies_always_override_project_ci` removed.
 
 {{< /history >}}
@@ -613,6 +614,9 @@ the only jobs that run are the pipeline execution policy jobs.
 This strategy replaces the project's existing CI/CD configuration with a new one defined by the pipeline execution policy. This strategy is ideal when the entire pipeline needs to be standardized or replaced, like when you want to enforce organization-wide CI/CD standards or compliance requirements in a highly regulated industry. To override the pipeline configuration, define the CI/CD jobs and do not use `include:project`.
 
 The strategy takes precedence over other policies that use the `inject_ci` or `inject_policy` strategy. If a policy with `override_project_ci` applies, the project CI/CD configuration is ignored. However, other security policy configurations are not overridden.
+
+When you use `override_project_ci` in a pipeline execution policy together with a scan execution policy,
+the CI/CD configurations are merged and both policies are applied to the resulting pipeline.
 
 Alternatively, you can merge the project's CI/CD configuration with the project's `.gitlab-ci.yml` instead of overriding it. To merge the configuration, use `include:project`. This strategy allows users to include the project CI/CD configuration in the pipeline execution policy configuration, enabling the users to customize the policy jobs. For example, they can combine the policy and project CI/CD configuration into one YAML file to override the `before_script` configuration or define required variables, such as `CS_IMAGE`, to define the required path to the container to scan. Here's a [short demo](https://youtu.be/W8tubneJ1X8) of this behavior.
 The following diagram illustrates how variables defined at the project and policy levels are selected in the resulting pipeline:
@@ -791,23 +795,6 @@ In this case, the job variable value `Project job variable value` takes preceden
 By default, to prevent a regular pipeline from triggering, users can push a commit to a protected branch with `[skip ci]` in the commit message. However, jobs defined with a pipeline execution policy are always triggered, as the policy ignores the `[skip ci]` directive. This prevents developers from skipping the execution of jobs defined in the policy, which ensures that critical security and compliance checks are always performed.
 
 For more flexible control over `[skip ci]` behavior, see the [`skip_ci` type](#skip_ci-type) section.
-
-## Interaction with scan execution policies
-
-Using pipeline execution policies with the `override_project_ci` strategy can affect the behavior of [scan execution policies](scan_execution_policies.md).
-
-The scan execution policy can be overridden if all of these are true:
-
-- The scan execution policies is configured for the project
-- A pipeline execution policies is configured for the project
-- the pipeline execution policy uses the `override_project_ci` strategy.
-
-The scan execution policy is ignored because the `override_project_ci` strategy removes all CI/CD configuration that is defined for the project, including policies.
-
-To ensure that both pipeline execution policies and scan execution policies are applied:
-
-- Consider using a different strategy for pipeline execution policies, such as `inject_policy`.
-- If you must use `override_project_ci`, include the scanner templates that you require in your pipeline execution policy to maintain the desired security scans.
 
 ## Examples
 

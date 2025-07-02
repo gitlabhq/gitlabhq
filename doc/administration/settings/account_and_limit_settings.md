@@ -103,8 +103,7 @@ To prevent this from happening, you can set a hard limit for your repositories' 
 This limit can be set globally, per group, or per project, with per project limits
 taking the highest priority.
 
-The repository size limit applies to both private and public projects. It includes repository files and LFS,
-but does not include:
+The repository size limit applies to both private and public projects. It includes repository files and Git LFS objects (even when stored in external object storage), but does not include:
 
 - Artifacts
 - Containers
@@ -148,7 +147,21 @@ The first push of a new project, including LFS objects, is checked for size.
 If the sum of their sizes exceeds the maximum allowed repository size, the push
 is rejected.
 
-For details on manually purging files, see [reducing the repository size using Git](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
+### Check repository size
+
+To determine if a project is nearing its configured repository size limit:
+
+1. [View your storage usage](../../user/storage_usage_quotas.md#view-storage).
+   The **Repository** size includes both Git repository files and
+   [Git LFS](../../topics/git/lfs/_index.md) objects.
+1. Compare the current usage to your configured repository size limit to estimate
+   remaining capacity.
+
+You can also use the [Projects API](../../api/projects.md) to retrieve repository
+statistics.
+
+To reduce repository size, see
+[methods to reduce repository size](../../user/project/repository/repository_size.md#methods-to-reduce-repository-size).
 
 ## Session duration
 

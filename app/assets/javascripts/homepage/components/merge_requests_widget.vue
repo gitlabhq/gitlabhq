@@ -1,8 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
-import { createAlert, VARIANT_WARNING } from '~/alert';
-import { __ } from '~/locale';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
 
 export default {
@@ -27,7 +26,6 @@ export default {
   data() {
     return {
       metadata: {},
-      hasFetchError: false,
     };
   },
   apollo: {
@@ -42,15 +40,8 @@ export default {
         return currentUser;
       },
       error(error) {
-        this.hasFetchError = true;
-        createAlert({
-          title: __('Number of merge requests not available'),
-          message: __(
-            'The number of merge requests is not available. Please refresh the page to try again.',
-          ),
-          variant: VARIANT_WARNING,
-          error,
-        });
+        this.$emit('fetch-metadata-error');
+        Sentry.captureException(error);
       },
     },
   },
@@ -59,25 +50,13 @@ export default {
       return this.$apollo.queries.metadata.loading;
     },
     reviewRequestedCount() {
-      if (
-        this.isLoadingMetadata ||
-        this.hasFetchError ||
-        this.metadata.reviewRequestedMergeRequests?.count === undefined
-      )
-        return '-';
-      return this.metadata.reviewRequestedMergeRequests.count;
+      return this.metadata.reviewRequestedMergeRequests?.count ?? '-';
     },
     reviewRequestedLastUpdatedAt() {
       return this.metadata?.reviewRequestedMergeRequests?.nodes?.[0]?.updatedAt ?? null;
     },
     assignedCount() {
-      if (
-        this.isLoadingMetadata ||
-        this.hasFetchError ||
-        this.metadata.assignedMergeRequests?.count === undefined
-      )
-        return '-';
-      return this.metadata.assignedMergeRequests.count;
+      return this.metadata.assignedMergeRequests?.count ?? '-';
     },
     assignedLastUpdatedAt() {
       return this.metadata?.assignedMergeRequests?.nodes?.[0]?.updatedAt ?? null;

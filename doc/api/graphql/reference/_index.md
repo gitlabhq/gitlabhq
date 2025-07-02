@@ -13006,6 +13006,8 @@ Input type: `WorkItemBulkUpdateInput`
 | <a id="mutationworkitembulkupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitembulkupdatemilestonewidget"></a>`milestoneWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdateparentid"></a>`parentId` | [`WorkItemsParentID!`](#workitemsparentid) | Global ID of the parent to which the bulk update will be scoped. The parent can be a project. The parent can also be a group (Premium and Ultimate only). Example `WorkItemsParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`. |
+| <a id="mutationworkitembulkupdatestateevent"></a>`stateEvent` {{< icon name="warning-solid" >}} | [`WorkItemStateEvent`](#workitemstateevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
+| <a id="mutationworkitembulkupdatesubscriptionevent"></a>`subscriptionEvent` {{< icon name="warning-solid" >}} | [`WorkItemSubscriptionEvent`](#workitemsubscriptionevent) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 
 #### Fields
 
@@ -43925,6 +43927,7 @@ The category of the additional context.
 | <a id="aiadditionalcontextcategoryrepository"></a>`REPOSITORY` | Repository content category. |
 | <a id="aiadditionalcontextcategorysnippet"></a>`SNIPPET` | Snippet content category. |
 | <a id="aiadditionalcontextcategoryterminal"></a>`TERMINAL` | Terminal content category. |
+| <a id="aiadditionalcontextcategoryuser_rule"></a>`USER_RULE` | User_rule content category. |
 
 ### `AiCatalogItemType`
 
@@ -47880,6 +47883,15 @@ Category of the work item status.
 | <a id="workitemstatuscategoryenumin_progress"></a>`IN_PROGRESS` | In progress status category. |
 | <a id="workitemstatuscategoryenumto_do"></a>`TO_DO` | To do status category. |
 | <a id="workitemstatuscategoryenumtriage"></a>`TRIAGE` | Triage status category. |
+
+### `WorkItemSubscriptionEvent`
+
+Values for work item subscription events.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="workitemsubscriptioneventsubscribe"></a>`SUBSCRIBE` | Subscribe to a work item. |
+| <a id="workitemsubscriptioneventunsubscribe"></a>`UNSUBSCRIBE` | Unsubscribe from a work item. |
 
 ### `WorkItemTodoUpdateAction`
 

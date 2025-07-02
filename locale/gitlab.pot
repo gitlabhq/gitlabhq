@@ -31597,6 +31597,9 @@ msgstr ""
 msgid "HomepageActivityWidget|The activity feed is not available. Please refresh the page to try again."
 msgstr ""
 
+msgid "Homepage|The number of merge requests is not available. Please refresh the page to try again."
+msgstr ""
+
 msgid "Hook execution failed. %{error}"
 msgstr ""
 
@@ -42398,9 +42401,6 @@ msgid "Number of commits per MR"
 msgstr ""
 
 msgid "Number of files touched"
-msgstr ""
-
-msgid "Number of merge requests not available"
 msgstr ""
 
 msgid "Number of namespaces per indexing rollout"
@@ -62623,9 +62623,6 @@ msgid "The number of changes to fetch from GitLab when cloning a repository. Low
 msgstr ""
 
 msgid "The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?"
-msgstr ""
-
-msgid "The number of merge requests is not available. Please refresh the page to try again."
 msgstr ""
 
 msgid "The number of merge requests merged by month."

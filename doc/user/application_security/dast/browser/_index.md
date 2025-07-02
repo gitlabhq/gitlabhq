@@ -53,6 +53,88 @@ JavaScript, such as single-page applications. See
 
 To add the analyzer to your CI/CD pipeline, see [enabling the analyzer](configuration/enabling_the_analyzer.md).
 
+## Getting started
+
+If you're new to DAST, get started by enabling it for a project.
+
+Prerequisites:
+
+- You have a [GitLab Runner](../../../../ci/runners/_index.md) with the
+  [`docker` executor](https://docs.gitlab.com/runner/executors/docker.html) on Linux/amd64.
+- You have a deployed target application. For more details, see the [deployment options](application_deployment_options.md).
+- The `dast` stage is added to the CI/CD pipeline definition, after the `deploy` stage. For example:
+
+  ```yaml
+  stages:
+    - build
+    - test
+    - deploy
+    - dast
+  ```
+
+- You have a network connection between the runner and your target application.
+
+  How you connect depends on your DAST configuration:
+  - If `DAST_TARGET_URL` and `DAST_AUTH_URL` specify port numbers, use those ports.
+  - If ports are not specified, use the standard port numbers for HTTP and HTTPS.
+
+  You might need to open both an HTTP and HTTPS port. For example, if the target URL uses HTTP, but the application links to resources using HTTPS. Always test your connection when you configure a scan.
+
+To enable DAST in a project:
+
+- [Add a DAST job to you CI/CD configuration](configuration/enabling_the_analyzer.md#create-a-dast-cicd-job).
+
+## Understanding the results
+
+You can review vulnerabilities in a pipeline:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the left sidebar, select **Build > Pipelines**.
+1. Select the pipeline.
+1. Select the **Security** tab.
+1. Select a vulnerability to view its details, including:
+   - Status: Indicates whether the vulnerability has been triaged or resolved.
+   - Description: Explains the cause of the vulnerability, its potential impact, and recommended remediation steps.
+   - Severity: Categorized into six levels based on impact.
+     [Learn more about severity levels](../../vulnerabilities/severities.md).
+   - Scanner: Identifies which analyzer detected the vulnerability.
+   - Method: Establishes the vulnerable server interaction type.
+   - URL: Shows the location of the vulnerability.
+   - Evidence: Describes test case to prove the presence of a given vulnerability.
+   - Identifiers: A list of references used to classify the vulnerability, such as CWE identifiers.
+
+You can also download the security scan results:
+
+- In the pipeline's **Security** tab, select **Download results**.
+
+For more details, see [Pipeline security report](../../vulnerability_report/pipeline.md).
+
+{{< alert type="note" >}}
+
+Findings are generated on feature branches. When they are merged into the default branch, they become vulnerabilities. This distinction is important when evaluating your security posture.
+
+{{< /alert >}}
+
+## Optimization
+
+For information about configuring DAST for a specific application or environment, see the [configuration options](configuration/_index.md).
+
+## Roll out
+
+After you configure DAST for a single project, you can extend the configuration to other projects:
+
+- Take care if your pipeline is configured to deploy to the same web server in each run. Running a DAST scan while a server is being updated leads to inaccurate and non-deterministic results.
+- Configure runners to use the [always pull policy](https://docs.gitlab.com/runner/executors/docker.html#using-the-always-pull-policy) to run the latest versions of the analyzers.
+- By default, DAST downloads all artifacts defined by previous jobs in the pipeline. If
+  your DAST job does not rely on `environment_url.txt` to define the URL under test or any other files created
+  in previous jobs, you shouldn't download artifacts. To avoid downloading
+  artifacts, extend the analyzer CI/CD job to specify no dependencies. For example, for the DAST proxy-based analyzer add the following to your `.gitlab-ci.yml` file:
+
+  ```yaml
+  dast:
+    dependencies: []
+  ```
+
 ## How DAST scans an application
 
 A scan performs the following steps:

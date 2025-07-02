@@ -30,6 +30,14 @@ module Mutations
         required: false,
         description: 'Input for milestone widget.',
         experiment: { milestone: '18.2' }
+      argument :state_event, ::Types::WorkItems::StateEventEnum,
+        required: false,
+        description: 'Close or reopen multiple work items at once.',
+        experiment: { milestone: '18.2' }
+      argument :subscription_event, ::Types::WorkItems::SubscriptionEventEnum,
+        required: false,
+        description: 'Subscribe or unsubscribe from the work items.',
+        experiment: { milestone: '18.2' }
 
       argument :parent_id, ::Types::GlobalIDType[::WorkItems::Parent],
         required: true,

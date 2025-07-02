@@ -178,14 +178,7 @@ all variables become available to the pipeline.
 
 ### For a project
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, projects can have a maximum of 200 CI/CD variables.
-- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, projects can have a maximum of 8000 CI/CD variables.
-
-{{< /history >}}
-
-You can add CI/CD variables to a project's settings.
+You can add CI/CD variables to a project's settings. Projects can have a maximum of 8000 CI/CD variables.
 
 Prerequisites:
 
@@ -213,14 +206,7 @@ or in [job scripts](job_scripts.md).
 
 ### For a group
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7, groups can have a maximum of 200 CI/CD variables.
-- [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/373289) in GitLab 15.9, groups can have a maximum of 30000 CI/CD variables.
-
-{{< /history >}}
-
-You can make a CI/CD variable available to all projects in a group.
+You can make a CI/CD variable available to all projects in a group. Groups can have a maximum of 30000 CI/CD variables.
 
 Prerequisites:
 
@@ -386,13 +372,7 @@ variable has the same value, that value is also masked, including when a variabl
 references a masked variable. The string `[MASKED]` is shown instead of the value,
 possibly with some trailing `x` characters.
 
-Different versions of [GitLab Runner](../runners/_index.md) have different masking limitations:
-
-| Version             | Limitations |
-| ------------------- | ----------- |
-| v14.1.0 and earlier | Masking of large secrets (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
-| v14.2.0 to v15.3.0  | The tail of a large secret (greater than 4 KiB) could potentially be [revealed](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28128). No sensitive URL parameter masking. |
-| v15.7.0 and later   | Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/_index.md#capturing-service-container-logs). |
+Secrets could be revealed when `CI_DEBUG_SERVICES` is enabled. For details, read about [service container logging](../services/_index.md#capturing-service-container-logs).
 
 ### Hide a CI/CD variable
 
@@ -476,14 +456,6 @@ as a `--certificate-authority` option, which accepts a path to a file:
 kubectl config set-cluster e2e --server="$KUBE_URL" --certificate-authority="$KUBE_CA_PEM"
 ```
 
-{{< alert type="warning" >}}
-
-Be careful when assigning the value of a file variable to another variable in GitLab 15.6 or older.
-The other variable takes the content of the file as its value, **not** the path to the file.
-In GitLab 15.7 and later, this behavior [was fixed](https://gitlab.com/gitlab-org/gitlab/-/issues/29407) and the other variable now takes the path to the file as the value.
-
-{{< /alert >}}
-
 #### Use a `.gitlab-ci.yml` variable as a file type variable
 
 You cannot set a CI/CD variable [defined in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file)
@@ -506,12 +478,6 @@ job:
 ```
 
 ## Prevent CI/CD variable expansion
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/217309) in GitLab 15.7.
-
-{{< /history >}}
 
 Expanded variables treat values with the `$` character as a reference to another variable.
 CI/CD variables are expanded by default. To treat variables with a `$` character as raw strings,

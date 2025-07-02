@@ -61,7 +61,7 @@ module Milestoneish
       .distinct
   end
 
-  def sorted_issues(user)
+  def milestone_issues(user)
     work_items_finder_params = issues_finder_params
     work_items_finder_params[:include_descendants] = true if work_items_finder_params[:include_subgroups]
 
@@ -71,16 +71,10 @@ module Milestoneish
     .execute.preload_associated_models
     .where(milestone_id: milestoneish_id)
     .limit(DISPLAY_ISSUES_LIMIT)
-    .sort_by_attribute('label_priority')
 
     WorkItem.where(id: WorkItem.select(:id).from(work_item_ids))
     .preload_associated_models
-    .sort_by_attribute('label_priority')
     .preload(namespace: :route)
-  end
-
-  def sorted_merge_requests(user)
-    merge_requests_visible_to_user(user).sort_by_attribute('label_priority')
   end
 
   def merge_requests_visible_to_user(user)

@@ -1,4 +1,5 @@
-import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HomepageApp from '~/homepage/components/homepage_app.vue';
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
 import WorkItemsWidget from '~/homepage/components/work_items_widget.vue';
@@ -13,9 +14,11 @@ describe('HomepageApp', () => {
 
   const findMergeRequestsWidget = () => wrapper.findComponent(MergeRequestsWidget);
   const findWorkItemsWidget = () => wrapper.findComponent(WorkItemsWidget);
+  const findMergeRequestsFetchMetadataError = () =>
+    wrapper.findByTestId('merge-requests-fetch-metadata-error');
 
   function createWrapper() {
-    wrapper = shallowMount(HomepageApp, {
+    wrapper = shallowMountExtended(HomepageApp, {
       propsData: {
         reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
         assignedMergeRequestsPath: MOCK_ASSIGNED_MERGE_REQUESTS_PATH,
@@ -29,10 +32,32 @@ describe('HomepageApp', () => {
     createWrapper();
   });
 
-  it('passes the correct props to the `MergeRequestsWidget` component', () => {
-    expect(findMergeRequestsWidget().props()).toEqual({
-      reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
-      assignedToYouPath: MOCK_ASSIGNED_MERGE_REQUESTS_PATH,
+  describe('MergeRequestsWidget', () => {
+    it('passes the correct props to the `MergeRequestsWidget` component', () => {
+      expect(findMergeRequestsWidget().props()).toEqual({
+        reviewRequestedPath: MOCK_MERGE_REQUESTS_REVIEW_REQUESTED_PATH,
+        assignedToYouPath: MOCK_ASSIGNED_MERGE_REQUESTS_PATH,
+      });
+    });
+
+    it('shows an alert of if `MergeRequestsWidget` fails to fetch the metadata', async () => {
+      expect(findMergeRequestsFetchMetadataError().exists()).toBe(false);
+
+      findMergeRequestsWidget().vm.$emit('fetch-metadata-error');
+      await nextTick();
+
+      expect(findMergeRequestsFetchMetadataError().text()).toBe(
+        'The number of merge requests is not available. Please refresh the page to try again.',
+      );
+    });
+
+    it('hides the alert on dismiss', async () => {
+      findMergeRequestsWidget().vm.$emit('fetch-metadata-error');
+      await nextTick();
+      findMergeRequestsFetchMetadataError().vm.$emit('dismiss');
+      await nextTick();
+
+      expect(findMergeRequestsFetchMetadataError().exists()).toBe(false);
     });
   });
 

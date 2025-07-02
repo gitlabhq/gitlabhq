@@ -228,7 +228,7 @@ The administrator is notified that 2FA has been disabled.
 
 #### Non-administrators
 
-In GitLab 15.2 and later, you can use either the Rails console or the
+You can use either the Rails console or the
 [API endpoint](../api/users.md#disable-two-factor-authentication-for-a-user) to disable 2FA
 for a non-administrator.
 
@@ -244,12 +244,6 @@ You cannot use the API endpoint to disable 2FA for administrators.
 - Offering: GitLab.com
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9484) in GitLab 15.8.
-
-{{< /history >}}
 
 Top-level group Owners can disable two-factor authentication (2FA) for enterprise users.
 
@@ -271,16 +265,9 @@ You can also [use the API](../api/group_enterprise_users.md#disable-two-factor-a
 
 {{< /details >}}
 
-{{< history >}}
-
-- It's deployed behind a feature flag, disabled by default.
-- Push notification support [introduced](https://gitlab.com/gitlab-org/gitlab-shell/-/issues/506) in GitLab 15.3.
-
-{{< /history >}}
-
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags/_index.md) named `two_factor_for_cli`. On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
+By default this feature is not available. To make it available, an administrator can [enable the feature flag](../administration/feature_flags/_index.md) named `two_factor_for_cli`. This feature is not ready for production use. This feature flag also affects [session duration for Git Operations when 2FA is enabled](../administration/settings/account_and_limit_settings.md#customize-session-duration-for-git-operations-when-2fa-is-enabled).
 
 {{< /alert >}}
 
@@ -296,7 +283,7 @@ ssh git@<hostname> 2fa_verify
 Then authenticate by either:
 
 - Entering the correct OTP.
-- In GitLab 15.3 and later, responding to a device push notification if
+- Responding to a device push notification if
   [FortiAuthenticator is enabled](../user/profile/account/two_factor_authentication.md#enable-a-one-time-password-authenticator-using-fortiauthenticator).
 
 After successful authentication, you can perform Git over SSH operations for 15 minutes (default) with the associated

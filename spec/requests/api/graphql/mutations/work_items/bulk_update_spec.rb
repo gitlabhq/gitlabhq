@@ -139,6 +139,73 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     end
   end
 
+  context 'when updating state_event' do
+    let(:additional_arguments) do
+      {
+        'stateEvent' => 'CLOSE'
+      }
+    end
+
+    it 'closes all work items' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+        updatable_work_items.each(&:reload)
+      end.to change { updatable_work_items.map(&:state) }.from(%w[opened opened]).to(%w[closed closed])
+
+      expect(mutation_response).to include(
+        'updatedWorkItemCount' => updatable_work_items.count
+      )
+    end
+  end
+
+  context 'when updating subscription_event' do
+    let(:additional_arguments) do
+      {
+        'subscriptionEvent' => 'SUBSCRIBE'
+      }
+    end
+
+    it 'subscribes current user to all work items' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(mutation_response).to include(
+        'updatedWorkItemCount' => updatable_work_items.count
+      )
+
+      expect(Subscription.where(user: current_user, subscribed: true, subscribable: updatable_work_items).count)
+        .to eq(updatable_work_items.count)
+      expect(updatable_work_items.all? { |w| w.subscribed?(current_user, project) }).to be_truthy
+    end
+
+    context 'when unsubscribing' do
+      before do
+        updatable_work_items.each do |work_item|
+          work_item.subscribe(current_user, project)
+        end
+      end
+
+      let(:additional_arguments) do
+        {
+          'subscriptionEvent' => 'UNSUBSCRIBE'
+        }
+      end
+
+      it 'unsubscribes current user from all work items' do
+        post_graphql_mutation(mutation, current_user: current_user)
+
+        expect(mutation_response).to include(
+          'updatedWorkItemCount' => updatable_work_items.count
+        )
+
+        updatable_work_items.each do |work_item|
+          work_item.reload
+          expect(work_item.subscriptions.where(user: current_user, subscribed: true)).not_to exist
+          expect(work_item.subscribed?(current_user, project)).to be_falsy
+        end
+      end
+    end
+  end
+
   context 'when updating multiple attributes simultaneously' do
     let_it_be(:assignee) { create(:user, developer_of: group) }
     let_it_be(:milestone) { create(:milestone, project: project) }
@@ -154,7 +221,9 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
         },
         'labelsWidget' => {
           'addLabelIds' => [label2.to_gid.to_s]
-        }
+        },
+        'subscriptionEvent' => 'SUBSCRIBE',
+        'stateEvent' => 'CLOSE'
       }
     end
 
@@ -166,6 +235,8 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
          .and change { updatable_work_items.flat_map(&:assignee_ids) }.from([]).to([assignee.id] * 2)
          .and change { updatable_work_items.map(&:milestone_id) }.from([nil, nil]).to([milestone.id] * 2)
          .and change { updatable_work_items.flat_map(&:label_ids) }.from([label1.id] * 2).to([label1.id, label2.id] * 2)
+         .and change { updatable_work_items.map(&:state) }.from(%w[opened opened]).to(%w[closed closed])
+         .and change { updatable_work_items.all? { |wi| wi.subscribed?(current_user, project) } }.from(false).to(true)
 
       expect(mutation_response).to include(
         'updatedWorkItemCount' => updatable_work_items.count

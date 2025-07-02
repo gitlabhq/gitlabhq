@@ -31,25 +31,19 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
     project.add_guest(guest)
   end
 
-  describe '#sorted_issues' do
-    before do
-      issue.labels << label_1
-      security_issue_1.labels << label_2
-      closed_issue_1.labels << label_3
-    end
-
-    it 'sorts issues by label priority' do
-      issues = milestone.sorted_issues(member)
+  describe '#milestone_issues' do
+    it 'returns issues' do
+      issues = milestone.milestone_issues(member)
 
       expect(issues.first).to eq(issue)
       expect(issues.second).to eq(security_issue_1)
       expect(issues.third).not_to eq(closed_issue_1)
     end
 
-    it 'limits issue count and keeps the ordering' do
+    it 'limits issue count' do
       stub_const('Milestoneish::DISPLAY_ISSUES_LIMIT', 4)
 
-      issues = milestone.sorted_issues(member)
+      issues = milestone.milestone_issues(member)
       # Cannot use issues.count here because it is sorting
       # by a virtual column 'highest_priority' and it will break
       # the query.
@@ -57,9 +51,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
 
       expect(issues.length).to eq(4)
       expect(total_issues_count).to eq(4)
-      expect(issues.first).to eq(issue)
-      expect(issues.second).to eq(security_issue_1)
-      expect(issues.third).not_to eq(closed_issue_1)
     end
   end
 
@@ -149,20 +140,6 @@ RSpec.describe Milestone, 'Milestoneish', factory_default: :keep do
           expect(milestone.issue_labels_visible_by_user(user)).to match_array(expected_labels)
         end
       end
-    end
-  end
-
-  describe '#sorted_merge_requests' do
-    it 'sorts merge requests by label priority' do
-      merge_request_1 = create(:labeled_merge_request, labels: [label_2], source_project: project, source_branch: 'branch_1', milestone: milestone)
-      merge_request_2 = create(:labeled_merge_request, labels: [label_1], source_project: project, source_branch: 'branch_2', milestone: milestone)
-      merge_request_3 = create(:labeled_merge_request, labels: [label_3], source_project: project, source_branch: 'branch_3', milestone: milestone)
-
-      merge_requests = milestone.sorted_merge_requests(member)
-
-      expect(merge_requests.first).to eq(merge_request_2)
-      expect(merge_requests.second).to eq(merge_request_1)
-      expect(merge_requests.third).to eq(merge_request_3)
     end
   end
 

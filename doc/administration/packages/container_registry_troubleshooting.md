@@ -71,7 +71,7 @@ Additional information about this: [issue 18239](https://gitlab.com/gitlab-org/g
 
 ## Docker login attempt fails with: 'token signed by untrusted key'
 
-[Registry relies on GitLab to validate credentials](container_registry.md#architecture-of-gitlab-container-registry)
+[Registry relies on GitLab to validate credentials](container_registry.md#container-registry-architecture)
 If the registry fails to authenticate valid login attempts, you get the following error message:
 
 ```shell

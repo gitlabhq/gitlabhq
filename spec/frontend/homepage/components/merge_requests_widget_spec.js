@@ -6,11 +6,12 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
-import { createAlert, VARIANT_WARNING } from '~/alert';
 import { withItems, withoutItems } from './mocks/merge_requests_widget_metadata_query_mocks';
 
 jest.mock('~/alert');
+jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('MergeRequestsWidget', () => {
   Vue.use(VueApollo);
@@ -101,25 +102,22 @@ describe('MergeRequestsWidget', () => {
       expect(findAssignedCount().text()).toBe('0');
     });
 
-    it('shows an alert if the query errors out', async () => {
+    it('emits the `fetch-metadata-error` event if the query errors out', async () => {
       createWrapper({
         mergeRequestsWidgetMetadataQueryHandler: () => jest.fn().mockRejectedValue(),
       });
+
+      expect(wrapper.emitted('fetch-metadata-error')).toBeUndefined();
+
       await waitForPromises();
 
+      expect(wrapper.emitted('fetch-metadata-error')).toHaveLength(1);
+      expect(Sentry.captureException).toHaveBeenCalled();
       expect(findReviewRequestedLastUpdatedAt().exists()).toBe(false);
       expect(findAssignedLastUpdatedAt().exists()).toBe(false);
 
       expect(findReviewRequestedCount().text()).toBe('-');
       expect(findAssignedCount().text()).toBe('-');
-
-      expect(createAlert).toHaveBeenCalledWith({
-        error: expect.any(Object),
-        title: 'Number of merge requests not available',
-        message:
-          'The number of merge requests is not available. Please refresh the page to try again.',
-        variant: VARIANT_WARNING,
-      });
     });
   });
 });

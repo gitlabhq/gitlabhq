@@ -8,7 +8,7 @@ title: Enabling the analyzer
 
 To run a DAST scan:
 
-- Read the [requirements](requirements.md) conditions for running a DAST scan.
+- Read the [requirements](../_index.md) conditions for running a DAST scan.
 - Create a [DAST job](#create-a-dast-cicd-job) in your CI/CD pipeline.
 - [Authenticate](authentication.md) as a user if your application requires it.
 
