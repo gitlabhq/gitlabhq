@@ -147,6 +147,14 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
           expect(described_class.new(group, request: request).as_json[:marked_for_deletion_on]).to eq(date)
         end
 
+        it 'returns is_self_deletion_scheduled as true for top group' do
+          expect(described_class.new(group, request: request).as_json[:is_self_deletion_scheduled]).to eq(true)
+        end
+
+        it 'returns is_self_deletion_scheduled as false for subgroups' do
+          expect(described_class.new(subgroup, request: request).as_json[:is_self_deletion_scheduled]).to eq(false)
+        end
+
         it 'returns permanent_deletion_date as the date the group will be deleted' do
           expect(described_class.new(group, request: request).as_json[:permanent_deletion_date]).to eq((date + deletion_adjourned_period.days).strftime('%F'))
         end

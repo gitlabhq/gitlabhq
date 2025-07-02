@@ -4401,9 +4401,6 @@ msgstr ""
 msgid "AdminSelfHostedModels|Assign a model to enable this feature"
 msgstr ""
 
-msgid "AdminSelfHostedModels|Assign a model to the %{subFeatureTitle} sub-feature before applying to all"
-msgstr ""
-
 msgid "AdminSelfHostedModels|Create self-hosted model"
 msgstr ""
 
@@ -56584,7 +56581,7 @@ msgstr ""
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr ""
 
-msgid "SecurityOrchestration|Runs comprehensive scans during release processes and when merging to main/production branches"
+msgid "SecurityOrchestration|Runs comprehensive scans for `release/*` branches and when merging to main/production branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Runs scans on a schedule for maintenance and continuous monitoring of protected branches"

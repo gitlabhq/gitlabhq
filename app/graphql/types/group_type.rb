@@ -382,6 +382,12 @@ module Types
       method: :self_deletion_in_progress?,
       experiment: { milestone: '18.2' }
 
+    field :is_self_deletion_scheduled, GraphQL::Types::Boolean,
+      null: false,
+      description: 'Indicates if group deletion is scheduled.',
+      method: :self_deletion_scheduled?,
+      experiment: { milestone: '18.2' }
+
     def label(title:)
       BatchLoader::GraphQL.for(title).batch(key: group) do |titles, loader, args|
         LabelsFinder

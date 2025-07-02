@@ -98,6 +98,9 @@ class GroupChildEntity < Grape::Entity
   # For both group and project
   expose :self_deletion_in_progress?, as: :is_self_deletion_in_progress
 
+  # For both group and project
+  expose :self_deletion_scheduled?, as: :is_self_deletion_scheduled
+
   private
 
   def access_group_counts?(group)

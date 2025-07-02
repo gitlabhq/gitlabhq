@@ -310,6 +310,7 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
             markedForDeletion
             markedForDeletionOn
             permanentDeletionDate
+            isSelfDeletionScheduled
           }
         }
       )
@@ -324,13 +325,18 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
       {
         marked_for_deletion: result.dig('data', 'group', 'markedForDeletion'),
         marked_for_deletion_on: result.dig('data', 'group', 'markedForDeletionOn'),
-        permanent_deletion_date: result.dig('data', 'group', 'permanentDeletionDate')
+        permanent_deletion_date: result.dig('data', 'group', 'permanentDeletionDate'),
+        is_self_deletion_scheduled: result.dig('data', 'group', 'isSelfDeletionScheduled')
       }
     end
 
     context 'when group is scheduled for deletion' do
       it 'marked_for_deletion returns true' do
         expect(group_data[:marked_for_deletion]).to be true
+      end
+
+      it 'is_self_deletion_scheduled returns true' do
+        expect(group_data[:is_self_deletion_scheduled]).to be true
       end
 
       it 'marked_for_deletion_on returns correct date' do
@@ -351,6 +357,10 @@ RSpec.describe GitlabSchema.types['Group'], feature_category: :groups_and_projec
 
       it 'marked_for_deletion returns true' do
         expect(group_data[:marked_for_deletion]).to be true
+      end
+
+      it 'is_self_deletion_scheduled returns false' do
+        expect(group_data[:is_self_deletion_scheduled]).to be false
       end
 
       it 'marked_for_deletion_on returns nil' do

@@ -21,7 +21,8 @@ module ResolvesGroups
     dependency_proxy_setting: [:dependency_proxy_setting],
     analyzer_statuses: [:analyzer_group_statuses],
     marked_for_deletion: [:deletion_schedule],
-    marked_for_deletion_on: [:deletion_schedule]
+    marked_for_deletion_on: [:deletion_schedule],
+    is_self_deletion_scheduled: [:deletion_schedule]
   }.freeze
 
   def resolve_with_lookahead(...)
