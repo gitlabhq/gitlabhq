@@ -51,8 +51,7 @@ RSpec.describe ::API::Entities::MergeRequestBasic, feature_category: :code_revie
         entities.to_json
       end
 
-      # The current threshold is 3 query per entity maximum.
-      expect(batch.count).to be_within(3 * query.count).of(control.count)
+      expect(batch.count).to be <= control.count * query.count
     end
   end
 

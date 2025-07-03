@@ -2111,6 +2111,15 @@ class User < ApplicationRecord
   def owns_runner?(runner)
     runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
 
+    # NOTE: This is a workaround to the fact that `ci_owned_group_runners` does not return the group runners that the
+    # user has access to in group A, when the user is owner of group B, and group B has been invited as owner
+    # to group A. Instead it only returns group runners that belong to a group that the user is a direct owner of.
+    # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
+    # and that would get used by `ci_owned_group_runners`, but that would require deeper changes
+    # from the ~"group::authorization" team.
+    # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
+    return Ability.allowed?(self, :admin_runner, runner.owner) if runner.group_type?
+
     ci_owned_runners.include?(runner)
   end
 

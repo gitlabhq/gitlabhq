@@ -42,12 +42,12 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
         it 'raises UnableToPartition error' do
           expect { prepare }
             .to raise_error(described_class::UnableToPartition)
-                  .and change {
-                    Gitlab::Database::PostgresConstraint
-                      .check_constraints
-                      .by_table_identifier(table_identifier)
-                      .count
-                  }.by(0)
+            .and not_change {
+              Gitlab::Database::PostgresConstraint
+                .check_constraints
+                .by_table_identifier(table_identifier)
+                .count
+            }
         end
       end
 
@@ -105,12 +105,12 @@ RSpec.describe Gitlab::Database::Partitioning::List::ConvertTable, feature_categ
               expect { prepare }
                 .to raise_error(described_class::UnableToPartition,
                   starting_with('Error validating partitioning constraint'))
-                      .and change {
-                        Gitlab::Database::PostgresConstraint
-                          .check_constraints
-                          .by_table_identifier(table_identifier)
-                          .count
-                      }.by(0)
+                .and not_change {
+                  Gitlab::Database::PostgresConstraint
+                    .check_constraints
+                    .by_table_identifier(table_identifier)
+                    .count
+                }
             end
           end
         end

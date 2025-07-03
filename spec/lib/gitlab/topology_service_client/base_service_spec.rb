@@ -41,6 +41,8 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
       end
     end
 
+    let(:tls_config) { { tls: { enabled: true } } }
+
     let(:config) do
       {
         ca_file: ca_file.path,
@@ -52,7 +54,7 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
     subject(:service_credentials) { base_service.send(:service_credentials) }
 
     before do
-      stub_config(cell: { enabled: true, topology_service_client: config })
+      stub_config(cell: { enabled: true, topology_service_client: tls_config.merge(config) })
     end
 
     after do
@@ -160,6 +162,12 @@ RSpec.describe Gitlab::TopologyServiceClient::BaseService, feature_category: :ce
       end
 
       include_examples 'insecure credentials'
+    end
+
+    context 'when TLS is disabled' do
+      let(:tls_config) { { tls: { enabled: false } } }
+
+      it { expect(service_credentials).to eq(:this_channel_is_insecure) }
     end
   end
 end

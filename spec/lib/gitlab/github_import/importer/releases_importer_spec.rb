@@ -95,7 +95,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       it 'is idempotent' do
         allow(importer).to receive(:each_release).and_return([github_release])
         expect { importer.execute }.to change { Release.count }.by(1)
-        expect { importer.execute }.to change { Release.count }.by(0) # Idempotency check
+        expect { importer.execute }.not_to change { Release.count } # Idempotency check
       end
 
       context 'when the body has user mentions' do
@@ -324,7 +324,7 @@ RSpec.describe Gitlab::GithubImport::Importer::ReleasesImporter, feature_categor
       it 'is idempotent' do
         allow(importer).to receive(:each_release).and_return([github_release])
         expect { importer.execute }.to change { Release.count }.by(1)
-        expect { importer.execute }.to change { Release.count }.by(0) # Idempotency check
+        expect { importer.execute }.not_to change { Release.count } # Idempotency check
       end
 
       context 'when the body has user mentions' do

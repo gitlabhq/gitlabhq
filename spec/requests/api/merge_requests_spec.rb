@@ -79,7 +79,7 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
     end
 
     context 'when authenticated' do
-      it 'avoids N+1 queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/330335' do
+      it 'avoids N+1 queries' do
         control = ActiveRecord::QueryRecorder.new do
           get api(endpoint_path, user)
         end
@@ -98,6 +98,22 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
         expect do
           get api(endpoint_path, user)
         end.not_to exceed_query_limit(control)
+      end
+
+      context 'when merge requests are merged' do
+        it 'avoids N+1 queries' do
+          create(:merge_request, state: :merged, source_project: project, target_project: project, merge_user: create(:user))
+
+          control = ActiveRecord::QueryRecorder.new do
+            get api(endpoint_path, user)
+          end
+
+          create(:merge_request, state: :merged, source_project: project, target_project: project, merge_user: create(:user))
+
+          expect do
+            get api(endpoint_path, user)
+          end.not_to exceed_query_limit(control)
+        end
       end
 
       context 'when merge request is unchecked' do

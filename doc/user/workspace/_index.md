@@ -416,6 +416,29 @@ see [Create a custom workspace image that supports arbitrary user IDs](create_im
 For more information, see the
 [OpenShift documentation](https://docs.openshift.com/container-platform/4.12/openshift_images/create-images.html#use-uid_create-images).
 
+## Shallow cloning
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543982) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `workspaces_shallow_clone_project`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+When you create a workspace, GitLab uses shallow cloning to improve performance.
+A shallow clone downloads only the latest commit history instead of the complete Git history,
+which significantly reduces the initial clone time for large repositories.
+
+After the workspace starts, Git converts the shallow clone to a full clone in the background.
+This process is transparent and doesn't affect your development workflow.
+
 ## Related topics
 
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)

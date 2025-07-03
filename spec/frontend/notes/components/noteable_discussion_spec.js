@@ -1,7 +1,5 @@
 import { mount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import MockAdapter from 'axios-mock-adapter';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
@@ -18,7 +16,6 @@ import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_i
 import NoteForm from '~/notes/components/note_form.vue';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import { COMMENT_FORM } from '~/notes/i18n';
-import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { globalAccessorPlugin } from '~/pinia/plugins';
@@ -26,45 +23,26 @@ import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
 import { useBatchComments } from '~/batch_comments/store';
 import {
-  noteableDataMock,
   discussionMock,
   notesDataMock,
   loggedOutnoteableData,
   userDataMock,
+  noteableDataMock,
 } from '../mock_data';
 import { useLocalStorageSpy } from '../../__helpers__/local_storage_helper';
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 
 jest.mock('~/behaviors/markdown/render_gfm');
 jest.mock('~/alert');
 
 describe('noteable_discussion component', () => {
-  let store;
   let pinia;
   let wrapper;
   let axiosMock;
 
-  const createStore = ({ saveNoteMock = jest.fn() } = {}) => {
-    const baseModule = notesModule();
-
-    return new Vuex.Store({
-      ...baseModule,
-      actions: {
-        ...baseModule.actions,
-        saveNote: saveNoteMock,
-      },
-    });
-  };
-
-  const createComponent = ({ storeMock = createStore(), discussion = discussionMock } = {}) => {
-    store = storeMock;
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
-
+  const createComponent = ({ discussion = discussionMock } = {}) => {
     wrapper = mountExtended(NoteableDiscussion, {
-      store,
       pinia,
       propsData: { discussion },
     });
@@ -73,6 +51,8 @@ describe('noteable_discussion component', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
+    useNotes().noteableData = noteableDataMock;
+    useNotes().notesData = notesDataMock;
     useNotes().saveNote.mockResolvedValue();
     useNotes().fetchDiscussionDiffLines.mockResolvedValue();
     useBatchComments();
@@ -137,9 +117,7 @@ describe('noteable_discussion component', () => {
           localStorage.setItem(`autosave/Note/Issue/${discussionMock.id}/Reply`, 'draft');
         }
         window.gon.current_user_id = userDataMock.id;
-        store.dispatch('setUserData', userDataMock);
         wrapper = mount(NoteableDiscussion, {
-          store,
           pinia,
           propsData: { discussion: discussionMock },
         });
@@ -193,7 +171,6 @@ describe('noteable_discussion component', () => {
       const discussion = { ...discussionMock, expanded: false };
 
       wrapper.setProps({ discussion });
-      store.dispatch = jest.fn();
 
       await nextTick();
 
@@ -201,7 +178,7 @@ describe('noteable_discussion component', () => {
 
       await nextTick();
 
-      expect(store.dispatch).toHaveBeenCalledWith('expandDiscussion', {
+      expect(useNotes().expandDiscussion).toHaveBeenCalledWith({
         discussionId: discussion.id,
       });
     });
@@ -266,16 +243,14 @@ describe('noteable_discussion component', () => {
   describe('save reply', () => {
     describe('if response contains validation errors', () => {
       beforeEach(async () => {
-        const storeMock = createStore({
-          saveNoteMock: jest.fn().mockRejectedValue({
-            response: {
-              status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
-              data: { errors: 'error 1 and error 2' },
-            },
-          }),
+        useNotes().saveNote.mockRejectedValue({
+          response: {
+            status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+            data: { errors: 'error 1 and error 2' },
+          },
         });
 
-        createComponent({ storeMock });
+        createComponent();
 
         wrapper.findComponent(DiscussionReplyPlaceholder).vm.$emit('focus');
         await nextTick();
@@ -300,10 +275,8 @@ describe('noteable_discussion component', () => {
     describe('user is logged in', () => {
       beforeEach(() => {
         window.gon.current_user_id = userDataMock.id;
-        store.dispatch('setUserData', userDataMock);
 
         wrapper = mount(NoteableDiscussion, {
-          store,
           pinia,
           propsData: { discussion: discussionMock },
         });
@@ -318,11 +291,9 @@ describe('noteable_discussion component', () => {
     describe('user is not logged in', () => {
       beforeEach(() => {
         window.gon.current_user_id = null;
-        store.dispatch('setNoteableData', loggedOutnoteableData);
-        store.dispatch('setNotesData', notesDataMock);
+        useNotes().noteableData = loggedOutnoteableData;
 
         wrapper = mount(NoteableDiscussion, {
-          store,
           pinia,
           propsData: { discussion: discussionMock },
         });
@@ -336,10 +307,8 @@ describe('noteable_discussion component', () => {
   });
 
   it('supports direct call on showReplyForm', async () => {
-    store = createStore();
     const mock = jest.fn();
     wrapper = mount(NoteableDiscussion, {
-      store,
       pinia,
       propsData: { discussion: discussionMock },
       stubs: { NoteForm: { methods: { append: mock }, render() {} } },

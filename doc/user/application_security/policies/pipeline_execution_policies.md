@@ -23,7 +23,7 @@ Use pipeline execution policies to manage and enforce CI/CD jobs for multiple pr
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
 
-## Pipeline execution policies schema
+## Schema
 
 {{< history >}}
 
@@ -45,7 +45,7 @@ the following sections and tables provide an alternative.
 |-------|------|----------|-------------|
 | `pipeline_execution_policy` | `array` of pipeline execution policy | true | List of pipeline execution policies (maximum five) |
 
-## Pipeline execution policy schema
+## `pipeline_execution_policy` schema
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
@@ -297,7 +297,7 @@ the policy configuration is not as well protected as when using the `allowlist` 
 
 {{< /alert >}}
 
-### Policy scope schema
+### `policy scope` schema
 
 To customize policy enforcement, you can define a policy's scope to either include, or exclude,
 specified projects, groups, or compliance framework labels. For more details, see
@@ -416,7 +416,7 @@ If you don't see the **CI/CD** settings, go to **Settings > General > Visibility
 
 Pipeline configuration strategy defines the method for merging the policy configuration with the project pipeline. Pipeline execution policies execute the jobs defined in the `.gitlab-ci.yml` file in isolated pipelines, which are merged into the pipelines of the target projects.
 
-### `inject_policy`
+### `inject_policy` type
 
 {{< history >}}
 
@@ -579,7 +579,7 @@ Special cases:
 
 {{< alert type="warning" >}}
 
-This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in GitLab 17.9. Use [`inject_policy`](#inject_policy) instead as it supports the enforcement of custom policy stages.
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/475152) in GitLab 17.9. Use [`inject_policy`](#inject_policy-type) instead as it supports the enforcement of custom policy stages.
 
 {{< /alert >}}
 

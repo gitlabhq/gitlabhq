@@ -22192,7 +22192,8 @@ CREATE TABLE protected_branch_unprotect_access_levels (
     user_id bigint,
     group_id bigint,
     protected_branch_project_id bigint,
-    protected_branch_namespace_id bigint
+    protected_branch_namespace_id bigint,
+    CONSTRAINT check_a5a558921b CHECK ((num_nonnulls(protected_branch_namespace_id, protected_branch_project_id) = 1))
 );
 
 CREATE SEQUENCE protected_branch_unprotect_access_levels_id_seq

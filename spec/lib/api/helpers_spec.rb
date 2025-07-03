@@ -1271,7 +1271,7 @@ RSpec.describe API::Helpers, feature_category: :shared do
       it 'does not destroy given project' do
         expect(project).not_to receive(:destroy)
 
-        expect { helper.destroy_conditionally!(project) }.to throw_symbol(:error).and change { Project.count }.by(0)
+        expect { helper.destroy_conditionally!(project) }.to throw_symbol(:error).and not_change { Project.count }
       end
     end
   end

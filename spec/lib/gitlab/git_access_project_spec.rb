@@ -78,7 +78,7 @@ RSpec.describe Gitlab::GitAccessProject do
       it 'does not create a new project' do
         expect { action }
           .to raise_specific_error
-          .and change { Project.count }.by(0)
+          .and not_change { Project.count }
       end
     end
 

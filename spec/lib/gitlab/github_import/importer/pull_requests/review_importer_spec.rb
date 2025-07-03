@@ -129,8 +129,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
           it 'does not import second approve and note' do
             expect { subject.execute }
-              .to change { Note.count }.by(0)
-              .and change { Approval.count }.by(0)
+              .to not_change { Note.count }
+              .and not_change { Approval.count }
           end
 
           it 'only pushes placeholder references for reviewer' do
@@ -315,8 +315,8 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::ReviewImporter, :cl
 
             it 'does not import second approve and note' do
               expect { subject.execute }
-                .to change { Note.count }.by(0)
-                .and change { Approval.count }.by(0)
+                .to not_change { Note.count }
+                .and not_change { Approval.count }
             end
           end
         end

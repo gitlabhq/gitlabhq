@@ -24,7 +24,7 @@ module RuboCop
           add_offense(node) do |corrector|
             replacement = "#{cbased(node)}Gitlab::Json.#{method_name}(#{arg_source})"
 
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(node, replacement)
           end
         end
 

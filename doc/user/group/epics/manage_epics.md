@@ -151,41 +151,6 @@ To update multiple epics at the same time:
 1. Select the appropriate fields and their values from the sidebar.
 1. Select **Update selected**.
 
-### Open epics in a drawer
-
-{{< details >}}
-
-- Offering: GitLab Self-Managed
-
-{{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464063) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `issues_list_drawer`. Disabled by default.
-- Feature flag [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170066) from `issues_list_drawer` to `epics_list_drawer` in GitLab 17.6.
-
-{{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
-
-When this feature is enabled, when you select an epic from the list or epic board, it opens in a drawer.
-You can then edit the epic or create comments.
-
-To open the epic in full view, either:
-
-- Open the epic in a new tab. From the list of epics, you can either:
-  - Right-click the epic and open it in a new browser tab.
-  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
-- From the drawer, in the top-left corner, select **Open in full view**.
-
-![Epic opened in a drawer.](img/epic_drawer_v17_4.png)
-
 ## Prevent truncating descriptions with "Read more"
 
 {{< history >}}
@@ -428,6 +393,54 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 - Private group and non-confidential epic: You must have at least the Guest role for the group.
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
+
+### Open epics in a drawer
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/464698) in GitLab 17.4 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_view_for_issues`. Enabled by default.
+- Ability to toggle between drawer and full page view [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/536620) in GitLab 18.2.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+{{< /alert >}}
+
+When you select an epic from the Epics page or an epic board, it opens in a drawer.
+You can then view and edit its details without losing context of the epic list or board.
+
+When using the drawer:
+
+- Select an epic from the list to open it in the drawer.
+- The drawer appears on the right side of the screen.
+- You can edit the epic directly in the drawer.
+- To close the drawer, select the close icon ({{< icon name="close" >}}) or press **Escape**.
+
+#### Open an epic in full page view
+
+To open an epic in the full page view:
+
+- Open the epic in a new tab. From the list of epics, either:
+  - Right-click the epic and open it in a new browser tab.
+  - Hold <kbd>Cmd</kbd> or <kbd>Ctrl</kbd> and select the epic.
+- Select an epic, and from the drawer, in the top-left corner, select **Open in full page** ({{< icon name="maximize" >}}).
+
+#### Set preference whether to open epics in a drawer
+
+To configure how epics open on the Epics page:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Plan > Epics**.
+1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. Toggle **Open items in side panel**:
+   - **On** (default): Epics open in a drawer overlay.
+   - **Off**: Epics open in a full page view.
+
+Your preference is saved and remembered across all your sessions and devices.
 
 ### Cached epic count
 

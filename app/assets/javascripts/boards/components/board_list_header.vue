@@ -349,7 +349,7 @@ export default {
       class="board-title gl-m-0 gl-flex gl-h-9 gl-items-center gl-px-3 gl-text-base"
     >
       <gl-button
-        v-gl-tooltip.hover
+        v-gl-tooltip
         :aria-label="chevronTooltip"
         :title="chevronTooltip"
         class="board-title-caret no-drag btn-icon gl-cursor-pointer hover:gl-bg-strong"
@@ -377,7 +377,7 @@ export default {
         }"
       >
         <gl-avatar
-          v-gl-tooltip.hover.bottom
+          v-gl-tooltip.bottom
           :title="listAssignee"
           :alt="list.assignee.name"
           :src="list.assignee.avatarUrl"
@@ -411,7 +411,7 @@ export default {
 
         <span
           v-if="listType !== 'label'"
-          v-gl-tooltip.hover
+          v-gl-tooltip
           :class="{
             '!gl-ml-2': list.collapsed && !showAssigneeListDetails,
             'gl-text-subtle': list.collapsed,
@@ -432,7 +432,7 @@ export default {
         <!-- EE end -->
         <gl-label
           v-if="listType === 'label'"
-          v-gl-tooltip.hover.bottom
+          v-gl-tooltip.bottom
           :background-color="list.label.color"
           :description="list.label.description"
           :scoped="showScopedLabels(list.label)"
@@ -521,7 +521,7 @@ export default {
         <gl-button
           v-if="isNewIssueShown"
           ref="newIssueBtn"
-          v-gl-tooltip.hover
+          v-gl-tooltip
           :aria-label="$options.i18n.newIssue"
           :title="$options.i18n.newIssue"
           size="small"
@@ -532,7 +532,7 @@ export default {
 
         <gl-button
           v-if="isNewEpicShown"
-          v-gl-tooltip.hover
+          v-gl-tooltip
           :aria-label="$options.i18n.newEpic"
           :title="$options.i18n.newEpic"
           size="small"
@@ -544,7 +544,7 @@ export default {
         <gl-button
           v-if="isSettingsShown"
           ref="settingsBtn"
-          v-gl-tooltip.hover
+          v-gl-tooltip
           :aria-label="$options.i18n.listSettings"
           size="small"
           :title="$options.i18n.listSettings"

@@ -219,10 +219,9 @@ RSpec.describe Gitlab::Database::TablesTruncate, :reestablished_active_record_ba
           let(:until_table) { referencing_table_model.table_name }
 
           it 'only truncates until the table specified' do
-            expect do
-              truncate_legacy_tables
-            end.to change(referencing_table_model, :count).by(-5)
-               .and change(referenced_table_model, :count).by(0)
+            expect { truncate_legacy_tables }
+              .to change(referencing_table_model, :count).by(-5)
+              .and not_change(referenced_table_model, :count)
           end
         end
 

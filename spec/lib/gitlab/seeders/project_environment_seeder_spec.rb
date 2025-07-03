@@ -32,9 +32,8 @@ RSpec.describe ::Gitlab::Seeders::ProjectEnvironmentSeeder, feature_category: :c
     end
 
     it 'skips seeding when project path is invalid' do
-      expect { invalid_project_path_seeder.seed }.to change {
-        project.environments.count
-      }.by(0)
+      expect { invalid_project_path_seeder.seed }
+        .not_to change { project.environments.count }
     end
 
     it 'skips environment creation if environment already exists' do

@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Cache::Ci::ProjectPipelineStatus, :clean_gitlab_redis_cac
         end
 
         it 'makes no Gitaly calls' do
-          expect { pipeline_status.load_status }.to change { Gitlab::GitalyClient.get_request_count }.by(0)
+          expect { pipeline_status.load_status }.not_to change { Gitlab::GitalyClient.get_request_count }
         end
       end
     end

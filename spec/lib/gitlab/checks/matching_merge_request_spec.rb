@@ -73,7 +73,7 @@ RSpec.describe Gitlab::Checks::MatchingMergeRequest, feature_category: :source_c
         it 'only increments total counter' do
           expect { subject.match? }
             .to change { total_counter.get }.by(1)
-            .and change { stale_counter.get }.by(0)
+            .and not_change { stale_counter.get }
         end
       end
 

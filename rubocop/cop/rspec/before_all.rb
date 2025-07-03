@@ -37,7 +37,7 @@ module Rubocop
 
           add_offense(node) do |corrector|
             replacement = 'before_all'
-            corrector.replace(node.source_range, replacement)
+            corrector.replace(node, replacement)
           end
         end
       end

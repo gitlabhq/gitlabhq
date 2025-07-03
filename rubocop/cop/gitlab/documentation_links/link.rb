@@ -110,7 +110,7 @@ module RuboCop
                 path_without_extension = path_without_anchor.gsub(/#{extension_pattern}$/, '')
                 arg_with_md_extension = path.gsub(/#{path_without_extension}#{extension_pattern}(\#.+)?$/,
                   "#{path_without_extension}.md\\2")
-                corrector.replace(node.first_argument.source_range, "'#{arg_with_md_extension}'")
+                corrector.replace(node.first_argument, "'#{arg_with_md_extension}'")
               end
               path_without_anchor += ".md"
             end

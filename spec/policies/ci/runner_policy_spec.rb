@@ -81,6 +81,31 @@ RSpec.describe Ci::RunnerPolicy, feature_category: :runner do
 
           it { expect_allowed :update_runner }
         end
+
+        context 'when access is provided by group invitation' do
+          let_it_be(:invited_group) { create(:group) }
+          let_it_be(:user) { create(:user, owner_of: invited_group) }
+
+          it { expect_disallowed :update_runner }
+
+          context 'when invited_group is invited to group' do
+            before do
+              create(:group_group_link, access_level, shared_group: group, shared_with_group: invited_group)
+            end
+
+            context 'as owner' do
+              let(:access_level) { :owner }
+
+              it { expect_allowed :update_runner }
+            end
+
+            context 'as maintainer' do
+              let(:access_level) { :maintainer }
+
+              it { expect_disallowed :update_runner }
+            end
+          end
+        end
       end
 
       context 'with project runner' do

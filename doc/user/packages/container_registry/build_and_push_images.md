@@ -157,16 +157,15 @@ build:
     - docker push $IMAGE_TAG
 ```
 
-In this example, `$CI_REGISTRY_IMAGE` resolves to the address of the registry tied
-to this project. `$CI_COMMIT_REF_NAME` resolves to the branch or tag name, which
-can contain forward slashes. Image tags can't contain forward slashes. Use
-`$CI_COMMIT_REF_SLUG` as the image tag. You can declare the variable, `$IMAGE_TAG`,
-combining `$CI_REGISTRY_IMAGE` and `$CI_COMMIT_REF_NAME` to save some typing in the
-`script` section.
+In the previous example:
 
-This example splits the tasks into 4 pipeline stages, including two tests that run in parallel. The `build` is stored in the container
-registry and used by subsequent stages, downloading the container image when needed. Changes to `main` also get tagged as
-`latest` and deployed using an application-specific deploy script:
+- `$CI_REGISTRY_IMAGE` resolves to the address of the registry tied
+to this project.
+- `$IMAGE_TAG` is a custom variable that combines the registry address with `$CI_COMMIT_REF_SLUG`, the image tag. The [`$CI_COMMIT_REF_NAME` predefined variable](../../../ci/variables/predefined_variables.md#predefined-variables) resolves to the branch or tag name and can contain forward slashes. Image tags cannot contain forward slashes. Use `$CI_COMMIT_REF_SLUG` instead.
+
+The following example splits CI/CD tasks into four pipeline stages, including two tests that run in parallel.
+
+The `build` is stored in the container registry and used by subsequent stages that download the container image when needed. When you push changes to the `main` branch, the pipeline tags the image as `latest` and deploys it using an application-specific deploy script:
 
 ```yaml
 default:
@@ -227,8 +226,8 @@ deploy:
 
 {{< alert type="note" >}}
 
-This example explicitly calls `docker pull`. If you prefer to implicitly pull the container image using `image:`,
+The previous example explicitly calls `docker pull`. If you prefer to implicitly pull the container image using `image:`,
 and use either the [Docker](https://docs.gitlab.com/runner/executors/docker.html) or [Kubernetes](https://docs.gitlab.com/runner/executors/kubernetes/) executor,
-make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#how-pull-policies-work) is set to `always`.
+make sure that [`pull_policy`](https://docs.gitlab.com/runner/executors/docker.html#set-the-always-pull-policy) is set to `always`.
 
 {{< /alert >}}

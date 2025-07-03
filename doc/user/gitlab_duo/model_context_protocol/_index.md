@@ -8,7 +8,7 @@ title: Use Model Context Protocol with AI-native features
 
 {{< details >}}
 
-- Tier: Ultimate
+- Tier: Free, Premium, Ultimate
 - Offering: GitLab.com
 - Status: Experiment
 
@@ -62,7 +62,7 @@ To turn MCP on or off for your group:
 
 To specify the MCP servers you want the AI-native feature to connect to:
 
-1. In VS Code, create an `mcp.json` file in `~/gitlab/duo/`.
+1. In VS Code, create an `mcp.json` file in `~/.gitlab/duo/`.
 1. Populate this file with the MCP servers you want the feature to connect to.
 
    For more information and examples, see the [MCP example servers documentation](https://modelcontextprotocol.io/examples). You can also find other example servers at [Smithery.ai](https://smithery.ai/)

@@ -64,7 +64,7 @@ export default {
     data-testid="work-item-type-icon"
     :title="workItemTooltipTitle"
     :aria-label="workItemTypeText"
-    class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0"
+    class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0 focus-visible:gl-focus-inset"
   >
     <gl-icon :name="iconName" :variant="iconVariant" :class="iconClass" />
     <span v-if="workItemTypeText" :class="{ 'gl-sr-only !gl-absolute': !showText }">{{

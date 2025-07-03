@@ -1,14 +1,13 @@
 <script>
 import { GlButton, GlSprintf, GlLink, GlFormCheckbox } from '@gitlab/ui';
-import { mapState } from 'pinia';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters as mapVuexGetters, mapActions as mapVuexActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
 import { useBatchComments } from '~/batch_comments/store';
+import { useNotes } from '~/notes/store/legacy_notes';
 import eventHub from '../event_hub';
 import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
@@ -136,10 +135,9 @@ export default {
     };
   },
   computed: {
-    ...mapVuexGetters([
+    ...mapState(useNotes, [
       'getDiscussionLastNote',
       'getNoteableData',
-      'getNoteableDataByProp',
       'getNotesDataByProp',
       'getUserDataByProp',
     ]),
@@ -191,7 +189,7 @@ export default {
       return null;
     },
     markdownPreviewPath() {
-      const notable = this.getNoteableDataByProp('preview_note_path');
+      const notable = this.getNoteableData.preview_note_path;
 
       const previewSuggestions = this.line && this.diffParams;
       const params = previewSuggestions
@@ -267,7 +265,7 @@ export default {
     this.updatePlaceholder();
   },
   methods: {
-    ...mapVuexActions(['toggleResolveNote']),
+    ...mapActions(useNotes, ['toggleResolveNote']),
     shouldToggleResolved(beforeSubmitDiscussionState) {
       return (
         this.showResolveDiscussionToggle && beforeSubmitDiscussionState !== this.newResolvedState()

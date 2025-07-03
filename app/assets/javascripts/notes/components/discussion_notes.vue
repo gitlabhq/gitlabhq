@@ -1,12 +1,12 @@
 <script>
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'pinia';
 import DuoCodeReviewSystemNote from 'ee_component/vue_shared/components/notes/duo_code_review_system_note.vue';
 import { __ } from '~/locale';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
 import { FILE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import { useNotes } from '~/notes/store/legacy_notes';
 import { SYSTEM_NOTE } from '../constants';
 import DiscussionNotesRepliesWrapper from './discussion_notes_replies_wrapper.vue';
 import NoteEditedText from './note_edited_text.vue';
@@ -57,7 +57,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['userCanReply']),
+    ...mapState(useNotes, ['userCanReply']),
     hasReplies() {
       return Boolean(this.replies.length);
     },
@@ -88,7 +88,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['toggleDiscussion', 'setSelectedCommentPositionHover']),
+    ...mapActions(useNotes, ['toggleDiscussion', 'setSelectedCommentPositionHover']),
     componentName(note) {
       if (note.isPlaceholderNote) {
         if (note.placeholderType === SYSTEM_NOTE) {

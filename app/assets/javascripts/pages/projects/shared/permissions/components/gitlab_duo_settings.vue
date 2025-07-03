@@ -154,7 +154,12 @@ export default {
     </project-setting-row>
 
     <template #footer>
-      <gl-button variant="confirm" type="submit" data-testid="gitlab-duo-save-button">
+      <gl-button
+        variant="confirm"
+        type="submit"
+        data-testid="gitlab-duo-save-button"
+        :disabled="duoFeaturesLocked"
+      >
         {{ $options.i18n.saveChanges }}
       </gl-button>
     </template>

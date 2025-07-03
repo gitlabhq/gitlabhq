@@ -775,7 +775,7 @@ Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
 Settings.cron_jobs['authn_oauth_access_token_cleanup_worker'] ||= {}
-Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['cron'] ||= '0 9 2 * *'
+Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['cron'] ||= '5 6 * * *'
 Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['job_class'] = 'Authn::OauthAccessTokenCleanupWorker'
 
 Gitlab.ee do
@@ -1144,6 +1144,8 @@ Settings.cell.topology_service_client['address'] ||= 'topology-service.example.c
 Settings.cell.topology_service_client['ca_file'] ||= nil
 Settings.cell.topology_service_client['certificate_file'] ||= nil
 Settings.cell.topology_service_client['private_key_file'] ||= nil
+Settings.cell.topology_service_client['tls'] ||= {}
+Settings.cell.topology_service_client['tls']['enabled'] = true if Settings.cell.topology_service_client['tls']['enabled'].nil?
 
 #
 # GitLab KAS

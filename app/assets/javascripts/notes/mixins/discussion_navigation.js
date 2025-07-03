@@ -1,8 +1,7 @@
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions as mapVuexActions, mapState } from 'vuex';
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { scrollToElement, contentTop } from '~/lib/utils/common_utils';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
+import { useNotes } from '~/notes/store/legacy_notes';
 
 function isOverviewPage() {
   return window.mrTabs?.currentAction === 'show';
@@ -85,17 +84,15 @@ function handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions) {
 
 export default {
   computed: {
-    ...mapGetters([
+    ...mapState(useNotes, [
       'nextUnresolvedDiscussionId',
       'previousUnresolvedDiscussionId',
       'getDiscussion',
+      'currentDiscussionId',
     ]),
-    ...mapState({
-      currentDiscussionId: (state) => state.notes.currentDiscussionId,
-    }),
   },
   methods: {
-    ...mapVuexActions(['expandDiscussion', 'setCurrentDiscussionId']),
+    ...mapActions(useNotes, ['expandDiscussion', 'setCurrentDiscussionId']),
     ...mapActions(useLegacyDiffs, ['scrollToFile', 'disableVirtualScroller']),
 
     async jumpToNextDiscussion(scrollOptions) {

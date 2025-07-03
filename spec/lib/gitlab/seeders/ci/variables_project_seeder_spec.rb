@@ -64,9 +64,8 @@ RSpec.describe ::Gitlab::Seeders::Ci::VariablesProjectSeeder, feature_category: 
     end
 
     it 'skips seeding when project path is invalid' do
-      expect { invalid_project_path_seeder.seed }.to change {
-        project.variables.count
-      }.by(0)
+      expect { invalid_project_path_seeder.seed }
+        .not_to change { project.variables.count }
     end
 
     it 'skips CI variable creation if CI variable already exists' do

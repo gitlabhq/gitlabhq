@@ -23,9 +23,11 @@ module Gitlab
       end
 
       def service_credentials
-        config = Gitlab.config.cell.topology_service_client
+        return :this_channel_is_insecure unless topology_service_config.tls.enabled
 
-        ca_file, key_file, cert_file = config.values_at('ca_file', 'private_key_file', 'certificate_file')
+        ca_file, key_file, cert_file = topology_service_config.values_at(
+          'ca_file', 'private_key_file', 'certificate_file'
+        )
 
         return GRPC::Core::ChannelCredentials.new unless key_file && cert_file
         return GRPC::Core::ChannelCredentials.new unless File.exist?(key_file) && File.exist?(cert_file)
@@ -38,11 +40,15 @@ module Gitlab
       end
 
       def topology_service_address
-        Gitlab.config.cell.topology_service_client.address
+        topology_service_config.address
       end
 
       def enabled?
         Gitlab.config.cell.enabled
+      end
+
+      def topology_service_config
+        @topology_service_config ||= Gitlab.config.cell.topology_service_client
       end
     end
   end

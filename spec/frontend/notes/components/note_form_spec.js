@@ -3,7 +3,6 @@ import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
 import NoteForm from '~/notes/components/note_form.vue';
-import createStore from '~/notes/stores';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 import { AT_WHO_ACTIVE_CLASS } from '~/gfm_auto_complete';
@@ -22,7 +21,6 @@ jest.mock('~/lib/utils/autosave');
 Vue.use(PiniaVuePlugin);
 
 describe('issue_note_form component', () => {
-  let store;
   let pinia;
   let wrapper;
   let textarea;
@@ -31,7 +29,6 @@ describe('issue_note_form component', () => {
 
   const createComponentWrapper = (propsData = {}, provide = {}, stubs = {}) => {
     wrapper = mountExtended(NoteForm, {
-      store,
       pinia,
       propsData: {
         ...props,
@@ -63,12 +60,9 @@ describe('issue_note_form component', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    useNotes();
+    useNotes().noteableData = noteableDataMock;
+    useNotes().notesData = notesDataMock;
     useBatchComments().$patch({ isMergeRequest: true });
-
-    store = createStore();
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
 
     props = {
       isEditing: false,

@@ -6,7 +6,6 @@ import { PiniaVuePlugin } from 'pinia';
 import DiscussionNotes from '~/notes/components/discussion_notes.vue';
 import NoteableNote from '~/notes/components/noteable_note.vue';
 import { SYSTEM_NOTE } from '~/notes/constants';
-import createStore from '~/notes/stores';
 import PlaceholderNote from '~/vue_shared/components/notes/placeholder_note.vue';
 import PlaceholderSystemNote from '~/vue_shared/components/notes/placeholder_system_note.vue';
 import SystemNote from '~/vue_shared/components/notes/system_note.vue';
@@ -28,7 +27,6 @@ const DISCUSSION_WITH_LINE_RANGE = {
 Vue.use(PiniaVuePlugin);
 
 describe('DiscussionNotes', () => {
-  let store;
   let pinia;
   let wrapper;
 
@@ -37,7 +35,6 @@ describe('DiscussionNotes', () => {
 
   const createComponent = (props, mountingMethod = shallowMount) => {
     wrapper = mountingMethod(DiscussionNotes, {
-      store,
       pinia,
       propsData: {
         discussion: discussionMock,
@@ -61,10 +58,8 @@ describe('DiscussionNotes', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
-    useNotes();
-    store = createStore();
-    store.dispatch('setNoteableData', noteableDataMock);
-    store.dispatch('setNotesData', notesDataMock);
+    useNotes().noteableData = noteableDataMock;
+    useNotes().notesData = notesDataMock;
   });
 
   describe('rendering', () => {
@@ -178,20 +173,27 @@ describe('DiscussionNotes', () => {
   });
 
   describe.each`
-    desc                               | props                                         | event           | expectedCalls
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseenter'} | ${[['setSelectedCommentPositionHover', LINE_RANGE]]}
-    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseleave'} | ${[['setSelectedCommentPositionHover']]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseenter'} | ${[]}
-    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseleave'} | ${[]}
-  `('$desc', ({ props, event, expectedCalls }) => {
+    desc                               | props                                         | event           | shouldSelectPosition | shouldIncludeRange
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseenter'} | ${true}              | ${true}
+    ${'with `discussion.position`'}    | ${{ discussion: DISCUSSION_WITH_LINE_RANGE }} | ${'mouseleave'} | ${true}              | ${false}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseenter'} | ${false}             | ${false}
+    ${'without `discussion.position`'} | ${{}}                                         | ${'mouseleave'} | ${false}             | ${false}
+  `('$desc', ({ props, event, shouldSelectPosition, shouldIncludeRange }) => {
     beforeEach(() => {
       createComponent(props);
-      jest.spyOn(store, 'dispatch');
     });
 
-    it(`calls store ${expectedCalls.length} times on ${event}`, () => {
+    it(`calls store on ${event}`, () => {
       getList().dispatchEvent(new MouseEvent(event));
-      expect(store.dispatch.mock.calls).toEqual(expectedCalls);
+      if (shouldSelectPosition) {
+        if (shouldIncludeRange) {
+          expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith(LINE_RANGE);
+        } else {
+          expect(useNotes().setSelectedCommentPositionHover).toHaveBeenCalledWith();
+        }
+      } else {
+        expect(useNotes().setSelectedCommentPositionHover).not.toHaveBeenCalled();
+      }
     });
   });
 

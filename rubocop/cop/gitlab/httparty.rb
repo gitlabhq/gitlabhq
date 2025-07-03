@@ -35,11 +35,11 @@ module RuboCop
 
               replacement = "Gitlab::HTTP.#{method_name}(#{arg_nodes.map(&:source).join(', ')})"
 
-              corrector.replace(node.source_range, replacement)
+              corrector.replace(node, replacement)
             end
           elsif includes_httparty?(node)
             add_offense(node, message: MSG_INCLUDE) do |corrector|
-              corrector.remove(node.source_range)
+              corrector.remove(node)
             end
           end
         end

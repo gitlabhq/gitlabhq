@@ -6,7 +6,7 @@ module Authn
     include CronjobQueue # rubocop:disable Scalability/CronWorkerContext -- does not perform work scoped to a context
 
     idempotent!
-    deduplicate :until_executed
+    deduplicate :until_executing, including_scheduled: true
     data_consistency :sticky
     feature_category :system_access
     concurrency_limit -> { 1 }

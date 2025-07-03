@@ -49,7 +49,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetails, schema: 2024071
       it 'creates only the needed user_details entries' do
         expect(user_details.count).to eq(3)
 
-        expect { migration.perform }.to change { user_details.count }.by(0)
+        expect { migration.perform }.not_to change { user_details.count }
       end
     end
 

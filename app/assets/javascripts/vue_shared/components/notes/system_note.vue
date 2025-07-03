@@ -18,14 +18,14 @@
  */
 import { GlButton, GlSkeletonLoader, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import $ from 'jquery';
-// eslint-disable-next-line no-restricted-imports
-import { mapGetters, mapActions, mapState } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import descriptionVersionHistoryMixin from 'ee_else_ce/notes/mixins/description_version_history';
 import axios from '~/lib/utils/axios_utils';
 import { __ } from '~/locale';
 import NoteHeader from '~/notes/components/note_header.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import { useNotes } from '~/notes/store/legacy_notes';
 import TimelineEntryItem from './timeline_entry_item.vue';
 
 const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
@@ -72,8 +72,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['targetNoteHash', 'descriptionVersions']),
-    ...mapState(['isLoadingDescriptionVersion']),
+    ...mapState(useNotes, ['targetNoteHash', 'descriptionVersions', 'isLoadingDescriptionVersion']),
     noteAnchorId() {
       return `note_${this.note.id}`;
     },
@@ -123,7 +122,7 @@ export default {
   },
   methods: {
     // eslint-disable-next-line vue/no-unused-properties -- These are used by the `descriptionVersionHistoryMixin` mixin
-    ...mapActions(['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
+    ...mapActions(useNotes, ['fetchDescriptionVersion', 'softDeleteDescriptionVersion']),
     async toggleDiff() {
       this.showLines = !this.showLines;
 

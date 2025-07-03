@@ -1,7 +1,6 @@
 <script>
 import { GlTooltipDirective, GlIcon } from '@gitlab/ui';
-// eslint-disable-next-line no-restricted-imports
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapState } from 'pinia';
 import DraftNote from '~/batch_comments/components/draft_note.vue';
 import { createAlert } from '~/alert';
 import { clearDraft, getDraft, getAutoSaveKeyFromDiscussion } from '~/lib/utils/autosave';
@@ -14,6 +13,7 @@ import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { FILE_DIFF_POSITION_TYPE, IMAGE_DIFF_POSITION_TYPE } from '~/diffs/constants';
+import { useNotes } from '~/notes/store/legacy_notes';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -86,7 +86,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters([
+    ...mapState(useNotes, [
       'convertedDisscussionIds',
       'getNoteableData',
       'userCanReply',
@@ -209,7 +209,7 @@ export default {
     eventHub.$off('startReplying', this.onStartReplying);
   },
   methods: {
-    ...mapActions([
+    ...mapActions(useNotes, [
       'saveNote',
       'removePlaceholderNotes',
       'toggleResolveNote',

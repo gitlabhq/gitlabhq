@@ -3,7 +3,6 @@ import DiscussionActions from '~/notes/components/discussion_actions.vue';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import ResolveWithIssueButton from '~/notes/components/discussion_resolve_with_issue_button.vue';
-import createStore from '~/notes/stores';
 import { discussionMock } from '../mock_data';
 
 // NOTE: clone mock_data so that it is not accidentally mutated
@@ -23,11 +22,9 @@ describe('DiscussionActions', () => {
   const createComponentFactory =
     (shallow = true) =>
     (props, options) => {
-      const store = createStore();
       const mountFn = shallow ? shallowMount : mount;
 
       wrapper = mountFn(DiscussionActions, {
-        store,
         propsData: {
           discussion: discussionMock,
           isResolving: false,

@@ -2,8 +2,6 @@ import { GlAlert } from '@gitlab/ui';
 import Autosize from 'autosize';
 import MockAdapter from 'axios-mock-adapter';
 import Vue, { nextTick } from 'vue';
-// eslint-disable-next-line no-restricted-imports
-import Vuex from 'vuex';
 import { PiniaVuePlugin } from 'pinia';
 import { createTestingPinia } from '@pinia/testing';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -13,7 +11,6 @@ import {
   shallowMountExtended,
 } from 'helpers/vue_test_utils_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
-import batchComments from '~/batch_comments/stores/modules/batch_comments';
 import { fetchUserCounts } from '~/super_sidebar/user_counts_fetch';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_OPEN } from '~/issues/constants';
@@ -24,13 +21,13 @@ import CommentForm from '~/notes/components/comment_form.vue';
 import * as constants from '~/notes/constants';
 import eventHub from '~/notes/event_hub';
 import { COMMENT_FORM } from '~/notes/i18n';
-import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
 import { mockTracking } from 'helpers/tracking_helper';
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { globalAccessorPlugin } from '~/pinia/plugins';
 import { useLegacyDiffs } from '~/diffs/stores/legacy_diffs';
 import { useNotes } from '~/notes/store/legacy_notes';
+import { useBatchComments } from '~/batch_comments/store';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
@@ -42,7 +39,6 @@ jest.mock('~/lib/utils/secret_detection', () => {
   };
 });
 
-Vue.use(Vuex);
 Vue.use(PiniaVuePlugin);
 
 describe('issue_comment_form component', () => {
@@ -64,26 +60,6 @@ describe('issue_comment_form component', () => {
   const findCommentTypeDropdown = () => wrapper.findByTestId('comment-button');
   const findCommentButton = () => findCommentTypeDropdown().find('button');
   const findErrorAlerts = () => wrapper.findAllComponents(GlAlert).wrappers;
-
-  const createStore = ({ actions = { saveNote: jest.fn() }, state = {}, getters = {} } = {}) => {
-    const baseModule = notesModule();
-
-    return new Vuex.Store({
-      ...baseModule,
-      actions: {
-        ...baseModule.actions,
-        ...actions,
-      },
-      state: {
-        ...baseModule.state,
-        ...state,
-      },
-      getters: {
-        ...baseModule.getters,
-        ...getters,
-      },
-    });
-  };
 
   const createNotableDataMock = (data = {}) => {
     return {
@@ -116,12 +92,11 @@ describe('issue_comment_form component', () => {
     userData = userDataMock,
     features = {},
     mountFunction = shallowMountExtended,
-    store = createStore(),
     stubs = {},
   } = {}) => {
-    store.dispatch('setNoteableData', noteableData);
-    store.dispatch('setNotesData', notesData);
-    store.dispatch('setUserData', userData);
+    useNotes().setNoteableData(noteableData);
+    useNotes().setNotesData(notesData);
+    useNotes().setUserData(userData);
 
     wrapper = mountFunction(CommentForm, {
       propsData: {
@@ -132,7 +107,6 @@ describe('issue_comment_form component', () => {
           ...initialData,
         };
       },
-      store,
       pinia,
       provide: {
         glFeatures: features,
@@ -144,7 +118,8 @@ describe('issue_comment_form component', () => {
   beforeEach(() => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin], stubActions: false });
     useLegacyDiffs();
-    useNotes();
+    useNotes().saveNote.mockResolvedValue();
+    useBatchComments();
     axiosMock = new MockAdapter(axios);
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
     detectAndConfirmSensitiveTokens.mockReturnValue(true);
@@ -160,20 +135,17 @@ describe('issue_comment_form component', () => {
       const note = 'hello world';
 
       it('should request to save note when note is entered', async () => {
-        const store = createStore();
-        jest.spyOn(store, 'dispatch');
-        mountComponent({ mountFunction: mountExtended, initialData: { note }, store });
+        mountComponent({ mountFunction: mountExtended, initialData: { note } });
         expect(findCloseReopenButton().props('disabled')).toBe(false);
         expect(findMarkdownEditor().props('value')).toBe(note);
         await findCloseReopenButton().trigger('click');
         expect(findCloseReopenButton().props('disabled')).toBe(true);
         expect(findMarkdownEditor().props('value')).toBe('');
-        expect(store.dispatch).toHaveBeenLastCalledWith('saveNote', expect.objectContaining({}));
+        expect(useNotes().saveNote).toHaveBeenLastCalledWith(expect.objectContaining({}));
       });
 
       it('tracks event', async () => {
-        const store = createStore();
-        mountComponent({ mountFunction: mountExtended, initialData: { note }, store });
+        mountComponent({ mountFunction: mountExtended, initialData: { note } });
         await findCloseReopenButton().trigger('click');
         expect(trackingSpy).toHaveBeenCalledWith(undefined, 'save_markdown', {
           label: 'markdown_editor',
@@ -182,11 +154,9 @@ describe('issue_comment_form component', () => {
       });
 
       it('does not report errors in the UI when the save succeeds', async () => {
-        const store = createStore();
         mountComponent({
           mountFunction: mountExtended,
           initialData: { note: '/label ~sdfghj' },
-          store,
         });
         await findCommentButton().trigger('click');
         // findErrorAlerts().exists returns false if *any* wrapper is empty,
@@ -205,20 +175,15 @@ describe('issue_comment_form component', () => {
       `(
         'displays the correct errors ($errors) for a $httpStatus network response',
         async ({ errors, httpStatus }) => {
-          const store = createStore({
-            actions: {
-              saveNote: jest.fn().mockRejectedValue({
-                response: {
-                  status: httpStatus,
-                  data: { quick_actions_status: { error_messages: errors } },
-                },
-              }),
+          useNotes().saveNote.mockRejectedValue({
+            response: {
+              status: httpStatus,
+              data: { quick_actions_status: { error_messages: errors } },
             },
           });
           mountComponent({
             mountFunction: mountExtended,
             initialData: { note: '/label ~sdfghj' },
-            store,
           });
           await findCommentButton().trigger('click');
           await waitForPromises();
@@ -234,21 +199,15 @@ describe('issue_comment_form component', () => {
 
       describe('if response contains validation errors', () => {
         beforeEach(async () => {
-          const store = createStore({
-            actions: {
-              saveNote: jest.fn().mockRejectedValue({
-                response: {
-                  status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
-                  data: { errors: 'error 1 and error 2' },
-                },
-              }),
+          useNotes().saveNote.mockRejectedValue({
+            response: {
+              status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+              data: { errors: 'error 1 and error 2' },
             },
           });
-
           mountComponent({
             mountFunction: mountExtended,
             initialData: { note: 'invalid note' },
-            store,
           });
 
           findCommentButton().trigger('click');
@@ -268,20 +227,15 @@ describe('issue_comment_form component', () => {
 
       it('should remove the correct error from the list when it is dismissed', async () => {
         const commandErrors = ['1', '2', '3'];
-        const store = createStore({
-          actions: {
-            saveNote: jest.fn().mockRejectedValue({
-              response: {
-                status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
-                data: { quick_actions_status: { error_messages: [...commandErrors] } },
-              },
-            }),
+        useNotes().saveNote.mockRejectedValue({
+          response: {
+            status: HTTP_STATUS_UNPROCESSABLE_ENTITY,
+            data: { quick_actions_status: { error_messages: [...commandErrors] } },
           },
         });
         mountComponent({
           mountFunction: mountExtended,
           initialData: { note: '/label ~sdfghj' },
-          store,
         });
         await findCommentButton().trigger('click');
         await waitForPromises();
@@ -312,15 +266,10 @@ describe('issue_comment_form component', () => {
       });
 
       it('should disable action button while submitting', async () => {
-        const store = createStore({
-          actions: {
-            saveNote: jest.fn().mockReturnValue(),
-          },
-        });
+        useNotes().saveNote.mockResolvedValue();
         mountComponent({
           mountFunction: mountExtended,
           initialData: { note: 'hello world' },
-          store,
         });
         const actionButton = findCloseReopenButton();
         await actionButton.trigger('click');
@@ -377,13 +326,10 @@ describe('issue_comment_form component', () => {
         });
 
         it('should resize textarea after note is saved', async () => {
-          const store = createStore();
-          store.registerModule('batchComments', batchComments());
-          store.state.batchComments.drafts = [{ note: 'A' }];
+          useBatchComments().drafts = [{ note: 'A' }];
           await mountComponent({
             mountFunction: mountExtended,
             initialData: { note: 'foo' },
-            store,
           });
           await findAddCommentNowButton().trigger('click');
           await waitForPromises();
@@ -394,12 +340,8 @@ describe('issue_comment_form component', () => {
       describe('edit mode', () => {
         it('should enter edit mode when arrow up is pressed', async () => {
           const noteId = 2;
-          const store = createStore({
-            state: {
-              discussions: [{ notes: [{ id: noteId, author: userDataMock }] }],
-            },
-          });
-          mountComponent({ mountFunction: mountExtended, store });
+          useNotes().discussions = [{ notes: [{ id: noteId, author: userDataMock }] }];
+          mountComponent({ mountFunction: mountExtended });
           jest.spyOn(eventHub, '$emit');
           await findMarkdownEditorTextarea().trigger('keydown.up');
           expect(eventHub.$emit).toHaveBeenCalledWith('enterEditMode', { noteId });
@@ -407,57 +349,56 @@ describe('issue_comment_form component', () => {
 
         describe('event enter', () => {
           describe('when no draft exists', () => {
-            const store = createStore({ actions: {} });
-
             it('should save note when cmd+enter is pressed', async () => {
-              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
-              jest.spyOn(axios, 'post');
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' } });
               await findMarkdownEditorTextarea().trigger('keydown.enter', { metaKey: true });
-              expect(axios.post).toHaveBeenCalledWith(noteableDataMock.create_note_path, {
-                merge_request_diff_head_sha: undefined,
-                note: {
-                  internal: false,
-                  note: 'a',
-                  noteable_id: noteableDataMock.id,
-                  noteable_type: 'Issue',
+              expect(useNotes().saveNote).toHaveBeenCalledWith({
+                data: {
+                  merge_request_diff_head_sha: undefined,
+                  note: {
+                    internal: false,
+                    note: 'a',
+                    noteable_id: noteableDataMock.id,
+                    noteable_type: 'Issue',
+                  },
                 },
+                endpoint: noteableDataMock.create_note_path,
+                flashContainer: expect.anything(),
+                isDraft: false,
               });
             });
 
             it('should save note when ctrl+enter is pressed', async () => {
-              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
-              jest.spyOn(axios, 'post');
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' } });
               await findMarkdownEditorTextarea().trigger('keydown.enter', { ctrlKey: true });
-              expect(axios.post).toHaveBeenCalledWith(noteableDataMock.create_note_path, {
-                merge_request_diff_head_sha: undefined,
-                note: {
-                  internal: false,
-                  note: 'a',
-                  noteable_id: noteableDataMock.id,
-                  noteable_type: 'Issue',
+              expect(useNotes().saveNote).toHaveBeenCalledWith({
+                data: {
+                  merge_request_diff_head_sha: undefined,
+                  note: {
+                    internal: false,
+                    note: 'a',
+                    noteable_id: noteableDataMock.id,
+                    noteable_type: 'Issue',
+                  },
                 },
+                endpoint: noteableDataMock.create_note_path,
+                flashContainer: expect.anything(),
+                isDraft: false,
               });
             });
           });
 
           describe('when a draft exists', () => {
-            let store;
-
             beforeEach(() => {
-              store = createStore({
-                actions: {
-                  saveNote: jest.fn().mockResolvedValue(),
-                },
-              });
-              store.registerModule('batchComments', batchComments());
-              store.state.batchComments.drafts = [{ note: 'A' }];
+              useNotes().saveNote.mockResolvedValue();
+              useBatchComments().drafts = [{ note: 'A' }];
             });
 
             it('sends the event to indicate that a new draft comment has been added', async () => {
               const note = 'some note text which enables actually adding a draft note';
 
               jest.spyOn(eventHub, '$emit');
-              mountComponent({ mountFunction: mountExtended, initialData: { note }, store });
+              mountComponent({ mountFunction: mountExtended, initialData: { note } });
 
               findAddToReviewButton().trigger('click');
 
@@ -469,10 +410,9 @@ describe('issue_comment_form component', () => {
             });
 
             it('should save note draft when cmd+enter is pressed', async () => {
-              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
-              jest.spyOn(store, 'dispatch').mockResolvedValue();
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' } });
               await findMarkdownEditorTextarea().trigger('keydown.enter', { metaKey: true });
-              expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+              expect(useNotes().saveNote).toHaveBeenCalledWith({
                 data: {
                   merge_request_diff_head_sha: undefined,
                   note: {
@@ -490,10 +430,9 @@ describe('issue_comment_form component', () => {
             });
 
             it('should save note draft when ctrl+enter is pressed', async () => {
-              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
-              jest.spyOn(store, 'dispatch').mockResolvedValue();
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' } });
               await findMarkdownEditorTextarea().trigger('keydown.enter', { ctrlKey: true });
-              expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+              expect(useNotes().saveNote).toHaveBeenCalledWith({
                 data: {
                   merge_request_diff_head_sha: undefined,
                   note: {
@@ -511,13 +450,12 @@ describe('issue_comment_form component', () => {
             });
 
             it('should add comment when shift+cmd+enter is pressed', async () => {
-              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
-              jest.spyOn(store, 'dispatch').mockResolvedValue();
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' } });
               await findMarkdownEditorTextarea().trigger('keydown.enter', {
                 shiftKey: true,
                 metaKey: true,
               });
-              expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+              expect(useNotes().saveNote).toHaveBeenCalledWith({
                 data: {
                   merge_request_diff_head_sha: undefined,
                   note: {
@@ -534,13 +472,12 @@ describe('issue_comment_form component', () => {
             });
 
             it('should add comment when shift+ctrl+enter is pressed', async () => {
-              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' }, store });
-              jest.spyOn(store, 'dispatch').mockResolvedValue();
+              mountComponent({ mountFunction: mountExtended, initialData: { note: 'a' } });
               await findMarkdownEditorTextarea().trigger('keydown.enter', {
                 shiftKey: true,
                 ctrlKey: true,
               });
-              expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+              expect(useNotes().saveNote).toHaveBeenCalledWith({
                 data: {
                   merge_request_diff_head_sha: undefined,
                   note: {
@@ -730,10 +667,8 @@ describe('issue_comment_form component', () => {
       });
 
       it('renders checkbox when hasDrafts is true', () => {
-        const store = createStore({ getters: { hasDrafts: () => true } });
-
-        mountComponent({ store });
-
+        useBatchComments().drafts = [{}];
+        mountComponent();
         expect(findConfidentialNoteCheckbox().exists()).toBe(true);
       });
 
@@ -785,16 +720,13 @@ describe('issue_comment_form component', () => {
         ${false}
       `('when checkbox value is `$shouldCheckboxBeChecked`', ({ shouldCheckboxBeChecked }) => {
         it(`sets \`internal\` to \`${shouldCheckboxBeChecked}\``, async () => {
-          const store = createStore();
           const note = 'internal note';
           mountComponent({
             mountFunction: mountExtended,
             initialData: { note },
             noteableData: { ...notableDataMockCanUpdateIssuable },
-            store,
           });
 
-          jest.spyOn(store, 'dispatch');
           const checkbox = findConfidentialNoteCheckbox();
 
           // check checkbox
@@ -806,7 +738,7 @@ describe('issue_comment_form component', () => {
           findCommentButton().trigger('click');
           await waitForPromises();
 
-          expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
+          expect(useNotes().saveNote).toHaveBeenCalledWith({
             data: {
               merge_request_diff_head_sha: undefined,
               note: {
@@ -839,31 +771,26 @@ describe('issue_comment_form component', () => {
   describe('check sensitive tokens', () => {
     const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
     const nonSensitiveMessage = 'text';
-    const store = createStore();
 
     it('should not save note when it contains sensitive token', async () => {
       detectAndConfirmSensitiveTokens.mockReturnValue(false);
       mountComponent({
         mountFunction: mountExtended,
         initialData: { note: sensitiveMessage },
-        store,
       });
-      jest.spyOn(store, 'dispatch');
       findCommentButton().trigger('click');
       await waitForPromises();
-      expect(store.dispatch).not.toHaveBeenCalled();
+      expect(useNotes().saveNote).not.toHaveBeenCalled();
     });
 
     it('should save note it does not contain sensitive token', async () => {
       mountComponent({
         mountFunction: mountExtended,
         initialData: { note: nonSensitiveMessage },
-        store,
       });
-      jest.spyOn(store, 'dispatch');
       await findCommentButton().trigger('click');
       await waitForPromises();
-      expect(store.dispatch).toHaveBeenCalledWith('saveNote', expect.objectContaining({}));
+      expect(useNotes().saveNote).toHaveBeenCalledWith(expect.objectContaining({}));
     });
   });
 
@@ -887,15 +814,8 @@ describe('issue_comment_form component', () => {
 
   describe('with batchComments in store', () => {
     describe('start review, add to review and comment now buttons', () => {
-      let store;
-
-      beforeEach(() => {
-        store = createStore();
-        store.registerModule('batchComments', batchComments());
-      });
-
       it('when no drafts exist on non-merge request, should not render', () => {
-        mountComponent({ store });
+        mountComponent();
         expect(findCommentTypeDropdown().exists()).toBe(true);
         expect(findStartReviewButton().exists()).toBe(false);
         expect(findAddToReviewButton().exists()).toBe(false);
@@ -903,7 +823,7 @@ describe('issue_comment_form component', () => {
       });
 
       it('when no drafts exist in a merge request, should render', () => {
-        mountComponent({ noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE, store });
+        mountComponent({ noteableType: constants.MERGE_REQUEST_NOTEABLE_TYPE });
         expect(findCommentTypeDropdown().exists()).toBe(true);
         expect(findStartReviewButton().exists()).toBe(true);
         expect(findAddToReviewButton().exists()).toBe(false);
@@ -912,11 +832,11 @@ describe('issue_comment_form component', () => {
 
       describe('when drafts exist', () => {
         beforeEach(() => {
-          store.state.batchComments.drafts = [{ note: 'A' }];
+          useBatchComments().drafts = [{ note: 'A' }];
         });
 
         it('should render proper action elements', async () => {
-          await mountComponent({ store });
+          await mountComponent();
           expect(findCommentTypeDropdown().exists()).toBe(false);
           expect(findAddToReviewButton().exists()).toBe(true);
           expect(findAddCommentNowButton().exists()).toBe(true);
@@ -927,12 +847,9 @@ describe('issue_comment_form component', () => {
           mountComponent({
             mountFunction: mountExtended,
             initialData: { note: 'a draft note' },
-            store,
           });
-          jest.spyOn(store, 'dispatch').mockResolvedValue();
           await findAddToReviewButton().trigger('click');
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'saveNote',
+          expect(useNotes().saveNote).toHaveBeenCalledWith(
             expect.objectContaining({
               endpoint: notesDataMock.draftsPath,
               isDraft: true,
@@ -944,12 +861,9 @@ describe('issue_comment_form component', () => {
           await mountComponent({
             mountFunction: mountExtended,
             initialData: { note: 'a comment' },
-            store,
           });
-          jest.spyOn(store, 'dispatch').mockResolvedValue();
           await findAddCommentNowButton().trigger('click');
-          expect(store.dispatch).toHaveBeenCalledWith(
-            'saveNote',
+          expect(useNotes().saveNote).toHaveBeenCalledWith(
             expect.objectContaining({
               endpoint: noteableDataMock.create_note_path,
               isDraft: false,

@@ -84,7 +84,7 @@ module RuboCop
       def corrector(node)
         ->(corrector) do
           corrector.insert_after(
-            node.source_range,
+            node,
             " # rubocop: disable #{cop_name}"
           )
         end

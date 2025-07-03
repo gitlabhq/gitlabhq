@@ -22,10 +22,10 @@ module RuboCop
 
           add_offense(node.loc.selector) do |corrector|
             if arg = second_argument(node)
-              corrector.replace(arg.source_range, 'false')
+              corrector.replace(arg, 'false')
             else
               first_argument = node.first_argument
-              corrector.insert_after(first_argument.source_range, ', false')
+              corrector.insert_after(first_argument, ', false')
             end
           end
         end

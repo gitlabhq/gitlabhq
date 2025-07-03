@@ -483,7 +483,7 @@ end
 
 override :as_indexed_json
 def as_indexed_json
-   # a hash containing the document represenation for this reference
+   # a hash containing the document representation for this reference
 end
 
 override :index_name
@@ -508,6 +508,12 @@ The logs show the updates. To check the document in the index, run this command:
 ```shell
 curl "http://localhost:9200/gitlab-development-<type>/_search"
 ```
+
+##### Common gotchas
+
+- Index operations actually perform an upsert. If the document exists, it performs a partial update by merging fields sent
+  with the existing document fields. If you want to explicitly remove fields or set them to empty, the `as_indexed_json`
+  must send `nil` or an empty array.
 
 #### Data consistency
 

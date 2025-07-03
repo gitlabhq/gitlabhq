@@ -5768,6 +5768,25 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when owner is a non-owned group' do
         it_behaves_like 'group member'
+
+        context 'when access is provided by group invitation' do
+          let_it_be(:invited_group) { create(:group) }
+          let_it_be(:user) { create(:user, owner_of: invited_group) }
+
+          it 'returns false for owns_runner?' do
+            expect(user.owns_runner?(runner)).to eq(false)
+          end
+
+          context 'when invited_group is invited to group' do
+            before do
+              create(:group_group_link, :owner, shared_group: group, shared_with_group: invited_group)
+            end
+
+            it 'returns true for owns_runner?' do
+              expect(user.owns_runner?(runner)).to eq(true)
+            end
+          end
+        end
       end
 
       context 'when in an owned group' do

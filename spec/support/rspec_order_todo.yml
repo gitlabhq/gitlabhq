@@ -1332,7 +1332,6 @@
 - './ee/spec/models/project_ci_cd_setting_spec.rb'
 - './ee/spec/models/project_import_data_spec.rb'
 - './ee/spec/models/ee/project_member_spec.rb'
-- './ee/spec/models/project_security_setting_spec.rb'
 - './ee/spec/models/protected_branch/required_code_owners_section_spec.rb'
 - './ee/spec/models/protected_branch/unprotect_access_level_spec.rb'
 - './ee/spec/models/protected_environments/approval_rule_spec.rb'
