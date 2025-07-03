@@ -33,7 +33,13 @@ You can use Docker commands to build and push container images to your container
      docker push registry.example.com/group/project/image
      ```
 
-## Configure your `.gitlab-ci.yml` file
+## Use GitLab CI/CD
+
+You can use [GitLab CI/CD](../../../ci/_index.md) to build and push container images to the
+Container Registry. You can use CI/CD to test, build, and deploy your project from the container
+image you created.
+
+### Configure your `.gitlab-ci.yml` file
 
 You can configure your `.gitlab-ci.yml` file to build and push container images to the container registry.
 
@@ -50,19 +56,26 @@ You can configure your `.gitlab-ci.yml` file to build and push container images 
 - Don't build directly to the `latest` tag because multiple jobs may be
   happening simultaneously.
 
-## Use GitLab CI/CD
+### Use a Docker-in-Docker container image
 
-You can use [GitLab CI/CD](../../../ci/_index.md) to build and push container images to the
-Container Registry. You can use CI/CD to test, build, and deploy your project from the container
-image you created.
+You can use your own Docker-in-Docker (DinD)
+container images with the container registry or Dependency Proxy.
 
-### Use a Docker-in-Docker container image from your container registry
+Use DinD to build, test, and deploy containerized
+applications from your CI/CD pipeline.
 
-You can use your own container images for Docker-in-Docker.
+Prerequisites:
 
-1. Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
-1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
+- Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
+
+{{< tabs >}}
+
+{{< tab title="From the container registry" >}}
+
+In your `.gitlab-ci.yml` file:
+
+- Update `image` and `services` to point to your registry.
+- Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
 
@@ -78,20 +91,14 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
-If you forget to set the service alias, the container image can't find the `dind` service,
-and an error like the following is shown:
+{{< /tab >}}
 
-```plaintext
-error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker on 192.168.0.1:53: no such host
-```
+{{< tab title="With the Dependency Proxy" >}}
 
-### Use a Docker-in-Docker container image with Dependency Proxy
+In your `.gitlab-ci.yml` file:
 
-You can use your own container images with Dependency Proxy.
-
-1. Set up [Docker-in-Docker](../../../ci/docker/using_docker_build.md#use-docker-in-docker).
-1. Update the `image` and `service` to point to your registry.
-1. Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
+- Update `image` and `services` to point to your dependency proxy.
+- Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
 
@@ -107,6 +114,10 @@ build:
     - docker run my-docker-image /script/to/run/tests
 ```
 
+{{< /tab >}}
+
+{{< /tabs >}}
+
 If you forget to set the service alias, the container image can't find the `dind` service,
 and an error like the following is shown:
 
@@ -116,7 +127,7 @@ error during connect: Get http://docker:2376/v1.39/info: dial tcp: lookup docker
 
 ## Container registry examples with GitLab CI/CD
 
-If you're using Docker-in-Docker on your runners, your `.gitlab-ci.yml` file should look similar to this:
+If you're using DinD on your runners, your `.gitlab-ci.yml` file should look similar to this:
 
 ```yaml
 build:

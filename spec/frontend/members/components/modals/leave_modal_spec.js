@@ -180,7 +180,7 @@ describe('LeaveModal', () => {
 
     const submitSpy = jest.spyOn(findForm().element, 'submit');
 
-    findModal().findByText('Leave').trigger('click');
+    findModal().vm.$emit('primary');
 
     expect(submitSpy).toHaveBeenCalled();
 

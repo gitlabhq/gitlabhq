@@ -10097,6 +10097,25 @@ Input type: `PromoteToEpicInput`
 | <a id="mutationpromotetoepicerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationpromotetoepicissue"></a>`issue` | [`Issue`](#issue) | Issue after mutation. |
 
+### `Mutation.refreshFindingTokenStatus`
+
+Input type: `RefreshFindingTokenStatusInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshfindingtokenstatusvulnerabilityid"></a>`vulnerabilityId` | [`VulnerabilityID!`](#vulnerabilityid) | Global ID of the Vulnerability whose token status should be refreshed. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationrefreshfindingtokenstatusclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationrefreshfindingtokenstatuserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationrefreshfindingtokenstatusfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Updated token status record for the given finding. |
+
 ### `Mutation.refreshStandardsAdherenceChecks`
 
 Input type: `RefreshStandardsAdherenceChecksInput`

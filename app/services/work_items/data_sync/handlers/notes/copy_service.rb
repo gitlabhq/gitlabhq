@@ -17,6 +17,7 @@ module WorkItems
             @target_noteable = target_noteable
             @source_parent = source_noteable.resource_parent
             @target_parent = target_noteable.resource_parent
+            @new_discussion_ids = {}
           end
 
           def execute
@@ -40,7 +41,8 @@ module WorkItems
 
           private
 
-          attr_reader :current_user, :source_noteable, :target_noteable, :source_parent, :target_parent
+          attr_reader :current_user, :source_noteable, :target_noteable, :source_parent, :target_parent,
+            :new_discussion_ids
 
           def copy_notes_emoji(notes_ids_map)
             notes_emoji = ::AwardEmoji.by_awardable('Note', notes_ids_map.keys)
@@ -79,19 +81,26 @@ module WorkItems
             ids.zip(allocated_ids).to_h
           end
 
+          # rubocop: disable Metrics/AbcSize -- Despite being long, this method is straightforward.
           def new_notes(notes_batch, notes_ids_map)
             notes_batch.map do |note|
+              new_discussion_ids[note.discussion_id] ||= Note.new(
+                noteable_id: target_noteable.id,
+                noteable_type: target_noteable.class.base_class
+              ).discussion_id
+
               note.attributes.tap do |attrs|
                 attrs['id'] = notes_ids_map[note.id]
                 attrs['noteable_id'] = target_noteable.id
                 # we want this if we want to use this also to copy notes when promoting issue to epic
                 attrs['noteable_type'] = target_noteable.class.base_class
+                attrs['discussion_id'] = new_discussion_ids[note.discussion_id]
                 # need to use `try` to be able to handle Issue model and legacy Epic model instances
                 attrs['project_id'] = target_noteable.try(:project_id)
                 attrs['namespace_id'] = target_noteable.try(:namespace_id) || target_noteable.try(:group_id)
                 attrs['imported_from'] = 'none' # maintaining current copy notes implementation
 
-                # this data is not changed, but it is being serialized and we need it deserialized for bulk inserts
+                # this data is not changed, but it is being serialized, and we need it deserialized for bulk inserts
                 attrs['position'] = note.attributes_before_type_cast['position']
                 attrs['original_position'] = note.attributes_before_type_cast['original_position']
                 attrs['change_position'] = note.attributes_before_type_cast['change_position']
@@ -104,6 +113,7 @@ module WorkItems
               end
             end
           end
+          # rubocop: enable Metrics/AbcSize
 
           def new_notes_emoji(notes_emoji, notes_ids_map)
             notes_emoji.map do |note_emoji|

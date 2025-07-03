@@ -294,11 +294,11 @@ Audit event types belong to the following product categories.
 |:----------|:---------------------|:------------------|:--------------|:------|
 | [`project_feature_metrics_dashboard_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's metrics dashboard access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369289) | Project |
 
-### GitLab Duo Workflow
+### GitLab Duo Agent Platform
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
 |:----------|:---------------------|:------------------|:--------------|:------|
-| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A susbset of API requests authenticated by a token with an audited scope | {{< icon name="check-circle" >}} Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
+| [`api_request_access_with_scope`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/172548) | A subset of API requests authenticated by a token with an audited scope | {{< icon name="check-circle" >}} Yes | GitLab [17.7](https://gitlab.com/gitlab-org/gitlab/-/issues/499461) | User |
 
 ### Dynamic application security testing
 

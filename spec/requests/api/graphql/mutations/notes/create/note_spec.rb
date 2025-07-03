@@ -61,10 +61,23 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       context 'when the user has permission to create notes on the discussion' do
         let(:discussion) { create(:discussion_note, project: project).to_discussion }
 
-        it 'creates a Note in a discussion' do
-          post_graphql_mutation(mutation, current_user: current_user)
+        context 'when discussion is not on the noteable' do
+          it 'checks noteable and discussion noteable' do
+            expect(noteable.id).not_to eq(discussion.noteable_id)
+          end
 
-          expect(mutation_response['note']['discussion']).to match a_graphql_entity_for(discussion)
+          it_behaves_like 'a mutation that returns top-level errors',
+            errors: ["The discussion does not exist or you don't have permission to perform this action"]
+        end
+
+        context 'when the discussion is on the noteable' do
+          let(:noteable) { discussion.noteable }
+
+          it 'creates a Note in a discussion' do
+            post_graphql_mutation(mutation, current_user: current_user)
+
+            expect(mutation_response['note']['discussion']).to match a_graphql_entity_for(discussion)
+          end
         end
 
         context 'when the discussion_id is not for a Discussion' do

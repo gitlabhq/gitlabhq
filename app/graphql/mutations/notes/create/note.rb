@@ -24,11 +24,10 @@ module Mutations
           discussion_id = nil
 
           if gid = args[:discussion_id]
-            discussion = GitlabSchema.find_by_gid(gid)
+            discussion_id = ::GitlabSchema.parse_gid(gid, expected_type: ::Discussion).model_id
+            discussion = noteable.notes.find_discussion(discussion_id)
 
             authorize_discussion!(discussion)
-
-            discussion_id = discussion.id
           end
 
           super.merge({
