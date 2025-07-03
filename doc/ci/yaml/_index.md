@@ -4695,16 +4695,17 @@ relative to `refs/heads/branch1` and the pipeline source is a merge request even
 
 - CI/CD variable support [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/283881) in GitLab 15.6.
 - Maximum number of checks against `exists` patterns or file paths [increased](https://gitlab.com/gitlab-org/gitlab/-/issues/227632) from 10,000 to 50,000 in GitLab 17.7.
+- Support for directory paths [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/327485) in GitLab 18.2.
 
 {{< /history >}}
 
-Use `exists` to run a job when certain files exist in the repository.
+Use `exists` to run a job when certain files or directories exist in the repository.
 
 **Keyword type**: Job keyword. You can use it as part of a job or an [`include`](#include).
 
 **Supported values**:
 
-- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`)
+- An array of file or directory paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`)
   and can't directly link outside it. File paths can use glob patterns and
   [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
@@ -4747,13 +4748,14 @@ In this example:
 - `exists` resolves to `true` if any of the listed files are found (an `OR` operation).
 - With job-level `rules:exists`, GitLab searches for the files in the project and
   ref that runs the pipeline. When using [`include` with `rules:exists`](includes.md#include-with-rulesexists),
-  GitLab searches for the files in the project and ref of the file that contains the `include`
+  GitLab searches for the files or directories in the project and ref of the file that contains the `include`
   section. The project containing the `include` section can be different than the project
   running the pipeline when using:
   - [Nested includes](includes.md#use-nested-includes).
   - [Compliance pipelines](../../user/compliance/compliance_pipelines.md).
 - `rules:exists` cannot search for the presence of [artifacts](../jobs/job_artifacts.md),
   because `rules` evaluation happens before jobs run and artifacts are fetched.
+- To test the existence of a directory, the path must end with a forward slash (/)
 
 ##### `rules:exists:paths`
 

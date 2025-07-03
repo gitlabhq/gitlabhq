@@ -701,6 +701,7 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryduoworkflowworkflowsprojectpath"></a>`projectPath` | [`ID`](#id) | Full path of the project containing the workflows. |
 | <a id="queryduoworkflowworkflowssort"></a>`sort` | [`Sort`](#sort) | Sort workflows by the criteria. |
 | <a id="queryduoworkflowworkflowstype"></a>`type` | [`String`](#string) | Type of workflow to filter by (e.g., software_development). |
+| <a id="queryduoworkflowworkflowsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID`](#aiduoworkflowsworkflowid) | Workflow ID to filter by. |
 
 ### `Query.echo`
 
@@ -27179,12 +27180,20 @@ A Duo Workflow.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="duoworkflowagentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during workflow execution. |
+| <a id="duoworkflowallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |
 | <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workflow was created. |
 | <a id="duoworkflowenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, e.g., ide or web. |
+| <a id="duoworkflowfirstcheckpoint"></a>`firstCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | First checkpoint of the workflow. |
 | <a id="duoworkflowgoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
 | <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the workflow. |
 | <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the workflow. |
+| <a id="duoworkflowmcpenabled"></a>`mcpEnabled` | [`Boolean`](#boolean) | Has MCP been enabled for the namespace. |
+| <a id="duoworkflowpreapprovedagentprivilegesnames"></a>`preApprovedAgentPrivilegesNames` | [`[String!]`](#string) | Privileges pre-approved for the agent during workflow execution. |
+| <a id="duoworkflowproject"></a>`project` | [`Project!`](#project) | Project that the workflow is in. |
 | <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
+| <a id="duoworkflowstatus"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
+| <a id="duoworkflowstatusname"></a>`statusName` | [`String`](#string) | Status Name of the workflow. |
 | <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workflow was last updated. |
 | <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
 | <a id="duoworkflowworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |

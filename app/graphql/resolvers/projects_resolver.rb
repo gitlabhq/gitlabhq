@@ -84,7 +84,7 @@ module Resolvers
     end
 
     def unconditional_includes
-      [:creator, :group, :invited_groups, :project_setting]
+      [:creator, :group, :invited_groups, :project_setting, :project_namespace]
     end
 
     def finder_params(args)

@@ -563,6 +563,7 @@ describe('useAccessTokens store', () => {
 
     describe('setup', () => {
       it('sets up the store', () => {
+        store.token = 'new token';
         store.setup({
           filters,
           id,
@@ -580,6 +581,7 @@ describe('useAccessTokens store', () => {
         expect(store.page).toBe(page);
         expect(store.showCreateForm).toBe(true);
         expect(store.sorting).toEqual(sorting);
+        expect(store.token).toEqual(null);
         expect(store.urlCreate).toBe(urlCreate);
         expect(store.urlRevoke).toBe(urlRevoke);
         expect(store.urlRotate).toBe(urlRotate);

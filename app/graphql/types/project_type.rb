@@ -84,7 +84,8 @@ module Types
 
     field :name, GraphQL::Types::String,
       null: false,
-      description: 'Name of the project without the namespace.'
+      description: 'Name of the project without the namespace.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :name_with_namespace, GraphQL::Types::String,
       null: false,
@@ -92,7 +93,8 @@ module Types
 
     field :description, GraphQL::Types::String,
       null: true,
-      description: 'Short description of the project.'
+      description: 'Short description of the project.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :tag_list, GraphQL::Types::String,
       null: true,
@@ -107,15 +109,18 @@ module Types
 
     field :http_url_to_repo, GraphQL::Types::String,
       null: true,
-      description: 'URL to connect to the project via HTTPS.'
+      description: 'URL to connect to the project via HTTPS.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :ssh_url_to_repo, GraphQL::Types::String,
       null: true,
-      description: 'URL to connect to the project via SSH.'
+      description: 'URL to connect to the project via SSH.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :web_url, GraphQL::Types::String,
       null: true,
-      description: 'Web URL of the project.'
+      description: 'Web URL of the project.',
+      scopes: [:api, :read_api, :ai_workflows]
 
     field :forks_count, GraphQL::Types::Int,
       null: false,

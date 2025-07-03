@@ -322,3 +322,11 @@ $merge-request-sticky-header-height: 45px;
   width: 12px;
   height: 12px;
 }
+
+// Firefox rendering bug fix - force new stacking context
+.diffs.tab-pane,
+.notes.tab-pane {
+  @supports (-moz-appearance: none) {
+    transform: translateZ(0);
+  }
+}

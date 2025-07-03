@@ -1991,6 +1991,8 @@ In the GitLab product help, a set of cards appears as an unordered list of links
 
 Card descriptions are populated from the `description` metadata on the Markdown page headers.
 
+Use cards on top-level pages where the cards are the only content on the page.
+
 ## Maintained versions
 
 Use the maintained versions shortcode to create an unordered list of the currently

@@ -221,13 +221,13 @@ Tests can then be ran with the `FIPS` variable set:
 You can run the test (or perform the test steps manually) against your local GitLab instance to see if the failure is reproducible. For example:
 
 ``` shell
-WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb
+WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 qa/specs/features/browser_ui/9_tenant_scale/project/create_project_spec.rb
 ```
 
 Orchestrated tests are excluded by default. To run them, use `-- --tag orchestrated` before your file name. For example:
 
 ``` shell
-WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag orchestrated qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb
+WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost:3000 -- --tag orchestrated qa/specs/features/browser_ui/9_tenant_scale/project/create_project_spec.rb
 ```
 
 ### Run the test against a GitLab Docker container
@@ -248,7 +248,7 @@ To run Nightly images change `registry.gitlab.com/gitlab-org/build/omnibus-gitla
 You can now run the test against this Docker instance. E.g.:
 
 ``` shell
-WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/1_manage/project/create_project_spec.rb
+WEBDRIVER_HEADLESS=false bundle exec bin/qa Test::Instance::All http://localhost qa/specs/features/browser_ui/9_tenant_scale/project/create_project_spec.rb
 ```
 
 ### Run the tests against CustomersDot staging environment

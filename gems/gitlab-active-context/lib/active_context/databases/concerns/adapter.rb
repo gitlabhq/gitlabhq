@@ -21,6 +21,10 @@ module ActiveContext
           @executor = executor_klass.new(self)
         end
 
+        def name
+          raise NotImplementedError
+        end
+
         def client_klass
           raise NotImplementedError
         end

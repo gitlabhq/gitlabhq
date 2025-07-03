@@ -2568,6 +2568,9 @@ msgstr ""
 msgid "AI|Thank you for your feedback."
 msgstr ""
 
+msgid "AI|Thanks for your feedback!"
+msgstr ""
+
 msgid "AI|The container element wasn't found, stopping AI Genie."
 msgstr ""
 
@@ -6959,6 +6962,9 @@ msgid "AmazonQ|Off by default"
 msgstr ""
 
 msgid "AmazonQ|On by default"
+msgstr ""
+
+msgid "AmazonQ|Provide feedback on code review"
 msgstr ""
 
 msgid "AmazonQ|Provider URL"
@@ -29243,6 +29249,9 @@ msgstr ""
 msgid "GlobalSearch|Files"
 msgstr ""
 
+msgid "GlobalSearch|Files count summary"
+msgstr ""
+
 msgid "GlobalSearch|Filters"
 msgstr ""
 
@@ -29432,6 +29441,9 @@ msgstr ""
 msgid "GlobalSearch|Search results are loading"
 msgstr ""
 
+msgid "GlobalSearch|Search results summary"
+msgstr ""
+
 msgid "GlobalSearch|Settings"
 msgstr ""
 
@@ -29446,18 +29458,23 @@ msgstr ""
 msgid "GlobalSearch|Show more"
 msgstr ""
 
-msgid "GlobalSearch|Showing 1 code result for %{term}"
-msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term}"
+msgid "GlobalSearch|Showing 1 code result for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}."
+msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "GlobalSearch|Showing 1 code result for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}"
-msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term} in %{branchDropdown} of %{ProjectWithGroupPathLink}"
+msgid "GlobalSearch|Showing 1 code result for %{term} in group %{groupNameLink}."
+msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term} in group %{groupNameLink}."
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "GlobalSearch|Showing 1 code result for %{term} in group %{groupNameLink}"
-msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term} in group %{groupNameLink}"
+msgid "GlobalSearch|Showing 1 code result for %{term}."
+msgid_plural "GlobalSearch|Showing %{resultsTotal} code results for %{term}."
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "GlobalSearch|Showing file %{filesFrom} from %{filesTo}"
+msgid_plural "GlobalSearch|Showing %{filesFrom}–%{filesTo} out of %{filesTotal} files"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -70750,6 +70767,9 @@ msgid "WorkItem|Mark as done"
 msgstr ""
 
 msgid "WorkItem|Mark this item as related to: %{workItemType} %{workItemReference}"
+msgstr ""
+
+msgid "WorkItem|Maximum %{maxLimit} statuses reached. Remove a status to add more."
 msgstr ""
 
 msgid "WorkItem|Merged"

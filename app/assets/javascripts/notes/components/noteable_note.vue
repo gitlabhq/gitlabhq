@@ -248,6 +248,9 @@ export default {
       const isFileComment = this.note.position?.position_type === 'file';
       return !this.isOverviewTab && (this.line || isFileComment);
     },
+    isAmazonQCodeReview() {
+      return this.author.username === 'amazon-q';
+    },
   },
   created() {
     const line = this.note.position?.line_range?.start || this.line;
@@ -517,6 +520,7 @@ export default {
           :is-resolved="note.resolved || note.resolve_discussion"
           :is-resolving="isResolving"
           :resolved-by="note.resolved_by"
+          :is-amazon-q-code-review="isAmazonQCodeReview"
           :is-draft="note.isDraft"
           :resolve-discussion="note.isDraft && note.resolve_discussion"
           :discussion-id="discussionId"

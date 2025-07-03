@@ -6,6 +6,10 @@ module ActiveContext
       class Adapter
         include ActiveContext::Databases::Concerns::Adapter
 
+        def name
+          'elasticsearch'
+        end
+
         def client_klass
           ActiveContext::Databases::Elasticsearch::Client
         end

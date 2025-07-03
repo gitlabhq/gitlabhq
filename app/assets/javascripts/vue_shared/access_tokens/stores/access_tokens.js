@@ -268,6 +268,7 @@ export const useAccessTokens = defineStore('accessTokens', {
       this.page = page;
       this.showCreateForm = showCreateForm;
       this.sorting = sorting;
+      this.token = null;
       this.urlCreate = urlCreate;
       this.urlRevoke = urlRevoke;
       this.urlRotate = urlRotate;

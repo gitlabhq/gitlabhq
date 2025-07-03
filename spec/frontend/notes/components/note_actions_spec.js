@@ -37,6 +37,8 @@ describe('noteActions', () => {
   const findTimelineButton = () => wrapper.findComponent(TimelineEventButton);
   const findReportAbuseButton = () => wrapper.find(`[data-testid="report-abuse-button"]`);
   const findDisclosureDropdownGroup = () => wrapper.findComponent(GlDisclosureDropdownGroup);
+  const findFeedbackButton = () => wrapper.find('[data-testid="amazon-q-feedback-button"]');
+  const findDeleteButton = () => wrapper.find('.js-note-delete');
 
   const setupStoreForIncidentTimelineEvents = ({
     userCanAdd,
@@ -192,7 +194,7 @@ describe('noteActions', () => {
       });
 
       it('should be possible to delete comment', () => {
-        expect(wrapper.find('.js-note-delete').exists()).toBe(true);
+        expect(findDeleteButton().exists()).toBe(true);
       });
 
       it('should not be possible to assign or unassign the comment author in a merge request', () => {
@@ -401,6 +403,109 @@ describe('noteActions', () => {
 
         expect(useNotes().promoteCommentToTimelineEvent).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('Amazon Q code review feedback', () => {
+    beforeEach(() => {
+      useNotes().setUserData(userDataMock);
+      wrapper = mountNoteActions({
+        ...props,
+        isAmazonQCodeReview: true,
+        canEdit: true,
+        canReportAsAbuse: true,
+      });
+    });
+
+    it('renders the feedback button when isAmazonQCodeReview is true', () => {
+      expect(findFeedbackButton().exists()).toBe(true);
+      expect(findFeedbackButton().text()).toBe('Provide feedback on code review');
+    });
+
+    it('renders the feedback modal when isAmazonQCodeReview is true and feedback not received', () => {
+      // The modal should be rendered when feedbackReceived is false
+      expect(wrapper.vm.feedbackReceived).toBe(false);
+
+      // Check that the modal component is conditionally rendered
+      const feedbackModal = wrapper.findComponent({ ref: 'feedbackModal' });
+      expect(feedbackModal.exists()).toBe(true);
+    });
+
+    it('hides the feedback modal after feedback is submitted', async () => {
+      // Initially modal should be visible
+      expect(wrapper.vm.feedbackReceived).toBe(false);
+
+      // Simulate feedback submission
+      const feedbackData = {
+        feedbackOptions: ['helpful'],
+        extendedFeedback: 'Great review!',
+      };
+
+      wrapper.vm.trackFeedback(feedbackData);
+      await nextTick();
+
+      // After feedback submission, feedbackReceived should be true
+      expect(wrapper.vm.feedbackReceived).toBe(true);
+
+      // Modal should no longer be rendered
+      const feedbackModal = wrapper.findComponent({ ref: 'feedbackModal' });
+      expect(feedbackModal.exists()).toBe(false);
+    });
+
+    it('hides the feedback button after feedback is received', async () => {
+      // Initially button should be visible
+      expect(findFeedbackButton().exists()).toBe(true);
+
+      // Set feedbackReceived to true
+      wrapper.vm.feedbackReceived = true;
+      await nextTick();
+
+      // Button should no longer be visible
+      expect(findFeedbackButton().exists()).toBe(false);
+    });
+
+    it('tracks feedback with correct parameters when submitted', () => {
+      const trackSpy = jest.spyOn(wrapper.vm, 'track').mockImplementation(() => {});
+      const feedbackData = {
+        feedbackOptions: ['helpful'],
+        extendedFeedback: 'Great review!',
+      };
+
+      wrapper.vm.trackFeedback(feedbackData);
+
+      expect(trackSpy).toHaveBeenCalledWith('amazon_q_code_review_feedback', {
+        action: 'amazon_q',
+        label: 'code_review_feedback',
+        property: feedbackData.feedbackOptions,
+        extra: {
+          extendedFeedback: feedbackData.extendedFeedback,
+          note_id: wrapper.vm.noteId,
+        },
+      });
+
+      // Verify that feedbackReceived is set to true after tracking
+      expect(wrapper.vm.feedbackReceived).toBe(true);
+    });
+  });
+
+  describe('When Amazon Q code review feedback is not available', () => {
+    beforeEach(() => {
+      useNotes().setUserData(userDataMock);
+      wrapper = mountNoteActions({
+        ...props,
+        isAmazonQCodeReview: false,
+        canEdit: true,
+        canReportAsAbuse: true,
+      });
+    });
+
+    it('does not render the feedback button when isAmazonQCodeReview is false', () => {
+      expect(findFeedbackButton().exists()).toBe(false);
+    });
+
+    it('still renders other action buttons correctly', () => {
+      // Verify that other buttons like delete are still rendered
+      expect(findDeleteButton().exists()).toBe(true);
     });
   });
 
