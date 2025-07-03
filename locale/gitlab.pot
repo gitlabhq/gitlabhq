@@ -11646,7 +11646,7 @@ msgstr ""
 msgid "BulkImport|Select whether user memberships in groups and projects are imported."
 msgstr ""
 
-msgid "BulkImport|Showing %{start}-%{end} of %{total}"
+msgid "BulkImport|Showing %{start} - %{end} of %{total}"
 msgstr ""
 
 msgid "BulkImport|Some groups are imported without projects."
@@ -30252,10 +30252,16 @@ msgstr ""
 msgid "Group milestone"
 msgstr ""
 
+msgid "Group name"
+msgstr ""
+
 msgid "Group name (your organization)"
 msgstr ""
 
 msgid "Group name can contain only letters, digits, dashes, spaces, dots, underscores, parenthesis, and emojis."
+msgstr ""
+
+msgid "Group name is required."
 msgstr ""
 
 msgid "Group name must start with a letter, digit, emoji, or underscore."
@@ -48299,6 +48305,9 @@ msgstr ""
 msgid "Project name can contain only lowercase or uppercase letters, digits, emoji, spaces, dots, underscores, dashes, or pluses."
 msgstr ""
 
+msgid "Project name is required."
+msgstr ""
+
 msgid "Project name must start with a letter, digit, emoji, or underscore."
 msgstr ""
 
@@ -49476,6 +49485,9 @@ msgid "Projects are graded based on the highest severity vulnerability present"
 msgstr ""
 
 msgid "Projects are where you store your code, access issues, wiki, and other features of GitLab."
+msgstr ""
+
+msgid "Projects contain the resources for your repository"
 msgstr ""
 
 msgid "Projects contributed to"
@@ -65539,6 +65551,9 @@ msgstr ""
 msgid "Trial|Continue"
 msgstr ""
 
+msgid "Trial|Continue to GitLab"
+msgstr ""
+
 msgid "Trial|Continue with trial"
 msgstr ""
 
@@ -65567,6 +65582,9 @@ msgid "Trial|State or province"
 msgstr ""
 
 msgid "Trial|We need a few more details from you to activate your trial."
+msgstr ""
+
+msgid "Trial|Welcome to GitLab"
 msgstr ""
 
 msgid "Trial|Your free Ultimate & GitLab Duo Enterprise Trial lasts for 60 days. After this period, you can maintain a GitLab Free account forever, or upgrade to a paid plan."
@@ -72354,6 +72372,9 @@ msgid "You successfully declined the invitation"
 msgstr ""
 
 msgid "You tried to fork %{link_to_the_project} but it failed for the following reason:"
+msgstr ""
+
+msgid "You use groups to organize your projects"
 msgstr ""
 
 msgid "You will be redirected to %{strong_start}%{domain}%{strong_end} after authorizing."

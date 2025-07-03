@@ -25695,6 +25695,14 @@ CREATE SEQUENCE vulnerability_occurrences_id_seq
 
 ALTER SEQUENCE vulnerability_occurrences_id_seq OWNED BY vulnerability_occurrences.id;
 
+CREATE TABLE vulnerability_partial_scans (
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    scan_id bigint NOT NULL,
+    project_id bigint NOT NULL,
+    mode smallint NOT NULL
+);
+
 CREATE TABLE vulnerability_reads (
     id bigint NOT NULL,
     vulnerability_id bigint NOT NULL,
@@ -31839,6 +31847,9 @@ ALTER TABLE ONLY vulnerability_occurrence_identifiers
 
 ALTER TABLE ONLY vulnerability_occurrences
     ADD CONSTRAINT vulnerability_occurrences_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY vulnerability_partial_scans
+    ADD CONSTRAINT vulnerability_partial_scans_pkey PRIMARY KEY (scan_id);
 
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT vulnerability_reads_pkey PRIMARY KEY (id);
@@ -38443,6 +38454,10 @@ CREATE INDEX index_vulnerability_occurrences_on_vulnerability_id ON vulnerabilit
 
 CREATE INDEX index_vulnerability_occurrences_prim_iden_id_and_vuln_id ON vulnerability_occurrences USING btree (primary_identifier_id, vulnerability_id);
 
+CREATE INDEX index_vulnerability_partial_scans_on_project_id ON vulnerability_partial_scans USING btree (project_id);
+
+CREATE INDEX index_vulnerability_partial_scans_on_scan_id ON vulnerability_partial_scans USING btree (scan_id);
+
 CREATE INDEX index_vulnerability_reads_common_attrs_for_groups ON vulnerability_reads USING btree (resolved_on_default_branch, state, report_type, severity, traversal_ids, vulnerability_id, has_vulnerability_resolution) WHERE (archived = false);
 
 CREATE INDEX index_vulnerability_reads_common_finder_query ON vulnerability_reads USING btree (project_id, state, report_type, severity, vulnerability_id DESC, dismissal_reason, has_vulnerability_resolution);
@@ -44219,6 +44234,9 @@ ALTER TABLE ONLY lists
 
 ALTER TABLE ONLY agent_activity_events
     ADD CONSTRAINT fk_d6f785c9fc FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY vulnerability_partial_scans
+    ADD CONSTRAINT fk_d7311920a8 FOREIGN KEY (scan_id) REFERENCES security_scans(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_achievements
     ADD CONSTRAINT fk_d7653ef780 FOREIGN KEY (revoked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

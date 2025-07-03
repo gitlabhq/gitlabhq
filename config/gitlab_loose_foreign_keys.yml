@@ -821,6 +821,10 @@ vulnerability_occurrences:
   - table: projects
     column: project_id
     on_delete: async_delete
+vulnerability_partial_scans:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 vulnerability_reads:
   - table: cluster_agents
     column: casted_cluster_agent_id
