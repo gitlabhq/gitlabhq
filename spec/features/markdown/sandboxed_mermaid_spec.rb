@@ -67,6 +67,23 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
     end
   end
 
+  context 'in a project home page' do
+    let!(:wiki) { create(:project_wiki, project: project) }
+    let!(:wiki_page) { create(:wiki_page, wiki: wiki, title: 'home', content: description) }
+
+    before do
+      project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
+    end
+
+    it 'includes mermaid frame correctly' do
+      visit(project_path(project))
+
+      wait_for_requests
+
+      expect(page.html).to include(expected)
+    end
+  end
+
   context 'in a group milestone' do
     let(:group_milestone) { create(:group_milestone, description: description) }
 

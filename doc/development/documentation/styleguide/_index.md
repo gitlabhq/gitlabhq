@@ -1355,6 +1355,7 @@ To emphasize an area in a screenshot, use an arrow.
     For an MR added to 11.1's milestone, a valid name for an illustration is `devops_diagram_v11_1.png`.
 - Place images in a separate directory named `img/` in the same directory where
   the `.md` document that you're working on is located.
+  - Do not link to externally-hosted images. Download a copy and store it in the appropriate `img` directory within the docs directory.
 - Consider PNG images instead of JPEG.
 - Compress GIFs with <https://ezgif.com/optimize> or similar tool.
 

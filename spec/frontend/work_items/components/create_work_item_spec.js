@@ -35,6 +35,7 @@ import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
 import { updateDraftWorkItemType } from '~/work_items/utils';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
+import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -73,6 +74,12 @@ describe('Create work item component', () => {
   const namespaceWorkItemTypes =
     namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes;
   const { webUrl: namespaceWebUrl } = namespaceWorkItemTypesQueryResponse.data.workspace;
+  const mockRelatedItem = {
+    id: 'gid://gitlab/WorkItem/22',
+    type: 'Issue',
+    reference: 'full-path#22',
+    webUrl: '/full-path/-/issues/22',
+  };
 
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
@@ -174,13 +181,46 @@ describe('Create work item component', () => {
 
   describe('Default', () => {
     beforeEach(async () => {
-      createComponent();
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
       await waitForPromises();
     });
 
     it('does not render error by default', () => {
       expect(findTitleInput().props('isValid')).toBe(true);
       expect(findAlert().exists()).toBe(false);
+    });
+
+    it('calls `updateNewWorkItemMutation` mutation when any widget emits `updateWidgetDraft` event', () => {
+      jest.spyOn(mockApollo.defaultClient, 'mutate');
+      const mockInput = {
+        workItemType: 'Issue',
+        fullPath: 'full-path',
+        assignees: [
+          {
+            __typename: 'CurrentUser',
+            id: 'gid://gitlab/User/1',
+            name: 'Administrator',
+            username: 'root',
+            webUrl: 'http://127.0.0.1:3000/root',
+            webPath: '/root',
+          },
+        ],
+      };
+
+      findAssigneesWidget().vm.$emit('updateWidgetDraft', mockInput);
+      expect(mockApollo.defaultClient.mutate).toHaveBeenCalledWith({
+        mutation: updateNewWorkItemMutation,
+        variables: {
+          input: {
+            ...mockInput,
+            relatedItemId: mockRelatedItem.id,
+          },
+        },
+      });
     });
 
     it('emits "confirmCancel" event on Cancel button click if form is filled', async () => {
@@ -233,7 +273,12 @@ describe('Create work item component', () => {
         const expectedWorkItemTypeData = namespaceWorkItemTypes.find(
           ({ name }) => name === workItemType,
         );
-        createComponent({ props: { preselectedWorkItemType: workItemType } });
+        createComponent({
+          props: {
+            preselectedWorkItemType: workItemType,
+            relatedItem: mockRelatedItem,
+          },
+        });
         await waitForPromises();
 
         findCancelButton().vm.$emit('click');
@@ -245,6 +290,7 @@ describe('Create work item component', () => {
           workItemType: expectedWorkItemTypeData.name,
           workItemTypeId: expectedWorkItemTypeData.id,
           workItemTypeIconName: expectedWorkItemTypeData.iconName,
+          relatedItemId: mockRelatedItem.id,
         });
       },
     );
@@ -367,7 +413,7 @@ describe('Create work item component', () => {
     });
 
     it('sets new work item cache and emits changeType on select', async () => {
-      createComponent({ props: { preselectedWorkItemType: null } });
+      createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
       await waitForPromises();
       const mockId = 'Issue';
 
@@ -380,13 +426,14 @@ describe('Create work item component', () => {
         workItemType: mockId,
         workItemTypeId: 'gid://gitlab/WorkItems::Type/1',
         workItemTypeIconName: 'issue-type-issue',
+        relatedItemId: mockRelatedItem.id,
       });
 
       expect(wrapper.emitted('changeType')).toBeDefined();
     });
 
     it('sets selected work item type in localStorage draft', async () => {
-      createComponent({ props: { preselectedWorkItemType: null } });
+      createComponent({ props: { preselectedWorkItemType: null, relatedItem: mockRelatedItem } });
       await waitForPromises();
       const mockId = 'Issue';
 
@@ -395,6 +442,7 @@ describe('Create work item component', () => {
 
       expect(updateDraftWorkItemType).toHaveBeenCalledWith({
         fullPath: 'full-path',
+        relatedItemId: mockRelatedItem.id,
         workItemType: {
           id: 'gid://gitlab/WorkItems::Type/1',
           name: mockId,
@@ -902,7 +950,11 @@ describe('Create work item component', () => {
 
           </div>
         </div>`);
-      createComponent();
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
       await waitForPromises();
 
       expect(setNewWorkItemCache).toHaveBeenCalledWith({
@@ -917,6 +969,7 @@ describe('Create work item component', () => {
             a
             description!`,
         confidential: false,
+        relatedItemId: mockRelatedItem.id,
       });
     });
   });

@@ -93,10 +93,15 @@ import { DEFAULT_PAGE_SIZE, issuableListTabs } from '~/vue_shared/issuable/list/
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
 import {
-  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  BASE_ALLOWED_CREATE_TYPES,
   DETAIL_VIEW_QUERY_PARAM_NAME,
   INJECTION_LINK_CHILD_PREVENT_ROUTER_NAVIGATION,
+  WORK_ITEM_TYPE_ENUM_OBJECTIVE,
+  WORK_ITEM_TYPE_NAME_ISSUE,
+  WORK_ITEM_TYPE_NAME_KEY_RESULT,
+  WORK_ITEM_TYPE_NAME_OBJECTIVE,
 } from '~/work_items/constants';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import { makeDrawerUrlParam } from '~/work_items/utils';
 import {
@@ -148,7 +153,9 @@ export default {
   ISSUES_VIEW_TYPE_KEY,
   ISSUES_GRID_VIEW_KEY,
   ISSUES_LIST_VIEW_KEY,
+  WORK_ITEM_TYPE_NAME_ISSUE,
   components: {
+    CreateWorkItemModal,
     CsvImportExportButtons,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
@@ -295,6 +302,16 @@ export default {
     },
   },
   computed: {
+    allowedWorkItemTypes() {
+      if (this.glFeatures.okrsMvc && this.hasOkrsFeature) {
+        return BASE_ALLOWED_CREATE_TYPES.concat(
+          WORK_ITEM_TYPE_NAME_KEY_RESULT,
+          WORK_ITEM_TYPE_NAME_OBJECTIVE,
+        );
+      }
+
+      return BASE_ALLOWED_CREATE_TYPES;
+    },
     dropdownTooltip() {
       return !this.showTooltip ? this.$options.i18n.actionsLabel : '';
     },
@@ -1106,23 +1123,35 @@ export default {
           >
             {{ __('Bulk edit') }}
           </gl-button>
-          <slot name="new-issuable-button">
-            <gl-button
-              v-if="showNewIssueLink"
-              :href="newIssuePath"
-              variant="confirm"
-              class="gl-grow"
-            >
-              {{ __('New issue') }}
-            </gl-button>
-          </slot>
-          <new-resource-dropdown
-            v-if="showNewIssueDropdown"
-            :query="$options.searchProjectsQuery"
-            :query-variables="newIssueDropdownQueryVariables"
-            :extract-projects="extractProjects"
-            :group-id="groupId"
+          <create-work-item-modal
+            v-if="glFeatures.issuesListCreateModal"
+            :allowed-work-item-types="allowedWorkItemTypes"
+            always-show-work-item-type-select
+            :full-path="fullPath"
+            :is-group="!isProject"
+            :preselected-work-item-type="$options.WORK_ITEM_TYPE_NAME_ISSUE"
+            :show-project-selector="!isProject"
+            @workItemCreated="refetchIssuables"
           />
+          <template v-else>
+            <slot name="new-issuable-button">
+              <gl-button
+                v-if="showNewIssueLink"
+                :href="newIssuePath"
+                variant="confirm"
+                class="gl-grow"
+              >
+                {{ __('New issue') }}
+              </gl-button>
+            </slot>
+            <new-resource-dropdown
+              v-if="showNewIssueDropdown"
+              :query="$options.searchProjectsQuery"
+              :query-variables="newIssueDropdownQueryVariables"
+              :extract-projects="extractProjects"
+              :group-id="groupId"
+            />
+          </template>
           <gl-disclosure-dropdown
             v-gl-tooltip
             category="tertiary"
@@ -1164,10 +1193,6 @@ export default {
 
       <template #empty-state>
         <empty-state-with-any-issues :has-search="hasSearch" :is-open-tab="isOpenTab" />
-      </template>
-
-      <template #list-body>
-        <slot name="list-body"></slot>
       </template>
 
       <template #custom-status="{ issuable = {} }">

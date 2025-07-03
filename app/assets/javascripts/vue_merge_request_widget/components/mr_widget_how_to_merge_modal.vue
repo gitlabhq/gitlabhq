@@ -100,7 +100,6 @@ export default {
       }
     });
   },
-  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 
@@ -122,8 +121,7 @@ export default {
     </p>
     <pre
       :class="[
-        $options.userColorScheme,
-        'code highlight js-syntax-highlight gl-rounded-base',
+        'code code-syntax-highlight-theme highlight js-syntax-highlight gl-rounded-base',
         { 'gl-rounded-b-none': reviewingDocsPath },
       ]"
       data-testid="how-to-merge-instructions"
@@ -169,7 +167,6 @@ export default {
       {{ $options.i18n.steps.step4.help }}
     </p>
     <pre
-      :class="$options.userColorScheme"
       class="code highlight js-syntax-highlight language-shell gl-rounded-base"
       data-testid="how-to-merge-instructions"
       >{{ mergeInfo2 }}</pre

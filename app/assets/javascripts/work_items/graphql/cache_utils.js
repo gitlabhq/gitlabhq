@@ -321,11 +321,12 @@ export const getNewWorkItemSharedCache = ({
   widgetDefinitions,
   fullPath,
   workItemType,
+  relatedItemId,
   isValidWorkItemDescription,
   workItemDescription = '',
 }) => {
-  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({ fullPath });
-  const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType });
+  const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({ fullPath, relatedItemId });
+  const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType, relatedItemId });
   const workItemTypeSpecificWidgets =
     getWorkItemWidgets(JSON.parse(getDraft(fullDraftAutosaveKey))) || {};
   const sharedCacheWidgets = JSON.parse(getDraft(widgetsAutosaveKey)) || {};
@@ -627,6 +628,7 @@ export const setNewWorkItemCache = async ({
   workItemType,
   workItemTypeId,
   workItemTypeIconName,
+  relatedItemId,
   workItemTitle = '',
   workItemDescription = '',
   confidential = false,
@@ -661,7 +663,7 @@ export const setNewWorkItemCache = async ({
   const isValidWorkItemTitle = workItemTitle.trim().length > 0;
   const isValidWorkItemDescription = workItemDescription.trim().length > 0;
 
-  const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType });
+  const autosaveKey = getNewWorkItemAutoSaveKey({ fullPath, workItemType, relatedItemId });
   const getStorageDraftString = getDraft(autosaveKey);
 
   const draftData = JSON.parse(getDraft(autosaveKey));
@@ -678,6 +680,7 @@ export const setNewWorkItemCache = async ({
       workItemType,
       isValidWorkItemDescription,
       workItemDescription,
+      relatedItemId,
     });
 
     draftTitle = sharedCache.draftTitle;

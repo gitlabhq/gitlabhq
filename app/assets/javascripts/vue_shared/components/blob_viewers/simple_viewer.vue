@@ -140,12 +140,11 @@ export default {
       }
     },
   },
-  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 <template>
   <div>
-    <div class="file-content code js-syntax-highlight gl-flex" :class="$options.userColorScheme">
+    <div class="file-content code code-syntax-highlight-theme js-syntax-highlight gl-flex">
       <blame v-if="showBlame && blameInfoForRange.length" :blame-info="blameInfoForRange" />
       <div class="line-numbers !gl-px-0">
         <div v-for="line in lineNumbers" :key="line" class="diff-line-num line-links gl-flex">

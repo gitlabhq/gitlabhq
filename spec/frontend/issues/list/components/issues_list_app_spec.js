@@ -40,6 +40,7 @@ import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_wit
 import IssuesListApp from '~/issues/list/components/issues_list_app.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
+import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   CREATED_DESC,
@@ -171,6 +172,7 @@ describe('CE IssuesListApp component', () => {
   const mockIssuesQueryResponse = jest.fn().mockResolvedValue(defaultQueryResponse);
   const mockIssuesCountsQueryResponse = jest.fn().mockResolvedValue(getIssuesCountsQueryResponse);
 
+  const findCreateWorkItemModal = () => wrapper.findComponent(CreateWorkItemModal);
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findIssuableByEmail = () => wrapper.findComponent(IssuableByEmail);
@@ -178,7 +180,7 @@ describe('CE IssuesListApp component', () => {
   const findGlButtons = () => wrapper.findAllComponents(GlButton);
   const findIssuableList = () => wrapper.findComponent(IssuableList);
   const findListViewTypeBtn = () => wrapper.findByTestId('list-view-type');
-  const findGridtViewTypeBtn = () => wrapper.findByTestId('grid-view-type');
+  const findGridViewTypeBtn = () => wrapper.findByTestId('grid-view-type');
   const findViewTypeLocalStorageSync = () => wrapper.findAllComponents(LocalStorageSync).at(0);
   const findNewResourceDropdown = () => wrapper.findComponent(NewResourceDropdown);
   const findCalendarButton = () => wrapper.findByTestId('subscribe-calendar');
@@ -376,6 +378,17 @@ describe('CE IssuesListApp component', () => {
       });
     });
 
+    describe('create modal', () => {
+      it.each([true, false])(
+        'renders depending on whether issuesListCreateModal=%s',
+        (issuesListCreateModal) => {
+          wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal } } });
+
+          expect(findCreateWorkItemModal().exists()).toBe(issuesListCreateModal);
+        },
+      );
+    });
+
     describe('new issue button', () => {
       it('renders when user has permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: true }, mountFn: mount });
@@ -386,6 +399,12 @@ describe('CE IssuesListApp component', () => {
 
       it('does not render when user does not have permissions', () => {
         wrapper = mountComponent({ provide: { showNewIssueLink: false }, mountFn: mount });
+
+        expect(findGlButtons().filter((button) => button.text() === 'New issue')).toHaveLength(0);
+      });
+
+      it('does not render when `issuesListCreateModal` is enabled', () => {
+        wrapper = mountComponent({ provide: { glFeatures: { issuesListCreateModal: true } } });
 
         expect(findGlButtons().filter((button) => button.text() === 'New issue')).toHaveLength(0);
       });
@@ -402,6 +421,14 @@ describe('CE IssuesListApp component', () => {
         wrapper = mountComponent({ provide: { isProject: false }, mountFn: mount });
 
         expect(findNewResourceDropdown().exists()).toBe(true);
+      });
+
+      it('does not render when `issuesListCreateModal` is enabled', () => {
+        wrapper = mountComponent({
+          provide: { isProject: false, glFeatures: { issuesListCreateModal: true } },
+        });
+
+        expect(findNewResourceDropdown().exists()).toBe(false);
       });
     });
   });
@@ -424,7 +451,7 @@ describe('CE IssuesListApp component', () => {
     });
 
     it('switch between list and grid', async () => {
-      findGridtViewTypeBtn().vm.$emit('click');
+      findGridViewTypeBtn().vm.$emit('click');
       await nextTick();
 
       expect(findIssuableList().props('isGridView')).toBe(true);

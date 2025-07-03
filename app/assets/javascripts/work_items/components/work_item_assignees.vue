@@ -13,7 +13,6 @@ import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import { ISSUE_MR_CHANGE_ASSIGNEE } from '~/behaviors/shortcuts/keybindings';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 export default {
@@ -268,15 +267,10 @@ export default {
       const { localAssigneeIds } = this;
 
       if (this.workItemId === newWorkItemId(this.workItemType)) {
-        this.$apollo.mutate({
-          mutation: updateNewWorkItemMutation,
-          variables: {
-            input: {
-              workItemType: this.workItemType,
-              fullPath: this.fullPath,
-              assignees: this.localAssignees,
-            },
-          },
+        this.$emit('updateWidgetDraft', {
+          workItemType: this.workItemType,
+          fullPath: this.fullPath,
+          assignees: this.localAssignees,
         });
 
         this.updateInProgress = false;

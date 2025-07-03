@@ -1,4 +1,5 @@
 <script>
+import { camelCase } from 'lodash';
 import { GlForm } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -98,6 +99,9 @@ export default {
     shouldUseGraphQLBulkEdit() {
       return this.isEpicsList || this.glFeatures.workItemsBulkEdit;
     },
+    isEditableUnlessEpicList() {
+      return !this.shouldUseGraphQLBulkEdit || (this.shouldUseGraphQLBulkEdit && !this.isEpicsList);
+    },
   },
   methods: {
     async handleFormSubmitted() {
@@ -121,16 +125,36 @@ export default {
       }
     },
     performBulkEdit() {
+      let assigneeIds;
+      if (this.assigneeId === BULK_UPDATE_UNASSIGNED) {
+        assigneeIds = [null];
+      } else if (this.assigneeId) {
+        assigneeIds = [this.assigneeId];
+      }
+      const hasLabelsToUpdate = this.addLabelIds.length > 0 || this.removeLabelIds.length > 0;
       return this.$apollo.mutate({
         mutation: workItemBulkUpdateMutation,
         variables: {
           input: {
             parentId: this.parentId,
             ids: this.checkedItems.map((item) => item.id),
-            labelsWidget: {
-              addLabelIds: this.addLabelIds,
-              removeLabelIds: this.removeLabelIds,
-            },
+            labelsWidget: hasLabelsToUpdate
+              ? {
+                  addLabelIds: this.addLabelIds,
+                  removeLabelIds: this.removeLabelIds,
+                }
+              : undefined,
+            assigneesWidget: assigneeIds
+              ? {
+                  assigneeIds,
+                }
+              : undefined,
+            confidential: this.confidentiality ? this.confidentiality === 'true' : undefined,
+            healthStatusWidget: this.healthStatus
+              ? {
+                  healthStatus: camelCase(this.healthStatus),
+                }
+              : undefined,
           },
         },
       });
@@ -171,7 +195,7 @@ export default {
       data-testid="bulk-edit-state"
     />
     <work-item-bulk-edit-assignee
-      v-if="!shouldUseGraphQLBulkEdit"
+      v-if="isEditableUnlessEpicList"
       v-model="assigneeId"
       :full-path="fullPath"
       :is-group="isGroup"
@@ -192,7 +216,7 @@ export default {
       @select="removeLabelIds = $event"
     />
     <work-item-bulk-edit-dropdown
-      v-if="!shouldUseGraphQLBulkEdit && hasIssuableHealthStatusFeature"
+      v-if="hasIssuableHealthStatusFeature && isEditableUnlessEpicList"
       v-model="healthStatus"
       :header-text="__('Select health status')"
       :items="$options.healthStatusItems"
@@ -208,7 +232,7 @@ export default {
       data-testid="bulk-edit-subscription"
     />
     <work-item-bulk-edit-dropdown
-      v-if="!shouldUseGraphQLBulkEdit"
+      v-if="isEditableUnlessEpicList"
       v-model="confidentiality"
       :header-text="__('Select confidentiality')"
       :items="$options.confidentialityItems"

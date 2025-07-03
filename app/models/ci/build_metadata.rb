@@ -4,8 +4,6 @@ module Ci
   # The purpose of this class is to store Build related data that can be disposed.
   # Data that should be persisted forever, should be stored with Ci::Build model.
   class BuildMetadata < Ci::ApplicationRecord
-    BuildTimeout = Struct.new(:value, :source)
-
     include Ci::Partitionable
     include Presentable
     include ChronicDurationAttribute
@@ -51,8 +49,7 @@ module Ci
     }
 
     def update_timeout_state
-      timeout = timeout_with_highest_precedence
-
+      timeout = ::Ci::Builds::TimeoutCalculator.new(build).applicable_timeout
       return unless timeout
 
       update(timeout: timeout.value, timeout_source: timeout.source)
@@ -68,38 +65,6 @@ module Ci
 
     def set_build_project
       self.project_id ||= build.project_id
-    end
-
-    def timeout_with_highest_precedence
-      [(job_timeout || project_timeout), runner_timeout].compact.min_by(&:value)
-    end
-
-    def project_timeout
-      strong_memoize(:project_timeout) do
-        BuildTimeout.new(project&.build_timeout, :project_timeout_source)
-      end
-    end
-
-    def job_timeout
-      return unless build.options
-
-      strong_memoize(:job_timeout) do
-        if timeout_from_options = build.options[:job_timeout]
-          BuildTimeout.new(timeout_from_options, :job_timeout_source)
-        end
-      end
-    end
-
-    def runner_timeout
-      return unless runner_timeout_set?
-
-      strong_memoize(:runner_timeout) do
-        BuildTimeout.new(build.runner.maximum_timeout, :runner_timeout_source)
-      end
-    end
-
-    def runner_timeout_set?
-      build.runner&.maximum_timeout.to_i > 0
     end
   end
 end

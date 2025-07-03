@@ -8,7 +8,7 @@ exports[`DiffsColorsPreview component renders diff colors preview 1`] = `
     Preview
   </label>
   <table
-    class="code"
+    class="code code-syntax-highlight-theme"
   >
     <tbody>
       <tr

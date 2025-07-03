@@ -3,7 +3,7 @@
 exports[`Blob Simple Viewer component rendering matches the snapshot 1`] = `
 <div>
   <div
-    class="code file-content gl-flex js-syntax-highlight"
+    class="code code-syntax-highlight-theme file-content gl-flex js-syntax-highlight"
   >
     <div
       class="!gl-px-0 line-numbers"

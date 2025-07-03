@@ -300,6 +300,7 @@ export default {
             workItemType: workItemType.name,
             workItemTypeId: workItemType.id,
             workItemTypeIconName: workItemType.iconName,
+            relatedItemId: this.relatedItemId,
             workItemTitle,
             workItemDescription,
             confidential: this.isConfidential,
@@ -311,6 +312,7 @@ export default {
         if (selectedWorkItemType) {
           updateDraftWorkItemType({
             fullPath: this.selectedProjectFullPath,
+            relatedItemId: this.relatedItemId,
             workItemType: {
               id: selectedWorkItemType.id,
               name: selectedWorkItemType.name,
@@ -353,6 +355,9 @@ export default {
     },
     hasWidgets() {
       return this.workItem?.widgets?.length > 0;
+    },
+    relatedItemId() {
+      return this.relatedItem?.id;
     },
     relatedItemReference() {
       return getDisplayReference(this.selectedProjectFullPath, this.relatedItem.reference);
@@ -540,7 +545,7 @@ export default {
       return (
         this.isWidgetSupported(WIDGET_TYPE_LINKED_ITEMS) &&
         this.isRelatedToItem &&
-        this.relatedItem?.id
+        this.relatedItemId
       );
     },
     resolvingMRDiscussionLink() {
@@ -706,10 +711,12 @@ export default {
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
+        relatedItemId: this.relatedItemId,
       });
 
       updateDraftWorkItemType({
         fullPath: this.selectedProjectFullPath,
+        relatedItemId: this.relatedItemId,
         workItemType: {
           id: this.selectedWorkItemTypeId,
           name: this.selectedWorkItemTypeName,
@@ -731,6 +738,7 @@ export default {
             input: {
               fullPath: this.selectedProjectFullPath,
               workItemType: this.selectedWorkItemTypeName,
+              relatedItemId: this.relatedItemId,
               [type]: value,
             },
           },
@@ -929,6 +937,22 @@ export default {
         this.loading = false;
       }
     },
+    async handleUpdateWidgetDraft(input) {
+      try {
+        await this.$apollo.mutate({
+          mutation: updateNewWorkItemMutation,
+          variables: {
+            input: {
+              ...input,
+              relatedItemId: this.relatedItemId,
+            },
+          },
+        });
+      } catch (e) {
+        this.error = this.createErrorText;
+        Sentry.captureException(e);
+      }
+    },
     handleCancelClick() {
       /*
       If any form field is filled or has a non-default value, ask user to confirm
@@ -955,6 +979,7 @@ export default {
         workItemType: this.selectedWorkItemTypeName,
         workItemTypeId: this.selectedWorkItemTypeId,
         workItemTypeIconName: this.selectedWorkItemTypeIconName,
+        relatedItemId: this.relatedItemId,
       });
     },
     onParentMilestone(parentMilestone) {
@@ -1108,6 +1133,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-assignees
@@ -1122,6 +1148,7 @@ export default {
               :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
               :work-item-type="selectedWorkItemTypeName"
               :can-invite-members="workItemAssignees.canInviteMembers"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-labels
@@ -1133,6 +1160,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-parent
@@ -1146,6 +1174,7 @@ export default {
               :parent="workItemParent"
               :is-group="isGroup"
               :allowed-parent-types-for-new-work-item="allowedParentTypesForSelectedType"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
               @parentMilestone="onParentMilestone"
             />
@@ -1158,6 +1187,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-milestone
@@ -1170,6 +1200,7 @@ export default {
               :work-item-milestone="workItemMilestone.milestone || selectedParentMilestone"
               :work-item-type="selectedWorkItemTypeName"
               :can-update="canUpdate"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
               @parentMilestone="onParentMilestone"
             />
@@ -1183,6 +1214,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-dates
@@ -1196,6 +1228,7 @@ export default {
               :should-roll-up="shouldDatesRollup"
               :work-item-type="selectedWorkItemTypeName"
               :work-item="workItem"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-health-status
@@ -1205,6 +1238,7 @@ export default {
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
               :full-path="selectedProjectFullPath"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-color
@@ -1213,6 +1247,7 @@ export default {
               :work-item="workItem"
               :full-path="selectedProjectFullPath"
               :can-update="canUpdate"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-custom-fields
@@ -1222,6 +1257,7 @@ export default {
               :custom-fields="workItemCustomFields"
               :full-path="selectedProjectFullPath"
               :can-update="canUpdate"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
             <work-item-crm-contacts
@@ -1231,6 +1267,7 @@ export default {
               :work-item-id="workItemId"
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
+              @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />
           </aside>

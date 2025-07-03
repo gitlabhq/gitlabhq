@@ -25996,7 +25996,6 @@ CREATE TABLE web_hooks (
     member_events boolean DEFAULT false NOT NULL,
     subgroup_events boolean DEFAULT false NOT NULL,
     recent_failures smallint DEFAULT 0 NOT NULL,
-    backoff_count smallint DEFAULT 0 NOT NULL,
     disabled_until timestamp with time zone,
     encrypted_url_variables bytea,
     encrypted_url_variables_iv bytea,

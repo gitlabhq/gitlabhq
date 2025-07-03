@@ -139,7 +139,6 @@ export default {
       }
     },
   },
-  userColorSchemeClass: window.gon.user_color_scheme,
 };
 </script>
 
@@ -259,8 +258,7 @@ export default {
           class="gl-my-2 gl-mr-5 gl-overflow-hidden gl-overflow-visible gl-rounded-small gl-border-1 gl-border-solid gl-border-strong gl-pl-0"
         >
           <table
-            :class="$options.userColorSchemeClass"
-            class="code js-syntax-highlight"
+            class="code code-syntax-highlight-theme js-syntax-highlight"
             data-testid="outdated-lines"
           >
             <tr v-for="line in lines" v-once :key="line.line_code" class="line_holder">

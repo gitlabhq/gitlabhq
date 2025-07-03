@@ -23,6 +23,7 @@ Auditor users:
 - Cannot view the Admin area or perform any administration actions.
 - Cannot access group or projects settings.
 - Cannot view job logs when [debug logging](../ci/variables/variables_troubleshooting.md#enable-debug-logging) is enabled.
+- Cannot access areas designed for editing, including the [pipeline editor](../ci/pipeline_editor/_index.md).
 
 Auditor users are sometimes used in situations where:
 

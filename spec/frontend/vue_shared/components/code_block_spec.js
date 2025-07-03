@@ -17,58 +17,58 @@ describe('Code Block', () => {
     createComponent({}, { default: 'DEFAULT SLOT' });
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-      <pre
-        class="code code-block rounded"
-      >
-        DEFAULT SLOT
-      </pre>
-    `);
+<pre
+  class="code code-block code-syntax-highlight-theme rounded"
+>
+  DEFAULT SLOT
+</pre>
+`);
   });
 
   it('renders with empty code prop', () => {
     createComponent({});
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-      <pre
-        class="code code-block rounded"
-      >
-        <code
-          class="gl-block"
-        />
-      </pre>
-    `);
+<pre
+  class="code code-block code-syntax-highlight-theme rounded"
+>
+  <code
+    class="gl-block"
+  />
+</pre>
+`);
   });
 
   it('renders code prop when provided', () => {
     createComponent({ code });
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-      <pre
-        class="code code-block rounded"
-      >
-        <code
-          class="gl-block"
-        >
-          test-code
-        </code>
-      </pre>
-    `);
+<pre
+  class="code code-block code-syntax-highlight-theme rounded"
+>
+  <code
+    class="gl-block"
+  >
+    test-code
+  </code>
+</pre>
+`);
   });
 
   it('sets maxHeight properly when provided', () => {
     createComponent({ code, maxHeight: '200px' });
 
     expect(wrapper.element).toMatchInlineSnapshot(`
-      <pre
-        class="code code-block rounded"
-        style="max-height: 200px; overflow-y: auto;"
-      >
-        <code
-          class="gl-block"
-        >
-          test-code
-        </code>
-      </pre>
-    `);
+<pre
+  class="code code-block code-syntax-highlight-theme rounded"
+  style="max-height: 200px; overflow-y: auto;"
+>
+  <code
+    class="gl-block"
+  >
+    test-code
+  </code>
+</pre>
+`);
   });
 });

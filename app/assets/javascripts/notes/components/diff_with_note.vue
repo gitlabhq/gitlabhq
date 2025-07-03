@@ -129,7 +129,6 @@ export default {
       return line.replace(FIRST_CHAR_REGEX, '');
     },
   },
-  userColorSchemeClass: window.gon.user_color_scheme,
 };
 </script>
 
@@ -144,7 +143,7 @@ export default {
       :expanded="!isCollapsed"
     />
     <div v-if="isTextFile" class="diff-content">
-      <table class="code js-syntax-highlight" :class="$options.userColorSchemeClass">
+      <table class="code js-syntax-highlight code-syntax-highlight-theme">
         <template v-if="!isFileDiscussion">
           <template v-if="hasTruncatedDiffLines">
             <tr

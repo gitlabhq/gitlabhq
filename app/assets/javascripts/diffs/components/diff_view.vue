@@ -188,18 +188,14 @@ export default {
       return this.lineDrafts(line, side).length > 0;
     },
   },
-  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 
 <template>
   <div
-    :class="[
-      $options.userColorScheme,
-      { 'inline-diff-view': inline, 'with-inline-findings': hasInlineFindingsChanges },
-    ]"
+    :class="[{ 'inline-diff-view': inline, 'with-inline-findings': hasInlineFindingsChanges }]"
     :data-commit-id="commitId"
-    class="diff-grid diff-table code diff-wrap-lines js-syntax-highlight text-file"
+    class="diff-grid diff-table code code-syntax-highlight-theme diff-wrap-lines js-syntax-highlight text-file"
     @mousedown="handleParallelLineMouseDown"
   >
     <template v-for="(line, index) in diffLines">

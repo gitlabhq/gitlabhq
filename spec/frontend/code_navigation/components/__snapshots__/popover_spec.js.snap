@@ -23,7 +23,7 @@ exports[`Code navigation popover component renders popover 1`] = `
       >
         <div>
           <pre
-            class="bg-transparent border-0 code highlight m-0 text-wrap"
+            class="bg-transparent border-0 code code-syntax-highlight-theme highlight m-0 text-wrap"
           >
             <span
               class="line"

@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User creates issue", feature_category: :team_planning do
+RSpec.describe "User creates issue", :js, feature_category: :team_planning do
   include DropzoneHelper
   include ListboxHelpers
 
@@ -23,16 +23,12 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       sign_out(:user)
     end
 
-    it "redirects to signin then back to new issue after signin", :js do
+    it "redirects to signin then back to new issue after signin" do
       create(:issue, project: project)
 
       visit project_issues_path(project)
 
-      wait_for_all_requests
-
-      page.within ".nav-controls" do
-        click_link "New issue"
-      end
+      click_link 'New item'
 
       expect(page).to have_current_path new_user_session_path, ignore_query: true
 
@@ -42,7 +38,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     end
   end
 
-  context "when signed in as guest", :js do
+  context "when signed in as guest" do
     before do
       project.add_guest(user)
       sign_in(user)
@@ -114,7 +110,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
     end
 
-    context 'with due date', :js do
+    context 'with due date' do
       it 'saves with due date' do
         visit(new_project_issue_path(project))
 
@@ -134,7 +130,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
     end
 
-    context 'dropzone upload file', :js do
+    context 'dropzone upload file' do
       before do
         visit new_project_issue_path(project)
       end
@@ -208,7 +204,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
     end
 
-    context 'suggestions', :js do
+    context 'suggestions' do
       it 'displays list of related issues' do
         visit(new_project_issue_path(project))
 
@@ -224,7 +220,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
     end
 
-    it 'clears local storage after creating a new issue', :js do
+    it 'clears local storage after creating a new issue' do
       2.times do
         visit new_project_issue_path(project)
 
@@ -238,7 +234,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       end
     end
 
-    it 'clears local storage after cancelling a new issue creation', :js do
+    it 'clears local storage after cancelling a new issue creation' do
       2.times do
         visit new_project_issue_path(project)
 
@@ -254,7 +250,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     end
   end
 
-  context 'when signed in as reporter', :js do
+  context 'when signed in as reporter' do
     let_it_be(:project) { create(:project) }
 
     before_all do
@@ -279,7 +275,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
     end
   end
 
-  context 'when signed in as a maintainer', :js do
+  context 'when signed in as a maintainer' do
     let_it_be(:project) { create(:project) }
 
     before_all do
@@ -310,7 +306,7 @@ RSpec.describe "User creates issue", feature_category: :team_planning do
       visit(new_project_issue_path(project))
     end
 
-    it "will correctly escape user names with an apostrophe when clicking 'Assign to me'", :js do
+    it "will correctly escape user names with an apostrophe when clicking 'Assign to me'" do
       click_button 'assign yourself'
 
       expect(page).to have_content(user_special.name)

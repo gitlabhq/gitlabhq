@@ -140,7 +140,7 @@ export default CodeBlockLowlight.extend({
       'pre',
       {
         ...mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-        class: `content-editor-code-block ${gon.user_color_scheme} ${HTMLAttributes.class}`,
+        class: `content-editor-code-block code-syntax-highlight-theme ${HTMLAttributes.class}`,
       },
       ['code', {}, 0],
     ];

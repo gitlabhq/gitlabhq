@@ -74,7 +74,6 @@ export default {
       return line[1] ?? line.line;
     },
   },
-  userColorScheme: window.gon.user_color_scheme,
 };
 </script>
 
@@ -122,7 +121,7 @@ export default {
       </div>
     </div>
 
-    <table v-if="isExpanded" :class="$options.userColorScheme" class="code js-syntax-highlight">
+    <table v-if="isExpanded" class="code code-syntax-highlight-theme js-syntax-highlight">
       <tbody>
         <tr v-for="(line, index) in lines" :key="`stacktrace-line-${index}`" class="line_holder">
           <td class="diff-line-num" :class="{ old: isHighlighted(lineNum(line)) }">

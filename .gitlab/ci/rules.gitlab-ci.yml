@@ -1041,7 +1041,7 @@
   rules:
     - if: '$GITLABCOM_DATABASE_TESTING_TRIGGER_TOKEN == null'
       when: never
-    - <<: *if-fork-merge-request
+    - if: '$CI_MERGE_REQUEST_SOURCE_PROJECT_PATH !~ /^gitlab(-org|-cn)?\//'
       when: never
     - <<: *if-merge-request
       changes: *db-patterns

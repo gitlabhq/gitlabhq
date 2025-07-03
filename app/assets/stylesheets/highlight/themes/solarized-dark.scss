@@ -101,7 +101,8 @@ $solarized-dark-il: #2aa198;
   --diff-deletion-color: #{$solarized-dark-old-bg};
 }
 
-.code.solarized-dark {
+.code.solarized-dark,
+.code.code-syntax-highlight-theme {
   --code-dark-theme: 1;
   --code-border-lightness-adjust: 0.1;
   --diff-expansion-background-color: #{lighten($solarized-dark-pre-bg, 10%)};

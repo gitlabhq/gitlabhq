@@ -7,7 +7,6 @@ import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_i
 import updateParentMutation from '~/work_items/graphql/update_parent.mutation.graphql';
 import { isValidURL } from '~/lib/utils/url_utility';
 
-import updateNewWorkItemMutation from '~/work_items/graphql/update_new_work_item.mutation.graphql';
 import {
   findMilestoneWidget,
   findHierarchyWidgetDefinition,
@@ -237,35 +236,19 @@ export default {
         this.updateInProgress = true;
 
         if (this.workItemId === newWorkItemId(this.workItemType)) {
-          this.$apollo
-            .mutate({
-              mutation: updateNewWorkItemMutation,
-              variables: {
-                input: {
-                  fullPath: this.fullPath,
-                  parent: this.isSelectedParentAvailable
-                    ? {
-                        ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
-                        webUrl: this.parentWebUrl ?? null,
-                      }
-                    : null,
-                  workItemType: this.workItemType,
-                },
-              },
-            })
-            .catch((error) => {
-              this.$emit(
-                'error',
-                sprintf(I18N_WORK_ITEM_ERROR_UPDATING, {
-                  workItemType: NAME_TO_TEXT_LOWERCASE_MAP[this.workItemType],
-                }),
-              );
-              Sentry.captureException(error);
-            })
-            .finally(() => {
-              this.searchStarted = false;
-              this.updateInProgress = false;
-            });
+          this.$emit('updateWidgetDraft', {
+            fullPath: this.fullPath,
+            parent: this.isSelectedParentAvailable
+              ? {
+                  ...this.visibleWorkItems.find(({ id }) => id === this.localSelectedItem),
+                  webUrl: this.parentWebUrl ?? null,
+                }
+              : null,
+            workItemType: this.workItemType,
+          });
+
+          this.searchStarted = false;
+          this.updateInProgress = false;
           return;
         }
 

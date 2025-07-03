@@ -53,8 +53,7 @@ export default {
         action: null,
       },
 
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      preClasses: `code highlight ${gon.user_color_scheme}`,
+      preClasses: 'code highlight code-syntax-highlight-theme',
     };
   },
   computed: {

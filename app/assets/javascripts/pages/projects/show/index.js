@@ -16,6 +16,7 @@ import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import CompactCodeDropdown from 'ee_else_ce/repository/components/code_dropdown/compact_code_dropdown.vue';
 import { convertObjectPropsToCamelCase, parseBoolean } from '~/lib/utils/common_utils';
 import apolloProvider from '~/repository/graphql';
+import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import { initHomePanel } from '../home_panel';
 
 // Project show page loads different overview content based on user preferences
@@ -125,8 +126,16 @@ const initEmptyProjectTabs = () => {
   new EmptyProject(); // eslint-disable-line no-new
 };
 
+const initWikiContent = () => {
+  const el = document.querySelector('.js-wiki-content');
+  if (!el) return;
+
+  renderGFM(el);
+};
+
 initCodeDropdown();
 initSourceCodeDropdowns();
 initFindFileShortcut();
 initEmptyProjectTabs();
 initWebIdeLink({ el: document.getElementById('js-tree-web-ide-link') });
+initWikiContent();

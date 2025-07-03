@@ -124,67 +124,130 @@ describe('WorkItemBulkEditSidebar component', () => {
     });
 
     describe('when not epics list', () => {
-      it('makes POST request to bulk edit', async () => {
-        const issuable_ids = '11,22'; // eslint-disable-line camelcase
-        const add_label_ids = [1, 2, 3]; // eslint-disable-line camelcase
-        const assignee_ids = [5]; // eslint-disable-line camelcase
-        const confidential = 'true';
-        const health_status = 'on_track'; // eslint-disable-line camelcase
-        const remove_label_ids = [4, 5, 6]; // eslint-disable-line camelcase
-        const state_event = 'reopen'; // eslint-disable-line camelcase
-        const subscription_event = 'subscribe'; // eslint-disable-line camelcase
-        axiosMock.onPost().replyOnce(HTTP_STATUS_OK);
-        createComponent({
-          provide: { hasIssuableHealthStatusFeature: true },
-          props: { isEpicsList: false },
+      describe('when work_items_bulk_edit is enabled', () => {
+        it('calls mutation to bulk edit', async () => {
+          const addLabelIds = ['gid://gitlab/Label/1'];
+          const removeLabelIds = ['gid://gitlab/Label/2'];
+          createComponent({
+            provide: {
+              hasIssuableHealthStatusFeature: true,
+              glFeatures: { workItemsBulkEdit: true },
+            },
+            props: { isEpicsList: false },
+          });
+          await waitForPromises();
+
+          findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
+          findAddLabelsComponent().vm.$emit('select', addLabelIds);
+          findRemoveLabelsComponent().vm.$emit('select', removeLabelIds);
+          findHealthStatusComponent().vm.$emit('input', 'on_track');
+          findConfidentialityComponent().vm.$emit('input', 'true');
+          findForm().vm.$emit('submit', { preventDefault: () => {} });
+
+          expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
+            input: {
+              parentId: 'gid://gitlab/Group/1',
+              ids: ['gid://gitlab/WorkItem/11', 'gid://gitlab/WorkItem/22'],
+              labelsWidget: {
+                addLabelIds,
+                removeLabelIds,
+              },
+              assigneesWidget: {
+                assigneeIds: ['gid://gitlab/User/5'],
+              },
+              confidential: true,
+              healthStatusWidget: {
+                healthStatus: 'onTrack',
+              },
+            },
+          });
+          expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
+          expect(findRemoveLabelsComponent().props('selectedLabelsIds')).toEqual([]);
         });
 
-        findStateComponent().vm.$emit('input', state_event);
-        findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
-        findAddLabelsComponent().vm.$emit('select', [
-          'gid://gitlab/Label/1',
-          'gid://gitlab/Label/2',
-          'gid://gitlab/Label/3',
-        ]);
-        findRemoveLabelsComponent().vm.$emit('select', [
-          'gid://gitlab/Label/4',
-          'gid://gitlab/Label/5',
-          'gid://gitlab/Label/6',
-        ]);
-        findHealthStatusComponent().vm.$emit('input', health_status);
-        findSubscriptionComponent().vm.$emit('input', subscription_event);
-        findConfidentialityComponent().vm.$emit('input', confidential);
-        findForm().vm.$emit('submit', { preventDefault: () => {} });
-        await waitForPromises();
+        it('renders error when there is a mutation error', async () => {
+          createComponent({
+            props: { isEpicsList: true },
+            mutationHandler: jest.fn().mockRejectedValue(new Error('oh no')),
+          });
 
-        expect(axiosMock.history.post[0].url).toBe('/group/project/-/issues/bulk_update');
-        expect(axiosMock.history.post[0].data).toBe(
-          JSON.stringify({
-            update: {
-              add_label_ids,
-              assignee_ids,
-              confidential,
-              health_status,
-              issuable_ids,
-              remove_label_ids,
-              state_event,
-              subscription_event,
-            },
-          }),
-        );
+          findForm().vm.$emit('submit', { preventDefault: () => {} });
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            captureError: true,
+            error: new Error('oh no'),
+            message: 'Something went wrong while bulk editing.',
+          });
+        });
       });
 
-      it('renders error when there is a response error', async () => {
-        axiosMock.onPost().replyOnce(HTTP_STATUS_BAD_REQUEST);
-        createComponent({ props: { isEpicsList: false } });
+      describe('when work_items_bulk_edit is disabled', () => {
+        it('makes POST request to bulk edit', async () => {
+          const issuable_ids = '11,22'; // eslint-disable-line camelcase
+          const add_label_ids = [1, 2, 3]; // eslint-disable-line camelcase
+          const assignee_ids = [5]; // eslint-disable-line camelcase
+          const confidential = 'true';
+          const health_status = 'on_track'; // eslint-disable-line camelcase
+          const remove_label_ids = [4, 5, 6]; // eslint-disable-line camelcase
+          const state_event = 'reopen'; // eslint-disable-line camelcase
+          const subscription_event = 'subscribe'; // eslint-disable-line camelcase
+          axiosMock.onPost().replyOnce(HTTP_STATUS_OK);
+          createComponent({
+            provide: {
+              hasIssuableHealthStatusFeature: true,
+              glFeatures: { workItemsBulkEdit: false },
+            },
+            props: { isEpicsList: false },
+          });
 
-        findForm().vm.$emit('submit', { preventDefault: () => {} });
-        await waitForPromises();
+          findStateComponent().vm.$emit('input', state_event);
+          findAssigneeComponent().vm.$emit('input', 'gid://gitlab/User/5');
+          findAddLabelsComponent().vm.$emit('select', [
+            'gid://gitlab/Label/1',
+            'gid://gitlab/Label/2',
+            'gid://gitlab/Label/3',
+          ]);
+          findRemoveLabelsComponent().vm.$emit('select', [
+            'gid://gitlab/Label/4',
+            'gid://gitlab/Label/5',
+            'gid://gitlab/Label/6',
+          ]);
+          findHealthStatusComponent().vm.$emit('input', health_status);
+          findSubscriptionComponent().vm.$emit('input', subscription_event);
+          findConfidentialityComponent().vm.$emit('input', confidential);
+          findForm().vm.$emit('submit', { preventDefault: () => {} });
+          await waitForPromises();
 
-        expect(createAlert).toHaveBeenCalledWith({
-          captureError: true,
-          error: new Error('Request failed with status code 400'),
-          message: 'Something went wrong while bulk editing.',
+          expect(axiosMock.history.post[0].url).toBe('/group/project/-/issues/bulk_update');
+          expect(axiosMock.history.post[0].data).toBe(
+            JSON.stringify({
+              update: {
+                add_label_ids,
+                assignee_ids,
+                confidential,
+                health_status,
+                issuable_ids,
+                remove_label_ids,
+                state_event,
+                subscription_event,
+              },
+            }),
+          );
+        });
+
+        it('renders error when there is a response error', async () => {
+          axiosMock.onPost().replyOnce(HTTP_STATUS_BAD_REQUEST);
+          createComponent({ props: { isEpicsList: false } });
+
+          findForm().vm.$emit('submit', { preventDefault: () => {} });
+          await waitForPromises();
+
+          expect(createAlert).toHaveBeenCalledWith({
+            captureError: true,
+            error: new Error('Request failed with status code 400'),
+            message: 'Something went wrong while bulk editing.',
+          });
         });
       });
     });

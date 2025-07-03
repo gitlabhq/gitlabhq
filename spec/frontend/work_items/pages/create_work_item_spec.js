@@ -316,7 +316,7 @@ describe('Create work item page component', () => {
       expect(visitUrl).toHaveBeenCalledWith('/gitlab-org/gitlab-test/-/issues');
     });
 
-    it('confirmation modal closes when user clicks "Discard changes" and redirects to list page when on group `work_items/new` route', async () => {
+    it('confirmation modal closes when user clicks "Discard changes" and redirects to issues list page when on group `work_items/new` route', async () => {
       const historyMock = {
         base: '/groups/gitlab-org/-',
         current: {
@@ -342,7 +342,7 @@ describe('Create work item page component', () => {
       await nextTick();
 
       expect(findCancelConfirmationModal().props('isVisible')).toBe(false);
-      expect(visitUrl).toHaveBeenCalledWith('/groups/gitlab-org/-/work_items');
+      expect(visitUrl).toHaveBeenCalledWith('/groups/gitlab-org/-/issues');
     });
 
     it('confirmation modal closes when user clicks "Discard changes" and redirects to list page when on group `epics/new` route', async () => {

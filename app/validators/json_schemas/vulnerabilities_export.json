@@ -21,7 +21,7 @@
     },
     "project_security_status": {
       "type": [
-        "array",
+        "object",
         "null"
       ],
       "description": "Data for rendering the project grades summary in PDF reports"

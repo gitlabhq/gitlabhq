@@ -13,7 +13,6 @@ import Tracking from '~/tracking';
 import { ISSUABLE_CHANGE_LABEL } from '~/behaviors/shortcuts/keybindings';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, TRACKING_CATEGORY_SHOW, WORK_ITEM_TYPE_NAME_EPIC } from '../constants';
 import {
   findLabelsWidget,
@@ -257,16 +256,11 @@ export default {
         await this.updateLabels({ addLabelIds, removeLabelIds });
       }
     },
-    async updateDraftCache() {
-      await this.$apollo.mutate({
-        mutation: updateNewWorkItemMutation,
-        variables: {
-          input: {
-            workItemType: this.workItemType,
-            fullPath: this.fullPath,
-            labels: this.labelsCache.filter(({ id }) => this.selectedLabelsIds.includes(id)),
-          },
-        },
+    updateDraftCache() {
+      this.$emit('updateWidgetDraft', {
+        workItemType: this.workItemType,
+        fullPath: this.fullPath,
+        labels: this.labelsCache.filter(({ id }) => this.selectedLabelsIds.includes(id)),
       });
     },
     async updateLabels({ addLabelIds = [], removeLabelIds = [] }) {

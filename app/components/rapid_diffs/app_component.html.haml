@@ -26,7 +26,7 @@
       .rd-app-content-header{ data: { hidden_files_warning: true } }
       - if empty_diff? && !lazy?
         = render RapidDiffs::EmptyStateComponent.new
-      .rd-app-code-theme.code{ class: helpers.user_color_scheme }
+      .rd-app-code-theme.code.code-syntax-highlight-theme
         .rd-app-diffs-list
           -# performance optimization: using a sibling element to cover diffs list is faster than changing opacity on the parent
           .rd-app-diffs-list-loading-overlay{ data: { diffs_overlay: true } }

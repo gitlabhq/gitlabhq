@@ -47,6 +47,7 @@ import {
   getNewWorkItemWidgetsAutoSaveKey,
   getWorkItemWidgets,
   updateDraftWorkItemType,
+  getDraftWorkItemType,
 } from '~/work_items/utils';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TYPE_EPIC } from '~/issues/constants';
@@ -264,6 +265,16 @@ describe('newWorkItemPath', () => {
       '/foobar/project/-/work_items/new?foo=bar',
     );
   });
+
+  it('returns `work_items` path for group issues', () => {
+    expect(
+      newWorkItemPath({
+        fullPath: 'my-group',
+        isGroup: true,
+        workItemType: WORK_ITEM_TYPE_NAME_ISSUE,
+      }),
+    ).toBe('/foobar/groups/my-group/-/work_items/new');
+  });
 });
 
 describe('convertTypeEnumToName', () => {
@@ -451,6 +462,16 @@ describe('getNewWorkItemAutoSaveKey', () => {
       expect(autosaveKey).toEqual(expectedAutosaveKey);
     },
   );
+
+  it('returns autosave key for new related item', () => {
+    const autosaveKey = getNewWorkItemAutoSaveKey({
+      fullPath: 'gitlab-org/gitlab',
+      workItemType: 'issue',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+    });
+
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-issue-related-22-draft');
+  });
 });
 
 describe('getNewWorkItemWidgetsAutoSaveKey', () => {
@@ -459,6 +480,15 @@ describe('getNewWorkItemWidgetsAutoSaveKey', () => {
       fullPath: 'gitlab-org/gitlab',
     });
     expect(autosaveKey).toEqual('new-gitlab-org/gitlab-widgets-draft');
+  });
+
+  it('returns autosave key for new related item', () => {
+    const autosaveKey = getNewWorkItemWidgetsAutoSaveKey({
+      fullPath: 'gitlab-org/gitlab',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+    });
+
+    expect(autosaveKey).toEqual('new-gitlab-org/gitlab-related-22-widgets-draft');
   });
 });
 
@@ -519,6 +549,53 @@ describe('updateDraftWorkItemType', () => {
       workItemWidgetsAutosaveKey,
       JSON.stringify({ TITLE: 'Some work item', TYPE: workItemType }),
     );
+  });
+
+  it('updates `TYPE` with workItemType to localStorage widgets for related item drafts key when it already exists', () => {
+    const workItemWidgetsKey = 'autosave/new-gitlab-org/gitlab-related-22-widgets-draft';
+    localStorage.setItem(workItemWidgetsKey, JSON.stringify({ TITLE: 'Some work item' }));
+
+    updateDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+      workItemType,
+    });
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      workItemWidgetsKey,
+      JSON.stringify({ TITLE: 'Some work item', TYPE: workItemType }),
+    );
+  });
+});
+
+describe('getDraftWorkItemType', () => {
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('gets `TYPE` from localStorage widgets draft when it exists', () => {
+    localStorage.setItem(
+      'autosave/new-gitlab-org/gitlab-widgets-draft',
+      JSON.stringify({ TYPE: 'Issue' }),
+    );
+    const workItemType = getDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+    });
+
+    expect(workItemType).toBe('Issue');
+  });
+
+  it('gets `TYPE` from localStorage widgets for related item draft when it exists', () => {
+    localStorage.setItem(
+      'autosave/new-gitlab-org/gitlab-related-22-widgets-draft',
+      JSON.stringify({ TYPE: 'Issue' }),
+    );
+    const workItemType = getDraftWorkItemType({
+      fullPath: 'gitlab-org/gitlab',
+      relatedItemId: 'gid://gitlab/WorkItem/22',
+    });
+
+    expect(workItemType).toBe('Issue');
   });
 });
 

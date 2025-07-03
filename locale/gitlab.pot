@@ -48217,6 +48217,9 @@ msgstr ""
 msgid "Project ID"
 msgstr ""
 
+msgid "Project Security Status"
+msgstr ""
+
 msgid "Project Status"
 msgstr ""
 
@@ -68653,6 +68656,9 @@ msgid "VsdContributorCount|the ClickHouse data store is not available for this n
 msgstr ""
 
 msgid "Vulnerabilities"
+msgstr ""
+
+msgid "Vulnerabilities Over Time"
 msgstr ""
 
 msgid "Vulnerabilities over time"

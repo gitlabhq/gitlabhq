@@ -19,13 +19,13 @@ RSpec.shared_examples 'rich text editor - code blocks' do
     end
 
     it 'applies theme classes to code blocks' do
-      expect(page).not_to have_css('.content-editor-code-block.code.highlight.dark')
+      expect(page).not_to have_css('.content-editor-code-block.code.highlight.code-syntax-highlight-theme')
 
       type_in_content_editor [:enter, :enter]
       type_in_content_editor '```js ' # trigger input rule
       type_in_content_editor 'var a = 0'
 
-      expect(page).to have_css('.content-editor-code-block.code.highlight.dark')
+      expect(page).to have_css('.content-editor-code-block.code.highlight.code-syntax-highlight-theme')
     end
   end
 

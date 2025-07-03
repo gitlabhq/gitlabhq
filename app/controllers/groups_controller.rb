@@ -37,6 +37,7 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items_beta, group.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
+    push_frontend_feature_flag(:issues_list_create_modal, group)
     push_frontend_feature_flag(:issues_list_drawer, group)
     push_frontend_feature_flag(:work_item_status_feature_flag, group&.root_ancestor)
   end
