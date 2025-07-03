@@ -86,7 +86,8 @@ export default {
     <work-item-attribute
       v-if="datesText"
       anchor-id="issuable-due-date"
-      wrapper-component-class="issuable-due-date"
+      wrapper-component="button"
+      wrapper-component-class="issuable-due-date !gl-cursor-help gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
       :title="datesText"
       title-component-class="gl-mr-3"
       :tooltip-text="datesTooltipTitle"

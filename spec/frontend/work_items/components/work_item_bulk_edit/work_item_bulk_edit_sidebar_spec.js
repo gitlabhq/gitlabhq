@@ -45,6 +45,7 @@ describe('WorkItemBulkEditSidebar component', () => {
       ]),
       provide: {
         hasIssuableHealthStatusFeature: false,
+        hasIterationsFeature: false,
         ...provide,
       },
       propsData: {

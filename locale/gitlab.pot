@@ -26533,6 +26533,9 @@ msgstr ""
 msgid "Failed to load groups, users and deploy keys."
 msgstr ""
 
+msgid "Failed to load iterations. Please try again."
+msgstr ""
+
 msgid "Failed to load labels. Please try again."
 msgstr ""
 
@@ -66290,12 +66293,6 @@ msgstr ""
 msgid "Update %{sourcePath} file"
 msgstr ""
 
-msgid "Update Now"
-msgstr ""
-
-msgid "Update Scheduled…"
-msgstr ""
-
 msgid "Update appearance settings"
 msgstr ""
 
@@ -66315,6 +66312,9 @@ msgid "Update password"
 msgstr ""
 
 msgid "Update password for %{current_name}"
+msgstr ""
+
+msgid "Update scheduled…"
 msgstr ""
 
 msgid "Update selected"

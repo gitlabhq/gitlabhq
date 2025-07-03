@@ -87,14 +87,7 @@ export default {
       'isProjectInvalid',
       'projectSelectionLabel',
     ]),
-    ...mapState([
-      'enabled',
-      'integrated',
-      'projects',
-      'selectedProject',
-      'settingsLoading',
-      'token',
-    ]),
+    ...mapState(['enabled', 'integrated', 'projects', 'selectedProject', 'settingsLoading']),
     showGitlabDsnSetting() {
       return this.integrated && this.enabled && this.gitlabDsn;
     },
@@ -218,7 +211,6 @@ export default {
           :project-selection-label="projectSelectionLabel"
           :projects="projects"
           :selected-project="selectedProject"
-          :token="token"
           @select-project="updateSelectedProject"
         />
       </div>

@@ -13,6 +13,9 @@ import WorkItemBulkEditAssignee from './work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditDropdown from './work_item_bulk_edit_dropdown.vue';
 import WorkItemBulkEditLabels from './work_item_bulk_edit_labels.vue';
 
+const WorkItemBulkEditIteration = () =>
+  import('ee_component/work_items/components/list/work_item_bulk_edit_iteration.vue');
+
 export default {
   name: 'WorkItemBulkEditSidebar',
   confidentialityItems: [
@@ -37,9 +40,10 @@ export default {
     WorkItemBulkEditAssignee,
     WorkItemBulkEditDropdown,
     WorkItemBulkEditLabels,
+    WorkItemBulkEditIteration,
   },
   mixins: [glFeatureFlagsMixin()],
-  inject: ['hasIssuableHealthStatusFeature'],
+  inject: ['hasIssuableHealthStatusFeature', 'hasIterationsFeature'],
   props: {
     checkedItems: {
       type: Array,
@@ -70,6 +74,7 @@ export default {
       removeLabelIds: [],
       state: undefined,
       subscription: undefined,
+      iteration: undefined,
     };
   },
   apollo: {
@@ -155,6 +160,7 @@ export default {
                   healthStatus: camelCase(this.healthStatus),
                 }
               : undefined,
+            iterationWidget: this.iteration ? { iterationId: this.iteration } : undefined,
           },
         },
       });
@@ -238,6 +244,12 @@ export default {
       :items="$options.confidentialityItems"
       :label="__('Confidentiality')"
       data-testid="bulk-edit-confidentiality"
+    />
+    <work-item-bulk-edit-iteration
+      v-if="shouldUseGraphQLBulkEdit && !isEpicsList && hasIterationsFeature"
+      v-model="iteration"
+      :full-path="fullPath"
+      :is-group="isGroup"
     />
   </gl-form>
 </template>

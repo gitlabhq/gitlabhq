@@ -10,6 +10,43 @@ RSpec.describe User, feature_category: :user_profile do
   include ExclusiveLeaseHelpers
   include LdapHelpers
 
+  shared_examples 'checks for groups with project creation permission' do
+    let_it_be(:user) { create(:user) }
+
+    context 'when user does not belong in a group' do
+      it { is_expected.to be(false) }
+    end
+
+    context 'when user belongs in group allowing project creation' do
+      let_it_be(:group) do
+        create(:group, developers: [user], project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
+      end
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when user belongs in group not allowing project creation' do
+      let_it_be(:group) do
+        create(:group, developers: [user], project_creation_level: Gitlab::Access::NO_ONE_PROJECT_ACCESS)
+      end
+
+      it { is_expected.to be(false) }
+
+      context 'when group is shared with another group allowing project creation' do
+        let_it_be(:shared_group_link) do
+          create(
+            :group_group_link,
+            :developer,
+            shared_with_group: group,
+            shared_group: create(:group, project_creation_level: Gitlab::Access::DEVELOPER_PROJECT_ACCESS)
+          )
+        end
+
+        it { is_expected.to be(true) }
+      end
+    end
+  end
+
   it_behaves_like 'having unique enum values'
 
   describe 'modules' do
@@ -2953,7 +2990,6 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be_with_refind(:user) { create(:user) }
     let_it_be_with_refind(:group) { create(:group, owners: user) }
 
-    it { expect(user.several_namespaces?).to be_truthy }
     it { expect(user.authorized_groups).to contain_exactly(group) }
     it { expect(user.owned_groups).to contain_exactly(group) }
     it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
@@ -3022,19 +3058,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe 'group multiple owners' do
-    let_it_be(:user) { create :user }
-    let_it_be(:user2) { create :user }
-    let_it_be(:group) { create :group, owners: [user, user2] }
-
-    it { expect(user2.several_namespaces?).to be_truthy }
-  end
-
   describe 'namespaced' do
     let_it_be(:user) { create :user }
     let_it_be(:project) { create(:project, namespace: user.namespace) }
 
-    it { expect(user.several_namespaces?).to be_falsey }
     it { expect(user.namespaces).to contain_exactly(user.namespace) }
   end
 
@@ -4158,6 +4185,24 @@ RSpec.describe User, feature_category: :user_profile do
     it 'finds the invite' do
       expect(user.pending_invitations).to contain_exactly(invited_member)
     end
+  end
+
+  describe '#has_groups_allowing_project_creation?' do
+    subject { user.has_groups_allowing_project_creation? }
+
+    it_behaves_like 'checks for groups with project creation permission'
+  end
+
+  describe '#can_select_namespace?' do
+    subject { user.can_select_namespace? }
+
+    context 'when user is admin' do
+      let_it_be(:user) { create(:user, :admin) }
+
+      it { is_expected.to be(true) }
+    end
+
+    it_behaves_like 'checks for groups with project creation permission'
   end
 
   describe '#can_create_project?' do

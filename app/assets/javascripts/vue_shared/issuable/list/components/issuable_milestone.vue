@@ -68,11 +68,11 @@ export default {
     <work-item-attribute
       anchor-id="issuable-milestone"
       :title="milestone.title"
-      wrapper-component-class="gl-text-sm !gl-text-subtle"
+      wrapper-component="a"
+      wrapper-component-class="!gl-text-subtle !gl-cursor-help gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
       :tooltip-text="milestoneDate"
       tooltip-placement="top"
       class="issuable-milestone gl-mr-3"
-      is-link
       :href="milestoneLink"
     >
       <template #icon>

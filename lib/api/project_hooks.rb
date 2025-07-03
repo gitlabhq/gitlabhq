@@ -13,6 +13,7 @@ module API
     end
 
     feature_category :webhooks
+    urgency :low
 
     helpers ::API::Helpers::WebHooksHelpers
 

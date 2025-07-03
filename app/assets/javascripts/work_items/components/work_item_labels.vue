@@ -256,39 +256,48 @@ export default {
         await this.updateLabels({ addLabelIds, removeLabelIds });
       }
     },
-    updateDraftCache() {
+    updateDraftCache(removeLabelIds = []) {
+      let labels = this.labelsCache.filter(({ id }) => this.selectedLabelsIds.includes(id));
+      if (removeLabelIds.length) {
+        labels = labels.filter(({ id }) => !removeLabelIds.includes(id));
+      }
+
       this.$emit('updateWidgetDraft', {
         workItemType: this.workItemType,
         fullPath: this.fullPath,
-        labels: this.labelsCache.filter(({ id }) => this.selectedLabelsIds.includes(id)),
+        labels,
       });
     },
     async updateLabels({ addLabelIds = [], removeLabelIds = [] }) {
       try {
         this.updateInProgress = true;
 
-        const {
-          data: {
-            workItemUpdate: { errors },
-          },
-        } = await this.$apollo.mutate({
-          mutation: updateWorkItemMutation,
-          variables: {
-            input: {
-              id: this.workItemId,
-              labelsWidget: {
-                addLabelIds,
-                removeLabelIds,
+        if (this.isCreateFlow) {
+          this.updateDraftCache(removeLabelIds);
+        } else {
+          const {
+            data: {
+              workItemUpdate: { errors },
+            },
+          } = await this.$apollo.mutate({
+            mutation: updateWorkItemMutation,
+            variables: {
+              input: {
+                id: this.workItemId,
+                labelsWidget: {
+                  addLabelIds,
+                  removeLabelIds,
+                },
               },
             },
-          },
-        });
+          });
 
-        if (errors.length > 0) {
-          throw new Error();
+          if (errors.length > 0) {
+            throw new Error();
+          }
+
+          this.track('updated_labels');
         }
-
-        this.track('updated_labels');
         this.$emit('labelsUpdated', [...addLabelIds, ...removeLabelIds]);
       } catch {
         this.$emit('error', i18n.updateError);

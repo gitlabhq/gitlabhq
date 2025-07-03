@@ -81,7 +81,6 @@ export default {
     'app/assets/javascripts/emoji/components/picker.vue',
     'app/assets/javascripts/error_tracking/components/error_details.vue',
     'app/assets/javascripts/error_tracking/components/error_tracking_list.vue',
-    'app/assets/javascripts/error_tracking_settings/components/project_dropdown.vue',
     'app/assets/javascripts/feature_flags/components/empty_state.vue',
     'app/assets/javascripts/feature_flags/components/environments_dropdown.vue',
     'app/assets/javascripts/feature_flags/components/feature_flags.vue',

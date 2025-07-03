@@ -17,12 +17,15 @@ When you add a digital signature to your commit, you provide extra assurance tha
 originated from you, rather than an impersonator. A digital signature is a cryptographic output
 used to verify authenticity.
 
-If GitLab can verify the committer's identity with a public [GPG key](gpg.md), the commit is
-marked **Verified** in the GitLab UI.
-You can then configure [push rules](../push_rules.md) for your project to:
+It's important to understand the difference between signed and verified commits:
 
-- Reject individual unsigned commits.
-- Reject all commits from unverified users.
+- Signed commits have a cryptographic signature attached that proves the commit's
+  integrity and authenticity. The signature is created using a private key.
+- Verified commits have signatures that GitLab can validate against a known public key
+  stored in a user's GitLab profile.
+
+If GitLab can verify the committer's identity with a public key, the commit is
+marked **Verified** in the GitLab UI.
 
 {{< alert type="note" >}}
 
@@ -31,11 +34,11 @@ applies it. Commit signing verifies only the committer's identity.
 
 {{< /alert >}}
 
-Sign commits with your:
+GitLab supports the following commit signing methods:
 
-- [SSH key](ssh.md).
-- [GPG key](gpg.md).
-- [Personal x.509 certificate](x509.md).
+- [SSH key](ssh.md)
+- [GPG key](gpg.md)
+- [Personal X.509 certificate](x509.md)
 
 ## Verify commits
 
@@ -64,13 +67,13 @@ To review commits for a merge request, or for an entire project, and verify they
 You can also [use the Commits API](../../../../api/commits.md#get-signature-of-a-commit)
 to check a commit's signature.
 
-### Verify commits made in the web UI
+### Verify web UI commits
 
 GitLab uses SSH to sign commits created through the web UI.
 To verify these commits locally, obtain the GitLab public key for signing web commits
 using the [Web Commits API](../../../../api/web_commits.md#get-public-signing-key).
 
-### Use gitmailmap with verified commits
+### Use `gitmailmap` with verified commits
 
 {{< history >}}
 
@@ -91,6 +94,14 @@ When using a `mailmap` author mapping, it's possible to have a verified commit w
 
 For SSH and UI signatures with `mailmap` author mappings, GitLab displays an orange verified label with a warning sign.
 To restore the green verified label, verify the mapped email address, or remove the `mailmap` entry.
+
+## Enforce signed commits with push rules
+
+You can require signed commits across your projects using push rules.
+The **Reject unsigned commits** push rule prevents any unsigned commits from being pushed
+to a repository, helping organizations maintain code integrity and meet compliance requirements.
+
+For more information about how this rule works and its limitations, see [Require signed commits](../push_rules.md#require-signed-commits).
 
 ## Troubleshooting
 

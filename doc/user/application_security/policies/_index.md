@@ -57,6 +57,7 @@ To enforce policies to meet your requirements, consider the following factors:
 - **Inheritance**: By default, a policy is enforced on the organizational units it's linked to, and
   all their descendent subgroups and their projects.
 - **Scope**: To customize policy enforcement, you can define a policy's scope to match your needs.
+- **Centralized security policy management**: To apply security policies across multiple groups and projects from a single, centralized location, GitLab Self-Managed instance administrators can designate a compliance and security policy (CSP) group. For more information, see [centralized security policy management](centralized_security_policy_management.md).
 
 #### Inheritance
 

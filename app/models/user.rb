@@ -1572,7 +1572,7 @@ class User < ApplicationRecord
   end
 
   def can_select_namespace?
-    several_namespaces? || admin
+    has_groups_allowing_project_creation? || admin
   end
 
   def can?(action, subject = :global, **opts)
@@ -1616,15 +1616,6 @@ class User < ApplicationRecord
     end
   end
   # rubocop: enable CodeReuse/ServiceClass
-
-  def several_namespaces?
-    union_sql = ::Gitlab::SQL::Union.new(
-      [owned_groups,
-        maintainers_groups,
-        groups_with_developer_project_access]).to_sql
-
-    ::Group.from("(#{union_sql}) #{::Group.table_name}").any?
-  end
 
   def namespace_id
     namespace.try :id
@@ -2011,14 +2002,13 @@ class User < ApplicationRecord
     enabled_following && user.enabled_following
   end
 
-  def has_forkable_groups?
-    Groups::AcceptingProjectCreationsFinder.new(self).execute.exists?
+  def has_groups_allowing_project_creation?
+    groups_allowing_project_creation.exists?
   end
 
   def forkable_namespaces
     strong_memoize(:forkable_namespaces) do
       personal_namespace = Namespace.where(id: namespace_id)
-      groups_allowing_project_creation = Groups::AcceptingProjectCreationsFinder.new(self).execute
 
       Namespace.from_union(
         [
@@ -2899,9 +2889,7 @@ class User < ApplicationRecord
   def ci_owned_project_runners_from_project_members
     project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
 
-    Ci::Runner
-      .joins(:runner_projects)
-      .where(runner_projects: { project: project_ids })
+    Ci::Runner.belonging_to_project(project_ids)
   end
 
   def ci_owned_project_runners_from_group_members
@@ -2988,6 +2976,10 @@ class User < ApplicationRecord
       # We cannot disclose the Pages unique domain, hence returning generic error message
       errors.add(:username, _('has already been taken'))
     end
+  end
+
+  def groups_allowing_project_creation
+    Groups::AcceptingProjectCreationsFinder.new(self).execute
   end
 end
 

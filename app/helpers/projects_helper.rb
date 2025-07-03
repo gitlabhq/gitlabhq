@@ -498,7 +498,7 @@ module ProjectsHelper
     return unless current_user
     return if project.empty_repo?
 
-    if current_user.already_forked?(project) && !current_user.has_forkable_groups?
+    if current_user.already_forked?(project) && !current_user.has_groups_allowing_project_creation?
       user_fork_url = namespace_project_path(current_user, current_user.fork_of(project))
     end
 

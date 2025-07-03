@@ -22,7 +22,6 @@ describe('error tracking settings project dropdown', () => {
           'projects',
           'projectSelectionLabel',
           'selectedProject',
-          'token',
         ),
         hasProjects: false,
         isProjectInvalid: false,

@@ -35,9 +35,7 @@ You can use Docker commands to build and push container images to your container
 
 ## Use GitLab CI/CD
 
-You can use [GitLab CI/CD](../../../ci/_index.md) to build and push container images to the
-Container Registry. You can use CI/CD to test, build, and deploy your project from the container
-image you created.
+Use [GitLab CI/CD](../../../ci/_index.md) to build, push, test, and deploy container images from the container registry.
 
 ### Configure your `.gitlab-ci.yml` file
 
@@ -72,6 +70,8 @@ Prerequisites:
 
 {{< tab title="From the container registry" >}}
 
+Use this approach when you want to use images stored in your GitLab container registry.
+
 In your `.gitlab-ci.yml` file:
 
 - Update `image` and `services` to point to your registry.
@@ -95,9 +95,11 @@ build:
 
 {{< tab title="With the Dependency Proxy" >}}
 
+Use this approach to cache images from external registries like Docker Hub for faster builds and to avoid rate limits.
+
 In your `.gitlab-ci.yml` file:
 
-- Update `image` and `services` to point to your dependency proxy.
+- Update `image` and `services` to use the Dependency Proxy prefix.
 - Add a service [alias](../../../ci/services/_index.md#available-settings-for-services).
 
 Your `.gitlab-ci.yml` should look similar to this:
