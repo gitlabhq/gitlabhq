@@ -548,6 +548,14 @@ RSpec.configure do |config|
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
     Users::Internal.clear_memoization(:support_bot_id)
   end
+
+  config.before do
+    # Reconfigures the Cloud Connector data loader to use YamlDataLoader as the default
+    # instead of the DatabaseDataLoader. This is because specs should not rely on
+    # database contents. But this can be overridden to use DatabaseDataLoader by explicitly specifying the
+    # data loader class in the context.
+    Gitlab::CloudConnector::Configuration.data_loader_class = Gitlab::CloudConnector::DataModel::YamlDataLoader
+  end
 end
 
 # Disabled because it's causing N+1 queries.
