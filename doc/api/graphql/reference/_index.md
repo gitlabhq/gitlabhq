@@ -6596,6 +6596,7 @@ Input type: `GroupAuditEventStreamingDestinationsUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationgroupauditeventstreamingdestinationsupdateactive"></a>`active` | [`Boolean`](#boolean) | Active status of the destination. |
 | <a id="mutationgroupauditeventstreamingdestinationsupdatecategory"></a>`category` | [`String`](#string) | Destination category. |
 | <a id="mutationgroupauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationgroupauditeventstreamingdestinationsupdateconfig"></a>`config` | [`JSON`](#json) | Destination config. |
@@ -7029,6 +7030,7 @@ Input type: `InstanceAuditEventStreamingDestinationsUpdateInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mutationinstanceauditeventstreamingdestinationsupdateactive"></a>`active` | [`Boolean`](#boolean) | Active status of the destination. |
 | <a id="mutationinstanceauditeventstreamingdestinationsupdatecategory"></a>`category` | [`String`](#string) | Destination category. |
 | <a id="mutationinstanceauditeventstreamingdestinationsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationinstanceauditeventstreamingdestinationsupdateconfig"></a>`config` | [`JSON`](#json) | Destination config. |
@@ -30439,6 +30441,7 @@ Represents an external destination to stream group level audit events.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="groupauditeventstreamingdestinationactive"></a>`active` | [`Boolean!`](#boolean) | Active status of the destination. |
 | <a id="groupauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
 | <a id="groupauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
 | <a id="groupauditeventstreamingdestinationeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |
@@ -31034,6 +31037,7 @@ Represents an external destination to stream instance level audit events.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="instanceauditeventstreamingdestinationactive"></a>`active` | [`Boolean!`](#boolean) | Active status of the destination. |
 | <a id="instanceauditeventstreamingdestinationcategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
 | <a id="instanceauditeventstreamingdestinationconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
 | <a id="instanceauditeventstreamingdestinationeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |
@@ -49589,6 +49593,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="auditeventstreamingdestinationinterfaceactive"></a>`active` | [`Boolean!`](#boolean) | Active status of the destination. |
 | <a id="auditeventstreamingdestinationinterfacecategory"></a>`category` | [`String!`](#string) | Category of the external destination to send audit events to. |
 | <a id="auditeventstreamingdestinationinterfaceconfig"></a>`config` | [`JSON!`](#json) | Config of the external destination. |
 | <a id="auditeventstreamingdestinationinterfaceeventtypefilters"></a>`eventTypeFilters` | [`[String!]!`](#string) | List of event type filters added for streaming. |

@@ -25,7 +25,7 @@ supported distributions and architectures.
 - OS requirements:
   - OpenSUSE Leap 15.6
   - SLES 12
-  - SLES 15
+  - SLES 15 SP6
 - See the [installation requirements](../requirements.md) to learn about the
   minimum hardware requirements.
 - Before you begin, make sure you have correctly

@@ -59,10 +59,12 @@ RSpec.shared_examples 'it has loose foreign keys' do
   end
 end
 
-RSpec.shared_examples 'cleanup by a loose foreign key' do
+RSpec.shared_examples 'cleanup by a loose foreign key' do |on_delete: nil|
   include_context 'for loose foreign keys'
 
   it 'cleans up (delete or nullify) the model' do
+    expect(foreign_key_definition.on_delete).to eq(on_delete.to_sym) if on_delete.present?
+
     puts("##+ Additional Debug Logs for LFK flakiness +##")
     puts("## Parent: #{parent.inspect} ##")
     parent.delete

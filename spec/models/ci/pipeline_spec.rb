@@ -6577,4 +6577,12 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       expect(pipeline.queued_duration).to be_nil
     end
   end
+
+  describe "association dependent" do
+    it_behaves_like "cleanup by a loose foreign key", on_delete: :async_nullify do
+      let!(:lfk_column) { :trigger_id }
+      let!(:parent) { create(:ci_trigger) }
+      let!(:model) { create(:ci_pipeline, trigger: parent) }
+    end
+  end
 end

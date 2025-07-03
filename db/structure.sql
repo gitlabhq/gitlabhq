@@ -10003,6 +10003,59 @@ CREATE TABLE ar_internal_metadata (
     updated_at timestamp(6) without time zone NOT NULL
 );
 
+CREATE TABLE arkose_sessions (
+    id bigint NOT NULL,
+    session_created_at timestamp with time zone,
+    checked_answer_at timestamp with time zone,
+    verified_at timestamp with time zone NOT NULL,
+    user_id bigint NOT NULL,
+    global_score integer,
+    custom_score integer,
+    challenge_shown boolean DEFAULT false NOT NULL,
+    challenge_solved boolean DEFAULT false NOT NULL,
+    session_is_legit boolean DEFAULT true NOT NULL,
+    is_tor boolean DEFAULT false NOT NULL,
+    is_vpn boolean DEFAULT false NOT NULL,
+    is_proxy boolean DEFAULT false NOT NULL,
+    is_bot boolean DEFAULT false NOT NULL,
+    session_xid text NOT NULL,
+    telltale_user text,
+    user_agent text,
+    user_language_shown text,
+    device_xid text,
+    telltale_list text[] DEFAULT '{}'::text[] NOT NULL,
+    user_ip text,
+    country text,
+    region text,
+    city text,
+    isp text,
+    connection_type text,
+    risk_band text,
+    risk_category text,
+    CONSTRAINT check_1a6f4682be CHECK ((char_length(user_agent) <= 255)),
+    CONSTRAINT check_1ccf4778d0 CHECK ((char_length(telltale_user) <= 128)),
+    CONSTRAINT check_20eae4e360 CHECK ((char_length(risk_band) <= 64)),
+    CONSTRAINT check_394c3c0153 CHECK ((char_length(session_xid) <= 64)),
+    CONSTRAINT check_5a92894aa9 CHECK ((char_length(device_xid) <= 64)),
+    CONSTRAINT check_8d83d12f95 CHECK ((char_length(user_ip) <= 64)),
+    CONSTRAINT check_940ffc498d CHECK ((char_length(risk_category) <= 64)),
+    CONSTRAINT check_9b4c7551e7 CHECK ((char_length(city) <= 64)),
+    CONSTRAINT check_b81756eb85 CHECK ((char_length(isp) <= 128)),
+    CONSTRAINT check_ba409cc401 CHECK ((char_length(region) <= 64)),
+    CONSTRAINT check_c745f5db92 CHECK ((char_length(country) <= 64)),
+    CONSTRAINT check_cd4cc1f7dc CHECK ((char_length(user_language_shown) <= 64)),
+    CONSTRAINT check_d4fd1df18c CHECK ((char_length(connection_type) <= 64))
+);
+
+CREATE SEQUENCE arkose_sessions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE arkose_sessions_id_seq OWNED BY arkose_sessions.id;
+
 CREATE TABLE atlassian_identities (
     user_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -27415,6 +27468,8 @@ ALTER TABLE ONLY approver_groups ALTER COLUMN id SET DEFAULT nextval('approver_g
 
 ALTER TABLE ONLY approvers ALTER COLUMN id SET DEFAULT nextval('approvers_id_seq'::regclass);
 
+ALTER TABLE ONLY arkose_sessions ALTER COLUMN id SET DEFAULT nextval('arkose_sessions_id_seq'::regclass);
+
 ALTER TABLE ONLY atlassian_identities ALTER COLUMN user_id SET DEFAULT nextval('atlassian_identities_user_id_seq'::regclass);
 
 ALTER TABLE ONLY audit_events ALTER COLUMN id SET DEFAULT nextval('audit_events_id_seq'::regclass);
@@ -29531,6 +29586,9 @@ ALTER TABLE ONLY approvers
 
 ALTER TABLE ONLY ar_internal_metadata
     ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+ALTER TABLE ONLY arkose_sessions
+    ADD CONSTRAINT arkose_sessions_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY atlassian_identities
     ADD CONSTRAINT atlassian_identities_pkey PRIMARY KEY (user_id);
@@ -34593,6 +34651,12 @@ CREATE INDEX index_approver_groups_on_target_id_and_target_type ON approver_grou
 CREATE INDEX index_approvers_on_target_id_and_target_type ON approvers USING btree (target_id, target_type);
 
 CREATE INDEX index_approvers_on_user_id ON approvers USING btree (user_id);
+
+CREATE INDEX index_arkose_sessions_on_session_xid ON arkose_sessions USING btree (session_xid);
+
+CREATE INDEX index_arkose_sessions_on_user_id ON arkose_sessions USING btree (user_id);
+
+CREATE INDEX index_arkose_sessions_on_verified_at ON arkose_sessions USING btree (verified_at);
 
 CREATE UNIQUE INDEX index_atlassian_identities_on_extern_uid ON atlassian_identities USING btree (extern_uid);
 
@@ -45737,6 +45801,9 @@ ALTER TABLE ONLY service_desk_custom_email_credentials
 
 ALTER TABLE ONLY software_license_policies
     ADD CONSTRAINT fk_rails_87b2247ce5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY arkose_sessions
+    ADD CONSTRAINT fk_rails_87ceb2456f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY achievements
     ADD CONSTRAINT fk_rails_87e990f752 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
