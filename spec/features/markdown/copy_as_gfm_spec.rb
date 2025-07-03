@@ -21,6 +21,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :markdown do
       user = create(:user)
       @project.add_maintainer(user)
       sign_in(user)
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(101)
       visit project_issue_path(@project, @feat.issue)
     end
 
