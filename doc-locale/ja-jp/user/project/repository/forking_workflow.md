@@ -108,7 +108,7 @@ GitLab UI からフォークを更新するには:
 1. すべての変更をブランチ (`main` ではない) で作成します。
 1. [機密イシューのマージリクエスト](../merge_requests/confidential.md)では作業しないでください。これには、`main`への変更が必要です。
 
-[リポジトリのミラーリング](mirror/_index.md)は、フォークを元のリポジトリと同期した状態に保ちます。この方法では、手動で `git pull` を実行する必要はなく、1 時間に 1 回フォークが更新されます。手順については、[プルミラーリングの Configure ](mirror/pull.md#configure-pull-mirroring)をお読みください。
+[リポジトリのミラーリング](mirror/_index.md)は、フォークを元のリポジトリと同期した状態に保ちます。この方法では、手動で `git pull` を実行する必要はなく、1 時間に 1 回フォークが更新されます。手順については、[プルミラーリングの Configure](mirror/pull.md#configure-pull-mirroring)をお読みください。
 
 {{< alert type="warning" >}}
 

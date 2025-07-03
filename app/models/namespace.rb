@@ -12,6 +12,7 @@ class Namespace < ApplicationRecord
   include Namespaces::Traversal::Recursive
   include Namespaces::Traversal::Linear
   include Namespaces::Traversal::Cached
+  include Namespaces::Traversal::Traversable
   include Namespaces::AdjournedDeletable
   include EachBatch
   include BlocksUnsafeSerialization

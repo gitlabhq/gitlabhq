@@ -23,20 +23,16 @@ fi
 
 # 1. Run Markdownlint
 printf "${COLOR_GREEN}INFO: Running Markdownlint on i18n files...${COLOR_RESET}\n"
-# PHASE 1: Check but don't fail on markdown errors
-# TODO: PHASE 2, fail the build with proper error codes https://gitlab.com/gitlab-com/localization/docs-site-localization/-/issues/127#note_2450926413
-markdownlint-cli2 ${MD_DOC_PATH} || {
+(cd doc-locale && markdownlint-cli2 --config .markdownlint/.markdownlint-cli2.yaml '**/*.md') || {
   printf "${COLOR_YELLOW}WARNING: Markdownlint found issues in i18n files, but continuing...${COLOR_RESET}\n"
-  # Error code not incremented in Phase 1
+  ((ERRORCODE++))
 }
 
 # 2. Run Vale
 printf "${COLOR_GREEN}INFO: Running Vale on i18n files...${COLOR_RESET}\n"
-# PHASE 1: Check but don't fail on vale errors
-# TODO: PHASE 2, fail the build with proper error codes https://gitlab.com/gitlab-com/localization/docs-site-localization/-/issues/127#note_2450926413
 vale --minAlertLevel error --filter='.Name matches "gitlab_docs"' ${MD_DOC_PATH_VALE} || {
   printf "${COLOR_YELLOW}WARNING: Vale found issues in i18n files, but continuing...${COLOR_RESET}\n"
-  # Error code not incremented in Phase 1
+  ((ERRORCODE++))
 }
 
 # Report results

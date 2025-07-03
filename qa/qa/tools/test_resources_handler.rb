@@ -185,8 +185,9 @@ module QA
           wait_for_resource_deletion(resource['api_path'])
 
           unless resource_not_found?(resource['api_path'])
-            logger.info("Permanently deleting #{resource_info}..."\
-                        "\e[31mFAILED - #{response} - Resource still exists\e[0m")
+            logger.info("Permanently deleting #{resource_info}..." \
+              "\e[31mFAILED - #{response} - Resource still exists\e[0m")
+
             return false
           end
 
@@ -226,12 +227,14 @@ module QA
       end
 
       def files
-        logger.info('Gathering JSON files...')
+        logger.info("Gathering JSON files using pattern #{@file_pattern}...")
         files = Dir.glob(@file_pattern)
 
         if files.empty?
-          logger.info("There is no file with this pattern #{@file_pattern}")
+          logger.info("There is no file with this pattern")
           exit 0
+        else
+          logger.info("Found #{files.size} JSON file(s) to process")
         end
 
         files.reject! { |file| File.zero?(file) }

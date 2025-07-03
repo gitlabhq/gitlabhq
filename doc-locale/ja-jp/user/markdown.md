@@ -571,15 +571,16 @@ The following codeblock uses HTML to skip the Vale ReferenceLinks test.
 Do not change it back to a markdown codeblock.
 -->
 
-<pre class="highlight"><code>- この行は、[インラインスタイルのリンク]（https://www.google.com）を示しています
-- この行は、[同じディレクトリ内のリポジトリファイルへのリンク]（permissions.md）を示しています
-- この行は、[1つ上のディレクトリにあるファイルへの相対リンク](../_index.md）を示しています
-- この行は、[タイトルテキストも含むリンク]（https://www.google.com "このリンクはGoogleに移動します！"）を示しています
+<pre class="highlight"><code>
+- この行は、[インラインスタイルのリンク](https://www.google.com)を示しています
+- この行は、[同じディレクトリ内のリポジトリファイルへのリンク](permissions.md)を示しています
+- この行は、[1つ上のディレクトリにあるファイルへの相対リンク](../_index.md)を示しています
+- この行は、[タイトルテキストも含むリンク](https://www.google.com "このリンクはGoogleに移動します！")を示しています
 
 見出しIDアンカーを使用する:
 
-- この行は、[#と見出しIDを使用した、別のMarkdownページ上のセクション]（permissions.md#project-features-permissions）にリンクします
-- この行は、[#と見出しIDを使用した、同じページ上の別のセクション]（#heading-ids-and-links）にリンクします
+- この行は、[#と見出しIDを使用した、別のMarkdownページ上のセクション](permissions.md#project-features-permissions)にリンクします
+- この行は、[#と見出しIDを使用した、同じページ上の別のセクション](#heading-ids-and-links)にリンクします
 
 参照を使用する:
 
@@ -589,9 +590,9 @@ Do not change it back to a markdown codeblock.
 
 参照リンクが後から続く可能性があることを示すテキスト。
 
-[大文字小文字を区別しない、任意の参照テキスト]: https://www.mozilla.org/en-US/
-[1]: https://slashdot.org
-[リンクテキスト自体]: https://about.gitlab.com/
+&#91;大文字小文字を区別しない、任意の参照テキスト]: https://www.mozilla.org/en-US/
+&#91;1]: https://slashdot.org
+&#91;リンクテキスト自体]: https://about.gitlab.com/
 </code></pre>
 
 - この行は、[インラインスタイルのリンク](https://www.google.com)を示しています
@@ -601,8 +602,8 @@ Do not change it back to a markdown codeblock.
 
 見出しIDアンカーを使用する:
 
-- この行は、[\#と見出しIDを使用した、別のMarkdownページ上のセクション](permissions.md#project-members-permissions)にリンクします
-- この行は、[\#と見出しIDを使用した、同じページ上の別のセクション](#heading-ids-and-links)にリンクします
+- この行は、[#と見出しIDを使用した、別のMarkdownページ上のセクション](permissions.md#project-members-permissions)にリンクします
+- この行は、[#と見出しIDを使用した、同じページ上の別のセクション](#heading-ids-and-links)にリンクします
 
 参照を使用する:
 
@@ -1109,7 +1110,7 @@ Do not change to a reference style link.
 参照スタイル:
 
 <pre class="highlight"><code>![代替テキスト1][ロゴ]
-[ロゴ]: img/markdown_logo_v17_11.png "タイトルテキスト"
+&#91;ロゴ]: img/markdown_logo_v17_11.png "タイトルテキスト"
 </code></pre>
 
 ![代替テキスト](img/markdown_logo_v17_11.png "タイトルテキスト")
@@ -1837,7 +1838,7 @@ Markdownは、ページをフォーマットするために次のASCII文字を�
 
 | 食べ物            | この食べ物が好きですか？(circle)|
 |-----------------|--------------------------------|
-|  ピザ          |  はい|いいえ                     |
+|  ピザ          |  はい\|いいえ                     |
 
 **太字ではなく、複数のアスタリスクの間に配置されたイタリックテキスト**
 
@@ -1882,18 +1883,18 @@ Do not change it back to a markdown codeblock.
 [^footnote-42]:このテキストは別の脚注です。
 </code></pre>
 
-脚注参照タグは\[^1]のようになります。
+脚注参照タグは[^1]のようになります。
 
-参照タグ\[^footnote-42]は、文字と数字の組み合わせです。
+参照タグ[^footnote-42]は、文字と数字の組み合わせです。
 
 <!--
 Do not delete the single space before the [^1] and [^footnotes] references below.
 These are used to force the Vale ReferenceLinks check to skip these examples.
 -->
 
- \[^1]:このテキストは脚注の中にあります。
+ [^1]:このテキストは脚注の中にあります。
 
- \[^footnote-42]:このテキストは別の脚注です。
+ [^footnote-42]:このテキストは別の脚注です。
 
 ## インラインHTML
 
@@ -2136,22 +2137,22 @@ Wikiでは、[diagrams.net](https://app.diagrams.net/)エディタを使用し�
 
 次の手順により、プレーンテキストエディタで図を作成できます。
 
-1. 編集するWikiページで\[**編集**]を選択。
-1. テキストボックスで、プレーンテキストエディタを使用していることを確認（左下のボタンに\[**リッチテキスト編集に切り替える**]と表示されます）。
-1. エディタのツールバーで\[**図の挿入または編集**]（{{< icon name="diagram" >}}）を選択。
+1. 編集するWikiページで**編集**を選択。
+1. テキストボックスで、プレーンテキストエディタを使用していることを確認（左下のボタンに**リッチテキスト編集に切り替える**と表示されます）。
+1. エディタのツールバーで**図の挿入または編集**（{{< icon name="diagram" >}}）を選択。
 1. [app.diagrams.net](https://app.diagrams.net/)エディタで図を作成。
-1. \[**保存して終了**を選択。
+1. **保存して終了**を選択。
 
 図へのMarkdown画像参照がWikiコンテンツに挿入されます。
 
 次の手順により、プレーンテキストエディタで図を編集できます。
 
-1. 編集するWikiページで\[**編集**]を選択。
-1. テキストボックスで、プレーンテキストエディタを使用していることを確認（左下のボタンに\[**リッチテキスト編集に切り替える**]と表示されます）。
+1. 編集するWikiページで**編集**を選択。
+1. テキストボックスで、プレーンテキストエディタを使用していることを確認（左下のボタンに**リッチテキスト編集に切り替える**と表示されます）。
 1. 図を含むMarkdown画像参照内にカーソルを置く。
-1. エディタのツールバーで\[**図の挿入または編集**]（{{< icon name="diagram" >}}）を選択。
+1. エディタのツールバーで**図の挿入または編集**（{{< icon name="diagram" >}}）を選択。
 1. [app.diagrams.net](https://app.diagrams.net/)エディタで図を編集。
-1. \[**保存して終了**]を選択。
+1. **保存して終了**を選択。
 
 図へのMarkdown画像参照がWikiコンテンツに挿入され、前の図が置き換えられます。
 
@@ -2159,23 +2160,23 @@ Wikiでは、[diagrams.net](https://app.diagrams.net/)エディタを使用し�
 
 次の手順により、リッチテキストエディタで図を作成できます。
 
-1. 編集するWikiページで\[**編集**]を選択。
-1. テキストボックスで、リッチテキストエディタを使用していることを確認します（左下のボタンに\[**プレーンテキスト編集に切り替える**]と表示されます）。
-1. エディタのツールバーで\[**その他のオプション**]（{{< icon name="plus" >}}）を選択。
-1. ドロップダウンリストで\[**図の作成または編集**]を選択。
+1. 編集するWikiページで**編集**を選択。
+1. テキストボックスで、リッチテキストエディタを使用していることを確認します（左下のボタンに**プレーンテキスト編集に切り替える**と表示されます）。
+1. エディタのツールバーで**その他のオプション**（{{< icon name="plus" >}}）を選択。
+1. ドロップダウンリストで**図の作成または編集**を選択。
 1. [app.diagrams.net](https://app.diagrams.net/)エディタで図を作成。
-1. \[**保存して終了**]を選択。
+1. **保存して終了**を選択。
 
 diagrams.netエディタで視覚化された図がWikiコンテンツに挿入されます。
 
 次の手順により、リッチテキストエディタで図を編集できます。
 
-1. 編集するWikiページで\[**編集**]を選択。
-1. テキストボックスで、リッチテキストエディタを使用していることを確認します（左下のボタンに\[**プレーンテキスト編集に切り替える**]と表示されます）。
+1. 編集するWikiページで**編集**を選択。
+1. テキストボックスで、リッチテキストエディタを使用していることを確認します（左下のボタンに**プレーンテキスト編集に切り替える**と表示されます）。
 1. 編集する図を選択。
-1. フローティングツールバーで\[**図の編]**]（{{< icon name="diagram" >}}）を選択。
+1. フローティングツールバーで**図の編]**（{{< icon name="diagram" >}}）を選択。
 1. [app.diagrams.net](https://app.diagrams.net/)エディタで図を編集。
-1. \[**保存して終了**]を選択。
+1. **保存して終了**を選択。
 
 選択した図が更新されたバージョンに置き換えられます。
 

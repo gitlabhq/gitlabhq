@@ -62,7 +62,7 @@ namespace :tw do
       CodeOwnerRule.new('Organizations', '@phillipwells'),
       CodeOwnerRule.new('Organization', '@lciutacu'),
       CodeOwnerRule.new('Package Registry', '@z_painter'),
-      CodeOwnerRule.new('Personal Productivity', '@sselhorn'),
+      CodeOwnerRule.new('Personal Productivity', '@kpaizee'),
       CodeOwnerRule.new('Pipeline Authoring', '@marcel.amirault'),
       CodeOwnerRule.new('Pipeline Execution', '@lyspin'),
       CodeOwnerRule.new('Pipeline Security', '@marcel.amirault'),

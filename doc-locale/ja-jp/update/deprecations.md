@@ -4288,7 +4288,7 @@ GitLabバージョン16.0 - 16.2では、[バンドルされたGrafanaを再度�
 
 </div>
 
-**更新: **以前に、GitLab 16.0で既存のライセンスコンプライアンスCIテンプレートを削除すると発表しました。ただし、[CycloneDXファイルのライセンススキャン](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/)に関するパフォーマンスの問題のため、代わりに16.3でこれを行います。
+**更新**: 以前に、GitLab 16.0で既存のライセンスコンプライアンスCIテンプレートを削除すると発表しました。ただし、[CycloneDXファイルのライセンススキャン](https://docs.gitlab.com/user/compliance/license_scanning_of_cyclonedx_files/)に関するパフォーマンスの問題のため、代わりに16.3でこれを行います。
 
 GitLab[**ライセンスコンプライアンス**](https://docs.gitlab.com/user/compliance/license_approval_policies/)CI/CDテンプレートは非推奨となり、GitLab 16.3リリースで削除される予定です。
 
@@ -4479,7 +4479,7 @@ GitLabにCAS OmniAuthプロバイダーを提供する`omniauth-cas3` gemは、�
 
 </div>
 
-**更新: **以前に、MobSFベースのGitLab SASTアナライザーがマルチモジュールAndroidプロジェクトをスキャンする方法の変更を発表しました。その変更はキャンセルされていて、対応は必要ありません。
+**更新**: 以前に、MobSFベースのGitLab SASTアナライザーがマルチモジュールAndroidプロジェクトをスキャンする方法の変更を発表しました。その変更はキャンセルされていて、対応は必要ありません。
 
 スキャンする単一のモジュールを変更する代わりに、[マルチモジュールのサポートを改善](https://gitlab.com/gitlab-org/security-products/analyzers/mobsf/-/merge_requests/73)しました。
 
@@ -5370,7 +5370,7 @@ GitLab 16.0以降、GitLab SAST CI/CDテンプレートは、.NETに[セキュ�
 
 影響を受けるアナライザーにカスタマイズを適用した場合、またはパイプラインでSemgrepベースのアナライザーを現在無効にしている場合は、[この変更に関する非推奨の問題](https://gitlab.com/gitlab-org/gitlab/-/issues/390416#breaking-change)に詳述されているように対応する必要があります。
 
-**更新: **この変更の範囲を縮小しました。GitLab 16.0では、次の変更は行いません。
+**更新**: この変更の範囲を縮小しました。GitLab 16.0では、次の変更は行いません。
 
 1. [PHPCS Security Audit](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit)に基づくアナライザーのサポートを削除し、[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)でGitLabが管理する検出ルールに置き換えます。
 1. [SpotBugsベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)のスコープからScalaを削除し、[Semgrepベースのアナライザー](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)でGitLabが管理する検出ルールに置き換えます。
@@ -5452,7 +5452,7 @@ PHPCS Security Auditベースのアナライザーを置き換える作業は[�
 
 上記のテンプレートのいずれかを使用していて、`_DISABLED`変数を使用しているが、`"true"`以外の値を設定している場合は、16.0リリース前にパイプラインをテストすることをお勧めします。
 
-**更新: **以前、影響を受けるテンプレートの`rules`を更新して、デフォルトで[マージリクエストパイプライン](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/)で実行することを発表しました。しかし、[非推奨に関する問題で説明されている](https://gitlab.com/gitlab-org/gitlab/-/issues/388988#note_1372629948)互換性の問題により、GitLab 16.0でこの変更を行うことはなくなりました。上記のように、`_DISABLED`変数の変更は引き続きリリースします。
+**更新**: 以前、影響を受けるテンプレートの`rules`を更新して、デフォルトで[マージリクエストパイプライン](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/)で実行することを発表しました。しかし、[非推奨に関する問題で説明されている](https://gitlab.com/gitlab-org/gitlab/-/issues/388988#note_1372629948)互換性の問題により、GitLab 16.0でこの変更を行うことはなくなりました。上記のように、`_DISABLED`変数の変更は引き続きリリースします。
 
 </div>
 
@@ -6372,7 +6372,7 @@ GitLab 13.0では、Geo管理者UIに新しいプロジェクトとデザイン�
 
 </div>
 
-GitLab 14.8では、[`geo:db:*` Rakeタスクを、[複数のデータベースのRails 6サポートを使用するようにGeo追跡データベースを切り替えた](https://gitlab.com/groups/gitlab-org/-/epics/6458)後に可能になった組み込みタスクに置き換えます。](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77269/diffs)次の`geo:db:*`タスクは、対応する`db:*:geo`タスクに置き換えられます。
+GitLab 14.8では、[`geo:db:*` Rakeタスクを組み込みタスクに置き換えます](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77269/diffs)。これは[複数のデータベースのRails 6サポートを使用するようにGeo追跡データベースを切り替えた](https://gitlab.com/groups/gitlab-org/-/epics/6458)後に可能になりました。次の`geo:db:*`タスクは、対応する`db:*:geo`タスクに置き換えられます。
 
 - `geo:db:drop` -> `db:drop:geo`
 - `geo:db:create` -> `db:create:geo`

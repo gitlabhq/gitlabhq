@@ -46,8 +46,6 @@ module Integrations
       :enable_ssl_verification,
       :exclude_service_accounts,
       :external_wiki_url,
-      :google_iap_service_account_json,
-      :google_iap_audience_client_id,
       :google_play_protected_refs,
       :group_confidential_mention_events,
       :group_mention_events,

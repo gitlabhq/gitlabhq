@@ -1114,6 +1114,7 @@ export default {
                 <div class="gl-mt-3 gl-flex gl-flex-wrap gl-justify-between gl-gap-y-3">
                   <work-item-award-emoji
                     v-if="workItemAwardEmoji"
+                    :work-item-archived="workItem.archived"
                     :work-item-id="workItem.id"
                     :work-item-fullpath="workItemFullPath"
                     :award-emoji="workItemAwardEmoji.awardEmoji"

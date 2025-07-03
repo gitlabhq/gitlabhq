@@ -721,7 +721,7 @@ GitLabは、[`rules:exists`](../../../ci/yaml/_index.md#rulesexists)に依存し
 
 これで、パイプラインに依存関係スキャンジョブが含まれるようになります。
 
-#### CI/CDコンポーネントを使用します。
+#### CI/CDコンポーネントを使用します
 
 {{< history >}}
 
@@ -815,7 +815,7 @@ CI/CD変数を使用して、依存関係スキャンの動作を[カスタマ�
 | `DS_GRADLE_RESOLUTION_POLICY`        | `gemnasium-maven`  | `"failed"`                   | Gradleの依存関係解決の厳密さを制御します。`"none"`を指定すると部分的な結果が許可され、`"failed"`を指定すると依存関係の解決に失敗した場合スキャンも失敗します。 |
 | `SBT_CLI_OPTS`                       | `gemnasium-maven`  |                              | アナライザーが`sbt`に渡すコマンドライン引数のリスト。 |
 | `PIP_INDEX_URL`                      | `gemnasium-python` | `https://pypi.org/simple`    | PythonパッケージインデックスのベースURL。 |
-| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | `PIP_INDEX_URL`に加えて使用する[パッケージインデックス](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url)の追加URLの配列。カンマ区切り。**警告: **この環境変数を使用する場合は、[次のセキュリティに関する考慮事項](#python-projects)をお読みください。 |
+| `PIP_EXTRA_INDEX_URL`                | `gemnasium-python` |                              | `PIP_INDEX_URL`に加えて使用する[パッケージインデックス](https://pip.pypa.io/en/stable/reference/pip_install/#cmdoption-extra-index-url)の追加URLの配列。カンマ区切り。**警告**: この環境変数を使用する場合は、[次のセキュリティに関する考慮事項](#python-projects)をお読みください。 |
 | `PIP_REQUIREMENTS_FILE`              | `gemnasium-python` |                              | スキャン対象のPip要件ファイル。これはパスではなくファイル名です。この環境変数が設定されている場合、指定されたファイルのみがスキャンされます。 |
 | `PIPENV_PYPI_MIRROR`                 | `gemnasium-python` |                              | 設定されている場合、Pipenvで使用されるPyPiインデックスを[ミラー](https://github.com/pypa/pipenv/blob/v2022.1.8/pipenv/environments.py#L263)でオーバーライドします。 |
 | `DS_PIP_VERSION`                     | `gemnasium-python` |                              | 特定のpipバージョン（例: `"19.3"`）のインストールを強制します。それ以外の場合は、Dockerイメージにインストールされているpipが使用されます。 |

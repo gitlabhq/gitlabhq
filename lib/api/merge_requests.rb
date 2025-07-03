@@ -89,10 +89,13 @@ module API
         args[:not][:milestone_title] = args[:not]&.delete(:milestone)
         args[:label_name] = args.delete(:labels)
         args[:not][:label_name] = args[:not]&.delete(:labels)
+        args[:sort] = "#{args[:order_by]}_#{args[:sort]}"
         args[:scope] = args[:scope].underscore if args[:scope]
 
+        parent_type = args[:project_id] ? :project : :group
+        args[:"attempt_#{parent_type}_search_optimizations"] = true
+
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
-        merge_requests = order_merge_requests(merge_requests)
         merge_requests = paginate(merge_requests)
                            .preload(:source_project, :target_project)
 
@@ -171,21 +174,6 @@ module API
       def batch_process_mergeability_checks(merge_requests)
         ::MergeRequests::MergeabilityCheckBatchService.new(merge_requests, current_user).execute
       end
-
-      # rubocop: disable CodeReuse/ActiveRecord
-      def order_merge_requests(merge_requests)
-        if params[:order_by] == 'merged_at'
-          case params[:sort]
-          when 'desc'
-            return merge_requests.reorder_by_metric('merged_at', 'DESC')
-          else
-            return merge_requests.reorder_by_metric('merged_at', 'ASC')
-          end
-        end
-
-        merge_requests.reorder(order_options_with_tie_breaker(override_created_at: false))
-      end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       params :merge_requests_params do
         use :merge_requests_base_params

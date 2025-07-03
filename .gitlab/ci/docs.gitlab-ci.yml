@@ -189,7 +189,6 @@ docs-i18n-lint markdown:
   stage: lint
   needs: []
   script:
-    - 'echo "  link-fragments: false" >> .markdownlint-cli2.yaml'
     - source ./scripts/utils.sh
     - |
       function docs_i18n_lint_markdown() {

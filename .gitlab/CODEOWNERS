@@ -43,6 +43,7 @@
 /doc-locale/ @gitlab-com/localization/maintainers
 /doc/development/i18n/proofreader.md @gitlab-com/localization/maintainers
 /argo_translation.yml @gitlab-com/localization/maintainers
+/doc-locale/.markdownlint/ @gitlab-com/localization/maintainers
 
 config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tkuah
 
@@ -594,7 +595,7 @@ lib/gitlab/checks/
 /doc/administration/auth/ @idurham
 /doc/administration/auth/ldap/ldap_synchronization.md @lciutacu
 /doc/administration/backup_restore/ @axil
-/doc/administration/broadcast_messages.md @sselhorn
+/doc/administration/broadcast_messages.md @kpaizee
 /doc/administration/cells.md @emily.sahlani
 /doc/administration/cicd/ @lyspin
 /doc/administration/cicd/job_logs.md @rsarangadharan
@@ -734,6 +735,7 @@ lib/gitlab/checks/
 /doc/api/chat.md @jglassman1
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @brendan777
+/doc/api/compliance_policy_settings.md @rlehmann1
 /doc/api/container_registry.md @z_painter
 /doc/api/container_repository_protection_rules.md @z_painter
 /doc/api/custom_attributes.md @msedlakjakubowski
@@ -776,7 +778,7 @@ lib/gitlab/checks/
 /doc/api/group_integrations.md @ashrafkhamis
 /doc/api/group_iterations.md @msedlakjakubowski
 /doc/api/group_labels.md @msedlakjakubowski
-/doc/api/group_ldap_links.md @phillipwells
+/doc/api/group_ldap_links.md @lciutacu
 /doc/api/group_level_variables.md @marcel.amirault
 /doc/api/group_markdown_uploads.md @msedlakjakubowski
 /doc/api/group_milestones.md @msedlakjakubowski
@@ -816,7 +818,7 @@ lib/gitlab/checks/
 /doc/api/milestones.md @msedlakjakubowski
 /doc/api/namespaces.md @phillipwells
 /doc/api/notes.md @msedlakjakubowski
-/doc/api/notification_settings.md @sselhorn
+/doc/api/notification_settings.md @kpaizee
 /doc/api/oauth2.md @idurham
 /doc/api/openapi/ @ashrafkhamis
 /doc/api/organizations.md @phillipwells
@@ -829,7 +831,6 @@ lib/gitlab/checks/
 /doc/api/pipeline_triggers.md @lyspin
 /doc/api/pipelines.md @lyspin
 /doc/api/plan_limits.md @idurham
-/doc/api/policy_settings.md @rlehmann1
 /doc/api/project_access_tokens.md @idurham
 /doc/api/project_aliases.md @brendan777
 /doc/api/project_badges.md @phillipwells
@@ -866,7 +867,7 @@ lib/gitlab/checks/
 /doc/api/rest/ @ashrafkhamis
 /doc/api/runners.md @rsarangadharan
 /doc/api/saml.md @idurham
-/doc/api/scim.md @idurham
+/doc/api/scim.md @lciutacu
 /doc/api/search.md @ashrafkhamis
 /doc/api/search_admin.md @ashrafkhamis
 /doc/api/secure_files.md @marcel.amirault
@@ -883,7 +884,7 @@ lib/gitlab/checks/
 /doc/api/templates/gitignores.md @brendan777
 /doc/api/templates/gitlab_ci_ymls.md @marcel.amirault
 /doc/api/templates/licenses.md @rdickenson
-/doc/api/todos.md @sselhorn
+/doc/api/todos.md @kpaizee
 /doc/api/topics.md @phillipwells
 /doc/api/user_email_addresses.md @idurham
 /doc/api/user_follow_unfollow.md @idurham
@@ -989,7 +990,6 @@ lib/gitlab/checks/
 /doc/development/spam_protection_and_captcha/ @gitlab-org/software-supply-chain-security/authorization/approvers
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
-/doc/downgrade_ee_to_ce/ @axil @eread
 /doc/drawers/ @ashrafkhamis
 /doc/editor_extensions/ @aqualls
 /doc/install/ @axil @eread
@@ -1042,9 +1042,10 @@ lib/gitlab/checks/
 /doc/tutorials/issue_triage_complex_group/ @msedlakjakubowski
 /doc/tutorials/issue_triage_group/ @msedlakjakubowski
 /doc/tutorials/kanban/ @msedlakjakubowski
-/doc/tutorials/left_sidebar/ @sselhorn
+/doc/tutorials/left_sidebar/ @kpaizee
 /doc/tutorials/merge_requests/ @aqualls
 /doc/tutorials/move_personal_project_to_group/ @phillipwells
+/doc/tutorials/pipeline_execution_policy/ @rlehmann1
 /doc/tutorials/protected_workflow/ @aqualls
 /doc/tutorials/reviews/ @aqualls
 /doc/tutorials/scan_execution_policy/ @rlehmann1
@@ -1110,8 +1111,12 @@ lib/gitlab/checks/
 /doc/user/group/reporting/ @idurham
 /doc/user/group/repositories_analytics/ @lyspin
 /doc/user/group/roadmap/ @msedlakjakubowski
-/doc/user/group/saml_sso/ @idurham
+/doc/user/group/saml_sso/_index.md @idurham
+/doc/user/group/saml_sso/example_saml_config.md @idurham
 /doc/user/group/saml_sso/group_sync.md @lciutacu
+/doc/user/group/saml_sso/scim_setup.md @lciutacu
+/doc/user/group/saml_sso/troubleshooting.md @idurham
+/doc/user/group/saml_sso/troubleshooting_scim.md @lciutacu
 /doc/user/group/settings/ @idurham
 /doc/user/group/ssh_certificates.md @brendan777
 /doc/user/group/subgroups/ @phillipwells
@@ -1127,7 +1132,7 @@ lib/gitlab/checks/
 /doc/user/profile/ @idurham
 /doc/user/profile/account/create_accounts.md @lciutacu
 /doc/user/profile/comment_templates.md @aqualls
-/doc/user/profile/notifications.md @sselhorn
+/doc/user/profile/notifications.md @kpaizee
 /doc/user/project/_index.md @phillipwells
 /doc/user/project/autocomplete_characters.md @brendan777
 /doc/user/project/badges.md @phillipwells
@@ -1159,7 +1164,7 @@ lib/gitlab/checks/
 /doc/user/project/integrations/hangouts_chat.md @ashrafkhamis
 /doc/user/project/integrations/harbor.md @z_painter
 /doc/user/project/integrations/irker.md @ashrafkhamis
-/doc/user/project/integrations/matrix.md @sselhorn
+/doc/user/project/integrations/matrix.md @kpaizee
 /doc/user/project/integrations/mattermost.md @ashrafkhamis
 /doc/user/project/integrations/mattermost_slash_commands.md @ashrafkhamis
 /doc/user/project/integrations/microsoft_teams.md @ashrafkhamis
@@ -1209,7 +1214,6 @@ lib/gitlab/checks/
 /doc/user/project/settings/_index.md @phillipwells
 /doc/user/project/settings/import_export.md @ashrafkhamis
 /doc/user/project/settings/import_export_troubleshooting.md @ashrafkhamis
-/doc/user/project/settings/migrate_projects.md @phillipwells
 /doc/user/project/settings/project_access_tokens.md @idurham
 /doc/user/project/system_notes.md @brendan777
 /doc/user/project/time_tracking.md @msedlakjakubowski
@@ -1223,15 +1227,15 @@ lib/gitlab/checks/
 /doc/user/reserved_names.md @phillipwells
 /doc/user/rich_text_editor.md @msedlakjakubowski
 /doc/user/search/ @ashrafkhamis
-/doc/user/search/command_palette.md @sselhorn
-/doc/user/shortcuts.md @sselhorn
+/doc/user/search/command_palette.md @kpaizee
+/doc/user/shortcuts.md @kpaizee
 /doc/user/snippets.md @brendan777
 /doc/user/ssh.md @idurham
 /doc/user/ssh_troubleshooting.md @idurham
 /doc/user/storage_management_automation.md @lciutacu
 /doc/user/storage_usage_quotas.md @lciutacu
 /doc/user/tasks.md @msedlakjakubowski
-/doc/user/todos.md @sselhorn
+/doc/user/todos.md @kpaizee
 /doc/user/work_items/ @msedlakjakubowski
 /doc/user/workspace/ @brendan777
 # End rake-managed-docs-block

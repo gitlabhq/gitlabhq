@@ -88,6 +88,7 @@ describe('WorkItemNotes component', () => {
   const findWorkItemDiscussionAtIndex = (index) => findAllWorkItemDiscussions().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
+  const findCommentsSection = () => wrapper.find('.issuable-discussion');
 
   const workItemNoteQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNoteResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
@@ -177,6 +178,14 @@ describe('WorkItemNotes component', () => {
   describe('when notes are loading', () => {
     it('renders skeleton loader', () => {
       expect(findNotesLoading().exists()).toBe(true);
+    });
+
+    it('renders the main discussion container even when notes are loading', () => {
+      expect(findCommentsSection().exists()).toBe(true);
+    });
+
+    it('renders the comment form even when notes are loading', () => {
+      expect(findWorkItemAddNote().exists()).toBe(true);
     });
 
     it('does not render system notes', () => {
@@ -298,6 +307,16 @@ describe('WorkItemNotes component', () => {
         pageSize: 20,
       });
       expect(findAllSystemNotes()).toHaveLength(mockNotesWidgetResponse.discussions.nodes.length);
+    });
+
+    it('renders the main discussion container when notes are loaded', async () => {
+      await waitForPromises();
+      expect(findCommentsSection().exists()).toBe(true);
+    });
+
+    it('renders the comment form even when notes are loaded', async () => {
+      await waitForPromises();
+      expect(findWorkItemAddNote().exists()).toBe(true);
     });
   });
 

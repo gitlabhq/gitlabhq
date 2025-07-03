@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'viewing an issue with cross project references' do
+RSpec.describe 'viewing an issue with cross project references', :js, feature_category: :team_planning do
   include ExternalAuthorizationServiceHelpers
   include Gitlab::Routing.url_helpers
 
@@ -44,6 +44,7 @@ RSpec.describe 'viewing an issue with cross project references' do
   end
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     project.add_developer(user)
     sign_in(user)
   end

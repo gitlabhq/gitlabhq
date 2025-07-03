@@ -161,9 +161,6 @@ export default {
     initialLoading() {
       return this.$apollo.queries.workItemNotes.loading && !this.isLoadingMore;
     },
-    someNotesLoaded() {
-      return !this.initialLoading || this.previewNote;
-    },
     pageInfo() {
       return this.workItemNotes?.pageInfo;
     },
@@ -566,8 +563,7 @@ export default {
       @changeSort="setSort"
       @changeFilter="setFilter"
     />
-    <work-item-notes-loading v-if="initialLoading" class="gl-mt-5" />
-    <div v-if="someNotesLoaded" class="issuable-discussion gl-mb-5 !gl-clearfix">
+    <div class="issuable-discussion gl-mb-5 !gl-clearfix">
       <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
         <ul class="notes notes-form timeline">
           <work-item-add-note
@@ -582,7 +578,9 @@ export default {
           />
         </ul>
       </div>
-      <work-item-notes-loading v-if="formAtTop && isLoadingMore && !notesCached" />
+      <work-item-notes-loading
+        v-if="initialLoading || (formAtTop && isLoadingMore && !notesCached)"
+      />
       <ul class="notes main-notes-list timeline">
         <template v-for="discussion in notesArray">
           <system-note

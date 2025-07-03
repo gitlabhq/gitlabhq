@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'User uploads file to note', feature_category: :text_editors do
+RSpec.describe 'User uploads file to note', :js, feature_category: :text_editors do
   include DropzoneHelper
 
   let(:user) { create(:user) }
@@ -10,20 +10,20 @@ RSpec.describe 'User uploads file to note', feature_category: :text_editors do
   let(:issue) { create(:issue, project: project, author: user) }
 
   before do
+    stub_feature_flags(work_item_view_for_issues: true)
     sign_in(user)
     visit project_issue_path(project, issue)
-    wait_for_requests
   end
 
   context 'before uploading' do
-    it 'shows "Attach a file or image" button', :js do
+    it 'shows "Attach a file or image" button' do
       expect(page).to have_selector('[data-testid="button-attach-file"]')
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
     end
   end
 
   context 'uploading is in progress', :capybara_ignore_server_errors do
-    it 'cancels uploading on clicking to "Cancel" button', :js do
+    it 'cancels uploading on clicking to "Cancel" button' do
       slow_requests do
         dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
@@ -35,7 +35,7 @@ RSpec.describe 'User uploads file to note', feature_category: :text_editors do
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
     end
 
-    it 'shows "Attaching a file" message on uploading 1 file', :js do
+    it 'shows "Attaching a file" message on uploading 1 file' do
       slow_requests do
         dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
@@ -43,7 +43,7 @@ RSpec.describe 'User uploads file to note', feature_category: :text_editors do
       end
     end
 
-    it 'shows "Attaching 2 files" message on uploading 2 file', :js do
+    it 'shows "Attaching 2 files" message on uploading 2 file' do
       slow_requests do
         dropzone_file([Rails.root.join('spec', 'fixtures', 'video_sample.mp4'),
                        Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
@@ -52,7 +52,7 @@ RSpec.describe 'User uploads file to note', feature_category: :text_editors do
       end
     end
 
-    it 'shows error message, "retry" and "attach a new file" link a if file is too big', :js do
+    it 'shows error message, "retry" and "attach a new file" link a if file is too big' do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'video_sample.mp4')], 0.01)
 
       error_text = 'File is too big (0.06MiB). Max filesize: 0.01MiB.'
@@ -64,7 +64,7 @@ RSpec.describe 'User uploads file to note', feature_category: :text_editors do
   end
 
   context 'uploading is complete' do
-    it 'shows "Attach a file or image" button on uploading complete', :js do
+    it 'shows "Attach a file or image" button on uploading complete' do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')])
       wait_for_requests
 
@@ -72,7 +72,7 @@ RSpec.describe 'User uploads file to note', feature_category: :text_editors do
       expect(page).not_to have_selector('.uploading-progress-container', visible: true)
     end
 
-    it 'they see the attached file', :js do
+    it 'they see the attached file' do
       dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')])
       click_button 'Comment'
       wait_for_requests

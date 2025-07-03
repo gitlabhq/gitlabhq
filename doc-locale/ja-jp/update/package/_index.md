@@ -59,7 +59,7 @@ GitLabインスタンスをオンラインにした状態でアップグレー�
 - [`gitlab/nightly-builds`](https://packages.gitlab.com/gitlab/nightly-builds): 毎日夜間に作成されるビルド。
 - [`gitlab/raspberry-pi2`](https://packages.gitlab.com/gitlab/raspberry-pi2): [Raspberry Pi](https://www.raspberrypi.org)パッケージ用に構築された公式Communityエディションリリース。
 
-GitLab [Communityエディション ](https://about.gitlab.com/install/?version=ce)または[Enterpriseエディション](https://about.gitlab.com/install/)をインストールしている場合、公式 GitLabリポジトリがすでに設定されているはずです。
+GitLab [Communityエディション](https://about.gitlab.com/install/?version=ce)または[Enterpriseエディション](https://about.gitlab.com/install/)をインストールしている場合、公式 GitLabリポジトリがすでに設定されているはずです。
 
 #### 最新バージョンにアップグレードする
 

@@ -335,6 +335,7 @@
 
 .docs-i18n-patterns: &docs-i18n-patterns
   - "doc-locale/**/*"
+  - "doc-locale/.markdownlint/.markdownlint-cli2.yaml"
   - "scripts/i18n_lint_doc.sh"
   - "scripts/i18n_verify_paths.sh"
 

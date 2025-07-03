@@ -335,7 +335,7 @@ GitLab Self-Managed では、[サイズ制限を増やす](../administration/ins
 
 ### `.gitlab-ci.yml` ファイルの編集中に `500` エラーが発生する
 
-[インクルードされた設定ファイルの loop ](pipeline_editor/_index.md#configuration-validation-currently-not-available-message)は、[Web エディタ](../user/project/repository/web_editor.md)で `.gitlab-ci.yml` ファイルを編集するときに `500` エラーを引き起こす可能性があります。
+[インクルードされた設定ファイルの loop](pipeline_editor/_index.md#configuration-validation-currently-not-available-message)は、[Web エディタ](../user/project/repository/web_editor.md)で `.gitlab-ci.yml` ファイルを編集するときに `500` エラーを引き起こす可能性があります。
 
 インクルードされた設定ファイルが、相互の参照の loop を作成しないようにしてください。
 
