@@ -7229,6 +7229,9 @@ msgstr ""
 msgid "An error occurred while loading diff"
 msgstr ""
 
+msgid "An error occurred while loading file controls. Refresh the page."
+msgstr ""
+
 msgid "An error occurred while loading filenames"
 msgstr ""
 
@@ -7245,9 +7248,6 @@ msgid "An error occurred while loading merge requests."
 msgstr ""
 
 msgid "An error occurred while loading projects."
-msgstr ""
-
-msgid "An error occurred while loading the blob controls."
 msgstr ""
 
 msgid "An error occurred while loading the file"
@@ -24003,9 +24003,6 @@ msgid "Edited %{timeago} by %{author}"
 msgstr ""
 
 msgid "Editing"
-msgstr ""
-
-msgid "Editing this file is not supported"
 msgstr ""
 
 msgid "Editor Extensions"
@@ -71521,6 +71518,15 @@ msgid "You cannot create new projects in your personal namespace because you hav
 msgstr ""
 
 msgid "You cannot create projects in your personal namespace. Contact your GitLab administrator."
+msgstr ""
+
+msgid "You cannot edit files in archived projects"
+msgstr ""
+
+msgid "You cannot edit files stored in LFS"
+msgstr ""
+
+msgid "You cannot edit this file"
 msgstr ""
 
 msgid "You cannot impersonate a blocked user"

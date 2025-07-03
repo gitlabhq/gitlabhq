@@ -28,15 +28,14 @@ RSpec.describe 'Projects > Files > User edits files', :js, feature_category: :so
   end
 
   shared_examples 'unavailable for an archived project' do
-    it 'does not show the edit link for an archived project', :js do
+    it 'shows disabled edit link for an archived project', :js do
       project.update!(archived: true)
       visit project_tree_path(project, project.repository.root_ref)
 
       click_link('.gitignore')
 
       aggregate_failures 'available edit buttons' do
-        expect(page).not_to have_text('Edit')
-        expect(page).not_to have_text('Web IDE')
+        expect(page).to have_button('Edit', disabled: true)
 
         within_testid('blob-controls') do
           click_button 'File actions'

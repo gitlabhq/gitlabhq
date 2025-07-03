@@ -253,9 +253,17 @@ describe('Blob controls component', () => {
   });
 
   describe('WebIdeLink component', () => {
-    it('renders the WebIdeLink component with the correct props', () => {
+    it('renders the WebIdeLink component with the correct props', async () => {
+      const blobOverwriteResolver = overrideBlobControlsResolver({
+        simpleViewer: {
+          ...blobControlsDataMock.repository.blobs.nodes[0].simpleViewer,
+          fileType: 'text',
+        },
+      });
+      await createComponent({
+        blobControlsResolver: blobOverwriteResolver,
+      });
       expect(findWebIdeLink().props()).toMatchObject({
-        showEditButton: false,
         editUrl: 'https://edit/blob/path/file.js',
         webIdeUrl: 'https://ide/blob/path/file.js',
         needsToFork: false,
@@ -266,42 +274,37 @@ describe('Blob controls component', () => {
         isGitpodEnabledForInstance: true,
         isGitpodEnabledForUser: true,
         disabled: false,
+        customTooltipText: '',
       });
     });
 
-    it('disables the WebIdeLink component when file is LFS', async () => {
-      const blobOverwriteResolver = overrideBlobControlsResolver({
-        storedExternally: true,
-        externalStorage: 'lfs',
+    describe('when project query has errors', () => {
+      it('disables the WebIdeLink component with appropriate tooltip', async () => {
+        await createComponent({ blobControlsResolver: blobControlsErrorResolver });
+
+        expect(findWebIdeLink().props('disabled')).toBe(true);
+        expect(findWebIdeLink().props('customTooltipText')).toBe(
+          'An error occurred while loading file controls. Refresh the page.',
+        );
       });
-      await createComponent({
-        blobControlsResolver: blobOverwriteResolver,
-      });
-      expect(findWebIdeLink().props('disabled')).toBe(true);
     });
 
-    it('does not render WebIdeLink component if file is archived', async () => {
-      const blobOverwriteResolver = overrideBlobControlsResolver({
-        ...blobControlsDataMock.repository.blobs.nodes[0],
-        archived: true,
-      });
-      await createComponent({
-        blobControlsResolver: blobOverwriteResolver,
-      });
+    describe.each`
+      description           | overrides                                                                | expectedTooltip
+      ${'file is archived'} | ${{ ...blobControlsDataMock.repository.blobs.nodes[0], archived: true }} | ${'You cannot edit files in archived projects'}
+      ${'file is LFS'}      | ${{ storedExternally: true, externalStorage: 'lfs' }}                    | ${'You cannot edit files stored in LFS'}
+    `('when $description', ({ overrides, expectedTooltip }) => {
+      it('disables the WebIdeLink component with appropriate tooltip', async () => {
+        const customBlobControlsResolver = (() => {
+          return overrideBlobControlsResolver(overrides);
+        })();
+        await createComponent({
+          blobControlsResolver: customBlobControlsResolver,
+        });
 
-      expect(findWebIdeLink().exists()).toBe(false);
-    });
-
-    it('does not render WebIdeLink component if file is not editable', async () => {
-      const blobOverwriteResolver = overrideBlobControlsResolver({
-        ...blobControlsDataMock.repository.blobs.nodes[0],
-        editBlobPath: '',
+        expect(findWebIdeLink().props('disabled')).toBe(true);
+        expect(findWebIdeLink().props('customTooltipText')).toBe(expectedTooltip);
       });
-      await createComponent({
-        blobControlsResolver: blobOverwriteResolver,
-      });
-
-      expect(findWebIdeLink().exists()).toBe(false);
     });
 
     describe('when can modify blob', () => {
@@ -440,7 +443,7 @@ describe('Blob controls component', () => {
         await createComponent(resolverParam);
 
         expect(createAlert).toHaveBeenCalledWith({
-          message: 'An error occurred while loading the blob controls.',
+          message: 'An error occurred while loading file controls. Refresh the page.',
         });
         expect(logError).toHaveBeenCalledWith(loggedError, mockError);
         expect(Sentry.captureException).toHaveBeenCalledWith(mockError);
