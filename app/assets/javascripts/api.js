@@ -3,7 +3,7 @@ import { __ } from '~/locale';
 import { validateAdditionalProperties } from '~/tracking/utils';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from './lib/utils/axios_utils';
-import { joinPaths } from './lib/utils/url_utility';
+import { joinPaths, isAbsolute } from './lib/utils/url_utility';
 
 export const DEFAULT_PER_PAGE = 20;
 
@@ -963,8 +963,30 @@ const Api = {
       });
   },
 
+  /**
+   * buildUrl (1) replaces `:version` placeholder by `gon.api_version` and
+   * (2) prepends the url with `gon.relative_url_root`, if the `url` argument
+   * is not an absolute URL (http://...).
+   *
+   * Using `gon.relative_url_root` is vital for GitLab instances installed on
+   * relative paths: https://docs.gitlab.com/install/relative_url/.
+   *
+   * In Rails, **API** paths, like `api_v..._path`, do not include the
+   * `gon.relative_url_root`. Since Rails doesn't provide `api_v..._url` helpers,
+   * `expose_url` backend method can be used as an alternative to `buildUrl`.
+   *
+   * buildUrl('/api/:version/projects/1') => '/[relative_url_root]/api/v4/projects/1'
+   *
+   * @param {string} url -
+   */
   buildUrl(url) {
-    return joinPaths(gon.relative_url_root || '', url.replace(':version', gon.api_version));
+    const withVersion = url.replace(':version', gon.api_version);
+
+    if (isAbsolute(withVersion)) {
+      return withVersion;
+    }
+
+    return joinPaths(gon.relative_url_root || '', withVersion);
   },
 
   fetchFeatureFlagUserLists(id, page) {

@@ -25,6 +25,7 @@ module Gitlab
 
       def log_events(entity_type, entity_events)
         event_class = ENTITY_TYPE_TO_CLASS[entity_type.to_s]
+
         if entity_events.one?
           [event_class.create!(build_event_attributes(entity_events.first))]
         else
@@ -65,3 +66,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Audit::Logging.prepend_mod

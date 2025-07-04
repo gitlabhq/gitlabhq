@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Groups::ObservabilityController, feature_category: :observability do
+  include ContentSecurityPolicyHelpers
+
   let(:group) { create(:group, :public) }
   let(:user) { create(:user) }
 
@@ -95,6 +97,146 @@ RSpec.describe Groups::ObservabilityController, feature_category: :observability
         observability_page
 
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+  end
+
+  describe 'Content Security Policy' do
+    subject(:csp_header) { response.headers['Content-Security-Policy'] }
+
+    before do
+      stub_feature_flags(observability_sass_features: group)
+    end
+
+    context 'when O11Y_URL environment variable is set' do
+      let(:o11y_url) { 'https://observability.example.com' }
+
+      before do
+        stub_env('O11Y_URL', o11y_url)
+      end
+
+      context 'when CSP directives are present' do
+        let(:csp) do
+          ActionDispatch::ContentSecurityPolicy.new do |p|
+            p.frame_src "'self'", 'https://existing-frame.example.com'
+          end
+        end
+
+        before do
+          stub_csp_for_controller(described_class, csp)
+          get group_observability_path(group, 'services')
+        end
+
+        it 'adds O11Y_URL to frame-src directive' do
+          frame_src_values = find_csp_directive('frame-src', header: csp_header)
+          expect(frame_src_values).to include("'self'", 'https://existing-frame.example.com', o11y_url)
+        end
+      end
+
+      context 'when CSP frame-src directive is not present' do
+        let(:csp) do
+          ActionDispatch::ContentSecurityPolicy.new do |p|
+            p.script_src "'self'"
+          end
+        end
+
+        before do
+          stub_csp_for_controller(described_class, csp)
+          get group_observability_path(group, 'services')
+        end
+
+        it 'creates frame-src directive with O11Y_URL' do
+          frame_src_values = find_csp_directive('frame-src', header: csp_header)
+          expect(frame_src_values).to include("'self'", o11y_url)
+        end
+      end
+
+      context 'when CSP has no directives' do
+        let(:csp) { ActionDispatch::ContentSecurityPolicy.new }
+
+        before do
+          stub_csp_for_controller(described_class, csp)
+          get group_observability_path(group, 'services')
+        end
+
+        it 'does not add frame-src directive' do
+          expect(csp_header).to be_blank
+        end
+      end
+    end
+
+    context 'when O11Y_URL environment variable is not set' do
+      before do
+        stub_env('O11Y_URL', nil)
+      end
+
+      context 'when CSP directives are present' do
+        let(:csp) do
+          ActionDispatch::ContentSecurityPolicy.new do |p|
+            p.frame_src "'self'", 'https://existing-frame.example.com'
+          end
+        end
+
+        before do
+          stub_csp_for_controller(described_class, csp)
+          get group_observability_path(group, 'services')
+        end
+
+        it 'does not modify frame-src directive' do
+          frame_src_values = find_csp_directive('frame-src', header: csp_header)
+          expect(frame_src_values).to contain_exactly("'self'", 'https://existing-frame.example.com')
+        end
+      end
+
+      context 'when CSP has no directives' do
+        let(:csp) { ActionDispatch::ContentSecurityPolicy.new }
+
+        before do
+          stub_csp_for_controller(described_class, csp)
+          get group_observability_path(group, 'services')
+        end
+
+        it 'does not add frame-src directive' do
+          expect(csp_header).to be_blank
+        end
+      end
+    end
+
+    context 'when O11Y_URL environment variable is empty string' do
+      before do
+        stub_env('O11Y_URL', '')
+      end
+
+      context 'when CSP directives are present' do
+        let(:csp) do
+          ActionDispatch::ContentSecurityPolicy.new do |p|
+            p.frame_src "'self'", 'https://existing-frame.example.com'
+          end
+        end
+
+        before do
+          stub_csp_for_controller(described_class, csp)
+          get group_observability_path(group, 'services')
+        end
+
+        it 'does not modify frame-src directive' do
+          frame_src_values = find_csp_directive('frame-src', header: csp_header)
+          expect(frame_src_values).to contain_exactly("'self'", 'https://existing-frame.example.com')
+        end
+      end
+    end
+
+    context 'when CSP directives are blank' do
+      let(:csp) { ActionDispatch::ContentSecurityPolicy.new }
+
+      before do
+        stub_env('O11Y_URL', 'https://observability.example.com')
+        stub_csp_for_controller(described_class, csp)
+        get group_observability_path(group, 'services')
+      end
+
+      it 'does not add frame-src directive' do
+        expect(csp_header).to be_blank
       end
     end
   end

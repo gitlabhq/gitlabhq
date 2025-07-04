@@ -50,6 +50,11 @@ module Mutations
         required: false,
         description: 'Input for labels widget.'
 
+      argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
+        required: false,
+        description: 'Input for hierarchy widget.',
+        experiment: { milestone: '18.2' }
+
       field :updated_work_item_count, GraphQL::Types::Int,
         null: true,
         description: 'Number of work items that were successfully updated.'

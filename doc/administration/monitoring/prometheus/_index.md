@@ -396,7 +396,7 @@ These are only examples and may not work on all setups. Further adjustments may 
 - **Data received**: `rate(node_network_receive_bytes_total{device!="lo"}[5m])`
 - **Disk read IOPS**: `sum by (instance) (rate(node_disk_reads_completed_total[1m]))`
 - **Disk write IOPS**: `sum by (instance) (rate(node_disk_writes_completed_total[1m]))`
-- **RPS via GitLab transaction count**: `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController|'}[1m])) by (controller, action)`
+- **RPS via GitLab transaction count**: `sum(irate(gitlab_transaction_duration_seconds_count{controller!~'HealthController|MetricsController'}[1m])) by (controller, action)`
 
 ## Prometheus as a Grafana data source
 

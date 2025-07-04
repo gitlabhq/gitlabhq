@@ -28,6 +28,13 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
     }
   end
 
+  before_all do
+    # Ensure support bot user is created so creation doesn't count towards query limit
+    # and we don't try to obtain an exclusive lease within a transaction.
+    # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
+    Users::Internal.support_bot_id
+  end
+
   context 'when Gitlab is FOSS only' do
     unless Gitlab.ee?
       context 'when parent is a group' do
@@ -203,6 +210,24 @@ RSpec.describe 'Bulk update work items', feature_category: :team_planning do
           expect(work_item.subscribed?(current_user, project)).to be_falsy
         end
       end
+    end
+  end
+
+  context 'when updating parent' do
+    let_it_be(:parent_work_item) { create(:work_item, :issue, project: project) }
+    let_it_be(:task_work_item) { create(:work_item, :task, project: project) }
+    let_it_be(:issue_work_item) { updatable_work_items.first }
+    let_it_be(:updatable_work_items) { [task_work_item, issue_work_item] }
+
+    let(:additional_arguments) { { hierarchy_widget: { parent_id: parent_work_item.to_gid.to_s } } }
+
+    it 'updates the parent for the appropriate work item(s)' do
+      expect do
+        post_graphql_mutation(mutation, current_user: current_user)
+      end.to not_change { issue_work_item.reload.work_item_parent }.from(nil)
+        .and change { task_work_item.reload.work_item_parent }.from(nil).to(parent_work_item)
+
+      expect(mutation_response).to include('updatedWorkItemCount' => 1)
     end
   end
 

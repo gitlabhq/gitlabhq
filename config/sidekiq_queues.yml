@@ -115,6 +115,8 @@
   - 1
 - - authz_user_group_member_roles_destroy_for_shared_group
   - 1
+- - authz_user_group_member_roles_update_for_group
+  - 1
 - - auto_devops
   - 2
 - - auto_merge
@@ -276,6 +278,8 @@
 - - compliance_management_compliance_framework_project_requirement_statuses_export_mailer
   - 1
 - - compliance_management_compliance_framework_projects_compliance_enqueue
+  - 1
+- - compliance_management_compliance_violation_detection
   - 1
 - - compliance_management_framework_export_mailer
   - 1

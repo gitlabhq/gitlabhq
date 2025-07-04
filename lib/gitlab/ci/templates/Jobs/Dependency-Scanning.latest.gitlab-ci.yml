@@ -19,7 +19,7 @@ variables:
   AST_ENABLE_MR_PIPELINES: "true"
   #
   DS_EXCLUDED_ANALYZERS: ""
-  DS_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  DS_EXCLUDED_PATHS: "spec, test, tests, tmp, node_modules"
   DS_MAJOR_VERSION: 6
   DS_SCHEMA_MODEL: 15
   # Use this variable to enforce the new Dependency Scanning analyzer for all projects
@@ -318,7 +318,7 @@ dependency-scanning:
       exists:
         - '**/{conda-lock.yml,pubspec.lock,Podfile.lock,Cargo.lock,Package.resolved}'
       variables:
-        DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'
+        DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, node_modules, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'
 
     # 2. Don't run the job in a *branch pipeline* if *MR pipelines* for AST are enabled and there's an open merge request.
     - if: $AST_ENABLE_MR_PIPELINES == "true" &&
@@ -348,4 +348,4 @@ dependency-scanning:
       exists:
         - '**/{conda-lock.yml,pubspec.lock,Podfile.lock,Cargo.lock,Package.resolved}'
       variables:
-        DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'
+        DS_EXCLUDED_PATHS: 'spec, test, tests, tmp, node_modules, **/build.gradle, **/build.gradle.kts, **/build.sbt, **/pom.xml, **/requirements.txt, **/requirements.pip, **/Pipfile, **/Pipfile.lock, **/requires.txt, **/setup.py, **/poetry.lock, **/uv.lock, **/packages.lock.json, **/conan.lock, **/package-lock.json, **/npm-shrinkwrap.json, **/pnpm-lock.yaml, **/yarn.lock, **/composer.lock, **/Gemfile.lock, **/gems.locked, **/go.graph, **/ivy-report.xml, **/maven.graph.json, **/dependencies.lock, **/pipdeptree.json, **/pipenv.graph.json, **/dependencies-compile.dot'

@@ -84,7 +84,7 @@ workflow:
         --print-deploy-args \
         $(cat $CI_PROJECT_DIR/EXTRA_DEPLOY_VALUES)
   artifacts:
-    expire_in: 1 day
+    expire_in: 7 days
     when: always
     reports:
       junit: qa/tmp/rspec-*.xml

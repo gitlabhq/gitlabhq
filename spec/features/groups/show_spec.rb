@@ -173,6 +173,40 @@ RSpec.describe 'Group show page', feature_category: :groups_and_projects do
         expect(page).to have_content(content)
       end
     end
+
+    describe 'tab frontend routing' do
+      context 'when route is not prefixed with group' do
+        before do
+          group.add_developer(user)
+          sign_in(user)
+          visit group_path(group)
+        end
+
+        it 'still allows for tab navigation and reloading', :js do
+          click_link _('Shared projects')
+          wait_for_requests
+          page.refresh
+
+          expect(page).to have_link('Shared projects')
+        end
+      end
+
+      context 'when route is prefixed with group' do
+        before do
+          group.add_developer(user)
+          sign_in(user)
+          visit group_canonical_path(group)
+        end
+
+        it 'still allows for tab navigation and reloading', :js do
+          click_link _('Shared projects')
+          wait_for_requests
+          page.refresh
+
+          expect(page).to have_link('Shared projects')
+        end
+      end
+    end
   end
 
   context 'when signed out' do

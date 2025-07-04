@@ -28,7 +28,15 @@ describe('Api', () => {
   });
 
   describe('buildUrl', () => {
-    it('adds URL root and fills in API version', () => {
+    describe('when input is an absolute URL', () => {
+      it('fills in API version but does not add relative URL root', () => {
+        const input = 'https://gitlab.com/api/:version/foo/bar';
+
+        expect(Api.buildUrl(input)).toEqual(`https://gitlab.com/api/${dummyApiVersion}/foo/bar`);
+      });
+    });
+
+    it('adds relative URL root and fills in API version', () => {
       const input = '/api/:version/foo/bar';
       const expectedOutput = `${dummyUrlRoot}/api/${dummyApiVersion}/foo/bar`;
 

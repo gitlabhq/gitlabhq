@@ -38271,6 +38271,8 @@ CREATE INDEX index_user_group_member_roles_on_member_role_id ON user_group_membe
 
 CREATE INDEX index_user_group_member_roles_on_shared_with_group_id ON user_group_member_roles USING btree (shared_with_group_id);
 
+CREATE INDEX index_user_group_member_roles_on_user_id ON user_group_member_roles USING btree (user_id);
+
 CREATE INDEX index_user_highest_roles_on_user_id_and_highest_access_level ON user_highest_roles USING btree (user_id, highest_access_level);
 
 CREATE INDEX index_user_id_and_notification_email_to_notification_settings ON notification_settings USING btree (user_id, notification_email, id) WHERE (notification_email IS NOT NULL);
@@ -39421,7 +39423,9 @@ CREATE UNIQUE INDEX unique_streaming_event_type_filters_destination_id ON audit_
 
 CREATE UNIQUE INDEX unique_streaming_instance_event_type_filters_destination_id ON audit_events_streaming_instance_event_type_filters USING btree (instance_external_audit_event_destination_id, audit_event_type);
 
-CREATE UNIQUE INDEX unique_user_group_member_roles_all_ids ON user_group_member_roles USING btree (user_id, group_id, shared_with_group_id, member_role_id);
+CREATE UNIQUE INDEX unique_user_group_member_roles_user_group ON user_group_member_roles USING btree (user_id, group_id) WHERE (shared_with_group_id IS NULL);
+
+CREATE UNIQUE INDEX unique_user_group_member_roles_user_group_shared_with_group ON user_group_member_roles USING btree (user_id, group_id, shared_with_group_id) WHERE (shared_with_group_id IS NOT NULL);
 
 CREATE UNIQUE INDEX unique_user_id_setting_type_and_settings_context_hash ON vs_code_settings USING btree (user_id, setting_type, settings_context_hash);
 

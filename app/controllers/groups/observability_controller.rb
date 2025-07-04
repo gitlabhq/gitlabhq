@@ -2,6 +2,13 @@
 
 module Groups
   class ObservabilityController < Groups::ApplicationController
+    content_security_policy do |p|
+      next if p.directives.blank? || ENV['O11Y_URL'].blank?
+
+      frame_src_values = Array.wrap(p.directives['frame-src']) | ["'self'", ENV['O11Y_URL'].to_s]
+      p.frame_src(*frame_src_values)
+    end
+
     before_action :authenticate_user!
     before_action :authorize_read_observability!
 
