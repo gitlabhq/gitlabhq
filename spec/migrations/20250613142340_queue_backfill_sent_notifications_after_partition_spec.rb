@@ -21,8 +21,7 @@ RSpec.describe QueueBackfillSentNotificationsAfterPartition, migration: :gitlab_
           column_name: :id,
           batch_size: described_class::BATCH_SIZE,
           sub_batch_size: described_class::SUB_BATCH_SIZE,
-          batch_min_value: 1,
-          batch_max_value: 1
+          batch_min_value: 1
         )
       }
     end
@@ -45,7 +44,7 @@ RSpec.describe QueueBackfillSentNotificationsAfterPartition, migration: :gitlab_
         reply_key: 'key2'
       )
       sent_notifications.create!(
-        id: described_class::DOT_COM_START_ID + 2,
+        id: described_class::DOT_COM_START_ID,
         noteable_type: 'Issue',
         noteable_id: 2,
         namespace_id: 1,
@@ -63,41 +62,7 @@ RSpec.describe QueueBackfillSentNotificationsAfterPartition, migration: :gitlab_
         batch_size: described_class::GITLAB_OPTIMIZED_BATCH_SIZE,
         sub_batch_size: described_class::GITLAB_OPTIMIZED_SUB_BATCH_SIZE,
         max_batch_size: described_class::GITLAB_OPTIMIZED_MAX_BATCH_SIZE,
-        batch_min_value: described_class::DOT_COM_START_ID,
-        batch_max_value: described_class::DOT_COM_START_ID + 2
-      )
-    end
-  end
-
-  context 'when records exist in the partitioned table already' do
-    before do
-      partitioned_sent_notifications.create!(
-        id: 100,
-        noteable_type: 'Issue',
-        noteable_id: 2,
-        namespace_id: 1,
-        reply_key: 'key'
-      )
-      partitioned_sent_notifications.create!(
-        id: 101,
-        noteable_type: 'Issue',
-        noteable_id: 2,
-        namespace_id: 1,
-        reply_key: 'key'
-      )
-    end
-
-    it 'sets the max id to the minimum on the partitioned table' do
-      migrate!
-
-      expect(batched_migration).to have_scheduled_batched_migration(
-        gitlab_schema: :gitlab_main,
-        table_name: :sent_notifications,
-        column_name: :id,
-        batch_size: described_class::BATCH_SIZE,
-        sub_batch_size: described_class::SUB_BATCH_SIZE,
-        batch_min_value: 1,
-        batch_max_value: 100
+        batch_min_value: described_class::DOT_COM_START_ID
       )
     end
   end

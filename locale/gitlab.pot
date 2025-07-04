@@ -2403,6 +2403,9 @@ msgstr ""
 msgid "AICatalog|Create agent"
 msgstr ""
 
+msgid "AICatalog|Create new agent"
+msgstr ""
+
 msgid "AICatalog|Define the agent's personality, expertise, and behavioral guidelines. This shapes how the agent responds and approaches tasks."
 msgstr ""
 
@@ -2422,6 +2425,9 @@ msgid "AICatalog|Modify the agent settings and configuration."
 msgstr ""
 
 msgid "AICatalog|Name is required."
+msgstr ""
+
+msgid "AICatalog|New agent"
 msgstr ""
 
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
@@ -56655,13 +56661,13 @@ msgstr ""
 msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
 msgstr ""
 
+msgid "SecurityOrchestration|Run scans for merge request pipelines targeting default branches and on default branches. Optimized for MR approval policy compatibility"
+msgstr ""
+
 msgid "SecurityOrchestration|Runs comprehensive scans for `release/*` branches and when merging to main/production branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Runs scans on a schedule for maintenance and continuous monitoring of protected branches"
-msgstr ""
-
-msgid "SecurityOrchestration|Runs scans on source branches targeting protected branches. Optimized for MR approval policy compatibility"
 msgstr ""
 
 msgid "SecurityOrchestration|Save allowlist"
@@ -70419,6 +70425,9 @@ msgstr ""
 msgid "WorkItem|An error occurred while removing the status."
 msgstr ""
 
+msgid "WorkItem|An error occurred while reordering statuses."
+msgstr ""
+
 msgid "WorkItem|An error occurred while saving the custom field."
 msgstr ""
 
@@ -70624,6 +70633,9 @@ msgid "WorkItem|Development"
 msgstr ""
 
 msgid "WorkItem|Discard changes"
+msgstr ""
+
+msgid "WorkItem|Done"
 msgstr ""
 
 msgid "WorkItem|Due"

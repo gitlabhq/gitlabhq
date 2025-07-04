@@ -26,13 +26,16 @@ class QueueBackfillSentNotificationsAfterPartition < Gitlab::Database::Migration
     partitioned_by :created_at, strategy: :monthly, retain_for: 1.year
   end
 
+  class MigrationSentNotification < MigrationRecord
+    self.table_name = :sent_notifications
+  end
+
   def up
     queue_batched_background_migration(
       MIGRATION,
       :sent_notifications,
       :id,
       batch_min_value: batch_start_id,
-      batch_max_value: batch_end_id,
       **batch_sizes
     )
   end
@@ -59,14 +62,8 @@ class QueueBackfillSentNotificationsAfterPartition < Gitlab::Database::Migration
   end
 
   def batch_start_id
-    return DOT_COM_START_ID if Gitlab.com_except_jh?
+    return DOT_COM_START_ID if Gitlab.com_except_jh? && MigrationSentNotification.where(id: DOT_COM_START_ID).exists?
 
     1
-  end
-
-  def batch_end_id
-    minimum_partitioned = MigrationPartSentNotification.minimum(:id)
-
-    minimum_partitioned if minimum_partitioned && minimum_partitioned >= batch_start_id
   end
 end
