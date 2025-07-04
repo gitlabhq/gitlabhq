@@ -5,6 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import ActivityWidget from '~/homepage/components/activity_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
+import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 
@@ -17,6 +18,7 @@ describe('ActivityWidget', () => {
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEventsList = () => wrapper.findByTestId('events-list');
+  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
 
   function createWrapper() {
     gon.current_username = MOCK_CURRENT_USERNAME;
@@ -69,5 +71,21 @@ describe('ActivityWidget', () => {
 
     expect(wrapper.findByTestId(EVENT_TESTID).exists()).toBe(true);
     expect(wrapper.findByTestId(EVENT_TESTID).text()).toBe(EVENT_TEXT);
+  });
+
+  describe('refresh functionality', () => {
+    it('refreshes on becoming visible again', async () => {
+      const reloadSpy = jest.spyOn(ActivityWidget.methods, 'reload').mockImplementation(() => {});
+
+      createWrapper();
+      await waitForPromises();
+      reloadSpy.mockClear();
+
+      findDetector().vm.$emit('visible');
+      await waitForPromises();
+
+      expect(reloadSpy).toHaveBeenCalled();
+      reloadSpy.mockRestore();
+    });
   });
 });

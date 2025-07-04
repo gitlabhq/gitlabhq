@@ -97,7 +97,7 @@ Views can be embedded in the following areas:
   - Epics
   - Issues
   - Merge requests
-  - Work items (tasks, OKRs, epics [with the new look](../group/epics/epic_work_items.md))
+  - Work items (tasks, OKRs, or epics)
 
 ### Syntax
 

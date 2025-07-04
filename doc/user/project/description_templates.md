@@ -34,7 +34,7 @@ You can define templates to use as descriptions
 for your:
 
 - [issues](issues/_index.md)
-- [epics](../group/epics/epic_work_items.md)
+- [epics](../group/epics/_index.md)
 - [tasks](../tasks.md)
 - [merge requests](merge_requests/_index.md)
 

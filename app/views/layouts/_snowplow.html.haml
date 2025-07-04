@@ -1,5 +1,3 @@
-- return unless Gitlab::Tracking.enabled?
-
 - namespace = @group || @project&.namespace || @namespace
 = webpack_bundle_tag 'tracker'
 - if Gitlab.com?

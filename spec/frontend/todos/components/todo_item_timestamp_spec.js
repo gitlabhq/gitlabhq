@@ -4,7 +4,7 @@ import TodoSnoozedTimestamp from '~/todos/components/todo_snoozed_timestamp.vue'
 import { useFakeDate } from 'helpers/fake_date';
 import { MR_REVIEW_REQUEST_TODO } from '../mock_data';
 
-describe('TodoItem', () => {
+describe('TodoItemTimestamp', () => {
   let wrapper;
 
   const mockCurrentTime = new Date('2024-12-18T13:24:00');

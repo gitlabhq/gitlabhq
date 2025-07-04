@@ -1,4 +1,4 @@
-= cache([ActionController::Base.asset_host, user_application_color_mode, user_color_scheme, Gitlab::Tracking.enabled?, Gitlab::Tracking.collector_hostname], expires_in: 1.minute) do
+= cache([ActionController::Base.asset_host, user_application_color_mode, user_color_scheme, Gitlab::Tracking.collector_hostname], expires_in: 1.minute) do
   - css_crossorigin = ActionController::Base.asset_host ? 'anonymous' : nil
 
   - if ActionController::Base.asset_host

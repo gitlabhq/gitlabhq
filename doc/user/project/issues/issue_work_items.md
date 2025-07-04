@@ -63,7 +63,3 @@ The new issues experience includes these improvements:
      When you change an issue to an epic, the epic is created in the parent group because epics can
      only exist in groups.
 - **Development**: Merge requests, branches, and feature flags related to this item are shown in a single list.
-
-## Related topics
-
-- [Test a new look for epics](../../group/epics/epic_work_items.md)

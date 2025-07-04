@@ -264,7 +264,7 @@ export default {
 </script>
 <template>
   <content-editor-provider :content-editor="contentEditor">
-    <div class="md-area gl-relative gl-overflow-hidden">
+    <div class="md-area gl-relative">
       <gl-loading-icon
         v-if="isLoading"
         size="lg"

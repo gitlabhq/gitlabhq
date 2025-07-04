@@ -81,6 +81,21 @@ RSpec.describe HealthCheckController, :request_store, :use_clean_rails_memory_st
         expect(response.media_type).to eq 'application/json'
         expect(json_response['healthy']).to be true
       end
+
+      context 'if the request IP was mapped to an IPv6' do
+        before do
+          allow(Gitlab::RequestContext.instance)
+            .to receive(:client_ip)
+            .and_return("::ffff:#{whitelisted_ip}")
+        end
+
+        it 'supports successful plaintext response' do
+          get :index
+
+          expect(response).to be_successful
+          expect(response.media_type).to eq 'text/plain'
+        end
+      end
     end
 
     context 'when a service is down but NO access token' do

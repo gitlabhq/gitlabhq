@@ -1,6 +1,6 @@
-import Vue, { nextTick } from 'vue';
+import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlButton, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlCollapsibleListbox } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -9,6 +9,7 @@ import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import { TABS_INDICES } from '~/todos/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 import { todosResponse } from '../../todos/mock_data';
 
 Vue.use(VueApollo);
@@ -33,19 +34,11 @@ describe('TodosWidget', () => {
 
   const findTodoItems = () => wrapper.findAllComponents(TodoItem);
   const findFirstTodoItem = () => wrapper.findComponent(TodoItem);
-  const findRefreshButton = () => wrapper.findComponent(GlButton);
   const findEmptyState = () => wrapper.findByText('All your to-do items are done.');
   const findAllTodosLink = () => wrapper.find('a[href="/dashboard/todos"]');
+  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
 
   describe('rendering', () => {
-    it('shows a refresh button with correct props', () => {
-      createComponent();
-
-      const refreshButton = findRefreshButton();
-      expect(refreshButton.exists()).toBe(true);
-      expect(refreshButton.props('icon')).toBe('retry');
-    });
-
     it('shows a link to all todos', () => {
       createComponent();
 
@@ -53,21 +46,6 @@ describe('TodosWidget', () => {
       expect(link.exists()).toBe(true);
       expect(link.text()).toBe('All to-do items');
       expect(link.attributes('href')).toBe('/dashboard/todos');
-    });
-  });
-
-  describe('loading state', () => {
-    it('shows loading state on refresh button while fetching todos', () => {
-      createComponent();
-
-      expect(findRefreshButton().props('loading')).toBe(true);
-    });
-
-    it('hides loading state after todos are fetched', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(findRefreshButton().props('loading')).toBe(false);
     });
   });
 
@@ -272,27 +250,13 @@ describe('TodosWidget', () => {
       await waitForPromises();
     });
 
-    it('refetches todos when refresh button is clicked', async () => {
-      todosQuerySuccessHandler.mockClear();
-
-      await findRefreshButton().vm.$emit('click');
+    it('refreshes on becoming visible again', async () => {
+      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.todos, 'refetch');
+      findDetector().vm.$emit('visible');
       await waitForPromises();
 
-      expect(todosQuerySuccessHandler).toHaveBeenCalledTimes(1);
-    });
-
-    it('shows loading state during refresh', async () => {
-      const refreshButton = findRefreshButton();
-
-      await waitForPromises();
-      expect(refreshButton.props('loading')).toBe(false);
-
-      refreshButton.vm.$emit('click');
-      await nextTick();
-      expect(refreshButton.props('loading')).toBe(true);
-
-      await waitForPromises();
-      expect(refreshButton.props('loading')).toBe(false);
+      expect(refetchSpy).toHaveBeenCalled();
+      refetchSpy.mockRestore();
     });
   });
 

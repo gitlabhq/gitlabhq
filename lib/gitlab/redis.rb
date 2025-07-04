@@ -18,6 +18,7 @@ module Gitlab
       Gitlab::Redis::Sessions,
       Gitlab::Redis::SharedState,
       Gitlab::Redis::TraceChunks,
+      Gitlab::Redis::MemoryStoreTraceChunks,
       Gitlab::Redis::Chat,
       Gitlab::Redis::Workhorse
     ].freeze

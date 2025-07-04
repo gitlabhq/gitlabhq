@@ -127,10 +127,10 @@ Alternatively, you can add linked items using [quick actions](../project/quick_a
 - `/blocks`
 - `/blocked_by`
 
-For detailed instructions specific to each work item type, see the relevant documentation:
+For detailed information specific to each work item type, see the relevant documentation:
 
 - [Linked issues](../project/issues/related_issues.md#add-a-linked-issue)
-- [Linked epics](../group/epics/linked_epics.md#add-a-linked-epic)
+- [Linked epics](../group/epics/linked_epics.md#add-a-linked-item)
 - [Linked tasks](../tasks.md#linked-items-in-tasks)
 - [Linked OKRs](../okrs.md#linked-items-in-okrs)
 

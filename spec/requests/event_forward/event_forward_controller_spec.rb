@@ -19,7 +19,7 @@ RSpec.describe EventForward::EventForwardController, feature_category: :product_
 
   before do
     allow(Gitlab::Tracking).to receive(:tracker).and_return(tracker)
-    allow(tracker).to receive_messages(emit_event_payload: nil, enabled?: true, hostname: 'localhost')
+    allow(tracker).to receive_messages(emit_event_payload: nil, hostname: 'localhost')
     allow(Gitlab::Tracking::EventEligibilityChecker).to receive(:new).and_return(event_eligibility_checker)
     allow(event_eligibility_checker).to receive(:eligible?).and_return(true)
     allow(EventForward::Logger).to receive(:build).and_return(logger)

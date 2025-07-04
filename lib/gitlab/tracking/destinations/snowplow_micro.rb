@@ -26,11 +26,6 @@ module Gitlab
             cookieDomain: COOKIE_DOMAIN
           )
         end
-
-        override :enabled?
-        def enabled?
-          true
-        end
       end
     end
   end

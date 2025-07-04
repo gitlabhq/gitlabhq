@@ -3,6 +3,7 @@ import { GlAlert, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const MAX_EVENTS = 10;
 
@@ -10,6 +11,7 @@ export default {
   components: {
     GlAlert,
     GlSkeletonLoader,
+    VisibilityChangeDetector,
   },
   directives: {
     SafeHtml,
@@ -21,24 +23,31 @@ export default {
       hasError: false,
     };
   },
-  async created() {
-    try {
-      const { data } = await axios.get(
-        `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}`,
-      );
-      this.activityFeedHtml = data.html;
-    } catch (e) {
-      Sentry.captureException(e);
-      this.hasError = true;
-    } finally {
-      this.isLoading = false;
-    }
+  created() {
+    this.reload();
+  },
+  methods: {
+    async reload() {
+      this.isLoading = true;
+
+      try {
+        const { data } = await axios.get(
+          `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}`,
+        );
+        this.activityFeedHtml = data.html;
+      } catch (e) {
+        Sentry.captureException(e);
+        this.hasError = true;
+      } finally {
+        this.isLoading = false;
+      }
+    },
   },
 };
 </script>
 
 <template>
-  <div>
+  <visibility-change-detector @visible="reload">
     <h4>{{ __('Activity') }}</h4>
     <gl-skeleton-loader v-if="isLoading" :width="200">
       <rect width="5" height="3" rx="1" y="2" />
@@ -64,5 +73,5 @@ export default {
       data-testid="events-list"
       class="gl-list-none gl-p-0"
     ></ul>
-  </div>
+  </visibility-change-detector>
 </template>

@@ -18,6 +18,13 @@ You can use service accounts to perform automated actions, access data, or run s
 Service accounts are commonly used in pipelines or third-party integrations where credentials must
 remain stable and unaffected by changes in human user membership.
 
+There are two types of service accounts:
+
+- Instance service accounts: Available to an entire GitLab instance, but must still be added to
+  groups and projects like a human user. Only available on GitLab Self-Managed and GitLab Dedicated.
+- Group service accounts: Owned by a specific top-level group and can inherit membership to
+  subgroups and projects like a human user.
+
 You authenticate as a service account with a [personal access token](personal_access_tokens.md).
 Service accounts have the same abilities as human users, and can perform actions
 like interacting with [package and container registries](../packages/_index.md),
@@ -29,24 +36,22 @@ Service accounts:
 - Do not use a seat.
 - Cannot sign in to GitLab through the UI.
 - Are identified in the group and project membership as service accounts.
-- Do not receive notification emails without [adding a custom email address](../../api/user_service_accounts.md#create-a-service-account-for-an-instance).
+- Do not receive notification emails without [adding a custom email address](../../api/user_service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/self_managed/_index.md#billable-users) or [internal users](../../administration/internal_users.md).
 - Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
-- Can be owned by the entire instance or a specific top-level group.
-  - On GitLab.com, service accounts must be owned by a top-level group.
 
 You can also manage service accounts through the API.
 
-- For instance-wide service accounts, use the [service account users API](../../api/user_service_accounts.md).
+- For instance service accounts, use the [service account users API](../../api/user_service_accounts.md).
 - For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
 
 ## Prerequisites
 
+- On GitLab.com, you must have the Owner role in a top-level group.
 - On GitLab Self-Managed or GitLab Dedicated you must either:
   - Be an administrator for the instance.
   - Have the Owner role in a top-level group and be [allowed to create service accounts](../../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
-- On GitLab.com, you must have the Owner role in a top-level group.
 
 ## View and manage service accounts
 
@@ -166,8 +171,8 @@ contributions can include activity such as merge requests, issues, groups, and p
 
 You can also delete service accounts through the API.
 
-- For instance-wide service accounts, use the [users API](../../api/users.md#delete-a-user).
-- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-service-account-user).
+- For instance service accounts, use the [users API](../../api/users.md#delete-a-user).
+- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-group-service-account).
 
 ## View and manage personal access tokens for a service account
 
@@ -179,7 +184,7 @@ The personal access tokens page displays information about the personal access t
 
 You can also manage personal access tokens for service accounts through the API.
 
-- For instance-wide service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
+- For instance service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
 - For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
 
 To view the personal access tokens page for a service account:

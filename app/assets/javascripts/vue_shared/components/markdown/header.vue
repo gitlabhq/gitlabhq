@@ -1,6 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script>
 import { GlPopover, GlButton, GlTooltipDirective, GlFormInput } from '@gitlab/ui';
+import { GL_COLOR_ORANGE_50, GL_COLOR_ORANGE_200 } from '@gitlab/ui/src/tokens/build/js/tokens';
 import $ from 'jquery';
 import { escapeRegExp } from 'lodash';
 import {
@@ -28,8 +29,8 @@ import HeaderDivider from './header_divider.vue';
 
 export default {
   findAndReplace: {
-    highlightColor: '#fdf1dd',
-    highlightColorActive: '#e6e4f2',
+    highlightColor: GL_COLOR_ORANGE_50,
+    highlightColorActive: GL_COLOR_ORANGE_200,
     highlightClass: 'js-highlight',
     highlightClassActive: 'js-highlight-active',
   },

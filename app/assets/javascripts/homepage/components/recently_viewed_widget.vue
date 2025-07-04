@@ -3,11 +3,12 @@ import { GlButton, GlIcon, GlSkeletonLoader } from '@gitlab/ui';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from '../graphql/queries/recently_viewed_items.query.graphql';
+import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const MAX_ITEMS = 10;
 
 export default {
-  components: { GlButton, GlIcon, GlSkeletonLoader, TooltipOnTruncate },
+  components: { GlButton, GlIcon, GlSkeletonLoader, VisibilityChangeDetector, TooltipOnTruncate },
   data() {
     return {
       items: [],
@@ -51,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <visibility-change-detector @visible="reload">
     <h4>{{ __('Recently viewed') }}</h4>
 
     <div v-if="error">
@@ -72,7 +73,7 @@ export default {
       <li v-for="item in items" :key="item.id">
         <a
           :href="item.webUrl"
-          class="gl-flex gl-items-center gl-gap-2 gl-rounded-small gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
+          class="gl-flex gl-items-center gl-gap-2 gl-rounded-small gl-p-1 gl-text-default hover:gl-bg-subtle hover:gl-text-default hover:gl-no-underline"
         >
           <gl-icon :name="item.icon" class="gl-shrink-0" />
           <tooltip-on-truncate
@@ -84,5 +85,5 @@ export default {
         </a>
       </li>
     </ul>
-  </div>
+  </visibility-change-detector>
 </template>

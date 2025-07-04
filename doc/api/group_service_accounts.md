@@ -12,13 +12,18 @@ title: Group service accounts API
 
 {{< /details >}}
 
-Use this API to interact with service accounts for your groups. For more information, see [Service accounts](../user/profile/service_accounts.md).
+Use this API to interact with group service accounts. Group service accounts are owned by
+a specific top-level group and can inherit membership to subgroups and projects like a human user.
+For more information, see [service accounts](../user/profile/service_accounts.md).
 
 Prerequisites:
 
-- You must have administrator access to the instance, or have the Owner role for the GitLab.com group.
+- On GitLab.com, you must have the Owner role for the group.
+- On GitLab Self-Managed or GitLab Dedicated you must either:
+  - Be an administrator for the instance.
+  - Have the Owner role in a top-level group and be [allowed to create service accounts](../administration/settings/account_and_limit_settings.md#allow-top-level-group-owners-to-create-service-accounts).
 
-## List all service account users
+## List all group service accounts
 
 {{< history >}}
 
@@ -26,7 +31,7 @@ Prerequisites:
 
 {{< /history >}}
 
-Lists all service account users in a specified top-level group.
+Lists all service accounts in a specified top-level group.
 
 Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
@@ -36,11 +41,11 @@ GET /groups/:id/service_accounts
 
 Parameters:
 
-| Attribute    | Type     | Required   | Description                                                     |
-|:-------------|:---------|:-----------|:----------------------------------------------------------------|
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `order_by`   | string   | no         | Orders list of users by `username` or `id`. Default is `id`.    |
-| `sort`       | string   | no         | Specifies sorting by `asc` or `desc`. Default is `desc`.        |
+| Attribute  | Type           | Required | Description |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `order_by` | string         | no       | Orders list of users by `username` or `id`. Default is `id`. |
+| `sort`     | string         | no       | Specifies sorting by `asc` or `desc`. Default is `desc`. |
 
 Example request:
 
@@ -68,18 +73,18 @@ Example response:
 ]
 ```
 
-## Create a service account user
+## Create a group service account
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/407775) in GitLab 16.1.
-- Specify a service account user username or name was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
-- Specify a service account user email address was [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181456) in GitLab 17.9 [with a flag](../administration/feature_flags/_index.md) named `group_service_account_custom_email`.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186476) in GitLab 17.11. Feature flag `group_service_account_custom_email` removed.
+- `username` and `name` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144841) in GitLab 16.10.
+- `email` attribute [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/181456) in GitLab 17.9 [with a flag](../administration/feature_flags/_index.md) named `group_service_account_custom_email`.
+- `email` attribute [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/186476) in GitLab 17.11. Feature flag `group_service_account_custom_email` removed.
 
 {{< /history >}}
 
-Creates a service account user in a given top-level group.
+Creates a service account in a specified top-level group.
 
 {{< alert type="note" >}}
 
@@ -93,12 +98,12 @@ POST /groups/:id/service_accounts
 
 Supported attributes:
 
-| Attribute  | Type           | Required | Description                                                                                                                                                                                                                                                                                   |
-|:-----------|:---------------|:---------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `id`       | integer/string | yes | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group.                                                                                                                                                                                                               |
-| `name`     | string         | no  | User account name. If not specified, uses `Service account user`.                                                                                                                                                                                                                             |
-| `username` | string         | no  | User account username. If not specified, generates a name prepended with `service_account_group_`.                                                                                                                                                                                            |
-| `email`    | string         | no  | User account email. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation before the account is active, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#verified-domains-for-groups). |
+| Attribute  | Type           | Required | Description |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `name`     | string         | no       | User account name. If not specified, uses `Service account user`. |
+| `username` | string         | no       | User account username. If not specified, generates a name prepended with `service_account_group_`. |
+| `email`    | string         | no       | User account email. If not specified, generates an email prepended with `service_account_group_`. Custom email addresses require confirmation before the account is active, unless the group has a matching [verified domain](../user/enterprise_user/_index.md#verified-domains-for-groups). |
 
 Example request:
 
@@ -117,7 +122,7 @@ Example response:
 }
 ```
 
-## Update a service account user
+## Update a group service account
 
 {{< history >}}
 
@@ -125,7 +130,7 @@ Example response:
 
 {{< /history >}}
 
-Updates a service account user in a given top-level group.
+Updates a service account in a specified top-level group.
 
 {{< alert type="note" >}}
 
@@ -139,12 +144,12 @@ PATCH /groups/:id/service_accounts/:user_id
 
 Parameters:
 
-| Attribute  | Type           | Required | Description                                                     |
-|:-----------|:---------------|:---------|:----------------------------------------------------------------|
+| Attribute  | Type           | Required | Description |
+| ---------- | -------------- | -------- | ----------- |
 | `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `user_id`  | integer        | yes      | The ID of the service account user.                              |
-| `name`     | string         | no       | Name of the user.                                               |
-| `username` | string         | no       | Username of the user.                                           |
+| `user_id`  | integer        | yes      | The ID of the service account. |
+| `name`     | string         | no       | Name of the user. |
+| `username` | string         | no       | Username of the user. |
 
 Example request:
 
@@ -163,7 +168,7 @@ Example response:
 }
 ```
 
-## Delete a service account user
+## Delete a group service account
 
 {{< history >}}
 
@@ -171,7 +176,7 @@ Example response:
 
 {{< /history >}}
 
-Deletes a service account user from a given top-level group.
+Deletes a service account from a specified top-level group.
 
 {{< alert type="note" >}}
 
@@ -185,11 +190,11 @@ DELETE /groups/:id/service_accounts/:user_id
 
 Parameters:
 
-| Attribute                  | Type           | Required                  | Description                                                                    |
-|:---------------------------|:---------------|:--------------------------|:-------------------------------------------------------------------------------|
-| `id`          | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `user_id`     | integer | yes      | The ID of a service account user.                            |
-| `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are instead deleted, as well as groups owned solely by this service account user. |
+| Attribute     | Type           | Required | Description |
+| ------------- | -------------- | -------- | ----------- |
+| `id`          | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`     | integer        | yes      | The ID of a service account. |
+| `hard_delete` | boolean        | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are instead deleted, as well as groups owned solely by this service account. |
 
 Example request:
 
@@ -197,7 +202,7 @@ Example request:
 curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/345/service_accounts/181"
 ```
 
-## List all personal access tokens for a service account user
+## List all personal access tokens for a group service account
 
 {{< history >}}
 
@@ -205,7 +210,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 {{< /history >}}
 
-Lists all personal access tokens for a service account user in a top-level group.
+Lists all personal access tokens for a service account in a top-level group.
 
 ```plaintext
 GET /groups/:id/service_accounts/:user_id/personal_access_tokens
@@ -215,18 +220,18 @@ Supported attributes:
 
 | Attribute          | Type                | Required | Description |
 | ------------------ | ------------------- | -------- | ----------- |
-| `id`      | integer/string | yes  | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
-| `user_id` | integer | yes      | ID of service account user. |
-| `created_after`    | datetime (ISO 8601) | No       | If defined, returns tokens created after the specified time. |
-| `created_before`   | datetime (ISO 8601) | No       | If defined, returns tokens created before the specified time. |
-| `expires_after`    | date (ISO 8601)     | No       | If defined, returns tokens that expire after the specified time. |
-| `expires_before`   | date (ISO 8601)     | No       | If defined, returns tokens that expire before the specified time. |
-| `last_used_after`  | datetime (ISO 8601) | No       | If defined, returns tokens last used after the specified time. |
-| `last_used_before` | datetime (ISO 8601) | No       | If defined, returns tokens last used before the specified time. |
-| `revoked`          | boolean             | No       | If `true`, only returns revoked tokens. |
-| `search`           | string              | No       | If defined, returns tokens that include the specified value in the name. |
-| `sort`             | string              | No       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
-| `state`            | string              | No       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
+| `id`               | integer/string      | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `user_id`          | integer             | yes      | ID of service account. |
+| `created_after`    | datetime (ISO 8601) | no       | If defined, returns tokens created after the specified time. |
+| `created_before`   | datetime (ISO 8601) | no       | If defined, returns tokens created before the specified time. |
+| `expires_after`    | date (ISO 8601)     | no       | If defined, returns tokens that expire after the specified time. |
+| `expires_before`   | date (ISO 8601)     | no       | If defined, returns tokens that expire before the specified time. |
+| `last_used_after`  | datetime (ISO 8601) | no       | If defined, returns tokens last used after the specified time. |
+| `last_used_before` | datetime (ISO 8601) | no       | If defined, returns tokens last used before the specified time. |
+| `revoked`          | boolean             | no       | If `true`, only returns revoked tokens. |
+| `search`           | string              | no       | If defined, returns tokens that include the specified value in the name. |
+| `sort`             | string              | no       | If defined, sorts the results by the specified value. Possible values: `created_asc`, `created_desc`, `expires_asc`, `expires_desc`, `last_used_asc`, `last_used_desc`, `name_asc`, `name_desc`. |
+| `state`            | string              | no       | If defined, returns tokens with the specified state. Possible values: `active` and `inactive`. |
 
 Example request:
 
@@ -262,7 +267,7 @@ Example of unsuccessful responses:
 - `401: Unauthorized`
 - `404 Group Not Found`
 
-## Create a personal access token for a service account user
+## Create a personal access token for a group service account
 
 {{< history >}}
 
@@ -270,7 +275,7 @@ Example of unsuccessful responses:
 
 {{< /history >}}
 
-Creates a personal access token for an existing service account user in a given top-level group.
+Creates a personal access token for an existing service account in a specified top-level group.
 
 ```plaintext
 POST /groups/:id/service_accounts/:user_id/personal_access_tokens
@@ -278,14 +283,14 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens
 
 Parameters:
 
-| Attribute | Type            | Required | Description |
-| --------- | --------------- | -------- | ----------- |
-| `id`      | integer/string | yes  | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
-| `user_id` | integer | yes      | ID of service account user.                            |
-| `name`    | string  | yes      | Name of personal access token. |
-| `description` | string  | no   | Description of personal access token. |
-| `scopes`  | array   | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes). |
-| `expires_at` | date    | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| Attribute     | Type           | Required | Description |
+| ------------- | -------------- | -------- | ----------- |
+| `id`          | integer/string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a top-level group. |
+| `user_id`     | integer        | yes      | ID of service account. |
+| `name`        | string         | yes      | Name of personal access token. |
+| `description` | string         | no       | Description of personal access token. |
+| `scopes`      | array          | yes      | Array of approved scopes. For a list of possible values, see [Personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes). |
+| `expires_at`  | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). If not specified, the date is set to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:
 
@@ -310,7 +315,7 @@ Example response:
 }
 ```
 
-## Revoke a personal access token for a service account user
+## Revoke a personal access token for a group service account
 
 {{< history >}}
 
@@ -318,7 +323,7 @@ Example response:
 
 {{< /history >}}
 
-Revokes a personal access token for an existing service account user in a given top-level group.
+Revokes a personal access token for an existing service account in a specified top-level group.
 
 {{< alert type="note" >}}
 
@@ -332,11 +337,11 @@ DELETE /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id
 
 Parameters:
 
-| Attribute    | Type            | Required | Description |
-| ------------ | --------------- | -------- | ----------- |
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `user_id`    | integer | yes      | The ID of the service account user.                            |
-| `token_id`   | integer | yes      | The ID of the token. |
+| Attribute  | Type           | Required | Description |
+| ---------- | -------------- | -------- | ----------- |
+| `id`       | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`  | integer        | yes      | The ID of the service account. |
+| `token_id` | integer        | yes      | The ID of the token. |
 
 Example request:
 
@@ -353,7 +358,7 @@ Other possible responses:
 - `403: Forbidden` if the request is not allowed.
 - `404: Not Found` if the access token does not exist.
 
-## Rotate a personal access token for a service account user
+## Rotate a personal access token for a group service account
 
 {{< history >}}
 
@@ -361,7 +366,7 @@ Other possible responses:
 
 {{< /history >}}
 
-Rotates a personal access token for an existing service account user in a given top-level group. This creates a new token valid for one week and revokes any existing tokens.
+Rotates a personal access token for an existing service account in a specified top-level group. This creates a new token valid for one week and revokes any existing tokens.
 
 {{< alert type="note" >}}
 
@@ -375,12 +380,12 @@ POST /groups/:id/service_accounts/:user_id/personal_access_tokens/:token_id/rota
 
 Parameters:
 
-| Attribute    | Type            | Required | Description |
-| ------------ | --------------- | -------- | ----------- |
-| `id`         | integer/string | yes  | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
-| `user_id`    | integer | yes      | The ID of the service account user.                            |
-| `token_id`   | integer | yes      | The ID of the token. |
-| `expires_at` | date   | no        | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9.If the token requires an expiration date, defaults to 1 week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
+| Attribute    | Type           | Required | Description |
+| ------------ | -------------- | -------- | ----------- |
+| `id`         | integer/string | yes      | The ID or [URL-encoded path of the target group](rest/_index.md#namespaced-paths). |
+| `user_id`    | integer        | yes      | The ID of the service account. |
+| `token_id`   | integer        | yes      | The ID of the token. |
+| `expires_at` | date           | no       | Expiration date of the access token in ISO format (`YYYY-MM-DD`). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/505671) in GitLab 17.9. If the token requires an expiration date, defaults to one week. If not required, defaults to the [maximum allowable lifetime limit](../user/profile/personal_access_tokens.md#access-token-expiration). |
 
 Example request:
 

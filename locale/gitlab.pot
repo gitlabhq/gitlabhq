@@ -69399,9 +69399,6 @@ msgstr ""
 msgid "We're experiencing difficulties and this tab content is currently unavailable."
 msgstr ""
 
-msgid "We're sorry, your GitLab Duo Enterprise trial could not be created because our system did not respond successfully."
-msgstr ""
-
 msgid "We're sorry, your trial could not be created because our system did not respond successfully."
 msgstr ""
 
@@ -70431,6 +70428,9 @@ msgstr ""
 msgid "WorkItem|An error occurred while getting work item counts."
 msgstr ""
 
+msgid "WorkItem|An error occurred while making status default."
+msgstr ""
+
 msgid "WorkItem|An error occurred while removing the status."
 msgstr ""
 
@@ -70794,6 +70794,9 @@ msgid "WorkItem|Load more"
 msgstr ""
 
 msgid "WorkItem|Magenta"
+msgstr ""
+
+msgid "WorkItem|Make default for %{defaultState} issues"
 msgstr ""
 
 msgid "WorkItem|Mark as done"

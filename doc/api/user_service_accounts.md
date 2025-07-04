@@ -12,12 +12,13 @@ title: Service account users API
 
 {{< /details >}}
 
-Use this API to interact with service accounts for an entire GitLab instance. For more information,
-see [service accounts](../user/profile/service_accounts.md).
+Use this API to interact with instance service accounts. Instance service accounts are available to
+an entire GitLab instance, but must still be added to groups and projects like a human user.
+For more information, see [service accounts](../user/profile/service_accounts.md).
 
-Service accounts are a type of user, and you can also use the [users API](users.md) to manage service accounts.
+You can also interact with service accounts through the [users API](users.md).
 
-## List all service accounts for an instance
+## List all instance service accounts
 
 {{< history >}}
 
@@ -25,8 +26,7 @@ Service accounts are a type of user, and you can also use the [users API](users.
 
 {{< /history >}}
 
-Lists all service accounts associated with the GitLab instance. Does not list service accounts
-associated with a specific group.
+Lists all instance service accounts.
 
 Use the `page` and `per_page` [pagination parameters](rest/_index.md#offset-based-pagination) to filter the results.
 
@@ -68,7 +68,7 @@ Example response:
 ]
 ```
 
-## Create a service account for an instance
+## Create an instance service account
 
 {{< history >}}
 
@@ -78,7 +78,7 @@ Example response:
 
 {{< /history >}}
 
-Creates a service account associated with the GitLab instance.
+Creates an instance service account.
 
 Prerequisites:
 

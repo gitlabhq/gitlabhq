@@ -8,6 +8,7 @@ import RecentlyViewedWidget from '~/homepage/components/recently_viewed_widget.v
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import RecentlyViewedItemsQuery from '~/homepage/graphql/queries/recently_viewed_items.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 
 Vue.use(VueApollo);
 
@@ -74,6 +75,7 @@ describe('RecentlyViewedWidget', () => {
   const findItemLinks = () => wrapper.findAll('a[href^="/"]');
   const findItemIcons = () => wrapper.findAllComponents(GlIcon);
   const findTooltipComponents = () => wrapper.findAllComponents(TooltipOnTruncate);
+  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
 
   describe('loading state', () => {
     it('shows skeleton loaders while fetching data', () => {
@@ -192,6 +194,22 @@ describe('RecentlyViewedWidget', () => {
       await waitForPromises();
 
       expect(wrapper.vm.items).toEqual([]);
+    });
+  });
+
+  describe('refresh functionality', () => {
+    beforeEach(async () => {
+      createComponent();
+      await waitForPromises();
+    });
+
+    it('refreshes on becoming visible again', async () => {
+      const refetchSpy = jest.spyOn(wrapper.vm.$apollo.queries.items, 'refetch');
+      findDetector().vm.$emit('visible');
+      await waitForPromises();
+
+      expect(refetchSpy).toHaveBeenCalled();
+      refetchSpy.mockRestore();
     });
   });
 

@@ -767,7 +767,7 @@ GitLab Flavored Markdown recognizes the following:
 | Issue                                                                                | ``#123``                                              | `namespace/project#123`                        | `project#123`                      |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
 | Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| [Epic](group/epics/_index.md)                                                        | `#123`  | `group1/subgroup&123` or `group1/subgroup#123` | |
+| [Epic](group/epics/_index.md)                                                        | `#123` or `&123`  | `group1/subgroup#123` or `group1/subgroup&123` | |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
@@ -816,8 +816,8 @@ For example:
 {{< history >}}
 
 - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
-- Supported for epics in GitLab 17.7, when `work_item_epics` flag got enabled by default.
-- Generally available for epics in GitLab 18.1.
+- Support for epics introduced in GitLab 17.7, with the flag named `work_item_epics`, enabled by default.
+- Generally available for epics in GitLab 18.1. Feature flag `work_item_epics` removed.
 
 {{< /history >}}
 
@@ -833,10 +833,9 @@ URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are al
 
 {{< history >}}
 
-- Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
 - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
-- Supported for epics in GitLab 17.7, when `work_item_epics` flag got enabled by default.
-- Generally available for epics in GitLab 18.1.
+- Support for epics introduced in GitLab 17.7, with the flag named `work_item_epics`, enabled by default.
+- Generally available for epics in GitLab 18.1. Feature flag `work_item_epics` removed.
 
 {{< /history >}}
 

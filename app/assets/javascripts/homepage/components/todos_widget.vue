@@ -1,6 +1,6 @@
 <script>
 import { computed } from 'vue';
-import { GlButton, GlCollapsibleListbox, GlTooltipDirective } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlTooltipDirective, GlSkeletonLoader } from '@gitlab/ui';
 import emptyTodosAllDoneSvg from '@gitlab/svgs/dist/illustrations/status/status-success-sm.svg';
 import emptyTodosFilteredSvg from '@gitlab/svgs/dist/illustrations/search-sm.svg';
 import { s__ } from '~/locale';
@@ -16,6 +16,7 @@ import {
 import TodoItem from '~/todos/components/todo_item.vue';
 import getTodosQuery from '~/todos/components/queries/get_todos.query.graphql';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 const N_TODOS = 5;
 
@@ -47,7 +48,7 @@ const FILTER_OPTIONS = [
 ];
 
 export default {
-  components: { TodoItem, GlButton, GlCollapsibleListbox },
+  components: { TodoItem, GlCollapsibleListbox, GlSkeletonLoader, VisibilityChangeDetector },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
@@ -63,6 +64,7 @@ export default {
       currentUserId: null,
       filter: null,
       todos: [],
+      showLoading: true,
     };
   },
   apollo: {
@@ -77,14 +79,23 @@ export default {
       },
       update({ currentUser: { id, todos: { nodes = [] } } = {} }) {
         this.currentUserId = id;
+        this.showLoading = false;
 
         return nodes;
       },
       error(error) {
         Sentry.captureException(error);
+        this.showLoading = false;
       },
     },
   },
+  methods: {
+    reload() {
+      this.showLoading = true;
+      this.$apollo.queries.todos.refetch();
+    },
+  },
+
   emptyTodosAllDoneSvg,
   emptyTodosFilteredSvg,
   FILTER_OPTIONS,
@@ -92,26 +103,23 @@ export default {
 </script>
 
 <template>
-  <div>
-    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2">
+  <visibility-change-detector class="gl-border gl-rounded-lg gl-bg-subtle" @visible="reload">
+    <div class="gl-flex gl-items-center gl-justify-between gl-gap-2 gl-px-5">
       <h4 class="gl-grow">{{ __('To-do items') }}</h4>
-
-      <gl-button
-        v-gl-tooltip.hover
-        icon="retry"
-        :aria-label="__('Refresh')"
-        :title="__('Refresh')"
-        :loading="$apollo.queries.todos.loading"
-        category="tertiary"
-        size="small"
-        @click="$apollo.queries.todos.refetch()"
-      />
 
       <gl-collapsible-listbox v-model="filter" :items="$options.FILTER_OPTIONS" />
     </div>
 
+    <div v-if="showLoading && $apollo.queries.todos.loading" class="gl-p-4">
+      <gl-skeleton-loader v-for="i in 5" :key="i" :width="200" :height="10">
+        <rect x="0" y="0" width="16" height="8" rx="2" ry="2" />
+        <rect x="24" y="0" width="174" height="8" rx="2" ry="2" />
+        <rect x="182" y="0" width="16" height="8" rx="2" ry="2" />
+      </gl-skeleton-loader>
+    </div>
+
     <div
-      v-if="!$apollo.queries.todos.loading && !todos.length && !filter"
+      v-else-if="!$apollo.queries.todos.loading && !todos.length && !filter"
       class="gl-flex gl-items-center gl-gap-5 gl-bg-subtle gl-p-4"
     >
       <img class="gl-h-11" aria-hidden="true" :src="$options.emptyTodosAllDoneSvg" />
@@ -134,9 +142,10 @@ export default {
         :todo="todo"
         @change="$apollo.queries.todos.refetch()"
       />
-      <div class="gl-p-3">
-        <a href="/dashboard/todos">{{ __('All to-do items') }}</a>
-      </div>
     </div>
-  </div>
+
+    <div class="gl-px-5 gl-py-3">
+      <a href="/dashboard/todos">{{ __('All to-do items') }}</a>
+    </div>
+  </visibility-change-detector>
 </template>

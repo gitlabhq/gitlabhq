@@ -118,11 +118,8 @@ export default {
     },
 
     jumpToFirstUnresolvedDiscussion() {
-      this.setCurrentDiscussionId(null)
-        .then(() => {
-          this.jumpToNextDiscussion();
-        })
-        .catch(() => {});
+      this.setCurrentDiscussionId(null);
+      this.jumpToNextDiscussion();
     },
   },
 };

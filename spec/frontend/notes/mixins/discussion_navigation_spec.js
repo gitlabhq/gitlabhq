@@ -56,7 +56,7 @@ describe('Discussion navigation mixin', () => {
     pinia = createTestingPinia({ plugins: [globalAccessorPlugin] });
     useLegacyDiffs();
     useNotes().discussions = createDiscussions();
-    useNotes().setCurrentDiscussionId.mockResolvedValue();
+    useNotes().setCurrentDiscussionId.mockReturnValue();
     wrapper = shallowMount(createComponent(), { pinia });
   });
 

@@ -52,10 +52,6 @@ module Gitlab
           end
         end
 
-        def enabled?
-          true
-        end
-
         def app_id
           if Gitlab::CurrentSettings.snowplow_enabled?
             Gitlab::CurrentSettings.snowplow_app_id

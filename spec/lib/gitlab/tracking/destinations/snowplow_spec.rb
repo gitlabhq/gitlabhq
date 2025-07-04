@@ -241,28 +241,6 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
-  describe '#enabled?' do
-    context 'when snowplow is enabled' do
-      before do
-        stub_application_setting(snowplow_enabled?: true)
-      end
-
-      it 'returns true' do
-        expect(subject.enabled?).to be_truthy
-      end
-    end
-
-    context 'when snowplow is disabled' do
-      before do
-        stub_application_setting(snowplow_enabled?: false)
-      end
-
-      it 'returns true' do
-        expect(subject.enabled?).to be_truthy
-      end
-    end
-  end
-
   describe '#app_id' do
     subject { described_class.new.app_id }
 

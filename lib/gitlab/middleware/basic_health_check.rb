@@ -48,12 +48,12 @@ module Gitlab
       private
 
       def compat_ip_whitelist
-        base = Settings.monitoring.ip_whitelist.map(&IPAddr.method(:new))
+        base = Settings.monitoring.ip_whitelist.map { |ip| IPAddr.new(ip) }
 
         # Add compatible addresses to match IPv4 allow list entries against IPv4 request IPs
         # that were mapped to IPv6 addresses on the kernel level.
         # https://docs.kernel.org/networking/ip-sysctl.html#proc-sys-net-ipv6-variables
-        compats = base.select(&:ipv4?).map(&:ipv4_compat)
+        compats = base.select(&:ipv4?).map(&:ipv4_mapped)
 
         base + compats
       end
