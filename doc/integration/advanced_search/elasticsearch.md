@@ -78,7 +78,8 @@ Advanced search works with the following versions of Elasticsearch.
 
 | GitLab version        | Elasticsearch version       |
 |-----------------------|-----------------------------|
-| GitLab 15.0 and later | Elasticsearch 7.x and 8.x   |
+| GitLab 18.1 and later | Elasticsearch 7.x and later |
+| GitLab 15.0 to 18.0   | Elasticsearch 7.x and 8.x   |
 | GitLab 14.0 to 14.10  | Elasticsearch 6.8 to 7.x    |
 
 Advanced search follows the [Elasticsearch end-of-life policy](https://www.elastic.co/support/eol).
