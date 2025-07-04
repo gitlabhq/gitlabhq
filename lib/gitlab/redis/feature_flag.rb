@@ -17,7 +17,8 @@ module Gitlab
             pool: false,
             compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
             namespace: Cache::CACHE_NAMESPACE,
-            expires_in: 1.hour
+            expires_in: 1.hour,
+            coder: ::Gitlab::Redis::Rails61CoderBackwardsCompatible
           )
         end
       end

@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'rails61_coder_backwards_compatible'
+
 module Gitlab
   module Redis
     class Cache < ::Gitlab::Redis::Wrapper
@@ -20,7 +22,8 @@ module Gitlab
             pool: false,
             compress: Gitlab::Utils.to_boolean(ENV.fetch('ENABLE_REDIS_CACHE_COMPRESSION', '1')),
             namespace: CACHE_NAMESPACE,
-            expires_in: default_ttl_seconds
+            expires_in: default_ttl_seconds,
+            coder: ::Gitlab::Redis::Rails61CoderBackwardsCompatible
           }
         end
 

@@ -21,5 +21,10 @@ RSpec.describe Gitlab::Redis::Cache, feature_category: :shared do
     it 'has a pool set to false' do
       expect(described_class.active_support_config[:pool]).to eq(false)
     end
+
+    it 'has Rails61CoderBackwardsCompatible as the coder' do
+      expect(described_class.active_support_config[:coder])
+        .to be(Gitlab::Redis::Rails61CoderBackwardsCompatible)
+    end
   end
 end
