@@ -73,12 +73,6 @@ In some cases, the quota limit is replaced by one of the following labels:
 
 ### View usage for a group
 
-{{< history >}}
-
-- Displaying instance runners duration per project [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/355666) in GitLab 15.0.
-
-{{< /history >}}
-
 Prerequisites:
 
 - You must have the Owner role for the group.
@@ -95,12 +89,6 @@ in the current month only. The list includes all projects in the namespace and i
 subgroups, sorted in descending order of compute usage.
 
 ### View usage for a personal namespace
-
-{{< history >}}
-
-- Displaying instance runners duration [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/345795) in GitLab 15.0.
-
-{{< /history >}}
 
 You can view the compute usage for your personal namespace:
 

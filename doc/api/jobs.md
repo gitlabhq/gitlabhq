@@ -16,12 +16,6 @@ Use this API to interact with [CI/CD jobs](../ci/jobs/_index.md).
 
 ## List project jobs
 
-{{< history >}}
-
-- Support for keyset pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362172) in GitLab 15.9.
-
-{{< /history >}}
-
 Get a list of jobs in a project. Jobs are sorted in descending order of their IDs.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/_index.md#pagination)

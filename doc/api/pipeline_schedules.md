@@ -120,12 +120,6 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
 
 ## Get all pipelines triggered by a pipeline schedule
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368566) in GitLab 15.3.
-
-{{< /history >}}
-
 Get all pipelines triggered by a pipeline schedule in a project.
 
 ```plaintext

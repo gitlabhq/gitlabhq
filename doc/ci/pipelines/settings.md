@@ -89,12 +89,6 @@ running job can be canceled before it completes. After a job with
 
 ## Prevent outdated deployment jobs
 
-{{< history >}}
-
-- Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
-
-{{< /history >}}
-
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
 

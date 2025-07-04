@@ -12,12 +12,6 @@ title: Merged results pipelines
 
 {{< /details >}}
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91849) in GitLab 15.1, merged results pipelines also run on [Draft merge requests](../../user/project/merge_requests/drafts.md).
-
-{{< /history >}}
-
 A merged results pipeline runs on the result of the source and target branches merged together.
 It is a type of [merge request pipeline](merge_request_pipelines.md).
 

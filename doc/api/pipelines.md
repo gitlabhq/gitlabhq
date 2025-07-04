@@ -18,7 +18,6 @@ Use this API to interact with [CI/CD pipelines](../ci/pipelines/_index.md).
 
 {{< history >}}
 
-- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
 - `name` in request [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_search`. Disabled by default.
 - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
@@ -98,7 +97,6 @@ Example of response
 
 {{< history >}}
 
-- `iid` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/342223) in GitLab 14.6.
 - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags/_index.md) named `pipeline_name_in_api`. Disabled by default.
 - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
 

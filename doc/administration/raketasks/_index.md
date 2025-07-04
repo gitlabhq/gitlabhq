@@ -15,6 +15,8 @@ title: Rake tasks
 GitLab provides [Rake](https://ruby.github.io/rake/) tasks to assist you with common administration and operational
 processes.
 
+All Rake tasks must be run on a Rails node unless the documentation for a task specifically states otherwise.
+
 You can perform GitLab Rake tasks by using:
 
 - `gitlab-rake <raketask>` for [Linux package](https://docs.gitlab.com/omnibus/) and [GitLab Helm chart](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet.html#gitlab-specific-kubernetes-information) installations.
