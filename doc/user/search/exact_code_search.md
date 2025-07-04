@@ -36,13 +36,24 @@ to search for code in all GitLab or in a specific project.
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
 and is used by default in groups where the feature is enabled.
 
-## Enable exact code search
+## Use exact code search
 
-- For [GitLab.com](../../subscriptions/gitlab_com/_index.md),
-  exact code search is enabled in paid subscriptions.
-- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
-  [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+Prerequisites:
+
+- Exact code search must be enabled:
+  - For [GitLab.com](../../subscriptions/gitlab_com/_index.md),
+    exact code search is enabled by default in paid subscriptions.
+  - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
+    [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
+    [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
+
+To use exact code search:
+
+1. On the left sidebar, select **Search or go to**.
+1. In the search box, enter your search term.
+1. On the left sidebar, select **Code**.
+
+You can also use exact code search in a project or group.
 
 In user preferences, you can [disable exact code search](../profile/preferences.md#disable-exact-code-search)
 to use [advanced search](advanced_search.md) instead.
@@ -61,16 +72,6 @@ The following scopes are available for exact code search:
 1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
    On GitLab Self-Managed, an administrator can enable global search
    with the [`zoekt_cross_namespace_search`](exact_code_search.md#global-code-search) feature flag.
-
-## Use exact code search
-
-To use exact code search:
-
-1. On the left sidebar, select **Search or go to**.
-1. In the search box, enter your search term.
-1. On the left sidebar, select **Code**.
-
-You can also use exact code search in a project or group.
 
 ## Zoekt search API
 

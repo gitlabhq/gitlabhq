@@ -31,12 +31,22 @@ With advanced search:
 Advanced search works in projects, issues, merge requests, milestones,
 users, epics, code, comments, commits, and wikis.
 
-## Enable advanced search
+## Use advanced search
 
-- For [GitLab.com](../../subscriptions/gitlab_com/_index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md),
-  advanced search is enabled in paid subscriptions.
-- For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
-  [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
+Prerequisites:
+
+- Advanced search must be enabled:
+  - For [GitLab.com](../../subscriptions/gitlab_com/_index.md) and [GitLab Dedicated](../../subscriptions/gitlab_dedicated/_index.md),
+    advanced search is enabled by default in paid subscriptions.
+  - For [GitLab Self-Managed](../../subscriptions/self_managed/_index.md), an administrator must
+    [enable advanced search](../../integration/advanced_search/elasticsearch.md#enable-advanced-search).
+
+To use advanced search:
+
+1. On the left sidebar, select **Search or go to**.
+1. In the search box, enter your search term.
+
+You can also use advanced search in a project or group.
 
 ## Available scopes
 

@@ -8,6 +8,7 @@ import { useFakeDate } from 'helpers/fake_date';
 import MergeRequestsWidget from '~/homepage/components/merge_requests_widget.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_requests_widget_metadata.query.graphql';
+import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 import { withItems, withoutItems } from './mocks/merge_requests_widget_metadata_query_mocks';
 
 jest.mock('~/alert');
@@ -34,6 +35,7 @@ describe('MergeRequestsWidget', () => {
     wrapper.findByTestId('review-requested-last-updated-at');
   const findAssignedCount = () => wrapper.findByTestId('assigned-count');
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
+  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
 
   function createWrapper({
     mergeRequestsWidgetMetadataQueryHandler = mergeRequestsWidgetMetadataQuerySuccessHandler(
@@ -118,6 +120,24 @@ describe('MergeRequestsWidget', () => {
 
       expect(findReviewRequestedCount().text()).toBe('-');
       expect(findAssignedCount().text()).toBe('-');
+    });
+  });
+
+  describe('refresh functionality', () => {
+    it('refreshes on becoming visible again', async () => {
+      const reloadSpy = jest
+        .spyOn(MergeRequestsWidget.methods, 'reload')
+        .mockImplementation(() => {});
+
+      createWrapper();
+      await waitForPromises();
+      reloadSpy.mockClear();
+
+      findDetector().vm.$emit('visible');
+      await waitForPromises();
+
+      expect(reloadSpy).toHaveBeenCalled();
+      reloadSpy.mockRestore();
     });
   });
 });

@@ -13,10 +13,9 @@ title: Merge request reviews
 
 {{< /details >}}
 
-Merge requests are the primary method of making changes to files in a GitLab project. After you
-[create a merge request](../creating_merge_requests.md) with your changes, add reviewers to check
-your work. Reviewers leave review comments on your merge request, including suggestions for improvements
-you can apply from the GitLab user interface.
+The merge request review process ensures that subject matter experts review your proposed changes
+before they are merged. Reviewers add review comments to merge requests, and [suggest changes](suggestions.md)
+the author can apply directly from the GitLab UI.
 
 Reviewers can use any of these tools to review a merge request:
 
@@ -24,6 +23,10 @@ Reviewers can use any of these tools to review a merge request:
 - Visual Studio Code, with the
   [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/_index.md).
 - A terminal window, with the [GitLab CLI](../../../../editor_extensions/gitlab_cli/_index.md).
+
+Approvals are one of several merge checks that ensure your merge request merges only when it's truly
+ready. Depending on your project configuration, reviewers can also block a merge request
+from merging by setting **Request changes**.
 
 GitLab Premium and Ultimate provide an **Assign reviewers** drawer with more information to help you
 find reviewers [who fulfill approval rules](#find-reviewers-who-fulfill-approval-rules):
@@ -48,9 +51,9 @@ For an overview, see [Merge request review](https://www.youtube.com/watch?v=2May
 
 ## Find merge requests to review
 
-Merge requests that you need to review are in the **Review requested** category of the
-[merge request homepage](../../../../tutorials/merge_requests/homepage.md). To view all merge requests
-on the homepage, use one of these methods:
+Your [merge request homepage](../homepage.md) shows your merge requests in progress, and merge requests
+awaiting review from you. The merge requests you need to review are in the **Review requested** category.
+To see all merge requests that need your attention, use one of these methods:
 
 - Press the <kbd>Shift</kbd> + <kbd>m</kbd> [keyboard shortcut](../../../shortcuts.md).
 - On the left sidebar, select **Merge requests** ({{< icon name="merge-request">}}).

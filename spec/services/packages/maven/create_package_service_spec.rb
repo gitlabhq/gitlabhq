@@ -10,25 +10,29 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
   let(:version) { '1.0-SNAPSHOT' }
   let(:path) { "my/company/app/#{app_name}" }
   let(:path_with_version) { "#{path}/#{version}" }
+  let(:service) { described_class.new(project, user, params) }
 
   describe '#execute' do
     let(:package) { subject[:package] }
 
-    subject { described_class.new(project, user, params).execute }
+    subject { service.execute }
 
     shared_examples 'valid package' do
       it_behaves_like 'returning a success service response'
 
       it 'creates a new package with metadatum' do
-        expect(package).to be_valid
-        expect(package.name).to eq(path)
-        expect(package.version).to eq(version)
-        expect(package.package_type).to eq('maven')
-        expect(package.maven_metadatum).to be_valid
-        expect(package.maven_metadatum.path).to eq(path_with_version)
-        expect(package.maven_metadatum.app_group).to eq('my.company.app')
-        expect(package.maven_metadatum.app_name).to eq(app_name)
-        expect(package.maven_metadatum.app_version).to eq(version)
+        expect(package).to be_valid.and have_attributes(
+          name: path,
+          version: version,
+          package_type: 'maven'
+        )
+
+        expect(package.maven_metadatum).to be_valid.and have_attributes(
+          path: path_with_version,
+          app_group: 'my.company.app',
+          app_name: app_name,
+          app_version: version
+        )
       end
 
       it_behaves_like 'assigns the package creator'
@@ -75,7 +79,7 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
       end
     end
 
-    context 'with an exisiting package' do
+    context 'with an existing package' do
       let!(:package) { create(:maven_package, project: project, name: path, version: version) }
 
       let(:params) do
@@ -88,6 +92,24 @@ RSpec.describe Packages::Maven::CreatePackageService, feature_category: :package
 
       it_behaves_like 'returning an error service response',
         message: 'Validation failed: Name has already been taken' do
+        it { is_expected.to have_attributes(reason: :name_taken) }
+      end
+    end
+
+    context 'when record is not unique' do
+      before do
+        allow(service).to receive(:create_package!).and_raise(ActiveRecord::RecordNotUnique)
+      end
+
+      let(:params) do
+        {
+          path: path_with_version,
+          name: path,
+          version: version
+        }
+      end
+
+      it_behaves_like 'returning an error service response' do
         it { is_expected.to have_attributes(reason: :name_taken) }
       end
     end

@@ -93,6 +93,8 @@ A GitLab CI/CD pipeline configuration includes:
   | [Default `variables`](#default-variables) | Define default CI/CD variables for all jobs in the pipeline. |
   | [Job `variables`](#job-variables)         | Define CI/CD variables for individual jobs. |
 
+- [Deprecated keywords](deprecated_keywords.md) that are no longer recommended for use.
+
 ## Global keywords
 
 Some keywords are not defined in a job. These keywords control pipeline behavior
@@ -1749,7 +1751,7 @@ job:
 
 - Scripts you specify in `before_script` are concatenated with any scripts you specify
   in the main [`script`](#script). The combined scripts execute together in a single shell.
-- Using `before_script` at the top level, but not in the `default` section, [is deprecated](#globally-defined-image-services-cache-before_script-after_script).
+- Using `before_script` at the top level, but not in the `default` section, [is deprecated](deprecated_keywords.md#globally-defined-image-services-cache-before_script-after_script).
 
 **Related topics**:
 
@@ -3494,7 +3496,7 @@ the `use-artifact` job only executes when `create-artifact` has successfully fin
 To need a job that sometimes does not exist in the pipeline, add `optional: true`
 to the `needs` configuration. If not defined, `optional: false` is the default.
 
-Jobs that use [`rules`](#rules), [`only`, or `except`](#only--except) and that are added with [`include`](#include)
+Jobs that use [`rules`](#rules), [`only`, or `except`](deprecated_keywords.md#only--except) and that are added with [`include`](#include)
 might not always be added to a pipeline. GitLab checks the `needs` relationships before starting a pipeline:
 
 - If the `needs` entry has `optional: true` and the needed job is present in the pipeline,
@@ -3707,7 +3709,7 @@ It also configures the pages deployment to be unpublished after a week.
 
 **Additional details**:
 
-- Using `pages` as a job name [is deprecated](#publish-keyword-and-pages-job-name-for-gitlab-pages).
+- Using `pages` as a job name [is deprecated](deprecated_keywords.md#publish-keyword-and-pages-job-name-for-gitlab-pages).
 - To use `pages` as a job name without triggering a Pages deployment, set the `pages` property to false
 
 #### `pages.publish`
@@ -3769,7 +3771,7 @@ The publish path specified must be relative to the build root.
 
 **Additional details**:
 
-- The top-level `publish` keyword [is deprecated](#publish-keyword-and-pages-job-name-for-gitlab-pages) and must now be nested under the `pages` keyword
+- The top-level `publish` keyword [is deprecated](deprecated_keywords.md#publish-keyword-and-pages-job-name-for-gitlab-pages) and must now be nested under the `pages` keyword
 
 #### `pages.path_prefix`
 
@@ -5747,7 +5749,7 @@ The keywords available for use in trigger jobs are:
 - [`allow_failure`](#allow_failure).
 - [`extends`](#extends).
 - [`needs`](#needs), but not [`needs:project`](#needsproject).
-- [`only` and `except`](#only--except).
+- [`only` and `except`](deprecated_keywords.md#only--except).
 - [`parallel`](#parallel).
 - [`rules`](#rules).
 - [`stage`](#stage).
@@ -6342,280 +6344,3 @@ variables:
 
 - The `expand` keyword can only be used with default and job `variables` keywords.
   You can't use it with [`rules:variables`](#rulesvariables) or [`workflow:rules:variables`](#workflowrulesvariables).
-
-## Deprecated keywords
-
-The following keywords are deprecated.
-
-{{< alert type="note" >}}
-
-These keywords are still usable to ensure backwards compatibility,
-but could be scheduled for removal in a future major milestone.
-
-{{< /alert >}}
-
-### Globally-defined `image`, `services`, `cache`, `before_script`, `after_script`
-
-Defining `image`, `services`, `cache`, `before_script`, and `after_script` globally is deprecated.
-Using these keywords at the top level is still possible to ensure backwards compatibility,
-but could be scheduled for removal in a future milestone.
-
-Use [`default`](#default) instead. For example:
-
-```yaml
-default:
-  image: ruby:3.0
-  services:
-    - docker:dind
-  cache:
-    paths: [vendor/]
-  before_script:
-    - bundle config set path vendor/bundle
-    - bundle install
-  after_script:
-    - rm -rf tmp/
-```
-
-### `only` / `except`
-
-{{< alert type="note" >}}
-
-`only` and `except` are deprecated and not being actively developed. These keywords
-are still usable to ensure backwards compatibility, but could be scheduled for removal
-in a future milestone. To control when to add jobs to pipelines, use [`rules`](#rules) instead.
-
-{{< /alert >}}
-
-You can use `only` and `except` to control when to add jobs to pipelines.
-
-- Use `only` to define when a job runs.
-- Use `except` to define when a job **does not** run.
-
-#### `only:refs` / `except:refs`
-
-{{< alert type="note" >}}
-
-`only:refs` and `except:refs` are deprecated and not being actively developed. These keywords
-are still usable to ensure backwards compatibility, but could be scheduled for removal
-in a future milestone. To use refs, regular expressions, or variables to control
-when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
-
-{{< /alert >}}
-
-You can use the `only:refs` and `except:refs` keywords to control when to add jobs to a
-pipeline based on branch names or pipeline types.
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Supported values**: An array including any number of:
-
-- Branch names, for example `main` or `my-feature-branch`.
-- Regular expressions that match against branch names, for example `/^feature-.*/`.
-- The following keywords:
-
-  | **Value**                | **Description** |
-  | -------------------------|-----------------|
-  | `api`                    | For pipelines triggered by the [pipelines API](../../api/pipelines.md#create-a-new-pipeline). |
-  | `branches`               | When the Git reference for a pipeline is a branch. |
-  | `chat`                   | For pipelines created by using a [GitLab ChatOps](../chatops/_index.md) command. |
-  | `external`               | When you use CI services other than GitLab. |
-  | `external_pull_requests` | When an external pull request on GitHub is created or updated (See [Pipelines for external pull requests](../ci_cd_for_external_repos/_index.md#pipelines-for-external-pull-requests)). |
-  | `merge_requests`         | For pipelines created when a merge request is created or updated. Enables [merge request pipelines](../pipelines/merge_request_pipelines.md), [merged results pipelines](../pipelines/merged_results_pipelines.md), and [merge trains](../pipelines/merge_trains.md). |
-  | `pipelines`              | For [multi-project pipelines](../pipelines/downstream_pipelines.md#multi-project-pipelines) created by [using the API with `CI_JOB_TOKEN`](../pipelines/downstream_pipelines.md#trigger-a-multi-project-pipeline-by-using-the-api), or the [`trigger`](#trigger) keyword. |
-  | `pushes`                 | For pipelines triggered by a `git push` event, including for branches and tags. |
-  | `schedules`              | For [scheduled pipelines](../pipelines/schedules.md). |
-  | `tags`                   | When the Git reference for a pipeline is a tag. |
-  | `triggers`               | For pipelines created by using a [trigger token](../triggers/_index.md#configure-cicd-jobs-to-run-in-triggered-pipelines). |
-  | `web`                    | For pipelines created by selecting **New pipeline** in the GitLab UI, from the project's **Build > Pipelines** section. |
-
-**Example of `only:refs` and `except:refs`**:
-
-```yaml
-job1:
-  script: echo
-  only:
-    - main
-    - /^issue-.*$/
-    - merge_requests
-
-job2:
-  script: echo
-  except:
-    - main
-    - /^stable-branch.*$/
-    - schedules
-```
-
-**Additional details**:
-
-- Scheduled pipelines run on specific branches, so jobs configured with `only: branches`
-  run on scheduled pipelines too. Add `except: schedules` to prevent jobs with `only: branches`
-  from running on scheduled pipelines.
-- `only` or `except` used without any other keywords are equivalent to `only: refs`
-  or `except: refs`. For example, the following two jobs configurations have the same
-  behavior:
-
-  ```yaml
-  job1:
-    script: echo
-    only:
-      - branches
-
-  job2:
-    script: echo
-    only:
-      refs:
-        - branches
-  ```
-
-- If a job does not use `only`, `except`, or [`rules`](#rules), then `only` is set to `branches`
-  and `tags` by default.
-
-  For example, `job1` and `job2` are equivalent:
-
-  ```yaml
-  job1:
-    script: echo "test"
-
-  job2:
-    script: echo "test"
-    only:
-      - branches
-      - tags
-  ```
-
-#### `only:variables` / `except:variables`
-
-{{< alert type="note" >}}
-
-`only:variables` and `except:variables` are deprecated and not being actively developed.
-These keywords are still usable to ensure backwards compatibility, but could be scheduled
-for removal in a future milestone. To use refs, regular expressions, or variables
-to control when to add jobs to pipelines, use [`rules:if`](#rulesif) instead.
-
-{{< /alert >}}
-
-You can use the `only:variables` or `except:variables` keywords to control when to add jobs
-to a pipeline, based on the status of [CI/CD variables](../variables/_index.md).
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Supported values**:
-
-- An array of [CI/CD variable expressions](../jobs/job_rules.md#cicd-variable-expressions).
-
-**Example of `only:variables`**:
-
-```yaml
-deploy:
-  script: cap staging deploy
-  only:
-    variables:
-      - $RELEASE == "staging"
-      - $STAGING
-```
-
-#### `only:changes` / `except:changes`
-
-`only:variables` and `except:variables`
-
-{{< alert type="note" >}}
-
-`only:changes` and `except:changes` are deprecated and not being actively developed.
-These keywords are still usable to ensure backwards compatibility, but could be scheduled
-for removal in a future milestone. To use changed files to control when to add a job to a pipeline,
-use [`rules:changes`](#ruleschanges) instead.
-
-{{< /alert >}}
-
-Use the `changes` keyword with `only` to run a job, or with `except` to skip a job,
-when a Git push event modifies a file.
-
-Use `changes` in pipelines with the following refs:
-
-- `branches`
-- `external_pull_requests`
-- `merge_requests`
-
-**Keyword type**: Job keyword. You can use it only as part of a job.
-
-**Supported values**: An array including any number of:
-
-- Paths to files.
-- Wildcard paths for:
-  - Single directories, for example `path/to/directory/*`.
-  - A directory and all its subdirectories, for example `path/to/directory/**/*`.
-- Wildcard [glob](https://en.wikipedia.org/wiki/Glob_(programming)) paths for all files
-  with the same extension or multiple extensions, for example `*.md` or `path/to/directory/*.{rb,py,sh}`.
-- Wildcard paths to files in the root directory, or all directories, wrapped in double quotes.
-  For example `"*.json"` or `"**/*.json"`.
-
-**Example of `only:changes`**:
-
-```yaml
-docker build:
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  only:
-    refs:
-      - branches
-    changes:
-      - Dockerfile
-      - docker/scripts/*
-      - dockerfiles/**/*
-      - more_scripts/*.{rb,py,sh}
-      - "**/*.json"
-```
-
-**Additional details**:
-
-- `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
-- Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
-  with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
-  `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
-- If you use refs other than `branches`, `external_pull_requests`, or `merge_requests`,
-  `changes` can't determine if a given file is new or old and always returns `true`.
-- If you use `only: changes` with other refs, jobs ignore the changes and always run.
-- If you use `except: changes` with other refs, jobs ignore the changes and never run.
-
-**Related topics**:
-
-- [Jobs or pipelines can run unexpectedly when using `only: changes`](../jobs/job_troubleshooting.md#jobs-or-pipelines-run-unexpectedly-when-using-changes).
-
-#### `only:kubernetes` / `except:kubernetes`
-
-{{< alert type="note" >}}
-
-`only:kubernetes` and `except:kubernetes` are deprecated and not being actively developed.
-These keywords are still usable to ensure backwards compatibility, but could be scheduled
-for removal in a future milestone. To control if jobs are added to the pipeline when
-the Kubernetes service is active in the project, use [`rules:if`](#rulesif) with the
-[`CI_KUBERNETES_ACTIVE`](../variables/predefined_variables.md) predefined CI/CD variable instead.
-
-{{< /alert >}}
-
-Use `only:kubernetes` or `except:kubernetes` to control if jobs are added to the pipeline
-when the Kubernetes service is active in the project.
-
-**Keyword type**: Job-specific. You can use it only as part of a job.
-
-**Supported values**:
-
-- The `kubernetes` strategy accepts only the `active` keyword.
-
-**Example of `only:kubernetes`**:
-
-```yaml
-deploy:
-  only:
-    kubernetes: active
-```
-
-In this example, the `deploy` job runs only when the Kubernetes service is active
-in the project.
-
-### `publish` keyword and `pages` job name for GitLab Pages
-
-The job-level `publish` keyword and the `pages` job name for GitLab Pages deployment jobs are deprecated.
-These are still usable to ensure backwards compatibility, but could be scheduled for removal
-in a future milestone. To control the pages deployment, use the [`pages`](#pages)
-and [`pages.publish`](#pagespublish) keywords instead.

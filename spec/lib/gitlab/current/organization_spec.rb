@@ -18,18 +18,6 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
     }
   end
 
-  shared_examples 'operation that derives organization from user' do
-    let_it_be(:user) do
-      create(:user, organization_users: [create(:organization_user, organization: organization)])
-    end
-
-    subject(:current_organization) { described_class.new(params: params, user: user).organization }
-
-    it 'returns that organization' do
-      expect(current_organization).to eq(organization)
-    end
-  end
-
   describe '.organization' do
     context 'when params result in an organization', :request_store do
       let(:params) { super().merge(namespace_id: group_path) }
@@ -45,10 +33,6 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
 
         expect(Gitlab::Organizations::FallbackOrganizationTracker.enabled?).to be(false)
       end
-    end
-
-    context 'when only current user result in an organization' do
-      it_behaves_like 'operation that derives organization from user'
     end
 
     context 'when no organization can be derived' do
@@ -142,9 +126,5 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :organization do
         it { is_expected.to be_nil }
       end
     end
-  end
-
-  describe '.from_user' do
-    it_behaves_like 'operation that derives organization from user'
   end
 end

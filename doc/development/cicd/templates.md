@@ -142,7 +142,7 @@ job:
 
 #### Use `rules` instead of `only` or `except`
 
-Avoid using [`only` or `except`](../../ci/yaml/_index.md#only--except) if possible.
+Avoid using [`only` or `except`](../../ci/yaml/deprecated_keywords.md#only--except) if possible.
 Only and except is not being developed any more, and [`rules`](../../ci/yaml/_index.md#rules)
 is now the preferred syntax:
 

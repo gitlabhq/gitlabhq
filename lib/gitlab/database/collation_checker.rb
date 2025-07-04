@@ -13,10 +13,8 @@ module Gitlab
           FROM
             pg_collation
           WHERE
-            collprovider = 'c'
-            AND collversion IS NOT NULL
-            AND pg_collation_actual_version(oid) IS NOT NULL
-            AND collversion <> pg_collation_actual_version(oid);
+            collprovider IN ('c', 'd')
+          AND (collversion IS DISTINCT FROM pg_collation_actual_version(oid));
       SQL
 
       def self.run(database_name: nil, logger: Gitlab::AppLogger)

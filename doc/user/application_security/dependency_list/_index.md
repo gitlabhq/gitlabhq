@@ -115,7 +115,7 @@ To filter by component version, you must filter by exactly one component first.
 
 To filter the dependency list:
 
-1. On the left sidebar, at the top, select **Search GitLab** ({{< icon name="search" >}}) to find your group or project.
+1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Secure > Dependency list**.
 1. Select the filter bar.
 1. Select a filter, then from the dropdown list select one or more criteria.

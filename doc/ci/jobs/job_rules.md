@@ -350,7 +350,7 @@ job-with-rules:
 For every change pushed to the branch, duplicate pipelines run. One
 branch pipeline runs a single job (`job-with-no-rules`), and one merge request pipeline
 runs the other job (`job-with-rules`). Jobs with no rules default
-to [`except: merge_requests`](../yaml/_index.md#only--except), so `job-with-no-rules`
+to [`except: merge_requests`](../yaml/deprecated_keywords.md#only--except), so `job-with-no-rules`
 runs in all cases except merge requests.
 
 ## Reuse rules in different jobs

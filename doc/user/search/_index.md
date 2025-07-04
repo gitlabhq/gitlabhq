@@ -197,7 +197,7 @@ As you type in the search box, autocomplete suggestions are displayed for:
 
 To search in all GitLab:
 
-1. On the left sidebar, at the top, select **Search or go to**.
+1. On the left sidebar, select **Search or go to**.
 1. Type your search query. You must type at least two characters.
 1. Press <kbd>Enter</kbd> to search, or select from the list.
 

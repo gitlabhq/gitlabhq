@@ -5892,6 +5892,9 @@ msgstr ""
 msgid "AiPowered|AI-native features now available in IDEs"
 msgstr ""
 
+msgid "AiPowered|Allow GitLab to process your code and project data for AI-powered features throughout this namespace. Your data will be sent to GitLab Duo for processing. Groups, subgroups, and projects can individually opt out if needed."
+msgstr ""
+
 msgid "AiPowered|Always off"
 msgstr ""
 
@@ -5913,7 +5916,7 @@ msgstr ""
 msgid "AiPowered|Automatic Code Reviews"
 msgstr ""
 
-msgid "AiPowered|Availability"
+msgid "AiPowered|Block GitLab from processing your code and project data for AI-powered features by default. Your data stays private unless subgroups or projects individually opt in."
 msgstr ""
 
 msgid "AiPowered|By turning on these features, you accept the %{linkStart}GitLab Testing Agreement%{linkEnd}."
@@ -5950,6 +5953,12 @@ msgid "AiPowered|Connection method"
 msgstr ""
 
 msgid "AiPowered|Contact sales for Duo Enterprise"
+msgstr ""
+
+msgid "AiPowered|Control whether AI-powered features are available."
+msgstr ""
+
+msgid "AiPowered|Control whether GitLab can process your code and project data to provide context to AI-powered features."
 msgstr ""
 
 msgid "AiPowered|Direct connections"
@@ -6021,12 +6030,6 @@ msgstr ""
 msgid "AiPowered|GitLab Duo Core will be available to all users in your %{plan} plan, including Chat and Code Suggestions in supported IDEs. %{eligibilityLinkStart}Eligibility requirements apply%{eligibilityLinkEnd}. By enabling GitLab Duo, you accept the %{aiLinkStart}GitLab AI functionality terms%{aiLinkEnd}."
 msgstr ""
 
-msgid "AiPowered|GitLab Duo Enterprise availability"
-msgstr ""
-
-msgid "AiPowered|GitLab Duo Pro availability"
-msgstr ""
-
 msgid "AiPowered|GitLab Duo Pro or Enterprise"
 msgstr ""
 
@@ -6043,6 +6046,9 @@ msgid "AiPowered|GitLab Duo Workflow is now on for the instance and the service 
 msgstr ""
 
 msgid "AiPowered|GitLab Duo Workflow is now on for the instance. To use Workflow in your groups, you must turn on AI features for specific groups."
+msgstr ""
+
+msgid "AiPowered|GitLab Duo availability"
 msgstr ""
 
 msgid "AiPowered|GitLab Duo seat assignment is now located in GitLab Duo settings."
@@ -6075,7 +6081,10 @@ msgstr ""
 msgid "AiPowered|Model Selection"
 msgstr ""
 
-msgid "AiPowered|Monitor, manage, and customize AI features to ensure efficient utilization and alignment."
+msgid "AiPowered|Monitor, manage, and customize AI-powered features to ensure efficient utilization and alignment."
+msgstr ""
+
+msgid "AiPowered|Never allow GitLab to process your code and project data for AI-powered features. Your data will not be sent to GitLab Duo anywhere in this namespace."
 msgstr ""
 
 msgid "AiPowered|Not enabled"
@@ -15506,16 +15515,13 @@ msgstr ""
 msgid "Compliance Center Export|Export chain of custody report of a specific commit as a CSV file (limited to 15MB)."
 msgstr ""
 
-msgid "Compliance Center Export|Export compliance status report"
-msgstr ""
-
 msgid "Compliance Center Export|Export contents of the compliance frameworks report as a CSV file."
 msgstr ""
 
-msgid "Compliance Center Export|Export contents of the compliance status report as a CSV file."
+msgid "Compliance Center Export|Export contents of the standards adherence report as a CSV file."
 msgstr ""
 
-msgid "Compliance Center Export|Export contents of the standards adherence report as a CSV file."
+msgid "Compliance Center Export|Export contents of the status report as a CSV file."
 msgstr ""
 
 msgid "Compliance Center Export|Export custody report"
@@ -15536,6 +15542,9 @@ msgstr ""
 msgid "Compliance Center Export|Export standards adherence report"
 msgstr ""
 
+msgid "Compliance Center Export|Export status report"
+msgstr ""
+
 msgid "Compliance Center Export|Export violations report"
 msgstr ""
 
@@ -15548,16 +15557,16 @@ msgstr ""
 msgid "Compliance Center Export|You will be emailed after the export is processed."
 msgstr ""
 
-msgid "Compliance Center|Compliance status"
-msgstr ""
-
-msgid "Compliance Center|Dashboard"
-msgstr ""
-
 msgid "Compliance Center|Frameworks"
 msgstr ""
 
+msgid "Compliance Center|Overview"
+msgstr ""
+
 msgid "Compliance Center|Report and manage compliance status, violations, and compliance frameworks for the group. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "Compliance Center|Status"
 msgstr ""
 
 msgid "Compliance Center|Violations"
@@ -55597,6 +55606,12 @@ msgstr ""
 msgid "SecurityConfiguration|Secure your project"
 msgstr ""
 
+msgid "SecurityConfiguration|Security configuration"
+msgstr ""
+
+msgid "SecurityConfiguration|Security labels"
+msgstr ""
+
 msgid "SecurityConfiguration|Security testing"
 msgstr ""
 
@@ -55619,6 +55634,9 @@ msgid "SecurityConfiguration|Toggle secret push protection"
 msgstr ""
 
 msgid "SecurityConfiguration|Upgrade or start a free trial"
+msgstr ""
+
+msgid "SecurityConfiguration|Use security labels to classify projects by business context, security needs, and more. Categories are shared across your groups, enabling consistent and scalable classification of assets. These labels can help prioritize security efforts, filter dashboards, and apply consistent governance across projects."
 msgstr ""
 
 msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"

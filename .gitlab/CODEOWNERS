@@ -178,7 +178,7 @@ Dangerfile
 
 # Secure & Threat Management ownership delineation
 # https://handbook.gitlab.com/handbook/engineering/development/sec/delineate-sec/#technical-boundaries
-^[Threat Insights backend] @gitlab-org/govern/threat-insights-backend-team
+^[Threat Insights backend] @gitlab-org/security-risk-management/security-insights/backend
 /development/sec/cyclonedx_property_taxonomy.md
 /app/finders/security/
 /app/models/vulnerability.rb
@@ -194,7 +194,7 @@ Dangerfile
 /ee/spec/policies/vulnerabilities/
 /ee/spec/policies/vulnerability*.rb
 
-^[Threat Insights frontend] @gitlab-org/govern/threat-insights-frontend-team
+^[Threat Insights frontend] @gitlab-org/security-risk-management/security-insights/frontend
 /app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/
 /ee/app/assets/javascripts/vue_merge_request_widget/widgets/security_reports/
 /ee/app/assets/javascripts/security_dashboard/
@@ -232,7 +232,7 @@ Dangerfile
 /spec/lib/gitlab/ci/reports/sbom/
 /spec/lib/sbom/
 
-^[Secure] @gitlab-org/secure/dynamic-analysis-be
+^[Secure] @gitlab-org/secure/dynamic-analysis
 /ee/app/services/app_sec/dast/
 
 ^[Security Policies frontend] @gitlab-org/security-risk-management/security-policies/frontend
@@ -950,7 +950,7 @@ lib/gitlab/checks/
 /doc/development/ai_features/ @gitlab-org/ai-powered
 /doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
 /doc/development/application_limits.md @gitlab-org/distribution
-/doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
+/doc/development/audit_event_guide/ @gitlab-org/security-risk-management/security-policies/frontend @gitlab-org/security-risk-management/security-insights/frontend @gitlab-org/security-risk-management/security-insights/backend
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
 /doc/development/build_test_package.md @gitlab-org/distribution
 /doc/development/cascading_settings.md @gitlab-org/foundations/engineering
@@ -1015,7 +1015,7 @@ lib/gitlab/checks/
 /doc/security/ @idurham
 /doc/security/asset_proxy.md @msedlakjakubowski
 /doc/security/user_file_uploads.md @msedlakjakubowski
-/doc/solutions/ @jfullam @Darwinjs @sbrightwell
+/doc/solutions/ @jfullam @DarwinJS @sbrightwell
 /doc/solutions/integrations/servicenow.md @ashrafkhamis
 /doc/subscriptions/ @lciutacu
 /doc/subscriptions/gitlab_com/compute_minutes.md @lyspin
@@ -1666,11 +1666,11 @@ lib/gitlab/checks/
 /ee/**/models/ai/ai_resource/ci/ @gitlab-org/maintainers/rails-backend
 /ee/**/serializers/ci/*_ai_*.rb @gitlab-org/maintainers/rails-backend
 /ee/lib/gitlab/ci/parsers/license_compliance/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/parsers/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/lib/gitlab/ci/parsers/security/ @gitlab-org/security-risk-management/security-insights/backend
 /ee/lib/gitlab/ci/reports/coverage_fuzzing/ @gitlab-org/secure/fuzzing-be
 /ee/lib/gitlab/ci/reports/dependency_list/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
-/ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
+/ee/lib/gitlab/ci/reports/security/ @gitlab-org/security-risk-management/security-insights/backend
 
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
@@ -1801,7 +1801,7 @@ ee/lib/gitlab/llm/chain/utils/chat_authorizer.rb
 ee/lib/gitlab/llm/chain/utils/chat_conversation.rb
 ee/lib/gitlab/llm/completions/chat.rb
 
-[Category:Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @missy-gitlab @tgao3701908 @emeraldjayde @squadri
+[Category:Code Suggestions] @jprovaznik @ck3g @acook.gitlab @partiaga @missy-gitlab @tgao3701908 @squadri
 ee/lib/api/code_suggestions.rb
 ee/lib/ai/additional_context.rb
 ee/lib/code_suggestions/

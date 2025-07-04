@@ -213,7 +213,7 @@ A revoked trigger token cannot be added back.
 To [configure when to run jobs](../jobs/job_control.md) in triggered pipelines, you can:
 
 - Use [`rules`](../yaml/_index.md#rules) with the `$CI_PIPELINE_SOURCE` [predefined CI/CD variable](../variables/predefined_variables.md).
-- Use [`only`/`except`](../yaml/_index.md#onlyrefs--exceptrefs) keywords, though `rules`
+- Use [`only`/`except`](../yaml/deprecated_keywords.md#onlyrefs--exceptrefs) keywords, though `rules`
   is the preferred keyword.
 
 | `$CI_PIPELINE_SOURCE` value | `only`/`except` keywords | Trigger method      |

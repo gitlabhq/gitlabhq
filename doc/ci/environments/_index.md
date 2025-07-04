@@ -444,7 +444,7 @@ In the following example, a `deploy_review` job calls a `stop_review` job to cle
 environment.
 
 - Both jobs must have the same [`rules`](../yaml/_index.md#rules)
-  or [`only/except`](../yaml/_index.md#only--except) configuration. Otherwise,
+  or [`only/except`](../yaml/deprecated_keywords.md#only--except) configuration. Otherwise,
   the `stop_review` job might not be included in all pipelines that include the
   `deploy_review` job, and you cannot trigger `action: stop` to stop the environment automatically.
 - The job with [`action: stop` might not run](#the-job-with-action-stop-doesnt-run)

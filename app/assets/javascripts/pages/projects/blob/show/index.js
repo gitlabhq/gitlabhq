@@ -14,7 +14,7 @@ import initBlob from '~/pages/projects/init_blob';
 import ForkInfo from '~/repository/components/fork_info.vue';
 import initWebIdeLink from '~/pages/projects/shared/web_ide_link';
 import CommitPipelineStatus from '~/projects/tree/components/commit_pipeline_status.vue';
-import BlobContentViewer from '~/repository/components/blob_content_viewer.vue';
+import App from '~/repository/components/app.vue';
 import '~/sourcegraph/load';
 import createStore from '~/code_navigation/store';
 import { generateHistoryUrl } from '~/repository/utils/url_utility';
@@ -126,7 +126,7 @@ if (viewBlobEl) {
       ...provideWebIdeLink(dataset),
     },
     render(createElement) {
-      return createElement(BlobContentViewer, {
+      return createElement(App, {
         props: {
           path: blobPath,
           projectPath,

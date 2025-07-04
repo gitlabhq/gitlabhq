@@ -115,7 +115,7 @@ Unable to create pipeline
 ```
 
 This error appears when the included job's `rules` configuration has been [overridden](sast/_index.md#overriding-sast-jobs)
-with [the deprecated `only` or `except` syntax.](../../ci/yaml/_index.md#only--except)
+with [the deprecated `only` or `except` syntax.](../../ci/yaml/deprecated_keywords.md#only--except)
 To fix this issue, you must either:
 
 - [Transition your `only/except` syntax to `rules`](#transitioning-your-onlyexcept-syntax-to-rules).
@@ -126,7 +126,7 @@ For more information, see [Overriding SAST jobs](sast/_index.md#overriding-sast-
 ### Transitioning your `only/except` syntax to `rules`
 
 When overriding the template to control job execution, previous instances of
-[`only` or `except`](../../ci/yaml/_index.md#only--except) are no longer compatible
+[`only` or `except`](../../ci/yaml/deprecated_keywords.md#only--except) are no longer compatible
 and must be transitioned to [the `rules` syntax](../../ci/yaml/_index.md#rules).
 
 If your override is aimed at limiting jobs to only run on `main`, the previous syntax

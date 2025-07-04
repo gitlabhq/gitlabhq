@@ -3,6 +3,7 @@ import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import mergeRequestsWidgetMetadataQuery from '../graphql/queries/merge_requests_widget_metadata.query.graphql';
+import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 export default {
   name: 'MergeRequestsWidget',
@@ -10,6 +11,7 @@ export default {
     GlIcon,
     GlLink,
     GlBadge,
+    VisibilityChangeDetector,
   },
   mixins: [timeagoMixin],
   inject: ['duoCodeReviewBotUsername'],
@@ -62,11 +64,16 @@ export default {
       return this.metadata?.assignedMergeRequests?.nodes?.[0]?.updatedAt ?? null;
     },
   },
+  methods: {
+    reload() {
+      this.$apollo.queries.metadata.refetch();
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="gl-border gl-rounded-lg gl-px-4 gl-py-1">
+  <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
     <h4 class="gl-flex gl-items-center gl-gap-2">
       <gl-icon name="merge-request" :size="16" />{{ __('Merge requests') }}
     </h4>
@@ -108,5 +115,5 @@ export default {
         </gl-link>
       </li>
     </ul>
-  </div>
+  </visibility-change-detector>
 </template>

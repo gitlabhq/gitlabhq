@@ -263,8 +263,6 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
         ).first
       end
 
-      let!(:c_collation_oid) { c_collation_info&.[]('oid') }
-
       before do
         skip 'C collation not found in database' unless c_collation_info
 
@@ -291,7 +289,7 @@ RSpec.describe Gitlab::Database::CollationChecker, feature_category: :database d
         connection.execute("DROP TABLE IF EXISTS #{table_name} CASCADE;")
       end
 
-      it 'detects C collation mismatch and finds affected index' do
+      it 'detects collation mismatch and finds affected index' do
         allow(checker).to receive(:mismatched_collations) do
           # Create a modified query to simulate actual version being different
           modified_query = described_class::COLLATION_VERSION_MISMATCH_QUERY

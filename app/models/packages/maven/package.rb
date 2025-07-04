@@ -9,8 +9,6 @@ module Packages
 
       accepts_nested_attributes_for :maven_metadatum
 
-      before_validation :prevent_concurrent_inserts, on: :create
-
       validates :version, format: { with: Gitlab::Regex.maven_version_regex }, if: -> { version? }
       validates :name, format: { with: Gitlab::Regex.package_name_regex }
 
@@ -33,24 +31,6 @@ module Packages
         return unless version? && user
 
         ::Packages::Maven::Metadata::SyncWorker.perform_async(user.id, project_id, name)
-      end
-
-      private
-
-      # This method will block while another database transaction attempts to insert the same data.
-      # After the lock is released by the other transaction, the uniqueness validation may fail
-      # with record not unique validation error.
-
-      # Without this block the uniqueness validation wouldn't be able to detect duplicated
-      # records as transactions can't see each other's changes.
-
-      # This is a temp advisory lock to prevent race conditions. We will switch to use database `upsert`
-      # once we have a database unique index: https://gitlab.com/gitlab-org/gitlab/-/issues/424238#note_2187274213
-      def prevent_concurrent_inserts
-        lock_key = [self.class.table_name, project_id, name, version].join('-')
-        lock_expression = "hashtext(#{connection.quote(lock_key)})"
-
-        connection.execute("SELECT pg_advisory_xact_lock(#{lock_expression})")
       end
     end
   end
