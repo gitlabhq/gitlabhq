@@ -14,6 +14,7 @@ module Milestones
 
       return unless milestone.destroyed?
 
+      execute_hooks(milestone, 'delete') if milestone.project_milestone?
       milestone
     end
 

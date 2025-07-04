@@ -7,8 +7,8 @@ RSpec.describe 'getting Alert Management Integrations', feature_category: :incid
 
   let_it_be(:project) { create(:project, :repository) }
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:prometheus_integration) { create(:prometheus_integration, project: project) }
-  let_it_be(:project_alerting_setting) { create(:project_alerting_setting, project: project) }
+  let_it_be(:old_prometheus_integration) { create(:prometheus_integration, project: project) }
+  let_it_be(:prometheus_integration) { create(:alert_management_prometheus_integration, :legacy, project: project) }
   let_it_be(:active_http_integration) { create(:alert_management_http_integration, project: project) }
   let_it_be(:inactive_http_integration) { create(:alert_management_http_integration, :inactive, project: project) }
   let_it_be(:other_project_http_integration) { create(:alert_management_http_integration) }
@@ -63,12 +63,7 @@ RSpec.describe 'getting Alert Management Integrations', feature_category: :incid
             ),
             a_graphql_entity_for(
               prometheus_integration,
-              'type' => 'PROMETHEUS',
-              'name' => 'Prometheus',
-              'active' => prometheus_integration.manual_configuration?,
-              'token' => project_alerting_setting.token,
-              'url' => "http://#{Gitlab.config.gitlab.host}/#{project.full_path}/prometheus/alerts/notify.json",
-              'apiUrl' => prometheus_integration.api_url
+              :name, :active, :token, :url, type: 'PROMETHEUS', api_url: nil
             )
           ]
         end
@@ -87,19 +82,14 @@ RSpec.describe 'getting Alert Management Integrations', feature_category: :incid
       end
 
       context 'when Prometheus Integration ID is given' do
-        let(:params) { { id: global_id_of(prometheus_integration) } }
+        let(:params) { { id: global_id_of(old_prometheus_integration) } }
 
         it_behaves_like 'a working graphql query'
 
         it 'returns the correct properties of the Prometheus Integration' do
           expect(integrations).to contain_exactly a_graphql_entity_for(
             prometheus_integration,
-            'type' => 'PROMETHEUS',
-            'name' => 'Prometheus',
-            'active' => prometheus_integration.manual_configuration?,
-            'token' => project_alerting_setting.token,
-            'url' => "http://localhost/#{project.full_path}/prometheus/alerts/notify.json",
-            'apiUrl' => prometheus_integration.api_url
+            :name, :active, :token, :url, type: 'PROMETHEUS', api_url: nil
           )
         end
       end

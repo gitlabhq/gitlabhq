@@ -1968,12 +1968,14 @@ GEM
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
     uber (0.1.0)
-    undercover (0.6.4)
+    undercover (0.7.0)
       base64
       bigdecimal
       imagen (>= 0.2.0)
       rainbow (>= 2.1, < 4.0)
       rugged (>= 0.27, < 1.10)
+      simplecov
+      simplecov_json_formatter
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.8.2)
@@ -2412,7 +2414,7 @@ DEPENDENCIES
   truncato (~> 0.7.13)
   tty-prompt (~> 0.23)
   typhoeus (~> 1.4.0)
-  undercover (~> 0.6.0)
+  undercover (~> 0.7.0)
   unicode-emoji (~> 4.0)
   unleash (~> 3.2.2)
   uri (= 0.13.2)

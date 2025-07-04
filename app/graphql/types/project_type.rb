@@ -537,7 +537,8 @@ module Types
     field :alert_management_integrations, Types::AlertManagement::IntegrationType.connection_type,
       null: true,
       description: 'Integrations which can receive alerts for the project.',
-      resolver: Resolvers::AlertManagement::IntegrationsResolver
+      resolver: Resolvers::AlertManagement::IntegrationsResolver,
+      deprecated: { reason: 'Use `alertManagementHttpIntegrations`', milestone: '18.2' }
 
     field :alert_management_http_integrations, Types::AlertManagement::HttpIntegrationType.connection_type,
       null: true,

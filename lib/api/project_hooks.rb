@@ -38,6 +38,7 @@ module API
         optional :deployment_events, type: Boolean, desc: "Trigger hook on deployment events"
         optional :feature_flag_events, type: Boolean, desc: "Trigger hook on feature flag events"
         optional :releases_events, type: Boolean, desc: "Trigger hook on release events"
+        optional :milestone_events, type: Boolean, desc: "Trigger hook on milestone events"
         optional :emoji_events, type: Boolean, desc: "Trigger hook on emoji events"
         optional :resource_access_token_events, type: Boolean, desc: "Trigger hook on project access token expiry events"
         optional :enable_ssl_verification, type: Boolean, desc: "Do SSL verification when triggering the hook"

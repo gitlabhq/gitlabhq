@@ -2,12 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Milestones::CloseService, feature_category: :team_planning do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
+RSpec.describe Milestones::ReopenService, feature_category: :team_planning do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:user) { create(:user) }
 
-  before do
+  let(:milestone) { create(:milestone, :closed, title: "Milestone v1.2", project: project) }
+
+  before_all do
     project.add_maintainer(user)
   end
 
@@ -20,27 +21,27 @@ RSpec.describe Milestones::CloseService, feature_category: :team_planning do
       end
 
       it { expect(milestone).to be_valid }
-      it { expect(milestone).to be_closed }
+      it { expect(milestone).to be_active }
 
       describe 'event' do
         let(:event) { Event.recent.first }
 
         it { expect(event.milestone).to be_truthy }
         it { expect(event.target).to eq(milestone) }
-        it { expect(event.action_name).to eq('closed') }
+        it { expect(event.action_name).to eq('opened') }
       end
     end
 
-    shared_examples 'closes the milestone' do |with_project_hooks:|
-      it 'executes hooks with close action and creates new event' do
-        expect(service).to receive(:execute_hooks).with(milestone, 'close').and_call_original
+    shared_examples 'reopens the milestone' do |with_project_hooks:|
+      it 'executes hooks with reopen action and creates new event' do
+        expect(service).to receive(:execute_hooks).with(milestone, 'reopen').and_call_original
         expect(project).to receive(:execute_hooks).with(kind_of(Hash), :milestone_hooks) if with_project_hooks
 
         expect { service.execute(milestone) }.to change { Event.count }.by(1)
       end
     end
 
-    shared_examples 'does not close the milestone' do
+    shared_examples 'does not reopen the milestone' do
       it 'does not execute hooks and does not create new event' do
         expect(service).not_to receive(:execute_hooks)
 
@@ -48,7 +49,9 @@ RSpec.describe Milestones::CloseService, feature_category: :team_planning do
       end
     end
 
-    context 'when milestone is successfully closed' do
+    context 'when milestone is successfully reopened' do
+      let(:milestone) { create(:milestone, :closed, project: project) }
+
       context 'when project has active milestone hooks' do
         let(:project) do
           create(:project).tap do |project|
@@ -56,26 +59,26 @@ RSpec.describe Milestones::CloseService, feature_category: :team_planning do
           end
         end
 
-        it_behaves_like 'closes the milestone', with_project_hooks: true
+        it_behaves_like 'reopens the milestone', with_project_hooks: true
       end
 
       context 'when project has no active milestone hooks' do
-        it_behaves_like 'closes the milestone', with_project_hooks: false
+        it_behaves_like 'reopens the milestone', with_project_hooks: false
       end
     end
 
-    context 'when milestone fails to close' do
-      context 'when milestone is already closed' do
-        let(:milestone) { create(:milestone, :closed, project: project) }
+    context 'when milestone fails to reopen' do
+      context 'when milestone is already active' do
+        let(:milestone) { create(:milestone, project: project) }
 
-        it_behaves_like 'does not close the milestone'
+        it_behaves_like 'does not reopen the milestone'
       end
 
       context 'when milestone is a group milestone' do
         let(:group) { create(:group) }
-        let(:milestone) { create(:milestone, group: group) }
+        let(:milestone) { create(:milestone, :closed, group: group) }
 
-        it_behaves_like 'does not close the milestone'
+        it_behaves_like 'does not reopen the milestone'
       end
     end
   end

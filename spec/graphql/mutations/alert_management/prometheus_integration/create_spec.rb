@@ -4,13 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create, feature_category: :api do
   include GraphqlHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
 
-  let(:api_url) { 'http://prometheus.com/' }
-  let(:args) { { project_path: project.full_path, active: true, api_url: api_url } }
+  let(:args) { { project_path: project.full_path, active: true, api_url: 'http://prometheus.com/' } }
 
-  specify { expect(described_class).to require_graphql_authorizations(:admin_project) }
+  specify { expect(described_class).to require_graphql_authorizations(:admin_operations) }
 
   describe '#resolve' do
     subject(:resolve) { mutation_for(project, current_user).resolve(args) }
@@ -20,49 +20,31 @@ RSpec.describe Mutations::AlertManagement::PrometheusIntegration::Create, featur
         project.add_maintainer(current_user)
       end
 
-      context 'when Prometheus Integration already exists' do
-        let_it_be(:existing_integration) { create(:prometheus_integration, project: project) }
-
-        it 'returns errors' do
-          expect(resolve).to eq(
-            integration: nil,
-            errors: ['Multiple Prometheus integrations are not supported']
-          )
-        end
-      end
-
-      context 'when api_url is nil' do
-        let(:api_url) { nil }
-
-        it 'creates the integration' do
-          expect { resolve }.to change(::Alerting::ProjectAlertingSetting, :count).by(1)
-        end
-      end
-
-      context 'when UpdateService responds with success' do
+      context 'when HttpIntegrations::CreateService responds with success' do
         it 'returns the integration with no errors' do
           expect(resolve).to eq(
-            integration: ::Integrations::Prometheus.last!,
+            integration: ::AlertManagement::HttpIntegration.last!,
             errors: []
           )
-        end
-
-        it 'creates a corresponding token' do
-          expect { resolve }.to change(::Integrations::Prometheus, :count).by(1)
+          expect(resolve[:integration]).to have_attributes(
+            active: true,
+            name: 'Prometheus',
+            type_identifier: 'prometheus'
+          )
         end
       end
 
-      context 'when UpdateService responds with an error' do
+      context 'when HttpIntegrations::CreateService responds with an error' do
         before do
-          allow_any_instance_of(::Projects::Operations::UpdateService)
+          allow_any_instance_of(::AlertManagement::HttpIntegrations::CreateService)
             .to receive(:execute)
-            .and_return({ status: :error, message: 'An error occurred' })
+            .and_return(ServiceResponse.error(payload: { integration: nil }, message: 'An integration already exists'))
         end
 
         it 'returns errors' do
           expect(resolve).to eq(
             integration: nil,
-            errors: ['An error occurred']
+            errors: ['An integration already exists']
           )
         end
       end

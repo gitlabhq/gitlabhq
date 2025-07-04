@@ -223,6 +223,8 @@ RSpec.configure do |config|
 
   config.include_context 'when rendered has no HTML escapes', type: :view
   config.include_context 'with STI disabled', type: :model
+  # Validate JSONB columns only in EE to avoid false positives in FOSS.
+  config.include_context 'with JSONB validated columns', type: :model if Gitlab.ee?
 
   include StubCurrentOrganization
   include StubFeatureFlags

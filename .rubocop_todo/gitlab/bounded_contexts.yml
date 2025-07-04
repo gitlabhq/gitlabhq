@@ -141,7 +141,6 @@ Gitlab/BoundedContexts:
     - 'app/graphql/mutations/alert_management/http_integration/reset_token.rb'
     - 'app/graphql/mutations/alert_management/http_integration/update.rb'
     - 'app/graphql/mutations/alert_management/prometheus_integration/create.rb'
-    - 'app/graphql/mutations/alert_management/prometheus_integration/prometheus_integration_base.rb'
     - 'app/graphql/mutations/alert_management/prometheus_integration/reset_token.rb'
     - 'app/graphql/mutations/alert_management/prometheus_integration/update.rb'
     - 'app/graphql/mutations/alert_management/update_alert_status.rb'

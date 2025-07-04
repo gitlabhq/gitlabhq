@@ -39,11 +39,20 @@ module Types
       field :api_url,
         GraphQL::Types::String,
         null: true,
-        description: 'URL at which Prometheus metrics can be queried to populate the metrics dashboard.'
+        description: 'URL at which Prometheus metrics can be queried to populate the metrics dashboard.',
+        deprecated: { reason: 'Feature removed in 16.0', milestone: '18.2' }
+
+      def type
+        object.type_identifier.to_sym
+      end
+
+      def api_url
+        nil
+      end
 
       definition_methods do
         def resolve_type(object, context)
-          if object.is_a?(::Integrations::Prometheus)
+          if object.type_identifier == 'prometheus'
             Types::AlertManagement::PrometheusIntegrationType
           else
             Types::AlertManagement::HttpIntegrationType

@@ -2433,9 +2433,6 @@ msgstr ""
 msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr ""
 
-msgid "AICatalog|Released %{fullDate}"
-msgstr ""
-
 msgid "AICatalog|Run"
 msgstr ""
 
@@ -17002,10 +16999,16 @@ msgstr ""
 msgid "ComplianceViolation|Audit event captured"
 msgstr ""
 
+msgid "ComplianceViolation|Control"
+msgstr ""
+
 msgid "ComplianceViolation|Detected"
 msgstr ""
 
 msgid "ComplianceViolation|Dismissed"
+msgstr ""
+
+msgid "ComplianceViolation|Framework"
 msgstr ""
 
 msgid "ComplianceViolation|In review"
@@ -17014,7 +17017,13 @@ msgstr ""
 msgid "ComplianceViolation|Registered event IP"
 msgstr ""
 
+msgid "ComplianceViolation|Requirement"
+msgstr ""
+
 msgid "ComplianceViolation|Resolved"
+msgstr ""
+
+msgid "ComplianceViolation|Violation created based on associated framework"
 msgstr ""
 
 msgid "Compliance|Framework deleted successfully"
@@ -28163,6 +28172,9 @@ msgstr ""
 msgid "Geo|Replication Details"
 msgstr ""
 
+msgid "Geo|Replication failure"
+msgstr ""
+
 msgid "Geo|Replication information"
 msgstr ""
 
@@ -28380,6 +28392,9 @@ msgid "Geo|Verification"
 msgstr ""
 
 msgid "Geo|Verification concurrency limit"
+msgstr ""
+
+msgid "Geo|Verification failure"
 msgstr ""
 
 msgid "Geo|Verification information"
@@ -31534,6 +31549,9 @@ msgid "Hide comments on this file"
 msgstr ""
 
 msgid "Hide details"
+msgstr ""
+
+msgid "Hide errors"
 msgstr ""
 
 msgid "Hide file browser"
@@ -40368,9 +40386,6 @@ msgid "Multi-project"
 msgstr ""
 
 msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
-msgstr ""
-
-msgid "Multiple Prometheus integrations are not supported"
 msgstr ""
 
 msgid "Multiple components '%{name}' have '%{attribute}' attribute"
@@ -59015,6 +59030,9 @@ msgstr ""
 msgid "Show epics in global search results"
 msgstr ""
 
+msgid "Show errors"
+msgstr ""
+
 msgid "Show file browser"
 msgstr ""
 
@@ -69486,6 +69504,9 @@ msgstr ""
 msgid "Webhooks|A merge request is created, updated, or merged."
 msgstr ""
 
+msgid "Webhooks|A milestone is created, closed, reopened, or deleted."
+msgstr ""
+
 msgid "Webhooks|A new tag is pushed to the repository."
 msgstr ""
 
@@ -73047,6 +73068,9 @@ msgid "added a %{link_type} link"
 msgstr ""
 
 msgid "added a Zoom call to this issue"
+msgstr ""
+
+msgid "agent"
 msgstr ""
 
 msgid "agents"

@@ -26,9 +26,15 @@ module Types
     mount_mutation Mutations::Security::CiConfiguration::ConfigureSast
     mount_mutation Mutations::Security::CiConfiguration::ConfigureSastIac
     mount_mutation Mutations::Security::CiConfiguration::ConfigureSecretDetection
-    mount_mutation Mutations::AlertManagement::PrometheusIntegration::Create
-    mount_mutation Mutations::AlertManagement::PrometheusIntegration::Update
-    mount_mutation Mutations::AlertManagement::PrometheusIntegration::ResetToken
+    mount_mutation Mutations::AlertManagement::PrometheusIntegration::Create, deprecated: {
+      reason: 'Use HttpIntegrationCreate', milestone: '18.2'
+    }
+    mount_mutation Mutations::AlertManagement::PrometheusIntegration::Update, deprecated: {
+      reason: 'Use HttpIntegrationUpdate', milestone: '18.2'
+    }
+    mount_mutation Mutations::AlertManagement::PrometheusIntegration::ResetToken, deprecated: {
+      reason: 'Use HttpIntegrationResetToken', milestone: '18.2'
+    }
     mount_mutation Mutations::AwardEmojis::Add
     mount_mutation Mutations::AwardEmojis::Remove
     mount_mutation Mutations::AwardEmojis::Toggle

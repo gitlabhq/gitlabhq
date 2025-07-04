@@ -211,6 +211,18 @@ RSpec.describe TestHooks::ProjectService, feature_category: :code_testing do
       end
     end
 
+    context 'milestone_events' do
+      let(:trigger) { 'milestone_events' }
+      let(:trigger_key) { :milestone_hooks }
+
+      it 'executes hook' do
+        allow(Gitlab::DataBuilder::Milestone).to receive(:build_sample).and_return(sample_data)
+
+        expect(hook).to receive(:execute).with(sample_data, trigger_key, force: true).and_return(success_result)
+        expect(service.execute).to include(success_result)
+      end
+    end
+
     context 'emoji' do
       let(:trigger) { 'emoji_events' }
       let(:trigger_key) { :emoji_hooks }

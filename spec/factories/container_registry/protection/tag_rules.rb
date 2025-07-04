@@ -7,9 +7,4 @@ FactoryBot.define do
     minimum_access_level_for_delete { :maintainer }
     minimum_access_level_for_push { :maintainer }
   end
-
-  trait :immutable do
-    minimum_access_level_for_delete { nil }
-    minimum_access_level_for_push { nil }
-  end
 end

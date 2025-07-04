@@ -117,6 +117,9 @@
     "releases_events": {
       "type": "boolean"
     },
+    "milestone_events": {
+      "type": "boolean"
+    },
     "emoji_events": {
       "type": "boolean"
     },

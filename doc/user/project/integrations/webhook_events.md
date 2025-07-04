@@ -37,6 +37,7 @@ Event type                                   | Trigger
 [Deployment event](#deployment-events)       | A deployment starts, succeeds, fails, or is canceled.
 [Feature flag event](#feature-flag-events)   | A feature flag is turned on or off.
 [Release event](#release-events)             | A release is created, edited, or deleted.
+[Milestone event](#milestone-events)         | A milestone is created, closed, reopened, or deleted.
 [Emoji event](#emoji-events)                 | An emoji reaction is added or removed.
 [Project or group access token event](#project-and-group-access-token-events) | A project or group access token will expire in seven days.
 [Vulnerability event](#vulnerability-events) | A vulnerability is created or updated.
@@ -2134,6 +2135,69 @@ Payload example:
       "email": "user@example.com"
     }
   }
+}
+```
+
+## Milestone events
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14213) in GitLab 18.2.
+
+{{< /history >}}
+
+Milestone events are triggered when a milestone is created, closed, reopened, or deleted.
+
+The available values for `object_attributes.action` in the payload are:
+
+- `create`
+- `close`
+- `reopen`
+
+Request header:
+
+```plaintext
+X-Gitlab-Event: Milestone Hook
+```
+
+Payload example:
+
+```json
+{
+  "object_kind": "milestone",
+  "event_type": "milestone",
+  "project": {
+    "id": 1,
+    "name": "Gitlab Test",
+    "description": "Aut reprehenderit ut est.",
+    "web_url": "http://example.com/gitlabhq/gitlab-test",
+    "avatar_url": null,
+    "git_ssh_url": "git@example.com:gitlabhq/gitlab-test.git",
+    "git_http_url": "http://example.com/gitlabhq/gitlab-test.git",
+    "namespace": "GitlabHQ",
+    "visibility_level": 20,
+    "path_with_namespace": "gitlabhq/gitlab-test",
+    "default_branch": "master",
+    "ci_config_path": null,
+    "homepage": "http://example.com/gitlabhq/gitlab-test",
+    "url": "http://example.com/gitlabhq/gitlab-test.git",
+    "ssh_url": "git@example.com:gitlabhq/gitlab-test.git",
+    "http_url": "http://example.com/gitlabhq/gitlab-test.git"
+  },
+  "object_attributes": {
+    "id": 61,
+    "iid": 10,
+    "title": "v1.0",
+    "description": "First stable release",
+    "state": "active",
+    "created_at": "2025-06-16 14:10:57 UTC",
+    "updated_at": "2025-06-16 14:10:57 UTC",
+    "due_date": "2025-06-30",
+    "start_date": "2025-06-16",
+    "group_id": null,
+    "project_id": 1
+  },
+  "action": "create"
 }
 ```
 

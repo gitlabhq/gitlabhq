@@ -29125,6 +29125,7 @@ paths:
         - issues_events
         - job_events
         - merge_requests_events
+        - milestone_events
         - note_events
         - pipeline_events
         - push_events
@@ -59246,6 +59247,8 @@ definitions:
         type: boolean
       releases_events:
         type: boolean
+      milestone_events:
+        type: boolean
       emoji_events:
         type: boolean
       resource_access_token_events:
@@ -59304,6 +59307,9 @@ definitions:
       releases_events:
         type: boolean
         description: Trigger hook on release events
+      milestone_events:
+        type: boolean
+        description: Trigger hook on milestone events
       emoji_events:
         type: boolean
         description: Trigger hook on emoji events
@@ -59421,6 +59427,9 @@ definitions:
       releases_events:
         type: boolean
         description: Trigger hook on release events
+      milestone_events:
+        type: boolean
+        description: Trigger hook on milestone events
       emoji_events:
         type: boolean
         description: Trigger hook on emoji events

@@ -619,6 +619,7 @@ ProjectHook:
 - confidential_note_events
 - repository_update_events
 - releases_events
+- milestone_events
 - emoji_events
 - resource_access_token_events
 ProtectedBranch:

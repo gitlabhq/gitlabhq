@@ -1386,7 +1386,7 @@ Supported attributes:
 |---------------------|----------------|----------|-------------|
 | `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/_index.md#namespaced-paths) owned by the authenticated user. |
 | `merge_request_iid` | integer        | Yes      | The internal ID of the merge request. |
-| `block_id`          | integer        | Yes      | The internal ID of the block. |
+| `block_id`          | integer        | Yes      | The ID of the block. |
 
 Example request:
 

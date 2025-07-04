@@ -5,6 +5,7 @@ module Milestones
     def execute(milestone)
       if milestone.close && milestone.project_milestone?
         event_service.close_milestone(milestone, current_user)
+        execute_hooks(milestone, 'close')
       end
 
       milestone

@@ -59,6 +59,10 @@
           integration_webhook_event_human_name(:releases_events),
           help_text: s_('Webhooks|A release is created, updated, or deleted.')
     %li.gl-pb-3
+      = form.gitlab_ui_checkbox_component :milestone_events,
+          integration_webhook_event_human_name(:milestone_events),
+          help_text: s_('Webhooks|A milestone is created, closed, reopened, or deleted.')
+    %li.gl-pb-3
       - emoji_help_link = link_to s_('Which emoji events trigger webhooks'), help_page_path('user/project/integrations/webhook_events.md', anchor: 'emoji-events')
       = form.gitlab_ui_checkbox_component :emoji_events,
           integration_webhook_event_human_name(:emoji_events),

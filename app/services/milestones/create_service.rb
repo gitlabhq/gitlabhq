@@ -9,6 +9,7 @@ module Milestones
 
       if milestone.save && milestone.project_milestone?
         event_service.open_milestone(milestone, current_user)
+        execute_hooks(milestone, 'create')
       end
 
       milestone
