@@ -332,7 +332,7 @@ ping-appsec-for-dependency-review:
   variables:
     GIT_CHECKOUT: "false"
     DISABLE_MENTIONS: "false"
-    DISABLE_SCORING: "true"
+    DISABLE_SCORING: "false"
     DISABLE_COMMENTING: "false"
     DEPENDENCY_REVIEW_BOT_CI_REG: "${CI_REGISTRY}/gitlab-com/gl-security/product-security/appsec/tooling/depscore/master"
   extends: [".ping-appsec-for-dependency-review:rules", ".use-docker-in-docker"]

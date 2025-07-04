@@ -678,7 +678,7 @@ lib/gitlab/checks/
 /doc/administration/settings/account_and_limit_settings.md @brendan777
 /doc/administration/settings/continuous_integration.md @lyspin
 /doc/administration/settings/deprecated_api_rate_limits.md @brendan777
-/doc/administration/settings/editor_extensions.md @aqualls
+/doc/administration/settings/editor_extensions.md @scawood
 /doc/administration/settings/email.md @msedlakjakubowski
 /doc/administration/settings/external_authorization.md @idurham
 /doc/administration/settings/files_api_rate_limits.md @brendan777
@@ -733,7 +733,7 @@ lib/gitlab/checks/
 /doc/api/branches.md @brendan777
 /doc/api/bulk_imports.md @ashrafkhamis
 /doc/api/chat.md @jglassman1
-/doc/api/code_suggestions.md @jglassman1
+/doc/api/code_suggestions.md @scawood
 /doc/api/commits.md @brendan777
 /doc/api/compliance_policy_settings.md @rlehmann1
 /doc/api/container_registry.md @z_painter
@@ -991,7 +991,8 @@ lib/gitlab/checks/
 /doc/development/stage_group_observability/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/tracing.md @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/drawers/ @ashrafkhamis
-/doc/editor_extensions/ @aqualls
+/doc/editor_extensions/ @scawood
+/doc/editor_extensions/gitlab_cli/ @aqualls
 /doc/install/ @axil @eread
 /doc/install/install_ai_gateway.md @sselhorn
 /doc/integration/ @idurham
@@ -1193,7 +1194,7 @@ lib/gitlab/checks/
 /doc/user/project/merge_requests/ @aqualls
 /doc/user/project/merge_requests/approvals/ @brendan777
 /doc/user/project/merge_requests/cherry_pick_changes.md @brendan777
-/doc/user/project/merge_requests/duo_in_merge_requests.md @jglassman1
+/doc/user/project/merge_requests/duo_in_merge_requests.md @scawood
 /doc/user/project/merge_requests/methods/ @brendan777
 /doc/user/project/merge_requests/squash_and_merge.md @brendan777
 /doc/user/project/merge_requests/status_checks.md @rlehmann1
@@ -1206,8 +1207,8 @@ lib/gitlab/checks/
 /doc/user/project/releases/ @eread
 /doc/user/project/remote_development/ @brendan777
 /doc/user/project/repository/ @brendan777
-/doc/user/project/repository/code_explain.md @jglassman1
-/doc/user/project/repository/code_suggestions/ @jglassman1
+/doc/user/project/repository/code_explain.md @scawood
+/doc/user/project/repository/code_suggestions/ @scawood
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/requirements/ @msedlakjakubowski
 /doc/user/project/service_desk/ @msedlakjakubowski

@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import {
+  GlTooltipDirective,
   GlBadge,
   GlTab,
   GlTabs,
@@ -76,6 +77,7 @@ export default {
     KeepAllAsPlaceholderModal,
   },
   directives: {
+    GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
   inject: {
@@ -421,7 +423,6 @@ export default {
         <div class="gl-ml-auto gl-flex gl-gap-2">
           <gl-button
             v-gl-modal="$options.uploadCsvModalId"
-            variant="link"
             icon="media"
             data-testid="reassign-csv-button"
           >
@@ -429,11 +430,12 @@ export default {
           </gl-button>
           <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
           <gl-disclosure-dropdown
+            v-gl-tooltip.hover.focus="__('More actions')"
             icon="ellipsis_v"
-            placement="bottom-end"
             category="tertiary"
             no-caret
-            block
+            text-sr-only
+            :toggle-text="__('More actions')"
             :auto-close="false"
           >
             <gl-disclosure-dropdown-item

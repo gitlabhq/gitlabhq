@@ -147,4 +147,24 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
       expect(connection.current_user).to be_nil
     end
   end
+
+  describe 'setting current organization' do
+    let(:organization) { create(:organization) }
+
+    before do
+      allow_next_instance_of(Gitlab::Current::Organization) do |instance|
+        allow(instance).to receive(:organization).and_return(organization)
+      end
+    end
+
+    it 'sets current_organization' do
+      expect(Gitlab::Current::Organization).to receive(:new).with(
+        params: connection.request.params, user: connection.current_user
+      )
+
+      connect
+
+      expect(connection.current_organization).to eq(organization)
+    end
+  end
 end

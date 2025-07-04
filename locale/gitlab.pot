@@ -56095,6 +56095,9 @@ msgstr ""
 msgid "SecurityOrchestration|Are you sure you want to delete this policy? This action cannot be undone."
 msgstr ""
 
+msgid "SecurityOrchestration|Are you sure you want to remove %{group} as CSP group?"
+msgstr ""
+
 msgid "SecurityOrchestration|At least one framework label should be selected"
 msgstr ""
 
@@ -56625,6 +56628,12 @@ msgstr ""
 msgid "SecurityOrchestration|Reason for snoozing policy (optional)"
 msgstr ""
 
+msgid "SecurityOrchestration|Remove %{group}"
+msgstr ""
+
+msgid "SecurityOrchestration|Remove group"
+msgstr ""
+
 msgid "SecurityOrchestration|Require %{approvals} %{plural} from %{approvers}"
 msgstr ""
 
@@ -56790,6 +56799,9 @@ msgstr ""
 msgid "SecurityOrchestration|Select the source"
 msgstr ""
 
+msgid "SecurityOrchestration|Selecting this will disconnect your top level compliance and security policy (CSP) group from all the other top level groups. All frameworks shared by the top level CSP group will also be disconnected due to this action."
+msgstr ""
+
 msgid "SecurityOrchestration|Send a bot message when the conditions match."
 msgstr ""
 
@@ -56953,9 +56965,6 @@ msgid "SecurityOrchestration|Turn off default mode to edit scope."
 msgstr ""
 
 msgid "SecurityOrchestration|Type in custom variable"
-msgstr ""
-
-msgid "SecurityOrchestration|Unassign group"
 msgstr ""
 
 msgid "SecurityOrchestration|Unknown source"
