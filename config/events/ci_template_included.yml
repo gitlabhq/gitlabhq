@@ -14,3 +14,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: Template event name
+  property:
+    description: "Indicates if the template was included implicitly or not. Implicit includes happen due to certain features, like AutoDevOps, being configured – as opposed to explicit includes via the keyword in a YAML file."

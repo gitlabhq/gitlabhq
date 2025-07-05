@@ -101,7 +101,7 @@
 {"name":"cvss-suite","version":"3.3.0","platform":"ruby","checksum":"54199fc1e0d5d833b1cb161453439143665c644cd3be2d21c2eee57fa06ed843"},
 {"name":"danger","version":"9.4.2","platform":"ruby","checksum":"43e552c6731030235a30fdeafe703d2e2ab9c30917154489cb0ecd9ad3259d80"},
 {"name":"danger-gitlab","version":"8.0.0","platform":"ruby","checksum":"497dd7d0f6513913de651019223d8058cf494df10acbd17de92b175dfa04a3a8"},
-{"name":"database_cleaner-active_record","version":"2.2.0","platform":"ruby","checksum":"3228d6d8ec1f2103fd6ab468dae923424318bcfabcf5dd5b02e5fcb0c486e1c7"},
+{"name":"database_cleaner-active_record","version":"2.2.1","platform":"ruby","checksum":"be47005de91e48f97841f8220f7cbd57b13682073016caac7ce332e6c77bbfcb"},
 {"name":"database_cleaner-core","version":"2.0.1","platform":"ruby","checksum":"8646574c32162e59ed7b5258a97a208d3c44551b854e510994f24683865d846c"},
 {"name":"date","version":"3.4.1","platform":"java","checksum":"74740d914c65a922a15657c25ff0e203c16f1d0f7aa910a9ebed712afe9819c4"},
 {"name":"date","version":"3.4.1","platform":"ruby","checksum":"bf268e14ef7158009bfeaec40b5fa3c7271906e88b196d958a89d4b408abe64f"},
