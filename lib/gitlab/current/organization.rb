@@ -11,11 +11,17 @@ module Gitlab
       end
 
       def organization
-        from_params || fallback_organization
+        from_params || from_user || fallback_organization
       end
 
       def from_params
         from_group_params || from_organization_params
+      end
+
+      def from_user
+        return unless user
+
+        ::Organizations::Organization.with_user(user).first
       end
 
       private
