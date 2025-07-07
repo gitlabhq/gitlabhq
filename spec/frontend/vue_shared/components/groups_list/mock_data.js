@@ -29,6 +29,9 @@ export const groups = [
     updatedAt: '2024-04-24T03:47:38Z',
     lastActivityAt: '2024-05-24T03:47:38Z',
     isLinkedToSubscription: false,
+    markedForDeletion: false,
+    isSelfDeletionInProgress: false,
+    isSelfDeletionScheduled: false,
   },
   {
     id: 2,
@@ -54,5 +57,8 @@ export const groups = [
     updatedAt: '2024-04-24T03:47:38Z',
     lastActivityAt: '2024-05-24T03:47:38Z',
     isLinkedToSubscription: false,
+    markedForDeletion: false,
+    isSelfDeletionInProgress: false,
+    isSelfDeletionScheduled: false,
   },
 ];

@@ -18,7 +18,6 @@ import {
 } from '~/visibility_level/constants';
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
@@ -353,14 +352,9 @@ describe('GroupsListItem', () => {
     });
 
     describe('when list item actions emits delete', () => {
-      const groupWithDeleteAction = {
-        ...group,
-        actionLoadingStates: { [ACTION_DELETE]: false },
-      };
-
       describe('when group is linked to a subscription', () => {
         const groupLinkedToSubscription = {
-          ...groupWithDeleteAction,
+          ...group,
           isLinkedToSubscription: true,
         };
 
@@ -396,7 +390,7 @@ describe('GroupsListItem', () => {
         beforeEach(async () => {
           createComponent({
             propsData: {
-              group: groupWithDeleteAction,
+              group,
             },
           });
 
@@ -407,7 +401,7 @@ describe('GroupsListItem', () => {
         it('displays confirmation modal with correct props', () => {
           expect(findDeleteConfirmationModal().props()).toMatchObject({
             visible: true,
-            phrase: groupWithDeleteAction.fullName,
+            phrase: group.fullName,
             confirmLoading: false,
           });
         });
@@ -415,7 +409,7 @@ describe('GroupsListItem', () => {
         describe('when deletion is confirmed', () => {
           describe('when API call is successful', () => {
             it('calls DELETE on group path, properly sets loading state, and emits refetch event', async () => {
-              axiosMock.onDelete(groupWithDeleteAction.webUrl).reply(200);
+              axiosMock.onDelete(group.webUrl).reply(200);
 
               await deleteModalFireConfirmEvent();
               expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(true);
@@ -425,14 +419,14 @@ describe('GroupsListItem', () => {
               expect(axiosMock.history.delete[0].params).toEqual(MOCK_DELETE_PARAMS);
               expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(false);
               expect(wrapper.emitted('refetch')).toEqual([[]]);
-              expect(renderDeleteSuccessToast).toHaveBeenCalledWith(groupWithDeleteAction);
+              expect(renderDeleteSuccessToast).toHaveBeenCalledWith(group);
               expect(createAlert).not.toHaveBeenCalled();
             });
           });
 
           describe('when API call is not successful', () => {
             it('calls DELETE on group path, properly sets loading state, and shows error alert', async () => {
-              axiosMock.onDelete(groupWithDeleteAction.webUrl).networkError();
+              axiosMock.onDelete(group.webUrl).networkError();
 
               await deleteModalFireConfirmEvent();
               expect(findDeleteConfirmationModal().props('confirmLoading')).toBe(true);
@@ -460,6 +454,32 @@ describe('GroupsListItem', () => {
 
           it('updates visibility prop', () => {
             expect(findDeleteConfirmationModal().props('visible')).toBe(false);
+          });
+        });
+      });
+
+      describe('when group can be deleted immediately', () => {
+        beforeEach(async () => {
+          createComponent({
+            propsData: {
+              group: {
+                ...group,
+                markedForDeletion: true,
+                isSelfDeletionInProgress: true,
+                isSelfDeletionScheduled: false,
+              },
+            },
+          });
+
+          findGroupListItemActions().vm.$emit('delete');
+          await nextTick();
+        });
+
+        it('displays confirmation modal with correct props', () => {
+          expect(findDeleteConfirmationModal().props()).toMatchObject({
+            visible: true,
+            phrase: group.fullName,
+            confirmLoading: false,
           });
         });
       });

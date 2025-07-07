@@ -30,7 +30,11 @@ in the first patch release after a new version, such as `13.10.1`.
 
 ## Access What's new
 
-To access the **What's new** feature:
+To access the unread **What's new** features:
+
+1. On the left sidebar, at the bottom, select **What's new**.
+
+To access previously watched **What's new** features:
 
 1. On the left sidebar, at the bottom, select **Help** ({{< icon name="question" >}}).
 1. Select **What's new** from the menu.

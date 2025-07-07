@@ -177,8 +177,8 @@ A **goal-oriented, structured graph** that orchestrates agents and tools to deli
 - **Structure** – Explicit phases: planning → execution → completion  
 - **Nodes** – Each node is an *Agent* (decision-maker) or *Deterministic step*: CRUD, Boolean decision
 - **Trigger & Terminator** – Every flow has one or many defined start trigger(s) and a defined end state  
-- **Input** - Each Flow must have an input. Inputs set the context for the Flow run and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
-- **Run** – One execution of an flow; runs carry user-specific goals and data  
+- **Input** - Each Flow must have an input. Inputs set the context for the Flow session and will differentiate different flows in outcomes. Inputs can be: Free text, Entities (GitLab or from 3rd party)
+- **Session** – One execution of an flow; sessions carry user-specific goals and data
 
 > **Analogy:** *competency / job description* – the "what & when" of getting work done.
 
@@ -186,8 +186,8 @@ A **goal-oriented, structured graph** that orchestrates agents and tools to deli
 
 A **specialized, LLM-powered decision-maker** that owns a single node inside an flow. Can be defined independently and reused across multiple flows as a reusable component.
 
-- **Prompt (Goal)** – Receives the run-specific objective from the flow
 - **Prompt (System)** - Sets the overall behavior, guardrails and persona for the agents    
+- **Prompt (Goal)** – Receives the session-specific objective from the flow
 - **Tools** – May call only the tools granted by the flow node definition and the user/company definition of available tools
 - **Agents / Flows** - Agents can invoke other agents or Flows to achieve their goal if these were made available 
 - **Reasoning** – Uses an LLM to decompose its goal into dynamic subtasks  

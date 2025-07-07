@@ -24,6 +24,7 @@
 #     active: boolean - filters for active groups.
 #     archived: boolean - default is nil which returns all groups, true returns only archived groups, and false returns
 #                         non archived groups
+#     with_statistics - load project statistics.
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -45,6 +46,7 @@ class GroupsFinder < UnionFinder
     # filtered_groups can contain an array of scopes, so these
     # are combined into a single query using UNION.
     groups = find_union(filtered_groups, Group)
+    groups = groups.with_statistics if params[:with_statistics] == true
     sort(groups).with_route
   end
 

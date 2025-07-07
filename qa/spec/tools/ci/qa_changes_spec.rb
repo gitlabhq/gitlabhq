@@ -100,7 +100,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
       let(:gcs_project_id) { 'gitlab-qa-resources' }
       let(:gcs_creds) { 'gcs-creds' }
       let(:gcs_bucket_name) { 'metrics-gcs-bucket' }
-      let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
+      let(:gcs_client) { double("Fog::Google::StorageJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
 
       let(:code_paths_mapping) do
         instance_double(QA::Tools::Ci::CodePathsMapping, import: code_paths_mapping_data)
@@ -110,7 +110,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
         stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', gcs_creds)
 
         allow(QA::Tools::Ci::CodePathsMapping).to receive(:new).and_return(code_paths_mapping)
-        allow(Fog::Storage::Google).to receive(:new)
+        allow(Fog::Google::Storage).to receive(:new)
           .with(google_project: gcs_project_id, google_json_key_string: gcs_creds)
           .and_return(gcs_client)
       end

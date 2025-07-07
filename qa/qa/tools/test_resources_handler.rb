@@ -288,7 +288,7 @@ module QA
       end
 
       def gcs_storage
-        @gcs_storage ||= Fog::Storage::Google.new(
+        @gcs_storage ||= Fog::Google::Storage.new(
           google_project: PROJECT,
           **(File.exist?(json_key) ? { google_json_key_location: json_key } : { google_json_key_string: json_key })
         )

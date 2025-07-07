@@ -5,6 +5,8 @@ require "spec_helper"
 RSpec.shared_examples "expose all link paths fields for the namespace" do
   include GraphqlHelpers
 
+  let(:type_specific_fields) { [] }
+
   specify do
     expected_fields = %i[
       contributionGuidePath
@@ -16,6 +18,8 @@ RSpec.shared_examples "expose all link paths fields for the namespace" do
       reportAbuse
       signIn
     ]
+
+    expected_fields.push(*type_specific_fields)
 
     if Gitlab.ee?
       expected_fields.push(*%i[

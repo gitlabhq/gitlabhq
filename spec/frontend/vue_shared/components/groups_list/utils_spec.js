@@ -10,6 +10,7 @@ import {
   ACTION_RESTORE,
   ACTION_DELETE,
   ACTION_LEAVE,
+  ACTION_DELETE_IMMEDIATELY,
 } from '~/vue_shared/components/list_actions/constants';
 import toast from '~/vue_shared/plugins/global_toast';
 
@@ -34,24 +35,34 @@ const MOCK_GROUP_PENDING_DELETION = {
 
 describe('availableGraphQLGroupActions', () => {
   describe.each`
-    userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | availableActions
-    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${[]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${[ACTION_EDIT]}
-    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${[ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${[ACTION_EDIT, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${[ACTION_EDIT]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE]}
-    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${[ACTION_EDIT]}
+    userPermissions                                              | markedForDeletion | isSelfDeletionInProgress | isSelfDeletionScheduled | availableActions
+    ${{ viewEditPage: false, removeGroup: false }}               | ${false}          | ${false}                 | ${false}                | ${[]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${false}          | ${false}                 | ${false}                | ${[ACTION_EDIT]}
+    ${{ viewEditPage: false, removeGroup: true }}                | ${false}          | ${false}                 | ${false}                | ${[ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${false}          | ${false}                 | ${false}                | ${[ACTION_EDIT, ACTION_DELETE]}
+    ${{ viewEditPage: true, removeGroup: false }}                | ${true}           | ${false}                 | ${false}                | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${false}                | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${false}                 | ${true}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${false}                | ${[ACTION_EDIT, ACTION_LEAVE]}
+    ${{ viewEditPage: true, removeGroup: true, canLeave: true }} | ${true}           | ${false}                 | ${true}                 | ${[ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${false}                | ${[ACTION_EDIT]}
+    ${{ viewEditPage: true, removeGroup: true }}                 | ${true}           | ${true}                  | ${true}                 | ${[ACTION_EDIT]}
   `(
     'availableGraphQLGroupActions',
-    ({ userPermissions, markedForDeletion, isSelfDeletionInProgress, availableActions }) => {
-      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, then availableActions = [${availableActions}] and is sorted correctly`, () => {
+    ({
+      userPermissions,
+      markedForDeletion,
+      isSelfDeletionInProgress,
+      isSelfDeletionScheduled,
+      availableActions,
+    }) => {
+      it(`when userPermissions = ${JSON.stringify(userPermissions)}, markedForDeletion is ${markedForDeletion}, isSelfDeletionInProgress is ${isSelfDeletionInProgress}, and isSelfDeletionScheduled is ${isSelfDeletionScheduled} then availableActions = [${availableActions}] and is sorted correctly`, () => {
         expect(
           availableGraphQLGroupActions({
             userPermissions,
             markedForDeletion,
             isSelfDeletionInProgress,
+            isSelfDeletionScheduled,
           }),
         ).toStrictEqual(availableActions);
       });

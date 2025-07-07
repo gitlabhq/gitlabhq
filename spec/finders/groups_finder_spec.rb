@@ -557,5 +557,25 @@ RSpec.describe GroupsFinder, feature_category: :groups_and_projects do
         it { is_expected.to eq(sorted_groups) }
       end
     end
+
+    describe 'with_statistics' do
+      let_it_be(:group) { create(:group, :public) }
+
+      context 'when true' do
+        it 'loads project statistics' do
+          first_group = described_class.new(user, { all_available: true, with_statistics: true }).execute.first
+
+          expect(first_group.storage_size).to eq(0)
+        end
+      end
+
+      context 'when false' do
+        it 'does not load project statistics' do
+          first_group = described_class.new(user, { all_available: true, with_statistics: false }).execute.first
+
+          expect(first_group).not_to respond_to(:storage_size)
+        end
+      end
+    end
   end
 end

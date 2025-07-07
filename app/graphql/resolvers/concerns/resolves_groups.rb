@@ -9,7 +9,6 @@ module ResolvesGroups
     container_repositories_count: [:container_repositories],
     description: [:namespace_details],
     description_html: [:namespace_details],
-    vulnerability_namespace_statistic: [:vulnerability_namespace_statistic],
     custom_emoji: [:custom_emoji],
     full_path: [:route],
     path: [:route],
@@ -19,14 +18,19 @@ module ResolvesGroups
     dependency_proxy_image_count: [:dependency_proxy_manifests],
     dependency_proxy_image_ttl_policy: [:dependency_proxy_image_ttl_policy],
     dependency_proxy_setting: [:dependency_proxy_setting],
-    analyzer_statuses: [:analyzer_group_statuses],
     marked_for_deletion: [:deletion_schedule],
     marked_for_deletion_on: [:deletion_schedule],
     is_self_deletion_scheduled: [:deletion_schedule]
   }.freeze
 
-  def resolve_with_lookahead(...)
-    apply_lookahead(resolve_groups(...))
+  def resolve_with_lookahead(*args, **kwargs)
+    apply_lookahead(
+      resolve_groups(
+        *args,
+        **kwargs,
+        with_statistics: lookahead.selection(:nodes).selects?(:project_statistics)
+      )
+    )
   end
 
   private

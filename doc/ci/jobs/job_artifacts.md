@@ -197,8 +197,6 @@ job:
 
 {{< history >}}
 
-- Interface improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33418) in GitLab 15.6.
-- Performance improvements [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387765) in GitLab 15.9.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/407475) in GitLab 16.0. Feature flag `artifacts_management_page` removed.
 
 {{< /history >}}
@@ -348,7 +346,7 @@ You can also delete individual artifacts from the [**Artifacts** page](#bulk-del
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33348) in GitLab 15.10 [with a flag](../../administration/feature_flags/_index.md) named `ci_job_artifact_bulk_destroy`. Disabled by default.
-- [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/398581) in GitLab 16.1.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398581) in GitLab 16.1. Feature flag `ci_job_artifact_bulk_destroy` removed.
 
 {{< /history >}}
 

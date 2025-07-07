@@ -7,6 +7,13 @@ module Types
         graphql_name 'ProjectNamespaceLinks'
         implements ::Types::Namespaces::LinkPaths
 
+        field :new_work_item_email_address,
+          GraphQL::Types::String,
+          null: true,
+          description: 'Email address that can be used to create a new work item in this project. ' \
+            'Returns null if incoming email is not configured. More details on how to configure incoming email ' \
+            'is in this [documentation](https://docs.gitlab.com/administration/incoming_email/#set-it-up).'
+
         def issues_list
           url_helpers.project_issues_path(project)
         end
@@ -27,6 +34,10 @@ module Types
           return unless project&.repository
 
           ::ProjectPresenter.new(project).contribution_guide_path
+        end
+
+        def new_work_item_email_address
+          project.new_issuable_address(current_user, 'issue')
         end
 
         private

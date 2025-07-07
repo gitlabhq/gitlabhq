@@ -425,19 +425,6 @@ builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
 end
 ```
 
-In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
-
-```ruby
-project = Project.find_by_full_path('path/to/project')
-builds_with_artifacts =  project.builds.with_downloadable_artifacts
-builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-  batch.each do |build|
-    build.artifacts_expire_at = Time.current
-    build.erase_erasable_artifacts!
-  end
-end
-```
-
 #### Delete old artifacts instance wide
 
 This step also erases artifacts that users have [chosen to keep](../../ci/jobs/job_artifacts.md#with-an-expiry):
@@ -450,18 +437,6 @@ builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
   end
 
   batch.update_all(artifacts_expire_at: Time.current)
-end
-```
-
-In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/372537), use the following instead:
-
-```ruby
-builds_with_artifacts =  Ci::Build.with_downloadable_artifacts
-builds_with_artifacts.where("finished_at < ?", 1.year.ago).each_batch do |batch|
-  batch.each do |build|
-    build.artifacts_expire_at = Time.current
-    build.erase_erasable_artifacts!
-  end
 end
 ```
 
@@ -503,9 +478,6 @@ builds.where("finished_at < ?", 1.year.ago).each_batch do |batch|
   end
 end
 ```
-
-In [GitLab 15.3 and earlier](https://gitlab.com/gitlab-org/gitlab/-/issues/369132), replace
-`Ci::BuildEraseService.new(build, admin_user).execute` with `build.erase(erased_by: admin_user)`.
 
 `1.year.ago` is a Rails [`ActiveSupport::Duration`](https://api.rubyonrails.org/classes/ActiveSupport/Duration.html) method.
 Start with a long duration to reduce the risk of accidentally deleting artifacts that are still in use.

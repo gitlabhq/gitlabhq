@@ -46,27 +46,32 @@ RSpec.describe "renders a `whats new` dropdown item", :js, feature_category: :on
       expect(page).not_to have_button(text: "What's new")
     end
 
-    it 'shows notification dot and count and removes it once viewed' do
+    it 'shows notification count and removes it once viewed' do
       visit root_dashboard_path
 
       within_testid('super-sidebar') do
-        click_on 'Help'
-        button = find_button(text: "What's new")
+        find_by_testid('sidebar-help-button').click
 
-        has_testid?('notification-dot', visible: true)
-        expect(button).to have_selector('.badge-pill')
+        within_testid('disclosure-content') { expect(page).not_to have_button(text: "What's new") }
 
-        button.click
+        find_by_testid('sidebar-help-button').click
+
+        has_testid?('notification-count', visible: true)
+
+        click_on "What's new"
       end
 
       find('.whats-new-drawer .gl-drawer-close-button').click
 
-      within_testid('super-sidebar') do
-        click_on 'Help'
-        button = find_button(text: "What's new")
+      expect(find('.gl-toast')).to have_content("What's new moved to Help.")
 
-        has_testid?('notification-dot', visible: false)
-        expect(button).not_to have_selector('.badge-pill')
+      within_testid('super-sidebar') do
+        expect(page).not_to have_button(text: "What's new")
+        has_testid?('notification-count', visible: false)
+
+        find_by_testid('sidebar-help-button').click
+
+        within_testid('disclosure-content') { expect(page).to have_button(text: "What's new") }
       end
     end
   end

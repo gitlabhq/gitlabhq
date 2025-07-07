@@ -27,9 +27,11 @@ for full details on any breaking changes.
 
 {{< alert type="note" >}}
 
-In GitLab Runner 17.11 and later, steps run on the container defined by the job's `image`.
-This replaces the legacy Docker image maintained by the step runner team, `registry.gitlab.com/gitlab-org/step-runner:v0`.
-Support for the legacy Docker image ends in GitLab 18.0.
+In GitLab Runner 17.11 and later, when you use the Docker executor, GitLab Runner injects the 
+step-runner binary into the build container. For all other executors, ensure that the step-runner
+binary is in the execution environment. Support for the legacy Docker image
+`registry.gitlab.com/gitlab-org/step-runner:v0`, maintained by the step runner team,
+ends in GitLab 18.0.
 
 {{< /alert >}}
 

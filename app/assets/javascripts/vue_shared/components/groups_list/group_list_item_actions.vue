@@ -7,6 +7,7 @@ import {
   ACTION_EDIT,
   ACTION_RESTORE,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_LEAVE,
 } from '~/vue_shared/components/list_actions/constants';
 import { restoreGroup } from '~/api/groups_api';
@@ -47,6 +48,9 @@ export default {
           action: this.onActionRestore,
         },
         [ACTION_DELETE]: {
+          action: this.onActionDelete,
+        },
+        [ACTION_DELETE_IMMEDIATELY]: {
           action: this.onActionDelete,
         },
         [ACTION_LEAVE]: {

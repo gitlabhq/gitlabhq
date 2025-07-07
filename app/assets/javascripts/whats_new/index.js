@@ -4,7 +4,7 @@ import store from './store';
 
 let whatsNewApp;
 
-export default (versionDigest) => {
+export default (versionDigest, withClose) => {
   if (whatsNewApp) {
     store.dispatch('openDrawer');
   } else {
@@ -17,6 +17,7 @@ export default (versionDigest) => {
         return createElement(WhatsNewApp, {
           props: {
             versionDigest,
+            withClose,
           },
         });
       },

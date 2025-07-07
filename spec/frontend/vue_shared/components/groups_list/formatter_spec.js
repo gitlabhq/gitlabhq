@@ -2,9 +2,9 @@ import organizationGroupsGraphQlResponse from 'test_fixtures/graphql/organizatio
 import { formatGraphQLGroups } from '~/vue_shared/components/groups_list/formatter';
 import {
   ACTION_EDIT,
-  ACTION_DELETE,
   ACTION_LEAVE,
   ACTION_RESTORE,
+  ACTION_DELETE_IMMEDIATELY,
 } from '~/vue_shared/components/list_actions/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 
@@ -32,7 +32,7 @@ describe('formatGraphQLGroups', () => {
       accessLevel: {
         integerValue: 50,
       },
-      availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE],
+      availableActions: [ACTION_EDIT, ACTION_RESTORE, ACTION_LEAVE, ACTION_DELETE_IMMEDIATELY],
       children: [],
       childrenLoading: false,
       hasChildren: false,

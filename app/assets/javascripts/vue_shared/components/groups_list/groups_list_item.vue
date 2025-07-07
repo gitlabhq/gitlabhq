@@ -9,7 +9,11 @@ import { VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE } from '~/visibility_level/
 import { ACCESS_LEVEL_LABELS, ACCESS_LEVEL_NO_ACCESS_INTEGER } from '~/access_level/constants';
 import { __ } from '~/locale';
 import { numberToMetricPrefix, numberToHumanSize, isNumeric } from '~/lib/utils/number_utils';
-import { ACTION_DELETE, ACTION_LEAVE } from '~/vue_shared/components/list_actions/constants';
+import {
+  ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
+  ACTION_LEAVE,
+} from '~/vue_shared/components/list_actions/constants';
 import {
   TIMESTAMP_TYPES,
   TIMESTAMP_TYPE_CREATED_AT,
@@ -130,7 +134,10 @@ export default {
       return Object.hasOwn(this.group, 'rootStorageStatistics');
     },
     hasActionDelete() {
-      return this.group.availableActions?.includes(ACTION_DELETE);
+      return (
+        this.group.availableActions?.includes(ACTION_DELETE) ||
+        this.group.availableActions?.includes(ACTION_DELETE_IMMEDIATELY)
+      );
     },
     hasActionLeave() {
       return this.group.availableActions?.includes(ACTION_LEAVE);

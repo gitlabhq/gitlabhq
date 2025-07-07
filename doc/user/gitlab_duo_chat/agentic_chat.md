@@ -63,15 +63,15 @@ You can only use Agentic Chat in a project:
 - That is part of a group that meets the prerequisites.
 
 To use Agentic Chat:
-
-1. In VS Code, go to **Settings > Extensions > GitLab Workflow**.
-1. Select **GitLab Duo Pro**.
-1. Under **GitLab > Duo Chat > Agentic: Enabled**, select the
-   **Enable Access to Agentic Duo Chat (Experimental)** checkbox.
+<!-- markdownlint-disable MD044 -->
+1. In VS Code, go to **Settings > Settings**.
+1. Search for `gitlab agentic`.
+1. Under **Gitlab › Duo Agentic Chat: Enabled**, select the
+   **Enable GitLab Duo Agentic Chat** checkbox.
 1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
 1. Optional. Select **Refresh page**, if prompted.
 1. In the message box, enter your question and press **Enter** or select **Send**.
-
+<!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
 ## Agentic Chat capabilities

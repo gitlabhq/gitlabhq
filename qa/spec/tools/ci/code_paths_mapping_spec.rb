@@ -10,7 +10,7 @@ RSpec.describe QA::Tools::Ci::CodePathsMapping do
   let(:file_paths) { ["/test_code/test_code_path_mappings.json"] }
   let(:logger) { instance_double("Logger", info: true, warn: true, debug: true) }
   let(:gcs_client_options) { { force: true, content_type: 'application/json' } }
-  let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- Class has `put_object` method but is not getting verified
+  let(:gcs_client) { double("Fog::Google::StorageJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- Class has `put_object` method but is not getting verified
   let(:gcs_project) { 'gitlab-qa-resources' }
   let(:gcs_bucket_name) { 'code-path-mappings' }
   let(:gcs_credentials) { 'code-path-mappings-gcs-credentials' }
@@ -30,7 +30,7 @@ RSpec.describe QA::Tools::Ci::CodePathsMapping do
   end
 
   before do
-    allow(Fog::Storage::Google).to receive(:new)
+    allow(Fog::Google::Storage).to receive(:new)
                                      .with(google_project: gcs_project,
                                        google_json_key_string: gcs_credentials)
                                      .and_return(gcs_client)

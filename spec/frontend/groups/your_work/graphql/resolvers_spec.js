@@ -74,6 +74,8 @@ describe('your work groups resolver', () => {
       createdAt: mockGroup.created_at,
       updatedAt: mockGroup.updated_at,
       markedForDeletion: mockGroup.marked_for_deletion,
+      isSelfDeletionInProgress: mockGroup.is_self_deletion_in_progress,
+      isSelfDeletionScheduled: mockGroup.is_self_deletion_scheduled,
       isLinkedToSubscription: mockGroup.is_linked_to_subscription,
       permanentDeletionDate: mockGroup.permanent_deletion_date,
       userPermissions: {

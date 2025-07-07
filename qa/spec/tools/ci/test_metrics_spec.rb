@@ -6,7 +6,7 @@ RSpec.describe QA::Tools::Ci::TestMetrics do
   let(:influx_client) { instance_double("InfluxDB2::Client", create_write_api: influx_write_api) }
   let(:influx_write_api) { instance_double("InfluxDB2::WriteApi", write: nil) }
   let(:gcs_client_options) { { force: true, content_type: 'application/json' } }
-  let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- Class has `put_object` method but is not getting verified
+  let(:gcs_client) { double("Fog::Google::StorageJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- Class has `put_object` method but is not getting verified
   let(:logger) { instance_double("Logger", info: true, warn: true) }
 
   let(:glob) { "metrics_glob/*.json" }
@@ -32,7 +32,7 @@ RSpec.describe QA::Tools::Ci::TestMetrics do
   before do
     allow(InfluxDB2::Client).to receive(:new) { influx_client }
 
-    allow(Fog::Storage::Google).to receive(:new)
+    allow(Fog::Google::Storage).to receive(:new)
                                      .with(google_project: metrics_gcs_project_id,
                                        google_json_key_string: metrics_gcs_creds)
                                      .and_return(gcs_client)

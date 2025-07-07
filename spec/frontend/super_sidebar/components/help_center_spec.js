@@ -24,7 +24,8 @@ describe('HelpCenter component', () => {
   };
   const withinComponent = () => within(wrapper.element);
   const findButton = (name) => withinComponent().getByRole('button', { name });
-  const findNotificationDot = () => wrapper.findByTestId('notification-dot');
+  const findWhatsNew = () => wrapper.findByTestId('sidebar-whatsnew-button');
+  const findNotificationCount = () => wrapper.findByTestId('notification-count');
 
   const createWrapper = (sidebarDataOverride = sidebarData, provide = {}) => {
     wrapper = mountExtended(HelpCenter, {
@@ -92,11 +93,11 @@ describe('HelpCenter component', () => {
     });
 
     it('renders menu items', () => {
+      expect(findWhatsNew().exists()).toBe(true);
       expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
 
       expect(findDropdownGroup(1).props('group').items).toEqual([
         expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
-        expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
       ]);
     });
 
@@ -143,6 +144,24 @@ describe('HelpCenter component', () => {
     it('passes custom offset to the dropdown', () => {
       expect(findDropdown().props('dropdownOffset')).toEqual({
         mainAxis: 4,
+      });
+    });
+
+    describe('with matching version digest in local storage', () => {
+      useLocalStorageSpy();
+
+      beforeEach(() => {
+        window.localStorage.setItem(STORAGE_KEY, 1);
+        createWrapper(sidebarData);
+      });
+
+      it('renders menu items', () => {
+        expect(findDropdownGroup(0).props('group').items).toEqual(getDefaultHelpItems());
+
+        expect(findDropdownGroup(1).props('group').items).toEqual([
+          expect.objectContaining({ text: HelpCenter.i18n.shortcuts }),
+          expect.objectContaining({ text: HelpCenter.i18n.whatsnew }),
+        ]);
       });
     });
 
@@ -251,7 +270,10 @@ describe('HelpCenter component', () => {
       });
 
       it("shows the What's new slideout", () => {
-        expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(sidebarData.whats_new_version_digest);
+        expect(toggleWhatsNewDrawer).toHaveBeenCalledWith(
+          sidebarData.whats_new_version_digest,
+          expect.any(Function),
+        );
       });
 
       it("shows the existing What's new slideout instance on subsequent clicks", () => {
@@ -270,7 +292,7 @@ describe('HelpCenter component', () => {
           expect.objectContaining({
             trackAction: 'click_button',
             trackLabel: 'whats_new',
-            trackProperty: 'nav_help_menu',
+            trackProperty: 'nav_whats_new',
           }),
         );
       });
@@ -285,8 +307,8 @@ describe('HelpCenter component', () => {
           });
         });
 
-        it('does not render notification dot', () => {
-          expect(findNotificationDot().exists()).toBe(false);
+        it('does not render notification count', () => {
+          expect(findNotificationCount().exists()).toBe(false);
         });
       });
 
@@ -300,8 +322,8 @@ describe('HelpCenter component', () => {
           });
         });
 
-        it('renders notification dot', () => {
-          expect(findNotificationDot().exists()).toBe(true);
+        it('renders notification count', () => {
+          expect(findNotificationCount().exists()).toBe(true);
         });
 
         describe("when What's new drawer is opened", () => {
@@ -309,8 +331,8 @@ describe('HelpCenter component', () => {
             findButton("What's new").click();
           });
 
-          it('does not render notification dot', () => {
-            expect(findNotificationDot().exists()).toBe(false);
+          it('renders notification count', () => {
+            expect(findNotificationCount().exists()).toBe(true);
           });
         });
 
@@ -323,8 +345,8 @@ describe('HelpCenter component', () => {
             });
           });
 
-          it('does not render notification dot', () => {
-            expect(findNotificationDot().exists()).toBe(false);
+          it('does not render notification count', () => {
+            expect(findNotificationCount().exists()).toBe(false);
           });
         });
       });

@@ -8,15 +8,16 @@ module Gitlab
     class Header
       include Prawn::View
 
-      def self.render(pdf, page: 0, height: 50)
-        new(pdf, page, height).render
+      def self.render(pdf, exportable_title, page: 0, height: 50)
+        new(pdf, page, height, exportable_title).render
       end
 
-      def initialize(pdf, page, height)
+      def initialize(pdf, page, height, exportable_title)
         @pdf = pdf
         @page = page
         @height = height
         @halfway_point = pdf.bounds.width / 2
+        @exportable_title = exportable_title
       end
 
       def render
@@ -47,8 +48,10 @@ module Gitlab
 
           # Title (right side)
           @pdf.bounding_box([@halfway_point, @pdf.bounds.top], width: @halfway_point, height: @height) do
+            @exportable_title ||= "Vulnerability Summary"
+
             @pdf.text_box(
-              "Vulnerability Summary | #{Date.current.strftime('%B %-d, %Y')} | #{@page}",
+              "#{@exportable_title} | #{Date.current.strftime('%B %-d, %Y')} | #{@page}",
               align: :right,
               valign: :center,
               size: 10

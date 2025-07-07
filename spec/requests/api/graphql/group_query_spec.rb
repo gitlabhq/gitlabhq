@@ -279,5 +279,23 @@ RSpec.describe 'getting group information', :with_license, feature_category: :gr
         it_behaves_like 'public group in which the user has no membership'
       end
     end
+
+    describe 'project statistics' do
+      it 'returns nil for each statistic because they are not supported in this query' do
+        post_graphql(group_query(private_group), current_user: admin)
+
+        expect(graphql_data_at(:group, :project_statistics)).to include({
+          "buildArtifactsSize" => nil,
+          "lfsObjectsSize" => nil,
+          "packagesSize" => nil,
+          "pipelineArtifactsSize" => nil,
+          "repositorySize" => nil,
+          "snippetsSize" => nil,
+          "storageSize" => nil,
+          "uploadsSize" => nil,
+          "wikiSize" => nil
+        })
+      end
+    end
   end
 end

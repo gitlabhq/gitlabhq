@@ -37,13 +37,11 @@ describe('ListActions', () => {
       {
         text: 'Edit',
         href: '/-/edit',
-        order: 1,
       },
       {
         text: 'Delete',
         variant: 'danger',
         action: expect.any(Function),
-        order: 4,
       },
     ]);
   });
@@ -68,7 +66,6 @@ describe('ListActions', () => {
       {
         text: 'Edit',
         href: '/-/edit',
-        order: 1,
       },
       {
         text: 'Custom',
@@ -78,7 +75,6 @@ describe('ListActions', () => {
         text: 'Delete',
         variant: 'danger',
         action: expect.any(Function),
-        order: 4,
       },
     ]);
   });
@@ -94,7 +90,6 @@ describe('ListActions', () => {
       {
         text: 'Edit',
         href: '/-/edit',
-        order: 1,
       },
     ]);
   });
@@ -111,12 +106,10 @@ describe('ListActions', () => {
         text: 'Delete',
         variant: 'danger',
         action: expect.any(Function),
-        order: 4,
       },
       {
         text: 'Edit',
         href: '/-/edit',
-        order: 1,
       },
     ]);
   });

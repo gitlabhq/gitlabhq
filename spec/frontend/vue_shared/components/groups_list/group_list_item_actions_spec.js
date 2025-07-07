@@ -5,6 +5,7 @@ import ListActions from '~/vue_shared/components/list_actions/list_actions.vue';
 import {
   ACTION_EDIT,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_RESTORE,
   ACTION_LEAVE,
 } from '~/vue_shared/components/list_actions/constants';
@@ -114,6 +115,14 @@ describe('GroupListItemActions', () => {
   describe('when delete action is fired', () => {
     it('emits delete event', () => {
       fireAction(ACTION_DELETE);
+
+      expect(wrapper.emitted('delete')).toEqual([[]]);
+    });
+  });
+
+  describe('when delete immediately action is fired', () => {
+    it('emits delete event', () => {
+      fireAction(ACTION_DELETE_IMMEDIATELY);
 
       expect(wrapper.emitted('delete')).toEqual([[]]);
     });

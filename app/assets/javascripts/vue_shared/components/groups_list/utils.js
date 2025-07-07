@@ -3,6 +3,7 @@ import { sprintf, __ } from '~/locale';
 import {
   ACTION_EDIT,
   ACTION_DELETE,
+  ACTION_DELETE_IMMEDIATELY,
   ACTION_LEAVE,
   ACTION_RESTORE,
 } from '~/vue_shared/components/list_actions/constants';
@@ -11,6 +12,7 @@ export const availableGraphQLGroupActions = ({
   userPermissions,
   markedForDeletion,
   isSelfDeletionInProgress,
+  isSelfDeletionScheduled,
 }) => {
   const baseActions = [];
 
@@ -18,7 +20,7 @@ export const availableGraphQLGroupActions = ({
     baseActions.push(ACTION_EDIT);
   }
 
-  if (userPermissions.removeGroup && markedForDeletion && !isSelfDeletionInProgress) {
+  if (userPermissions.removeGroup && isSelfDeletionScheduled && !isSelfDeletionInProgress) {
     baseActions.push(ACTION_RESTORE);
   }
 
@@ -26,8 +28,14 @@ export const availableGraphQLGroupActions = ({
     baseActions.push(ACTION_LEAVE);
   }
 
-  if (userPermissions.removeGroup && !isSelfDeletionInProgress) {
-    baseActions.push(ACTION_DELETE);
+  if (userPermissions.removeGroup) {
+    // Groups that are not marked for deletion can be deleted (delayed)
+    if (!markedForDeletion) {
+      baseActions.push(ACTION_DELETE);
+      // Groups with self deletion scheduled can be deleted immediately
+    } else if (isSelfDeletionScheduled && !isSelfDeletionInProgress) {
+      baseActions.push(ACTION_DELETE_IMMEDIATELY);
+    }
   }
 
   return baseActions;

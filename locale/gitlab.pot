@@ -21367,6 +21367,9 @@ msgstr ""
 msgid "Delete image"
 msgstr ""
 
+msgid "Delete immediately"
+msgstr ""
+
 msgid "Delete internal note"
 msgstr ""
 
@@ -69904,6 +69907,9 @@ msgid "What would you like to do?"
 msgstr ""
 
 msgid "What's new"
+msgstr ""
+
+msgid "What's new moved to Help."
 msgstr ""
 
 msgid "When a deployment job is successful, prevent older deployment jobs that are still pending."

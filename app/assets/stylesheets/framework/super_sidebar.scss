@@ -394,10 +394,6 @@ $command-palette-spacing: px-to-rem(14px);
   .btn-with-notification {
     position: relative;
 
-    .notification-dot-info {
-      @include notification-dot(var(--super-sidebar-accent-color), 9px, 5px, 22px);
-    }
-
     .notification-dot-warning {
       @include notification-dot($orange-300, 12px, 1px, 19px);
     }

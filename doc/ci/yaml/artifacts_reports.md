@@ -170,12 +170,6 @@ but the artifacts themselves are not shared with parent pipelines.
 
 ## `artifacts:reports:codequality`
 
-{{< history >}}
-
-- Multiple reports in diff annotations and full pipeline report [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/9014) in GitLab 15.7.
-
-{{< /history >}}
-
 The `codequality` report collects [code quality issues](../testing/code_quality.md). The
 collected code quality report uploads to GitLab as an artifact.
 
@@ -229,12 +223,6 @@ GitLab can display the results of one or more reports in:
 - Tier: Ultimate
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/360766) in GitLab 15.3
-
-{{< /history >}}
 
 This report is a Software Bill of Materials describing the components of a project
 following the [CycloneDX](https://cyclonedx.org/docs/1.4) protocol format.

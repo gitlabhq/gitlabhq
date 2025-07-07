@@ -476,7 +476,7 @@ module API
         ]
         tags %w[merge_requests]
       end
-      get ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review_workflow, urgency: :high do
+      get ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review_workflow, urgency: :low do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         context_commits =
           paginate(merge_request.merge_request_context_commits).map(&:to_commit)
@@ -500,7 +500,7 @@ module API
         ]
         tags %w[merge_requests]
       end
-      post ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review_workflow do
+      post ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review_workflow, urgency: :low do
         commit_ids = params[:commits]
 
         if commit_ids.size > CONTEXT_COMMITS_POST_LIMIT
@@ -537,7 +537,7 @@ module API
         ]
         tags %w[merge_requests]
       end
-      delete ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review_workflow do
+      delete ':id/merge_requests/:merge_request_iid/context_commits', feature_category: :code_review_workflow, urgency: :low do
         commit_ids = params[:commits]
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
