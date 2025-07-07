@@ -125,7 +125,9 @@ Step 1 helps prevent wastage of compute quota that would be spent running analyz
 
 Video walkthrough of how Dependency Scanning analyzers are using [downstream pipeline](../../ci/pipelines/downstream_pipelines.md) feature to test analyzers using test projects:
 
-[![How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://img.youtube.com/vi/KauRBlfUbDE/0.jpg)](https://www.youtube.com/watch?v=KauRBlfUbDE)
+<i class="fa-youtube-play" aria-hidden="true"></i>
+[How Sec leverages the downstream pipeline feature of GitLab to test analyzers end to end](https://www.youtube.com/watch?v=KauRBlfUbDE)
+<!-- Video published on 2019-10-09 -->
 
 ### Testing local changes
 

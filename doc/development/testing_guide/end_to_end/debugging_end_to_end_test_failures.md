@@ -17,9 +17,11 @@ This page outlines steps for investigating [end-to-end test](_index.md) failures
 
 Note when viewing a deployment failure from the `#announcements` Slack channel, you will have to click into the pipeline and look at the `Downstream` results to understand if the deployment failure arose from a failure in `Staging-Canary` or if the failure occurred in `Staging`.
 
-Click on the diagram below to visit the announcement issue for more context and view an uncompressed image:
+Visit the [announcement issue](https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2280) for more context
+and to view an uncompressed version of the following image:
 
-[![Pipeline Reorder](img/deployment_pipeline_and_e2e_tests_v18_0.png "pipeline diagram")](https://gitlab.com/gitlab-com/gl-infra/delivery/-/issues/2280)
+![Pipeline Reorder](img/deployment_pipeline_and_e2e_tests_v18_0.png)
+
 Note the diagram has been updated as part of increasing rollback availability by removing the [blocking nature of post-deployment migrations](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/585).
 
 ### Staging Ref
