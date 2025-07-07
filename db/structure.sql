@@ -13900,7 +13900,10 @@ CREATE TABLE deploy_tokens (
     read_virtual_registry boolean DEFAULT false NOT NULL,
     project_id bigint,
     group_id bigint,
-    write_virtual_registry boolean DEFAULT false NOT NULL
+    write_virtual_registry boolean DEFAULT false NOT NULL,
+    seven_days_notification_sent_at timestamp with time zone,
+    thirty_days_notification_sent_at timestamp with time zone,
+    sixty_days_notification_sent_at timestamp with time zone
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -35492,6 +35495,12 @@ CREATE INDEX index_draft_notes_on_discussion_id ON draft_notes USING btree (disc
 CREATE INDEX index_draft_notes_on_merge_request_id ON draft_notes USING btree (merge_request_id);
 
 CREATE INDEX index_draft_notes_on_project_id ON draft_notes USING btree (project_id);
+
+CREATE INDEX index_dts_on_expiring_at_seven_days_notification_sent_at ON deploy_tokens USING btree (expires_at, id) WHERE ((revoked = false) AND (seven_days_notification_sent_at IS NULL));
+
+CREATE INDEX index_dts_on_expiring_at_sixty_days_notification_sent_at ON deploy_tokens USING btree (expires_at, id) WHERE ((revoked = false) AND (sixty_days_notification_sent_at IS NULL));
+
+CREATE INDEX index_dts_on_expiring_at_thirty_days_notification_sent_at ON deploy_tokens USING btree (expires_at, id) WHERE ((revoked = false) AND (thirty_days_notification_sent_at IS NULL));
 
 CREATE INDEX index_duo_workflows_checkpoint_writes_on_namespace_id ON duo_workflows_checkpoint_writes USING btree (namespace_id);
 
