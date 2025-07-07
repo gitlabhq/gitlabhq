@@ -2266,7 +2266,7 @@ Input type: `AiDuoWorkflowCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationaiduoworkflowcreateagentprivileges"></a>`agentPrivileges` | [`[Int!]`](#int) | Actions the agent is allowed to perform. |
-| <a id="mutationaiduoworkflowcreateallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | When enabled, Duo Workflow may stop to ask the user questions before proceeding. |
+| <a id="mutationaiduoworkflowcreateallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | When enabled, Duo Agent Platform may stop to ask the user questions before proceeding. |
 | <a id="mutationaiduoworkflowcreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationaiduoworkflowcreateenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment for the workflow. |
 | <a id="mutationaiduoworkflowcreategoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
@@ -27231,44 +27231,44 @@ GitLab Duo settings.
 
 ### `DuoWorkflow`
 
-A Duo Workflow.
+GitLab Duo Agent Platform session.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="duoworkflowagentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during workflow execution. |
+| <a id="duoworkflowagentprivilegesnames"></a>`agentPrivilegesNames` | [`[String!]`](#string) | Privileges granted to the agent during execution. |
 | <a id="duoworkflowallowagenttorequestuser"></a>`allowAgentToRequestUser` | [`Boolean`](#boolean) | Allow the agent to request user input. |
-| <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workflow was created. |
-| <a id="duoworkflowenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, e.g., ide or web. |
-| <a id="duoworkflowfirstcheckpoint"></a>`firstCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | First checkpoint of the workflow. |
-| <a id="duoworkflowgoal"></a>`goal` | [`String`](#string) | Goal of the workflow. |
-| <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the workflow. |
-| <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the workflow. |
+| <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the session was created. |
+| <a id="duoworkflowenvironment"></a>`environment` | [`WorkflowEnvironment`](#workflowenvironment) | Environment, like IDE or web. |
+| <a id="duoworkflowfirstcheckpoint"></a>`firstCheckpoint` | [`DuoWorkflowEvent`](#duoworkflowevent) | First checkpoint of the session. |
+| <a id="duoworkflowgoal"></a>`goal` | [`String`](#string) | Goal of the session. |
+| <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the session. |
+| <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the session. |
 | <a id="duoworkflowmcpenabled"></a>`mcpEnabled` | [`Boolean`](#boolean) | Has MCP been enabled for the namespace. |
-| <a id="duoworkflowpreapprovedagentprivilegesnames"></a>`preApprovedAgentPrivilegesNames` | [`[String!]`](#string) | Privileges pre-approved for the agent during workflow execution. |
-| <a id="duoworkflowproject"></a>`project` | [`Project!`](#project) | Project that the workflow is in. |
+| <a id="duoworkflowpreapprovedagentprivilegesnames"></a>`preApprovedAgentPrivilegesNames` | [`[String!]`](#string) | Privileges pre-approved for the agent during execution. |
+| <a id="duoworkflowproject"></a>`project` | [`Project!`](#project) | Project that the session is in. |
 | <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
-| <a id="duoworkflowstatus"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
-| <a id="duoworkflowstatusname"></a>`statusName` | [`String`](#string) | Status Name of the workflow. |
-| <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workflow was last updated. |
+| <a id="duoworkflowstatus"></a>`status` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
+| <a id="duoworkflowstatusname"></a>`statusName` | [`String`](#string) | Status name of the session. |
+| <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the session was last updated. |
 | <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
-| <a id="duoworkflowworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |
+| <a id="duoworkflowworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | GitLab Duo Agent Platform flow type based on its capabilities. |
 
 ### `DuoWorkflowEnablement`
 
-Duo Workflow enablement status checks.
+Duo Agent Platform enablement status checks.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="duoworkflowenablementchecks"></a>`checks` | [`[DuoWorkflowEnablementCheck!]`](#duoworkflowenablementcheck) | Enablement checks. |
-| <a id="duoworkflowenablementenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether GitLab Duo Workflow is enabled for current user and the project. |
+| <a id="duoworkflowenablementenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether Duo Agent Platform is enabled for current user and the project. |
 
 ### `DuoWorkflowEnablementCheck`
 
-Represents single Duo Workflow enablement check.
+Represents single Duo Agent Platform enablement check.
 
 #### Fields
 
@@ -27280,7 +27280,7 @@ Represents single Duo Workflow enablement check.
 
 ### `DuoWorkflowEvent`
 
-Events that describe the history and progress of a Duo Workflow.
+Events that describe the history and progress of a GitLab Duo Agent Platform session.
 
 #### Fields
 
@@ -27288,13 +27288,13 @@ Events that describe the history and progress of a Duo Workflow.
 | ---- | ---- | ----------- |
 | <a id="duoworkfloweventcheckpoint"></a>`checkpoint` | [`JsonString`](#jsonstring) | Checkpoint of the event. |
 | <a id="duoworkfloweventerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
-| <a id="duoworkfloweventexecutionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Granular status of workflow execution. |
+| <a id="duoworkfloweventexecutionstatus"></a>`executionStatus` {{< icon name="warning-solid" >}} | [`String!`](#string) | **Introduced** in GitLab 17.10. **Status**: Experiment. Granular status of the session's execution. |
 | <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
 | <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
 | <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
-| <a id="duoworkfloweventworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | Duo Workflow type based on its capabilities. |
-| <a id="duoworkfloweventworkflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the workflow. |
-| <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the workflow. |
+| <a id="duoworkfloweventworkflowdefinition"></a>`workflowDefinition` | [`String`](#string) | GitLab Duo Agent Platform flow type based on its capabilities. |
+| <a id="duoworkfloweventworkflowgoal"></a>`workflowGoal` | [`String`](#string) | Goal of the session. |
+| <a id="duoworkfloweventworkflowstatus"></a>`workflowStatus` | [`DuoWorkflowStatus`](#duoworkflowstatus) | Status of the session. |
 
 ### `EgressNode`
 
@@ -36404,7 +36404,7 @@ Project-level settings for product analytics provider.
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectduoagenticchatavailable"></a>`duoAgenticChatAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. User access to Duo agentic Chat feature. |
 | <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
-| <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether GitLab Duo Workflow is enabled for the project. |
+| <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether Duo Agent Platform is enabled for the project. |
 | <a id="projectexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |
 | <a id="projectflowmetrics"></a>`flowMetrics` {{< icon name="warning-solid" >}} | [`ProjectValueStreamAnalyticsFlowMetrics`](#projectvaluestreamanalyticsflowmetrics) | **Introduced** in GitLab 15.10. **Status**: Experiment. Flow metrics for value stream analytics. |
 | <a id="projectforkedfrom"></a>`forkedFrom` | [`Project`](#project) | Project the project was forked from. |
@@ -39774,7 +39774,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobcanmodifyblobwithwebide"></a>`canModifyBlobWithWebIde` | [`Boolean!`](#boolean) | Whether the current user can modify the blob with Web IDE. |
 | <a id="repositoryblobcodenavigationpath"></a>`codeNavigationPath` | [`String`](#string) | Web path for code navigation. |
 | <a id="repositoryblobcodeowners"></a>`codeOwners` | [`[UserCore!]`](#usercore) | List of code owners for the blob. |
-| <a id="repositoryblobduoworkflowinvokepath"></a>`duoWorkflowInvokePath` | [`String`](#string) | Path to invoke Duo Workflow. |
+| <a id="repositoryblobduoworkflowinvokepath"></a>`duoWorkflowInvokePath` | [`String`](#string) | Path to invoke Duo Agent Platform. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |
 | <a id="repositoryblobenvironmentexternalurlforroutemap"></a>`environmentExternalUrlForRouteMap` | [`String`](#string) | Web path to blob on an environment. |
 | <a id="repositoryblobenvironmentformattedexternalurl"></a>`environmentFormattedExternalUrl` | [`String`](#string) | Environment on which the blob is available. |
@@ -39805,7 +39805,7 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobrawtextblob"></a>`rawTextBlob` | [`String`](#string) | Raw content of the blob, if the blob is text data. |
 | <a id="repositoryblobreplacepath"></a>`replacePath` | [`String`](#string) | Web path to replace the blob content. |
 | <a id="repositoryblobrichviewer"></a>`richViewer` | [`BlobViewer`](#blobviewer) | Blob content rich viewer. |
-| <a id="repositoryblobshowduoworkflowaction"></a>`showDuoWorkflowAction` | [`Boolean`](#boolean) | Indicator to show Duo Workflow action. |
+| <a id="repositoryblobshowduoworkflowaction"></a>`showDuoWorkflowAction` | [`Boolean`](#boolean) | Indicator to show Duo Agent Platform action. |
 | <a id="repositoryblobsimpleviewer"></a>`simpleViewer` | [`BlobViewer!`](#blobviewer) | Blob content simple viewer. |
 | <a id="repositoryblobsize"></a>`size` | [`BigInt`](#bigint) | Size (in bytes) of the blob. |
 | <a id="repositoryblobstoredexternally"></a>`storedExternally` | [`Boolean`](#boolean) | Whether the blob's content is stored externally (for instance, in LFS). |

@@ -46,7 +46,6 @@ import {
   TOKEN_TYPE_UPDATED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_root.vue';
-import WorkItemUserPreferences from '~/work_items/components/shared/work_item_list_preferences.vue';
 import CreateWorkItemModal from '~/work_items/components/create_work_item_modal.vue';
 import WorkItemsListApp from '~/work_items/pages/work_items_list_app.vue';
 import getWorkItemStateCountsQuery from 'ee_else_ce/work_items/graphql/list/get_work_item_state_counts.query.graphql';
@@ -112,7 +111,6 @@ describeSkipVue3(skipReason, () => {
   const findBulkEditStartButton = () => wrapper.find('[data-testid="bulk-edit-start-button"]');
   const findBulkEditSidebar = () => wrapper.findComponent(WorkItemBulkEditSidebar);
   const findWorkItemListHeading = () => wrapper.findComponent(WorkItemListHeading);
-  const findWorkItemUserPreferences = () => wrapper.findComponent(WorkItemUserPreferences);
 
   const mountComponent = ({
     provide = {},
@@ -728,22 +726,43 @@ describeSkipVue3(skipReason, () => {
           await waitForPromises();
         });
 
-        it('is rendered when feature is enabled', () => {
-          expect(findDrawer().exists()).toBe(true);
-        });
+        it.each`
+          message              | shouldOpenItemsInSidePanel | drawerExists
+          ${'is rendered'}     | ${true}                    | ${true}
+          ${'is not rendered'} | ${false}                   | ${false}
+        `(
+          '$message when shouldOpenItemsInSidePanel is $shouldOpenItemsInSidePanel',
+          async ({ shouldOpenItemsInSidePanel, drawerExists }) => {
+            const mockHandler = jest.fn().mockResolvedValue({
+              data: {
+                currentUser: {
+                  id: 'gid://gitlab/User/1',
+                  userPreferences: {
+                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel },
+                  },
+                },
+              },
+            });
 
-        describe('display settings', () => {
-          it('updates displaySettings when displaySettingsChanged event is emitted', async () => {
-            mountComponent();
+            mountComponent({
+              mockPreferencesHandler: mockHandler,
+              provide: {
+                glFeatures: {
+                  workItemViewForIssues: false,
+                  epicsListDrawer: false,
+                  issuesListDrawer: true,
+                },
+                isSignedIn: true,
+              },
+            });
+
             await waitForPromises();
 
-            const newSettings = { shouldOpenItemsInSidePanel: false };
-            findWorkItemUserPreferences().vm.$emit('displaySettingsChanged', newSettings);
-            await nextTick();
+            expect(findDrawer().exists()).toBe(drawerExists);
+          },
+        );
 
-            expect(findWorkItemUserPreferences().props('displaySettings')).toEqual(newSettings);
-          });
-
+        describe('display settings', () => {
           describe('workItemDrawerEnabled with display settings', () => {
             it('returns false when shouldOpenItemsInSidePanel is false', async () => {
               const mockHandler = jest.fn().mockResolvedValue({

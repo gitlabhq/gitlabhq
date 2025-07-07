@@ -123,3 +123,4 @@ If you run into any issues while trying out this change, you can use the
 - [Add an emoji reaction](../../emoji_reactions.md) to an epic or its comments.
 - Collaborate on an epic by posting comments in a [thread](../../discussions/_index.md).
 - Use [health status](manage_epics.md#health-status) to track your progress.
+- [Create epic templates](../../project/description_templates.md#create-a-description-template) to standardize epic descriptions.

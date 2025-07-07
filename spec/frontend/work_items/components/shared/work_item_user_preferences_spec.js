@@ -5,12 +5,29 @@ import { GlDisclosureDropdown, GlToggle, GlDisclosureDropdownItem } from '@gitla
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import WorkItemsListPreferences from '~/work_items/components/shared/work_item_list_preferences.vue';
+import WorkItemsListPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
+import workItemDisplaySettingsQuery from '~/work_items/graphql/get_user_preferences.query.graphql';
 
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
+
+const updatedUserPreferences = {
+  __typename: 'UserPreferences',
+  workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+};
+
+const originalUserPreferences = {
+  currentUser: {
+    __typename: 'User',
+    id: 'gid://gitlab/User/1',
+    userPreferences: {
+      __typename: 'UserPreferences',
+      workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+    },
+  },
+};
 
 describe('WorkItemsListPreferences', () => {
   let wrapper;
@@ -20,10 +37,7 @@ describe('WorkItemsListPreferences', () => {
     data: {
       userPreferencesUpdate: {
         __typename: 'UserPreferencesUpdatePayload',
-        userPreferences: {
-          __typename: 'UserPreferences',
-          workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
-        },
+        userPreferences: updatedUserPreferences,
         errors: [],
       },
     },
@@ -31,6 +45,10 @@ describe('WorkItemsListPreferences', () => {
 
   const createComponent = ({ props = {}, provide = {}, mutationHandler = successHandler } = {}) => {
     mockApolloProvider = createMockApollo([[updateWorkItemsDisplaySettings, mutationHandler]]);
+    mockApolloProvider.clients.defaultClient.cache.writeQuery({
+      query: workItemDisplaySettingsQuery,
+      data: originalUserPreferences,
+    });
 
     wrapper = shallowMount(WorkItemsListPreferences, {
       apolloProvider: mockApolloProvider,
@@ -64,7 +82,7 @@ describe('WorkItemsListPreferences', () => {
     });
 
     describe('when toggle is clicked', () => {
-      it('saves preference and emits event on success', async () => {
+      it('saves preference and updates Apollo Client cache on success', async () => {
         createComponent();
 
         findDropdownItem().vm.$emit('action');
@@ -75,9 +93,14 @@ describe('WorkItemsListPreferences', () => {
             workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
           },
         });
-        expect(wrapper.emitted('displaySettingsChanged')).toHaveLength(1);
-        expect(wrapper.emitted('displaySettingsChanged')[0][0]).toEqual({
-          shouldOpenItemsInSidePanel: false,
+        const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
+          query: workItemDisplaySettingsQuery,
+        });
+        expect(updatedCacheData).toEqual({
+          currentUser: {
+            ...originalUserPreferences.currentUser,
+            userPreferences: updatedUserPreferences,
+          },
         });
       });
 

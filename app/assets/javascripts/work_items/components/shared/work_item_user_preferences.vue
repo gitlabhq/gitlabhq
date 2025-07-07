@@ -7,10 +7,11 @@ import {
 } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
-
+import workItemDisplaySettingsQuery from '~/work_items/graphql/get_user_preferences.query.graphql';
 import updateWorkItemsDisplaySettings from '../../graphql/update_user_preferences.mutation.graphql';
 
 export default {
+  name: 'WorkItemUserPreferences',
   components: {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
@@ -73,9 +74,22 @@ export default {
           variables: {
             input,
           },
+          update: (
+            cache,
+            {
+              data: {
+                userPreferencesUpdate: { userPreferences },
+              },
+            },
+          ) => {
+            cache.updateQuery({ query: workItemDisplaySettingsQuery }, ({ currentUser }) => ({
+              currentUser: {
+                ...currentUser,
+                userPreferences,
+              },
+            }));
+          },
         });
-
-        this.$emit('displaySettingsChanged', newDisplaySettings);
       } catch (error) {
         createAlert({
           message: __('Something went wrong while saving the preference.'),

@@ -797,13 +797,6 @@ To move an issue to another epic:
 1. Go to the **Child items** section.
 1. Drag issues into the desired parent epic in the visible hierarchy.
 
-### Use an epic template for repeating issues
-
-You can create a spreadsheet template to manage a pattern of consistently repeating issues.
-
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an introduction to epic templates, see [GitLab Epics and Epic Template Tip](https://www.youtube.com/watch?v=D74xKFNw8vg).
-
 ## Multi-level child epics
 
 {{< details >}}

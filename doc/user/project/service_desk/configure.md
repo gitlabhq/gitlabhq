@@ -157,7 +157,7 @@ For more information, see [System header and footer messages](../../../administr
 
 ## Use a custom template for Service Desk tickets
 
-You can select one [description template](../description_templates.md#create-an-issue-template)
+You can select one [description template](../description_templates.md#create-a-description-template)
 **per project** to be appended to every new Service Desk ticket's description.
 
 You can set description templates at various levels:
@@ -170,7 +170,7 @@ The templates are inherited. For example, in a project, you can also access temp
 
 Prerequisites:
 
-- You must have [created a description template](../description_templates.md#create-an-issue-template).
+- You must have [created a description template](../description_templates.md#create-a-description-template).
 
 To use a custom description template with Service Desk:
 

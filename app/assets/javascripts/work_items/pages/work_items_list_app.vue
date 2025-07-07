@@ -91,7 +91,7 @@ import CreateWorkItemModal from '../components/create_work_item_modal.vue';
 import WorkItemHealthStatus from '../components/work_item_health_status.vue';
 import WorkItemDrawer from '../components/work_item_drawer.vue';
 import WorkItemListHeading from '../components/work_item_list_heading.vue';
-import WorkItemUserPreferences from '../components/shared/work_item_list_preferences.vue';
+import WorkItemUserPreferences from '../components/shared/work_item_user_preferences.vue';
 import {
   BASE_ALLOWED_CREATE_TYPES,
   DETAIL_VIEW_QUERY_PARAM_NAME,
@@ -357,13 +357,18 @@ export default {
     },
     workItemDrawerEnabled() {
       const shouldOpenItemsInSidePanel = this.displaySettings?.shouldOpenItemsInSidePanel ?? true;
+
       if (!shouldOpenItemsInSidePanel) return false;
+
       if (this.glFeatures.workItemViewForIssues) {
-        return true;
+        return shouldOpenItemsInSidePanel;
       }
-      return this.isEpicsList
-        ? this.glFeatures?.epicsListDrawer
-        : this.glFeatures?.issuesListDrawer;
+
+      if (this.isEpicsList) {
+        return this.glFeatures?.epicsListDrawer && shouldOpenItemsInSidePanel;
+      }
+
+      return this.glFeatures?.issuesListDrawer && shouldOpenItemsInSidePanel;
     },
     isEpicsList() {
       return this.workItemType === WORK_ITEM_TYPE_NAME_EPIC;
@@ -973,9 +978,6 @@ export default {
       this.isInitialLoadComplete = false;
       this.refetchItems({ refetchCounts: true });
     },
-    handleDisplaySettingsChanged(newDisplaySettings) {
-      this.displaySettings = newDisplaySettings;
-    },
   },
 };
 </script>
@@ -1035,13 +1037,9 @@ export default {
         @previous-page="handlePreviousPage"
         @sort="handleSort"
         @select-issuable="handleToggle"
-        @displaySettingsChanged="handleDisplaySettingsChanged"
       >
         <template #user-preference>
-          <work-item-user-preferences
-            :display-settings="displaySettings"
-            @displaySettingsChanged="handleDisplaySettingsChanged"
-          />
+          <work-item-user-preferences :display-settings="displaySettings" />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
           <div class="gl-flex gl-gap-3">

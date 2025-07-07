@@ -3,6 +3,7 @@
 class DashboardController < Dashboard::ApplicationController
   include IssuableCollectionsAction
   include FiltersEvents
+  include HomepageData
 
   prepend_before_action(only: [:issues]) { authenticate_sessionless_user!(:rss) }
   prepend_before_action(only: [:issues_calendar]) { authenticate_sessionless_user!(:ics) }
@@ -20,12 +21,22 @@ class DashboardController < Dashboard::ApplicationController
 
   respond_to :html
 
+  feature_category :notifications, [:home]
   feature_category :user_profile, [:activity]
   feature_category :team_planning, [:issues, :issues_calendar]
   feature_category :code_review_workflow, [:merge_requests, :search_merge_requests]
 
   urgency :low, [:merge_requests, :activity, :search_merge_requests]
   urgency :low, [:issues, :issues_calendar]
+
+  def home
+    if Feature.enabled?(:personal_homepage, current_user)
+      @homepage_app_data = homepage_app_data(current_user)
+      render('root/index')
+    else
+      not_found
+    end
+  end
 
   def activity
     respond_to do |format|

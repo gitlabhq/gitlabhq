@@ -5,9 +5,6 @@ module Ci
     include ApplicationWorker
 
     data_consistency :sticky
-    concurrency_limit -> {
-      1000 if Feature.enabled?(:concurrency_limit_ci_archive_trace_worker, Feature.current_request)
-    }
 
     sidekiq_options retry: 3
     include PipelineBackgroundQueue

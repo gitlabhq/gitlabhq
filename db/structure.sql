@@ -36772,6 +36772,8 @@ CREATE UNIQUE INDEX index_ns_user_callouts_feature ON user_namespace_callouts US
 
 CREATE INDEX index_oauth_access_grants_on_application_id ON oauth_access_grants USING btree (application_id);
 
+CREATE INDEX index_oauth_access_grants_on_created_at_expires_in ON oauth_access_grants USING btree (created_at, expires_in);
+
 CREATE INDEX index_oauth_access_grants_on_resource_owner_id ON oauth_access_grants USING btree (resource_owner_id, application_id, created_at);
 
 CREATE UNIQUE INDEX index_oauth_access_grants_on_token ON oauth_access_grants USING btree (token);
