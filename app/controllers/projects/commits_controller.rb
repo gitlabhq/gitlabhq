@@ -70,7 +70,7 @@ class Projects::CommitsController < Projects::ApplicationController
   end
 
   def validate_path
-    return unless @path
+    return if @path.blank?
 
     path_exists = @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
     redirect_to_tree_root_for_missing_path(@project, @ref, @path) unless path_exists
