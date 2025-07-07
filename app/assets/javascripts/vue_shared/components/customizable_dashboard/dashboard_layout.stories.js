@@ -1,5 +1,5 @@
 import DashboardLayout from './dashboard_layout.vue';
-import PanelsBase from './panels_base.vue';
+import ExtendedDashboardPanel from './extended_dashboard_panel.vue';
 
 export default {
   component: DashboardLayout,
@@ -44,16 +44,16 @@ const dashboardConfig = {
 };
 
 const Template = (args, { argTypes }) => ({
-  components: { DashboardLayout, PanelsBase },
+  components: { DashboardLayout, ExtendedDashboardPanel },
   props: Object.keys(argTypes),
   template: `
     <dashboard-layout v-bind="$props">
       <template #panel="{ panel }">
-        <panels-base :title="panel.title" class="gl-h-full">
+        <extended-dashboard-panel :title="panel.title" class="gl-h-full">
           <template #body>
             <p class="gl-text-tertiary">Your visualization here</p>
           </template>
-        </panels-base>
+        </extended-dashboard-panel>
       </template>
       <template #empty-state>
         <p>No dashboard panels here 🕵</p>

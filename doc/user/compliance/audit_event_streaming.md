@@ -47,6 +47,51 @@ the streaming destination.
 
 {{< /alert >}}
 
+## Activate or deactivate streaming destinations
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537096) in GitLab 18.2.
+
+{{< /history >}}
+
+You can temporarily deactivate audit event streaming to a destination without deleting the destination configuration. When a streaming destination is deactivated:
+
+- Audit events stop streaming to that destination immediately.
+- The destination configuration is preserved.
+- You can reactivate the destination at any time.
+- Other active destinations continue to receive events.
+
+### Deactivate a streaming destination
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To deactivate a streaming destination:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Monitoring > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
+1. Clear the **Active** checkbox.
+1. Select **Save** to deactivate the streaming destination.
+
+The destination shows as **Inactive** and stops receiving audit events.
+
+### Activate a streaming destination
+
+To reactivate a previously deactivated streaming destination:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Monitoring > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
+1. Select the **Active** checkbox.
+1. Select **Save** to activate the streaming destination.
+
+The destination resumes receiving audit events immediately.
+
 ## HTTP destinations
 
 Prerequisites:

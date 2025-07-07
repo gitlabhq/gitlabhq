@@ -1,11 +1,11 @@
 import { nextTick } from 'vue';
 import { GlDashboardPanel, GlPopover } from '@gitlab/ui';
 import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
-import PanelsBase from '~/vue_shared/components/customizable_dashboard/panels_base.vue';
+import ExtendedDashboardPanel from '~/vue_shared/components/customizable_dashboard/extended_dashboard_panel.vue';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
 import { stubComponent } from 'helpers/stub_component';
 
-describe('PanelsBase', () => {
+describe('ExtendedDashboardPanel', () => {
   /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
 
@@ -15,7 +15,7 @@ describe('PanelsBase', () => {
     scopedSlots = {},
     mountFn = shallowMountExtended,
   } = {}) => {
-    wrapper = mountFn(PanelsBase, {
+    wrapper = mountFn(ExtendedDashboardPanel, {
       propsData: {
         ...props,
       },

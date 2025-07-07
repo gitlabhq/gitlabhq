@@ -9,7 +9,6 @@ ee/spec/frontend/approvals/mr_edit/mr_rules_spec.js
 ee/spec/frontend/approvals/project_settings/project_rules_spec.js
 ee/spec/frontend/boards/components/board_content_sidebar_spec.js
 ee/spec/frontend/boards/components/board_new_issue_spec.js
-ee/spec/frontend/boards/components/epics_swimlanes_spec.js
 ee/spec/frontend/ci/secrets/components/secrets_breadcrumbs_spec.js
 ee/spec/frontend/compliance_dashboard/components/frameworks_report/report_spec.js
 ee/spec/frontend/dependencies/components/dependency_location_spec.js

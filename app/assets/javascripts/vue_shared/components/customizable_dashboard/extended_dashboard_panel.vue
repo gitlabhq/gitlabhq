@@ -14,7 +14,7 @@ import { PANEL_POPOVER_DELAY } from './constants';
  */
 
 export default {
-  name: 'PanelsBase',
+  name: 'ExtendedDashboardPanel',
   components: {
     GlPopover,
     GlDashboardPanel,

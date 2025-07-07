@@ -1,24 +1,24 @@
 import { s__, __ } from '~/locale';
 import { VARIANT_DANGER, VARIANT_WARNING, VARIANT_INFO } from '~/alert';
-import PanelsBase from './panels_base.vue';
+import ExtendedDashboardPanel from './extended_dashboard_panel.vue';
 
 export default {
-  component: PanelsBase,
-  title: 'vue_shared/components/customizable_dashboard/panels_base',
+  component: ExtendedDashboardPanel,
+  title: 'vue_shared/components/customizable_dashboard/extended_dashboard_panel',
 };
 
 const Template = (args, { argTypes }) => ({
-  components: { PanelsBase },
+  components: { ExtendedDashboardPanel },
   props: Object.keys(argTypes),
   template: `
-    <panels-base v-bind="$props" style="min-height: 7rem;">
+    <extended-dashboard-panel v-bind="$props" style="min-height: 7rem;">
       <template #body>
         <p><code>#body</code> slot content</p>
       </template>
       <template #alert-message>
         <div><code>#alert-message</code> slot content</div>
       </template>
-    </panels-base>
+    </extended-dashboard-panel>
   `,
 });
 
