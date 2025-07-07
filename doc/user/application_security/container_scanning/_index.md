@@ -731,6 +731,18 @@ To scan an archive file, set the environment variable `CS_IMAGE` to the format `
 - The `archive://` scheme prefix specifies that the analyzer is to scan an archive.
 - `path/to/archive` specifies the path to the archive to scan, whether an absolute path or a relative path.
 
+### Image name
+
+Container Scanning determines the image name by first evaluating the archive's `manifest.json` and using the first item in `RepoTags`.
+If this is not found, `index.json` is used to fetch the `io.containerd.image.name` annotation. If this is not found, the archive filename
+is used instead.
+
+- `manifest.json` is defined in [Docker Image Specification v1.1.0](https://github.com/moby/docker-image-spec/blob/v1.1.0/v1.1.md#combined-image-json--filesystem-changeset-format)
+and created by using the command `docker save`.
+- `index.json` format is defined in the [OCI image specification v1.1.1](https://github.com/opencontainers/image-spec/blob/v1.1.1/spec.md).
+`io.containerd.image.name` is [available in containerd v1.3.0 and later](https://github.com/containerd/containerd/blob/v1.3.0/images/annotations.go)
+when using `ctr image export`.
+
 ### Scanning archives built in a previous job
 
 To scan an archive built in a CI/CD job, you must pass the archive artifact from the build job to the container scanning job.

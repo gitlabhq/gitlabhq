@@ -15,7 +15,14 @@ function createComponent(propsData = {}) {
 }
 
 const findBadge = () => wrapper.findComponent(GlBadge);
-const findTooltip = () => getBinding(findBadge().element, 'gl-tooltip');
+const findButton = () => wrapper.find('button');
+const findTooltip = () => {
+  const button = findButton();
+  if (!button.exists()) {
+    return null;
+  }
+  return getBinding(button.element, 'gl-tooltip');
+};
 
 describe('Merge request dashboard approval count FOSS component', () => {
   it('does not render badge when merge request is not approved', () => {
@@ -23,6 +30,7 @@ describe('Merge request dashboard approval count FOSS component', () => {
       mergeRequest: { approvedBy: { nodes: [] } },
     });
 
+    expect(findButton().exists()).toBe(false);
     expect(findBadge().exists()).toBe(false);
   });
 
@@ -31,6 +39,7 @@ describe('Merge request dashboard approval count FOSS component', () => {
       mergeRequest: { approvedBy: { nodes: ['approved'] } },
     });
 
+    expect(findButton().exists()).toBe(true);
     expect(findBadge().exists()).toBe(true);
   });
 
@@ -43,6 +52,11 @@ describe('Merge request dashboard approval count FOSS component', () => {
       mergeRequest: { approvedBy: { nodes: approvers } },
     });
 
-    expect(findTooltip().value).toBe(tooltipTitle);
+    expect(findButton().exists()).toBe(true);
+    expect(findBadge().exists()).toBe(true);
+
+    const tooltip = findTooltip();
+    expect(tooltip).not.toBeNull();
+    expect(tooltip.value).toBe(tooltipTitle);
   });
 });

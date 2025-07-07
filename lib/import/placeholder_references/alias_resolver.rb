@@ -7,6 +7,8 @@ module Import
 
       MissingAlias = Class.new(StandardError)
 
+      DOCS_URL = 'https://docs.gitlab.com/development/user_contribution_mapping/#placeholder-reference-aliasing'
+
       NOTE_COLUMNS = { "author_id" => "author_id", "updated_by_id" => "updated_by_id",
                        "resolved_by_id" => "resolved_by_id" }.freeze
       NOTE_EXCLUSIONS = %w[updated_by_id resolved_by_id].freeze
@@ -14,6 +16,8 @@ module Import
       # A new version for a model should be defined when new entries must be
       # mapped in a different way to data that already exists in the database.
       # Context: https://gitlab.com/gitlab-org/gitlab/-/issues/478501
+      # Warning: Do not remove old aliases, even if a model has been renamed and no longer exists.
+      #          Unused placeholder references referencing old model names name may still exist.
       ALIASES = {
         "Approval" => {
           1 => {
@@ -274,6 +278,7 @@ module Import
         message = "ALIASES must be extended to include #{model}"
         message += ".#{column}" if column
         message += " for version #{version}" if version
+        message += ". See #{DOCS_URL} for more information"
         MissingAlias.new(message)
       end
 

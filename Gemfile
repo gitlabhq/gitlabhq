@@ -422,10 +422,6 @@ gem 'tty-prompt', '~> 0.23', require: false, feature_category: :shared
 # Perf bar
 gem 'peek', '~> 1.1', feature_category: :shared
 
-# Google Cloud Profiler support
-gem 'cloud_profiler_agent', '~> 0.0.0', path: 'vendor/gems/cloud_profiler_agent', require: false,
-  feature_category: :shared
-
 # Snowplow events trackin
 gem 'snowplow-tracker', '~> 0.8.0', feature_category: :product_analytics
 

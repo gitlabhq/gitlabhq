@@ -618,7 +618,8 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
         expect(::Import::Framework::Logger).to receive(:error).with(
           hash_including(
             message: "#{invalid_model} is not a model, #{user_reference_column} cannot be reassigned.",
-            error: "ALIASES must be extended to include ThisWillNeverMapToARealModel for version 1",
+            error: "ALIASES must be extended to include ThisWillNeverMapToARealModel for version 1. See " \
+              "#{Import::PlaceholderReferences::AliasResolver::DOCS_URL} for more information",
             source_user_id: source_user.id
           )
         )

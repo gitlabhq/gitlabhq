@@ -2448,13 +2448,19 @@ msgstr ""
 msgid "AICatalog|Save changes"
 msgstr ""
 
-msgid "AICatalog|System Prompt (optional)"
+msgid "AICatalog|System Prompt"
+msgstr ""
+
+msgid "AICatalog|System Prompt is required."
 msgstr ""
 
 msgid "AICatalog|This agent specializes in... It can help you with... Best suited for..."
 msgstr ""
 
-msgid "AICatalog|User Prompt (optional)"
+msgid "AICatalog|User Prompt"
+msgstr ""
+
+msgid "AICatalog|User Prompt is required."
 msgstr ""
 
 msgid "AICatalog|You are an expert in [domain]. Your communication style is [style]. When helping users, you should always... Your key strengths include... You approach problems by..."

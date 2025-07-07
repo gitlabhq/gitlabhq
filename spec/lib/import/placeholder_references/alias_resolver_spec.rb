@@ -2,6 +2,8 @@
 
 require "spec_helper"
 
+DOCS_HELPER_MESSAGE = "See #{Import::PlaceholderReferences::AliasResolver::DOCS_URL} for more information".freeze
+
 RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :importers do
   describe ".aliases" do
     def missing_attribute_message(model, attribute)
@@ -168,7 +170,7 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
     context "when the model does not exist" do
       it "returns version 1 after reporting a missing alias" do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
-          .with(described_class::MissingAlias.new("ALIASES must be extended to include Issue"))
+          .with(described_class::MissingAlias.new("ALIASES must be extended to include Issue. #{DOCS_HELPER_MESSAGE}"))
 
         expect(described_class.version_for_model("Issue")).to eq(1)
       end
@@ -236,8 +238,9 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
 
       it "returns a constantized version of the passed string after reporting a missing alias" do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-          described_class::MissingAlias.new("ALIASES must be extended to include Blob for version 1")
-        )
+          described_class::MissingAlias.new(
+            "ALIASES must be extended to include Blob for version 1. #{DOCS_HELPER_MESSAGE}"
+          ))
 
         expect(aliased_model).to eq(Blob)
       end
@@ -248,11 +251,12 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
 
       it "raises a MissingAlias error and reports it" do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-          described_class::MissingAlias.new("ALIASES must be extended to include NotARealModel for version 1")
-        )
+          described_class::MissingAlias.new(
+            "ALIASES must be extended to include NotARealModel for version 1. #{DOCS_HELPER_MESSAGE}"
+          ))
 
         expect { aliased_model }.to raise_exception(described_class::MissingAlias)
-          .with_message("ALIASES must be extended to include NotARealModel for version 1")
+          .with_message("ALIASES must be extended to include NotARealModel for version 1. #{DOCS_HELPER_MESSAGE}")
       end
     end
   end
@@ -315,8 +319,9 @@ RSpec.describe Import::PlaceholderReferences::AliasResolver, feature_category: :
 
       it "returns the same column after reporting a missing alias" do
         expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
-          described_class::MissingAlias.new("ALIASES must be extended to include Note.test123_id for version 1")
-        )
+          described_class::MissingAlias.new(
+            "ALIASES must be extended to include Note.test123_id for version 1. #{DOCS_HELPER_MESSAGE}"
+          ))
 
         expect(aliased_column).to eq("test123_id")
       end

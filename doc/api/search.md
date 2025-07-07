@@ -15,8 +15,8 @@ title: Search API
 Every API call to search must be authenticated.
 
 When [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search),
-these additional scopes are available for the [advanced search](#advanced-search-api),
-[group search](#group-search-api), and [project search](#project-search-api) APIs:
+these additional scopes are available for the [global search](#global-search),
+[group search](#group-search), and [project search](#project-search) APIs:
 
 - `wiki_blobs`
 - `commits`
@@ -26,7 +26,9 @@ these additional scopes are available for the [advanced search](#advanced-search
 If you want to use basic search instead, see
 [specify a search type](../user/search/_index.md#specify-a-search-type).
 
-## Advanced search API
+The search API supports [offset-based pagination](rest/_index.md#offset-based-pagination).
+
+## Global search
 
 Search for a [term](../user/search/advanced_search.md#syntax) across the entire GitLab instance.
 The response depends on the requested scope.
@@ -311,6 +313,7 @@ Example response:
 
 {{< /details >}}
 
+Use this scope to search wikis.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
@@ -389,6 +392,7 @@ Example response:
 
 {{< /details >}}
 
+Use this scope to search code.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
@@ -470,7 +474,7 @@ Example response:
 ]
 ```
 
-## Group search API
+## Group search
 
 Search for a [term](../user/search/_index.md) in the specified group.
 
@@ -727,6 +731,7 @@ Example response:
 
 {{< /details >}}
 
+Use this scope to search wikis.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 ```shell
@@ -805,6 +810,7 @@ Example response:
 
 {{< /details >}}
 
+Use this scope to search code.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
@@ -886,7 +892,7 @@ Example response:
 ]
 ```
 
-## Project search API
+## Project search
 
 Search for a [term](../user/search/_index.md) in the specified project.
 
@@ -1111,6 +1117,7 @@ Example response:
 
 {{< /details >}}
 
+Use this scope to search wikis.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:
@@ -1206,6 +1213,7 @@ Example response:
 
 {{< /details >}}
 
+Use this scope to search code.
 This scope is available only when [advanced search is enabled](../user/search/advanced_search.md#use-advanced-search).
 
 The following filters are available for this scope:

@@ -138,8 +138,18 @@ detect-tests:
     - apt update && apt install -y curl
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
-    - retrieve_tests_mapping "$MAPPING_ARCHIVE"
     - retrieve_frontend_fixtures_mapping
+    # Use alternative coverage based mappings for tier-2 pipeline
+    - |
+      echo "Fetching crystalball mappings"
+      if echo "$CI_MERGE_REQUEST_LABELS" | grep -q "pipeline::tier-2"; then
+        echo "Using alternative coverage based mapping path: $RSPEC_PACKED_TESTS_MAPPING_ALT_PATH"
+        MAPPING_ARCHIVE=$(echo "$RSPEC_PACKED_TESTS_MAPPING_ALT_PATH")
+      else
+        echo "Using standard described_class based mapping path: $RSPEC_PACKED_TESTS_MAPPING_PATH"
+        MAPPING_ARCHIVE=$(echo "$RSPEC_PACKED_TESTS_MAPPING_PATH")
+      fi
+      retrieve_tests_mapping "$MAPPING_ARCHIVE"
   script:
     - |
       # $FIND_CHANGES_MERGE_REQUEST_IID is defined in as-if-foss.gitlab-ci.yml

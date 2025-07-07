@@ -487,14 +487,16 @@ export default {
           <span class="issuable-authored gl-mr-3">
             <gl-sprintf v-if="author.name" :message="__('created %{timeAgo} by %{author}')">
               <template #timeAgo>
-                <span
+                <button
                   v-if="issuable.createdAt"
                   v-gl-tooltip.bottom
                   :title="tooltipTitle(issuable.createdAt)"
+                  :aria-label="tooltipTitle(issuable.createdAt)"
                   data-testid="issuable-created-at"
+                  class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0 gl-text-subtle focus-visible:gl-focus-inset"
                 >
                   {{ createdAt }}
-                </span>
+                </button>
               </template>
               <template #author>
                 <span v-if="externalAuthor" data-testid="external-author"
@@ -627,15 +629,16 @@ export default {
         class="gl-hidden sm:gl-flex sm:gl-flex-col sm:gl-items-end md:gl-flex-row md:gl-items-center"
       >
         <slot name="health-status"></slot>
-        <span
+        <button
           v-if="timestamp"
           v-gl-tooltip.bottom
-          class="gl-text-subtle sm:gl-inline-block"
+          class="!gl-cursor-default gl-border-none gl-bg-transparent gl-p-0 gl-text-subtle focus-visible:gl-focus-inset sm:gl-inline-block"
           :title="tooltipTitle(timestamp)"
+          :aria-label="tooltipTitle(timestamp)"
           data-testid="issuable-timestamp"
         >
           {{ formattedTimestamp }}
-        </span>
+        </button>
       </div>
     </div>
   </li>

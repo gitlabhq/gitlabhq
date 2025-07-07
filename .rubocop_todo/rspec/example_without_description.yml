@@ -268,7 +268,6 @@ RSpec/ExampleWithoutDescription:
     - 'spec/helpers/sidebars_helper_spec.rb'
     - 'spec/initializers/diagnostic_reports_spec.rb'
     - 'spec/initializers/gitlab_http_spec.rb'
-    - 'spec/initializers/google_cloud_profiler_spec.rb'
     - 'spec/keeps/helpers/postgres_ai_spec.rb'
     - 'spec/lib/banzai/filter/commit_trailers_filter_spec.rb'
     - 'spec/lib/banzai/pipeline/incident_management/timeline_event_pipeline_spec.rb'

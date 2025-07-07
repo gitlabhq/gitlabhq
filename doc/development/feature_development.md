@@ -108,6 +108,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [Test Import Project](import_project.md)
 - [Group migration](bulk_import.md)
 - [Export to CSV](export_csv.md)
+- [User contribution mapping](user_contribution_mapping.md)
 
 ### Integrations
 
