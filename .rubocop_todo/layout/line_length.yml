@@ -1760,7 +1760,6 @@ Layout/LineLength:
     - 'ee/spec/support/shared_examples/models/protected_environments/authorizable_examples.rb'
     - 'ee/spec/support/shared_examples/policies/protected_environments_shared_examples.rb'
     - 'ee/spec/support/shared_examples/quick_actions/issuable/unassign_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/quick_actions/issue/page_quick_action_shared_examples.rb'
     - 'ee/spec/support/shared_examples/quick_actions/merge_request/assign_reviewer_shared_examples.rb'
     - 'ee/spec/support/shared_examples/quick_actions/merge_request/unassign_reviewer_shared_examples.rb'
     - 'ee/spec/support/shared_examples/requests/api/graphql/geo/registries_shared_examples.rb'

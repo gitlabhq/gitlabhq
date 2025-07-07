@@ -83,7 +83,6 @@ module Mutations
 
       def validate(merge_request, merge_service, merge_params)
         skipped_checks = merge_request.skipped_mergeable_checks(
-          auto_merge_requested: merge_params.key?(:auto_merge_strategy),
           auto_merge_strategy: merge_params[:auto_merge_strategy]
         )
 

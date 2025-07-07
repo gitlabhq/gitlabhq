@@ -4214,33 +4214,20 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#skipped_mergeable_checks' do
     subject { build_stubbed(:merge_request).skipped_mergeable_checks(options) }
 
-    let(:feature_flag) { true }
+    let(:options) { { auto_merge_strategy: auto_merge_strategy } }
 
-    where(:options, :skip_ci_check) do
-      {}                              | false
-      { auto_merge_requested: false } | false
-      { auto_merge_requested: true }  | true
+    where(:auto_merge_strategy, :skip_checks) do
+      ''                                                      | false
+      AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true
     end
+
     with_them do
-      it { is_expected.to include(skip_ci_check: skip_ci_check) }
-    end
-
-    context 'when auto_merge_requested is true' do
-      let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
-
-      where(:auto_merge_strategy, :skip_checks) do
-        ''                                                      | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true
-      end
-
-      with_them do
-        it do
-          is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
-            skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
-            skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
-            skip_jira_check: skip_checks, skip_security_policy_check: skip_checks,
-            skip_merge_time_check: skip_checks)
-        end
+      it do
+        is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
+          skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
+          skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
+          skip_jira_check: skip_checks, skip_security_policy_check: skip_checks,
+          skip_merge_time_check: skip_checks, skip_ci_check: skip_checks)
       end
     end
   end

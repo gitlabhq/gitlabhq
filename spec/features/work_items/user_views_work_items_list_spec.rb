@@ -6,8 +6,9 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group, :public) }
   let_it_be(:project) { create(:project, :public, group: group) }
+  let_it_be(:project_internal) { create(:project_empty_repo, :internal, group: group) }
 
-  context 'when user is signed in as owner' do
+  context 'if user is signed in as owner' do
     let(:issuable_container) { '[data-testid="issuable-container"]' }
 
     before_all do
@@ -22,9 +23,7 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
       wait_for_all_requests
     end
 
-    it 'shows message when there are no items in the list' do
-      expect(page).to have_content("No results found")
-    end
+    it_behaves_like 'no work items in the list'
 
     context 'when the work items list page renders' do
       let_it_be(:issue) { create(:work_item, :issue, project: project, title: 'There is an issue in the list') }
@@ -33,17 +32,11 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
         create(:work_item, :incident, project: project, title: 'An incident happened while loading the list')
       end
 
-      let!(:closed_issue) { create(:work_item, :closed, project: project) }
+      let_it_be(:closed_issue) { create(:work_item, :closed, project: project) }
 
       it 'show actions based on user permissions' do
         expect(page).to have_link('New item')
         expect(page).to have_button('Bulk edit')
-      end
-
-      it 'display the recent history widget when configured' do
-        within_testid('issuable-search-container') do
-          expect(page).to have_selector('[data-testid="history-icon"]')
-        end
       end
 
       it 'show default sort order' do
@@ -53,23 +46,20 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
         end
       end
 
-      it 'load the open items in the project' do
-        within('.issuable-list') do
-          expect(page).to have_link(issue.title)
-            .and have_link(task.title)
-            .and have_link(incident.title)
-            .and have_no_content(closed_issue.title)
-        end
+      it_behaves_like 'shows open items in the list' do
+        let(:open_item) { task }
+        let(:closed_item) { closed_issue }
       end
 
-      it 'load the closed items in the project' do
-        visit project_work_items_path(project, state: :closed)
+      context 'when viewing closed work items' do
+        before do
+          visit project_work_items_path(project, state: :closed)
+          wait_for_all_requests
+        end
 
-        wait_for_all_requests
-
-        within('.issuable-list') do
-          expect(page).to have_link(closed_issue.title)
-            .and have_no_link(issue.title)
+        it_behaves_like 'shows closed items in the list' do
+          let(:open_item) { issue }
+          let(:closed_item) { closed_issue }
         end
       end
 
@@ -92,12 +82,14 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
         let_it_be(:award_emoji_upvote) { create(:award_emoji, :upvote, user: user, awardable: task) }
         let_it_be(:award_emoji_downvote) { create(:award_emoji, :downvote, user: user, awardable: task) }
 
+        it_behaves_like 'dates on the work items list' do
+          let(:date) { 'Dec 31, 2025' }
+        end
+
         it 'display available metadata' do
           within(all(issuable_container)[0]) do
             expect(page).to have_link(milestone.title)
               .and have_link(label.name)
-
-            expect(find_by_testid('issuable-due-date-title').text).to have_text('Dec 31, 2025')
 
             expect(page).to have_link(user.name, href: user_path(user))
             expect(find_by_testid('time-estimate-title').text).to have_text('4h')
@@ -119,45 +111,7 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
         visit project_work_items_path(project)
       end
 
-      it 'displays default page size of 20 items with correct dropdown text' do
-        expect(page).to have_selector(issuable_container, count: 20)
-
-        expect(page).to have_button _('Show 20 items')
-
-        expect(page).to have_button _('Next')
-        expect(page).to have_button _('Previous'), disabled: true
-      end
-
-      it 'navigates through pages using Next and Previous buttons' do
-        expect(page).to have_button _('Previous'), disabled: true
-        expect(page).to have_button _('Next'), disabled: false
-
-        click_button _('Next')
-
-        expect(page).to have_button _('Previous'), disabled: false
-        expect(page).to have_button _('Next'), disabled: true
-
-        expect(page).to have_selector(issuable_container, count: 5)
-
-        click_button _('Previous')
-
-        expect(page).to have_button _('Previous'), disabled: true
-        expect(page).to have_button _('Next'), disabled: false
-        expect(page).to have_selector(issuable_container, count: 20)
-      end
-
-      it 'changes page size and updates display accordingly' do
-        click_button _('Show 20 items')
-
-        within_testid('list-footer') do
-          find('[role="option"]', text: _('Show 50 items')).click
-        end
-
-        expect(page).to have_selector(issuable_container, count: 25)
-
-        expect(page).not_to have_button _('Next'), disabled: true
-        expect(page).not_to have_button _('Previous'), disabled: true
-      end
+      it_behaves_like 'pagination on the work items list page'
 
       it 'respects per_page parameter in URL' do
         visit project_work_items_path(project, first_page_size: 50)
@@ -185,6 +139,31 @@ RSpec.describe 'Work Items List', :js, feature_category: :team_planning do
 
     it 'does not show confidential items' do
       expect(page).not_to have_content(confidential_issue.title)
+    end
+  end
+
+  context 'with internal project visibility level' do
+    let_it_be(:open_work_item) { create(:work_item, :issue, project: project_internal, title: 'Open work item') }
+
+    let_it_be(:closed_work_item) do
+      create(:work_item, :issue, :closed, project: project_internal, title: 'Closed work item')
+    end
+
+    context 'when a member views all work items' do
+      before_all do
+        project_internal.add_developer(user)
+      end
+
+      before do
+        sign_in(user)
+        visit project_work_items_path(project_internal, state: :all)
+        wait_for_all_requests
+      end
+
+      it_behaves_like 'shows all items in the list' do
+        let(:open_item) { open_work_item }
+        let(:closed_item) { closed_work_item }
+      end
     end
   end
 end

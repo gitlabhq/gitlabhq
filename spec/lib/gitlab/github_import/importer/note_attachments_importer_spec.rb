@@ -15,6 +15,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
   let(:image_tag_url) { 'https://user-images.githubusercontent.com/6833842/0cf366b61ea5.jpeg' }
   let(:project_blob_url) { 'https://github.com/nickname/public-test-repo/blob/main/example.md' }
   let(:other_project_blob_url) { 'https://github.com/nickname/other-repo/blob/main/README.md' }
+  let(:user_attachment_url) { 'https://github.com/user-attachments/assets/73433gh3' }
   let(:text) do
     <<-TEXT.split("\n").map(&:strip).join("\n")
       Some text...
@@ -25,6 +26,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
 
       [link to project blob file](#{project_blob_url})
       [link to other project blob file](#{other_project_blob_url})
+
+      <img width= \"200\" alt=\"user-attachment-image\" src="#{user_attachment_url}" \/>
     TEXT
   end
 
@@ -35,7 +38,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
       record.reload
       expect(record.description).to start_with("Some text...\n\n[special-doc](/uploads/")
       expect(record.description).to include('![image.jpeg](/uploads/')
-      expect(record.description).to include('<img width="248" alt="tag-image" src="/uploads')
+      expect(record.description).to include('user-attachment-image')
     end
 
     it 'changes link to project blob files' do
@@ -73,6 +76,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
     let(:tmp_stub_doc) { Tempfile.create('attachment_download_test.txt') }
     let(:tmp_stub_image) { Tempfile.create('image.jpeg') }
     let(:tmp_stub_image_tag) { Tempfile.create('image-tag.jpeg') }
+    let(:tmp_stub_user_attachment) { Tempfile.create('user-attachment.jpeg') }
+
     let(:access_token) { 'exampleGitHubToken' }
     let(:options) { { headers: { 'Authorization' => "Bearer #{access_token}" } } }
 
@@ -83,8 +88,11 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
         .and_return(downloader_stub)
       allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(image_tag_url, options: options)
         .and_return(downloader_stub)
-      allow(downloader_stub).to receive(:perform).and_return(tmp_stub_doc, tmp_stub_image, tmp_stub_image_tag)
-      allow(downloader_stub).to receive(:delete).exactly(3).times
+      allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(user_attachment_url, options: options)
+        .and_return(downloader_stub)
+      allow(downloader_stub).to receive(:perform).and_return(tmp_stub_doc, tmp_stub_image, tmp_stub_image_tag,
+        tmp_stub_user_attachment)
+      allow(downloader_stub).to receive(:delete).exactly(4).times
       allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
     end
 
@@ -132,25 +140,6 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
 
         record.reload
         expect(record.note).to include("[link to other project blob file](#{other_project_blob_url})")
-      end
-    end
-
-    context "when attachment behind redirection link is unsupported file type" do
-      let(:record) { create(:issue, project: project, description: text) }
-      let(:image_url) { 'https://github.com/nickname/public-test-repo/assets/142635249/123' }
-      let(:image_tag_url) { 'https://github.com/nickname/public-test-repo/assets/142635249/123' }
-
-      before do
-        allow(downloader_stub).to receive(:perform)
-          .and_raise(Gitlab::GithubImport::AttachmentsDownloader::UnsupportedAttachmentError)
-      end
-
-      it "does not replace url" do
-        importer.execute
-
-        record.reload
-        expect(record.description).to include("![image.jpeg](#{image_url}")
-        expect(record.description).to include("<img width=\"248\" alt=\"tag-image\" src=\"#{image_tag_url}\"")
       end
     end
   end

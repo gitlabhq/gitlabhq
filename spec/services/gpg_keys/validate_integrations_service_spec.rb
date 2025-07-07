@@ -18,7 +18,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
   end
 
   context 'when BeyondIdentity integration is not activated' do
-    let_it_be(:integration) { create(:beyond_identity_integration, active: false) }
+    let_it_be(:integration) { create(:beyond_identity_integration, :instance, active: false) }
 
     it 'return false' do
       expect(::Gitlab::BeyondIdentity::Client).not_to receive(:new)
@@ -28,7 +28,7 @@ RSpec.describe GpgKeys::ValidateIntegrationsService, feature_category: :source_c
   end
 
   context 'when BeyondIdentity integration is activated' do
-    let_it_be(:integration) { create(:beyond_identity_integration) }
+    let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
 
     it 'returns true on successful check' do
       expect_next_instance_of(::Gitlab::BeyondIdentity::Client) do |instance|

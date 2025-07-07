@@ -1415,7 +1415,7 @@ class MergeRequest < ApplicationRecord
     merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
 
     {
-      skip_ci_check: options.fetch(:auto_merge_requested, false),
+      skip_ci_check: merge_when_checks_pass_strat,
       skip_approved_check: merge_when_checks_pass_strat,
       skip_draft_check: merge_when_checks_pass_strat,
       skip_blocked_check: merge_when_checks_pass_strat,
@@ -2169,12 +2169,11 @@ class MergeRequest < ApplicationRecord
   # Note that this could also return SHA from now dangling commits
   #
   def all_commit_shas
-    @all_commit_shas ||= begin
-      return commit_shas unless persisted?
+    return commit_shas unless persisted?
 
-      all_commits.pluck(:sha).uniq
-    end
+    all_commits.pluck(:sha).uniq
   end
+  strong_memoize_attr :all_commit_shas
 
   def merge_commit
     @merge_commit ||= project.commit(merge_commit_sha) if merge_commit_sha

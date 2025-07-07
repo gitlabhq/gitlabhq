@@ -5,6 +5,8 @@ class AuthorizedProjectsWorker
 
   data_consistency :sticky
 
+  worker_resource_boundary :cpu
+
   sidekiq_options retry: 3
 
   feature_category :permissions

@@ -519,13 +519,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   end
 
   def merge!
-    # Disable the CI check if auto_merge_strategy is specified since we have
-    # to wait until CI completes to know
-    skipped_checks = @merge_request.skipped_mergeable_checks(
-      auto_merge_requested: auto_merge_requested?,
-      auto_merge_strategy: params[:auto_merge_strategy]
-    )
-
     return :failed unless @merge_request.mergeable?(**skipped_checks)
 
     squashing = params.fetch(:squash, false)
@@ -549,7 +542,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         AutoMergeService.new(project, current_user, merge_params)
           .execute(
             merge_request,
-            params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy
+            auto_merge_strategy
           )
       end
     else
@@ -714,6 +707,20 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     ::Feature.enabled?(:rapid_diffs, current_user, type: :beta) &&
       ::Feature.enabled?(:rapid_diffs_on_mr_show, current_user, type: :wip) &&
       params[:rapid_diffs] == 'true'
+  end
+
+  def skipped_checks
+    if auto_merge_requested?
+      @merge_request.skipped_mergeable_checks(
+        auto_merge_strategy: auto_merge_strategy
+      )
+    else
+      {}
+    end
+  end
+
+  def auto_merge_strategy
+    params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy
   end
 end
 

@@ -1440,6 +1440,15 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         expect(changes.last.new_path).to eq('with space/README.md')
       end
     end
+
+    context 'with an empty new rev' do
+      let(:old_rev) { 'foo' }
+      let(:new_rev) { Gitlab::Git::SHA1_BLANK_SHA }
+
+      it 'returns an empty array' do
+        expect(changes).to eq([])
+      end
+    end
   end
 
   describe '#merge_base' do

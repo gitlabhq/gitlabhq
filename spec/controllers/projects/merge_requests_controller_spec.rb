@@ -613,6 +613,23 @@ RSpec.describe Projects::MergeRequestsController, feature_category: :code_review
         end
       end
 
+      context 'when the merge when checks strategy is passed' do
+        let!(:head_pipeline) do
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
+        end
+
+        def set_auto_merge
+          post :merge, params: base_params.merge(sha: merge_request.diff_head_sha, auto_merge_strategy:
+                                                 'merge_when_checks_pass')
+        end
+
+        it_behaves_like 'api merge with auto merge' do
+          let(:service_class) { AutoMerge::MergeWhenChecksPassService }
+          let(:status) { 'merge_when_checks_pass' }
+          let(:not_current_pipeline_status) { 'merge_when_checks_pass' }
+        end
+      end
+
       context 'when merge when pipeline succeeds option is passed' do
         let!(:head_pipeline) do
           create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)

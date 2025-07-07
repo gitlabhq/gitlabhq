@@ -44,8 +44,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
   def show
     return if show_params[:iid] == 'new'
 
-    @work_item = ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
-      .execute.with_work_item_type.find_by_iid(show_params[:iid])
+    @work_item = issuable
   end
 
   private
@@ -86,6 +85,12 @@ class Projects::WorkItemsController < Projects::ApplicationController
 
   def file_extension_allowlist
     EXTENSION_ALLOWLIST
+  end
+
+  def issuable
+    @issuable ||= ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
+                    .execute.with_work_item_type
+                    .find_by_iid(show_params[:iid])
   end
 end
 

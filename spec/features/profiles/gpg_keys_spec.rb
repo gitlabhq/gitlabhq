@@ -80,7 +80,7 @@ RSpec.describe 'User Settings > GPG keys', feature_category: :user_profile do
   end
 
   context 'when external verification is required' do
-    let!(:beyond_identity_integration) { create(:beyond_identity_integration) }
+    let!(:beyond_identity_integration) { create(:beyond_identity_integration, :instance) }
     let!(:gpg_key) do
       create :gpg_key, externally_verified: externally_verified, user: user, key: GpgHelpers::User2.public_key
     end

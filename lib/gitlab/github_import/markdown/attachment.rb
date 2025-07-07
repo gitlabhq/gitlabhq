@@ -102,6 +102,10 @@ module Gitlab
           )
         end
 
+        def user_attachment?
+          url.start_with?("#{::Gitlab::GithubImport::MarkdownText.github_url}/user-attachments/")
+        end
+
         def inspect
           "<#{self.class.name}: { name: #{name}, url: #{url} }>"
         end

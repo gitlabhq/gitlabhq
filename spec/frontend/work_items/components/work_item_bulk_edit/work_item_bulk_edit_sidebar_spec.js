@@ -10,6 +10,7 @@ import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
+import WorkItemBulkEditMilestone from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_milestone.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
 import workItemParentQuery from '~/work_items/graphql/list//work_item_parent.query.graphql';
@@ -66,6 +67,7 @@ describe('WorkItemBulkEditSidebar component', () => {
   const findSubscriptionComponent = () => wrapper.findComponentByTestId('bulk-edit-subscription');
   const findConfidentialityComponent = () =>
     wrapper.findComponentByTestId('bulk-edit-confidentiality');
+  const findMilestoneComponent = () => wrapper.findComponent(WorkItemBulkEditMilestone);
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -143,6 +145,9 @@ describe('WorkItemBulkEditSidebar component', () => {
           findRemoveLabelsComponent().vm.$emit('select', removeLabelIds);
           findHealthStatusComponent().vm.$emit('input', 'on_track');
           findConfidentialityComponent().vm.$emit('input', 'true');
+          findMilestoneComponent().vm.$emit('input', 'gid://gitlab/Milestone/30');
+          findSubscriptionComponent().vm.$emit('input', 'unsubscribe');
+          findStateComponent().vm.$emit('input', 'reopen');
           findForm().vm.$emit('submit', { preventDefault: () => {} });
 
           expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
@@ -160,6 +165,11 @@ describe('WorkItemBulkEditSidebar component', () => {
               healthStatusWidget: {
                 healthStatus: 'onTrack',
               },
+              milestoneWidget: {
+                milestoneId: 'gid://gitlab/Milestone/30',
+              },
+              subscriptionEvent: 'UNSUBSCRIBE',
+              stateEvent: 'REOPEN',
             },
           });
           expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
@@ -397,6 +407,37 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findConfidentialityComponent().props('value')).toBe('false');
+    });
+  });
+
+  describe('"Milestone" component', () => {
+    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList },
+      });
+
+      expect(findMilestoneComponent().exists()).toBe(!isEpicsList);
+    });
+
+    it('updates milestone when "Milestone" component emits "input" event', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      findMilestoneComponent().vm.$emit('input', 'gid://gitlab/Milestone/30');
+      await nextTick();
+
+      expect(findMilestoneComponent().props('value')).toBe('gid://gitlab/Milestone/30');
     });
   });
 });

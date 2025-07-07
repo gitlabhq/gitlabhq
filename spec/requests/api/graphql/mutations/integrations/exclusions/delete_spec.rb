@@ -48,7 +48,7 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
       end
 
       context 'and the integration is active for the instance' do
-        let!(:instance_integration) { create(:beyond_identity_integration) }
+        let!(:instance_integration) { create(:beyond_identity_integration, :instance) }
 
         context 'and there is a group exclusion', :sidekiq_inline do
           let!(:group_exclusion) do

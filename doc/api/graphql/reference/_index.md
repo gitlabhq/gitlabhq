@@ -9694,6 +9694,7 @@ Input type: `ProjectSecretUpdateInput`
 | <a id="mutationprojectsecretupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationprojectsecretupdatedescription"></a>`description` | [`String`](#string) | New description of the project secret. |
 | <a id="mutationprojectsecretupdateenvironment"></a>`environment` | [`String`](#string) | New environments that can access the secret. |
+| <a id="mutationprojectsecretupdatemetadatacas"></a>`metadataCas` | [`Int`](#int) | This should match the current metadata version of the project secret being updated. |
 | <a id="mutationprojectsecretupdatename"></a>`name` | [`String!`](#string) | Name of the project secret to update. |
 | <a id="mutationprojectsecretupdateprojectpath"></a>`projectPath` | [`ID!`](#id) | Project of the secret. |
 | <a id="mutationprojectsecretupdatesecret"></a>`secret` | [`String`](#string) | New value of the project secret. |
@@ -39105,6 +39106,7 @@ Representation of a project secret.
 | <a id="projectsecretbranch"></a>`branch` | [`String!`](#string) | Branches that can access the secret. |
 | <a id="projectsecretdescription"></a>`description` | [`String`](#string) | Description of the project secret. |
 | <a id="projectsecretenvironment"></a>`environment` | [`String!`](#string) | Environments that can access the secret. |
+| <a id="projectsecretmetadataversion"></a>`metadataVersion` | [`Int`](#int) | Current metadata version of the project secret. |
 | <a id="projectsecretname"></a>`name` | [`String!`](#string) | Name of the project secret. |
 | <a id="projectsecretproject"></a>`project` | [`Project!`](#project) | Project the secret belong to. |
 

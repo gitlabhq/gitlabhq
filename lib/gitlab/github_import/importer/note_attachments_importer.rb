@@ -6,6 +6,8 @@ module Gitlab
       class NoteAttachmentsImporter
         attr_reader :note_text, :project, :client
 
+        SUPPORTED_RECORD_TYPES = [::Release.name, ::Issue.name, ::MergeRequest.name, ::Note.name].freeze
+
         # note_text - An instance of `Gitlab::GithubImport::Representation::NoteText`.
         # project - An instance of `Project`.
         # client - An instance of `Gitlab::GithubImport::Client`.
@@ -33,7 +35,8 @@ module Gitlab
 
           if attachment.part_of_project_blob?(project_import_source)
             convert_project_content_link(attachment.url, project_import_source)
-          elsif attachment.media?(project_import_source) || attachment.doc_belongs_to_project?(project_import_source)
+          elsif attachment.media?(project_import_source) || attachment.doc_belongs_to_project?(project_import_source) ||
+              attachment.user_attachment?
             download_attachment(attachment)
           else # url to other GitHub project
             attachment.url
@@ -57,10 +60,6 @@ module Gitlab
           file = downloader.perform
           uploader = UploadService.new(project, file, FileUploader).execute
           uploader.to_h[:url]
-        rescue ::Gitlab::GithubImport::AttachmentsDownloader::UnsupportedAttachmentError
-          attachment.url
-        ensure
-          downloader&.delete
         end
 
         def options
@@ -72,15 +71,30 @@ module Gitlab
         end
 
         def update_note_record(text)
-          case note_text.record_type
-          when ::Release.name
-            ::Release.find(note_text.record_db_id).update_column(:description, text)
-          when ::Issue.name
-            ::Issue.find(note_text.record_db_id).update_column(:description, text)
-          when ::MergeRequest.name
-            ::MergeRequest.find(note_text.record_db_id).update_column(:description, text)
+          return unless supported_record_type?
+
+          record = find_record
+          column_name = record_column_for_type(note_text.record_type)
+
+          record.update_column(column_name, text)
+          record.refresh_markdown_cache!
+        end
+
+        def supported_record_type?
+          SUPPORTED_RECORD_TYPES.include?(note_text.record_type)
+        end
+
+        def find_record
+          record_class = note_text.record_type.constantize
+          record_class.find(note_text.record_db_id)
+        end
+
+        def record_column_for_type(record_type)
+          case record_type
+          when ::Release.name, ::Issue.name, ::MergeRequest.name
+            :description
           when ::Note.name
-            ::Note.find(note_text.record_db_id).update_column(:note, text)
+            :note
           end
         end
       end

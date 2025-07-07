@@ -304,6 +304,7 @@ module Integrations
           new_integration = integration.dup
 
           new_integration.instance = false
+          new_integration.organization_id = nil
           new_integration.project_id = project_id
           new_integration.group_id = group_id
           new_integration.inherit_from_id = integration.id if integration.inheritable?
@@ -513,12 +514,13 @@ module Integrations
 
         validates :project_id, presence: true, unless: -> { instance_level? || group_level? }
         validates :group_id, presence: true, unless: -> { instance_level? || project_level? }
-        validates :project_id, :group_id, absence: true, if: -> { instance_level? }
+        validates :project_id, :group, absence: true, if: -> { instance_level? }
+        validates :organization_id, presence: true, if: -> { instance_level? }
         validates :type, presence: true, exclusion: BASE_CLASSES
         validates :type, uniqueness: { scope: :instance }, if: :instance_level?
         validates :type, uniqueness: { scope: :project_id }, if: :project_level?
         validates :type, uniqueness: { scope: :group_id }, if: :group_level?
-        validate :validate_belongs_to_project_or_group
+        validate :validate_belongs_to_one_of_project_group_or_organization
 
         scope :external_issue_trackers, -> { where(category: 'issue_tracker').active }
         scope :third_party_wikis, -> { where(category: 'third_party_wiki').active }
@@ -811,10 +813,10 @@ module Integrations
 
       private
 
-      def validate_belongs_to_project_or_group
-        return unless project_level? && group_level?
+      def validate_belongs_to_one_of_project_group_or_organization
+        return if [group_id, project_id, organization_id].compact.one?
 
-        errors.add(:project_id, 'The integration cannot belong to both a project and a group')
+        errors.add(:base, 'The integration must belong to one organization, group, or project.')
       end
 
       def validate_recipients?

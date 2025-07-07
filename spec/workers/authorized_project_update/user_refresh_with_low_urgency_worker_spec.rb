@@ -17,5 +17,9 @@ RSpec.describe AuthorizedProjectUpdate::UserRefreshWithLowUrgencyWorker, feature
     )
   end
 
+  it 'is cpu-bound' do
+    expect(described_class.get_worker_resource_boundary).to eq(:cpu)
+  end
+
   it_behaves_like "refreshes user's project authorizations"
 end

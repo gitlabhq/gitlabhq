@@ -742,7 +742,6 @@ RSpec/ContextWording:
     - 'ee/spec/support/shared_examples/models/member_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/mentionable_shared_examples.rb'
     - 'ee/spec/support/shared_examples/models/protected_environments/authorizable_examples.rb'
-    - 'ee/spec/support/shared_examples/quick_actions/issue/status_page_quick_actions_shared_examples.rb'
     - 'ee/spec/support/shared_examples/requests/credentials_inventory_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/boards/base_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/merge_merge_requests_shared_examples.rb'

@@ -7,6 +7,7 @@ feature_categories:
 description: Represents a user membership to a particular SCIM group (defined by identity providers)
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192157
 milestone: '18.1'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

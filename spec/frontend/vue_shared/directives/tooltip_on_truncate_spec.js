@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { nextTick } from 'vue';
 import { createMockDirective as mockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { hasHorizontalOverflow } from '~/lib/utils/dom_utils';
 
@@ -102,6 +103,7 @@ describe('TooltipOnTruncate directive', () => {
       expect(getTooltip().value).toBe('');
 
       await wrapper.setProps({ content: 'Some content' });
+      await nextTick();
 
       expect(getTooltip().value).toBe('Some content');
     });

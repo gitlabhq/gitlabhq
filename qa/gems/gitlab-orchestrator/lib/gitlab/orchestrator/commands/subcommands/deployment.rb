@@ -57,10 +57,7 @@ module Gitlab
                 desc: "Kubernetes resource definition preset",
                 default: Gitlab::Orchestrator::Deployment::ResourcePresets::DEFAULT,
                 type: :string,
-                enum: [
-                  Gitlab::Orchestrator::Deployment::ResourcePresets::DEFAULT,
-                  Gitlab::Orchestrator::Deployment::ResourcePresets::HIGH
-                ]
+                enum: Gitlab::Orchestrator::Deployment::ResourcePresets::PRESETS
 
               super
             end

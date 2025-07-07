@@ -78,7 +78,7 @@
   :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :low
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 2
   :idempotent: true
   :tags: []
@@ -2960,7 +2960,7 @@
   :feature_category: :permissions
   :has_external_dependencies: false
   :urgency: :high
-  :resource_boundary: :unknown
+  :resource_boundary: :cpu
   :weight: 2
   :idempotent: true
   :tags: []

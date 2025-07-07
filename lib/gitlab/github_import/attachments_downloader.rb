@@ -8,7 +8,6 @@ module Gitlab
       include ::BulkImports::FileDownloads::Validations
 
       DownloadError = Class.new(StandardError)
-      UnsupportedAttachmentError = Class.new(StandardError)
 
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
       DEFAULT_FILE_SIZE_LIMIT = Gitlab::CurrentSettings.max_attachment_size.megabytes
@@ -55,19 +54,15 @@ module Gitlab
         options[:follow_redirects] = false
         response = ::Import::Clients::HTTP.get(file_url, options)
 
-        download_url = if response.redirection?
-                         response.headers[:location]
-                       else
-                         file_url
-                       end
-
-        file_type_valid?(URI.parse(download_url).path)
-
-        download_url
+        if response.redirection?
+          response.headers[:location]
+        else
+          file_url
+        end
       end
 
       def github_assets_url_regex
-        %r{#{Regexp.escape(::Gitlab::GithubImport::MarkdownText.github_url)}/.*/assets/}
+        %r{#{Regexp.escape(::Gitlab::GithubImport::MarkdownText.github_url)}/.*/(assets|files)/}
       end
 
       def download_from(url)
@@ -94,12 +89,6 @@ module Gitlab
           mkdir_p dir
           File.join(dir, filename)
         end
-      end
-
-      def file_type_valid?(file_url)
-        return if Gitlab::GithubImport::Markdown::Attachment::MEDIA_TYPES.any? { |type| file_url.ends_with?(type) }
-
-        raise UnsupportedAttachmentError
       end
     end
   end
