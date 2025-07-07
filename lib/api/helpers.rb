@@ -268,7 +268,7 @@ module API
     def find_namespace(id)
       if INTEGER_ID_REGEX.match?(id.to_s)
         # We need to stick to an up-to-date replica or primary db here in order to properly observe the namespace
-        # recently created by GitlabSubscriptions::Trials::CreateService#create_group_flow.
+        # recently created by GitlabSubscriptions::Trials::UltimateCreateService.
         # See https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/9808
         ::Namespace.sticking.find_caught_up_replica(:namespace, id)
 

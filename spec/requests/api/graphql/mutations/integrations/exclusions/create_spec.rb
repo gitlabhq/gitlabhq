@@ -60,7 +60,7 @@ RSpec.describe Mutations::Integrations::Exclusions::Create, feature_category: :i
     end
 
     context 'when integrations exist for the projects' do
-      let!(:instance_exclusion) { create(:beyond_identity_integration, :instance) }
+      let!(:instance_exclusion) { create(:beyond_identity_integration) }
       let!(:existing_exclusion) do
         create(:beyond_identity_integration, project: project2, active: false, inherit_from_id: instance_exclusion.id,
           instance: false)

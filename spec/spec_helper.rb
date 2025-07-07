@@ -288,9 +288,6 @@ RSpec.configure do |config|
       # (ie. ApplicationSetting#auto_devops_enabled)
       stub_feature_flags(force_autodevops_on_by_default: false)
 
-      # The survey popover can block the diffs causing specs to fail
-      stub_feature_flags(mr_experience_survey: false)
-
       # Using FortiAuthenticator as OTP provider is disabled by default in
       # tests, until we introduce it in user settings
       stub_feature_flags(forti_authenticator: false)

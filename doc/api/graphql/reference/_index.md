@@ -8849,6 +8849,30 @@ Input type: `NamespaceSettingsUpdateInput`
 | <a id="mutationnamespacesettingsupdateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationnamespacesettingsupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
+### `Mutation.namespacesRegenerateNewWorkItemEmailAddress`
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `NamespacesRegenerateNewWorkItemEmailAddressInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacesregeneratenewworkitememailaddressclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacesregeneratenewworkitememailaddressfullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace to regenerate the new work item email address for. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationnamespacesregeneratenewworkitememailaddressclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationnamespacesregeneratenewworkitememailaddresserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationnamespacesregeneratenewworkitememailaddressnamespace"></a>`namespace` | [`Namespace`](#namespace) | Namespace after regenerating the new work item email address. |
+
 ### `Mutation.noteConvertToThread`
 
 Convert a standard comment to a resolvable thread.
@@ -47551,7 +47575,6 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumgold_trial_billings"></a>`GOLD_TRIAL_BILLINGS` | Callout feature name for gold_trial_billings. |
 | <a id="usercalloutfeaturenameenumjoining_a_project_alert"></a>`JOINING_A_PROJECT_ALERT` | Callout feature name for joining_a_project_alert. |
 | <a id="usercalloutfeaturenameenummerge_request_dashboard_display_preferences_popover"></a>`MERGE_REQUEST_DASHBOARD_DISPLAY_PREFERENCES_POPOVER` | Callout feature name for merge_request_dashboard_display_preferences_popover. |
-| <a id="usercalloutfeaturenameenummr_experience_survey"></a>`MR_EXPERIENCE_SURVEY` | Callout feature name for mr_experience_survey. |
 | <a id="usercalloutfeaturenameenumnamespace_over_storage_users_combined_alert"></a>`NAMESPACE_OVER_STORAGE_USERS_COMBINED_ALERT` | Callout feature name for namespace_over_storage_users_combined_alert. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_alert_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ALERT_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_alert_threshold. |
 | <a id="usercalloutfeaturenameenumnamespace_storage_limit_alert_error_threshold"></a>`NAMESPACE_STORAGE_LIMIT_ALERT_ERROR_THRESHOLD` | Callout feature name for namespace_storage_limit_alert_error_threshold. |

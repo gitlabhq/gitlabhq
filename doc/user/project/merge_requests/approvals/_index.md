@@ -51,7 +51,7 @@ To configure approval rules:
 
 You can also configure:
 
-- Additional [merge request approval settings](settings.md) for more control of the
+- More [merge request approval settings](settings.md) for more control of the
   level of oversight and security your project needs.
 - Merge request approval rules with the
   [Merge request approvals API](../../../../api/merge_request_approvals.md).
@@ -86,8 +86,8 @@ Use cases include:
 
 {{< /history >}}
 
-You can see the approval status of a merge request in two places. On the [merge request itself](#for-a-single-merge-request)
-and in the [list of merge requests](#in-the-list-of-merge-requests) for your project or group.
+To view the approval status of a merge request, check the merge request itself, or the list of
+merge requests for your project or group.
 
 ### For a single merge request
 
@@ -135,7 +135,7 @@ To see the review and approval status for each reviewer:
 1. Open the merge request.
 1. Check the right sidebar.
 
-Each reviewer's status is shown next to the their name.
+Each reviewer's status is shown next to their name.
 
 - {{< icon name="dash-circle" >}} Awaiting review
 - {{< icon name="status_running" >}} Review in progress

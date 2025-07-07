@@ -67,7 +67,7 @@ RSpec.describe Integrations::Exclusions::DestroyService, feature_category: :sour
       end
 
       context 'and the integration is active for the instance' do
-        let!(:instance_integration) { create(:beyond_identity_integration, :instance) }
+        let!(:instance_integration) { create(:beyond_identity_integration) }
 
         it 'updates the exclusion integration to be active' do
           expect { execute }.to change { exclusion.reload.active }.from(false).to(true)

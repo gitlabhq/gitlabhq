@@ -13352,6 +13352,7 @@ CREATE TABLE dast_pre_scan_verification_steps (
     verification_errors text[] DEFAULT '{}'::text[] NOT NULL,
     check_type smallint DEFAULT 0 NOT NULL,
     project_id bigint,
+    CONSTRAINT check_2cf67eeb54 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_cd216b95e4 CHECK ((char_length(name) <= 255))
 );
 
@@ -29777,9 +29778,6 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
-ALTER TABLE integrations
-    ADD CONSTRAINT check_2aae034509 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)) NOT VALID;
-
 ALTER TABLE security_scans
     ADD CONSTRAINT check_2d56d882f6 CHECK ((project_id IS NOT NULL)) NOT VALID;
 
@@ -36682,6 +36680,8 @@ CREATE UNIQUE INDEX index_namespace_import_users_on_namespace_id ON namespace_im
 CREATE UNIQUE INDEX index_namespace_import_users_on_user_id ON namespace_import_users USING btree (user_id);
 
 CREATE UNIQUE INDEX index_namespace_root_storage_statistics_on_namespace_id ON namespace_root_storage_statistics USING btree (namespace_id);
+
+CREATE INDEX index_namespace_settings_on_duo_features ON namespace_settings USING btree (duo_features_enabled, lock_duo_features_enabled) INCLUDE (namespace_id) WHERE (duo_features_enabled IS NOT NULL);
 
 CREATE INDEX index_namespace_settings_on_namespace_id_where_archived_true ON namespace_settings USING btree (namespace_id) WHERE (archived = true);
 

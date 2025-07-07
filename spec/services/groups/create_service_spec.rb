@@ -321,7 +321,7 @@ RSpec.describe Groups::CreateService, '#execute', feature_category: :groups_and_
   end
 
   context 'when an instance-level instance specific integration' do
-    let_it_be(:instance_specific_integration) { create(:beyond_identity_integration, :instance) }
+    let_it_be(:instance_specific_integration) { create(:beyond_identity_integration) }
 
     it 'creates integration inheriting from the instance level integration' do
       expect(created_group.integrations.count).to eq(1)

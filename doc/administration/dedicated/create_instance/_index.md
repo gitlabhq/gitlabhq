@@ -13,7 +13,7 @@ title: Create your GitLab Dedicated instance
 
 {{< /details >}}
 
-The instructions on this page guide you through the onboarding and initial setup of your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/saas-platforms/switchboard/), the GitLab Dedicated portal.
+The instructions on this page guide you through the onboarding and initial setup of your GitLab Dedicated instance using [Switchboard](https://about.gitlab.com/direction/platforms/switchboard/), the GitLab Dedicated portal.
 
 ## Step 1: Get access to Switchboard
 

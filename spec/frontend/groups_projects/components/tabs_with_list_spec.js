@@ -27,6 +27,7 @@ import {
   SORT_DIRECTION_ASC,
   PAGINATION_TYPE_KEYSET,
   PAGINATION_TYPE_OFFSET,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -50,6 +51,7 @@ import {
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { VISIBILITY_LEVEL_PRIVATE_STRING } from '~/visibility_level/constants';
 import { programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
@@ -67,6 +69,7 @@ const defaultPropsData = {
   filteredSearchSupportedTokens: [
     FILTERED_SEARCH_TOKEN_LANGUAGE,
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+    FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   ],
   filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
   filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
@@ -271,6 +274,7 @@ describe('TabsWithList', () => {
             [defaultPropsData.filteredSearchTermKey]: searchTerm,
             [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
             [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
+            [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: [VISIBILITY_LEVEL_PRIVATE_STRING],
           });
           await waitForPromises();
         });
@@ -279,6 +283,7 @@ describe('TabsWithList', () => {
           expect(successHandler).toHaveBeenCalledWith({
             minAccessLevel: 'OWNER',
             programmingLanguageName: 'CSS',
+            visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
             search: searchTerm,
             skipContributed: false,
             skipStarred: true,
@@ -553,6 +558,7 @@ describe('TabsWithList', () => {
       [defaultPropsData.filteredSearchTermKey]: 'foo',
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
+      [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_STRING,
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
       [QUERY_PARAM_START_CURSOR]: mockStartCursor,
     };
@@ -578,6 +584,7 @@ describe('TabsWithList', () => {
           [defaultPropsData.filteredSearchTermKey]: query[defaultPropsData.filteredSearchTermKey],
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
+          [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: query[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL],
         },
         filtersAsQueryVariables: {
           programmingLanguageName: 'CoffeeScript',

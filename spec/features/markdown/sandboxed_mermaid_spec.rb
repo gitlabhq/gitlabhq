@@ -75,12 +75,18 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
       project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
     end
 
-    it 'includes mermaid frame correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/553529' do
+    it 'includes mermaid frame correctly' do
       visit(project_path(project))
 
-      wait_for_requests
+      wait_for_all_requests
 
-      expect(page.html).to include(expected)
+      page.within '.js-wiki-content' do
+        # the find is needed to ensure the lazy container is loaded, otherwise
+        # it can be a flaky test, similar to
+        # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/25408
+        #
+        expect(page.html).to include(expected)
+      end
     end
   end
 

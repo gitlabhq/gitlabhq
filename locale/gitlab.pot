@@ -3530,9 +3530,6 @@ msgstr ""
 msgid "Activate Service Desk"
 msgstr ""
 
-msgid "Activate my trial"
-msgstr ""
-
 msgid "Activated"
 msgstr ""
 
@@ -26623,6 +26620,9 @@ msgstr ""
 msgid "Failed to refresh compliance requirement status. Error: %{error_message}"
 msgstr ""
 
+msgid "Failed to regenerate new work item email address"
+msgstr ""
+
 msgid "Failed to regenerate unique domain"
 msgstr ""
 
@@ -40389,21 +40389,6 @@ msgid "MrReports|Blockers"
 msgstr ""
 
 msgid "MrReports|Reports"
-msgstr ""
-
-msgid "MrSurvey|By continuing, you acknowledge that responses will be used to improve GitLab and in accordance with the %{linkStart}GitLab Privacy Policy%{linkEnd}."
-msgstr ""
-
-msgid "MrSurvey|How satisfied are you with %{strongStart}speed/performance%{strongEnd} of merge requests?"
-msgstr ""
-
-msgid "MrSurvey|Merge request experience survey"
-msgstr ""
-
-msgid "MrSurvey|Overall, how satisfied are you with merge requests?"
-msgstr ""
-
-msgid "MrSurvey|Thank you for your feedback!"
 msgstr ""
 
 msgid "Multi-project"
@@ -61448,21 +61433,6 @@ msgstr ""
 msgid "Support page URL"
 msgstr ""
 
-msgid "Surveys|Delighted"
-msgstr ""
-
-msgid "Surveys|Happy"
-msgstr ""
-
-msgid "Surveys|Neutral"
-msgstr ""
-
-msgid "Surveys|Sad"
-msgstr ""
-
-msgid "Surveys|Unhappy"
-msgstr ""
-
 msgid "Switch Branches"
 msgstr ""
 
@@ -65613,22 +65583,10 @@ msgstr ""
 msgid "TrialWidget|Your trial of Ultimate with GitLab Duo Enterprise has ended"
 msgstr ""
 
-msgid "Trials|Create a new group and start your free trial."
-msgstr ""
-
-msgid "Trials|You can apply your free trial to a group."
-msgstr ""
-
 msgid "Trial|Activate my trial"
 msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
-msgstr ""
-
-msgid "Trial|Apply your trial to a new group"
-msgstr ""
-
-msgid "Trial|Apply your trial to a new or existing group"
 msgstr ""
 
 msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
@@ -65659,9 +65617,6 @@ msgid "Trial|Start your free Ultimate and GitLab Duo Enterprise trial"
 msgstr ""
 
 msgid "Trial|Start your free trial"
-msgstr ""
-
-msgid "Trial|Start your free trial on %{group_name}"
 msgstr ""
 
 msgid "Trial|State or province"
@@ -70304,6 +70259,12 @@ msgid "Work in progress limit: %{wipLimit} items"
 msgstr ""
 
 msgid "Work item"
+msgstr ""
+
+msgid "Work item creation via email is not supported"
+msgstr ""
+
+msgid "Work item creation via email is only supported for projects"
 msgstr ""
 
 msgid "Work item not supported"

@@ -272,30 +272,6 @@ $merge-request-sticky-header-height: 45px;
   }
 }
 
-.mr-experience-survey-wrapper {
-  // setting this explicitly because:
-  //   diff-files-holder has z-index 203
-  //   z-index 9999 utility class breaks tooltips
-  z-index: 210;
-}
-
-.mr-experience-survey-body {
-  width: 300px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.mr-experience-survey-legal {
-  order: 1;
-}
-
-.mr-experience-survey-logo {
-  width: 16px;
-
-  svg {
-    max-width: 100%;
-  }
-}
-
 // These are composite classes for use with Vue Transition
 // https://vuejs.org/guide/built-ins/transition
 .survey-slide-up-enter {

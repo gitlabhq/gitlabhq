@@ -5,6 +5,7 @@ import { programmingLanguages } from 'jest/groups_projects/components/mock_data'
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import {
@@ -45,6 +46,7 @@ describe('AdminProjectsApp', () => {
       filteredSearchSupportedTokens: [
         FILTERED_SEARCH_TOKEN_LANGUAGE,
         FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+        FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
       ],
       filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
       filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,

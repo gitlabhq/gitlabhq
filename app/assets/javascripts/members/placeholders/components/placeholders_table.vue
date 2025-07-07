@@ -2,7 +2,6 @@
 import {
   GlAvatarLabeled,
   GlBadge,
-  GlEmptyState,
   GlIcon,
   GlKeysetPagination,
   GlLoadingIcon,
@@ -18,6 +17,7 @@ import { fetchPolicies } from '~/lib/graphql';
 import { DEFAULT_PAGE_SIZE } from '~/members/constants';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
+import EmptyResult from '~/vue_shared/components/empty_result.vue';
 import {
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
   PLACEHOLDER_STATUS_COMPLETED,
@@ -34,7 +34,6 @@ export default {
   components: {
     GlAvatarLabeled,
     GlBadge,
-    GlEmptyState,
     GlIcon,
     GlKeysetPagination,
     GlLoadingIcon,
@@ -43,6 +42,7 @@ export default {
     GlLink,
     PlaceholderActions,
     HelpPopover,
+    EmptyResult,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -150,11 +150,6 @@ export default {
     isSearchQueryTooShort() {
       return this.querySearch && this.querySearch.trim().length < MINIMUM_QUERY_LENGTH;
     },
-    emptyText() {
-      return this.isSearchQueryTooShort
-        ? __('Enter at least three characters to search.')
-        : __('Edit your search and try again');
-    },
   },
 
   methods: {
@@ -217,7 +212,9 @@ export default {
       </template>
 
       <template #empty>
-        <gl-empty-state :title="__('No results found')" :description="emptyText" />
+        <!-- EmptyResult shows minimum length message when searchMinimumLength is set,
+             otherwise shows generic search message -->
+        <empty-result type="search" :search-minimum-length="isSearchQueryTooShort ? 3 : null" />
       </template>
 
       <template #cell(user)="{ item }">

@@ -17,12 +17,7 @@ module Admin
     end
 
     def installation_service
-      Integrations::SlackInstallation::InstanceService.new(
-        current_user: current_user,
-        params: params
-          .permit(:code)
-          .merge(organization_id: Current.organization.id)
-      )
+      Integrations::SlackInstallation::InstanceService.new(current_user: current_user, params: params.permit(:code))
     end
   end
 end

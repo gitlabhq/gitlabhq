@@ -180,8 +180,14 @@ module QA
             end
           end
 
-          all_elements('review-drawer-toggle', minimum: 1).first.click
-          click_element('submit-review-button')
+          retry_until(sleep_interval: 2, max_attempts: 5, message: "Retry closing review drawer") do
+            if has_element?('review-drawer-toggle', wait: 2)
+              all_elements('review-drawer-toggle', minimum: 1).first.click
+            end
+
+            click_element('submit-review-button')
+            has_no_element?('review-drawer-toggle', wait: 2)
+          end
 
           # After clicking the button, wait for the review bar to disappear
           # before moving on to the next part of the test

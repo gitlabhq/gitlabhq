@@ -1917,7 +1917,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it { is_expected.to be_falsey }
 
     context 'when beyond identity is disabled for a project' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance, active: false) }
+      let_it_be(:integration) { create(:beyond_identity_integration, active: false) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1927,7 +1927,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when a GPG key failed external validation and one GPC key is externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:integration) { create(:beyond_identity_integration) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1939,7 +1939,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when there are no GPG keys externally validated' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:integration) { create(:beyond_identity_integration) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)
@@ -1951,7 +1951,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     context 'when GPG keys are missing' do
-      let_it_be(:integration) { create(:beyond_identity_integration, :instance) }
+      let_it_be(:integration) { create(:beyond_identity_integration) }
 
       before do
         allow(project).to receive(:beyond_identity_integration).and_return(integration)

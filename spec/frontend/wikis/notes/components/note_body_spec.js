@@ -42,16 +42,16 @@ describe('NoteBody', () => {
         expect(renderGFM).toHaveBeenCalled();
       });
 
-      it('should not render "Edited" text when lastEdited is the same as createdAt', () => {
+      it('should not render "Edited" text when lastEditedBy is not present', () => {
         const editedComponent = wrapper.findComponent(NoteEditedText);
 
         expect(editedComponent.exists()).toBe(false);
       });
 
-      it('should render "Edited" text when lastEditedAt is not the same as createdAt', () => {
+      it('should render "Edited" text when lastEditedBy is present', () => {
         // remounting to trigger mounted function
         wrapper = createWrapper({
-          note: { ...note, lastEditedAt: '2024-11-11T08:11:34Z' },
+          note: { ...note, lastEditedBy: { name: 'user', webPath: '/user' } },
           noteableId,
         });
 

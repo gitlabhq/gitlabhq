@@ -15,6 +15,7 @@ module QA
       HTTP_STATUS_NOT_FOUND = 404
       HTTP_STATUS_TOO_MANY_REQUESTS = 429
       HTTP_STATUS_SERVER_ERROR = 500
+      HTTP_STATUS_SERVICE_UNAVAILABLE = 503
 
       def post(url, payload, args = {})
         request_args = {
@@ -197,7 +198,10 @@ module QA
       end
 
       def fatal_response?(response_code)
-        [HTTP_STATUS_UNAUTHORIZED, HTTP_STATUS_SERVER_ERROR, HTTP_STATUS_BAD_REQUEST].include?(response_code)
+        [HTTP_STATUS_UNAUTHORIZED,
+          HTTP_STATUS_SERVER_ERROR,
+          HTTP_STATUS_BAD_REQUEST,
+          HTTP_STATUS_SERVICE_UNAVAILABLE].include?(response_code)
       end
     end
   end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe ::Gitlab::BeyondIdentity::Client, feature_category: :source_code_management do
-  let_it_be_with_reload(:integration) { create(:beyond_identity_integration, :instance) }
+  let_it_be_with_reload(:integration) { create(:beyond_identity_integration) }
 
   let(:stubbed_response) do
     { 'authorized' => true }.to_json

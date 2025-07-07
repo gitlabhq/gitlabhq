@@ -53,28 +53,21 @@ RSpec.describe Integration, feature_category: :integrations do
     it { is_expected.to validate_presence_of(:type) }
     it { is_expected.to validate_exclusion_of(:type).in_array(described_class::BASE_CLASSES) }
 
-    where(:project_id, :group_id, :instance, :organization_id, :valid) do
-      1    | nil  | false  | nil | true
-      nil  | 1    | false  | nil | true
-      nil  | nil  | true   | 1   | true
-      nil  | nil  | false  | nil | false
-      1    | 1    | false  | 1   | false
-      1    | nil  | true   | nil | false
-      nil  | 1    | false  | nil | true
-      nil  | 1    | true   | 1   | false
+    where(:project_id, :group_id, :instance, :valid) do
+      1    | nil  | false  | true
+      nil  | 1    | false  | true
+      nil  | nil  | true   | true
+      nil  | nil  | false  | false
+      1    | 1    | false  | false
+      1    | nil  | false  | true
+      1    | nil  | true   | false
+      nil  | 1    | false  | true
+      nil  | 1    | true   | false
     end
 
     with_them do
       it 'validates the integration' do
-        expect(
-          build(
-            :integration,
-            project_id: project_id,
-            group_id: group_id,
-            organization_id: organization_id,
-            instance: instance
-          ).valid?
-        ).to eq(valid)
+        expect(build(:integration, project_id: project_id, group_id: group_id, instance: instance).valid?).to eq(valid)
       end
     end
 
@@ -363,95 +356,57 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.find_or_initialize_all_non_project_specific' do
-    shared_examples 'integration instances' do |include_instance_specific|
-      it 'returns the available integration instances' do
-        integrations = described_class.find_or_initialize_all_non_project_specific(
-          described_class.for_instance, include_instance_specific: include_instance_specific
-        ).map(&:to_param)
+    shared_examples 'integration instances' do
+      [false, true].each do |include_instance_specific|
+        context "with include_instance_specific value equal to #{include_instance_specific}" do
+          it 'returns the available integration instances' do
+            integrations = described_class.find_or_initialize_all_non_project_specific(
+              described_class.for_instance, include_instance_specific: include_instance_specific
+            ).map(&:to_param)
 
-        expect(integrations).to match_array(
-          described_class.available_integration_names(
-            include_project_specific: false,
-            include_instance_specific: include_instance_specific
-          )
-        )
-      end
+            expect(integrations).to match_array(
+              described_class.available_integration_names(
+                include_project_specific: false,
+                include_instance_specific: include_instance_specific)
+            )
+          end
 
-      it 'does not create integration instances' do
-        expect do
-          described_class.find_or_initialize_all_non_project_specific(
-            described_class.for_instance,
-            include_instance_specific: include_instance_specific
-          )
-        end.not_to change { described_class.count }
+          it 'does not create integration instances' do
+            expect do
+              described_class.find_or_initialize_all_non_project_specific(
+                described_class.for_instance,
+                include_instance_specific: include_instance_specific
+              )
+            end.not_to change { described_class.count }
+          end
+        end
       end
     end
 
-    context 'without existing instance integrations' do
-      it_behaves_like 'integration instances', false
-      it_behaves_like 'integration instances', true
-    end
+    it_behaves_like 'integration instances'
 
-    context 'with existing instances' do
+    context 'with all existing instances' do
       def integration_hash(type)
-        integration_hash = Integration.new(type: type).to_database_hash
-        integration_hash[:organization_id] = create(:organization).id
-        integration_hash[:instance] = true
-        integration_hash
+        Integration.new(instance: true, type: type).to_database_hash
       end
 
-      context 'when all instance integrations are present' do
-        context 'when include_instance_specific is true' do
-          before do
-            attrs = described_class
-              .available_integration_types(
-                include_project_specific: false,
-                include_instance_specific: true
-              )
-              .map do |integration_type|
-              integration_hash(integration_type)
-            end
-
-            described_class.insert_all(attrs)
-          end
-
-          it_behaves_like 'integration instances', true
-
-          context 'with a previous existing integration (:mock_ci) and a new integration (:asana)' do
-            before do
-              described_class.insert(integration_hash(:mock_ci))
-              described_class.delete_by(**integration_hash(:asana))
-            end
-
-            it_behaves_like 'integration instances', true
-          end
+      before do
+        attrs = described_class.available_integration_types(include_project_specific: false).map do |integration_type|
+          integration_hash(integration_type)
         end
 
-        context 'when include_instance_specific is false' do
-          before do
-            attrs = described_class
-              .available_integration_types(
-                include_project_specific: false,
-                include_instance_specific: false
-              )
-              .map do |integration_type|
-              integration_hash(integration_type)
-            end
+        described_class.insert_all(attrs)
+      end
 
-            described_class.insert_all(attrs)
-          end
+      it_behaves_like 'integration instances'
 
-          it_behaves_like 'integration instances', false
-
-          context 'with a previous existing integration (:mock_ci) and a new integration (:asana)' do
-            before do
-              described_class.insert(integration_hash(:mock_ci))
-              described_class.delete_by(**integration_hash(:asana))
-            end
-
-            it_behaves_like 'integration instances', false
-          end
+      context 'with a previous existing integration (:mock_ci) and a new integration (:asana)' do
+        before do
+          described_class.insert(integration_hash(:mock_ci))
+          described_class.delete_by(**integration_hash(:asana))
         end
+
+        it_behaves_like 'integration instances'
       end
     end
 
@@ -460,8 +415,7 @@ RSpec.describe Integration, feature_category: :integrations do
         create(:jira_integration, :instance)
       end
 
-      it_behaves_like 'integration instances', true
-      it_behaves_like 'integration instances', false
+      it_behaves_like 'integration instances'
     end
   end
 
@@ -648,8 +602,8 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '.create_from_default_integrations' do
-    let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/', organization: create(:organization)) }
-    let!(:instance_level_instance_specific_integration) { create(:beyond_identity_integration, :instance) }
+    let!(:instance_integration) { create(:prometheus_integration, :instance, api_url: 'https://prometheus.instance.com/') }
+    let!(:instance_level_instance_specific_integration) { create(:beyond_identity_integration) }
 
     it 'creates integrations from default integrations' do
       expect(described_class).to receive(:create_from_active_default_integrations)
@@ -783,7 +737,7 @@ RSpec.describe Integration, feature_category: :integrations do
       end
 
       context 'when the integration is instance specific' do
-        let!(:instance_integration) { create(:beyond_identity_integration, :instance) }
+        let!(:instance_integration) { create(:beyond_identity_integration) }
 
         it 'does not create an integration from the instance level instance specific integration' do
           described_class.create_from_active_default_integrations(project, :project_id)
@@ -796,7 +750,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
   describe '.create_from_default_instance_specific_integrations' do
     context 'with an active instance-level integration' do
-      let!(:instance_integration) { create(:beyond_identity_integration, :instance) }
+      let!(:instance_integration) { create(:beyond_identity_integration) }
 
       it 'creates an integration from the instance-level integration' do
         described_class.create_from_default_instance_specific_integrations(project, :project_id)
@@ -1514,7 +1468,7 @@ RSpec.describe Integration, feature_category: :integrations do
 
       it 'saves correctly using insert_all' do
         hash = record.to_database_hash
-        hash[:project_id] = project.id
+        hash[:project_id] = project
 
         expect do
           described_class.insert_all([hash])
@@ -1522,9 +1476,6 @@ RSpec.describe Integration, feature_category: :integrations do
 
         expect(described_class.last).not_to eq record
         expect(described_class.last).to have_attributes(properties: db_props)
-        expect(described_class.last.project_id).to eq(project.id)
-        expect(described_class.last.group_id).to be_nil
-        expect(described_class.last.organization_id).to be_nil
       end
     end
   end

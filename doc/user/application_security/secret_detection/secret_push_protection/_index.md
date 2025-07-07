@@ -69,14 +69,14 @@ push protection, to minimize the delay when pushing your commits and minimize th
 alerts. For example, personal access tokens that use a custom prefix are not detected by secret push protection.
 You can [exclude](../exclusions.md) selected secrets from detection by secret push protection.
 
-## Enable secret push protection
+## Getting started
 
 On GitLab Dedicated and GitLab Self-Managed instances, you must:
 
 1. [Allow secret push protection on the entire instance](#allow-the-use-of-secret-push-protection-in-your-gitlab-instance).
 1. Enable secret push protection. You can either:
    - [Enable secret push protection in a specific project](#enable-secret-push-protection-in-a-project).
-   - Use the API to [enable secret push protection for all projects in group](../../../../api/group_security_settings.md#update-secret_push_protection_enabled-setting). Ultimate only.
+   - Use the API to [enable secret push protection for all projects in group](../../../../api/group_security_settings.md#update-secret_push_protection_enabled-setting).
 
 ### Allow the use of secret push protection in your GitLab instance
 
@@ -148,6 +148,103 @@ Secret push protection does not check a file in a commit when:
 
 Secret push protection scans only the diffs of commits pushed over HTTP(S) and SSH.
 If a secret is already present in a file and not part of the changes, it is not detected.
+
+## Understanding the results
+
+Secret push protection can identify various categories of secrets:
+
+- **API keys and tokens**: Service-specific authentication credentials
+- **Database connection strings**: URLs containing embedded credentials
+- **Private keys**: Cryptographic keys for authentication or encryption
+- **Generic high-entropy strings**: Patterns that appear to be randomly generated secrets
+
+When a push is blocked, secret push protection provides detailed information to help you locate and address the detected secrets:
+
+- **Commit ID**: The specific commit containing the secret. Useful for tracking changes in your Git history.
+- **File path and line number**: The exact location of the detected pattern for quick navigation.
+- **Secret type**: The classification of the detected pattern. For example, `GitLab Personal Access Token` or `AWS Access Key`.
+
+### Common detection categories
+
+Not all detections require immediate action. Consider the following when evaluating results:
+
+- **True positives**: Legitimate secrets that should be rotated and removed. For example:
+  - [Valid](../../vulnerabilities/validity_check.md) API keys or tokens
+  - Production database credentials
+  - Private cryptographic keys
+  - Any credentials that could grant unauthorized access
+
+- **False positives**: Detected patterns that aren't actual secrets. For example:
+  - Test data that resembles secrets but has no real-world value
+  - Placeholder values in configuration templates
+  - Example credentials in documentation
+  - Hash values or checksums that match secret patterns
+
+Document common false positive patterns in your organization to streamline future evaluations.
+
+## Optimization
+
+Before deploying secret push protection widely, optimize the configuration to reduce false positives and improve accuracy for your specific environment.
+
+### Reduce false positives
+
+False positives can significantly impact developer productivity and lead to security fatigue.
+
+To reduce false positives:
+
+- Configure [exclusions](../exclusions.md) strategically:
+  - Create path-based exclusions for test directories, documentation, and third party dependencies.
+  - Use pattern-based exclusions for known false positive patterns specific to your codebase.
+  - Document your exclusion rules and review them regularly.
+- Create standards for placeholder values and test credentials.
+- Monitor false positive rates and continue to adjust exclusions accordingly.
+
+### Optimize performance
+
+Large repositories or frequent pushes can have performance impacts.
+
+To optimize the performance of secret push protection:
+
+- Monitor push times and establish baseline metrics before deployment.
+- Use diff scanning to reduce the amount of content scanned on each push.
+- Consider file size limits for repositories with large binary assets.
+- Implement exclusions for directories that are unlikely to contain secrets.
+
+### Integration with existing workflows
+
+Ensure secret push protection complements your existing development practices:
+
+- Configure pipeline secret detection and secret push protection to be sure you have defense in depth.
+- Update developer documentation to include secret push protection procedures.
+- Align with security training to educate developers on secure coding practices to minimize leaked secrets.
+
+## Roll out
+
+Successfully deploying secret push protection at scale requires careful planning and a phased implementation:
+
+1. Choose two or three non-critical projects with active development to test the feature and understand its impact on developer workflows.
+1. Turn on secret push protection for your selected test projects and monitor developer feedback.
+1. Document processes for handling blocked pushes and train your development teams on the new workflows.
+1. Track the number of secrets detected, false positive rates, and developer experience feedback during the pilot phase.
+
+You should run the pilot phase for two to four weeks to gather sufficient data and identify any workflow adjustments needed before broader deployment.
+
+Once you have completed the pilot, consider the next three phases for a scaled rollout:
+
+1. Early adopters (weeks 3-6)
+   - Enable on 10-20% of active projects, prioritizing security-sensitive repositories.
+   - Focus on teams with strong security awareness and buy-in.
+   - Monitor performance impacts and developer experience.
+   - Refine processes based on real-world usage.
+1. Broad deployment (weeks 7-12)
+   - Gradually enable across remaining projects in batches.
+   - Provide ongoing support and training to development teams.
+   - Monitor system performance and scale infrastructure if needed.
+   - Continue optimizing exclusion rules based on usage patterns.
+1. Full coverage (weeks 13-16)
+   - Enable secret push protection on all remaining projects.
+   - Establish ongoing maintenance and review processes.
+   - Implement regular audits of exclusion rules and detected patterns.
 
 ## Resolve a blocked push
 

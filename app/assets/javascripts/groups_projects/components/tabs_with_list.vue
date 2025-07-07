@@ -13,6 +13,12 @@ import {
   ACCESS_LEVEL_OWNER_INTEGER,
   ACCESS_LEVELS_INTEGER_TO_STRING,
 } from '~/access_level/constants';
+import {
+  VISIBILITY_LEVEL_LABELS,
+  VISIBILITY_LEVEL_PRIVATE_STRING,
+  VISIBILITY_LEVEL_INTERNAL_STRING,
+  VISIBILITY_LEVEL_PUBLIC_STRING,
+} from '~/visibility_level/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
 import {
@@ -23,6 +29,7 @@ import {
   PAGINATION_TYPE_KEYSET,
   PAGINATION_TYPE_OFFSET,
   QUERY_PARAM_PAGE,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
@@ -186,6 +193,22 @@ export default {
             },
           ],
         },
+        {
+          type: FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+          icon: 'eye',
+          title: __('Visibility'),
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            VISIBILITY_LEVEL_PRIVATE_STRING,
+            VISIBILITY_LEVEL_INTERNAL_STRING,
+            VISIBILITY_LEVEL_PUBLIC_STRING,
+          ].map((visibilityLevelString) => ({
+            value: visibilityLevelString,
+            title: VISIBILITY_LEVEL_LABELS[visibilityLevelString],
+          })),
+        },
       ].filter((filteredSearchToken) =>
         this.filteredSearchSupportedTokens.includes(filteredSearchToken.type),
       );
@@ -236,9 +259,8 @@ export default {
     },
     filters() {
       const filters = pick(this.routeQueryWithoutPagination, [
-        FILTERED_SEARCH_TOKEN_LANGUAGE,
-        FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
         this.filteredSearchTermKey,
+        ...this.filteredSearchSupportedTokens,
       ]);
 
       // Normalize the property to Number since Vue Router 4 will
@@ -265,10 +287,15 @@ export default {
         this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
       );
     },
+    visibilityLevel() {
+      const visibilityLevel = this.filters[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL];
+      return Array.isArray(visibilityLevel) ? visibilityLevel[0] : visibilityLevel;
+    },
     filtersAsQueryVariables() {
       return {
         programmingLanguageName: this.programmingLanguageName,
         minAccessLevel: this.minAccessLevel,
+        visibilityLevel: this.visibilityLevel,
       };
     },
     timestampType() {
@@ -509,8 +536,9 @@ export default {
             size="sm"
             class="gl-tab-counter-badge"
             data-testid="tab-counter-badge"
-            >{{ tabCount(tab) }}</gl-badge
           >
+            {{ tabCount(tab) }}
+          </gl-badge>
         </div>
       </template>
 

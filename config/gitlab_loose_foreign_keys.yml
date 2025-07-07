@@ -245,6 +245,10 @@ country_access_logs:
   - table: users
     column: user_id
     on_delete: async_delete
+dast_pre_scan_verification_steps:
+  - table: projects
+    column: project_id
+    on_delete: async_delete
 dast_pre_scan_verifications:
   - table: p_ci_pipelines
     column: ci_pipeline_id

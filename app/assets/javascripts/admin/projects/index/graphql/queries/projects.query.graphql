@@ -10,6 +10,7 @@ query getAdminProjects(
   $sort: String
   $search: String
   $minAccessLevel: AccessLevelEnum
+  $visibilityLevel: VisibilityLevelsEnum
   $programmingLanguageName: String
 ) {
   projects(
@@ -22,6 +23,7 @@ query getAdminProjects(
     search: $search
     minAccessLevel: $minAccessLevel
     programmingLanguageName: $programmingLanguageName
+    visibilityLevel: $visibilityLevel
   ) {
     count
     nodes {

@@ -31,6 +31,8 @@ module Gitlab
         enabled? && supports_wildcard?
       end
 
+      alias_method :supports_work_item_creation?, :supports_issue_creation?
+
       def reply_address(key)
         incoming_email_config.address.sub(WILDCARD_PLACEHOLDER, key)
       end

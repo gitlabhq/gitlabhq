@@ -6,10 +6,10 @@ class AddMultiNotNullConstraintToIntegrations < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
 
   def up
-    add_multi_column_not_null_constraint(:integrations, :group_id, :project_id, :organization_id, validate: false)
+    # No-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20126
   end
 
   def down
-    remove_multi_column_not_null_constraint(:integrations, :group_id, :project_id, :organization_id)
+    # no-op to fix https://gitlab.com/gitlab-com/gl-infra/production/-/issues/20126
   end
 end

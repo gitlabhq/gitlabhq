@@ -3,6 +3,7 @@ import TabsWithList from '~/groups_projects/components/tabs_with_list.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+  FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   PAGINATION_TYPE_KEYSET,
 } from '~/groups_projects/constants';
 import {
@@ -31,6 +32,7 @@ export default {
   filteredSearchSupportedTokens: [
     FILTERED_SEARCH_TOKEN_LANGUAGE,
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
+    FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
   ],
   timestampTypeMap: {
     [SORT_OPTION_CREATED.value]: TIMESTAMP_TYPE_CREATED_AT,

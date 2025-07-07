@@ -3,17 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::BackgroundMigration::UpdateJiraTrackerDataDeploymentTypeBasedOnUrl do
-  let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
-
-  let(:namespaces_table) { table(:namespaces) }
-  let(:group1) { namespaces_table.create!(name: 'group1', path: 'group1', organization_id: organization.id) }
-  let(:group2) { namespaces_table.create!(name: 'group2', path: 'group2', organization_id: organization.id) }
-  let(:group3) { namespaces_table.create!(name: 'group3', path: 'group3', organization_id: organization.id) }
-
   let(:integrations_table) { table(:integrations) }
-  let(:service_jira_cloud) { integrations_table.create!(id: 1, type_new: 'JiraService', group_id: group1.id) }
-  let(:service_jira_server) { integrations_table.create!(id: 2, type_new: 'JiraService', group_id: group2.id) }
-  let(:service_jira_unknown) { integrations_table.create!(id: 3, type_new: 'JiraService', group_id: group3.id) }
+  let(:service_jira_cloud) { integrations_table.create!(id: 1, type_new: 'JiraService') }
+  let(:service_jira_server) { integrations_table.create!(id: 2, type_new: 'JiraService') }
+  let(:service_jira_unknown) { integrations_table.create!(id: 3, type_new: 'JiraService') }
 
   let(:table_name) { :jira_tracker_data }
   let(:batch_column) { :id }

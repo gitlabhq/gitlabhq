@@ -11,7 +11,6 @@ import { parseBoolean } from '~/lib/utils/common_utils';
 import initSourcegraph from '~/sourcegraph';
 import ZenMode from '~/zen_mode';
 import initAwardsApp from '~/emoji/awards_app';
-import { initMrExperienceSurvey } from '~/surveys/merge_request_experience';
 import toast from '~/vue_shared/plugins/global_toast';
 import getStateQuery from './queries/get_state.query.graphql';
 import initCheckoutModal from './init_checkout_modal';
@@ -23,7 +22,6 @@ export default function initMergeRequestShow(store, pinia) {
   initSourcegraph();
   initIssuableSidebar();
   initAwardsApp(document.getElementById('js-vue-awards-block'));
-  initMrExperienceSurvey();
   initCheckoutModal();
 
   const el = document.querySelector('.js-mr-header');

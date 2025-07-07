@@ -18,7 +18,7 @@ variables:
   # Helm chart ref used by test-on-cng pipeline
   GITLAB_HELM_CHART_REF: "6cdb0e1cd4ceb7c9fd01ffa2f62c4a7a4c77a23b"
   # Specific ref for cng-mirror project to trigger builds for
-  GITLAB_CNG_MIRROR_REF: "272b2069fc386348d2474eac26060e781f2a0dd2"
+  GITLAB_CNG_MIRROR_REF: "51637e0b7ab573aa0817945df517c7c0d0250d79"
   # Makes sure some of the common scripts from pipeline-common use bundler to execute commands
   RUN_WITH_BUNDLE: "true"
   # Makes sure reporting script defined in .gitlab-qa-report from pipeline-common is executed from correct folder

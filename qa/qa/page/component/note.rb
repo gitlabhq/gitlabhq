@@ -97,11 +97,11 @@ module QA
           click_element 'expand-replies-button'
         end
 
-        def has_comment?(comment_text)
+        def has_comment?(comment_text, wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME)
           has_element?(
             'noteable-note-container',
             text: comment_text,
-            wait: QA::Support::Repeater::DEFAULT_MAX_WAIT_TIME
+            wait: wait
           )
         end
 
@@ -167,13 +167,13 @@ module QA
         def start_review_with_comment(text)
           fill_editor_element('comment-field', text)
           click_element('start-review-button')
-          has_comment?(text)
+          has_comment?(text, 3)
         end
 
         def add_comment_to_review(text)
           fill_editor_element('comment-field', text)
           click_element('add-to-review-button')
-          has_comment?(text)
+          has_comment?(text, 3)
         end
 
         def toggle_comments(position)
