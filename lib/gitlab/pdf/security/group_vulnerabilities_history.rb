@@ -57,7 +57,7 @@ module Gitlab
 
             # Date information
             @pdf.text_box(
-              "#{@date_info} (#{@selected_day_range})",
+              "#{@date_info} (#{@selected_day_range} #{s_('Days')})",
               at: [0, @pdf.bounds.top - 40],
               width: @pdf.bounds.right,
               align: :center,
@@ -105,7 +105,7 @@ module Gitlab
           @pdf.svg(icon_svg, at: [10, @pdf.cursor - 25], width: @icon_size, height: @icon_size)
 
           @pdf.text_box(
-            chart[:severity],
+            chart[:severity].capitalize,
             at: [30, @pdf.cursor + 12],
             width: 100
           )

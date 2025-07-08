@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mapActions, mapState } from 'pinia';
+import { GlToast } from '@gitlab/ui';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
 import { getCookie, parseBoolean, removeCookie } from '~/lib/utils/common_utils';
@@ -17,6 +18,7 @@ export default function initDiffsApp() {
   const { dataset } = el;
 
   Vue.use(VueApollo);
+  Vue.use(GlToast);
   const { newCommentTemplatePaths } = dataset;
 
   const vm = new Vue({

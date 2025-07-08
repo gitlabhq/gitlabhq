@@ -1,14 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
 import { createTestingPinia } from '@pinia/testing';
-import { GlAnimatedSidebarIcon, GlButton } from '@gitlab/ui';
+import { GlAnimatedSidebarIcon, GlButton, GlTooltip } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import { PiniaVuePlugin } from 'pinia';
 import FileBrowserToggle from '~/diffs/components/file_browser_toggle.vue';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
-import { keysFor, MR_TOGGLE_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+import {
+  keysFor,
+  MR_TOGGLE_FILE_BROWSER,
+  MR_TOGGLE_FILE_BROWSER_DEPRECATED,
+} from '~/behaviors/shortcuts/keybindings';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { Mousetrap } from '~/lib/mousetrap';
-import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 jest.mock('~/behaviors/shortcuts/shortcuts_toggle');
@@ -19,16 +22,18 @@ Vue.use(PiniaVuePlugin);
 
 describe('FileBrowserToggle', () => {
   let wrapper;
+  let showToast;
 
   const findToggle = () => wrapper.findComponent(GlButton);
 
   const createComponent = () => {
     const pinia = createTestingPinia();
     useFileBrowser();
+    showToast = jest.fn();
     wrapper = shallowMount(FileBrowserToggle, {
       pinia,
-      directives: {
-        GlTooltip: createMockDirective('gl-tooltip'),
+      mocks: {
+        $toast: { show: showToast },
       },
     });
   };
@@ -95,22 +100,30 @@ describe('FileBrowserToggle', () => {
   });
 
   describe('tooltip', () => {
-    const findTooltip = () => getBinding(findToggle().element, 'gl-tooltip');
+    const findTooltip = () => wrapper.findComponent(GlTooltip);
 
-    it('Displays hide message for open file browser', () => {
+    it('displays hide message for open file browser', () => {
       createComponent();
-      expect(findTooltip().value).toBe(
-        'Hide file browser <kbd class="flat gl-ml-1" aria-hidden="true">f</kbd>',
-      );
+      expect(findTooltip().text()).toContain('Hide file browser');
     });
 
-    it('Displays show message for hidden file browser', async () => {
+    it('displays show message for hidden file browser', async () => {
       createComponent();
       useFileBrowser().fileBrowserVisible = false;
       await nextTick();
-      expect(findTooltip().value).toBe(
-        'Show file browser <kbd class="flat gl-ml-1" aria-hidden="true">f</kbd>',
-      );
+      expect(findTooltip().text()).toContain('Show file browser');
+    });
+  });
+
+  describe('deprecated shortcut', () => {
+    const deprecatedShortcuts = keysFor(MR_TOGGLE_FILE_BROWSER_DEPRECATED);
+
+    it('displays deprecation warning on toggle once', () => {
+      createComponent();
+      Mousetrap.trigger(deprecatedShortcuts[0]);
+      Mousetrap.trigger(deprecatedShortcuts[0]);
+      expect(useFileBrowser().toggleFileBrowserVisibility).toHaveBeenCalledTimes(2);
+      expect(showToast).toHaveBeenCalledTimes(1);
     });
   });
 });

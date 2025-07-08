@@ -238,7 +238,7 @@ RSpec.describe Glql::BaseController, feature_category: :integrations do
 
   describe 'rescue_from' do
     let(:error_message) do
-      'Query execution is locked due to repeated failures.'
+      'Query temporarily blocked due to repeated timeouts. Please try again later or narrow your search scope.'
     end
 
     it 'handles GlqlQueryLockedError' do

@@ -1,56 +1,83 @@
 <script>
-import { GlAnimatedSidebarIcon, GlButton, GlTooltipDirective } from '@gitlab/ui';
+import { GlAnimatedSidebarIcon, GlButton, GlSprintf, GlTooltip } from '@gitlab/ui';
 import { mapActions, mapState } from 'pinia';
+import { h } from 'vue';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
-import { sanitize } from '~/lib/dompurify';
 import { __ } from '~/locale';
-import { keysFor, MR_TOGGLE_FILE_BROWSER } from '~/behaviors/shortcuts/keybindings';
+import {
+  keysFor,
+  MR_TOGGLE_FILE_BROWSER,
+  MR_TOGGLE_FILE_BROWSER_DEPRECATED,
+} from '~/behaviors/shortcuts/keybindings';
 import { useFileBrowser } from '~/diffs/stores/file_browser';
 import { Mousetrap } from '~/lib/mousetrap';
+import Shortcut from '~/behaviors/shortcuts/shortcut.vue';
 
 export default {
   name: 'FileBrowserToggle',
+  MR_TOGGLE_FILE_BROWSER,
   components: {
     GlButton,
     GlAnimatedSidebarIcon,
-  },
-  directives: {
-    GlTooltip: GlTooltipDirective,
+    GlTooltip,
+    Shortcut,
   },
   computed: {
     ...mapState(useFileBrowser, ['fileBrowserVisible']),
     toggleFileBrowserShortcutKey() {
-      return shouldDisableShortcuts() ? null : keysFor(MR_TOGGLE_FILE_BROWSER)[0];
+      return this.shortcutsEnabled ? keysFor(MR_TOGGLE_FILE_BROWSER)[0] : null;
+    },
+    shortcutsEnabled() {
+      return !shouldDisableShortcuts();
     },
     toggleFileBrowserTitle() {
       return this.fileBrowserVisible ? __('Hide file browser') : __('Show file browser');
     },
-    toggleFileBrowserTooltip() {
-      const description = this.toggleFileBrowserTitle;
-      const key = this.toggleFileBrowserShortcutKey;
-      return shouldDisableShortcuts()
-        ? description
-        : sanitize(`${description} <kbd class="flat gl-ml-1" aria-hidden=true>${key}</kbd>`);
-    },
   },
   created() {
+    // we need to create the VNode in advance because `h` in Vue 2 only works here and in `mounted`
+    this.legacyVNode = this.createLegacyShortcutVNode();
     this.initFileBrowserVisibility();
   },
   mounted() {
-    Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggleFileBrowserVisibility);
+    if (this.shortcutsEnabled) {
+      Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER_DEPRECATED), this.toggleFileBrowserLegacy);
+      Mousetrap.bind(keysFor(MR_TOGGLE_FILE_BROWSER), this.toggleFileBrowserVisibility);
+    }
   },
   beforeDestroy() {
-    Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER));
+    if (this.shortcutsEnabled) {
+      Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER_DEPRECATED));
+      Mousetrap.unbind(keysFor(MR_TOGGLE_FILE_BROWSER));
+    }
   },
   methods: {
     ...mapActions(useFileBrowser, ['toggleFileBrowserVisibility', 'initFileBrowserVisibility']),
+    toggleFileBrowserLegacy() {
+      if (!sessionStorage.getItem('notifiedOnLegacyFileBrowserToggle')) {
+        this.$toast.show([this.legacyVNode]);
+        sessionStorage.setItem('notifiedOnLegacyFileBrowserToggle', 'true');
+      }
+      this.toggleFileBrowserVisibility();
+    },
+    createLegacyShortcutVNode() {
+      const message = __('The %{old} shortcut is deprecated. Use %{new} shortcut instead.');
+      return h(GlSprintf, {
+        props: { message },
+        scopedSlots: {
+          old: () =>
+            h(Shortcut, { props: { shortcuts: MR_TOGGLE_FILE_BROWSER_DEPRECATED.defaultKeys } }),
+          new: () => h(Shortcut, { props: { shortcuts: MR_TOGGLE_FILE_BROWSER.defaultKeys } }),
+        },
+      });
+    },
   },
 };
 </script>
 
 <template>
   <gl-button
-    v-gl-tooltip.html="toggleFileBrowserTooltip"
+    ref="toggle"
     variant="default"
     class="btn-icon gl-mr-3 max-lg:gl-hidden"
     data-testid="file-tree-button"
@@ -59,6 +86,10 @@ export default {
     :selected="fileBrowserVisible"
     @click="toggleFileBrowserVisibility"
   >
+    <gl-tooltip v-if="shortcutsEnabled" :target="() => $refs.toggle.$el">
+      {{ toggleFileBrowserTitle }}
+      <shortcut :shortcuts="$options.MR_TOGGLE_FILE_BROWSER.defaultKeys" />
+    </gl-tooltip>
     <gl-animated-sidebar-icon :is-on="fileBrowserVisible" class="gl-button-icon" />
   </gl-button>
 </template>

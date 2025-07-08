@@ -32,78 +32,55 @@ This feature is available for testing, but not ready for production use.
 
 With GitLab Query Language (GLQL), fields are used to:
 
-- [Filter](#fields-inside-query) the results returned from a [GLQL query](_index.md#query-syntax).
-- [Control the details](#fields-in-glql-views) displayed in a [GLQL view](_index.md#presentation-syntax).
-- [Sort](#fields-to-sort-glql-views-by) the results displayed in a GLQL view.
+- Filter the results returned from a [GLQL query](_index.md#query-syntax).
+- Control the details displayed in a [GLQL view](_index.md#presentation-syntax).
+- Sort the results displayed in a GLQL view.
 
-The following fields are available:
+You use fields in three GLQL components:
+
+- **`query`** - Set conditions to determine which items to retrieve
+- **`fields`** - Specify which columns and details appear in your view  
+- **`sort`** - Order items by specific criteria
+
+The following sections describe the available fields for each component.
 
 ## Fields inside query
 
-In a GLQL view, the `query` parameter can be used to include one more expressions of the
-format `field operator value`.
+In a GLQL view, the `query` parameter can be used to include one or more expressions of the
+format `<field> <operator> <value>`. Multiple expressions are joined with `and`,
+for example, `group = "gitlab-org" and author = currentUser()`.
 
-### Type
+The table below provides an overview of all available query fields and their specifications:
 
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-- Support for querying epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: The type of object to query: one of the work item types or merge requests.
-
-**Field name**: `type`
-
-**Allowed operators**: `=`, `in`
-
-**Allowed value types**:
-
-- `Enum`, one of:
-  - `Issue`
-  - `Incident`
-  - `Epic`
-  - `TestCase`
-  - `Requirement`
-  - `Task`
-  - `Ticket`
-  - `Objective`
-  - `KeyResult`
-  - `MergeRequest`
-- `List` (containing one or more `enum` values)
-
-**Additional details**:
-
-- If omitted when used inside a GLQL view, all issue and work item types are included by default.
-- Certain work item types (like `Issue`, `Task`, or `Objective`) cannot be used together with `MergeRequest` and `Epic` types.
-- `type = Epic` queries can only be used together with the [group](#group) field.
-
-**Examples**:
-
-- List issues of type `Incident`:
-
-  ```plaintext
-  type = incident
-  ```
-
-- List issues of types `Issue` or `Task`:
-
-  ```plaintext
-  type in (Issue, Task)
-  ```
-
-- List all merge requests assigned to the current user:
-
-  ```plaintext
-  type = MergeRequest and assignee = currentUser()
-  ```
-
-- List all epics authored by the current user in the group `gitlab-org`
-
-  ```plaintext
-  group = "gitlab-org" and type = Epic and author = currentUser()
-  ```
+| Field                                   | Name (and alias)                             | Operators                 | Supported for |
+| --------------------------------------- | -------------------------------------------- | ------------------------- | ------------- |
+| [Approved by user](#approved-by-user)   | `approver`, `approvedBy`, `approvers`        | `=`, `!=`                 | Merge requests |
+| [Assignees](#assignees)                 | `assignee`, `assignees`                      | `=`, `in`, `!=`           | Issues, merge requests |
+| [Author](#author)                       | `author`                                     | `=`, `!=`                 | Issues, epics, merge requests |
+| [Cadence](#cadence)                     | `cadence`                                    | `=`, `in`                 | Issues        |
+| [Closed at](#closed-at)                 | `closed`, `closedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Issues        |
+| [Confidential](#confidential)           | `confidential`                               | `=`, `!=`                 | Issues, epics |
+| [Created at](#created-at)               | `created`, `createdAt`, `opened`, `openedAt` | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
+| [Deployed at](#deployed-at)             | `deployed`, `deployedAt`                     | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
+| [Draft](#draft)                         | `draft`                                      | `=`, `!=`                 | Merge requests |
+| [Due date](#due-date)                   | `due`, `dueDate`                             | `=`, `>`, `<`, `>=`, `<=` | Issues        |
+| [Environment](#environment)             | `environment`                                | `=`                       | Merge requests |
+| [Epic](#epic)                           | `epic`                                       | `=`, `!=`                 | Issues        |
+| [Group](#group)                         | `group`                                      | `=`                       | Issues, epics, merge requests |
+| [Health status](#health-status)         | `health`, `healthStatus`                     | `=`, `!=`                 | Issues        |
+| [ID](#id)                               | `id`                                         | `=`, `in`                 | Issues, epics, merge requests |
+| [Include subgroups](#include-subgroups) | `includeSubgroups`                           | `=`, `!=`                 | Issues, epics, merge requests |
+| [Iteration](#iteration)                 | `iteration`                                  | `=`, `in`, `!=`           | Issues        |
+| [Labels](#labels)                       | `label`, `labels`                            | `=`, `in`, `!=`           | Issues, epics, merge requests |
+| [Merged at](#merged-at)                 | `merged`, `mergedAt`                         | `=`, `>`, `<`, `>=`, `<=` | Merge requests |
+| [Merged by user](#merged-by-user)       | `merger`, `mergedBy`                         | `=`                       | Merge requests |
+| [Milestone](#milestone)                 | `milestone`                                  | `=`, `in`, `!=`           | Issues, epics, merge requests |
+| [Project](#project)                     | `project`                                    | `=`                       | Issues, merge requests |
+| [Reviewers](#reviewers)                 | `reviewer`, `reviewers`, `reviewedBy`        | `=`, `!=`                 | Merge requests |
+| [State](#state)                         | `state`                                      | `=`                       | Issues, epics, merge requests |
+| [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, merge requests |
+| [Updated at](#updated-at)               | `updated`, `updatedAt`                       | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
+| [Weight](#weight)                       | `weight`                                     | `=`, `!=`                 | Issues        |
 
 ### Approved by user
 
@@ -116,20 +93,11 @@ format `field operator value`.
 
 **Description**: Query merge requests by one or more users who approved the merge request.
 
-**Field name**: `approver`
-
-**Aliases**: `approvedBy`, `approvers`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `String`
 - `User` (for example, `@username`)
 - `List` (containing `String` or `User` values)
-- `Nullable` (either of `null`, `none`, or `any`)
-
-**Supported for object types**: `MergeRequest`
 
 **Examples**:
 
@@ -149,24 +117,12 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by one or more users who are assigned to the issue or merge request.
 
-**Field name**: `assignee`
-
-**Aliases**: `assignees`
-
-**Allowed operators**: `=`, `in`, `!=`
-
 **Allowed value types**:
 
 - `String`
 - `User` (for example, `@username`)
 - `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Additional details**:
 
@@ -214,21 +170,10 @@ format `field operator value`.
 
 **Description**: Query issues or merge request by their author.
 
-**Field name**: `author`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `String`
 - `User` (for example, `@username`)
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Examples**:
 
@@ -254,20 +199,11 @@ format `field operator value`.
 
 **Description**: Query issues by the [cadence](../group/iterations/_index.md#iteration-cadences) that the issue's iteration is a part of.
 
-**Field name**: `cadence`
-
-**Allowed operators**: `=`, `in`, `!=`
-
 **Allowed value types**:
 
 - `Number` (only positive integers)
 - `List` (containing `Number` values)
 - `Nullable` (either of `none`, or `any`)
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
 
 **Additional details**:
 
@@ -298,22 +234,11 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by the date when they were closed.
 
-**Field name**: `closed`
-
-**Aliases**: `closedAt`
-
-**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
-
 **Allowed value types**:
 
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
 
 **Additional details**:
 
@@ -350,19 +275,9 @@ format `field operator value`.
 
 **Description**: Query issues by their visibility to project members.
 
-**Field name**: `confidential`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `Boolean` (either of `true` or `false`)
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
 
 **Additional details**:
 
@@ -394,24 +309,11 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by the date when they were created.
 
-**Field name**: `created`
-
-**Aliases**: `createdAt`, `opened`, `openedAt`
-
-**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
-
 **Allowed value types**:
 
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequests`
 
 **Additional details**:
 
@@ -450,19 +352,11 @@ format `field operator value`.
 
 **Description**: Query merge requests by the date when they were deployed.
 
-**Field name**: `deployed`
-
-**Aliases**: `deployedAt`
-
-**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
-
 **Allowed value types**:
 
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Supported for object types**: `MergeRequest`
 
 **Additional details**:
 
@@ -493,15 +387,9 @@ format `field operator value`.
 
 **Description**: Query merge requests by their draft status.
 
-**Field name**: `draft`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `Boolean` (either of `true` or `false`)
-
-**Supported for object types**: `MergeRequest`
 
 **Examples**:
 
@@ -528,22 +416,11 @@ format `field operator value`.
 
 **Description**: Query issues by the date when they are due.
 
-**Field name**: `due`
-
-**Aliases**: `dueDate`
-
-**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
-
 **Allowed value types**:
 
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
 
 **Additional details**:
 
@@ -586,13 +463,7 @@ format `field operator value`.
 
 **Description**: Query merge requests by the environment to which they have been deployed.
 
-**Field name**: `environment`
-
-**Allowed operators**: `=`
-
 **Allowed value types**: `String`
-
-**Supported for object types**: `MergeRequest`
 
 **Examples**:
 
@@ -618,17 +489,11 @@ format `field operator value`.
 
 **Description**: Query issues by their parent epic ID or reference.
 
-**Field name**: `epic`
-
-**Allowed operators**: `=`
-
 **Allowed value types**:
 
 - `Number` (epic ID)
 - `String` (containing an epic reference like `&123`)
 - `Epic` (for example, `&123`, `gitlab-org&123`)
-
-**Supported for object types**: `Issue`
 
 **Examples**:
 
@@ -648,17 +513,7 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests within all projects in a given group.
 
-**Field name**: `group`
-
-**Allowed operators**: `=`
-
 **Allowed value types**: `String`
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Additional details**:
 
@@ -694,21 +549,10 @@ format `field operator value`.
 
 **Description**: Query issues by their health status.
 
-**Field name**: `health`
-
-**Aliases**: `healthStatus`
-
-**Allowed operators**: `=`
-
 **Allowed value types**:
 
 - `StringEnum` (one of `"needs attention"`, `"at risk"` or `"on track"`)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
 
 **Examples**:
 
@@ -735,21 +579,10 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by their IDs.
 
-**Field name**: `id`
-
-**Allowed operators**: `=`, `in`
-
 **Allowed value types**:
 
 - `Number` (only positive integers)
 - `List` (containing `Number` values)
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Examples**:
 
@@ -782,20 +615,9 @@ format `field operator value`.
 
 **Description**: Query within the entire hierarchy of a group.
 
-**Field name**: `includeSubgroups`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `Boolean` (either of `true` or `false`)
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Additional details**:
 
@@ -833,10 +655,6 @@ format `field operator value`.
 
 **Description**: Query issues by their associated [iteration](../group/iterations/_index.md).
 
-**Field name**: `iteration`
-
-**Allowed operators**: `=`, `in`, `!=`
-
 **Allowed value types**:
 
 - `Number` (only positive integers)
@@ -844,11 +662,6 @@ format `field operator value`.
 - `List` (containing `Number` or `Iteration` values)
 - `Enum` (only `current` is supported)
 - `Nullable` (either of `none`, or `any`)
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
 
 **Additional details**:
 
@@ -899,25 +712,12 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by their associated labels.
 
-**Field name**: `label`
-
-**Aliases**: `labels`
-
-**Allowed operators**: `=`, `in`, `!=`
-
 **Allowed value types**:
 
 - `String`
 - `Label` (for example, `~bug`, `~"team::planning"`)
 - `List` (containing `String` or `Label` values)
 - `Nullable` (either of `none`, or `any`)
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Additional details**:
 
@@ -980,19 +780,11 @@ format `field operator value`.
 
 **Description**: Query merge requests by the date when they were merged.
 
-**Field name**: `merged`
-
-**Aliases**: `mergedAt`
-
-**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
-
 **Allowed value types**:
 
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Supported for object types**: `MergeRequest`
 
 **Additional details**:
 
@@ -1024,20 +816,10 @@ format `field operator value`.
 
 **Description**: Query merge requests by the user that merged the merge request.
 
-**Field name**: `merger`
-
-**Aliases**: `mergedBy`
-
-**Allowed operators**: `=`
-
 **Allowed value types**:
 
 - `String`
 - `User` (for example, `@username`)
-- `List` (containing `String` or `User` values)
-- `Nullable` (either of `null`, `none`, or `any`)
-
-**Supported for object types**: `MergeRequest`
 
 **Examples**:
 
@@ -1058,10 +840,6 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by their associated milestone.
 
-**Field name**: `milestone`
-
-**Allowed operators**: `=`, `in`, `!=`
-
 **Allowed value types**:
 
 - `String`
@@ -1069,18 +847,12 @@ format `field operator value`.
 - `List` (containing `String` or `Milestone` values)
 - `Nullable` (either of `none`, or `any`)
 
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
-
 **Additional details**:
 
 - Milestones containing spaces must be wrapped in quotes (`"`).
 - Because an issue can have only one milestone, the `=` operator cannot be used with `List` type for the `milestone` field.
-- The `in` operator is not supported for `MergeRequest` types.
+- The `in` operator is not supported for `MergeRequest` and `Epic` types.
+- The `Epic` type does not support wildcard milestone filters like `none` or `any`.
 
 **Examples**:
 
@@ -1118,17 +890,7 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests within a particular project.
 
-**Field name**: `project`
-
-**Allowed operators**: `=`
-
 **Allowed value types**: `String`
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Additional details**:
 
@@ -1154,27 +916,18 @@ format `field operator value`.
 
 **Description**: Query merge requests that were reviewed by one or more users.
 
-**Field name**: `reviewer`
-
-**Aliases**: `reviewers`, `reviewedBy`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `String`
 - `User` (for example, `@username`)
-- `List` (containing `String` or `User` values)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Supported for object types**: `MergeRequest`
 
 **Examples**:
 
-- List all merge requests reviewed by current user and `@johndoe`
+- List all merge requests reviewed by current user:
 
   ```plaintext
-  type = MergeRequest and reviewer = (currentUser(), @johndoe)
+  type = MergeRequest and reviewer = currentUser()
   ```
 
 ### State
@@ -1188,22 +941,11 @@ format `field operator value`.
 
 **Description**: The state of this issue or merge request.
 
-**Field name**: `state`
-
-**Allowed operators**: `=`
-
 **Allowed value types**:
 
 - `Enum`
   - For issue and work item types, one of `opened`, `closed`, or `all`
   - For `MergeRequest` types, one of `opened`, `closed`, `merged`, or `all`
-
-**Supported for object types**:
-
-- `Issue`
-- `Epic`
-- Work item types like `Task` or `Objective`
-- `MergeRequest`
 
 **Additional details**:
 
@@ -1235,6 +977,63 @@ format `field operator value`.
   type = MergeRequest and state = merged
   ```
 
+### Type
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- Support for querying epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+
+{{< /history >}}
+
+**Description**: The type of object to query: one of the work item types or merge requests.
+
+**Allowed value types**:
+
+- `Enum`, one of:
+  - `Issue`
+  - `Incident`
+  - `Epic`
+  - `TestCase`
+  - `Requirement`
+  - `Task`
+  - `Ticket`
+  - `Objective`
+  - `KeyResult`
+  - `MergeRequest`
+- `List` (containing one or more `enum` values)
+
+**Additional details**:
+
+- If omitted when used inside a GLQL view, the default `type` is `Issue`.
+- `type = Epic` queries can only be used together with the [group](#group) field.
+
+**Examples**:
+
+- List incidents:
+
+  ```plaintext
+  type = incident
+  ```
+
+- List issues and tasks:
+
+  ```plaintext
+  type in (Issue, Task)
+  ```
+
+- List all merge requests assigned to the current user:
+
+  ```plaintext
+  type = MergeRequest and assignee = currentUser()
+  ```
+
+- List all epics authored by the current user in the group `gitlab-org`
+
+  ```plaintext
+  group = "gitlab-org" and type = Epic and author = currentUser()
+  ```
+
 ### Updated at
 
 {{< history >}}
@@ -1246,23 +1045,11 @@ format `field operator value`.
 
 **Description**: Query issues or merge requests by when they were last updated.
 
-**Field name**: `updated`
-
-**Aliases**: `updatedAt`
-
-**Allowed operators**: `=`, `>`, `<`, `>=`, `<=`
-
 **Allowed value types**:
 
 - `AbsoluteDate` (in the format `YYYY-MM-DD`)
 - `RelativeDate` (in the format `<sign><digit><unit>`, where sign is `+`, `-`, or omitted,
   digit is an integer, and `unit` is one of `d` (days), `w` (weeks), `m` (months) or `y` (years))
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
-- `MergeRequests`
 
 **Additional details**:
 
@@ -1293,19 +1080,10 @@ format `field operator value`.
 
 **Description**: Query issues by their weight.
 
-**Field name**: `weight`
-
-**Allowed operators**: `=`, `!=`
-
 **Allowed value types**:
 
 - `Number` (only positive integers or 0)
 - `Nullable` (either of `null`, `none`, or `any`)
-
-**Supported for object types**:
-
-- `Issue`
-- Work item types like `Task` or `Objective`
 
 **Additional details**:
 
@@ -1327,321 +1105,45 @@ format `field operator value`.
 
 ## Fields in GLQL views
 
-In GLQL views, the `fields` view parameter is a comma-separated list of fields, or field functions that
-can be used to indicate what fields to include in the rendered GLQL view.
-
-### Approved by user
-
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) `iteration` in GitLab 17.6.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) support for `merge requests` in GitLab 17.8.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) `last comment` in GitLab 17.11.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) support for `epics` in GitLab 18.1.
 
 {{< /history >}}
 
-**Description**: Display all users who have approved a merge request listed in the view.
-
-**Field name**: `approver`
-
-**Aliases**: `approvers`, `approvedBy`
-
-**Supported for**: Merge requests
-
-### Assignees
-
-**Description**: Display all users who are assigned to an object listed in the view.
-
-**Field name**: `assignee`
-
-**Aliases**: `assignees`
-
-**Supported for**: Issues, merge requests
-
-### Author
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display the author of an object listed in the view.
-
-**Field name**: `author`
-
-**Supported for**: Issues, epics, merge requests
-
-### Closed at
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display relative time since today when an object listed in the view was closed.
-
-**Field name**: `closed`
-
-**Aliases**: `closedAt`
-
-**Supported for**: Issues, epics, merge requests
-
-### Confidential
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display either `Yes` or `No` indicating whether an object listed in the view is confidential.
-
-**Field name**: `confidential`
-
-**Supported for**: Issues, epics
-
-### Created at
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display relative time since today when an object listed in the view was opened.
-
-**Field name**: `created`
-
-**Aliases**: `createdAt`
-
-**Supported for**: Issues, epics, merge requests
-
-### Deployed at
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-
-{{< /history >}}
-
-**Description**: Display relative time since today when a merge request listed in the view was deployed.
-
-**Field name**: `deployed`
-
-**Aliases**: `deployedAt`
-
-**Supported for**: Merge requests
-
-### Draft
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-
-{{< /history >}}
-
-**Description**: Display either `Yes` or `No` indicating whether a merge request listed in the view is in draft state.
-
-**Field name**: `draft`
-
-**Supported for**: Merge requests
-
-### Description
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Displays the description of an issue or a merge request listed in the view.
-
-**Field name**: `description`
-
-**Supported for**: Issues, epics, merge requests
-
-### Due date
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display relative time since today when an object listed in the view is due.
-
-**Field name**: `due`
-
-**Aliases**: `dueDate`
-
-**Supported for**: Issues, epics
-
-### Health status
-
-**Description**: Display a badge indicating the health status of an object listed in the view.
-
-**Field name**: `health`
-
-**Aliases**: `healthStatus`
-
-**Supported for**: Issues
-
-### ID
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display the ID of an object listed in the view.
-
-**Field name**: `id`
-
-**Supported for**: Issues, epics, merge requests
-
-### Iteration
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
-
-{{< /history >}}
-
-**Description**: Display the iteration an object listed in the view may be associated with.
-
-**Field name**: `iteration`
-
-**Supported for**: Issues
-
-### Labels
-
-**Description**: Display all labels associated with an object listed in the view.
-
-{{< history >}}
-
-- Support for epics [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Field name**: `label`
-
-**Aliases**: `labels`
-
-**Supported for**: Issues, epics, merge requests
-
-### Last comment
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
-
-{{< /history >}}
-
-**Description**: Display the last comment made on an object listed in the view.
-
-**Field name**: `lastComment`
-
-**Supported for**: Issues, epics, merge requests
-
-### Merged at
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-
-{{< /history >}}
-
-**Description**: Display relative time since today when a merge request listed in the view was merged.
-
-**Field name**: `merged`
-
-**Aliases**: `mergedAt`
-
-**Supported for**: Merge requests
-
-### Milestone
-
-**Description**: Display the milestone associated with an object listed in the view.
-
-**Field name**: `milestone`
-
-**Supported for**: Issues, epics, merge requests
-
-### Reviewers
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
-
-{{< /history >}}
-
-**Description**: Display all users who are assigned to a merge request listed in the view for review.
-
-**Field name**: `reviewer`
-
-**Aliases**: `reviewers`
-
-**Supported for**: Merge requests
-
-### Start date
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
-
-{{< /history >}}
-
-**Description**: Display the start date of epics listed in the view.
-
-**Field name**: `start`
-
-**Aliases**: `startDate`
-
-**Supported for**: Epics
-
-### State
-
-**Description**: Display a badge indicating the state of an object listed in the view. For issues and epics,
-possible values are `Open` or `Closed`. For merge requests, possible values are `Open`, `Closed` or `Merged`.
-
-**Field name**: `state`
-
-**Supported for**: Issues, epics, merge requests
-
-### Title
-
-**Description**: Displays the title of an object listed in the view.
-
-**Field name**: `title`
-
-**Supported for**: Issues, epics, merge requests
-
-### Type
-
-**Description**: Displays the type of the work item listed in the view, for example Issue, Task, Objective, or Key Result.
-
-**Field name**: `type`
-
-**Supported for**: Issues
-
-### Updated at
-
-**Description**: Display relative time since today when an object listed in the view was last updated.
-
-**Field name**: `updated`
-
-**Aliases**: `updatedAt`
-
-**Supported for**: Issues, epics, merge requests
-
-### Weight
-
-**Description**: Display the weight of an object listed in the view.
-
-**Field name**: `weight`
-
-**Supported for**: Issues
+In GLQL views, the `fields` view component is a comma-separated list of fields, or field functions that
+can be used to indicate what fields to include in the rendered GLQL view,
+for example, `fields: title, state, health, epic, milestone, weight, updated`.
+
+| Field            | Name or alias                         | Objects supported             | Description |
+| ---------------- | ------------------------------------- | ----------------------------- | ----------- |
+| Approved by user | `approver`, `approvers`, `approvedBy` | Merge requests                | Display users who approved the merge request |
+| Assignees        | `assignee`, `assignees`               | Issues, merge requests        | Display users assigned to the object |
+| Author           | `author`                              | Issues, epics, merge requests | Display the author of the object |
+| Closed at        | `closed`, `closedAt`                  | Issues, epics, merge requests | Display time since the object was closed |
+| Confidential     | `confidential`                        | Issues, epics                 | Display `Yes` or `No` indicating whether the object is confidential |
+| Created at       | `created`, `createdAt`                | Issues, epics, merge requests | Display time since the object was created |
+| Deployed at      | `deployed`, `deployedAt`              | Merge requests                | Display time since the merge request was deployed |
+| Description      | `description`                         | Issues, epics, merge requests | Display the description of the object |
+| Draft            | `draft`                               | Merge requests                | Display `Yes` or `No` indicating whether the merge request is in draft state |
+| Due date         | `due`, `dueDate`                      | Issues, epics                 | Display time until the object is due |
+| Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object |
+| ID               | `id`                                  | Issues, epics, merge requests | Display the ID of the object |
+| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object |
+| Labels           | `label`, `labels`                     | Issues, epics, merge requests | Display labels associated with the object. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
+| Last comment     | `lastComment`                         | Issues, epics, merge requests | Display the last comment made on the object |
+| Merged at        | `merged`, `mergedAt`                  | Merge requests                | Display time since the merge request was merged |
+| Milestone        | `milestone`                           | Issues, epics, merge requests | Display the milestone associated with the object |
+| Reviewers        | `reviewer`, `reviewers`               | Merge requests                | Display users assigned to review the merge request |
+| Start date       | `start`, `startDate`                  | Epics                         | Display the start date of the epic |
+| State            | `state`                               | Issues, epics, merge requests | Display a badge indicating the state of the object. For issues and epics, values are `Open` or `Closed`. For merge requests, values are `Open`, `Closed`, or `Merged` |
+| Title            | `title`                               | Issues, epics, merge requests | Display the title of the object |
+| Type             | `type`                                | Issues                        | Display the work item type, for example `Issue`, `Task`, or `Objective` |
+| Updated at       | `updated`, `updatedAt`                | Issues, epics, merge requests | Display time since the object was last updated |
+| Weight           | `weight`                              | Issues                        | Display the weight of the object |
 
 ## Fields to sort GLQL views by
 
@@ -1671,7 +1173,7 @@ field and order.
 
 **Examples**:
 
-- List all issues in the `gitlab-org/gitlab` project sorted by title. Display columns 
+- List all issues in the `gitlab-org/gitlab` project sorted by title. Display columns
   `state`, `title`, and `updated`.
 
   ````yaml
@@ -1684,7 +1186,7 @@ field and order.
   ````
 
 - List all merge requests in the `gitlab-org` group assigned to the
-  authenticated user sorted by the merge date (latest first). Display columns 
+  authenticated user sorted by the merge date (latest first). Display columns
   `title`, `reviewer`, and `merged`.
 
   ````yaml
@@ -1730,5 +1232,55 @@ field and order.
   fields: title, dueDate, assignee
   sort: dueDate asc
   query: group = "gitlab-org" and due >= today() and due <= 1w
+  ```
+  ````
+
+## Troubleshooting
+
+### Query timeout errors
+
+You might encounter these error messages:
+
+```plaintext
+GLQL view timed out. Add more filters to reduce the number of results.
+```
+
+```plaintext
+Query temporarily blocked due to repeated timeouts. Please try again later or try narrowing your search scope.
+```
+
+These errors occur when your query takes too long to execute.
+Large result sets and broad searches can cause timeouts.
+
+To resolve this issue, add filters to limit your search scope:
+
+- Add time range filters to limit results to a specific period, by using date fields like `created`, `updated`, or `closed`.
+  For example:
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, labels, created
+  query: group = "gitlab-org" and label = "group::knowledge" and created > "2025-01-01" and created < "2025-03-01"
+  ```
+  ````
+
+- Filter by recent updates to focus on active items:
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, labels, updated
+  query: group = "gitlab-org" and label = "group::knowledge" and updated > -3m
+  ```
+  ````
+
+- Use project-specific queries instead of group-wide searches when possible:
+
+  ````yaml
+  ```glql
+  display: table
+  fields: title, state, assignee
+  query: project = "gitlab-org/gitlab" and state = opened and updated > -1m
   ```
   ````

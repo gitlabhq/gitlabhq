@@ -23,6 +23,7 @@ module AuditEvents
       include BulkInsertSafe
       include EachBatch
       include PartitionedTable
+      include FromUnion
 
       self.primary_key = :id
 

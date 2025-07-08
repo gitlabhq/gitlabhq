@@ -72,13 +72,13 @@ RSpec.describe Gitlab::PDF::Security::GroupVulnerabilitiesHistory, feature_categ
 
       expect(pdf).to have_received(:text_box).with(s_('Vulnerability History'), any_args).once
 
-      expected_date_string = "#{data[:date_info]} (#{data[:selected_day_range]})"
+      expected_date_string = "#{data[:date_info]} (#{data[:selected_day_range]} Days)"
       expect(pdf).to have_received(:text_box).with(expected_date_string, any_args).once
 
-      expect(pdf).to have_received(:text_box).with('critical', any_args).once
-      expect(pdf).to have_received(:text_box).with('high', any_args).once
-      expect(pdf).to have_received(:text_box).with('medium', any_args).once
-      expect(pdf).to have_received(:text_box).with('low', any_args).once
+      expect(pdf).to have_received(:text_box).with('Critical', any_args).once
+      expect(pdf).to have_received(:text_box).with('High', any_args).once
+      expect(pdf).to have_received(:text_box).with('Medium', any_args).once
+      expect(pdf).to have_received(:text_box).with('Low', any_args).once
     end
 
     it 'renders the SVG charts' do

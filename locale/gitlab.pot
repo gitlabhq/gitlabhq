@@ -62254,6 +62254,9 @@ msgstr ""
 msgid "That's OK, I don't want to renew"
 msgstr ""
 
+msgid "The %{old} shortcut is deprecated. Use %{new} shortcut instead."
+msgstr ""
+
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr ""
 

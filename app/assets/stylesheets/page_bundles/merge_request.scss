@@ -165,7 +165,7 @@ $merge-request-sticky-header-height: 45px;
       container-type: scroll-state;
       container-name: sticky-header;
       top: $calc-application-header-height;
-      z-index: $tabs-holder-z-index;
+      z-index: $top-bar-z-index - 1;
 
       &:has(.detail-page-description)::after {
         height: calc(#{$merge-request-sticky-header-height} + 26px); // Height of the 2 sticky bars combined
@@ -173,10 +173,12 @@ $merge-request-sticky-header-height: 45px;
 
       &::after {
         content: '';
-        top: $calc-application-header-height;
         height: $merge-request-sticky-header-height;
         @include translucent-glass-background;
-        @apply gl-border-b gl-fixed gl-left-0 gl-right-0 gl-z-0 gl-hidden;
+        @apply gl-border-b gl-absolute gl-z-0 gl-hidden gl-top-0;
+
+        left: calc((100% + var(--application-bar-left) - 100vw) / 2);
+        width: calc(100vw - var(--application-bar-left));
       }
 
       @container sticky-header scroll-state(stuck: top) {
