@@ -63,7 +63,8 @@ module Gitlab
           end
 
           if record.is_a?(ActiveRecord::Relation)
-            serialize_many_relations(key, record, definition_options)
+            batch_order = batch_ordering(record, key, options[:batch_ids])
+            serialize_many_relations(key, record, definition_options, batch_order: batch_order)
           elsif record.respond_to?(:each) # this is to support `project_members` that return an Array
             serialize_many_each(key, record, definition_options)
           else
@@ -75,7 +76,7 @@ module Gitlab
 
         attr_reader :json_writer, :relations_schema, :exportable, :logger, :current_user
 
-        def serialize_many_relations(key, records, options)
+        def serialize_many_relations(key, records, options, batch_order:)
           log_relation_export(key, records.size)
 
           # Temporarily skip preloading associations for epics as that results in not preloading
@@ -85,7 +86,7 @@ module Gitlab
           # https://gitlab.com/gitlab-org/gitlab/-/issues/504684
           key_preloads = preloads&.dig(key) unless [:epic, :epics].include?(key)
 
-          batch(records, key) do |batch|
+          batch(records, key, batch_order: batch_order) do |batch|
             next if batch.empty?
 
             batch_enumerator = Enumerator.new do |items|
@@ -161,14 +162,11 @@ module Gitlab
           record.to_authorized_json(keys_to_authorize, current_user, options)
         end
 
-        def batch(relation, key)
+        def batch(relation, key, batch_order:)
           opts = { of: batch_size(key) }
-          order_by = reorders(relation, key)
 
-          # we need to sort issues by non primary key column(relative_position)
-          # and `in_batches` does not support that
-          if order_by
-            scope = relation.reorder(order_by)
+          if batch_order
+            scope = relation.reorder(batch_order)
 
             Gitlab::Pagination::Keyset::Iterator.new(scope: scope, use_union_optimization: true).each_batch(**opts) do |batch|
               yield batch
@@ -220,11 +218,27 @@ module Gitlab
           relations_schema[:preload]
         end
 
-        def reorders(relation, key)
+        # We can supply a custom `order_by` in `import_export.yml` if we
+        # need to sort by non-primary key or take advantage of advanced pagination techniques.
+        #
+        # When using batched exports in direct transfer. A set of record_ids may already
+        # be provided. In this case, it makes sense to rely on the original `IN`-based
+        # query rather than applying our own custom sort.
+        #
+        # @param records    The set of records currently being serialized.
+        # @param key        The relation key, e.g. :issues, :merge_requests
+        # @param record_ids An optional array of record IDs that may be provided during
+        #                   direct transfer batch export.
+        def batch_ordering(records, key, record_ids)
+          if key == :merge_requests &&
+              (record_ids || Feature.disabled?(:keyset_paginate_exported_merge_requests, exportable))
+            return
+          end
+
           export_reorder = relations_schema[:export_reorder]&.dig(key)
           return unless export_reorder
 
-          custom_reorder(relation.klass, export_reorder)
+          custom_reorder(records.klass, export_reorder)
         end
 
         def custom_reorder(klass, order_by)

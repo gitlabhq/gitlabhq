@@ -8,8 +8,9 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
   let(:user) { double }
   let(:generated_embedding) { [0.5, 0.6] }
   let(:collection_name) { 'items' }
+  let(:current_search_embedding_version) { { field: 'preset_field', model: model, class: Test::Embeddings } }
   let(:collection) do
-    double(collection_name: collection_name, current_search_embedding_version: { field: 'preset_field', model: model })
+    double(collection_name: collection_name, current_search_embedding_version: current_search_embedding_version)
   end
 
   let(:model) do
@@ -34,7 +35,8 @@ RSpec.describe ActiveContext::Databases::Postgresql::Processor, feature_category
     allow(client).to receive(:with_model_for).with(collection_name).and_yield(model)
     allow(ActiveContext).to receive(:adapter).and_return(adapter)
     allow(ActiveContext::Embeddings).to receive(:generate_embeddings)
-      .with(anything, model: model, user: user).and_return([generated_embedding])
+      .with(anything, version: current_search_embedding_version, user: user)
+      .and_return([generated_embedding])
   end
 
   shared_examples 'a SQL transformer' do |query, expected_sql|

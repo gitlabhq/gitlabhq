@@ -105,7 +105,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should display multi-project label when pipeline project id is not the same as triggered pipeline project id', () => {
-      expect(findPipelineLabel().text()).toBe('Multi-project');
+      expect(findPipelineLabel().text()).toBe('multi-project');
     });
   });
 
@@ -115,7 +115,7 @@ describe('Linked pipeline', () => {
     });
 
     it('should display parent label when pipeline project id is the same as triggered_by pipeline project id', () => {
-      expect(findPipelineLabel().exists()).toBe(true);
+      expect(findPipelineLabel().text()).toBe('parent');
     });
 
     it('upstream pipeline should contain the correct link', () => {

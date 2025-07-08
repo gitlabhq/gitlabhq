@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Test
-  class Embeddings < ::ActiveContext::Embeddings
+  class Embeddings
     def self.generate_embeddings(_content, _unit_primitive:, _model: nil, _user: nil)
       [
         [1, 2, 3, 4, 5],

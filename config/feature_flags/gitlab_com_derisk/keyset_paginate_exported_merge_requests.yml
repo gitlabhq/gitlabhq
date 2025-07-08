@@ -1,0 +1,10 @@
+---
+name: keyset_paginate_exported_merge_requests
+description: Use keyset pagination for serializing MRs during file-based export
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553170
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196530
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553171
+milestone: '18.2'
+group: group::import
+type: gitlab_com_derisk
+default_enabled: false

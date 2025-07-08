@@ -13,6 +13,7 @@ import SetStatusForm from './set_status_form.vue';
 Vue.use(GlToast);
 
 export default {
+  name: 'SetStatusModalWrapper',
   SET_STATUS_MODAL_ID,
   components: {
     GlModal,

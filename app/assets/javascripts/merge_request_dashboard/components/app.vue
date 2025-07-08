@@ -102,7 +102,7 @@ export default {
     },
   },
   mergeRequestIllustration,
-  docsPath: helpPagePath('/tutorials/merge_requests/homepage.html'),
+  docsPath: helpPagePath('/user/project/merge_requests/homepage.html'),
 };
 </script>
 

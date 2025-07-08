@@ -397,6 +397,7 @@ Custom token prefixes apply only to the following tokens:
 - [Deploy tokens](../../user/project/deploy_tokens/_index.md)
 - [Feature flags client tokens](../../operations/feature_flags.md#get-access-credentials)
 - [Incoming email tokens](../../security/tokens/_index.md#incoming-email-token)
+- [OAuth application secrets](../../integration/oauth_provider.md)
 
 Prerequisites:
 

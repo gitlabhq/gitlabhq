@@ -4116,13 +4116,19 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|AI-native features"
 msgstr ""
 
+msgid "AdminAIPoweredFeatures|AI-native features that help users accomplish tasks during the lifecycle of a merge request. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|AI-native features that support users outside of Chat or Code Suggestions. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
 msgid "AdminAIPoweredFeatures|Add self-hosted model"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|An AI assistant that provides real-time guidance helping users accomplish tasks like generate commit messages and merge request descriptions, without Chat. %{linkStart}Learn more.%{linkEnd}"
+msgid "AdminAIPoweredFeatures|An AI assistant that helps users accelerate software development using real-time conversational AI. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|An AI assistant that provides real-time guidance helping users understand code, generate tests, and boost collaboration, using Chat. %{linkStart}Learn more.%{linkEnd}"
+msgid "AdminAIPoweredFeatures|An AI-native feature that generates a summary of discussions on an issue. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|An error occurred while loading the AI feature settings. Please try again."
@@ -4131,7 +4137,7 @@ msgstr ""
 msgid "AdminAIPoweredFeatures|Apply to all sub-features"
 msgstr ""
 
-msgid "AdminAIPoweredFeatures|Assists developers by providing real-time code completions and recommendations. %{linkStart}Learn more.%{linkEnd}"
+msgid "AdminAIPoweredFeatures|Assists developers by generating and completing code in real-time. %{linkStart}Learn more.%{linkEnd}"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Code Suggestions"
@@ -4153,6 +4159,12 @@ msgid "AdminAIPoweredFeatures|GitLab Default"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|GitLab Duo Chat"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|GitLab Duo for issues"
+msgstr ""
+
+msgid "AdminAIPoweredFeatures|GitLab Duo for merge requests"
 msgstr ""
 
 msgid "AdminAIPoweredFeatures|Model"
@@ -12831,9 +12843,6 @@ msgid "Cherry-pick this commit"
 msgstr ""
 
 msgid "Cherry-pick this merge request"
-msgstr ""
-
-msgid "Child"
 msgstr ""
 
 msgid "Child issues and epics"
@@ -26582,6 +26591,9 @@ msgid "Failed to load stacktrace."
 msgstr ""
 
 msgid "Failed to load the Web IDE"
+msgstr ""
+
+msgid "Failed to load work items. Please try again."
 msgstr ""
 
 msgid "Failed to make repository read-only: %{reason}"
@@ -40389,9 +40401,6 @@ msgid "MrReports|Blockers"
 msgstr ""
 
 msgid "MrReports|Reports"
-msgstr ""
-
-msgid "Multi-project"
 msgstr ""
 
 msgid "Multiple IP address ranges are supported. Does not affect access to the group's settings."
@@ -65649,9 +65658,6 @@ msgstr ""
 msgid "Trigger cluster reindexing. Only use this with an index that was created in GitLab 13.0 or later."
 msgstr ""
 
-msgid "Trigger job"
-msgstr ""
-
 msgid "Trigger pipelines for mirror updates"
 msgstr ""
 
@@ -73416,6 +73422,9 @@ msgid_plural "checklist items"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "child"
+msgstr ""
+
 msgid "ci secure files"
 msgstr ""
 
@@ -74736,6 +74745,9 @@ msgstr ""
 msgid "mrWidget|Your password"
 msgstr ""
 
+msgid "multi-project"
+msgstr ""
+
 msgid "must be 254 characters or less."
 msgstr ""
 
@@ -75451,6 +75463,9 @@ msgid "toggle collapse"
 msgstr ""
 
 msgid "total must be less than or equal to %{size}"
+msgstr ""
+
+msgid "trigger job"
 msgstr ""
 
 msgid "trigger token"

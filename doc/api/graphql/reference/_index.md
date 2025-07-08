@@ -15478,6 +15478,29 @@ The edge type for [`ComplianceFramework`](#complianceframework).
 | <a id="complianceframeworkedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="complianceframeworkedgenode"></a>`node` | [`ComplianceFramework`](#complianceframework) | The item at the end of the edge. |
 
+#### `ComplianceFrameworksNeedingAttentionConnection`
+
+The connection type for [`ComplianceFrameworksNeedingAttention`](#complianceframeworksneedingattention).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworksneedingattentionconnectionedges"></a>`edges` | [`[ComplianceFrameworksNeedingAttentionEdge]`](#complianceframeworksneedingattentionedge) | A list of edges. |
+| <a id="complianceframeworksneedingattentionconnectionnodes"></a>`nodes` | [`[ComplianceFrameworksNeedingAttention]`](#complianceframeworksneedingattention) | A list of nodes. |
+| <a id="complianceframeworksneedingattentionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ComplianceFrameworksNeedingAttentionEdge`
+
+The edge type for [`ComplianceFrameworksNeedingAttention`](#complianceframeworksneedingattention).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworksneedingattentionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="complianceframeworksneedingattentionedgenode"></a>`node` | [`ComplianceFrameworksNeedingAttention`](#complianceframeworksneedingattention) | The item at the end of the edge. |
+
 #### `ComplianceRequirementConnection`
 
 The connection type for [`ComplianceRequirement`](#compliancerequirement).
@@ -24907,6 +24930,20 @@ Compliance framework Coverage summary for a group.
 | <a id="complianceframeworkcoveragesummarycoveredcount"></a>`coveredCount` | [`Int!`](#int) | Number of projects covered by at least one framework. |
 | <a id="complianceframeworkcoveragesummarytotalprojects"></a>`totalProjects` | [`Int!`](#int) | Total number of projects in the group. |
 
+### `ComplianceFrameworksNeedingAttention`
+
+Compliance framework requiring attention.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="complianceframeworksneedingattentionframework"></a>`framework` | [`ComplianceFramework!`](#complianceframework) | Compliance framework needing attention. |
+| <a id="complianceframeworksneedingattentionid"></a>`id` | [`ID!`](#id) | ID of the framework needing attention. |
+| <a id="complianceframeworksneedingattentionprojectscount"></a>`projectsCount` | [`Int!`](#int) | Number of projects with the framework applied. |
+| <a id="complianceframeworksneedingattentionrequirementscount"></a>`requirementsCount` | [`Int!`](#int) | Number of requirements in the framework. |
+| <a id="complianceframeworksneedingattentionrequirementswithoutcontrols"></a>`requirementsWithoutControls` | [`[ComplianceRequirement!]`](#compliancerequirement) | Requirements without controls. |
+
 ### `ComplianceRequirement`
 
 Represents a ComplianceRequirement associated with a ComplianceFramework.
@@ -28651,6 +28688,7 @@ GPG signature for a signed commit.
 | <a id="groupcicdsettings"></a>`ciCdSettings` {{< icon name="warning-solid" >}} | [`CiCdSettings`](#cicdsettings) | **Introduced** in GitLab 17.9. **Status**: Experiment. Namespace CI/CD settings for the namespace. |
 | <a id="groupcomplianceframeworkcoveragesummary"></a>`complianceFrameworkCoverageSummary` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageSummary`](#complianceframeworkcoveragesummary) | **Introduced** in GitLab 18.1. **Status**: Experiment. Summary of compliance framework coverage in a group and its subgroups. |
 | <a id="groupcomplianceframeworkscoveragedetails"></a>`complianceFrameworksCoverageDetails` {{< icon name="warning-solid" >}} | [`ComplianceFrameworkCoverageDetailConnection`](#complianceframeworkcoveragedetailconnection) | **Introduced** in GitLab 18.1. **Status**: Experiment. Detailed compliance framework coverage for each framework in the group. |
+| <a id="groupcomplianceframeworksneedingattention"></a>`complianceFrameworksNeedingAttention` {{< icon name="warning-solid" >}} | [`ComplianceFrameworksNeedingAttentionConnection`](#complianceframeworksneedingattentionconnection) | **Introduced** in GitLab 18.2. **Status**: Experiment. Frameworks missing either project assignments or requirements definitions. |
 | <a id="groupcompliancerequirementcontrolcoverage"></a>`complianceRequirementControlCoverage` {{< icon name="warning-solid" >}} | [`RequirementControlCoverage`](#requirementcontrolcoverage) | **Introduced** in GitLab 18.1. **Status**: Experiment. Compliance control status summary showing count of passed, failed, and pending controls. |
 | <a id="groupcompliancerequirementcoverage"></a>`complianceRequirementCoverage` {{< icon name="warning-solid" >}} | [`RequirementCoverage`](#requirementcoverage) | **Introduced** in GitLab 18.2. **Status**: Experiment. Compliance requirement coverage statistics for the group. |
 | <a id="groupcontainerrepositoriescount"></a>`containerRepositoriesCount` | [`Int!`](#int) | Number of container repositories in the group. |

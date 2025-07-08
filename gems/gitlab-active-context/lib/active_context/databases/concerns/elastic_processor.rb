@@ -250,7 +250,7 @@ module ActiveContext
 
           k = node_values[:k]
           field = node_values[:target] || preset_values[:field]
-          vector = node_values[:vector] || get_embeddings(node_values[:content], preset_values[:model])
+          vector = node_values[:vector] || get_embeddings(node_values[:content], preset_values)
 
           {
             k: k,

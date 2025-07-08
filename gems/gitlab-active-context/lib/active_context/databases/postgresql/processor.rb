@@ -105,7 +105,7 @@ module ActiveContext
           preset_values = collection.current_search_embedding_version
 
           column = node.value[:target] || preset_values[:field]
-          vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values[:model])
+          vector = node.value[:vector] || get_embeddings(node.value[:content], preset_values)
           limit = node.value[:k]
           vector_str = "[#{vector.join(',')}]"
 

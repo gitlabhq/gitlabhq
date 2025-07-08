@@ -24,7 +24,7 @@ describe('ReportAbuseDropdownItem', () => {
         reportedFromUrl: REPORTED_FROM_URL,
       },
       stubs: {
-        MountingPortal: stubComponent(MountingPortal),
+        MountingPortal: stubComponent(MountingPortal, { name: 'MountingPortal' }),
       },
     });
   };

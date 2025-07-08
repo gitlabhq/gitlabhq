@@ -11,6 +11,7 @@ import { HTTP_STATUS_BAD_REQUEST, HTTP_STATUS_OK } from '~/lib/utils/http_status
 import WorkItemBulkEditAssignee from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditLabels from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_labels.vue';
 import WorkItemBulkEditMilestone from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_milestone.vue';
+import WorkItemBulkEditParent from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_parent.vue';
 import WorkItemBulkEditSidebar from '~/work_items/components/work_item_bulk_edit/work_item_bulk_edit_sidebar.vue';
 import workItemBulkUpdateMutation from '~/work_items/graphql/list/work_item_bulk_update.mutation.graphql';
 import workItemParentQuery from '~/work_items/graphql/list//work_item_parent.query.graphql';
@@ -68,6 +69,7 @@ describe('WorkItemBulkEditSidebar component', () => {
   const findConfidentialityComponent = () =>
     wrapper.findComponentByTestId('bulk-edit-confidentiality');
   const findMilestoneComponent = () => wrapper.findComponent(WorkItemBulkEditMilestone);
+  const findParentComponent = () => wrapper.findComponent(WorkItemBulkEditParent);
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
@@ -148,6 +150,7 @@ describe('WorkItemBulkEditSidebar component', () => {
           findMilestoneComponent().vm.$emit('input', 'gid://gitlab/Milestone/30');
           findSubscriptionComponent().vm.$emit('input', 'unsubscribe');
           findStateComponent().vm.$emit('input', 'reopen');
+          findParentComponent().vm.$emit('input', 'gid://gitlab/WorkItem/101');
           findForm().vm.$emit('submit', { preventDefault: () => {} });
 
           expect(workItemBulkUpdateHandler).toHaveBeenCalledWith({
@@ -170,6 +173,9 @@ describe('WorkItemBulkEditSidebar component', () => {
               },
               subscriptionEvent: 'UNSUBSCRIBE',
               stateEvent: 'REOPEN',
+              hierarchyWidget: {
+                parentId: 'gid://gitlab/WorkItem/101',
+              },
             },
           });
           expect(findAddLabelsComponent().props('selectedLabelsIds')).toEqual([]);
@@ -438,6 +444,37 @@ describe('WorkItemBulkEditSidebar component', () => {
       await nextTick();
 
       expect(findMilestoneComponent().props('value')).toBe('gid://gitlab/Milestone/30');
+    });
+  });
+
+  describe('"Parent" component', () => {
+    it.each([true, false])('renders depending on isEpicsList prop', (isEpicsList) => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList },
+      });
+
+      expect(findParentComponent().exists()).toBe(!isEpicsList);
+    });
+
+    it('updates parent when "Parent" component emits "input" event', async () => {
+      createComponent({
+        provide: {
+          glFeatures: {
+            workItemsBulkEdit: true,
+          },
+        },
+        props: { isEpicsList: false },
+      });
+
+      findParentComponent().vm.$emit('input', 'gid://gitlab/WorkItem/30');
+      await nextTick();
+
+      expect(findParentComponent().props('value')).toBe('gid://gitlab/WorkItem/30');
     });
   });
 });

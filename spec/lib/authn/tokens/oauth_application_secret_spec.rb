@@ -13,8 +13,14 @@ RSpec.describe Authn::Tokens::OauthApplicationSecret, feature_category: :system_
   context 'with valid oauth application secret' do
     let(:plaintext) { oauth_application_secret.plaintext_secret }
     let(:valid_revocable) { oauth_application_secret }
+    let_it_be(:default_prefix) do
+      ::Gitlab::DoorkeeperSecretStoring::Token::UniqueApplicationToken::OAUTH_APPLICATION_SECRET_PREFIX_FORMAT
+        .split('-').first
+    end
 
     it_behaves_like 'finding the valid revocable'
+
+    it_behaves_like 'contains instance prefix when enabled'
 
     describe '#revoke!', :enable_admin_mode do
       subject(:revoke) { described_class.new(plaintext, :api_admin_token).revoke!(current_user) }

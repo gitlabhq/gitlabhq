@@ -7,7 +7,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
   let_it_be(:release) { create(:release) }
   let_it_be(:group) { create(:group) }
 
-  let_it_be(:exportable) do
+  let_it_be_with_reload(:exportable) do
     create(:project,
       :public,
       :repository,
@@ -35,13 +35,13 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
     {
       only: [:name, :description],
       include: include,
-      preload: { issues: nil },
+      preload: { issues: nil, merge_requests: nil },
       export_reorder: custom_orderer,
       include_if_exportable: include_if_exportable
     }
   end
 
-  subject do
+  subject(:serializer) do
     described_class.new(exportable, relations_schema, json_writer, exportable_path: exportable_path, logger: logger, current_user: user)
   end
 
@@ -521,6 +521,66 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
         subject.serialize_relation({ merge_requests: { include: [] } })
 
         expect(Dir.exist?(cache_dir)).to eq(false)
+      end
+    end
+
+    context 'when serializing a set of merge requests' do
+      let(:custom_orderer) do
+        {
+          merge_requests: {
+            column: :created_at,
+            direction: :asc,
+            nulls_position: :nulls_last
+          }
+        }
+      end
+
+      before do
+        create_list(:merge_request, 2, :unique_branches, source_project: exportable)
+      end
+
+      it 'uses keyset pagination to iterate over the set of MRs' do
+        expect(json_writer).to receive(:write_relation_array).with(
+          exportable_path,
+          :merge_requests,
+          exportable.merge_requests.map(&:to_json)
+        )
+
+        expect(Gitlab::Pagination::Keyset::Iterator).to receive(:new).and_call_original
+
+        serializer.serialize_relation({ merge_requests: { include: [] } })
+      end
+
+      context 'when batch ids are provided' do
+        it 'uses the default batching behaviour rather than switching to keyset pagination' do
+          expect(json_writer).to receive(:write_relation_array).with(
+            exportable_path,
+            :merge_requests,
+            exportable.merge_requests.map(&:to_json)
+          )
+
+          expect(Gitlab::Pagination::Keyset::Iterator).not_to receive(:new)
+
+          serializer.serialize_relation({ merge_requests: { include: [] } }, batch_ids: exportable.merge_requests.pluck(:id))
+        end
+      end
+
+      context 'when :keyset_paginate_exported_merge_requests is disabled' do
+        before do
+          stub_feature_flags(keyset_paginate_exported_merge_requests: false)
+        end
+
+        it 'calls json_writer.write_relation_array without using keyset pagination' do
+          expect(json_writer).to receive(:write_relation_array).with(
+            exportable_path,
+            :merge_requests,
+            exportable.merge_requests.map(&:to_json)
+          )
+
+          expect(Gitlab::Pagination::Keyset::Iterator).not_to receive(:new)
+
+          serializer.serialize_relation({ merge_requests: { include: [] } })
+        end
       end
     end
 

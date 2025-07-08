@@ -12,8 +12,8 @@ import workItemParent from '../../graphql/list/work_item_parent.query.graphql';
 import WorkItemBulkEditAssignee from './work_item_bulk_edit_assignee.vue';
 import WorkItemBulkEditDropdown from './work_item_bulk_edit_dropdown.vue';
 import WorkItemBulkEditLabels from './work_item_bulk_edit_labels.vue';
-
 import WorkItemBulkEditMilestone from './work_item_bulk_edit_milestone.vue';
+import WorkItemBulkEditParent from './work_item_bulk_edit_parent.vue';
 
 const WorkItemBulkEditIteration = () =>
   import('ee_component/work_items/components/list/work_item_bulk_edit_iteration.vue');
@@ -44,6 +44,7 @@ export default {
     WorkItemBulkEditLabels,
     WorkItemBulkEditIteration,
     WorkItemBulkEditMilestone,
+    WorkItemBulkEditParent,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: ['hasIssuableHealthStatusFeature', 'hasIterationsFeature'],
@@ -73,16 +74,17 @@ export default {
       assigneeId: undefined,
       confidentiality: undefined,
       healthStatus: undefined,
-      parentId: undefined,
+      parentNamespaceId: undefined,
       removeLabelIds: [],
       state: undefined,
       subscription: undefined,
-      iteration: undefined,
-      milestone: undefined,
+      iterationId: undefined,
+      milestoneId: undefined,
+      parentId: undefined,
     };
   },
   apollo: {
-    parentId: {
+    parentNamespaceId: {
       query: workItemParent,
       variables() {
         return {
@@ -145,7 +147,7 @@ export default {
         mutation: workItemBulkUpdateMutation,
         variables: {
           input: {
-            parentId: this.parentId,
+            parentId: this.parentNamespaceId,
             ids: this.checkedItems.map((item) => item.id),
             labelsWidget: hasLabelsToUpdate
               ? {
@@ -164,10 +166,11 @@ export default {
                   healthStatus: camelCase(this.healthStatus),
                 }
               : undefined,
-            iterationWidget: this.iteration ? { iterationId: this.iteration } : undefined,
-            milestoneWidget: this.milestone ? { milestoneId: this.milestone } : undefined,
+            iterationWidget: this.iterationId ? { iterationId: this.iterationId } : undefined,
+            milestoneWidget: this.milestoneId ? { milestoneId: this.milestoneId } : undefined,
             stateEvent: this.state && this.state.toUpperCase(),
             subscriptionEvent: this.subscription && this.subscription.toUpperCase(),
+            hierarchyWidget: this.parentId ? { parentId: this.parentId } : undefined,
           },
         },
       });
@@ -254,13 +257,19 @@ export default {
     />
     <work-item-bulk-edit-iteration
       v-if="shouldUseGraphQLBulkEdit && !isEpicsList && hasIterationsFeature"
-      v-model="iteration"
+      v-model="iterationId"
       :full-path="fullPath"
       :is-group="isGroup"
     />
     <work-item-bulk-edit-milestone
       v-if="shouldUseGraphQLBulkEdit && !isEpicsList"
-      v-model="milestone"
+      v-model="milestoneId"
+      :full-path="fullPath"
+      :is-group="isGroup"
+    />
+    <work-item-bulk-edit-parent
+      v-if="shouldUseGraphQLBulkEdit && !isEpicsList"
+      v-model="parentId"
       :full-path="fullPath"
       :is-group="isGroup"
     />

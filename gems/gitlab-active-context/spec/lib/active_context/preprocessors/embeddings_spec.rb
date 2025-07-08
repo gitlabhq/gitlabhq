@@ -68,6 +68,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
               ['Some content'],
               model: nil,
               unit_primitive: unit_primitive,
+              user: nil,
               batch_size: 10
             ).and_return([vectors])
 
@@ -99,6 +100,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   ['Other content'],
                   model: nil,
                   unit_primitive: unit_primitive,
+                  user: nil,
                   batch_size: 10
                 ).and_return([vectors])
 
@@ -128,6 +130,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   ['Some content'],
                   model: nil,
                   unit_primitive: unit_primitive,
+                  user: nil,
                   batch_size: 10
                 ).and_return([vectors])
 
@@ -199,6 +202,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   ['Some other content'],
                   model: nil,
                   unit_primitive: unit_primitive,
+                  user: nil,
                   batch_size: 10
                 ).and_return([vectors])
 
@@ -228,6 +232,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   ['Some content'],
                   model: nil,
                   unit_primitive: unit_primitive,
+                  user: nil,
                   batch_size: 10
                 ).and_return([vectors])
 
@@ -328,6 +333,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   ['Other content'],
                   model: nil,
                   unit_primitive: unit_primitive,
+                  user: nil,
                   batch_size: 10
                 ).and_return([vectors])
 
@@ -377,6 +383,7 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
                   ['Some other content'],
                   model: nil,
                   unit_primitive: unit_primitive,
+                  user: nil,
                   batch_size: 10
                 ).and_return([vectors])
 
@@ -402,26 +409,62 @@ RSpec.describe ActiveContext::Preprocessors::Embeddings do
     end
 
     describe 'embedding versions' do
-      context 'when embedding version class is not defined' do
-        let(:mock_embedding_version) { { field: :embedding, model: nil } }
-
-        it 'raises an EmbeddingsVersionError' do
-          expect { preprocessed_reference }.to raise_error(
-            described_class::EmbeddingsVersionError,
-            "No `class` specified for model version `embedding`."
+      shared_examples 'has an EmbeddingsClassError' do
+        # An ActiveContext::Embeddings::EmbeddingsClassError is raised here
+        # But all StandardError types are caught in `with_batch_handling`
+        # This will be addressed in https://gitlab.com/gitlab-org/gitlab/-/issues/552302
+        it 'raises an error', skip: 'error is still handled in `with_batch_handling`' do
+          expect { preprocessed_result }.to raise_error(
+            ActiveContext::Embeddings::EmbeddingsClassError,
+            expected_error_message
           )
+        end
+
+        # TODO: remove after https://gitlab.com/gitlab-org/gitlab/-/issues/552302
+        it 'logs the error' do
+          expect(ActiveContext::Logger).to receive(:retryable_exception) do |error_arg|
+            expect(error_arg.class).to eq ActiveContext::Embeddings::EmbeddingsClassError
+            expect(error_arg.message).to eq expected_error_message
+          end
+
+          expect(preprocessed_result[:successful]).to be_empty
+          expect(preprocessed_result[:failed]).to eq([reference])
         end
       end
 
-      context 'when embedding version class does not inherit from ActiveContext::Embeddings' do
+      context 'when embedding version class is not defined' do
+        let(:mock_embedding_version) { { field: :embedding, model: nil } }
+
+        it_behaves_like 'has an EmbeddingsClassError' do
+          let(:expected_error_message) { "No `class` specified for model version `embedding`." }
+        end
+      end
+
+      context 'when embedding version class does not implement a `generate_embeddings` class method' do
         let(:mock_embeddings_class) { Class.new(Object) }
         let(:mock_embedding_version) { { field: :embedding, model: nil, class: mock_embeddings_class } }
 
-        it 'raises an EmbeddingsVersionError' do
-          expect { preprocessed_reference }.to raise_error(
-            described_class::EmbeddingsVersionError,
-            "Specified class for model version `embedding` must inherit from `#{ActiveContext::Embeddings}`."
-          )
+        it_behaves_like 'has an EmbeddingsClassError' do
+          let(:expected_error_message) do
+            "Specified class for model version `embedding` must have a `generate_embeddings` class method."
+          end
+        end
+      end
+
+      context "when the embedding version class's generate_embeddings method expects the wrong arguments" do
+        let(:mock_embeddings_class) do
+          Class.new(Test::Embeddings) do
+            def self.generate_embeddings(the, wrong:, params:); end
+          end
+        end
+
+        let(:mock_embedding_version) { { field: :embedding, model: nil, class: mock_embeddings_class } }
+
+        it_behaves_like 'has an EmbeddingsClassError' do
+          let(:expected_error_message) do
+            "`#{mock_embeddings_class}.generate_embeddings` does not have the correct parameters: " \
+              "missing keywords: :wrong, :params"
+          end
         end
       end
     end

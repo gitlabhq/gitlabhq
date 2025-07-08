@@ -34,8 +34,8 @@ module ActiveContext
           end
         end
 
-        def get_embeddings(content, model)
-          ActiveContext::Embeddings.generate_embeddings(content, model: model, user: user)&.first
+        def get_embeddings(content, embeddings_version)
+          ActiveContext::Embeddings.generate_embeddings(content, version: embeddings_version, user: user)&.first
         end
       end
     end

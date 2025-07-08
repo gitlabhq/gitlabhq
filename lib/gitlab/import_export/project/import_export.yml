@@ -1204,6 +1204,10 @@ export_reorders:
       column: :relative_position
       direction: :asc
       nulls_position: :nulls_last
+    merge_requests:
+      column: :created_at
+      direction: :asc
+      nulls_position: :nulls_last
 
 # EE specific relationships and settings to include. All of this will be merged
 # into the previous structures if EE is used.

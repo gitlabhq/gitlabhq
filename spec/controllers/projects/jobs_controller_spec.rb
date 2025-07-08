@@ -391,7 +391,7 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
             sign_in(user)
           end
 
-          it 'user can edit runner' do
+          it 'returns job' do
             get_show_json
 
             expect(response).to have_gitlab_http_status(:ok)
@@ -410,12 +410,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
             sign_in(user)
           end
 
-          it 'user can not edit runner' do
+          it 'returns job' do
             get_show_json
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
-            expect(json_response['runner']).not_to have_key('edit_path')
+            expect(json_response['runner']).to have_key('edit_path')
           end
         end
 
@@ -428,12 +428,12 @@ RSpec.describe Projects::JobsController, :clean_gitlab_redis_shared_state, featu
             sign_in(user)
           end
 
-          it 'user can not edit runner' do
+          it 'returns job' do
             get_show_json
 
             expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('job/job_details')
-            expect(json_response['runner']).not_to have_key('edit_path')
+            expect(json_response['runner']).to have_key('edit_path')
           end
         end
       end

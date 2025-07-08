@@ -7,12 +7,6 @@ module ActiveContext
 
       IndexingError = Class.new(StandardError)
 
-      # We cannot inherit from StandardError because this is rescued in `with_batch_handling`
-      # This type of error should always fail since we want it to be caught immediately
-      # TODO: when https://gitlab.com/gitlab-org/gitlab/-/issues/552302 is completed,
-      #       we can change this to inherit from StandardError
-      EmbeddingsVersionError = Class.new(Exception) # rubocop: disable Lint/InheritException -- see comment above
-
       class_methods do
         def apply_embeddings(
           refs:,
@@ -80,32 +74,14 @@ module ActiveContext
 
         def generate_embeddings_for_each_version(versions:, contents:, unit_primitive:)
           versions.each_with_object({}) do |version, embeddings_by_version|
-            klass = embeddings_class(version)
-
-            embedding = klass.generate_embeddings(
+            embedding = ActiveContext::Embeddings.generate_embeddings(
               contents,
-              model: version[:model],
+              version: version,
               unit_primitive: unit_primitive,
               batch_size: version[:batch_size]
             )
             embeddings_by_version[version[:field]] = embedding
           end
-        end
-
-        def embeddings_class(embeddings_version)
-          klass = embeddings_version[:class]
-          field = embeddings_version[:field]
-
-          raise EmbeddingsVersionError, "No `class` specified for model version `#{field}`." if klass.nil?
-
-          unless klass <= ActiveContext::Embeddings
-            raise(
-              EmbeddingsVersionError,
-              "Specified class for model version `#{field}` must inherit from `#{ActiveContext::Embeddings}`."
-            )
-          end
-
-          klass
         end
       end
     end

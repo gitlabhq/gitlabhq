@@ -26,6 +26,8 @@ module Gitlab
                     value: release.description.truncate(DESCRIPTION_LIMIT),
                     raw: true)
                 end
+
+                variables.append(key: 'CI_RELEASE_NAME', value: release.name)
               end
             end
           end

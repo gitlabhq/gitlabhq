@@ -155,12 +155,12 @@ export default {
     },
     label() {
       if (this.parentPipeline) {
-        return __('Parent');
+        return __('parent');
       }
       if (this.isChildPipeline) {
-        return __('Child');
+        return __('child');
       }
-      return __('Multi-project');
+      return __('multi-project');
     },
     parentPipeline() {
       return this.isUpstream && !this.isMultiProject;

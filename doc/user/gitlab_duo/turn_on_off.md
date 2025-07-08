@@ -299,13 +299,6 @@ To turn GitLab Duo on or off for an instance:
 
 {{< /tabs >}}
 
-{{< alert type="note" >}}
-
-An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/441532) to allow administrators
-to override the setting for specific groups or projects.
-
-{{< /alert >}}
-
 ## Turn on beta and experimental features
 
 GitLab Duo features that are experimental and beta are turned off by default.

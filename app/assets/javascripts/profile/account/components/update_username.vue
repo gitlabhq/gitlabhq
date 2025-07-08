@@ -87,10 +87,13 @@ Please update your Git repository remotes as soon as possible.`),
           this.isRequestPending = false;
         })
         .catch((error) => {
+          const errorMessage =
+            error?.response?.data?.message ||
+            s__('Profiles|An error occurred while updating your username, please try again.');
+
           createAlert({
-            message:
-              error?.response?.data?.message ||
-              s__('Profiles|An error occurred while updating your username, please try again.'),
+            message: errorMessage,
+            renderMessageHTML: true,
           });
           this.isRequestPending = false;
           throw error;
