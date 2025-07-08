@@ -41,7 +41,7 @@ module Gitlab
         raise NotImplementedError
       end
 
-      def page_counter_id(parent)
+      def page_keyset_id(parent)
         raise NotImplementedError
       end
 
@@ -71,16 +71,16 @@ module Gitlab
 
       def process_batch(batch)
         batch.each do |parent_record|
-          # The page counter needs to be scoped by parent_record to avoid skipping
+          # The page keyset needs to be scoped by parent_record to avoid skipping
           # pages of notes from already imported parent_record.
-          page_counter = Gitlab::Import::PageCounter.new(project, page_counter_id(parent_record))
+          page_keyset = Gitlab::Import::PageKeyset.new(project, page_keyset_id(parent_record), ::Import::SOURCE_GITHUB)
           repo = project.import_source
-          options = collection_options.merge(page: page_counter.current)
+          resume_url = page_keyset.current
 
-          client.each_page(collection_method, repo, parent_record.iid, options) do |page|
-            next unless page_counter.set(page.number)
-
+          client.each_page(collection_method, resume_url, repo, parent_record.iid, collection_options) do |page|
             yield parent_record, page
+
+            page_keyset.set(page.url)
           end
 
           after_batch_processed(parent_record)

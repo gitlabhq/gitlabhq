@@ -526,7 +526,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/kubernetes/rollout_instances.rb'
     - 'lib/gitlab/language_data.rb'
     - 'lib/gitlab/lets_encrypt/client.rb'
-    - 'lib/gitlab/metrics/prometheus.rb'
     - 'lib/gitlab/prometheus_client.rb'
     - 'lib/gitlab/rack_attack/request.rb'
     - 'lib/gitlab/redis/multi_store.rb'

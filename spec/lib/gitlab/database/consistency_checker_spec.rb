@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Database::ConsistencyChecker, feature_category: :cell do
   let(:batch_size) { 10 }
   let(:max_batches) { 4 }
   let(:max_runtime) { described_class::MAX_RUNTIME }
-  let(:metrics_counter) { Gitlab::Metrics.registry.get(:consistency_checks) }
+  let(:metrics_counter) { Gitlab::Metrics.client.get(:consistency_checks) }
 
   subject(:consistency_checker) do
     described_class.new(

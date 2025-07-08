@@ -170,6 +170,7 @@
     "EpicIssue",
     "Issue",
     "MergeRequest",
+    "ProjectComplianceViolation",
     "Snippet",
     "Vulnerability",
     "WikiPage"

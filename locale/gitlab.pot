@@ -5838,6 +5838,9 @@ msgstr ""
 msgid "Agent not found for provided id."
 msgstr ""
 
+msgid "Agent sessions"
+msgstr ""
+
 msgid "Agents"
 msgstr ""
 
@@ -17035,7 +17038,13 @@ msgstr ""
 msgid "ComplianceViolation|Dismissed"
 msgstr ""
 
+msgid "ComplianceViolation|Fix suggestion generated for this failed control"
+msgstr ""
+
 msgid "ComplianceViolation|Framework"
+msgstr ""
+
+msgid "ComplianceViolation|Go to project settings"
 msgstr ""
 
 msgid "ComplianceViolation|In review"
@@ -23552,10 +23561,13 @@ msgstr ""
 msgid "DuoAgenticChat|GitLab Duo Agentic Chat"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Agent flow"
+msgid "DuoAgentsPlatform|Agent session"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Agents"
+msgid "DuoAgentsPlatform|Agent sessions"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Automate"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Convert Jenkins to CI"
@@ -23582,13 +23594,13 @@ msgstr ""
 msgid "DuoAgentsPlatform|New"
 msgstr ""
 
-msgid "DuoAgentsPlatform|New Agent Flow"
+msgid "DuoAgentsPlatform|New agent sessions will appear here."
 msgstr ""
 
-msgid "DuoAgentsPlatform|New Agent runs will appear here."
+msgid "DuoAgentsPlatform|New session"
 msgstr ""
 
-msgid "DuoAgentsPlatform|No Agent runs yet"
+msgid "DuoAgentsPlatform|No agent sessions yet"
 msgstr ""
 
 msgid "DuoAgentsPlatform|No logs available yet."
@@ -23603,16 +23615,16 @@ msgstr ""
 msgid "DuoAgentsPlatform|Prompt"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Run an Agent Flow"
-msgstr ""
-
-msgid "DuoAgentsPlatform|Select Agent Flow"
+msgid "DuoAgentsPlatform|Select a flow"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Something went wrong while fetching Agent Flows"
 msgstr ""
 
-msgid "DuoAgentsPlatform|Start Agent Flow"
+msgid "DuoAgentsPlatform|Start agent session"
+msgstr ""
+
+msgid "DuoAgentsPlatform|Start an agent session"
 msgstr ""
 
 msgid "DuoAgentsPlatform|Status"
@@ -53279,6 +53291,9 @@ msgstr ""
 msgid "Runners|Learn more in the %{linkStart}Google Cloud documentation%{linkEnd}."
 msgstr ""
 
+msgid "Runners|Loading"
+msgstr ""
+
 msgid "Runners|Machine type"
 msgstr ""
 
@@ -53577,6 +53592,9 @@ msgstr ""
 msgid "Runners|Runner assigned to project."
 msgstr ""
 
+msgid "Runners|Runner authentication token"
+msgstr ""
+
 msgid "Runners|Runner authentication token expiration"
 msgstr ""
 
@@ -53758,6 +53776,9 @@ msgid "Runners|The name of node pool"
 msgstr ""
 
 msgid "Runners|The project, group or instance where the runner was registered. Instance runners are always owned by Administrator."
+msgstr ""
+
+msgid "Runners|The runner authentication token displays here %{boldStart}for a short time only%{boldEnd}. After you register the runner, this token is stored in the %{codeStart}config.toml%{codeEnd} and cannot be accessed again from the UI."
 msgstr ""
 
 msgid "Runners|The runner authentication token is invalid"
@@ -54004,9 +54025,6 @@ msgid "Runner|Your CSV export has started. It will be sent to your email inbox w
 msgstr ""
 
 msgid "Running"
-msgstr ""
-
-msgid "Runs"
 msgstr ""
 
 msgid "Runs a number of housekeeping tasks within the current repository, such as compressing file revisions and removing unreachable objects."

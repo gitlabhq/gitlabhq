@@ -38949,11 +38949,31 @@ Compliance violation for a project.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="projectcomplianceviolationauditevent"></a>`auditEvent` | [`AuditEvent!`](#auditevent) | Audit event related to the violation. |
+| <a id="projectcomplianceviolationcommenters"></a>`commenters` | [`UserCoreConnection!`](#usercoreconnection) | All commenters on the noteable. (see [Connections](#connections)) |
 | <a id="projectcomplianceviolationcompliancecontrol"></a>`complianceControl` | [`ComplianceRequirementsControl!`](#compliancerequirementscontrol) | Compliance control of the violation. |
 | <a id="projectcomplianceviolationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the violation was detected. |
+| <a id="projectcomplianceviolationdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
 | <a id="projectcomplianceviolationid"></a>`id` | [`ID!`](#id) | Compliance violation ID. |
 | <a id="projectcomplianceviolationproject"></a>`project` | [`Project!`](#project) | Project of the compliance violation. |
 | <a id="projectcomplianceviolationstatus"></a>`status` | [`ComplianceViolationStatus!`](#complianceviolationstatus) | Compliance violation status of the project. |
+
+#### Fields with arguments
+
+##### `ProjectComplianceViolation.notes`
+
+All notes on this noteable.
+
+Returns [`NoteConnection!`](#noteconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectcomplianceviolationnotesfilter"></a>`filter` | [`NotesFilterType`](#notesfiltertype) | Type of notes collection: ALL_NOTES, ONLY_COMMENTS, ONLY_ACTIVITY. |
 
 ### `ProjectDataTransfer`
 
@@ -50262,6 +50282,7 @@ Implementations:
 - [`EpicIssue`](#epicissue)
 - [`Issue`](#issue)
 - [`MergeRequest`](#mergerequest)
+- [`ProjectComplianceViolation`](#projectcomplianceviolation)
 - [`Snippet`](#snippet)
 - [`Vulnerability`](#vulnerability)
 - [`WikiPage`](#wikipage)

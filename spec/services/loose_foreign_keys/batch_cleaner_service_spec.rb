@@ -138,7 +138,7 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
   end
 
   context 'when parent records are deleted' do
-    let(:deleted_records_counter) { Gitlab::Metrics.registry.get(:loose_foreign_key_processed_deleted_records) }
+    let(:deleted_records_counter) { Gitlab::Metrics.client.get(:loose_foreign_key_processed_deleted_records) }
 
     before do
       parent_record_1.delete
@@ -171,7 +171,7 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
     end
 
     it 'records the DeletedRecord status updates', :prometheus do
-      counter = Gitlab::Metrics.registry.get(:loose_foreign_key_processed_deleted_records)
+      counter = Gitlab::Metrics.client.get(:loose_foreign_key_processed_deleted_records)
 
       expect(counter.get(table: loose_fk_parent_table.table_name, db_config_name: 'main')).to eq(1)
     end
@@ -257,8 +257,8 @@ RSpec.describe LooseForeignKeys::BatchCleanerService, feature_category: :databas
       let(:modification_tracker) { instance_double(LooseForeignKeys::ModificationTracker) }
       let(:over_limit_return_values) { [true] }
       let(:deleted_record) { LooseForeignKeys::DeletedRecord.load_batch_for_table('public._test_loose_fk_parent_table', 1).first }
-      let(:deleted_records_rescheduled_counter) { Gitlab::Metrics.registry.get(:loose_foreign_key_rescheduled_deleted_records) }
-      let(:deleted_records_incremented_counter) { Gitlab::Metrics.registry.get(:loose_foreign_key_incremented_deleted_records) }
+      let(:deleted_records_rescheduled_counter) { Gitlab::Metrics.client.get(:loose_foreign_key_rescheduled_deleted_records) }
+      let(:deleted_records_incremented_counter) { Gitlab::Metrics.client.get(:loose_foreign_key_incremented_deleted_records) }
 
       let(:cleaner) do
         described_class.new(

@@ -9,14 +9,8 @@ require 'active_support/inflector'
 require 'active_support/core_ext/numeric/bytes'
 
 require 'gitlab/utils/all'
-
-if ENV["LABKIT_METRICS_ENABLED"] == "true"
-  require 'gitlab-labkit'
-  require_relative '../lib/gitlab/metrics/labkit'
-else
-  require 'prometheus/client'
-  require_relative '../lib/gitlab/metrics/prometheus'
-end
+require 'gitlab-labkit'
+require_relative '../lib/gitlab/metrics/labkit'
 
 require 'rack'
 

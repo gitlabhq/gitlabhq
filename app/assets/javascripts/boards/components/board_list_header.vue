@@ -213,6 +213,9 @@ export default {
         filters: this.filterParams,
       };
     },
+    showStatusIcon() {
+      return this.listType === 'status' && (!this.isSwimlanesHeader || !this.list.collapsed);
+    },
   },
   apollo: {
     // eslint-disable-next-line @gitlab/vue-no-undef-apollo-properties
@@ -387,7 +390,7 @@ export default {
         />
       </a>
       <gl-icon
-        v-if="listType === 'status'"
+        v-if="showStatusIcon"
         data-testid="status-icon"
         :name="listStatusIconName"
         :size="12"

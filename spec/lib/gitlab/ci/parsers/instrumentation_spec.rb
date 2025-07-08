@@ -19,7 +19,7 @@ RSpec.describe Gitlab::Ci::Parsers::Instrumentation do
 
       expect(result).to eq('parse hello world')
 
-      metrics = Gitlab::Metrics.registry.get(:ci_report_parser_duration_seconds).get({ parser: parser_class.name })
+      metrics = Gitlab::Metrics.client.get(:ci_report_parser_duration_seconds).get({ parser: parser_class.name })
 
       expect(metrics.keys).to match_array(described_class::BUCKETS)
     end

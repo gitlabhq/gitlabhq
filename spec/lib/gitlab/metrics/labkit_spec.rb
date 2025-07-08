@@ -11,10 +11,6 @@ RSpec.describe ::Gitlab::Metrics::Labkit, :prometheus, feature_category: :scalab
 
   let(:client) { all_metrics.client }
 
-  after do
-    all_metrics.clear_errors!
-  end
-
   describe '#reset_registry!' do
     it 'clears existing metrics' do
       counter = client.counter(:test, 'test metric')
@@ -29,16 +25,20 @@ RSpec.describe ::Gitlab::Metrics::Labkit, :prometheus, feature_category: :scalab
   end
 
   describe '#error_detected!' do
+    after do
+      Labkit::Metrics::Client.enable!
+    end
+
     it 'disables Prometheus metrics' do
       stub_application_setting(prometheus_metrics_enabled: true)
 
-      expect(all_metrics.error?).to be_falsey
+      expect(client.enabled?).to be_truthy
       expect(all_metrics.prometheus_metrics_enabled?).to be_truthy
 
       all_metrics.error_detected!
 
+      expect(client.enabled?).to be_falsey
       expect(all_metrics.prometheus_metrics_enabled?).to be_falsey
-      expect(all_metrics.error?).to be_truthy
     end
   end
 end

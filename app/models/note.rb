@@ -351,6 +351,10 @@ class Note < ApplicationRecord
     noteable_type == "Vulnerability"
   end
 
+  def for_compliance_violation?
+    noteable_type == 'ComplianceManagement::Projects::ComplianceViolation'
+  end
+
   def for_project_snippet?
     noteable.is_a?(ProjectSnippet)
   end
@@ -485,6 +489,8 @@ class Note < ApplicationRecord
       'security_resource'
     elsif for_wiki_page?
       'wiki_page'
+    elsif for_compliance_violation?
+      'compliance_violations_report'
     else
       noteable_type.demodulize.underscore
     end

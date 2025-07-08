@@ -56,6 +56,6 @@ RSpec.describe Ci::PrometheusMetrics::ObserveHistogramsService, feature_category
   end
 
   def histogram_data(name = :pipeline_graph_link_calculation_duration_seconds)
-    Gitlab::Metrics.registry.get(name)&.get({})
+    Gitlab::Metrics.client.get(name)&.get({})
   end
 end

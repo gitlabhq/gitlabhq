@@ -5,7 +5,7 @@ module MergeRequests
     def execute(merge_request)
       return cannot_create_pipeline_error unless can_create_pipeline_for?(merge_request)
 
-      create_detached_merge_request_pipeline(merge_request)
+      create_merge_request_pipeline(merge_request)
     end
 
     def execute_async(merge_request)
@@ -21,8 +21,8 @@ module MergeRequests
       )
     end
 
-    def create_detached_merge_request_pipeline(merge_request)
-      project, ref = detached_pipeline_project_and_ref(merge_request)
+    def create_merge_request_pipeline(merge_request)
+      project, ref = pipeline_project_and_ref(merge_request)
 
       Ci::CreatePipelineService.new(project,
         current_user,
@@ -48,7 +48,7 @@ module MergeRequests
 
     private
 
-    def detached_pipeline_project_and_ref(merge_request)
+    def pipeline_project_and_ref(merge_request)
       if can_create_pipeline_in_target_project?(merge_request)
         [merge_request.target_project, merge_request.ref_path]
       else

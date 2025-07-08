@@ -5223,7 +5223,6 @@
 - './spec/lib/gitlab/metrics/memory_spec.rb'
 - './spec/lib/gitlab/metrics/method_call_spec.rb'
 - './spec/lib/gitlab/metrics/methods_spec.rb'
-- './spec/lib/gitlab/metrics/prometheus_spec.rb'
 - './spec/lib/gitlab/metrics/rack_middleware_spec.rb'
 - './spec/lib/gitlab/metrics/rails_slis_spec.rb'
 - './spec/lib/gitlab/metrics/requests_rack_middleware_spec.rb'

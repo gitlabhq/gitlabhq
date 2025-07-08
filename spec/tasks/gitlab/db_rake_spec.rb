@@ -1498,6 +1498,15 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     before do
       allow(Gitlab.config.cell).to receive(:enabled).and_return(true)
 
+      acsr = Gitlab::Database::AlterCellSequencesRange.new(
+        1,
+        100000,
+        connection
+      )
+
+      connection.execute(acsr.alter_new_sequences_range_function)
+      connection.execute(acsr.alter_new_sequences_range_trigger)
+
       connection.execute(<<~SQL)
         CREATE SEQUENCE test_sequence_range_0_90000 START 1 MINVALUE 1 MAXVALUE 90000;
         CREATE SEQUENCE test_sequence_range_300000_390000 START 300000 MINVALUE 300000 MAXVALUE 390000;
@@ -1506,6 +1515,13 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         SELECT nextval('test_sequence_range_0_90000');
         SELECT nextval('test_sequence_range_300000_390000');
         SELECT nextval('test_sequence_range_700000_790000');
+      SQL
+    end
+
+    after do
+      connection.execute(<<~SQL)
+        DROP EVENT TRIGGER IF EXISTS alter_new_sequences_range;
+        DROP FUNCTION IF EXISTS alter_new_sequences_range;
       SQL
     end
 

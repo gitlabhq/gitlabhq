@@ -120,6 +120,7 @@ export default {
           return;
         }
 
+        this.$emit('onGetNewRunnerId', runner.id);
         this.$emit('next');
         // destroy the alert
         createAlert({ message: null }).dismiss();

@@ -360,7 +360,7 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     end
   end
 
-  describe '#each_object_to_import' do
+  describe '#each_object_to_import', :clean_gitlab_redis_shared_state do
     let(:importer) { importer_class.new(project, client) }
     let(:object) { {} }
     let(:object_counter_class) { Gitlab::GithubImport::ObjectCounter }
@@ -372,17 +372,16 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
     end
 
     it 'yields every object to import' do
-      page = double(:page, objects: [object], number: 1)
+      page = instance_double(Gitlab::GithubImport::Client::Page, objects: [object], url: nil)
 
       expect(client)
         .to receive(:each_page)
-        .with(:issues, 'foo/bar', { state: 'all', page: 1 })
+        .with(:issues, nil, 'foo/bar', { state: 'all' })
         .and_yield(page)
 
-      expect(importer.page_counter)
+      expect(importer.page_keyset)
         .to receive(:set)
-        .with(1)
-        .and_return(true)
+        .with(nil)
 
       expect(importer)
         .to receive(:already_imported?)
@@ -400,22 +399,27 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
         .to yield_with_args(object)
     end
 
-    it 'resumes from the last page' do
-      page = double(:page, objects: [object], number: 2)
+    it 'resumes from the last processed page URL' do
+      last_processed_url = 'https://api.github.com/repositories/1/issues?page=2'
 
-      expect(importer.page_counter)
+      page = instance_double(
+        Gitlab::GithubImport::Client::Page,
+        objects: [object],
+        url: last_processed_url
+      )
+
+      expect(importer.page_keyset)
         .to receive(:current)
-        .and_return(2)
+        .and_return(last_processed_url)
 
       expect(client)
         .to receive(:each_page)
-        .with(:issues, 'foo/bar', { state: 'all', page: 2 })
+        .with(:issues, last_processed_url, 'foo/bar', { state: 'all' })
         .and_yield(page)
 
-      expect(importer.page_counter)
+      expect(importer.page_keyset)
         .to receive(:set)
-        .with(2)
-        .and_return(true)
+        .with(last_processed_url)
 
       expect(importer)
         .to receive(:already_imported?)
@@ -431,37 +435,15 @@ RSpec.describe Gitlab::GithubImport::ParallelScheduling, feature_category: :impo
 
       expect { |b| importer.each_object_to_import(&b) }
         .to yield_with_args(object)
-    end
-
-    it 'does not yield any objects if the page number was not set' do
-      page = double(:page, objects: [object], number: 1)
-
-      expect(client)
-        .to receive(:each_page)
-        .with(:issues, 'foo/bar', { state: 'all', page: 1 })
-        .and_yield(page)
-
-      expect(importer.page_counter)
-        .to receive(:set)
-        .with(1)
-        .and_return(false)
-
-      expect { |b| importer.each_object_to_import(&b) }
-        .not_to yield_control
     end
 
     it 'does not yield the object if it was already imported' do
-      page = double(:page, objects: [object], number: 1)
+      page = instance_double(Gitlab::GithubImport::Client::Page, objects: [object], url: nil)
 
       expect(client)
         .to receive(:each_page)
-        .with(:issues, 'foo/bar', { state: 'all', page: 1 })
+        .with(:issues, nil, 'foo/bar', { state: 'all' })
         .and_yield(page)
-
-      expect(importer.page_counter)
-        .to receive(:set)
-        .with(1)
-        .and_return(true)
 
       expect(importer)
         .to receive(:already_imported?)

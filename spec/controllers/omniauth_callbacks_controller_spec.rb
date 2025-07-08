@@ -171,7 +171,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         it 'increments Prometheus counter' do
           expect { post(provider) }.to(
             change do
-              Gitlab::Metrics.registry
+              Gitlab::Metrics.client
                             .get(:gitlab_omniauth_login_total)
                             &.get(omniauth_provider: 'github', status: 'succeeded')
                             .to_f
@@ -198,7 +198,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         it 'increments Prometheus counter' do
           expect { post(provider) }.to(
             change do
-              Gitlab::Metrics.registry
+              Gitlab::Metrics.client
                              .get(:gitlab_omniauth_login_total)
                              &.get(omniauth_provider: 'github', status: 'succeeded')
                              .to_f
@@ -312,7 +312,7 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
         ForgeryProtection.with_forgery_protection do
           expect { post :failure }.to(
             change do
-              Gitlab::Metrics.registry
+              Gitlab::Metrics.client
                              .get(:gitlab_omniauth_login_total)
                              &.get(omniauth_provider: 'saml', status: 'failed')
                              .to_f

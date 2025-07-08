@@ -42,15 +42,6 @@
   &.animating {
     overflow: hidden;
   }
-
-  .settings-toggle svg {
-    @include gl-prefers-reduced-motion-transition;
-    @apply gl-transition;
-  }
-
-  &.expanded .settings-toggle svg {
-    transform: rotate(90deg);
-  }
 }
 
 .vue-settings-block {
@@ -150,6 +141,7 @@
   .instance-runners-info {
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-alert-body {
+      // selector-max-compound-selectors
       p:last-child {
         margin-bottom: 0;
       }

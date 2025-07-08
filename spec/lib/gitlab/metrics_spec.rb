@@ -11,12 +11,6 @@ RSpec.describe Gitlab::Metrics, :prometheus, feature_category: :scalability do
     end
   end
 
-  describe '.enabled?' do
-    it 'returns a boolean' do
-      expect(described_class.enabled?).to be_in([true, false])
-    end
-  end
-
   describe '.prometheus_metrics_enabled?' do
     subject { described_class.prometheus_metrics_enabled? }
 
@@ -25,7 +19,6 @@ RSpec.describe Gitlab::Metrics, :prometheus, feature_category: :scalability do
     context 'when Gitlab::CurrentSettings.prometheus_metrics_enabled is enabled' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(true)
-        allow(described_class).to receive(:metrics_folder_present?).and_return(true)
         Labkit::Metrics::Client.enable!
       end
 
@@ -35,7 +28,6 @@ RSpec.describe Gitlab::Metrics, :prometheus, feature_category: :scalability do
     context 'when Gitlab::CurrentSettings.prometheus_metrics_enabled is false' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(false)
-        allow(described_class).to receive(:metrics_folder_present?).and_return(true)
         Labkit::Metrics::Client.enable!
       end
 
@@ -45,7 +37,6 @@ RSpec.describe Gitlab::Metrics, :prometheus, feature_category: :scalability do
     context 'when metrics are disabled' do
       before do
         allow(Gitlab::CurrentSettings).to receive(:prometheus_metrics_enabled).and_return(true)
-        allow(described_class).to receive(:metrics_folder_present?).and_return(false)
         Labkit::Metrics::Client.disable!
       end
 

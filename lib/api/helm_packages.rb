@@ -20,7 +20,11 @@ module API
     content_type :binary, 'application/octet-stream'
     content_type :yaml, 'text/yaml'
 
-    formatter :yaml, ->(object, _) { object.serializable_hash.stringify_keys.to_yaml }
+    formatter :yaml, ->(object, _) do
+      yaml_content = object.serializable_hash.stringify_keys.to_yaml
+
+      yaml_content.gsub(Gitlab::Regex.helm_index_app_version_quote_regex, '\1"\2"')
+    end
 
     authenticate_with do |accept|
       accept.token_types(:personal_access_token, :deploy_token, :job_token)
@@ -50,12 +54,13 @@ module API
         end
 
         get ":channel/index.yaml" do
+          env['api.format'] = :yaml
+
           project = authorized_user_project(action: :read_package)
           authorize_read_package!(project)
 
           packages = Packages::Helm::PackagesFinder.new(project, params[:channel]).execute
 
-          env['api.format'] = :yaml
           present ::Packages::Helm::IndexPresenter.new(params[:id], params[:channel], packages),
             with: ::API::Entities::Helm::Index
         end

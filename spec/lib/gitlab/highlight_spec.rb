@@ -144,7 +144,7 @@ RSpec.describe Gitlab::Highlight do
     it 'increments usage counter', :prometheus do
       described_class.highlight(file_name, content)
 
-      gitlab_highlight_usage_counter = Gitlab::Metrics.registry.get(:gitlab_highlight_usage)
+      gitlab_highlight_usage_counter = Gitlab::Metrics.client.get(:gitlab_highlight_usage)
 
       expect(gitlab_highlight_usage_counter.get(used_on: :blob)).to eq(1)
       expect(gitlab_highlight_usage_counter.get(used_on: :diff)).to eq(0)
@@ -154,7 +154,7 @@ RSpec.describe Gitlab::Highlight do
       it 'increments usage counter', :prometheus do
         described_class.highlight(file_name, content, used_on: :diff)
 
-        gitlab_highlight_usage_counter = Gitlab::Metrics.registry.get(:gitlab_highlight_usage)
+        gitlab_highlight_usage_counter = Gitlab::Metrics.client.get(:gitlab_highlight_usage)
 
         expect(gitlab_highlight_usage_counter.get(used_on: :diff)).to eq(1)
         expect(gitlab_highlight_usage_counter.get(used_on: :blob)).to eq(0)

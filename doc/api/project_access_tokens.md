@@ -86,7 +86,7 @@ curl --request GET \
 
 ## Get details on a project access token
 
-Gets details on a project access token. You can either reference a specific project access token, or use the keyword `self` to return details on the authenticating project access token.
+Gets details on a project access token.
 
 ```plaintext
 GET projects/:id/access_tokens/:token_id
@@ -95,7 +95,7 @@ GET projects/:id/access_tokens/:token_id
 | Attribute  | Type              | required | Description |
 | ---------- | ----------------- | -------- | ----------- |
 | `id`       | integer or string | yes      | ID or [URL-encoded path](rest/_index.md#namespaced-paths) of a project. |
-| `token_id` | integer or string | yes      | ID of a project access token or the keyword `self`. |
+| `token_id` | integer or string | yes      | ID |
 
 ```shell
 curl --request GET \

@@ -2,7 +2,6 @@
 import {
   GlAvatarLabeled,
   GlBadge,
-  GlIcon,
   GlKeysetPagination,
   GlLoadingIcon,
   GlTable,
@@ -34,7 +33,6 @@ export default {
   components: {
     GlAvatarLabeled,
     GlBadge,
-    GlIcon,
     GlKeysetPagination,
     GlLoadingIcon,
     GlTable,
@@ -206,7 +204,7 @@ export default {
 
 <template>
   <div>
-    <gl-table :items="nodes" :fields="fields" :busy="isLoading" show-empty>
+    <gl-table :items="nodes" :fields="fields" :busy="isLoading" show-empty stacked="md">
       <template #table-busy>
         <gl-loading-icon size="lg" class="gl-my-5" />
       </template>
@@ -231,40 +229,35 @@ export default {
       </template>
 
       <template #cell(source)="{ item }">
-        <div class="gl-flex gl-gap-1">
-          <gl-icon name="location" />
-          <span>{{ item.sourceHostname }}</span>
-        </div>
-        <div class="gl-mt-2">{{ item.sourceName }}</div>
-        <div class="gl-mt-2 gl-flex gl-gap-1">
-          <span v-if="item.sourceUsername">@{{ item.sourceUsername }}</span>
-          <template v-else>
-            <help-popover
-              :aria-label="s__('UserMapping|Full user details missing')"
-              class="gl-inline-flex"
+        <p class="gl-mb-2">{{ item.sourceHostname }}</p>
+        <p class="gl-mb-2">{{ item.sourceName }}</p>
+        <p v-if="item.sourceUsername" class="gl-mb-2">@{{ item.sourceUsername }}</p>
+        <template v-else>
+          <help-popover
+            :aria-label="s__('UserMapping|Full user details missing')"
+            class="gl-relative gl-top-[-2px]"
+          >
+            <gl-sprintf
+              :message="
+                s__(
+                  'UserMapping|Full user details could not be fetched from source instance. %{linkStart}Why are placeholder users created%{linkEnd}?',
+                )
+              "
             >
-              <gl-sprintf
-                :message="
-                  s__(
-                    'UserMapping|Full user details could not be fetched from source instance. %{linkStart}Why are placeholder users created%{linkEnd}?',
-                  )
-                "
-              >
-                <template #link="{ content }">
-                  <gl-link
-                    class="gl-text-sm"
-                    :href="$options.placeholderUsersHelpPath"
-                    target="_blank"
-                    >{{ content }}</gl-link
-                  >
-                </template>
-              </gl-sprintf>
-            </help-popover>
-            <span class="gl-font-subtle gl-italic"
-              >{{ s__('UserMapping|User ID') }}: {{ item.sourceUserIdentifier }}</span
-            >
-          </template>
-        </div>
+              <template #link="{ content }">
+                <gl-link
+                  class="gl-text-sm"
+                  :href="$options.placeholderUsersHelpPath"
+                  target="_blank"
+                  >{{ content }}</gl-link
+                >
+              </template>
+            </gl-sprintf>
+          </help-popover>
+          <span class="gl-font-subtle gl-italic"
+            >{{ s__('UserMapping|User ID') }}: {{ item.sourceUserIdentifier }}</span
+          >
+        </template>
       </template>
 
       <template #head(createdAt)="{ label }">

@@ -1,7 +1,8 @@
-import { GlCollapse } from '@gitlab/ui';
+import { GlCollapse, GlAnimatedChevronLgRightDownIcon } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import SettingsBlock from '~/vue_shared/components/settings/settings_block.vue';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { parseBoolean } from '~/lib/utils/common_utils';
 
 describe('Settings Block', () => {
   let wrapper;
@@ -21,6 +22,7 @@ describe('Settings Block', () => {
   const findTitle = () => wrapper.findByTestId('settings-block-title');
   const findToggleButton = () => wrapper.findByTestId('settings-block-toggle');
   const findDescriptionSlot = () => wrapper.findByTestId('description-slot');
+  const findChevronIcon = () => wrapper.findComponent(GlAnimatedChevronLgRightDownIcon);
 
   it('has a default slot', () => {
     mountComponent();
@@ -75,6 +77,13 @@ describe('Settings Block', () => {
       expect(findToggleButton().attributes('aria-label')).toContain('Expand');
     });
 
+    it('animates chevron', () => {
+      // Vue compat doesn't know about component props if it extends other component
+      expect(
+        findChevronIcon().props('isOn') ?? parseBoolean(findChevronIcon().attributes('is-on')),
+      ).toBe(false);
+    });
+
     describe('when `Expand` button is clicked', () => {
       beforeEach(async () => {
         await findToggleButton().trigger('click');
@@ -117,6 +126,13 @@ describe('Settings Block', () => {
 
     it('renders button with `Collapse` text', () => {
       expect(findToggleButton().attributes('aria-label')).toContain('Collapse');
+    });
+
+    it('animates chevron', () => {
+      // Vue compat doesn't know about component props if it extends other component
+      expect(
+        findChevronIcon().props('isOn') ?? parseBoolean(findChevronIcon().attributes('is-on')),
+      ).toBe(true);
     });
 
     describe('when `Collapse` button is clicked', () => {

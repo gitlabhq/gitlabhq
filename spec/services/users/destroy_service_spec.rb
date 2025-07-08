@@ -165,7 +165,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
           it 'updates the scheduled records gauge' do
             service.execute(user)
 
-            gauge = Gitlab::Metrics.registry.get(:gitlab_ghost_user_migration_scheduled_records_total)
+            gauge = Gitlab::Metrics.client.get(:gitlab_ghost_user_migration_scheduled_records_total)
             expect(gauge.get).to eq(1)
           end
         end
@@ -179,7 +179,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
 
             service.execute(user)
 
-            gauge = Gitlab::Metrics.registry.get(:gitlab_ghost_user_migration_scheduled_records_total)
+            gauge = Gitlab::Metrics.client.get(:gitlab_ghost_user_migration_scheduled_records_total)
             expect(gauge.get).to eq(9000)
           end
         end
@@ -191,7 +191,7 @@ RSpec.describe Users::DestroyService, feature_category: :user_management do
 
           service.execute(user)
 
-          gauge = Gitlab::Metrics.registry.get(:gitlab_ghost_user_migration_lag_seconds)
+          gauge = Gitlab::Metrics.client.get(:gitlab_ghost_user_migration_lag_seconds)
           expect(gauge.get).to eq(600)
         end
       end

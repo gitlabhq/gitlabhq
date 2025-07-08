@@ -783,6 +783,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('my package name') }
     it { is_expected.not_to match('foo.bar.baz-2.0-20190901~47283-1') }
     it { is_expected.not_to match('!!()()') }
+    it { is_expected.not_to match('myfile@1.1.tar.gz') }
   end
 
   describe '.generic_package_file_name_regex' do
@@ -792,6 +793,7 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('foo') }
     it { is_expected.to match('foo.bar.baz-2.0-20190901.47283-1.jar') }
     it { is_expected.to match('foo.bar.baz-2.0-20190901~47283-1') }
+    it { is_expected.to match('myfile@1.1.tar.gz') }
     it { is_expected.not_to match('../../foo') }
     it { is_expected.not_to match('..\..\foo') }
     it { is_expected.not_to match('%2f%2e%2e%2f%2essh%2fauthorized_keys') }
@@ -800,6 +802,8 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.not_to match('!!()()') }
     it { is_expected.not_to match('~/../../filename') }
     it { is_expected.not_to match('filename~') }
+    it { is_expected.not_to match('@filename') }
+    it { is_expected.not_to match('filename@') }
   end
 
   describe '.prefixed_semver_regex' do
@@ -1157,5 +1161,16 @@ RSpec.describe Gitlab::Regex, feature_category: :tooling do
     it { is_expected.to match('my file name') }
     it { is_expected.to match('1.0-SNAPSHOT_v1_snapshot edited') }
     it { is_expected.not_to match('!!()()') }
+  end
+
+  describe '.helm_index_app_version_quote_regex' do
+    subject { described_class.helm_index_app_version_quote_regex }
+
+    it { is_expected.to match('appVersion: master') }
+    it { is_expected.to match('appVersion: 4852e000') }
+    it { is_expected.to match('appVersion: v1.0.0') }
+    it { is_expected.not_to match('apiVersion: master') }
+    it { is_expected.not_to match('apiVersion: "4852e000"') }
+    it { is_expected.not_to match('apiVersion: \'v1.0.0\'') }
   end
 end

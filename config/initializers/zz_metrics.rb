@@ -2,7 +2,7 @@
 
 # This file was prefixed with zz_ because we want to load it the last!
 # See: https://gitlab.com/gitlab-org/gitlab-foss/issues/55611
-if Gitlab::Metrics.enabled? && Gitlab::Runtime.application?
+if Gitlab::Metrics.prometheus_metrics_enabled? && Gitlab::Runtime.application?
   require 'pathname'
   require 'connection_pool'
 

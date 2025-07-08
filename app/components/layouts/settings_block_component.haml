@@ -3,8 +3,12 @@
     = callout
   .gl-flex.gl-justify-between.gl-items-start.gl-gap-x-3.gl-pt-5
     .gl-shrink-0.gl-px-2.gl-py-0.-gl-mr-3.sm:gl-p-2.sm:gl-mr-0
-      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, icon: 'chevron-lg-right', icon_classes: '!-gl-mx-2', button_text_classes: 'gl-sr-only', button_options: @button_options.merge(class: 'settings-toggle js-settings-toggle', 'aria-label': aria_label)) do
-        = button_text
+      = render Pajamas::ButtonComponent.new(category: :tertiary, size: :small, button_options: @button_options.merge(class: 'btn-icon settings-toggle js-settings-toggle', 'aria-label': aria_label)) do
+        .gl-sr-only = button_text
+        = render Pajamas::AnimatedIconComponent.new(icon: :chevron_lg_right_down,
+            variant: :current,
+            is_on: @expanded,
+            icon_options: { class: 'js-settings-icon' })
     .gl-grow
       %h2{ class: title_classes, data: { 'settings-block-title': '' } }
         = heading || @heading

@@ -136,6 +136,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::HostList do
   end
 
   def expect_metrics(hosts)
-    expect(Gitlab::Metrics.registry.get(:db_load_balancing_hosts).get({})).to eq(hosts)
+    expect(Gitlab::Metrics.client.get(:db_load_balancing_hosts).get({})).to eq(hosts)
   end
 end

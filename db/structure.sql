@@ -24932,6 +24932,7 @@ CREATE TABLE user_preferences (
     extensions_marketplace_opt_in_url text,
     dark_color_scheme_id smallint,
     work_items_display_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    default_duo_add_on_assignment_id bigint,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),
@@ -33410,6 +33411,8 @@ CREATE INDEX achievement_uploads_store_idx ON achievement_uploads USING btree (s
 CREATE INDEX achievement_uploads_uploaded_by_user_id_idx ON achievement_uploads USING btree (uploaded_by_user_id);
 
 CREATE INDEX achievement_uploads_uploader_path_idx ON achievement_uploads USING btree (uploader, path);
+
+CREATE UNIQUE INDEX add_default_user_assignment_to_user_preferences ON user_preferences USING btree (default_duo_add_on_assignment_id);
 
 CREATE INDEX ai_vectorizable_file_uploads_checksum_idx ON ai_vectorizable_file_uploads USING btree (checksum);
 
@@ -43196,6 +43199,9 @@ ALTER TABLE ONLY status_check_responses
 
 ALTER TABLE ONLY merge_request_metrics
     ADD CONSTRAINT fk_56067dcb44 FOREIGN KEY (target_project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY user_preferences
+    ADD CONSTRAINT fk_561e98d37c FOREIGN KEY (default_duo_add_on_assignment_id) REFERENCES subscription_user_add_on_assignments(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY protected_branch_unprotect_access_levels
     ADD CONSTRAINT fk_5632201009 FOREIGN KEY (protected_branch_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

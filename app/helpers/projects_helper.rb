@@ -399,7 +399,7 @@ module ProjectsHelper
                       .external_authorization_service_default_label
 
     s_(
-      "ExternalAuthorizationService|When no classification label is set the "\
+      "ExternalAuthorizationService|When no classification label is set the " \
         "default label `%{default_label}` will be used."
     ) % { default_label: default_label }
   end

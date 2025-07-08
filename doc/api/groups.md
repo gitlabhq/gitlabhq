@@ -2133,7 +2133,6 @@ Example response:
 ]
 ```
 
-<!--
 ### Credentials inventory management
 
 {{< details >}}
@@ -2464,4 +2463,3 @@ Other possible responses:
   - You do not have access to the specified token.
 - `403: Forbidden` if the token is not allowed to rotate itself or token is not a bot user token.
 - `404: Not Found` if the user is a group owner but the token does not exist.
--->

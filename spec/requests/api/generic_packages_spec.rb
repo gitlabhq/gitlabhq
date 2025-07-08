@@ -517,17 +517,48 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           end
         end
 
-        context 'when there is + sign is in filename' do
-          it 'creates a package and package file with filename' do
-            headers = workhorse_headers.merge(auth_header)
+        context 'with special characters in filename' do
+          where(:symbol, :file_name) do
+            [
+              ['+', 'my+file.tar.gz'],
+              ['~', 'my~file.tar.gz'],
+              ['@', 'myfile@1.1.tar.gz']
+            ]
+          end
 
-            upload_file(params, headers, file_name: 'my+file.tar.gz')
+          with_them do
+            it "creates package with #{params[:symbol]} in the filename", :aggregate_failures do
+              headers = workhorse_headers.merge(auth_header)
 
-            aggregate_failures do
-              package = ::Packages::Generic::Package.for_projects(project).last
+              expect do
+                upload_file(params, headers, file_name:)
+              end.to change { ::Packages::Generic::Package.for_projects(project).count }.by(1)
+
               expect(response).to have_gitlab_http_status(:created)
-              expect(package.package_files.last.file_name).to eq('my+file.tar.gz')
+              expect(project.package_files.find_by(file_name:)).not_to be_nil
             end
+          end
+        end
+      end
+
+      context 'when filename contains @ or ~ symbol at beginning or end' do
+        where(:symbol, :file_name, :description) do
+          [
+            ['@', 'myfile1.1.tar.gz@', 'at the end'],
+            ['@', '@myfile1.1.tar.gz', 'at the beginning'],
+            ['~', 'myfile.tar.gz~', 'at the end'],
+            ['~', '~myfile.tar.gz', 'at the beginning']
+          ]
+        end
+
+        with_them do
+          it "returns a bad request when #{params[:symbol]} is #{params[:description]} of filename",
+            :aggregate_failures do
+            headers = workhorse_headers.merge(personal_access_token_header)
+
+            upload_file(params, headers, file_name: file_name)
+
+            expect(response).to have_gitlab_http_status(:bad_request)
           end
         end
       end

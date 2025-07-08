@@ -465,9 +465,9 @@ The following IPs will be used as an example:
 To configure Consul:
 
 1. SSH in to the server that will host Consul.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and to select the correct Linux package, with the same version
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system. Select the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -575,11 +575,10 @@ The following IPs will be used as an example:
 - `10.6.0.22`: PostgreSQL secondary 1
 - `10.6.0.23`: PostgreSQL secondary 2
 
-First, make sure to [install](https://about.gitlab.com/install/)
-the Linux GitLab package **on each node**. Following the steps,
-install the necessary dependencies from step 1, and add the
-GitLab package repository from step 2. When installing GitLab
-in the second step, do not supply the `EXTERNAL_URL` value.
+First, make sure to [install](../../install/package/_index.md#supported-platforms)
+the Linux GitLab package **on each node**. Be sure to only add the GitLab
+package repository and install GitLab for your chosen operating system,
+but do **not** provide the `EXTERNAL_URL` value.
 
 #### PostgreSQL nodes
 
@@ -900,9 +899,9 @@ a node and change its status from primary to replica (and vice versa).
 #### Configure the primary Redis Cache node
 
 1. SSH in to the **Primary** Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and to select the correct Linux package, with the same version
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system. Select the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -973,9 +972,9 @@ a node and change its status from primary to replica (and vice versa).
 #### Configure the replica Redis Cache nodes
 
 1. SSH in to the **replica** Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and to select the correct Linux package, with the same version
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system. Select the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add same contents as the primary node in the previous section replacing `redis_master_node` with `redis_replica_node`:
 
@@ -1065,9 +1064,9 @@ a node and change its status from primary to replica (and vice versa).
 #### Configure the primary Redis Persistent node
 
 1. SSH in to the **Primary** Redis server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and to select the correct Linux package, with the same version
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system. Select the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -1128,9 +1127,9 @@ a node and change its status from primary to replica (and vice versa).
 #### Configure the replica Redis Persistent nodes
 
 1. SSH in to the **replica** Redis Persistent server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and to select the correct Linux package, with the same version
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system. Select the same version
    and type (Community or Enterprise editions) as your current install.
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
@@ -1248,11 +1247,10 @@ The following IPs will be used as an example:
 
 - `10.6.0.141`: Praefect PostgreSQL
 
-First, make sure to [install](https://about.gitlab.com/install/)
-the Linux GitLab package in the Praefect PostgreSQL node. Following the steps,
-install the necessary dependencies from step 1, and add the
-GitLab package repository from step 2. When installing GitLab
-in the second step, do not supply the `EXTERNAL_URL` value.
+First, make sure to [install](../../install/package/_index.md#supported-platforms)
+the Linux package on the Praefect PostgreSQL node. Be sure to only add the GitLab
+package repository and install GitLab for your chosen operating system,
+but do **not** provide the `EXTERNAL_URL` value.
 
 1. SSH in to the Praefect PostgreSQL node.
 1. Create a strong password to be used for the Praefect PostgreSQL user. Take note of this password as `<praefect_postgresql_password>`.
@@ -1419,9 +1417,9 @@ The following IPs will be used as an example:
 To configure the Praefect nodes, on each one:
 
 1. SSH in to the Praefect server.
-1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux package
+   of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Edit the `/etc/gitlab/gitlab.rb` file to configure Praefect:
 
    {{< alert type="note" >}}
@@ -1580,9 +1578,9 @@ The following IPs will be used as an example:
 
 On each node:
 
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page, and do not provide the `EXTERNAL_URL` value.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system, but do **not** provide the `EXTERNAL_URL` value.
 1. Edit the Gitaly server node's `/etc/gitlab/gitlab.rb` file to configure
    storage paths, enable the network listener, and to configure the token:
 
@@ -1831,9 +1829,9 @@ To configure the Sidekiq nodes, on each one:
    telnet <GitLab host> 6379 # Redis
    ```
 
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
 
    ```ruby
@@ -1982,9 +1980,9 @@ The following IPs will be used as an example:
 
 On each node perform the following:
 
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 
 1. Edit `/etc/gitlab/gitlab.rb` and use the following configuration.
    To maintain uniformity of links across nodes, the `external_url`
@@ -2177,9 +2175,9 @@ The following IP will be used as an example:
 To configure the Monitoring node:
 
 1. SSH in to the Monitoring node.
-1. [Download and install](https://about.gitlab.com/install/) the Linux
-   package of your choice. Be sure to follow only installation steps 1 and 2
-   on the page.
+1. [Download and install](../../install/package/_index.md#supported-platforms) the Linux
+   package of your choice. Be sure to only add the GitLab package repository and install GitLab
+   for your chosen operating system.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
