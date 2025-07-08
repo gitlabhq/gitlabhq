@@ -1312,10 +1312,6 @@ module Ci
       merge_request_id.present? && merge_request.present?
     end
 
-    def merge_request_from_forked_project?
-      merge_request? && merge_request.for_fork?
-    end
-
     def external_pull_request?
       external_pull_request_id.present?
     end
@@ -1585,7 +1581,7 @@ module Ci
       return false unless project.protect_merge_request_pipelines?
 
       # Exposing protected variables to MR Pipelines is explicitly prohibited for cross-project MRs
-      return false unless merge_request.for_same_project?
+      return false unless merge_request.source_project_id == merge_request.target_project_id
 
       access = Gitlab::UserAccess.new(user, container: project)
       # Exposing protected variables to MR Pipelines is not allowed if user who created the pipeline CANNOT update the source branch
