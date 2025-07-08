@@ -1114,6 +1114,37 @@ You should upgrade to Ubuntu 22.04 for continued support.
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.8">
+
+## GitLab 18.8
+
+<div class="deprecation breaking-change" data-milestone="18.8">
+
+### Static compliance violations report
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.2</span>
+- Removal in GitLab <span class="milestone">18.8</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/12774).
+
+</div>
+
+The existing static compliance violations report is deprecated in GitLab 18.2 and will be removed in GitLab 18.8.
+
+To replace the static compliance violations report:
+
+- In GitLab 17.11, we released [custom compliance frameworks](https://docs.gitlab.com/user/compliance/compliance_frameworks/).
+- In GitLab 18.2, we released the new [dynamic compliance violations report](https://docs.gitlab.com/user/compliance/compliance_center/compliance_violations_report/).
+
+These features give all of the same functionality as the static violations report, but you can configure the violations that you require.
+
+In GitLab 18.8, we'll replace the static compliance violations report with the dynamic report using compliance frameworks for more accurate reporting on requirements
+and controls.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.6">
 
 ## GitLab 18.6
