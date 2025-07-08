@@ -992,6 +992,50 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#merge_request_from_forked_project?' do
+    context 'merge request from a forked project' do
+      let_it_be(:forked_project) do
+        fork_project(project, nil, repository: true)
+      end
+
+      let_it_be(:merge_request_from_forked_project) do
+        create(:merge_request, source_project: forked_project, target_project: project)
+      end
+
+      let_it_be(:forked_project_merge_request_pipeline) do
+        create(:ci_pipeline, project: project, merge_request: merge_request_from_forked_project)
+      end
+
+      it 'returns true for pipelines from a forked project' do
+        expect(forked_project_merge_request_pipeline).to be_merge_request_from_forked_project
+      end
+    end
+
+    context 'merge request from the same project' do
+      let_it_be(:same_project_merge_request) do
+        create(:merge_request, source_project: project, target_project: project)
+      end
+
+      let_it_be(:same_project_merge_request_pipeline) do
+        create(:ci_pipeline, project: project, merge_request: same_project_merge_request)
+      end
+
+      it 'returns false for pipelines from the same project' do
+        expect(same_project_merge_request_pipeline).not_to be_merge_request_from_forked_project
+      end
+    end
+
+    context 'when merge request is nil' do
+      let_it_be(:non_merge_request_pipeline) do
+        create(:ci_pipeline, project: project, merge_request_id: nil)
+      end
+
+      it 'returns false for pipelines without a merge request' do
+        expect(non_merge_request_pipeline).not_to be_merge_request_from_forked_project
+      end
+    end
+  end
+
   describe '#detached_merge_request_pipeline?' do
     subject { pipeline.detached_merge_request_pipeline? }
 

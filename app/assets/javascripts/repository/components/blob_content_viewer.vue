@@ -317,7 +317,9 @@ export default {
 
           await this.$nextTick();
           handleLocationHash(); // Ensures that we scroll to the hash when async content is loaded
-          eventHub.$emit('showBlobInteractionZones', this.blobInfo.path);
+          if (type === SIMPLE_BLOB_VIEWER) {
+            eventHub.$emit('showBlobInteractionZones', this.blobInfo.path);
+          }
         })
         .catch(() => this.displayError())
         .finally(() => {

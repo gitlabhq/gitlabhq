@@ -33,6 +33,7 @@ import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/h
 import LineHighlighter from '~/blob/line_highlighter';
 import { LEGACY_FILE_TYPES } from '~/repository/constants';
 import { SIMPLE_BLOB_VIEWER, RICH_BLOB_VIEWER } from '~/blob/components/constants';
+import eventHub from '~/notes/event_hub';
 import {
   simpleViewerMock,
   richViewerMock,
@@ -282,6 +283,28 @@ describe('Blob content viewer component', () => {
           expect(mockAxios.history.get[0].url).toBe(`/${type}?format=json&viewer=simple`);
         },
       );
+
+      describe('code navigation', () => {
+        const setup = async (viewer, viewerType) => {
+          jest.spyOn(eventHub, '$emit').mockImplementation();
+          mockAxios
+            .onGet(`/some_file.js?format=json&viewer=${viewerType}`)
+            .replyOnce(HTTP_STATUS_OK, 'test');
+          await createComponent({ blob: viewer });
+        };
+
+        it('emits showBlobInteractionZones for text files', async () => {
+          await setup(simpleViewerMock, 'simple');
+
+          expect(eventHub.$emit).toHaveBeenCalledWith('showBlobInteractionZones', 'some_file.js');
+        });
+
+        it('does not emit showBlobInteractionZones non-text files', async () => {
+          await setup(richViewerMock, 'rich');
+
+          expect(eventHub.$emit).not.toHaveBeenCalled();
+        });
+      });
 
       it('loads the LineHighlighter', async () => {
         mockAxios.onGet(legacyViewerUrl).replyOnce(HTTP_STATUS_OK, 'test');
