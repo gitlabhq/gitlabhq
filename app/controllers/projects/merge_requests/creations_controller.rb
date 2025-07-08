@@ -12,6 +12,8 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
+  feature_category :continuous_integration, [:pipelines]
+
   urgency :low, [
     :new,
     :create,

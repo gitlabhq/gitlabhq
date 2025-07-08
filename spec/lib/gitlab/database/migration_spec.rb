@@ -51,26 +51,6 @@ RSpec.describe Gitlab::Database::Migration, feature_category: :database do
       end
     end
 
-    context 'when not explicitly called' do
-      it 'does not enable lock retries' do
-        expect(subject.enable_lock_retries?).not_to be_truthy
-      end
-    end
-
-    context 'when explicitly called' do
-      let(:class_def) do
-        Class.new do
-          include Gitlab::Database::Migration::LockRetriesConcern
-
-          enable_lock_retries!
-        end
-      end
-
-      it 'enables lock retries when used in the class definition' do
-        expect(subject.enable_lock_retries?).to be_truthy
-      end
-    end
-
     describe '#with_lock_retries_used?' do
       it 'returns false without using with_lock_retries' do
         expect(subject.with_lock_retries_used?).not_to be_truthy

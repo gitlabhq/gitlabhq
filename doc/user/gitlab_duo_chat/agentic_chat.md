@@ -9,7 +9,7 @@ title: GitLab Duo Agentic Chat in VS Code
 
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
-- Offering: GitLab.com
+- Offering: GitLab.com, GitLab Self-Managed
 - Status: Experiment
 - LLMs: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
@@ -17,7 +17,8 @@ title: GitLab Duo Agentic Chat in VS Code
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1. This feature is an [experiment](../../policy/development_stages_support.md).
+- [Introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1. This feature is an [experiment](../../policy/development_stages_support.md).
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -74,6 +75,40 @@ To use Agentic Chat:
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
+### Create custom rules
+
+{{< history >}}
+
+- Custom rules [added](https://gitlab.com/gitlab-org/gitlab/-/issues/550743) in GitLab 18.2.
+
+{{< /history >}}
+
+If you have specific instructions that you want Agentic Chat to follow in every conversation, you can create custom rules.
+
+Prerequisites:
+
+- You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.32.2 or later.
+
+{{< alert type="note" >}}
+
+Conversations that existed before you created any custom rules do not follow those rules.
+
+{{< /alert >}}
+
+1. Create a `.gitlab/duo/chat-rules.md` file.
+1. Enter the custom rules into the file. For example:
+
+   ```markdown
+   - don't put comments in the generated code
+   - be brief in your explanations
+   - always use single quotes for JavaScript strings
+   ```
+
+1. Save the file.
+1. To have Agentic Chat follow the new custom rules, start a new conversation, or `/clear` the existing conversation.
+
+   You must do this every time you change the custom rules.
+
 ## Agentic Chat capabilities
 
 Agentic Chat extends Chat capabilities with the following features:
@@ -90,6 +125,7 @@ Agentic Chat extends Chat capabilities with the following features:
 - **Multi-source Analysis**: Can combine information from multiple sources to
   provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect Agentic Chat to
   external data sources and tools.
+- **Custom rules**: Conversations can follow any customised rules that you specify.
 
 ### Chat feature comparison
 

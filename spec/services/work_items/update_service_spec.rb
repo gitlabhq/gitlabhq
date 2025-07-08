@@ -265,6 +265,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
             work_item.reload
           end.to change { work_item.state }.from('opened').to('closed')
         end
+
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
+        end
       end
 
       context 'when state_event is reopen' do
@@ -281,6 +285,10 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
             update_work_item
             work_item.reload
           end.to change { work_item.state }.from('closed').to('opened')
+        end
+
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { update_work_item }
         end
       end
     end

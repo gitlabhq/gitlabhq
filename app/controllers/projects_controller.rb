@@ -65,7 +65,7 @@ class ProjectsController < Projects::ApplicationController
   feature_category :source_code_management, [:remove_fork, :housekeeping, :refs]
   feature_category :team_planning, [:preview_markdown, :new_issuable_address]
   feature_category :importers, [:export, :remove_export, :generate_new_export, :download_export]
-  feature_category :code_review_workflow, [:unfoldered_environment_names]
+  feature_category :continuous_delivery, [:unfoldered_environment_names]
 
   urgency :low, [:export, :remove_export, :generate_new_export, :download_export]
   urgency :low, [:preview_markdown, :new_issuable_address]

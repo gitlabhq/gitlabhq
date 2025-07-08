@@ -567,10 +567,8 @@ offers a method to retry the operations with different `lock_timeout` settings
 and wait time between the attempts. Multiple shorter attempts to acquire the necessary
 lock allow the database to process other statements.
 
-Lock retries are controlled by two different helpers:
-
-1. `enable_lock_retries!`: enabled by default for all `transactional` migrations.
-1. `with_lock_retries`: enabled manually for a block within `non-transactional` migrations.
+When working with `non_transactional` migrations, the `with_lock_retries` method enables explicit control over lock
+acquisition retries and timeout configuration for code blocks executed within the migration.
 
 ### Transactional migrations
 

@@ -215,6 +215,36 @@ You can ask about a specific GitLab pipeline job. For example:
 - `What are the main steps executed in this pipeline job?`
 - When you are viewing a pipeline job in GitLab, you can ask `Generate a summary of the current pipeline job.`
 
+## Ask about a specific work item
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Enterprise
+- Offering: GitLab.com, GitLab Self-Managed, GitLab Dedicated
+- Editors: GitLab UI, Web IDE, VS Code, JetBrains IDEs
+- LLM: Anthropic [Claude 4.0 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194302) in GitLab 18.2.
+
+{{< /history >}}
+
+You can ask about a specific GitLab work item. For example:
+
+- `Generate a summary for the work item identified via this link: <link to your work item>`
+- When you are viewing an work item in GitLab, you can ask `Generate a concise summary of the current work item.`
+- `How can I improve the description of <link to your work item> so that readers understand the value and problems to be solved?`
+
+{{< alert type="note" >}}
+
+If the work item contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
+{{< /alert >}}
+
 ## Explain selected code
 
 {{< details >}}

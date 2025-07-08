@@ -56,6 +56,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   feature_category :code_testing, [:accessibility_reports]
   feature_category :infrastructure_as_code, [:terraform_reports]
   feature_category :continuous_integration, [:pipeline_status, :pipelines, :exposed_artifacts]
+  feature_category :continuous_delivery, [:ci_environments_status]
 
   urgency :high, [:export_csv]
   urgency :low, [

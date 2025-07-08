@@ -913,6 +913,8 @@
   - 1
 - - security_analyzer_namespace_statuses_adjustment
   - 1
+- - security_analyzer_namespace_statuses_process_group_deleted_events
+  - 1
 - - security_analyzers_status_process_archived_events
   - 1
 - - security_analyzers_status_process_deleted_events

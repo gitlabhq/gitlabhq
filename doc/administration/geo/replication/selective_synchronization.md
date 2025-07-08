@@ -15,9 +15,9 @@ title: Selective synchronization
 Geo supports selective synchronization, which allows administrators to choose
 which projects should be synchronized by **secondary** sites.
 A subset of projects can be chosen, either by group or by storage shard. The
-former is ideal for replicating data belonging to a subset of users, while the
-latter is more suited to progressively rolling out Geo to a large GitLab
-instance.
+former is ideal for reducing transfer and storage costs by replicating data
+belonging to only a subset of users. The latter is more suited to progressively
+rolling out Geo to a large GitLab instance.
 
 {{< alert type="note" >}}
 

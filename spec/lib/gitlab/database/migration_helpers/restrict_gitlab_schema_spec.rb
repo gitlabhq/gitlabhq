@@ -211,8 +211,6 @@ RSpec.describe Gitlab::Database::MigrationHelpers::RestrictGitlabSchema, :use_cl
           migration: ->(klass) do
             include Gitlab::Database::MigrationHelpers::LooseForeignKeyHelpers
 
-            enable_lock_retries!
-
             def up
               track_record_deletions(:audit_events)
             end

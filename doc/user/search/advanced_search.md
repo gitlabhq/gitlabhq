@@ -53,7 +53,7 @@ You can also use advanced search in a project or group.
 Scopes describe the type of data you're searching.
 The following scopes are available for advanced search:
 
-| Scope          | Global <sup>1</sup>                         | Group                                       | Project |
+| Scope          | Global <sup>1</sup> <sup>2</sup>            | Group                                       | Project |
 |----------------|:-------------------------------------------:|:-------------------------------------------:|:-------:|
 | Code           | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | Comments       | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
@@ -71,6 +71,7 @@ The following scopes are available for advanced search:
 1. An administrator can [disable global search scopes](_index.md#disable-global-search-scopes).
    On GitLab Self-Managed, global search is not available when limited indexing is enabled by default.
    An administrator can [enable global search for limited indexing](../../integration/advanced_search/elasticsearch.md#indexed-namespaces).
+1. On GitLab.com, global search is not enabled for code, commits, and wikis.
 
 ## Syntax
 

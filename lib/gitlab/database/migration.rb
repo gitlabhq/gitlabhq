@@ -6,16 +6,6 @@ module Gitlab
       module LockRetriesConcern
         extend ActiveSupport::Concern
 
-        class_methods do
-          def enable_lock_retries!
-            @enable_lock_retries = true
-          end
-
-          def enable_lock_retries?
-            @enable_lock_retries
-          end
-        end
-
         included do
           private
 
@@ -29,8 +19,6 @@ module Gitlab
         def with_lock_retries_used?
           with_lock_retries_used
         end
-
-        delegate :enable_lock_retries?, to: :class
       end
 
       # This implements a simple versioning scheme for migration helpers.

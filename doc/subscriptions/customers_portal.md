@@ -114,6 +114,32 @@ The invitation is valid for seven days.
 If the user does not accept the invitation before it expires, you can send them a new invitation.
 You can have maximum 15 pending invitations at a time.
 
+### Remove a billing account manager
+
+You can remove billing account managers from your account at any time.
+After you remove a billing account manager, they no longer have access to view or edit your billing account information.
+
+To remove a billing account manager:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Billing account managers** section.
+1. In the list, next to the billing account manager you want to remove, select **Remove**.
+1. In the confirmation dialog, select **Remove** to confirm the action.
+
+### Revoke a billing account manager invitation
+
+You can revoke invitations that have not yet been accepted.
+Users that have been invited but have not yet accepted the invitation display the name **Awaiting user registration**.
+
+To revoke an invitation:
+
+1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
+1. On the left sidebar, select **Billing account settings**.
+1. Scroll to the **Billing account managers** section.
+1. In the list, next to the invited user with the **Awaiting user signup** name, select **Remove**.
+1. In the confirmation dialog, select **Remove** to revoke the invitation.
+
 ### Change your billing contact
 
 The billing contact receives all invoices and subscription event notifications.

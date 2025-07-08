@@ -28,10 +28,6 @@ RSpec.describe Gitlab::Database::Migrations::LockRetryMixin, feature_category: :
       end
     end
 
-    describe '#enable_lock_retries?' do
-      it_behaves_like 'delegable', :enable_lock_retries?
-    end
-
     describe '#with_lock_retries_used!' do
       it_behaves_like 'delegable', :with_lock_retries_used!
     end
