@@ -28,6 +28,7 @@ import {
   PAGINATION_TYPE_KEYSET,
   PAGINATION_TYPE_OFFSET,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+  FILTERED_SEARCH_TOKEN_NAMESPACE,
 } from '~/groups_projects/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import {
@@ -52,6 +53,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { VISIBILITY_LEVEL_PRIVATE_STRING } from '~/visibility_level/constants';
+import Api from '~/api';
 import { programmingLanguages } from './mock_data';
 
 jest.mock('~/alert');
@@ -70,6 +72,7 @@ const defaultPropsData = {
     FILTERED_SEARCH_TOKEN_LANGUAGE,
     FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
     FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+    FILTERED_SEARCH_TOKEN_NAMESPACE,
   ],
   filteredSearchTermKey: FILTERED_SEARCH_TERM_KEY,
   filteredSearchNamespace: FILTERED_SEARCH_NAMESPACE,
@@ -153,6 +156,10 @@ describe('TabsWithList', () => {
   const findFilteredSearchAndSort = () => wrapper.findComponent(FilteredSearchAndSort);
   const findTabView = () => wrapper.findComponent(TabView);
   const findBadge = () => wrapper.findComponent(GlBadge);
+
+  beforeEach(() => {
+    jest.spyOn(Api, 'namespaces').mockResolvedValue([]);
+  });
 
   afterEach(() => {
     router = null;
@@ -275,6 +282,7 @@ describe('TabsWithList', () => {
             [FILTERED_SEARCH_TOKEN_LANGUAGE]: ['5'],
             [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ['50'],
             [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: [VISIBILITY_LEVEL_PRIVATE_STRING],
+            [FILTERED_SEARCH_TOKEN_NAMESPACE]: ['namespace'],
           });
           await waitForPromises();
         });
@@ -284,6 +292,7 @@ describe('TabsWithList', () => {
             minAccessLevel: 'OWNER',
             programmingLanguageName: 'CSS',
             visibilityLevel: VISIBILITY_LEVEL_PRIVATE_STRING,
+            namespacePath: 'namespace',
             search: searchTerm,
             skipContributed: false,
             skipStarred: true,
@@ -559,6 +568,7 @@ describe('TabsWithList', () => {
       [FILTERED_SEARCH_TOKEN_LANGUAGE]: '8',
       [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: ACCESS_LEVEL_OWNER_INTEGER,
       [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: VISIBILITY_LEVEL_PRIVATE_STRING,
+      [FILTERED_SEARCH_TOKEN_NAMESPACE]: 'namespace',
       [QUERY_PARAM_END_CURSOR]: mockEndCursor,
       [QUERY_PARAM_START_CURSOR]: mockStartCursor,
     };
@@ -585,6 +595,7 @@ describe('TabsWithList', () => {
           [FILTERED_SEARCH_TOKEN_LANGUAGE]: query[FILTERED_SEARCH_TOKEN_LANGUAGE],
           [FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL]: query[FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL],
           [FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL]: query[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL],
+          [FILTERED_SEARCH_TOKEN_NAMESPACE]: query[FILTERED_SEARCH_TOKEN_NAMESPACE],
         },
         filtersAsQueryVariables: {
           programmingLanguageName: 'CoffeeScript',

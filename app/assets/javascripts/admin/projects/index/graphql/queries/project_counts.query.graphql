@@ -3,6 +3,7 @@ query getAdminProjectCounts(
   $minAccessLevel: AccessLevelEnum
   $programmingLanguageName: String
   $visibilityLevel: VisibilityLevelsEnum
+  $namespacePath: ID
 ) {
   active: projects(
     active: true
@@ -10,6 +11,7 @@ query getAdminProjectCounts(
     minAccessLevel: $minAccessLevel
     programmingLanguageName: $programmingLanguageName
     visibilityLevel: $visibilityLevel
+    namespacePath: $namespacePath
   ) {
     count
   }
@@ -19,6 +21,7 @@ query getAdminProjectCounts(
     minAccessLevel: $minAccessLevel
     programmingLanguageName: $programmingLanguageName
     visibilityLevel: $visibilityLevel
+    namespacePath: $namespacePath
   ) {
     count
   }

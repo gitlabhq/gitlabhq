@@ -254,6 +254,23 @@ RSpec.describe OmniauthCallbacksController, :with_current_organization, type: :c
       end
     end
 
+    context 'when the user is trying to sign-in from restricted country' do
+      let(:extern_uid) { 'my-uid' }
+      let(:provider) { :github }
+      let(:error_message) { "It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong" }
+
+      before do
+        allow(controller).to receive(:allowed_new_user?).and_raise(OmniauthCallbacksController::SignUpFromRestrictedCountyError)
+
+        post provider
+      end
+
+      it 'redirects to root path with message' do
+        expect(response).to redirect_to new_user_session_path
+        expect(flash[:alert]).to include(error_message)
+      end
+    end
+
     context 'when the user is on the last sign in attempt' do
       let(:extern_uid) { 'my-uid' }
 

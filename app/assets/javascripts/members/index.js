@@ -90,7 +90,7 @@ export const initMembersApp = (el, context, options) => {
       reassignmentCsvPath,
       restrictReassignmentToEnterprise,
       allowInactivePlaceholderReassignment: parseBoolean(allowInactivePlaceholderReassignment),
-      allowBypassPlaceholderConfirmation: parseBoolean(allowBypassPlaceholderConfirmation),
+      allowBypassPlaceholderConfirmation,
       group: {
         id: isGroup ? sourceId : null,
         name: groupName,

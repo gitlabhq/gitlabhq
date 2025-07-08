@@ -48,6 +48,7 @@ import {
   TOKEN_TITLE_STATUS,
   TOKEN_TYPE_STATUS,
 } from '~/vue_shared/components/filtered_search_bar/constants';
+import BypassConfirmationMessage from './bypass_confirmation_message.vue';
 import PlaceholdersTable from './placeholders_table.vue';
 import CsvUploadModal from './csv_upload_modal.vue';
 import KeepAllAsPlaceholderModal from './keep_all_as_placeholder_modal.vue';
@@ -71,6 +72,7 @@ export default {
     GlAlert,
     GlLink,
     GlSprintf,
+    BypassConfirmationMessage,
     FilteredSearchBar,
     PlaceholdersTable,
     CsvUploadModal,
@@ -85,7 +87,7 @@ export default {
       default: {},
     },
     allowBypassPlaceholderConfirmation: {
-      default: false,
+      default: null,
     },
   },
   data() {
@@ -341,17 +343,7 @@ export default {
       </gl-sprintf>
 
       <p v-if="allowBypassPlaceholderConfirmation" class="gl-mb-0 gl-mt-3">
-        <gl-sprintf
-          :message="
-            s__(
-              'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
-            )
-          "
-        >
-          <template #strong="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
+        <bypass-confirmation-message />
       </p>
     </gl-alert>
     <gl-tabs

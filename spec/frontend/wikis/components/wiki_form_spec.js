@@ -525,4 +525,120 @@ describe('WikiForm', () => {
       });
     });
   });
+
+  describe('title placeholder functionality', () => {
+    const pageInfoWithNewPageTitle = {
+      persisted: false,
+      slug: 'parent/path/{new_page_title}',
+      title: 'parent/path/{new_page_title}',
+      uploadsPath: '/project/path/-/wikis/attachments',
+      wikiPath: '/project/path/-/wikis',
+      helpPath: '/help/user/project/wiki/_index',
+      markdownHelpPath: '/help/user/markdown',
+      markdownPreviewPath: '/project/path/-/wikis/.md/preview-markdown',
+      createPath: '/project/path/-/wikis/new',
+    };
+
+    describe('when creating a new page with placeholder in title', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: mount,
+          pageInfo: pageInfoWithNewPageTitle,
+        });
+      });
+
+      it('renders the correct initial value in the title input', () => {
+        expect(findTitle().element.value).toBe('parent/path/{Give this page a title}');
+      });
+
+      it('clears placeholder when user starts typing', async () => {
+        await findTitle().setValue('parent/path/My New Page');
+        expect(findTitle().element.value).toBe('parent/path/My New Page');
+      });
+
+      it('clears placeholder when user presses a printable key', async () => {
+        // Simulate focus to ensure placeholder is active
+        await findTitle().trigger('focus');
+        // Simulate keydown for a printable character
+        await findTitle().trigger('keydown', {
+          key: 'M',
+          ctrlKey: false,
+          metaKey: false,
+          altKey: false,
+        });
+        // After keydown, the value should be just the parent path
+        expect(findTitle().element.value).toBe('parent/path/');
+      });
+
+      it('does not clear placeholder for non-printable keys', async () => {
+        await findTitle().trigger('focus');
+        await findTitle().trigger('keydown', {
+          key: 'Enter',
+          ctrlKey: false,
+          metaKey: false,
+          altKey: false,
+        });
+        expect(findTitle().element.value).toBe('parent/path/{Give this page a title}');
+      });
+
+      it('does not clear placeholder for modifier key combinations', async () => {
+        await findTitle().trigger('focus');
+        await findTitle().trigger('keydown', {
+          key: 'a',
+          ctrlKey: true,
+          metaKey: false,
+          altKey: false,
+        });
+        expect(findTitle().element.value).toBe('parent/path/{Give this page a title}');
+      });
+    });
+
+    describe('when creating a new page without placeholder in title', () => {
+      const pageInfoWithoutPlaceholder = {
+        persisted: false,
+        slug: 'normal-page',
+        title: 'normal-page',
+        uploadsPath: '/project/path/-/wikis/attachments',
+        wikiPath: '/project/path/-/wikis',
+        helpPath: '/help/user/project/wiki/_index',
+        markdownHelpPath: '/help/user/markdown',
+        markdownPreviewPath: '/project/path/-/wikis/.md/preview-markdown',
+        createPath: '/project/path/-/wikis/new',
+      };
+
+      beforeEach(() => {
+        createWrapper({
+          mountFn: mount,
+          pageInfo: pageInfoWithoutPlaceholder,
+        });
+      });
+
+      it('renders the correct initial value in the title input', () => {
+        expect(findTitle().element.value).toBe('normal-page');
+      });
+
+      it('handles normal input without placeholder logic', async () => {
+        await findTitle().setValue('updated-title');
+        expect(findTitle().element.value).toBe('updated-title');
+      });
+    });
+
+    describe('when editing an existing page', () => {
+      beforeEach(() => {
+        createWrapper({
+          mountFn: mount,
+          persisted: true,
+        });
+      });
+
+      it('renders the correct initial value in the title input', () => {
+        expect(findTitle().element.value).not.toBe('parent/path/{Give this page a title}');
+      });
+
+      it('handles input normally without placeholder logic', async () => {
+        await findTitle().setValue('updated-title');
+        expect(findTitle().element.value).toBe('updated-title');
+      });
+    });
+  });
 });

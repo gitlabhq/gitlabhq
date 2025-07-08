@@ -3,6 +3,12 @@
     "ContainerProtectionAccessLevel",
     "ContainerProtectionTagRule"
   ],
+  "AiCatalogItem": [
+    "AiCatalogAgent"
+  ],
+  "AiCatalogItemVersion": [
+    "AiCatalogAgentVersion"
+  ],
   "AlertManagementIntegration": [
     "AlertManagementHttpIntegration",
     "AlertManagementPrometheusIntegration"

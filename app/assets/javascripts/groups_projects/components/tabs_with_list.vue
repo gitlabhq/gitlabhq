@@ -21,6 +21,7 @@ import {
 } from '~/visibility_level/constants';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { InternalEvents } from '~/tracking';
+import NamespaceToken from '~/vue_shared/components/filtered_search_bar/tokens/namespace_token.vue';
 import {
   FILTERED_SEARCH_TOKEN_LANGUAGE,
   FILTERED_SEARCH_TOKEN_MIN_ACCESS_LEVEL,
@@ -30,6 +31,7 @@ import {
   PAGINATION_TYPE_OFFSET,
   QUERY_PARAM_PAGE,
   FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL,
+  FILTERED_SEARCH_TOKEN_NAMESPACE,
 } from '../constants';
 import userPreferencesUpdateMutation from '../graphql/mutations/user_preferences_update.mutation.graphql';
 import TabView from './tab_view.vue';
@@ -209,6 +211,15 @@ export default {
             title: VISIBILITY_LEVEL_LABELS[visibilityLevelString],
           })),
         },
+        {
+          type: FILTERED_SEARCH_TOKEN_NAMESPACE,
+          icon: 'namespace',
+          title: __('Namespace'),
+          token: NamespaceToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          recentSuggestionsStorageKey: 'tabs-with-list-namespace',
+        },
       ].filter((filteredSearchToken) =>
         this.filteredSearchSupportedTokens.includes(filteredSearchToken.type),
       );
@@ -287,6 +298,10 @@ export default {
         this.programmingLanguages.find(({ id }) => id === parseInt(programmingLanguageId, 10))?.name
       );
     },
+    namespacePath() {
+      const namespacePath = this.filters[FILTERED_SEARCH_TOKEN_NAMESPACE];
+      return Array.isArray(namespacePath) ? namespacePath[0] : namespacePath;
+    },
     visibilityLevel() {
       const visibilityLevel = this.filters[FILTERED_SEARCH_TOKEN_VISIBILITY_LEVEL];
       return Array.isArray(visibilityLevel) ? visibilityLevel[0] : visibilityLevel;
@@ -296,6 +311,7 @@ export default {
         programmingLanguageName: this.programmingLanguageName,
         minAccessLevel: this.minAccessLevel,
         visibilityLevel: this.visibilityLevel,
+        namespacePath: this.namespacePath,
       };
     },
     timestampType() {

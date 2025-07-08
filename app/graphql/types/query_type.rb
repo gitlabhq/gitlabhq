@@ -156,7 +156,6 @@ module Types
     field :runner, Types::Ci::RunnerType,
       null: true,
       resolver: Resolvers::Ci::RunnerResolver,
-      extras: [:lookahead],
       description: "Find a runner."
     field :runner_platforms, resolver: Resolvers::Ci::RunnerPlatformsResolver,
       deprecated: { reason: 'No longer used, use gitlab-runner documentation to learn about supported platforms', milestone: '15.9' }

@@ -295,10 +295,6 @@ export default {
     'ee/app/assets/javascripts/vue_merge_request_widget/components/widget/app.vue',
     'ee/app/assets/javascripts/vue_merge_request_widget/mr_widget_options.vue',
     'ee/app/assets/javascripts/vue_merge_request_widget/widgets/status_checks/index.vue',
-    'ee/app/assets/javascripts/vulnerabilities/components/header.vue',
-    'ee/app/assets/javascripts/vulnerabilities/components/new_vulnerability/section_details.vue',
-    'ee/app/assets/javascripts/vulnerabilities/components/vulnerability_details.vue',
-    'ee/app/assets/javascripts/vulnerabilities/components/vulnerability_training.vue',
   ],
   rules: {
     'vue/no-unused-properties': 'off',

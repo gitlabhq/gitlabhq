@@ -23,10 +23,7 @@ Use CI/CD pipelines to automatically build, test, and deploy your code.
 | <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Understand CI/CD rules](https://www.youtube.com/watch?v=QjQc-zeL16Q) (8m 56s) |  Learn more about how to use CI/CD rules. | |
 | [Use Auto DevOps to deploy an application](../topics/autodevops/cloud_deployments/auto_devops_with_gke.md)  | Deploy an application to Google Kubernetes Engine (GKE). | |
 | [Using Buildah in a rootless container with GitLab Runner Operator on OpenShift](../ci/docker/buildah_rootless_tutorial.md)  | Learn how to set up GitLab Runner Operator on OpenShift to build Docker images with Buildah in a rootless container | |
-| [Automatically build and publish packages with CI/CD](../user/packages/pypi_repository/auto_publish_tutorial.md) | Learn how to automatically build, test, and publish a PyPI package to the package registry. | |
-| [Structure the package registry for enterprise scale](../user/packages/package_registry/enterprise_structure_tutorial.md) | Set up your organization to upload, manage, and consume packages at scale. | |
 | [Set up CI/CD steps](setup_steps/_index.md)  | Learn how to set up the steps component and configure a CI/CD pipeline to use the step in a job. | |
-| [Build and sign Python packages with GitLab CI/CD](../user/packages/package_registry/pypi_cosign_tutorial.md)  | Learn how to build a secure pipeline for Python packages using GitLab CI/CD and Sigstore Cosign. | |
 
 ## Configure GitLab Runner
 
@@ -38,13 +35,3 @@ Set up runners to run jobs in a pipeline.
 | [Configure GitLab Runner to use the Google Kubernetes Engine](configure_gitlab_runner_to_use_gke/_index.md) | Learn how to configure GitLab Runner to use the GKE to run jobs. | |
 | [Automate runner creation and registration](automate_runner_creation/_index.md) | Learn how to automate runner creation as an authenticated user to optimize your runner fleet.  | |
 | [Set up the Google Cloud integration](set_up_gitlab_google_integration/_index.md) | Learn how to integrate Google Cloud with GitLab and set up GitLab Runner to run jobs on Google Cloud.  | |
-
-## Publish a static website
-
-Use GitLab Pages to publish a static website directly from your project.
-
-| Topic | Description | Good for beginners |
-|-------|-------------|--------------------|
-| [Create a Pages website from a CI/CD template](../user/project/pages/getting_started/pages_ci_cd_template.md) | Quickly generate a Pages website for your project using a CI/CD template for a popular Static Site Generator (SSG). | {{< icon name="star" >}} |
-| [Create a Pages website from scratch](../user/project/pages/getting_started/pages_from_scratch.md) | Create all the components of a Pages website from a blank project. | |
-| [Build, test, and deploy your Hugo site with GitLab](hugo/_index.md) | Generate your Hugo site using a CI/CD template and GitLab Pages. | {{< icon name="star" >}} |

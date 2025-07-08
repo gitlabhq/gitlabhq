@@ -4,7 +4,6 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: How to create, clone, and use GitLab repositories.
 title: Repository
-description: Version control, code storage, Git repositories, and repository monitoring.
 ---
 
 {{< details >}}
@@ -76,8 +75,7 @@ You can clone a repository using the:
 
 ## Download repository source code
 
-When you download a repository's source code, it is compressed and saved as an archive file.
-To download the source code stored in a repository:
+To download a repository's source code as a compressed file:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Above the file list, select **Code**.
@@ -99,6 +97,17 @@ To download the source code stored in a repository:
 
 The checksums of generated archives can change even if the repository itself doesn't
 change. For example, this occurs if Git or a third-party library that GitLab uses changes.
+
+## View repository by Git revision
+
+To view all repository files and folders at a specific Git revision, such as a commit SHA,
+branch name, or tag:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. At the top, select to open the **Select Git revision** dropdown list.
+1. Select or search for a Git revision.
+
+You can also view and browse files at a specific Git revision from the [commits](commits/_index.md) page.
 
 ## Repository languages
 

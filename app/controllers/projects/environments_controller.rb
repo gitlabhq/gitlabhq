@@ -12,7 +12,6 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   before_action only: [:show] do
     push_frontend_feature_flag(:k8s_tree_view, project)
-    push_frontend_feature_flag(:use_websocket_for_k8s_watch, project)
   end
 
   before_action :authorize_read_environment!

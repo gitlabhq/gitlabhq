@@ -8216,6 +8216,30 @@ CREATE SEQUENCE ai_agents_id_seq
 
 ALTER SEQUENCE ai_agents_id_seq OWNED BY ai_agents.id;
 
+CREATE TABLE ai_catalog_item_consumers (
+    id bigint NOT NULL,
+    ai_catalog_item_id bigint NOT NULL,
+    organization_id bigint,
+    group_id bigint,
+    project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    enabled boolean DEFAULT false NOT NULL,
+    locked boolean DEFAULT true NOT NULL,
+    pinned_version_prefix text,
+    CONSTRAINT check_55026cf703 CHECK ((num_nonnulls(group_id, organization_id, project_id) = 1)),
+    CONSTRAINT check_a788d1fdfa CHECK ((char_length(pinned_version_prefix) <= 50))
+);
+
+CREATE SEQUENCE ai_catalog_item_consumers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE ai_catalog_item_consumers_id_seq OWNED BY ai_catalog_item_consumers.id;
+
 CREATE TABLE ai_catalog_item_versions (
     id bigint NOT NULL,
     release_date timestamp with time zone,
@@ -27382,6 +27406,8 @@ ALTER TABLE ONLY ai_agent_versions ALTER COLUMN id SET DEFAULT nextval('ai_agent
 
 ALTER TABLE ONLY ai_agents ALTER COLUMN id SET DEFAULT nextval('ai_agents_id_seq'::regclass);
 
+ALTER TABLE ONLY ai_catalog_item_consumers ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_consumers_id_seq'::regclass);
+
 ALTER TABLE ONLY ai_catalog_item_versions ALTER COLUMN id SET DEFAULT nextval('ai_catalog_item_versions_id_seq'::regclass);
 
 ALTER TABLE ONLY ai_catalog_items ALTER COLUMN id SET DEFAULT nextval('ai_catalog_items_id_seq'::regclass);
@@ -29419,6 +29445,9 @@ ALTER TABLE ONLY ai_agent_versions
 
 ALTER TABLE ONLY ai_agents
     ADD CONSTRAINT ai_agents_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT ai_catalog_item_consumers_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ai_catalog_item_versions
     ADD CONSTRAINT ai_catalog_item_versions_pkey PRIMARY KEY (id);
@@ -34445,6 +34474,14 @@ CREATE INDEX index_ai_agent_versions_on_agent_id ON ai_agent_versions USING btre
 CREATE INDEX index_ai_agent_versions_on_project_id ON ai_agent_versions USING btree (project_id);
 
 CREATE UNIQUE INDEX index_ai_agents_on_project_id_and_name ON ai_agents USING btree (project_id, name);
+
+CREATE INDEX index_ai_catalog_item_consumers_on_ai_catalog_item_id ON ai_catalog_item_consumers USING btree (ai_catalog_item_id);
+
+CREATE INDEX index_ai_catalog_item_consumers_on_group_id ON ai_catalog_item_consumers USING btree (group_id);
+
+CREATE INDEX index_ai_catalog_item_consumers_on_organization_id ON ai_catalog_item_consumers USING btree (organization_id);
+
+CREATE INDEX index_ai_catalog_item_consumers_on_project_id ON ai_catalog_item_consumers USING btree (project_id);
 
 CREATE INDEX index_ai_catalog_item_versions_on_organization_id ON ai_catalog_item_versions USING btree (organization_id);
 
@@ -42741,6 +42778,9 @@ ALTER TABLE ONLY ghost_user_migrations
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT fk_204d40056a FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT fk_2081306886 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY work_item_select_field_values
     ADD CONSTRAINT fk_20ae82616c FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -43326,6 +43366,9 @@ ALTER TABLE ONLY events
 ALTER TABLE ONLY vulnerability_reads
     ADD CONSTRAINT fk_62736f638f FOREIGN KEY (vulnerability_id) REFERENCES vulnerabilities(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT fk_6282f97083 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY user_admin_roles
     ADD CONSTRAINT fk_62ce6c86fd FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -43842,6 +43885,9 @@ ALTER TABLE ONLY ci_unit_test_failures
 ALTER TABLE ONLY protected_environments
     ADD CONSTRAINT fk_9e112565b7 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT fk_9e3abe6238 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_9e49e5c2b7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -44117,6 +44163,9 @@ ALTER TABLE ONLY project_compliance_standards_adherence
 
 ALTER TABLE p_ci_runner_machine_builds
     ADD CONSTRAINT fk_bb490f12fe_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY ai_catalog_item_consumers
+    ADD CONSTRAINT fk_bba1649fa5 FOREIGN KEY (ai_catalog_item_id) REFERENCES ai_catalog_items(id) ON DELETE RESTRICT;
 
 ALTER TABLE ONLY wiki_page_meta_user_mentions
     ADD CONSTRAINT fk_bc155eba89 FOREIGN KEY (wiki_page_meta_id) REFERENCES wiki_page_meta(id) ON DELETE CASCADE;

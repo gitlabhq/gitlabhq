@@ -28,6 +28,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   feature_category :system_access
 
+  # To be used in ee version for raising error on user signup if user is from restricted country
+  SignUpFromRestrictedCountyError = Class.new(StandardError)
+
   def handle_omniauth
     if ::AuthHelper.saml_providers.include?(oauth['provider'].to_sym)
       saml
@@ -235,7 +238,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def sign_in_user_flow(auth_user_class)
     auth_user = build_auth_user(auth_user_class)
-    new_user = auth_user.new?
+    new_user = allowed_new_user?(auth_user)
     @user = auth_user.find_and_update!
 
     if auth_user.valid_sign_in?
@@ -281,6 +284,20 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     handle_disabled_provider
   rescue Gitlab::Auth::OAuth::User::SignupDisabledError
     handle_signup_error
+  rescue SignUpFromRestrictedCountyError
+    handle_signup_from_restricted_country_error
+  end
+
+  def handle_signup_from_restricted_country_error
+    sign_up_message = "Sign up with Jihu"
+    jihu_url = ActionController::Base.helpers.link_to _(sign_up_message), "https://about.gitlab.com/pricing/faq-jihu/",
+      class: 'gl-link'
+    message = safe_format(_('It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong.' \
+      'We advise you to %{jihu_url} before continuing.'), jihu_url: jihu_url)
+
+    flash[:alert] = sanitize(message)
+
+    redirect_to new_user_session_path
   end
 
   def handle_signup_error
@@ -470,6 +487,11 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   # overridden in specific EE class
   def enqueue_after_sign_in_workers(_user, _auth_user)
     true
+  end
+
+  # overridden in specific EE class
+  def allowed_new_user?(auth_user)
+    auth_user.new?
   end
 
   def store_idp_two_factor_status(bypass_2fa)

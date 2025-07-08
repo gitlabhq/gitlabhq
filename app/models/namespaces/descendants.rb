@@ -35,7 +35,7 @@ module Namespaces
         .pluck_primary_key
     end
 
-    def self.upsert_with_consistent_data(namespace:, self_and_descendant_group_ids:, all_project_ids:)
+    def self.upsert_with_consistent_data(namespace:, self_and_descendant_group_ids:, all_project_ids:, outdated_at: nil)
       query = <<~SQL
         INSERT INTO namespace_descendants
         (namespace_id, traversal_ids, self_and_descendant_group_ids, all_project_ids, outdated_at, calculated_at)
@@ -53,7 +53,7 @@ module Namespaces
           traversal_ids = EXCLUDED.traversal_ids,
           self_and_descendant_group_ids = EXCLUDED.self_and_descendant_group_ids,
           all_project_ids = EXCLUDED.all_project_ids,
-          outdated_at = EXCLUDED.outdated_at,
+          #{handle_outdated_at(outdated_at)}
           calculated_at = EXCLUDED.calculated_at
       SQL
 
@@ -66,5 +66,24 @@ module Namespaces
         Time.current
       ]))
     end
+
+    def self.handle_outdated_at(previous_outdated_at)
+      if previous_outdated_at
+        # When the cache is outdated, the outdated_at column is always bumped.
+        # Here we only mark the namespace_descendants record up to date
+        # when the outdated_at value is exactly the same as the outdated_at loaded earlier.
+        quoted = Namespaces::Descendants.connection.quote(previous_outdated_at)
+        <<~SQL
+        outdated_at = CASE
+          WHEN namespace_descendants.outdated_at = #{quoted} THEN NULL
+          ELSE namespace_descendants.outdated_at
+        END,
+        SQL
+      else
+        "outdated_at = EXCLUDED.outdated_at,"
+      end
+    end
+
+    private_class_method :handle_outdated_at
   end
 end

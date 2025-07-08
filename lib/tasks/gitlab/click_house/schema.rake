@@ -109,7 +109,12 @@ namespace :gitlab do
 
       result = connection.select(query).dig(0, 'all_statements')
 
-      File.write(Rails.root.join('db', 'click_house', "#{database}.sql"), result)
+      path_to_sql = Rails.root.join('db', 'click_house', "#{database}.sql")
+      if File.writable?(path_to_sql)
+        File.write(path_to_sql, result)
+      else
+        puts "File #{path_to_sql} is not writeable, skipping writing #{database}.sql"
+      end
     end
   end
 end

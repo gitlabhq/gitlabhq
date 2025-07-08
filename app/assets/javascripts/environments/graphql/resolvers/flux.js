@@ -101,33 +101,29 @@ const watchFluxResource = async ({
 
   updateFluxConnection(connectionStatus.connecting);
 
-  if (gon?.features?.useWebsocketForK8sWatch) {
-    const watchId = `${resourceType}-${resourceName}`;
-    const [group, version] = apiVersion.split('/');
-    const watchParams = {
-      version,
-      group,
-      resource: resourceType,
-      fieldSelector,
-      namespace,
-    };
-    const cacheParams = {
-      updateQueryCache,
-      updateConnectionStatusFn: updateFluxConnection,
-    };
+  const watchId = `${resourceType}-${resourceName}`;
+  const [group, version] = apiVersion.split('/');
+  const watchParams = {
+    version,
+    group,
+    resource: resourceType,
+    fieldSelector,
+    namespace,
+  };
+  const cacheParams = {
+    updateQueryCache,
+    updateConnectionStatusFn: updateFluxConnection,
+  };
 
-    try {
-      const config = new Configuration(variables.configuration);
-      await subscribeToSocket({
-        watchId,
-        watchParams,
-        cacheParams,
-        config,
-      });
-    } catch {
-      await watchFunction();
-    }
-  } else {
+  try {
+    const config = new Configuration(variables.configuration);
+    await subscribeToSocket({
+      watchId,
+      watchParams,
+      cacheParams,
+      config,
+    });
+  } catch {
     await watchFunction();
   }
 };

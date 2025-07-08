@@ -14,12 +14,17 @@ module Gitlab
           return unless @context.versions_to_create.any?
 
           version_filepaths = version_filenames.map { |f| File.join(schema_directory, f) }
-          FileUtils.rm(version_filepaths)
+
+          version_filepaths.each do |version_filepath|
+            FileUtils.rm(version_filepath) if File.exist?(version_filepath) && File.writable?(version_filepath)
+          end
 
           @context.versions_to_create.each do |version|
-            version_filepath = File.join(schema_directory, version)
+            path = File.join(schema_directory, version)
 
-            File.open(version_filepath, 'w') do |file|
+            next unless File.exist?(path) ? File.writable?(path) : File.writable?(File.dirname(path))
+
+            File.open(path, 'w') do |file|
               file << Digest::SHA256.hexdigest(version)
             end
           end

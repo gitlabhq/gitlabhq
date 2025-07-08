@@ -723,13 +723,45 @@ container_scanning:
 
 ## Scanning archive formats
 
+{{< history >}}
+
+- Scanning tar files [introduced](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/merge_requests/3151) in GitLab 18.0.
+
+{{< /history >}}
+
 Container Scanning supports images in archive formats (`.tar`, `.tar.gz`).
-Such images may be created, for example, using `docker save` or `docker buildx build -o - . > out.tar`.
+Such images may be created, for example, using `docker save` or `docker buildx build`.
 
 To scan an archive file, set the environment variable `CS_IMAGE` to the format `archive://path/to/archive`:
 
 - The `archive://` scheme prefix specifies that the analyzer is to scan an archive.
 - `path/to/archive` specifies the path to the archive to scan, whether an absolute path or a relative path.
+
+Container Scanning supports tar image files following the [Docker Image Specification](https://github.com/moby/docker-image-spec).
+OCI tarballs are not supported.
+For more information regarding supported formats, see [Trivy tar file support](https://trivy.dev/v0.48/docs/target/container_image/#tar-files).
+
+### Building supported tar files
+
+Container Scanning uses metadata from the tar file for image naming.
+When building tar image files, ensure the image is tagged:
+
+```shell
+# Pull or build an image with a name and a tag
+docker pull image:latest
+# OR
+docker build . -t image:latest
+# Then export to tar using docker save
+docker save image:latest -o image-latest.tar
+
+# Or build an image with a tag using buildx build
+docker buildx create --name container --driver=docker-container
+docker buildx build -t image:latest --builder=container -o type=docker,dest=- . > image-latest.tar
+
+# With podman
+podman build -t image:latest .
+podman save -o image-latest.tar image:latest
+```
 
 ### Image name
 
@@ -751,14 +783,15 @@ Use the [`artifacts:paths`](../../../ci/yaml/_index.md#artifactspaths) and [`dep
 ```yaml
 build_job:
   script:
-    - docker buildx build -o - . > out.tar
+    - docker build . -t image:latest
+    - docker save image:latest -o image-latest.tar
   artifacts:
     paths:
-      - "out.tar"
+      - "image-latest.tar"
 
 container_scanning:
   variables:
-    CS_IMAGE: "archive://out.tar"
+    CS_IMAGE: "archive://image-latest.tar"
   dependencies:
     - build_job
 ```
@@ -773,11 +806,6 @@ container_scanning:
   variables:
     GIT_STRATEGY: fetch
 ```
-
-### Limitations
-
-Archive container scanning [does not support collecting location information](https://gitlab.com/gitlab-org/gitlab/-/issues/541110) for scanned dependencies.
-Moreover, there is a [known bug](https://gitlab.com/gitlab-org/gitlab/-/issues/501077) where vulnerability locations do not contain the image name, which may deduplicate vulnerabilities from different archives.
 
 ## Running the standalone container scanning tool
 

@@ -9,8 +9,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
 
   include_examples 'an idempotent worker' do
     it 'executes successfully' do
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
-        { processed_namespaces: 0, skipped_namespaces: 0 })
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:result, {})
 
       run_job
     end
@@ -22,8 +21,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
     let_it_be_with_reload(:outdated3) { create(:namespace_descendants, :outdated) }
 
     it 'invokes the service and increments the processed_namespaces' do
-      expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
-        { processed_namespaces: 3, skipped_namespaces: 0 })
+      expect(worker).to receive(:log_extra_metadata_on_done).with(:result, { processed: 3 })
 
       run_job
 
@@ -43,7 +41,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
           namespace_id = instance.send(:namespace_id)
           # Emulate locked scenario for the 2nd record
           if namespace_id == outdated2.namespace_id
-            nil
+            :skipped
           else
             # Mark the record up to date like the service does.
             Namespaces::Descendants.where(namespace_id: namespace_id).update_all(outdated_at: nil)
@@ -54,7 +52,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
         # rubocop: enable RSpec/AnyInstanceOf
 
         expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
-          { processed_namespaces: 2, skipped_namespaces: 1 })
+          { processed: 2, skipped: 1 })
 
         run_job
 
@@ -75,7 +73,7 @@ RSpec.describe Namespaces::ProcessOutdatedNamespaceDescendantsCronWorker, featur
         end
 
         expect(worker).to receive(:log_extra_metadata_on_done).with(:result,
-          { processed_namespaces: 1, skipped_namespaces: 0 })
+          { processed: 1 })
 
         run_job
       end

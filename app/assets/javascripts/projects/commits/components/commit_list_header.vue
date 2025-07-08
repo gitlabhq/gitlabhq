@@ -7,6 +7,6 @@ export default {
 
 <template>
   <div>
-    <h1 class="gl-text-size-h1">{{ projectPath }}</h1>
+    <h1 class="gl-text-size-h1">{{ __('Commits') }}</h1>
   </div>
 </template>

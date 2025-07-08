@@ -43,7 +43,6 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
       it('return workbenchConfiguration based on gitlabUrl', () => {
         expect(getGitLabUrl).toHaveBeenCalledWith(TEST_GITLAB_WEB_IDE_PUBLIC_PATH);
         expect(config).toEqual({
-          featureFlags: { crossOriginExtensionHost: false },
           crossOriginExtensionHost: false,
           workbenchBaseUrl: GITLAB_URL,
         });
@@ -65,7 +64,6 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
           },
         });
         expect(config).toEqual({
-          featureFlags: { crossOriginExtensionHost: true },
           crossOriginExtensionHost: true,
           workbenchBaseUrl: `https://workbench-82f9aaae2ef4f6ffb993ca55c2a2eb.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}`,
           extensionsHostBaseUrl: `https://{{uuid}}.cdn.web-ide.gitlab-static.net/gitlab-web-ide-vscode-workbench-${packageJSON.version}/vscode`,
@@ -89,7 +87,6 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
         });
         expect(getGitLabUrl).toHaveBeenCalledWith(TEST_GITLAB_WEB_IDE_PUBLIC_PATH);
         expect(result).toEqual({
-          featureFlags: { crossOriginExtensionHost: false },
           crossOriginExtensionHost: false,
           workbenchBaseUrl: GITLAB_URL,
         });

@@ -75,6 +75,7 @@ export default {
       label: s__('WikiPage|Title'),
       placeholder: s__('WikiPage|Page title'),
       templatePlaceholder: s__('WikiPage|Template title'),
+      newPagePlaceholder: s__('WikiPage|{Give this page a title}'),
       helpText: {
         existingPage: s__(
           'WikiPage|Tip: You can move this page by adding the path to the beginning of the title.',
@@ -167,6 +168,10 @@ export default {
         class: 'note-textarea',
       },
       generatePathFromTitle: !this.pageInfo.persisted,
+      placeholderActive: false,
+      placeholderText: this.$options.i18n.title.newPagePlaceholder,
+      parentPath: '',
+      initialTitleValue: '',
     };
   },
   computed: {
@@ -272,8 +277,9 @@ export default {
     },
   },
   mounted() {
-    if (!this.commitMessage) this.updateCommitMessage();
+    this.initializeTitlePlaceholder();
 
+    if (!this.commitMessage) this.updateCommitMessage();
     window.addEventListener('beforeunload', this.onPageUnload);
   },
   destroyed() {
@@ -393,6 +399,79 @@ export default {
         this.$emit('is-editing', false);
       }
     },
+    isPrintableKey(event) {
+      // More robust check for printable characters
+      // Excludes control keys, function keys, etc.
+      if (event.ctrlKey || event.metaKey || event.altKey) {
+        return false;
+      }
+
+      // Check if it's a single printable character
+      // This includes letters, numbers, symbols, space, etc.
+      const { key } = event;
+      return key.length === 1;
+    },
+    async initializeTitlePlaceholder() {
+      if (!this.pageInfo.persisted) {
+        this.initialTitleValue = this.pageTitle;
+
+        if (this.initialTitleValue.endsWith('{new_page_title}')) {
+          // Extract parent path by removing the placeholder
+          this.parentPath = this.initialTitleValue.replace(/\{new_page_title\}$/, '');
+
+          // Set the title with placeholder text
+          this.pageTitle = `${this.parentPath}${this.placeholderText}`;
+          this.placeholderActive = true;
+
+          // Position cursor after parent path on next tick
+          await this.$nextTick();
+          this.positionCursorAfterParentPath();
+        }
+      }
+    },
+
+    positionCursorAfterParentPath() {
+      const input = this.$refs.titleInput?.$el || this.$refs.titleInput;
+      if (input) {
+        const cursorPosition = this.parentPath.length;
+        input.setSelectionRange(cursorPosition, cursorPosition);
+        input.focus();
+      }
+    },
+
+    handleTitleInput(event) {
+      const newValue = event.target ? event.target.value : event;
+
+      if (this.placeholderActive) {
+        // Check if user has modified the placeholder area
+        if (!newValue.includes(this.placeholderText)) {
+          this.placeholderActive = false;
+        }
+      }
+
+      this.pageTitle = newValue;
+    },
+
+    async handleTitleKeydown(event) {
+      if (this.placeholderActive && this.isPrintableKey(event)) {
+        // Clear the placeholder
+        this.placeholderActive = false;
+        this.pageTitle = this.parentPath;
+
+        // Position cursor at the end
+        await this.$nextTick();
+        const input = this.$refs.titleInput?.$el || this.$refs.titleInput;
+        if (input) {
+          input.setSelectionRange(this.parentPath.length, this.parentPath.length);
+        }
+      }
+    },
+
+    handleTitleFocus() {
+      if (this.placeholderActive) {
+        this.positionCursorAfterParentPath();
+      }
+    },
   },
 };
 </script>
@@ -427,6 +506,7 @@ export default {
         >
           <gl-form-input
             id="wiki_title"
+            ref="titleInput"
             v-model="pageTitle"
             type="text"
             class="form-control"
@@ -434,6 +514,9 @@ export default {
             :required="true"
             :autofocus="!pageInfo.persisted"
             :placeholder="titlePlaceholder"
+            @input="handleTitleInput"
+            @keydown="handleTitleKeydown"
+            @focus="handleTitleFocus"
           />
         </gl-form-group>
       </div>

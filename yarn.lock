@@ -1440,7 +1440,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.1":
+"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -1492,10 +1492,10 @@
   dependencies:
     "@vue/devtools-api" "^6.0.0-beta.11"
 
-"@gitlab/web-ide@^0.0.1-dev-20250703083336":
-  version "0.0.1-dev-20250703083336"
-  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250703083336.tgz#eb6d15b07e940acd32131a2e8b30f9e34a2e7dcb"
-  integrity sha512-HrdwvYj4eAxSPOEbBfsln77qvWdOelkjlYGYV1z+59ldlHcqDjNjwADYAPpRSXfwse1i4mOTb1S61SXDDH0Icg==
+"@gitlab/web-ide@^0.0.1-dev-20250704091020":
+  version "0.0.1-dev-20250704091020"
+  resolved "https://registry.yarnpkg.com/@gitlab/web-ide/-/web-ide-0.0.1-dev-20250704091020.tgz#d13600c9dbc69185bf43f92fbdce6f296e6442e2"
+  integrity sha512-C/QlurCT14xLVjQMdUcOu4nxM+e7CxRX3VbScYbeVJIBJHOj4BQYy0HwIJEBvf0yxpv+ga4QH/e+YuIn3ZzHJA==
 
 "@gleam-lang/highlight.js-gleam@^1.5.0":
   version "1.5.0"
@@ -9508,11 +9508,6 @@ istanbul-reports@^3.1.3:
   dependencies:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
-
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jed@^1.1.1:
   version "1.1.1"

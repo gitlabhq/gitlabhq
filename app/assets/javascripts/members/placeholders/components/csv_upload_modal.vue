@@ -6,6 +6,7 @@ import { validateFileFromAllowList } from '~/lib/utils/file_upload';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, __ } from '~/locale';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
+import BypassConfirmationMessage from './bypass_confirmation_message.vue';
 
 export default {
   components: {
@@ -14,11 +15,12 @@ export default {
     GlSprintf,
     GlButton,
     GlAlert,
+    BypassConfirmationMessage,
     UploadDropzone,
   },
   inject: {
     allowBypassPlaceholderConfirmation: {
-      default: false,
+      default: null,
     },
     reassignmentCsvPath: {
       default: '',
@@ -187,18 +189,8 @@ export default {
       {{ uploadError }}
     </gl-alert>
     <gl-alert variant="warning" :dismissible="false">
-      <div v-if="allowBypassPlaceholderConfirmation" data-testid="bypass-confirmation-message">
-        <gl-sprintf
-          :message="
-            s__(
-              'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
-            )
-          "
-        >
-          <template #strong="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
+      <div v-if="allowBypassPlaceholderConfirmation">
+        <bypass-confirmation-message />
         <p class="gl-mb-0 gl-mt-3">
           {{
             s__(

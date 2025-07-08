@@ -6,6 +6,7 @@ import {
   handleUpdateUrl,
   getBaseConfig,
   getWebIDEWorkbenchConfig,
+  setupIdeContainer,
 } from '~/ide/lib/gitlab_web_ide';
 import Tracking from '~/tracking';
 import setWindowLocation from 'helpers/set_window_location_helper';
@@ -20,9 +21,9 @@ jest.mock('~/lib/utils/csrf', () => ({
 }));
 jest.mock('~/tracking');
 jest.mock('~/ide/render_web_ide_error');
-jest.mock('~/ide/lib/gitlab_web_ide/get_web_ide_workbench_config');
 jest.mock('~/ide/lib/gitlab_web_ide/get_base_config');
 jest.mock('~/ide/lib/gitlab_web_ide/get_web_ide_workbench_config');
+jest.mock('~/ide/lib/gitlab_web_ide/setup_ide_container');
 
 const ROOT_ELEMENT_ID = 'ide';
 const TEST_NONCE = 'test123nonce';
@@ -101,14 +102,20 @@ describe('ide/init_gitlab_web_ide', () => {
   };
   const findRootElement = () => document.getElementById(ROOT_ELEMENT_ID);
   const createSubject = () => initGitlabWebIDE(findRootElement());
+  let ideContainer;
 
   beforeEach(() => {
     gon.current_username = TEST_USERNAME;
     gon.features = { webIdeLanguageServer: true };
     process.env.GITLAB_WEB_IDE_PUBLIC_PATH = TEST_GITLAB_WEB_IDE_PUBLIC_PATH;
+    ideContainer = {
+      element: document.createElement('div'),
+      show: jest.fn(),
+    };
 
     getBaseConfig.mockReturnValue(TEST_BASE_CONFIG);
     getWebIDEWorkbenchConfig.mockResolvedValue(TEST_WORKBENCH_CONFIG);
+    setupIdeContainer.mockReturnValue(ideContainer);
 
     createRootElement();
   });
@@ -128,7 +135,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
     it('calls start with element', () => {
       expect(start).toHaveBeenCalledTimes(1);
-      expect(start).toHaveBeenCalledWith(findRootElement(), {
+      expect(start).toHaveBeenCalledWith(ideContainer.element, {
         ...TEST_BASE_CONFIG,
         ...TEST_WORKBENCH_CONFIG,
         projectPath: TEST_PROJECT_PATH,
@@ -151,8 +158,6 @@ describe('ide/init_gitlab_web_ide', () => {
         },
         featureFlags: {
           languageServerWebIDE: gon.features.webIdeLanguageServer,
-          dedicatedWebIDEOrigin: true,
-          crossOriginExtensionHost: true,
         },
         editorFont: {
           fallbackFontFamily: 'monospace',
@@ -175,13 +180,17 @@ describe('ide/init_gitlab_web_ide', () => {
       });
     });
 
-    it('clears classes and data from root element', () => {
-      const rootEl = findRootElement();
+    describe('when web-ide is ready', () => {
+      beforeEach(() => {
+        start.mockResolvedValue({ ready: Promise.resolve() });
+        createSubject();
+      });
 
-      // why: Snapshot to test that the element was cleaned including `test-class`
-      expect(rootEl.outerHTML).toBe(
-        '<div id="ide" class="gl-flex gl-justify-center gl-items-center gl-relative gl-h-full"></div>',
-      );
+      it('shows web ide container', async () => {
+        await waitForPromises();
+
+        expect(ideContainer.show).toHaveBeenCalled();
+      });
     });
   });
 
@@ -196,7 +205,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
     it('includes mrTargetProject', () => {
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           mrTargetProject: TEST_MR_TARGET_PROJECT,
         }),
@@ -213,7 +222,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
     it('includes line number', () => {
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           lineRange: TEST_LINE_NUMBER,
         }),
@@ -229,7 +238,7 @@ describe('ide/init_gitlab_web_ide', () => {
     });
     it('includes line range', () => {
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           lineRange: TEST_LINE_RANGE,
         }),
@@ -246,7 +255,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
     it('includes forkInfo', () => {
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           forkInfo: TEST_FORK_INFO,
         }),
@@ -265,7 +274,7 @@ describe('ide/init_gitlab_web_ide', () => {
     it('calls start with element', () => {
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           auth: {
             type: 'oauth',
@@ -300,6 +309,27 @@ describe('ide/init_gitlab_web_ide', () => {
     });
   });
 
+  describe('on ready error', () => {
+    const mockError = new Error('error');
+
+    beforeEach(() => {
+      jest.mocked(start).mockResolvedValue({ ready: Promise.reject(mockError) });
+
+      createSubject();
+    });
+
+    it('shows alert', async () => {
+      await waitForPromises();
+
+      expect(start).toHaveBeenCalledTimes(1);
+      expect(renderWebIdeError).toHaveBeenCalledTimes(1);
+      expect(renderWebIdeError).toHaveBeenCalledWith({
+        error: mockError,
+        signOutPath: TEST_SIGN_OUT_PATH,
+      });
+    });
+  });
+
   describe('when extensionMarketplaceSettings is in dataset', () => {
     async function setMockExtensionMarketplaceSettingsDataset(
       mockSettings = TEST_EXTENSION_MARKETPLACE_SETTINGS,
@@ -319,7 +349,7 @@ describe('ide/init_gitlab_web_ide', () => {
       await setMockExtensionMarketplaceSettingsDataset();
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           extensionsGallerySettings: {
             enabled: true,
@@ -337,7 +367,7 @@ describe('ide/init_gitlab_web_ide', () => {
 
       expect(start).toHaveBeenCalledTimes(1);
       expect(start).toHaveBeenCalledWith(
-        findRootElement(),
+        ideContainer.element,
         expect.objectContaining({
           settingsContextHash: TEST_SETTINGS_CONTEXT_HASH,
         }),

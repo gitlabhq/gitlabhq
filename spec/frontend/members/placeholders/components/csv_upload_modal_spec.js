@@ -9,6 +9,7 @@ import {
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
 } from '~/lib/utils/http_status';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import BypassConfirmationMessage from '~/members/placeholders/components/bypass_confirmation_message.vue';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
 import UploadDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -29,7 +30,7 @@ describe('CsvUploadModal', () => {
   const findUploadDropzone = () => wrapper.findComponent(UploadDropzone);
   const findUploadErrorAlert = () => wrapper.findByTestId('upload-error');
   const findGlModal = () => wrapper.findComponent(GlModal);
-  const findBypassConfirmationMessage = () => wrapper.findByTestId('bypass-confirmation-message');
+  const findBypassConfirmationMessage = () => wrapper.findComponent(BypassConfirmationMessage);
 
   const createComponent = ({ provide = {} } = {}) => {
     wrapper = shallowMountExtended(CsvUploadModal, {
@@ -60,14 +61,24 @@ describe('CsvUploadModal', () => {
   });
 
   describe('allowBypassPlaceholderConfirmation', () => {
-    it('does not render bypass confirmation message when false', () => {
+    it('does not render bypass confirmation message when value is null', () => {
       expect(findBypassConfirmationMessage().exists()).toBe(false);
     });
 
-    it('renders bypass confirmation message message when true', () => {
+    it('renders admin bypass confirmation when `admin` bypass value is passed', () => {
       createComponent({
         provide: {
-          allowBypassPlaceholderConfirmation: true,
+          allowBypassPlaceholderConfirmation: 'admin',
+        },
+      });
+
+      expect(findBypassConfirmationMessage().exists()).toBe(true);
+    });
+
+    it('renders group owner bypass confirmation when `group_owner` bypass value is passed', () => {
+      createComponent({
+        provide: {
+          allowBypassPlaceholderConfirmation: 'group_owner',
         },
       });
 

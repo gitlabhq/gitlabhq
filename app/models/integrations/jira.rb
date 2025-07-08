@@ -690,8 +690,7 @@ module Integrations
           project,
           entity_type.to_sym
         ],
-        id: entity_id,
-        host: Settings.gitlab.base_url
+        entity_url_options(entity_type, entity_id)
       )
     end
 
@@ -812,6 +811,18 @@ module Integrations
           basic: s_('JiraService|Basic')
         )
       )
+    end
+
+    def entity_url_options(entity_type, entity_id)
+      options = { host: Settings.gitlab.base_url }
+
+      if entity_type == 'work_item'
+        options[:iid] = entity_id
+      else
+        options[:id] = entity_id
+      end
+
+      options
     end
   end
 end

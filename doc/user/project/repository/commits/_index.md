@@ -59,6 +59,22 @@ The commit's details page shows:
 - References: Branches and tags containing this commit.
 - Related merge requests: Links to merge requests associated with the commit.
 
+## Browse repository files by Git revision
+
+To view all repository files and folders at a specific Git revision, such as a commit SHA,
+branch name, or tag:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Commits**.
+1. Choose one of the following options:
+   - Filter by Git revision:
+      1. At the top, select to open the **Select Git revision** dropdown list.
+      1. Select or search for a Git revision.
+   - Select a specific commit from the commits list.
+1. At the top right, select **Browse files**.
+
+You are directed to the [repository](../_index.md) page at that specific revision.
+
 ## Filter and search commits
 
 Filter and search the commit history to find specific changes or track work by particular authors.

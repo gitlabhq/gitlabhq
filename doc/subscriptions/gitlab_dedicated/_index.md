@@ -42,9 +42,9 @@ GitLab Dedicated provides the following security features to protect your data a
 
 #### Authentication and authorization
 
-You can configure [SAML single sign-on (SSO)](../../integration/saml.md) using any number of SAML providers for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Providers (IdPs). SAML request signing, group sync, and SAML groups are supported.
+GitLab Dedicated supports [SAML](../../administration/dedicated/configure_instance/saml.md) and [OpenID Connect (OIDC)](../../administration/dedicated/configure_instance/openid_connect.md) providers for single sign-on (SSO).
 
-For more information, see how to configure [SAML](../../administration/dedicated/configure_instance/saml.md) for your instance.
+You can configure single sign-on (SSO) using the supported providers for authentication. Your instance acts as the service provider, and you provide the necessary configuration for GitLab to communicate with your Identity Providers (IdPs).
 
 #### Secure networking
 
@@ -278,7 +278,7 @@ The following are not included in service level availability calculations:
 - Issues with customer or cloud provider infrastructure outside of GitLab control
 - Scheduled maintenance windows
 - Emergency maintenance for critical security or data issues
-- Service disruptions caused by natural disasters, widespread internet outages, 
+- Service disruptions caused by natural disasters, widespread internet outages,
   datacenter failures, or other events outside of GitLab control.
 
 ## Migrate to GitLab Dedicated

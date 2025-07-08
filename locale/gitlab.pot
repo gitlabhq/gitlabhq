@@ -11484,6 +11484,9 @@ msgstr ""
 msgid "Browse Files"
 msgstr ""
 
+msgid "Browse commit files"
+msgstr ""
+
 msgid "Browse files"
 msgstr ""
 
@@ -34482,6 +34485,9 @@ msgstr ""
 msgid "Issue|Title"
 msgstr ""
 
+msgid "It looks like you are visiting GitLab from Mainland China, Macau, or Hong Kong.We advise you to %{jihu_url} before continuing."
+msgstr ""
+
 msgid "It looks like you're attempting to activate your subscription. Use %{a_start}the Subscription page%{a_end} instead."
 msgstr ""
 
@@ -54243,7 +54249,7 @@ msgstr ""
 msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{branchExceptions} %{agents} %{namespaces}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs for %{scopes} %{branches} %{sources} %{branchExceptions} %{agents} %{namespaces}"
+msgid "ScanExecutionPolicy|%{rules} every time a pipeline runs that %{scopes} %{branches} using %{sources} %{branchExceptions} %{agents} %{namespaces}"
 msgstr ""
 
 msgid "ScanExecutionPolicy|%{strategySelector} pipeline file to run from %{projectSelector}"
@@ -54441,6 +54447,9 @@ msgstr ""
 msgid "ScanResultPolicy|Access tokens"
 msgstr ""
 
+msgid "ScanResultPolicy|Add another account"
+msgstr ""
+
 msgid "ScanResultPolicy|Add exception"
 msgstr ""
 
@@ -54543,7 +54552,7 @@ msgstr ""
 msgid "ScanResultPolicy|Enable automated systems and bots to bypass policies for approved workflows."
 msgstr ""
 
-msgid "ScanResultPolicy|Error occurred while fetching access tokens."
+msgid "ScanResultPolicy|Error while fetching"
 msgstr ""
 
 msgid "ScanResultPolicy|Except"
@@ -54666,10 +54675,16 @@ msgstr ""
 msgid "ScanResultPolicy|No settings available for this policy"
 msgstr ""
 
+msgid "ScanResultPolicy|No tokens available"
+msgstr ""
+
 msgid "ScanResultPolicy|Only 1 age criteria is allowed"
 msgstr ""
 
 msgid "ScanResultPolicy|Override project approval settings"
+msgstr ""
+
+msgid "ScanResultPolicy|Personal access token"
 msgstr ""
 
 msgid "ScanResultPolicy|Policy Exception settings"
@@ -54729,10 +54744,10 @@ msgstr ""
 msgid "ScanResultPolicy|Save denylist"
 msgstr ""
 
-msgid "ScanResultPolicy|Security team project"
+msgid "ScanResultPolicy|Select a scan type before adding criteria"
 msgstr ""
 
-msgid "ScanResultPolicy|Select a scan type before adding criteria"
+msgid "ScanResultPolicy|Select access tokens"
 msgstr ""
 
 msgid "ScanResultPolicy|Select all"
@@ -54756,10 +54771,19 @@ msgstr ""
 msgid "ScanResultPolicy|Select role exceptions. Choose which roles can bypass this policy."
 msgstr ""
 
+msgid "ScanResultPolicy|Select service account"
+msgstr ""
+
+msgid "ScanResultPolicy|Select service account or create a token"
+msgstr ""
+
+msgid "ScanResultPolicy|Select service accounts"
+msgstr ""
+
 msgid "ScanResultPolicy|Select token exceptions"
 msgstr ""
 
-msgid "ScanResultPolicy|Select tokens"
+msgid "ScanResultPolicy|Service accounts"
 msgstr ""
 
 msgid "ScanResultPolicy|Severity is:"
@@ -54769,9 +54793,6 @@ msgid "ScanResultPolicy|Specify the packages where this license requires approva
 msgstr ""
 
 msgid "ScanResultPolicy|Status is:"
-msgstr ""
-
-msgid "ScanResultPolicy|Target project documentation"
 msgstr ""
 
 msgid "ScanResultPolicy|The product %{verb} use the selected licenses"
@@ -54864,7 +54885,13 @@ msgstr ""
 msgid "ScanResultPolicy|scanners"
 msgstr ""
 
+msgid "ScanResultPolicy|service account"
+msgstr ""
+
 msgid "ScanResultPolicy|severity levels"
+msgstr ""
+
+msgid "ScanResultPolicy|token"
 msgstr ""
 
 msgid "ScanResultPolicy|vulnerabilities allowed"
@@ -55929,6 +55956,48 @@ msgstr ""
 msgid "SecurityInventory|You're already viewing this subgroup"
 msgstr ""
 
+msgid "SecurityLabels|Add label"
+msgstr ""
+
+msgid "SecurityLabels|Add security label"
+msgstr ""
+
+msgid "SecurityLabels|Cancel"
+msgstr ""
+
+msgid "SecurityLabels|Color"
+msgstr ""
+
+msgid "SecurityLabels|Delete"
+msgstr ""
+
+msgid "SecurityLabels|Delete security label"
+msgstr ""
+
+msgid "SecurityLabels|Delete security label?"
+msgstr ""
+
+msgid "SecurityLabels|Deleting the \"%{labelName}\" Security Label will permanently remove it from its category and any projects where it is applied. This action cannot be undone."
+msgstr ""
+
+msgid "SecurityLabels|Description"
+msgstr ""
+
+msgid "SecurityLabels|Description is required"
+msgstr ""
+
+msgid "SecurityLabels|Edit security label"
+msgstr ""
+
+msgid "SecurityLabels|Name"
+msgstr ""
+
+msgid "SecurityLabels|Name is required"
+msgstr ""
+
+msgid "SecurityLabels|Update label"
+msgstr ""
+
 msgid "SecurityOrchestration| and "
 msgstr ""
 
@@ -56075,6 +56144,9 @@ msgid "SecurityOrchestration|After dismissing the alert, the information will ne
 msgstr ""
 
 msgid "SecurityOrchestration|After this merge request is merged, go to [%{framework}](%{link}) and remove the compliance pipeline so that the new pipeline execution policy can take precedence."
+msgstr ""
+
+msgid "SecurityOrchestration|All pipeline sources"
 msgstr ""
 
 msgid "SecurityOrchestration|All projects in linked groups"
@@ -56845,9 +56917,6 @@ msgid "SecurityOrchestration|Select security policy project"
 msgstr ""
 
 msgid "SecurityOrchestration|Select suffix"
-msgstr ""
-
-msgid "SecurityOrchestration|Select the source"
 msgstr ""
 
 msgid "SecurityOrchestration|Selecting this will disconnect your top level compliance and security policy (CSP) group from all the other top level groups. All frameworks shared by the top level CSP group will also be disconnected due to this action."
@@ -63127,6 +63196,9 @@ msgstr ""
 msgid "There was a problem fetching milestones."
 msgstr ""
 
+msgid "There was a problem fetching namespaces."
+msgstr ""
+
 msgid "There was a problem fetching project branches."
 msgstr ""
 
@@ -67553,6 +67625,9 @@ msgstr ""
 msgid "UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately."
 msgstr ""
 
+msgid "UserMapping|The %{strongStart}Skip confirmation when group owners reassign placeholder users to enterprise users%{strongEnd} setting is enabled. Enterprise users do not have to approve the reassignment, and contributions are reassigned immediately."
+msgstr ""
+
 msgid "UserMapping|The file is being processed and you will receive an email when completed."
 msgstr ""
 
@@ -70157,6 +70232,9 @@ msgid "WikiPage|Update template %{pageTitle}"
 msgstr ""
 
 msgid "WikiPage|Write your content or drag files here…"
+msgstr ""
+
+msgid "WikiPage|{Give this page a title}"
 msgstr ""
 
 msgid "Wiki|Add custom sidebar"
@@ -75423,13 +75501,13 @@ msgstr ""
 msgid "target all default branches"
 msgstr ""
 
-msgid "target all protected branches"
-msgstr ""
-
-msgid "target default branch"
-msgstr ""
-
 msgid "targeting "
+msgstr ""
+
+msgid "targets all protected branches"
+msgstr ""
+
+msgid "targets default branch"
 msgstr ""
 
 msgid "task"

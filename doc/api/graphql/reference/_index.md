@@ -13876,6 +13876,30 @@ The edge type for [`AiCatalogItem`](#aicatalogitem).
 | <a id="aicatalogitemedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="aicatalogitemedgenode"></a>`node` | [`AiCatalogItem`](#aicatalogitem) | The item at the end of the edge. |
 
+#### `AiCatalogItemVersionConnection`
+
+The connection type for [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemversionconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
+| <a id="aicatalogitemversionconnectionedges"></a>`edges` | [`[AiCatalogItemVersionEdge]`](#aicatalogitemversionedge) | A list of edges. |
+| <a id="aicatalogitemversionconnectionnodes"></a>`nodes` | [`[AiCatalogItemVersion]`](#aicatalogitemversion) | A list of nodes. |
+| <a id="aicatalogitemversionconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `AiCatalogItemVersionEdge`
+
+The edge type for [`AiCatalogItemVersion`](#aicatalogitemversion).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemversionedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="aicatalogitemversionedgenode"></a>`node` | [`AiCatalogItemVersion`](#aicatalogitemversion) | The item at the end of the edge. |
+
 #### `AiConversationsThreadConnection`
 
 The connection type for [`AiConversationsThread`](#aiconversationsthread).
@@ -21831,20 +21855,37 @@ Version of an AI Agent.
 | <a id="aiagentversionmodel"></a>`model` | [`String!`](#string) | Model of the agent. |
 | <a id="aiagentversionprompt"></a>`prompt` | [`String!`](#string) | Prompt of the agent. |
 
-### `AiCatalogItem`
+### `AiCatalogAgent`
 
-An AI catalog item.
+An AI catalog agent.
 
 #### Fields
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="aicatalogitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
-| <a id="aicatalogitemdescription"></a>`description` | [`String!`](#string) | Description of the item. |
-| <a id="aicatalogitemid"></a>`id` | [`ID!`](#id) | ID of the item. |
-| <a id="aicatalogitemitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
-| <a id="aicatalogitemname"></a>`name` | [`String!`](#string) | Name of the item. |
-| <a id="aicatalogitemproject"></a>`project` | [`Project`](#project) | Project for the item. |
+| <a id="aicatalogagentcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogagentdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogagentid"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogagentitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
+| <a id="aicatalogagentname"></a>`name` | [`String!`](#string) | Name of the item. |
+| <a id="aicatalogagentproject"></a>`project` | [`Project`](#project) | Project for the item. |
+| <a id="aicatalogagentversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+
+### `AiCatalogAgentVersion`
+
+An AI catalog agent version.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogagentversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogagentversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogagentversionpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp of when the item version was published. |
+| <a id="aicatalogagentversionsystemprompt"></a>`systemPrompt` | [`String`](#string) | System prompt for the agent. |
+| <a id="aicatalogagentversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
+| <a id="aicatalogagentversionuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
+| <a id="aicatalogagentversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
 
 ### `AiConversationsThread`
 
@@ -49732,6 +49773,44 @@ Implementations:
 | <a id="accesslevelinterfaceimmutable"></a>`immutable` {{< icon name="warning-solid" >}} | [`Boolean!`](#boolean) | **Introduced** in GitLab 17.11. **Status**: Experiment. Returns true when tag rule is for tag immutability. Otherwise, false. |
 | <a id="accesslevelinterfaceminimumaccesslevelfordelete"></a>`minimumAccessLevelForDelete` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to delete container image tags from the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
 | <a id="accesslevelinterfaceminimumaccesslevelforpush"></a>`minimumAccessLevelForPush` {{< icon name="warning-solid" >}} | [`ContainerProtectionTagRuleAccessLevel`](#containerprotectiontagruleaccesslevel) | **Introduced** in GitLab 17.8. **Status**: Experiment. Minimum GitLab access level required to push container image tags to the container repository. Valid values include `MAINTAINER`, `OWNER`, or `ADMIN`. |
+
+#### `AiCatalogItem`
+
+An AI catalog item.
+
+Implementations:
+
+- [`AiCatalogAgent`](#aicatalogagent)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogitemdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogitemid"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogitemitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
+| <a id="aicatalogitemname"></a>`name` | [`String!`](#string) | Name of the item. |
+| <a id="aicatalogitemproject"></a>`project` | [`Project`](#project) | Project for the item. |
+| <a id="aicatalogitemversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+
+#### `AiCatalogItemVersion`
+
+An AI catalog item version.
+
+Implementations:
+
+- [`AiCatalogAgentVersion`](#aicatalogagentversion)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogitemversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogitemversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogitemversionpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp of when the item version was published. |
+| <a id="aicatalogitemversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
+| <a id="aicatalogitemversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
 
 #### `AlertManagementIntegration`
 

@@ -85,7 +85,9 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
   end
 
   describe '.upsert_with_consistent_data' do
-    let_it_be(:cache) { create(:namespace_descendants, :outdated, calculated_at: nil, traversal_ids: [100, 200]) }
+    let_it_be_with_reload(:cache) do
+      create(:namespace_descendants, :outdated, calculated_at: nil, traversal_ids: [100, 200])
+    end
 
     it 'updates the namespace descendant record', :freeze_time do
       described_class.upsert_with_consistent_data(
@@ -103,6 +105,45 @@ RSpec.describe Namespaces::Descendants, feature_category: :database do
         outdated_at: nil,
         calculated_at: Time.current
       )
+    end
+
+    describe 'setting outdated_at for optimistic locking' do
+      context 'when outdated_at value changed in the meantime' do
+        it 'keeps the outdated_at value set thus the record stays outdated' do
+          outdated_at = cache.outdated_at
+          new_outdated_at_value = outdated_at + 1.day
+
+          cache.update!(outdated_at: new_outdated_at_value)
+
+          described_class.upsert_with_consistent_data(
+            namespace: cache.namespace,
+            self_and_descendant_group_ids: [1, 2, 3],
+            all_project_ids: [5, 6, 7],
+            outdated_at: outdated_at
+          )
+
+          cache.reload
+
+          expect(cache.outdated_at).to eq(new_outdated_at_value)
+        end
+      end
+
+      context 'when outdated_at value did not change' do
+        it 'marks the record up to date' do
+          cache.reload
+
+          described_class.upsert_with_consistent_data(
+            namespace: cache.namespace,
+            self_and_descendant_group_ids: [1, 2, 3],
+            all_project_ids: [5, 6, 7],
+            outdated_at: cache.outdated_at
+          )
+
+          cache.reload
+
+          expect(cache.outdated_at).to be_nil
+        end
+      end
     end
   end
 end

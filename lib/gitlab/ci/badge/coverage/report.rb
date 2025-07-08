@@ -47,31 +47,12 @@ module Gitlab::Ci
           @successful_pipeline ||= @project.ci_pipelines.latest_successful_for_ref(@ref)
         end
 
-        def failed_pipeline
-          @failed_pipeline ||= @project.ci_pipelines.latest_failed_for_ref(@ref)
-        end
-
-        def running_pipeline
-          @running_pipeline ||= @project.ci_pipelines.latest_running_for_ref(@ref)
-        end
-
         def raw_coverage
           latest =
             if @job.present?
-              if Feature.enabled?(:show_job_badge_regardless_of_pipeline, @project)
-                pipeline_ids = @project.ci_pipelines.latest_pipelines_for_ref_by_statuses(@ref).map(&:id)
+              pipeline_ids = @project.ci_pipelines.latest_pipelines_for_ref_by_statuses(@ref).map(&:id)
 
-                Ci::Build.in_pipelines(pipeline_ids).latest.success.by_name(@job).max_by(&:created_at)
-              else
-                builds = ::Ci::Build
-                  .in_pipelines([successful_pipeline, running_pipeline, failed_pipeline])
-                  .latest
-                  .success
-                  .for_ref(@ref)
-                  .by_name(@job)
-
-                builds.max_by(&:created_at)
-              end
+              Ci::Build.in_pipelines(pipeline_ids).latest.success.by_name(@job).max_by(&:created_at)
             else
               successful_pipeline
             end

@@ -12,6 +12,7 @@ query getAdminProjects(
   $minAccessLevel: AccessLevelEnum
   $visibilityLevel: VisibilityLevelsEnum
   $programmingLanguageName: String
+  $namespacePath: ID
 ) {
   projects(
     active: $active
@@ -24,6 +25,7 @@ query getAdminProjects(
     minAccessLevel: $minAccessLevel
     programmingLanguageName: $programmingLanguageName
     visibilityLevel: $visibilityLevel
+    namespacePath: $namespacePath
   ) {
     count
     nodes {

@@ -104,16 +104,6 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Report, feature_category: :continuou
           it 'returns the coverage for the build' do
             expect(badge.status).to eq(25.00)
           end
-
-          context 'with FF show_job_badge_regardless_of_pipeline disabled' do
-            before do
-              stub_feature_flags(show_job_badge_regardless_of_pipeline: false)
-            end
-
-            it 'returns previous build coverage' do
-              expect(badge.status).to eq(40.00)
-            end
-          end
         end
 
         context 'and the build failed' do
@@ -121,16 +111,6 @@ RSpec.describe Gitlab::Ci::Badge::Coverage::Report, feature_category: :continuou
 
           it 'reverts to the last successful job' do
             expect(badge.status).to eq(40.00)
-          end
-
-          context 'with FF show_job_badge_regardless_of_pipeline disabled' do
-            before do
-              stub_feature_flags(show_job_badge_regardless_of_pipeline: false)
-            end
-
-            it 'returns previous build coverage' do
-              expect(badge.status).to eq(40.00)
-            end
           end
         end
       end

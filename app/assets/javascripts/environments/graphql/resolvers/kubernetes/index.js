@@ -115,19 +115,15 @@ export const watchEvents = async ({
     }
   };
 
-  if (gon?.features?.useWebsocketForK8sWatch) {
-    const watchId = `events-io-${involvedObjectName}`;
-    const watchParams = { version: 'v1', resource: 'events', fieldSelector, namespace };
-    const cacheParams = {
-      updateQueryCache,
-    };
+  const watchId = `events-io-${involvedObjectName}`;
+  const watchParams = { version: 'v1', resource: 'events', fieldSelector, namespace };
+  const cacheParams = {
+    updateQueryCache,
+  };
 
-    try {
-      await subscribeToSocket({ watchId, watchParams, configuration, cacheParams });
-    } catch {
-      await watchFunction();
-    }
-  } else {
+  try {
+    await subscribeToSocket({ watchId, watchParams, configuration, cacheParams });
+  } catch {
     await watchFunction();
   }
 };

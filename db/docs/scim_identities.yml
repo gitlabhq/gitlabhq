@@ -7,6 +7,7 @@ feature_categories:
 description: Table to persisit scim identities of the user in instance wide SCIM
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26124
 milestone: '12.9'
-gitlab_schema: gitlab_main_cell
-exempt_from_sharding: true
+gitlab_schema: gitlab_main_user
+sharding_key:
+  user_id: users
 table_size: small

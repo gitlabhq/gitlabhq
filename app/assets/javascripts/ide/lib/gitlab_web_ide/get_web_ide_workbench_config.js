@@ -52,17 +52,11 @@ export const getWebIDEWorkbenchConfig = async () => {
       workbenchBaseUrl,
       extensionsHostBaseUrl,
       crossOriginExtensionHost: true,
-      featureFlags: {
-        crossOriginExtensionHost: true,
-      },
     };
   } catch (e) {
     return {
       workbenchBaseUrl: getGitLabUrl(process.env.GITLAB_WEB_IDE_PUBLIC_PATH),
       crossOriginExtensionHost: false,
-      featureFlags: {
-        crossOriginExtensionHost: false,
-      },
     };
   }
 };

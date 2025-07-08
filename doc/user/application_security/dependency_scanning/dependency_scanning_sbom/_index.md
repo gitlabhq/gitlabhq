@@ -658,6 +658,98 @@ To use the dependency scanning analyzer:
      SECURE_ANALYZERS_PREFIX: "docker-registry.example.com/analyzers"
    ```
 
+## Security policies
+
+Use security policies to enforce Dependency Scanning across multiple projects.
+The appropriate policy type depends on whether your projects have scannable artifacts committed to their repositories.
+
+### Scan execution policies
+
+[Scan execution policies](../../policies/scan_execution_policies.md) are supported for all projects that have scannable artifacts committed to their repositories. These artifacts include lockfiles, dependency graph files, and other files that can be directly analyzed to identify dependencies.
+
+For projects with these artifacts, scan execution policies provide the fastest and most straightforward way to enforce Dependency Scanning.
+
+### Pipeline execution policies
+
+For projects that don't have scannable artifacts committed to their repositories,
+you must use [pipeline execution policies](../../policies/pipeline_execution_policies.md).
+These policies use a custom CI/CD job to generate scannable artifacts before invoking Dependency Scanning.
+
+Pipeline execution policies:
+
+- Generate lockfiles or dependency graphs as part of your CI/CD pipeline.
+- Customize the dependency detection process for your specific project requirements.
+- Implement the language-specific instructions for build tools like Gradle and Maven.
+
+#### Example: Pipeline execution policy for a Gradle project
+
+For a Gradle project without a scannable artifact committed to the repository, a pipeline execution policy with an artifact generation step is required. This example uses the `nebula` plugin.
+
+In the dedicated security policies project create or update the main policy file (for example, `policy.yml`):
+
+```yaml
+pipeline_execution_policy:
+- name: Enforce Gradle dependency scanning with SBOM
+  description: Generate dependency artifact and run Dependency Scanning.
+  enabled: true
+  pipeline_config_strategy: inject_policy
+  content:
+    include:
+      - project: $SECURITY_POLICIES_PROJECT
+        file: "dependency-scanning.yml"
+```
+
+Add `dependency-scanning.yml`:
+
+```yaml
+stages:
+  - build
+  - test
+
+variables:
+  DS_ENFORCE_NEW_ANALYZER: "true"
+
+include:
+  - template: Jobs/Dependency-Scanning.latest.gitlab-ci.yml
+
+generate nebula lockfile:
+  image: openjdk:11-jdk
+  stage: build
+  script:
+    - |
+      cat << EOF > nebula.gradle
+      initscript {
+          repositories {
+            mavenCentral()
+          }
+          dependencies {
+              classpath 'com.netflix.nebula:gradle-dependency-lock-plugin:12.7.1'
+          }
+      }
+
+      allprojects {
+          apply plugin: nebula.plugin.dependencylock.DependencyLockPlugin
+      }
+      EOF
+      ./gradlew --init-script nebula.gradle -PdependencyLock.includeTransitives=true -PdependencyLock.lockFile=dependencies.lock generateLock saveLock
+      ./gradlew --init-script nebula.gradle -PdependencyLock.includeTransitives=false -PdependencyLock.lockFile=dependencies.direct.lock generateLock saveLock
+  after_script:
+    - find . -path '*/build/dependencies.lock' -print -delete
+  artifacts:
+    paths:
+      - '**/dependencies.lock'
+      - '**/dependencies.direct.lock'
+```
+
+This approach ensures that:
+
+1. A pipeline run in the Gradle project generates the scannable artifacts.
+1. Dependency Scanning is enforced and has access to the scannable artifacts.
+1. All projects in the policy scope consistently follow the same dependency scanning approach.
+1. Configuration changes can be managed centrally and applied across multiple projects.
+
+For more details on implementing pipeline execution policies for different build tools, refer to the [language-specific instructions](#language-specific-instructions).
+
 ## Troubleshooting
 
 When working with dependency scanning, you might encounter the following issues.

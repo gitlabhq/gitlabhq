@@ -230,3 +230,15 @@ export const CONTEXT_TYPE = Object.freeze({
   PROJECT: 'PROJECT',
   GROUP: 'GROUP',
 });
+
+export const BYPASS_CONFIRMATION_TYPE_ADMIN = 'admin';
+export const BYPASS_CONFIRMATION_TYPE_GROUP_OWNER = 'group_owner';
+
+export const ALLOW_BYPASS_PLACEHOLDER_CONFIRMATION_MESSAGE = {
+  [BYPASS_CONFIRMATION_TYPE_ADMIN]: s__(
+    'UserMapping|The %{strongStart}Skip confirmation when administrators reassign placeholder users%{strongEnd} setting is enabled. Users do not have to approve the reassignment, and contributions are reassigned immediately.',
+  ),
+  [BYPASS_CONFIRMATION_TYPE_GROUP_OWNER]: s__(
+    'UserMapping|The %{strongStart}Skip confirmation when group owners reassign placeholder users to enterprise users%{strongEnd} setting is enabled. Enterprise users do not have to approve the reassignment, and contributions are reassigned immediately.',
+  ),
+};

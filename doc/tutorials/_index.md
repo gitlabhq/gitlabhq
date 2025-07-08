@@ -15,6 +15,7 @@ Learn about GitLab fundamentals by following guided instructions.
 - [Plan and track your work](plan_and_track.md)
 - [Build your application](build_application.md)
 - [Secure your application and check compliance](secure_application.md)
+- [Deploy and release your application](deploy_release.md)
 - [Manage your infrastructure](infrastructure.md)
 - [Extend with GitLab](develop.md)
 

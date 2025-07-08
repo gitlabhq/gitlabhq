@@ -6,7 +6,7 @@ import { getLineRangeFromHash } from '~/lib/utils/url_utility';
 import {
   getBaseConfig,
   getOAuthConfig,
-  setupRootElement,
+  setupIdeContainer,
   handleTracking,
   handleUpdateUrl,
   getWebIDEWorkbenchConfig,
@@ -38,7 +38,7 @@ export const initGitlabWebIDE = async (el) => {
 
   const languageServerWebIDE = gon?.features?.webIdeLanguageServer || false;
   const webIdeWorkbenchConfig = await getWebIDEWorkbenchConfig();
-  const rootEl = setupRootElement(el);
+  const container = setupIdeContainer(el);
   const editorFont = editorFontJSON
     ? convertObjectPropsToCamelCase(JSON.parse(editorFontJSON), { deep: true })
     : null;
@@ -60,7 +60,7 @@ export const initGitlabWebIDE = async (el) => {
 
   try {
     // See ClientOnlyConfig https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L17
-    await start(rootEl, {
+    const { ready } = await start(container.element, {
       ...getBaseConfig(),
       ...webIdeWorkbenchConfig,
       nonce,
@@ -80,9 +80,7 @@ export const initGitlabWebIDE = async (el) => {
         signIn: el.dataset.signInPath,
       },
       featureFlags: {
-        dedicatedWebIDEOrigin: true,
         languageServerWebIDE,
-        crossOriginExtensionHost: webIdeWorkbenchConfig.featureFlags.crossOriginExtensionHost,
       },
       editorFont,
       extensionsGallerySettings: extensionMarketplaceSettings,
@@ -93,6 +91,10 @@ export const initGitlabWebIDE = async (el) => {
       // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86
       telemetryEnabled: Tracking.enabled(),
     });
+
+    await ready;
+
+    container.show();
   } catch (error) {
     renderWebIdeError({ error, signOutPath });
   }
