@@ -10,4 +10,5 @@ milestone: '17.2'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
+  namespace_id: namespaces
 table_size: small

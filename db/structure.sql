@@ -14295,7 +14295,7 @@ ALTER SEQUENCE draft_notes_id_seq OWNED BY draft_notes.id;
 CREATE TABLE duo_workflows_checkpoint_writes (
     id bigint NOT NULL,
     workflow_id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     idx integer NOT NULL,
     thread_ts text NOT NULL,
     task text NOT NULL,
@@ -14304,6 +14304,7 @@ CREATE TABLE duo_workflows_checkpoint_writes (
     data text NOT NULL,
     namespace_id bigint,
     CONSTRAINT check_38dc205bb2 CHECK ((char_length(data) <= 10000)),
+    CONSTRAINT check_3d119c06ee CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
     CONSTRAINT check_c64af76670 CHECK ((char_length(write_type) <= 255)),
     CONSTRAINT check_d66d09c813 CHECK ((char_length(task) <= 255)),
     CONSTRAINT check_ddb83bc2d5 CHECK ((char_length(channel) <= 255)),
@@ -14322,7 +14323,7 @@ ALTER SEQUENCE duo_workflows_checkpoint_writes_id_seq OWNED BY duo_workflows_che
 CREATE TABLE duo_workflows_checkpoints (
     id bigint NOT NULL,
     workflow_id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     thread_ts text NOT NULL,
@@ -14331,6 +14332,7 @@ CREATE TABLE duo_workflows_checkpoints (
     metadata jsonb NOT NULL,
     namespace_id bigint,
     CONSTRAINT check_3dcc551d16 CHECK ((char_length(parent_ts) <= 255)),
+    CONSTRAINT check_4b59da71b6 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
     CONSTRAINT check_5d3139b983 CHECK ((char_length(thread_ts) <= 255))
 );
 
@@ -14346,7 +14348,7 @@ ALTER SEQUENCE duo_workflows_checkpoints_id_seq OWNED BY duo_workflows_checkpoin
 CREATE TABLE duo_workflows_events (
     id bigint NOT NULL,
     workflow_id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     event_type smallint NOT NULL,
@@ -14355,7 +14357,8 @@ CREATE TABLE duo_workflows_events (
     correlation_id_value text,
     namespace_id bigint,
     CONSTRAINT check_125840165c CHECK ((char_length(message) <= 16384)),
-    CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128))
+    CONSTRAINT check_5e35596b00 CHECK ((char_length(correlation_id_value) <= 128)),
+    CONSTRAINT check_9014d33202 CHECK ((num_nonnulls(namespace_id, project_id) = 1))
 );
 
 CREATE SEQUENCE duo_workflows_events_id_seq
@@ -14370,7 +14373,7 @@ ALTER SEQUENCE duo_workflows_events_id_seq OWNED BY duo_workflows_events.id;
 CREATE TABLE duo_workflows_workflows (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
-    project_id bigint NOT NULL,
+    project_id bigint,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
@@ -14384,6 +14387,7 @@ CREATE TABLE duo_workflows_workflows (
     namespace_id bigint,
     CONSTRAINT check_30ca07a4ef CHECK ((char_length(goal) <= 16384)),
     CONSTRAINT check_3a9162f1ae CHECK ((char_length(image) <= 2048)),
+    CONSTRAINT check_73884a5839 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
     CONSTRAINT check_ec723e2a1a CHECK ((char_length(workflow_definition) <= 255))
 );
 

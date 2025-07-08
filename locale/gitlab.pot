@@ -56059,6 +56059,9 @@ msgstr ""
 msgid "SecurityOrchestration|All projects in this group except:"
 msgstr ""
 
+msgid "SecurityOrchestration|All projects in this instance except:"
+msgstr ""
+
 msgid "SecurityOrchestration|All projects linked to security policy project."
 msgstr ""
 
