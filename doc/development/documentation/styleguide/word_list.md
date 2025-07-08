@@ -159,7 +159,7 @@ Instead of:
 
 Use lowercase for **advanced search** to refer to the faster, more efficient search across the entire GitLab instance.
 
-## agent
+## agent for Kubernetes
 
 Use lowercase to refer to the [GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent).
 For example:
@@ -197,6 +197,17 @@ Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
 ## AI, artificial intelligence
 
 Use **AI**. Do not spell out **artificial intelligence**.
+
+## AI agent
+
+When writing about AI, the **AI agent** is an entity that performs actions for the user.
+
+After first use, you can use **agent** without **AI**.
+
+When you're interacting with an AI agent, a [**session**](#session) is running.
+The user can stop a session.
+
+One or more AI agents can be part of a [**flow**](#flows), where they are orchestrated to work together on a problem.
 
 ## AI gateway
 
@@ -1051,6 +1062,13 @@ When you are viewing a list of items, like issues or merge requests, you filter 
 the available attributes. For example, you might filter by assignee or reviewer.
 
 Filtering is different from [searching](#search).
+
+## flows
+
+GitLab provides multiple **flows** that are run by [AI agents](#ai-agent).
+Both **flow** and **agent flow** are acceptable.
+
+You choose a flow. You start a [**session**](#session).
 
 ## foo
 
@@ -2310,6 +2328,11 @@ See [GitLab Self-Managed](#gitlab-self-managed).
 ## Service Desk
 
 Use title case for **Service Desk**.
+
+## session
+
+When an [AI agent](#ai-agent) is working on a [**flow**](#flows), a **session** is running.
+The session can start and stop.
 
 ## setup, set up
 

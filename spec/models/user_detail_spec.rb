@@ -477,7 +477,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz',
         orcid: '1234-1234-1234-1234',
         mastodon: '@robin@example.com',
-        organization: 'organization',
+        user_detail_organization: 'organization',
         twitter: 'twitter',
         website_url: 'https://example.com'
       }

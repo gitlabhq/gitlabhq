@@ -211,7 +211,7 @@ This section lists the features that are not available for GitLab Dedicated.
 
 The following GitLab application features are not available:
 
-- LDAP, smart card, or Kerberos authentication
+- LDAP (Git clone with username / password), smart card, or Kerberos authentication
 - Multiple login providers
 - FortiAuthenticator or FortiToken 2FA
 - Reply by email
@@ -222,6 +222,7 @@ The following GitLab application features are not available:
 - Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
 - Any functionality or feature behind a feature flag that is turned `off` by default
 - [Sigstore for keyless signing and verification](../../ci/yaml/signing_examples.md)
+- OAuth providers outside of standard SAML
 
 The following features are not supported:
 

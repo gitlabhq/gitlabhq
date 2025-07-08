@@ -1,0 +1,13 @@
+---
+name: ci_stop_using_has_exposed_artifacts_metadata_col
+description: >
+  Updates code to stop using p_ci_builds_metadata.has_exposed_artifacts. This means that
+  finding exposed artifacts requires iterating through all latest builds of a pipeline,
+  not just ones with has_exposed_artifacts = true.
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/work_items/550223
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195693
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/551510
+milestone: '18.2'
+group: group::ci platform
+type: gitlab_com_derisk
+default_enabled: false

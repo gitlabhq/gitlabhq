@@ -84,7 +84,7 @@ module ProfilesHelper
       pronunciation: user.pronunciation,
       website_url: user.website_url,
       job_title: user.job_title,
-      organization: user.organization,
+      organization: user.user_detail_organization,
       bio: user.bio,
       include_private_contributions: user.include_private_contributions?.to_s,
       achievements_enabled: user.achievements_enabled.to_s,

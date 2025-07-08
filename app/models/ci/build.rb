@@ -169,6 +169,7 @@ module Ci
       )
     end
 
+    # TODO: Remove this scope when FF `ci_stop_using_has_exposed_artifacts_metadata_col` is removed
     scope :with_exposed_artifacts, -> do
       joins(:metadata).merge(Ci::BuildMetadata.with_exposed_artifacts)
         .includes(:metadata, :job_artifacts_metadata)

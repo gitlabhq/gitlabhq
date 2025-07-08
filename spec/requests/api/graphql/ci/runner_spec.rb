@@ -443,7 +443,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         end
 
         let_it_be(:owned_project_owner) { create(:user) }
-        let_it_be(:owned_project) { create(:project) }
+        let_it_be(:owned_project) { create(:project, owners: owned_project_owner) }
         let_it_be(:other_project) { create(:project) }
         let_it_be(:project_runner) { create(:ci_runner, :project_type, projects: [other_project, owned_project]) }
         let_it_be(:owned_project_pipeline) { create(:ci_pipeline, project: owned_project) }
@@ -456,10 +456,6 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         let_it_be(:other_build) do
           create(:ci_build, :success, runner: project_runner, pipeline: other_project_pipeline,
             tag_list: %i[d e f], created_at: 30.minutes.ago, started_at: 19.minutes.ago, finished_at: 1.minute.ago)
-        end
-
-        before_all do
-          owned_project.add_owner(owned_project_owner)
         end
 
         it 'returns empty values for sensitive fields in non-owned jobs' do
@@ -825,11 +821,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
   end
 
   describe 'by non-admin user' do
-    let(:user) { create(:user) }
-
-    before do
-      group.add_member(user, Gitlab::Access::OWNER)
-    end
+    let(:user) { create(:user, owner_of: group) }
 
     it_behaves_like 'retrieval with no admin url' do
       let(:runner) { active_group_runner }

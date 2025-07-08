@@ -222,6 +222,7 @@ func TestSendGitAuditEvent(t *testing.T) {
 		Protocol: "http",
 		Repo:     "project-1",
 		Username: "GitLab-Shell",
+		Changes:  "_any",
 		PackfileStats: &gitalypb.PackfileNegotiationStatistics{
 			Wants: 3,
 			Haves: 23,

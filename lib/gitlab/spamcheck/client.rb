@@ -76,7 +76,7 @@ module Gitlab
         user_pb = ::Spamcheck::User.new
         user_pb.username = user.username
         user_pb.id = user.id
-        user_pb.org = user.organization || ''
+        user_pb.org = user.user_detail_organization || ''
         user_pb.created_at = convert_to_pb_timestamp(user.created_at)
         user_pb.abuse_metadata = Google::Protobuf::Map.new(:string, :float, user.abuse_metadata)
 

@@ -137,7 +137,7 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
             username: 1,
             website_url: 1,
             private_profile: 1,
-            organization: 1,
+            user_detail_organization: 1,
             location: 1,
             public_email: 1,
             user_type: 'project_bot',

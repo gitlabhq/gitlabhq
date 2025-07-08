@@ -148,7 +148,7 @@ module UsersHelper
   def work_information(user, with_schema_markup: false)
     return unless user
 
-    organization = user.organization
+    organization = user.user_detail_organization
     job_title = user.job_title
 
     if organization.present? && job_title.present?

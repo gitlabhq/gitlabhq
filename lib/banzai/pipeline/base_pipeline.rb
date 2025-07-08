@@ -12,7 +12,7 @@ module Banzai
       end
 
       def self.html_pipeline
-        @html_pipeline ||= HTML::Pipeline.new(filters)
+        @html_pipeline ||= Banzai::PipelineBase.new(filters)
         @html_pipeline.setup_instrumentation(name)
 
         @html_pipeline

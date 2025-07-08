@@ -47,7 +47,7 @@ module Banzai
     private
 
     def render_documents(objects, attribute)
-      pipeline = HTML::Pipeline.new([])
+      pipeline = Banzai::PipelineBase.new([])
 
       objects.map do |object|
         document = pipeline.to_document(Banzai.render_field(object, attribute))

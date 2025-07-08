@@ -38995,6 +38995,7 @@ Compliance violation for a project.
 | <a id="projectcomplianceviolationcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp when the violation was detected. |
 | <a id="projectcomplianceviolationdiscussions"></a>`discussions` | [`DiscussionConnection!`](#discussionconnection) | All discussions on the noteable. (see [Connections](#connections)) |
 | <a id="projectcomplianceviolationid"></a>`id` | [`ID!`](#id) | Compliance violation ID. |
+| <a id="projectcomplianceviolationissues"></a>`issues` | [`IssueConnection`](#issueconnection) | Project issues linked to the violation. (see [Connections](#connections)) |
 | <a id="projectcomplianceviolationproject"></a>`project` | [`Project!`](#project) | Project of the compliance violation. |
 | <a id="projectcomplianceviolationstatus"></a>`status` | [`ComplianceViolationStatus!`](#complianceviolationstatus) | Compliance violation status of the project. |
 

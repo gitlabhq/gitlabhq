@@ -438,6 +438,8 @@ module API
           user_params[:password_expires_at] = Time.current if admin_making_changes_for_another_user
         end
 
+        user_params[:user_detail_organization] = user_params.delete(:organization) if user_params[:organization]
+
         result = ::Users::UpdateService.new(current_user, user_params.merge(user: user)).execute do |user|
           user.send_only_admin_changed_your_password_notification! if admin_making_changes_for_another_user
         end

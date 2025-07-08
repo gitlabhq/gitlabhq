@@ -76,7 +76,7 @@ The **Metric trends** table displays metrics for the last six months, with month
 
 ### AI usage metrics
 
-**Code Suggestions usage**: Monthly user engagement with AI Code Suggestions.
+**Code Suggestions: Usage**: Monthly user engagement with AI Code Suggestions.
 
 On GitLab.com, data updates every fives minutes.
 GitLab counts Code Suggestions usage only if the user has pushed code to the project in the current month.

@@ -79,7 +79,7 @@ module Banzai
       # If sanitization times out, we can not return partial un-sanitized results.
       # It's ok to allow any following filters to run since this is safe HTML.
       def returned_timeout_value
-        HTML::Pipeline.parse(COMPLEX_MARKDOWN_MESSAGE)
+        Banzai::PipelineBase.parse(COMPLEX_MARKDOWN_MESSAGE)
       end
 
       class << self

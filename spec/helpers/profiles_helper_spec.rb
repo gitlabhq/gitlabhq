@@ -130,7 +130,7 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
         pronouns: 'they/them',
         pronunciation: 'test-user',
         job_title: 'Developer',
-        organization: 'GitLab',
+        user_detail_organization: 'GitLab',
         location: 'Remote',
         website_url: 'https://example.com',
         bio: 'Test bio')

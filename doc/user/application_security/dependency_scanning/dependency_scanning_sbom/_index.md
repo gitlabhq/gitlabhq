@@ -154,8 +154,8 @@ This method gives information about dependencies which are direct.
 To enable the CI/CD component on a Gradle project:
 
 1. Edit the `build.gradle` or `build.gradle.kts` to use the
-   [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example).
-1. Configure the `.gitlab-ci.yml` file to generate the `dependencies.lock` artifacts, and pass them
+   [gradle-dependency-lock-plugin](https://github.com/nebula-plugins/gradle-dependency-lock-plugin/wiki/Usage#example) or use an init script.
+1. Configure the `.gitlab-ci.yml` file to generate the `dependencies.lock` and `dependencies.direct.lock` artifacts, and pass them
    to the `dependency-scanning` job.
 
 The following example demonstrates how to configure the component
@@ -166,30 +166,44 @@ stages:
   - build
   - test
 
-# Define the image that contains Java and Gradle
 image: gradle:8.0-jdk11
 
 include:
   - component: $CI_SERVER_FQDN/components/dependency-scanning/main@0
 
-build:
+generate nebula lockfile:
   # Running in the build stage ensures that the dependency-scanning job
-  # receives the dependencies.lock artifacts.
+  # receives the scannable artifacts.
   stage: build
   script:
-    - gradle generateLock saveLock
-    - gradle assemble
-  # generateLock saves the lock file in the build/ directory of a project
-  # and saveLock copies it into the root of a project. To avoid duplicates
-  # and get an accurate location of the dependency, use find to remove the
-  # lock files in the build/ directory only.
+    - |
+      cat << EOF > nebula.gradle
+      initscript {
+          repositories {
+            mavenCentral()
+          }
+          dependencies {
+              classpath 'com.netflix.nebula:gradle-dependency-lock-plugin:12.7.1'
+          }
+      }
+
+      allprojects {
+          apply plugin: nebula.plugin.dependencylock.DependencyLockPlugin
+      }
+      EOF
+      ./gradlew --init-script nebula.gradle -PdependencyLock.includeTransitives=true -PdependencyLock.lockFile=dependencies.lock generateLock saveLock
+      ./gradlew --init-script nebula.gradle -PdependencyLock.includeTransitives=false -PdependencyLock.lockFile=dependencies.direct.lock generateLock saveLock
+      # generateLock saves the lock file in the build/ directory of a project
+      # and saveLock copies it into the root of a project. To avoid duplicates
+      # and get an accurate location of the dependency, use find to remove the
+      # lock files in the build/ directory only.
   after_script:
-    - find . -path '*/build/dependencies.lock' -print -delete
-  # Collect all dependencies.lock artifacts and pass them onto jobs
-  # in sequential stages.
+    - find . -path '*/build/dependencies*.lock' -print -delete
+  # Collect all generated artifacts and pass them onto jobs in sequential stages.
   artifacts:
     paths:
-      - "**/dependencies.lock"
+      - '**/dependencies*.lock'
+      - '**/dependencies*.lock'
 ```
 
 ###### HtmlDependencyReportTask

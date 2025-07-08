@@ -36,7 +36,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
 
     context 'work information' do
       it 'shows job title and organization details' do
-        user.update!(organization: 'GitLab - work info test', job_title: 'Frontend Engineer')
+        user.update!(user_detail_organization: 'GitLab - work info test', job_title: 'Frontend Engineer')
 
         subject
 
@@ -44,7 +44,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
 
       it 'shows job title' do
-        user.update!(organization: nil, job_title: 'Frontend Engineer - work info test')
+        user.update!(user_detail_organization: nil, job_title: 'Frontend Engineer - work info test')
 
         subject
 
@@ -52,7 +52,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
       end
 
       it 'shows organization details' do
-        user.update!(organization: 'GitLab - work info test', job_title: '')
+        user.update!(user_detail_organization: 'GitLab - work info test', job_title: '')
 
         subject
 
@@ -210,7 +210,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
       create(
         :user,
         state: :blocked,
-        organization: 'GitLab - work info test',
+        user_detail_organization: 'GitLab - work info test',
         job_title: 'Frontend Engineer',
         pronunciation: 'pruh-nuhn-see-ay-shn',
         bio: 'My personal bio'
@@ -260,7 +260,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
       create(
         :user,
         :unconfirmed,
-        organization: 'GitLab - work info test',
+        user_detail_organization: 'GitLab - work info test',
         job_title: 'Frontend Engineer',
         pronunciation: 'pruh-nuhn-see-ay-shn',
         bio: 'My personal bio'
@@ -389,7 +389,7 @@ RSpec.describe 'User page', feature_category: :user_profile do
   end
 
   context 'structured markup' do
-    let_it_be(:user) { create(:user, website_url: 'https://gitlab.com', organization: 'GitLab', job_title: 'Frontend Engineer', email: 'public@example.com', public_email: 'public@example.com', location: 'Country', created_at: Time.zone.now, updated_at: Time.zone.now) }
+    let_it_be(:user) { create(:user, website_url: 'https://gitlab.com', user_detail_organization: 'GitLab', job_title: 'Frontend Engineer', email: 'public@example.com', public_email: 'public@example.com', location: 'Country', created_at: Time.zone.now, updated_at: Time.zone.now) }
 
     it 'shows Person structured markup' do
       subject

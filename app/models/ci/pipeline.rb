@@ -1280,7 +1280,11 @@ module Ci
     end
 
     def has_exposed_artifacts?
-      complete? && builds.latest.with_exposed_artifacts.exists?
+      if Feature.enabled?(:ci_stop_using_has_exposed_artifacts_metadata_col, project)
+        complete? && builds.latest.any_with_exposed_artifacts?
+      else
+        complete? && builds.latest.with_exposed_artifacts.exists?
+      end
     end
 
     def has_erasable_artifacts?

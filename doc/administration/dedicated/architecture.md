@@ -52,15 +52,33 @@ GitLab Dedicated leverages GitLab Geo for [disaster recovery](../../subscription
 
 Geo does not use an active-active failover configuration. For more information, see [Geo](../geo/_index.md).
 
-### AWS PrivateLink connection (optional)
+### AWS PrivateLink connection
+
+>Required for Geo migrations to Dedicated. Otherwise, optional
 
 Optionally, private connectivity is available for your GitLab Dedicated instance, using [AWS PrivateLink](https://aws.amazon.com/privatelink/) as a connection gateway.
 
 Both [inbound](configure_instance/network_security.md#inbound-private-link) and [outbound](configure_instance/network_security.md#outbound-private-link) private links are supported.
 
-![Diagram of a GitLab-managed AWS VPC using AWS PrivateLink to connect with a customer-managed AWS VPC.](img/privatelink_diagram_v17_1.png)
+#### Inbound
+
+![Diagram of a GitLab-managed AWS VPC using inbound AWS PrivateLink to connect with a customer-managed AWS VPC.](img/privatelink_inbound_v18_0.png)
 
 GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/933b958b-bfad-4898-a8ae-182815f159ca/edit?invitationId=inv_38b9a265-dff2-4db6-abdb-369ea1e92f5f) files for the diagram in Lucidchart.
+
+#### Outbound
+
+![Diagram of a GitLab-managed AWS VPC using outbound AWS PrivateLink to connect with a customer-managed AWS VPC.](img/privatelink_outbound_v18_0.png)
+
+GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/5aeae97e-a3c4-43e3-8b9d-27900d944147/edit?invitationId=inv_0e4fee9f-cf63-439c-9bf9-71ecbfbd8979&page=F5pcfQybsAYU8#) files for the diagram in Lucidchart.
+
+#### AWS PrivateLink for migration
+
+Additionally, AWS PrivateLink is also used for migration purposes. The customer's Dedicated GitLab instance can use AWS PrivateLink to pull data for a migration to GitLab Dedicated.
+
+![Diagram of a simplified Dedicated Geo setup.](img/dedicated_geo_simplified_v18_0.png)
+
+GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/1e83e102-37b3-48a9-885d-e72122683bce/edit?view_items=AzvnMfovRJe3p&invitationId=inv_c02140dd-416b-41b5-b14a-7288b54bb9b5) files for the diagram in Lucidchart.
 
 ## Hosted runners for GitLab Dedicated
 

@@ -98,7 +98,7 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
     end
 
     context 'with RequestStore enabled', :request_store do
-      let(:reference_filter) { HTML::Pipeline.new([described_class]) }
+      let(:reference_filter) { Banzai::PipelineBase.new([described_class]) }
 
       it 'queries the collection on the first call' do
         expect_any_instance_of(Project).to receive(:default_issues_tracker?).once.and_call_original

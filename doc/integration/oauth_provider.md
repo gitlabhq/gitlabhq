@@ -5,6 +5,12 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 title: Configure GitLab as an OAuth 2.0 authentication identity provider
 ---
 
+{{< history >}}
+
+- Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
+
+{{< /history >}}
+
 [OAuth 2.0](https://oauth.net/2/) provides secure delegated server resource
 access to client applications on behalf of a resource owner. OAuth 2 allows
 authorization servers to issue access tokens to third-party clients with the approval
@@ -24,9 +30,10 @@ You can use a non-SSL URL instead, but you should use an SSL URL.
 After adding an OAuth 2 application to an instance, you can use OAuth 2 to:
 
 - Enable users to sign in to your application with their GitLab.com account.
+- Enable users to sign in to your application using [SAML SSO](../user/group/saml_sso/_index.md)
+  when SAML is configured for the associated group.
 - Set up GitLab.com for authentication to your GitLab instance. For more information,
   see [integrating your server with GitLab.com](gitlab.md).
-
 - After an application is created, external services can manage access tokens using the
   [OAuth 2 API](../api/oauth2.md).
 

@@ -1150,10 +1150,24 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       end
 
       it "updates the user organization and job title" do
-        expect(gl_user.organization).to eq(info_hash[:organization])
+        expect(gl_user.user_detail_organization).to eq(info_hash[:organization])
         expect(gl_user.job_title).to eq(info_hash[:job_title])
         expect(gl_user.user_synced_attributes_metadata.organization_synced).to be(true)
         expect(gl_user.user_synced_attributes_metadata.job_title_synced).to be(true)
+      end
+
+      context "when there is a mismatch with what attributes can be synced" do
+        before do
+          allow(UserSyncedAttributesMetadata).to receive(:syncable_attributes).and_return([:random_key])
+          info_hash[:random_key] = "random value"
+          allow_next_instance_of(Gitlab::Auth::OAuth::AuthHash) do |instance|
+            allow(instance).to receive(:random_key).and_return(info_hash[:random_key])
+          end
+        end
+
+        it "raises an error" do
+          expect { oauth_user }.to raise_error Gitlab::Auth::OAuth::User::UnknownAttributeMappingError
+        end
       end
     end
 
@@ -1178,7 +1192,7 @@ RSpec.describe Gitlab::Auth::OAuth::User, :aggregate_failures, feature_category:
       end
 
       it "updates the user organization and job title" do
-        expect(gl_user.organization).to eq(info_hash[:organization])
+        expect(gl_user.user_detail_organization).to eq(info_hash[:organization])
         expect(gl_user.job_title).to eq(info_hash[:job_title])
         expect(gl_user.user_synced_attributes_metadata.organization_synced).to be(true)
         expect(gl_user.user_synced_attributes_metadata.job_title_synced).to be(true)

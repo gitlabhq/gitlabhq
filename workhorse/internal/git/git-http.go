@@ -109,6 +109,7 @@ func sendGitAuditEvent(action string) func(*api.API, *http.Request, *api.Respons
 			Repo:          response.GL_REPOSITORY,
 			Username:      response.GL_USERNAME,
 			PackfileStats: stats,
+			Changes:       "_any",
 		})
 		if err != nil {
 			log.WithContextFields(ctx, log.Fields{

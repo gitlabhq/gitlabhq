@@ -2682,6 +2682,38 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#has_exposed_artifacts?' do
+    let(:pipeline) { create(:ci_pipeline, :success) }
+    let(:options) { nil }
+
+    subject { pipeline.has_exposed_artifacts? }
+
+    before do
+      create(:ci_build, pipeline: pipeline)
+      create(:ci_build, options: options, pipeline: pipeline)
+    end
+
+    it { is_expected.to eq(false) }
+
+    context 'with unexposed artifacts' do
+      let(:options) { { artifacts: { paths: ['test'] } } }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'with exposed artifacts' do
+      let(:options) { { artifacts: { expose_as: 'test', paths: ['test'] } } }
+
+      it { is_expected.to eq(true) }
+
+      context 'when the pipeline is not complete' do
+        let(:pipeline) { create(:ci_pipeline, :running) }
+
+        it { is_expected.to eq(false) }
+      end
+    end
+  end
+
   describe '#manual_actions' do
     subject { pipeline.manual_actions }
 

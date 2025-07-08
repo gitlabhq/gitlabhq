@@ -195,7 +195,7 @@ module Users
         :location,
         :name,
         :note,
-        :organization,
+        :user_detail_organization,
         :password,
         :password_automatically_set,
         :password_expires_at,

@@ -17,7 +17,6 @@ ee/spec/frontend/geo_sites/index_spec.js
 ee/spec/frontend/groups/settings/components/comma_separated_list_token_selector_spec.js
 ee/spec/frontend/issues_analytics/components/issues_analytics_table_spec.js
 ee/spec/frontend/iterations/components/iteration_form_spec.js
-ee/spec/frontend/iterations/components/iteration_report_issues_spec.js
 ee/spec/frontend/members/components/action_dropdowns/user_action_dropdown_spec.js
 ee/spec/frontend/members/components/modals/ldap_override_confirmation_modal_spec.js
 ee/spec/frontend/members/components/table/members_table_spec.js

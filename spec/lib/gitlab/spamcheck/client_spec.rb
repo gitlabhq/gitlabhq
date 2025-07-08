@@ -6,7 +6,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
   include_context 'includes Spam constants'
 
   let(:endpoint) { 'grpc://grpc.test.url' }
-  let_it_be(:user) { create(:user, organization: 'GitLab') }
+  let_it_be(:user) { create(:user, user_detail_organization: 'GitLab') }
   let(:verdict_value) { ::Spamcheck::SpamVerdict::Verdict::ALLOW }
   let(:verdict_score) { 0.01 }
   let(:verdict_evaluated) { true }
@@ -169,7 +169,7 @@ RSpec.describe Gitlab::Spamcheck::Client, feature_category: :instance_resiliency
       user_pb = described_class.new.send(:build_user_protobuf, user)
       expect(user_pb.username).to eq user.username
       expect(user_pb.id).to eq user.id
-      expect(user_pb.org).to eq user.organization
+      expect(user_pb.org).to eq user.user_detail_organization
       expect(user_pb.created_at).to eq timestamp_to_protobuf_timestamp(user.created_at)
       expect(user_pb.emails.count).to be 1
       expect(user_pb.emails.first.email).to eq user.email

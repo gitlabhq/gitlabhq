@@ -45813,11 +45813,11 @@ definitions:
         type: string
       github:
         type: string
-      organization:
-        type: string
       job_title:
         type: string
       pronouns:
+        type: string
+      organization:
         type: string
       bot:
         type: string
@@ -50218,11 +50218,11 @@ definitions:
         type: string
       github:
         type: string
-      organization:
-        type: string
       job_title:
         type: string
       pronouns:
+        type: string
+      organization:
         type: string
       bot:
         type: string
@@ -65529,11 +65529,11 @@ definitions:
         type: string
       github:
         type: string
-      organization:
-        type: string
       job_title:
         type: string
       pronouns:
+        type: string
+      organization:
         type: string
       bot:
         type: string

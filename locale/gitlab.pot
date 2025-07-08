@@ -5856,19 +5856,19 @@ msgstr ""
 msgid "AiAnalytics|the ClickHouse data store is not available"
 msgstr ""
 
-msgid "AiImpactAnalytics|Code Suggestions acceptance rate"
+msgid "AiImpactAnalytics|Assigned Duo seat engagement"
 msgstr ""
 
-msgid "AiImpactAnalytics|Code Suggestions usage"
+msgid "AiImpactAnalytics|Code Suggestions: Acceptance rate"
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo Chat: Unique users"
+msgid "AiImpactAnalytics|Code Suggestions: Usage"
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo RCA: Unique users"
+msgid "AiImpactAnalytics|Duo Chat: Usage"
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo seats: Assigned and used"
+msgid "AiImpactAnalytics|Duo RCA: Usage"
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly GitLab Duo Code Suggestions accepted / total Code Suggestions generated."
@@ -9065,12 +9065,6 @@ msgid "Attribute 'container-overrides' is not yet supported"
 msgstr ""
 
 msgid "Attribute 'pod-overrides' is not yet supported"
-msgstr ""
-
-msgid "Audit Event Author Placeholder"
-msgstr ""
-
-msgid "Audit Event Details placeholder"
 msgstr ""
 
 msgid "Audit events"
@@ -16109,6 +16103,9 @@ msgstr ""
 msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policies instead. %{linkStart}Pipeline execution policies%{linkEnd} provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance enforcement in pipelines."
 msgstr ""
 
+msgid "ComplianceReport|By %{name}"
+msgstr ""
+
 msgid "ComplianceReport|Change status"
 msgstr ""
 
@@ -16169,6 +16166,9 @@ msgstr ""
 msgid "ComplianceReport|Full target branch name"
 msgstr ""
 
+msgid "ComplianceReport|Generic Audit event"
+msgstr ""
+
 msgid "ComplianceReport|Have questions or thoughts on the new improvements? %{linkStart}Please provide feedback on your experience%{linkEnd}."
 msgstr ""
 
@@ -16179,6 +16179,9 @@ msgid "ComplianceReport|Less than 2 approvers"
 msgstr ""
 
 msgid "ComplianceReport|Migrate pipeline to a policy"
+msgstr ""
+
+msgid "ComplianceReport|No audit event available"
 msgstr ""
 
 msgid "ComplianceReport|No frameworks"
@@ -16233,6 +16236,9 @@ msgid "ComplianceReport|Unable to load the compliance framework report. Refresh 
 msgstr ""
 
 msgid "ComplianceReport|Unable to load the compliance violations report. Refresh the page and try again."
+msgstr ""
+
+msgid "ComplianceReport|Unknown author"
 msgstr ""
 
 msgid "ComplianceReport|Update filtered results?"
@@ -62605,6 +62611,12 @@ msgid "The file has been successfully created."
 msgstr ""
 
 msgid "The file has been successfully deleted."
+msgstr ""
+
+msgid "The file is locked."
+msgstr ""
+
+msgid "The file is unlocked."
 msgstr ""
 
 msgid "The file you're about to delete is tracked by LFS"

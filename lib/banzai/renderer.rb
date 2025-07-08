@@ -3,7 +3,6 @@
 module Banzai
   module Renderer
     USER_CONTENT_ID_PREFIX = 'user-content-'
-    HTML_PIPELINE_SUBSCRIPTION = 'call_filter.html_pipeline'
 
     # Convert a Markdown String into an HTML-safe String of HTML
     #
@@ -193,15 +192,19 @@ module Banzai
       Rails.cache.__send__(:expanded_key, full_cache_key(cache_key, pipeline_name)) # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    # this is built specifically for outputting debug timing/information for the Banzai pipeline.
-    # Example usage:
-    #   Banzai.render(markdown, project: nil, debug_timing: true)
-    #   Banzai.render(markdown, project: Project.first, debug: true)
+    # Instrumentation is used for a couple purposes
+    # - tracking timing of filters and the pipeline to manage performance and security.
+    #   See `PipelineTimingCheck`
+    # - outputting debug timing/information for the pipeline.
+    #   Example usage:
+    #     Banzai.render(markdown, project: nil, debug_timing: true)
+    #     Banzai.render(markdown, project: Project.first, debug: true)
     def self.instrument_filters
       service = ActiveSupport::Notifications
-      HTML::Pipeline.default_instrumentation_service = service
+      Banzai::PipelineBase.default_instrumentation_service = service
+      subscription_name = Banzai::PipelineBase.filter_subscription_name
 
-      service.monotonic_subscribe(HTML_PIPELINE_SUBSCRIPTION) do |_event, start, ending, _transaction_id, payload|
+      service.monotonic_subscribe(subscription_name) do |_event, start, ending, _transaction_id, payload|
         duration = ending - start
         payload[:result][:pipeline_timing] = payload[:result][:pipeline_timing].to_f + duration
 
@@ -222,7 +225,7 @@ module Banzai
 
       yield
     ensure
-      service.unsubscribe(HTML_PIPELINE_SUBSCRIPTION) if service
+      service.unsubscribe(subscription_name) if service
     end
 
     def self.formatted_duration(duration)
