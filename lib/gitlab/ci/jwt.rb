@@ -21,7 +21,7 @@ module Gitlab
 
       attr_reader :build, :ttl
 
-      delegate :user, :pipeline, :runner, to: :build
+      delegate :project, :user, :pipeline, :runner, to: :build
       delegate :source_ref, :source_ref_path, to: :pipeline
 
       def default_payload
@@ -86,12 +86,6 @@ module Gitlab
 
       def environment_protected?
         false # Overridden in EE
-      end
-
-      def project
-        return pipeline.merge_request.source_project if pipeline.merge_request_from_forked_project?
-
-        build.project
       end
     end
   end
