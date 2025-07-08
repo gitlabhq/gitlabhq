@@ -59734,6 +59734,9 @@ msgstr ""
 msgid "Target branches"
 msgstr ""
 
+msgid "Target group prevents forks that point outside this group"
+msgstr ""
+
 msgid "Target project cannot be equal to source project"
 msgstr ""
 
