@@ -11,6 +11,8 @@ class RemovePCiBuildsTriggerRequestId < Gitlab::Database::Migration[2.3]
   def up
     return unless can_execute_on?(:ci_builds)
 
+    execute("ALTER SEQUENCE ci_builds_id_seq OWNED BY p_ci_builds.id")
+
     remove_column(TABLE, COLUMN)
   end
 
