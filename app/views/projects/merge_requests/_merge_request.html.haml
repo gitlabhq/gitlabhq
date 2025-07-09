@@ -11,6 +11,8 @@
   .issuable-info-container.gl-flex-col.md:gl-flex-row.gl-gap-3
     .issuable-main-info{ class: '!gl-mr-0' }
       .merge-request-title.title
+        - if Feature.enabled?(:show_merge_request_status_draft, current_user) && merge_request.draft? && merge_request.state == 'opened'
+          = render Pajamas::BadgeComponent.new(_('Draft'), variant: :warning, icon: 'merge-request', class: 'gl-relative gl-top-1')
         %span.merge-request-title-text.js-onboarding-mr-item
           = hidden_merge_request_icon(merge_request)
           = link_to merge_request.title, merge_request_path(merge_request), class: 'js-prefetch-document'

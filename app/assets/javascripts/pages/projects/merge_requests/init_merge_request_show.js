@@ -25,7 +25,7 @@ export default function initMergeRequestShow(store, pinia) {
   initCheckoutModal();
 
   const el = document.querySelector('.js-mr-header');
-  const { hidden, imported, iid, projectPath, state } = el.dataset;
+  const { hidden, imported, isDraft, iid, projectPath, state } = el.dataset;
 
   // eslint-disable-next-line no-new
   new Vue({
@@ -47,6 +47,7 @@ export default function initMergeRequestShow(store, pinia) {
         props: {
           initialState: state,
           isImported: parseBoolean(imported),
+          isDraft: parseBoolean(isDraft),
         },
       });
     },

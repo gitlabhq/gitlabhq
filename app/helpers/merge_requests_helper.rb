@@ -306,6 +306,7 @@ module MergeRequestsHelper
       isFluidLayout: fluid_layout.to_s,
       blocksMerge: project.only_allow_merge_if_all_discussions_are_resolved?.to_s,
       imported: merge_request.imported?.to_s,
+      isDraft: merge_request.draft.to_s,
       tabs: [
         [
           'show',

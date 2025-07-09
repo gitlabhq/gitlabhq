@@ -142,8 +142,35 @@ hidden files.
 If there is no `.gitmodules` file, it's possible the submodule settings are in a
 [`git config`](https://www.atlassian.com/git/tutorials/setting-up-a-repository/git-config) file.
 
-### `fatal: run_command returned non-zero status` error
+### Error: `fatal: run_command returned non-zero status`
 
 This error can happen in a job when working with submodules and the `GIT_STRATEGY` is set to `fetch`.
 
 Setting the `GIT_STRATEGY` to `clone` should resolve the issue.
+
+### Error: `fatal: could not read Username for 'https://gitlab.com': No such device or address`
+
+If you're using GitLab hosted runners, you may encounter this error when your CI/CD job attempts to clone or fetch Git submodules.
+
+During CI/CD pipeline execution, GitLab Runners automatically perform Git URL substitution to authenticate
+through `CI_JOB_TOKEN`:
+
+```shell
+git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "${CI_SERVER_FQDN}"
+```
+
+For GitLab hosted runners, the `CI_SERVER_FQDN` is different from `https://gitlab.com`.
+If your submodule resides in `https://gitlab.com`,
+this substitution is not performed, leading to the error.
+
+One way to resolve this error is to create a `pre_get_sources_script` and
+configure the URL substitution with `CI_JOB_TOKEN` manually:
+
+   ```yaml
+   variables:
+     GIT_SUBMODULE_STRATEGY: recursive
+     GIT_SUBMODULE_DEPTH: 1
+   hooks:
+     pre_get_sources_script:
+       - git config --global url."https://gitlab-ci-token:${CI_JOB_TOKEN}@${CI_SERVER_FQDN}".insteadOf "${SUBMODULE_URL}"
+   ```

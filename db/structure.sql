@@ -5127,6 +5127,7 @@ CREATE TABLE p_knowledge_graph_replicas (
     updated_at timestamp with time zone NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
     retries_left smallint NOT NULL,
+    reserved_storage_bytes bigint DEFAULT 10485760 NOT NULL,
     CONSTRAINT c_p_knowledge_graph_replicas_retries_status CHECK (((retries_left > 0) OR ((retries_left = 0) AND (state >= 200))))
 )
 PARTITION BY RANGE (namespace_id);

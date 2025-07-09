@@ -52,12 +52,22 @@ module Gitlab
 
             @pdf.move_down 10
 
+            # rubocop:disable Layout/LineLength -- long text for title
             # draw the title
             @pdf.text_box(
               s_('Vulnerability History'),
               at: [0, @pdf.cursor],
               width: @pdf.bounds.right, height: 20,
-              align: :center, style: :bold, size: 16)
+              align: :left, style: :bold, size: 14)
+
+            @pdf.move_down 20
+
+            @pdf.text_box(
+              s_("Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed."),
+              at: [0, @pdf.cursor],
+              width: @pdf.bounds.right, height: 20,
+              align: :left, size: 10)
+            # rubocop:enable  Layout/LineLength
 
             @pdf.move_down 10
 

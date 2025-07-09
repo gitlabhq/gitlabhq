@@ -250,14 +250,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
         end
-
-        context 'when feature flag :packages_protected_packages_generic is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_generic: false)
-          end
-
-          it_behaves_like 'authorized package'
-        end
       end
 
       where(:package_name_pattern, :minimum_access_level_for_push, :auth_header, :shared_examples_name) do
@@ -833,14 +825,6 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
           expect(response).to have_gitlab_http_status(:forbidden)
           expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
-        end
-
-        context 'when feature flag :packages_protected_packages_generic is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_generic: false)
-          end
-
-          it_behaves_like 'uploaded package'
         end
       end
 

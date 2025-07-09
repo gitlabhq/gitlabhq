@@ -25493,6 +25493,33 @@ Represents a vulnerability. The connection type is countable.
 
 #### Fields with arguments
 
+##### `CountableVulnerability.dependencies`
+
+Dependencies for the vulnerability.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`DependencyConnection!`](#dependencyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="countablevulnerabilitydependenciescomponentids"></a>`componentIds` | [`[SbomComponentID!]`](#sbomcomponentid) | Filter dependencies by component IDs. |
+| <a id="countablevulnerabilitydependenciescomponentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
+| <a id="countablevulnerabilitydependenciescomponentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
+| <a id="countablevulnerabilitydependenciesnotcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter dependencies to exclude the specified component versions. |
+| <a id="countablevulnerabilitydependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
+| <a id="countablevulnerabilitydependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
+| <a id="countablevulnerabilitydependenciessourcetypes"></a>`sourceTypes` | [`[SbomSourceType!]`](#sbomsourcetype) | Filter dependencies by source type. |
+
 ##### `CountableVulnerability.issueLinks`
 
 List of issue links related to the vulnerability.
@@ -26507,6 +26534,28 @@ A software dependency used by a project.
 | <a id="dependencyvulnerabilities"></a>`vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities associated with the dependency. (see [Connections](#connections)) |
 | <a id="dependencyvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
 
+#### Fields with arguments
+
+##### `Dependency.dependencyPaths`
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`DependencyPathPage`](#dependencypathpage).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencydependencypathsafter"></a>`after` | [`String`](#string) | Fetch paths after the cursor. |
+| <a id="dependencydependencypathsbefore"></a>`before` | [`String`](#string) | Fetch paths before the cursor. |
+| <a id="dependencydependencypathslimit"></a>`limit` | [`Int`](#int) | Number of paths to fetch. |
+
 ### `DependencyAggregation`
 
 A software dependency aggregation used by a group.
@@ -26526,6 +26575,28 @@ A software dependency aggregation used by a group.
 | <a id="dependencyaggregationversion"></a>`version` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 18.1. Replaced by component_version. |
 | <a id="dependencyaggregationvulnerabilities"></a>`vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities associated with the dependency. (see [Connections](#connections)) |
 | <a id="dependencyaggregationvulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
+
+#### Fields with arguments
+
+##### `DependencyAggregation.dependencyPaths`
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`DependencyPathPage`](#dependencypathpage).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyaggregationdependencypathsafter"></a>`after` | [`String`](#string) | Fetch paths after the cursor. |
+| <a id="dependencyaggregationdependencypathsbefore"></a>`before` | [`String`](#string) | Fetch paths before the cursor. |
+| <a id="dependencyaggregationdependencypathslimit"></a>`limit` | [`Int`](#int) | Number of paths to fetch. |
 
 ### `DependencyPath`
 
@@ -42325,6 +42396,33 @@ Represents a vulnerability.
 
 #### Fields with arguments
 
+##### `Vulnerability.dependencies`
+
+Dependencies for the vulnerability.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`DependencyConnection!`](#dependencyconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="vulnerabilitydependenciescomponentids"></a>`componentIds` | [`[SbomComponentID!]`](#sbomcomponentid) | Filter dependencies by component IDs. |
+| <a id="vulnerabilitydependenciescomponentnames"></a>`componentNames` | [`[String!]`](#string) | Filter dependencies by component names. |
+| <a id="vulnerabilitydependenciescomponentversions"></a>`componentVersions` | [`[String!]`](#string) | Filter dependencies by component versions. |
+| <a id="vulnerabilitydependenciesnotcomponentversions"></a>`notComponentVersions` {{< icon name="warning-solid" >}} | [`[String!]`](#string) | **Introduced** in GitLab 18.1. **Status**: Experiment. Filter dependencies to exclude the specified component versions. |
+| <a id="vulnerabilitydependenciespackagemanagers"></a>`packageManagers` | [`[PackageManager!]`](#packagemanager) | Filter dependencies by package managers. |
+| <a id="vulnerabilitydependenciessort"></a>`sort` | [`DependencySort`](#dependencysort) | Sort dependencies by given criteria. |
+| <a id="vulnerabilitydependenciessourcetypes"></a>`sourceTypes` | [`[SbomSourceType!]`](#sbomsourcetype) | Filter dependencies by source type. |
+
 ##### `Vulnerability.issueLinks`
 
 List of issue links related to the vulnerability.
@@ -46880,7 +46978,7 @@ Package type of a package protection rule resource.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypeconan"></a>`CONAN` | Packages of the Conan format. |
-| <a id="packagesprotectionrulepackagetypegeneric"></a>`GENERIC` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.1. **Status**: Experiment. Packages of the Generic format. Available only when feature flag `packages_protected_packages_generic` is enabled. |
+| <a id="packagesprotectionrulepackagetypegeneric"></a>`GENERIC` | Packages of the Generic format. |
 | <a id="packagesprotectionrulepackagetypehelm"></a>`HELM` {{< icon name="warning-solid" >}} | **Introduced** in GitLab 18.1. **Status**: Experiment. Packages of the Helm format.Available only when feature flag `packages_protected_packages_helm` is enabled. |
 | <a id="packagesprotectionrulepackagetypemaven"></a>`MAVEN` | Packages of the Maven format. |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` | Packages of the npm format. |
@@ -50090,6 +50188,28 @@ Implementations:
 | <a id="dependencyinterfaceversion"></a>`version` {{< icon name="warning-solid" >}} | [`String`](#string) | **Deprecated** in GitLab 18.1. Replaced by component_version. |
 | <a id="dependencyinterfacevulnerabilities"></a>`vulnerabilities` | [`VulnerabilityConnection`](#vulnerabilityconnection) | Vulnerabilities associated with the dependency. (see [Connections](#connections)) |
 | <a id="dependencyinterfacevulnerabilitycount"></a>`vulnerabilityCount` | [`Int!`](#int) | Number of vulnerabilities within the dependency. |
+
+##### Fields with arguments
+
+###### `DependencyInterface.dependencyPaths`
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`DependencyPathPage`](#dependencypathpage).
+
+####### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="dependencyinterfacedependencypathsafter"></a>`after` | [`String`](#string) | Fetch paths after the cursor. |
+| <a id="dependencyinterfacedependencypathsbefore"></a>`before` | [`String`](#string) | Fetch paths before the cursor. |
+| <a id="dependencyinterfacedependencypathslimit"></a>`limit` | [`Int`](#int) | Number of paths to fetch. |
 
 #### `DesignFields`
 

@@ -33,10 +33,10 @@ module Namespaces
       alias_method :recursive_self_and_hierarchy, :self_and_hierarchy
 
       # Returns all the ancestors of the current namespaces.
-      def ancestors(hierarchy_order: nil)
-        return self.class.none unless parent_id
+      def ancestors(hierarchy_order: nil, skope: self.class)
+        return skope.none unless parent_id
 
-        object_hierarchy(self.class.where(id: parent_id))
+        object_hierarchy(skope.where(id: parent_id))
           .base_and_ancestors(hierarchy_order: hierarchy_order)
       end
       alias_method :recursive_ancestors, :ancestors
@@ -54,10 +54,10 @@ module Namespaces
       end
       alias_method :recursive_ancestors_upto, :ancestors_upto
 
-      def self_and_ancestors(hierarchy_order: nil)
-        return self.class.where(id: id) unless parent_id
+      def self_and_ancestors(hierarchy_order: nil, skope: self.class)
+        return skope.where(id: id) unless parent_id
 
-        object_hierarchy(self.class.where(id: id))
+        object_hierarchy(skope.where(id: id))
           .base_and_ancestors(hierarchy_order: hierarchy_order)
       end
       alias_method :recursive_self_and_ancestors, :self_and_ancestors

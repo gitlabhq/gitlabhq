@@ -170,6 +170,9 @@ class Note < ApplicationRecord
     )
   end
   scope :with_metadata, -> { includes(:system_note_metadata) }
+  scope :with_noteable_type, ->(type) { where(noteable_type: type) }
+  scope :with_noteable_ids, ->(ids) { where(noteable_id: ids) }
+  scope :with_note, ->(note) { where(note: note) }
 
   scope :without_hidden, -> {
     where_not_exists(Users::BannedUser.where('notes.author_id = banned_users.user_id'))
@@ -177,6 +180,24 @@ class Note < ApplicationRecord
 
   scope :for_note_or_capitalized_note, ->(text) { where(note: [text, text.capitalize]) }
   scope :like_note_or_capitalized_note, ->(text) { where('(note LIKE ? OR note LIKE ?)', text, text.capitalize) }
+
+  scope :distinct_on_noteable_id, -> do
+    table = arel_table
+
+    select(
+      Arel.sql("DISTINCT ON (#{table[:noteable_id].name}) *")
+    )
+  end
+
+  scope :order_by_noteable_latest_first, -> do
+    table = arel_table
+
+    order(
+      table[:noteable_id].asc,
+      table[:created_at].desc,
+      table[:id].desc
+    )
+  end
 
   before_validation :ensure_namespace_id, :nullify_blank_type, :nullify_blank_line_code
   # Syncs `confidential` with `internal` as we rename the column.

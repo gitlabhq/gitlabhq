@@ -35,6 +35,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   before_action :check_user_can_push_to_source_branch!, only: [:rebase]
 
   before_action only: [:show, :diffs, :rapid_diffs, :reports] do
+    push_frontend_feature_flag(:show_merge_request_status_draft, current_user)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:mr_review_batch_submit, current_user)

@@ -1001,7 +1001,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe '#self_or_ancestor_archived?' do
+  describe '#self_or_ancestors_archived?' do
     using RSpec::Parameterized::TableSyntax
 
     let(:grandparent) { create(:group) }
@@ -1027,7 +1027,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'returns the expected result' do
-        expect(namespace.self_or_ancestor_archived?).to eq(expected_result)
+        expect(namespace.self_or_ancestors_archived?).to eq(expected_result)
       end
     end
 
@@ -1036,12 +1036,12 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
 
       it 'returns true when archived' do
         root.namespace_settings.update!(archived: true)
-        expect(root.self_or_ancestor_archived?).to eq(true)
+        expect(root.self_or_ancestors_archived?).to eq(true)
       end
 
       it 'returns false when not archived' do
         root.namespace_settings.update!(archived: false)
-        expect(root.self_or_ancestor_archived?).to eq(false)
+        expect(root.self_or_ancestors_archived?).to eq(false)
       end
     end
 
@@ -1052,7 +1052,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
       end
 
       it 'does not execute additional queries' do
-        expect { namespace.self_or_ancestor_archived? }.to match_query_count(0)
+        expect { namespace.self_or_ancestors_archived? }.to match_query_count(0)
       end
 
       context 'when namespace_settings is nil' do
@@ -1063,8 +1063,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
         end
 
         it 'does not raise an error and returns false' do
-          expect { namespace.self_or_ancestor_archived? }.not_to raise_error
-          expect(namespace.self_or_ancestor_archived?).to be false
+          expect { namespace.self_or_ancestors_archived? }.not_to raise_error
+          expect(namespace.self_or_ancestors_archived?).to be false
         end
       end
     end

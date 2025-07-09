@@ -70,8 +70,6 @@ module Resolvers
         .new(current_user: current_user, params: finder_params(args), project_ids_relation: parse_gids(args[:ids]))
         .execute
 
-      projects.each { |project| BatchLoader::GraphQL.wrap(project.self_or_ancestors_archived?) }
-
       apply_lookahead(projects)
     end
 
@@ -84,7 +82,15 @@ module Resolvers
     end
 
     def unconditional_includes
-      [:creator, :group, :invited_groups, :project_setting, :project_namespace]
+      [
+        :creator,
+        :group,
+        :invited_groups,
+        :project_setting,
+        {
+          project_namespace: [:namespace_settings_with_ancestors_inherited_settings]
+        }
+      ]
     end
 
     def finder_params(args)

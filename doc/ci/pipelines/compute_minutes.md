@@ -21,7 +21,7 @@ title: Compute minutes
 
 The usage of instance runners by projects running CI/CD jobs is measured in compute minutes.
 
-For some installation types, your [namespace](../../user/namespace/_index.md) has an [compute quota](instance_runner_compute_minutes.md#compute-quota-enforcement),
+For some installation types, your [namespace](../../user/namespace/_index.md) has a [compute quota](instance_runner_compute_minutes.md#compute-quota-enforcement),
 which limits the available compute minutes you can use.
 
 A compute quota can be applied to all [admin-managed instance runners](instance_runner_compute_minutes.md):

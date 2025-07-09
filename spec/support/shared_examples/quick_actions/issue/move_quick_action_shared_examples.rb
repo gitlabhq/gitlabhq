@@ -2,7 +2,7 @@
 
 RSpec.shared_examples 'move quick action' do
   before do
-    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(260)
+    allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(262)
   end
 
   context 'move the issue to another project' do

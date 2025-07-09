@@ -53,9 +53,10 @@ module Gitlab
         clean_up_blank_lines(processed_content)
 
         # Restore code blocks
-        code_blocks.each_with_object(processed_content) do |(placeholder, block), result|
-          result.gsub!(placeholder, block)
-        end.strip
+        code_blocks.each do |placeholder, block|
+          processed_content.sub!(placeholder) { block } # Use block form for literal replacement
+        end
+        processed_content.strip
       end
 
       def hugo_anchor(title)

@@ -169,7 +169,7 @@ You should use one of the configurations below for each client.
 
 {{< tabs >}}
 
-{{< tab title="`mvn`" >}}
+{{< tab title="mvn" >}}
 
 | Token type            | Name must be    | Token                                                                   |
 | --------------------- | --------------- | ----------------------------------------------------------------------- |
@@ -240,7 +240,7 @@ To configure a Maven virtual registry as a replacement of the default registry, 
 
 {{< /tab >}}
 
-{{< tab title="`gradle`" >}}
+{{< tab title="gradle" >}}
 
 | Token type            | Name must be    | Token                                                                   |
 | --------------------- | --------------- | ----------------------------------------------------------------------- |
@@ -299,7 +299,7 @@ Add a `repositories` section to your
 
 {{< /tab >}}
 
-{{< tab title="`sbt`" >}}
+{{< tab title="sbt" >}}
 
 | Token type            | Username must be                                        | Token                                                                   |
 | --------------------- | ------------------------------------------------------- | ----------------------------------------------------------------------- |

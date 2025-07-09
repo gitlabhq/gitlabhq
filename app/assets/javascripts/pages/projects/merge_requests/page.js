@@ -44,6 +44,7 @@ const initMrStickyHeader = () => {
       sourceProjectPath,
       blocksMerge,
       imported,
+      isDraft,
     } = parsedData;
 
     tabData.tabs = tabs;
@@ -73,6 +74,7 @@ const initMrStickyHeader = () => {
           props: {
             tabs: tabData.tabs,
             isImported: parseBoolean(imported),
+            isDraft: parseBoolean(isDraft),
           },
         });
       },

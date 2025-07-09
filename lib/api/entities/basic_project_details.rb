@@ -54,6 +54,7 @@ module API
         projects_relation.preload(:project_feature, :route)
                          .preload(:import_state, :topics)
                          .preload(:auto_devops)
+                         .preload(project_namespace: [:namespace_settings_with_ancestors_inherited_settings])
                          .preload(namespace: [:route, :owner])
       end
       # rubocop: enable CodeReuse/ActiveRecord
@@ -62,8 +63,6 @@ module API
         # Call the count methods on every project, so the BatchLoader would load them all at
         # once when the entities are rendered
         projects_relation.each(&:forks_count)
-
-        projects_relation.each(&:self_or_ancestors_archived?)
 
         super
       end

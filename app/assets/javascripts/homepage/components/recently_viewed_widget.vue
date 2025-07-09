@@ -24,7 +24,7 @@ export default {
         const enhanceWithIcon = (items, icon) => items.map((item) => ({ ...item, icon }));
 
         return [
-          ...enhanceWithIcon(recentlyViewedIssues, 'work-item-issue'),
+          ...enhanceWithIcon(recentlyViewedIssues, 'issues'),
           ...enhanceWithIcon(recentlyViewedMergeRequests, 'merge-request'),
         ]
           .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
@@ -53,7 +53,7 @@ export default {
 
 <template>
   <visibility-change-detector @visible="reload">
-    <h4>{{ __('Recently viewed') }}</h4>
+    <h4 class="gl-mt-0">{{ __('Recently viewed') }}</h4>
 
     <div v-if="error">
       <span>{{ __('Something went wrong.') }}</span>

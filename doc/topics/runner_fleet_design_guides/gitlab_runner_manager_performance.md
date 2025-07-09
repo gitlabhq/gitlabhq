@@ -6,7 +6,7 @@ info: >-
   this page, see
   https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 description: Optimize GitLab Runner Manager Pod performance in Kubernetes environments.
-title: Optimizing GitLab Runner manager pod performance
+title: Optimize GitLab Runner manager pod performance
 ---
 {{< details >}}
 
@@ -80,7 +80,7 @@ Each responsibility affects performance differently:
 - **Memory intensive**: Log buffering, job queue management
 - **Network intensive**: GitLab API communication, log streaming
 
-## Deploying GitLab Runner in Kubernetes
+## Deploy GitLab Runner in Kubernetes
 
 Install GitLab Runner through the [GitLab Runner Operator](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator).
 The Operator actively receives new features and improvements.
@@ -91,7 +91,7 @@ The easiest way to install GitLab Runner in Kubernetes is to apply the
 [`operator.k8s.yaml` manifest from the latest release](https://gitlab.com/gitlab-org/gl-openshift/gitlab-runner-operator/-/releases)
 and then follow the instructions in the [Operator install documentation](https://docs.gitlab.com/runner/install/operator/#install-on-kubernetes).
 
-## Configuring monitoring
+## Configure monitoring
 
 Observability is critical for GitLab Runner administration in Kubernetes because
 pods are ephemeral and metrics provide the primary operational visibility.
@@ -168,7 +168,7 @@ This dashboard can help you visualize:
 - Job queue saturation levels
 - Individual pod resource consumption
 
-## Identifying overloaded manager pods
+## Identify overloaded manager pods
 
 Recognize performance degradation before it impacts your pipelines.
 
@@ -441,7 +441,7 @@ spec:
           averageUtilization: 80
 ```
 
-## Troubleshooting performance issues
+## Troubleshoot performance issues
 
 Address common manager pod performance problems with these solutions.
 

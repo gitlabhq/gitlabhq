@@ -7,6 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { useFakeDate } from 'helpers/fake_date';
 import WorkItemsWidget from '~/homepage/components/work_items_widget.vue';
 import workItemsWidgetMetadataQuery from '~/homepage/graphql/queries/work_items_widget_metadata.query.graphql';
+import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 import { withItems, withoutItems } from './mocks/work_items_widget_metadata_query_mocks';
 
 describe('WorkItemsWidget', () => {
@@ -27,6 +28,7 @@ describe('WorkItemsWidget', () => {
   const findAssignedLastUpdatedAt = () => wrapper.findByTestId('assigned-last-updated-at');
   const findAuthoredCount = () => wrapper.findByTestId('authored-count');
   const findAuthoredLastUpdatedAt = () => wrapper.findByTestId('authored-last-updated-at');
+  const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
 
   function createWrapper({ workItemsWidgetMetadataQueryMock = withItems } = {}) {
     const mockApollo = createMockApollo([
@@ -93,6 +95,22 @@ describe('WorkItemsWidget', () => {
 
       expect(findAssignedCount().text()).toBe('0');
       expect(findAuthoredCount().text()).toBe('0');
+    });
+  });
+
+  describe('refresh functionality', () => {
+    it('refreshes on becoming visible again', async () => {
+      const reloadSpy = jest.spyOn(WorkItemsWidget.methods, 'reload').mockImplementation(() => {});
+
+      createWrapper();
+      await waitForPromises();
+      reloadSpy.mockClear();
+
+      findDetector().vm.$emit('visible');
+      await waitForPromises();
+
+      expect(reloadSpy).toHaveBeenCalled();
+      reloadSpy.mockRestore();
     });
   });
 });

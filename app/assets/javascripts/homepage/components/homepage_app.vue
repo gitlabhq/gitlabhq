@@ -43,9 +43,9 @@ export default {
 
 <template>
   <div>
-    <h1>{{ __("Today's highlights") }}</h1>
+    <h1 class="gl-mb-6">{{ __("Today's highlights") }}</h1>
     <div class="gl-grid gl-grid-cols-1 gl-gap-6 md:gl-grid-cols-3">
-      <div class="gl-flex gl-flex-col gl-gap-4 md:gl-col-span-2">
+      <div class="gl-flex gl-flex-col gl-gap-6 md:gl-col-span-2">
         <gl-alert
           v-if="hasMergeRequestsMetadataError"
           variant="warning"

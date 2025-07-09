@@ -5654,10 +5654,10 @@ RSpec.describe User, feature_category: :user_profile do
     end
   end
 
-  describe '#ci_owned_runners', feature_category: :runner do
+  describe '#ci_available_runners', feature_category: :runner do
     let_it_be_with_refind(:user) { create(:user) }
 
-    subject(:ci_owned_runners) { user.ci_owned_runners }
+    subject(:ci_available_runners) { user.ci_available_runners }
 
     shared_examples 'nested groups owner' do
       context 'when the user is the owner of a multi-level group' do
@@ -5665,9 +5665,9 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to contain_exactly(runner, group_runner)
         end
 
-        it 'returns true for owns_runner?' do
-          expect(user.owns_runner?(runner)).to eq(true)
-          expect(user.owns_runner?(group_runner)).to eq(true)
+        it 'returns true for runner_available?' do
+          expect(user.runner_available?(runner)).to eq(true)
+          expect(user.runner_available?(group_runner)).to eq(true)
         end
       end
     end
@@ -5686,9 +5686,9 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to contain_exactly(project_runner, another_project_runner)
         end
 
-        it 'returns true for owns_runner?' do
-          expect(user.owns_runner?(project_runner)).to eq(true)
-          expect(user.owns_runner?(another_project_runner)).to eq(true)
+        it 'returns true for runner_available?' do
+          expect(user.runner_available?(project_runner)).to eq(true)
+          expect(user.runner_available?(another_project_runner)).to eq(true)
         end
       end
 
@@ -5699,9 +5699,9 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(project_runner)).to eq(false)
-          expect(user.owns_runner?(another_project_runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(project_runner)).to eq(false)
+          expect(user.runner_available?(another_project_runner)).to eq(false)
         end
       end
 
@@ -5712,9 +5712,9 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(project_runner)).to eq(false)
-          expect(user.owns_runner?(another_project_runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(project_runner)).to eq(false)
+          expect(user.runner_available?(another_project_runner)).to eq(false)
         end
       end
 
@@ -5725,9 +5725,9 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(project_runner)).to eq(false)
-          expect(user.owns_runner?(another_project_runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(project_runner)).to eq(false)
+          expect(user.runner_available?(another_project_runner)).to eq(false)
         end
       end
     end
@@ -5742,8 +5742,8 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(runner)).to eq(false)
         end
       end
 
@@ -5756,8 +5756,8 @@ RSpec.describe User, feature_category: :user_profile do
           is_expected.to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(runner)).to eq(false)
         end
       end
 
@@ -5767,11 +5767,11 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it 'does not load any runner' do
-          expect(user.ci_owned_runners).to be_empty
+          expect(user.ci_available_runners).to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(runner)).to eq(false)
         end
       end
 
@@ -5781,22 +5781,22 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it 'does not load any runner' do
-          expect(user.ci_owned_runners).to be_empty
+          expect(user.ci_available_runners).to be_empty
         end
 
-        it 'returns false for owns_runner?' do
-          expect(user.owns_runner?(runner)).to eq(false)
+        it 'returns false for runner_available?' do
+          expect(user.runner_available?(runner)).to eq(false)
         end
       end
     end
 
     context 'without any projects nor groups' do
       it 'does not load any runner' do
-        expect(user.ci_owned_runners).to be_empty
+        expect(user.ci_available_runners).to be_empty
       end
 
-      it 'returns false for owns_runner?' do
-        expect(user.owns_runner?(create(:ci_runner))).to eq(false)
+      it 'returns false for runner_available?' do
+        expect(user.runner_available?(create(:ci_runner))).to eq(false)
       end
     end
 
@@ -5807,11 +5807,11 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is the owner of a project' do
         it 'loads the runner belonging to the project' do
-          expect(user.ci_owned_runners).to contain_exactly(runner)
+          expect(user.ci_available_runners).to contain_exactly(runner)
         end
 
-        it 'returns true for owns_runner?' do
-          expect(user.owns_runner?(runner)).to eq(true)
+        it 'returns true for runner_available?' do
+          expect(user.runner_available?(runner)).to eq(true)
         end
       end
     end
@@ -5827,8 +5827,8 @@ RSpec.describe User, feature_category: :user_profile do
           let_it_be(:invited_group) { create(:group) }
           let_it_be(:user) { create(:user, owner_of: invited_group) }
 
-          it 'returns false for owns_runner?' do
-            expect(user.owns_runner?(runner)).to eq(false)
+          it 'returns false for runner_available?' do
+            expect(user.runner_available?(runner)).to eq(false)
           end
 
           context 'when invited_group is invited to group' do
@@ -5836,8 +5836,8 @@ RSpec.describe User, feature_category: :user_profile do
               create(:group_group_link, :owner, shared_group: group, shared_with_group: invited_group)
             end
 
-            it 'returns true for owns_runner?' do
-              expect(user.owns_runner?(runner)).to eq(true)
+            it 'returns true for runner_available?' do
+              expect(user.runner_available?(runner)).to eq(true)
             end
           end
         end
@@ -5850,11 +5850,11 @@ RSpec.describe User, feature_category: :user_profile do
 
         context 'and the user is the owner of a one level group' do
           it 'loads the runners in the group' do
-            expect(user.ci_owned_runners).to contain_exactly(runner)
+            expect(user.ci_available_runners).to contain_exactly(runner)
           end
 
-          it 'returns true for owns_runner?' do
-            expect(user.owns_runner?(runner)).to eq(true)
+          it 'returns true for runner_available?' do
+            expect(user.runner_available?(runner)).to eq(true)
           end
         end
 
@@ -5888,11 +5888,11 @@ RSpec.describe User, feature_category: :user_profile do
     context 'with project runner' do
       let_it_be(:group) { create(:group) }
       let_it_be(:project) { create(:project, group: group) }
-      let_it_be(:runner) { create(:ci_runner, :project, projects: [project]) }
-      let_it_be(:another_project) { create(:project) }
+      let_it_be(:another_project) { create(:project, group: group) }
+      let_it_be(:runner) { create(:ci_runner, :project, projects: [project, another_project]) }
 
       it 'does not load any runner' do
-        expect(user.ci_owned_runners).to be_empty
+        expect(user.ci_available_runners).to be_empty
       end
 
       context 'when project belongs to an owned group' do
@@ -5917,10 +5917,10 @@ RSpec.describe User, feature_category: :user_profile do
           let_it_be(:another_project_runner) { create(:ci_runner, :project, projects: [another_project, project]) }
 
           it 'returns runner shared from inaccessible project' do
-            expect(ci_owned_runners).to contain_exactly(runner, another_project_runner)
+            expect(ci_available_runners).to contain_exactly(runner, another_project_runner)
 
-            expect(user.owns_runner?(another_project_runner)).to be true
-            expect(user.owns_runner?(runner)).to be true
+            expect(user.runner_available?(another_project_runner)).to be true
+            expect(user.runner_available?(runner)).to be true
           end
         end
       end
@@ -5933,6 +5933,32 @@ RSpec.describe User, feature_category: :user_profile do
         end
 
         it_behaves_like 'project member'
+
+        context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
+          before do
+            stub_feature_flags(optimize_ci_owned_project_runners_query: false)
+          end
+
+          it_behaves_like 'project member'
+        end
+      end
+
+      context 'when user is member of non-owner project' do
+        let(:project_runner) { runner }
+
+        def add_user
+          another_project.add_member(user, access)
+        end
+
+        it_behaves_like 'project member'
+
+        context 'when optimize_ci_owned_project_runners_query feature flag is disabled' do
+          before do
+            stub_feature_flags(optimize_ci_owned_project_runners_query: false)
+          end
+
+          it_behaves_like 'project member'
+        end
       end
 
       context 'when group member accesses project runner' do
@@ -5959,13 +5985,14 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       it 'returns results from project_members, group_members and group_runners methods' do
-        expect(user).to receive_messages(ci_owned_project_runners_from_project_members: [],
-          ci_owned_project_runners_from_group_members: [],
-          ci_owned_group_runners: []
+        expect(user).to receive_messages(
+          ci_available_project_runners_from_project_members: [],
+          ci_available_project_runners_from_group_members: [],
+          ci_available_group_runners: []
         )
-        expect(user).not_to receive(:ci_owned_project_runners)
+        expect(user).not_to receive(:ci_available_project_runners)
 
-        ci_owned_runners
+        ci_available_runners
       end
 
       context 'with a project runner owned by inaccessible project' do
@@ -5975,10 +6002,10 @@ RSpec.describe User, feature_category: :user_profile do
         let_it_be(:another_project_runner) { create(:ci_runner, :project, projects: [another_project, project]) }
 
         it 'returns runner shared from inaccessible project' do
-          expect(ci_owned_runners).to contain_exactly(runner, another_project_runner)
+          expect(ci_available_runners).to contain_exactly(runner, another_project_runner)
 
-          expect(user.owns_runner?(another_project_runner)).to be true
-          expect(user.owns_runner?(runner)).to be true
+          expect(user.runner_available?(another_project_runner)).to be true
+          expect(user.runner_available?(runner)).to be true
         end
       end
     end
@@ -5991,29 +6018,29 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       it 'respects feature flag scoped to user' do
-        expect(user).to receive(:ci_owned_project_runners).and_return([])
-        expect(user).to receive(:ci_owned_group_runners).and_return([])
-        expect(user).not_to receive(:ci_owned_project_runners_from_project_members)
-        expect(user).not_to receive(:ci_owned_project_runners_from_group_members)
+        expect(user).to receive(:ci_available_project_runners).and_return([])
+        expect(user).to receive(:ci_available_group_runners).and_return([])
+        expect(user).not_to receive(:ci_available_project_runners_from_project_members)
+        expect(user).not_to receive(:ci_available_project_runners_from_group_members)
 
-        ci_owned_runners
+        ci_available_runners
       end
 
       context 'when feature flag is only enabled for other user' do
         let(:ff_user) { build(:user, id: 1) }
 
         it 'uses old behavior' do
-          expect(user).to receive(:ci_owned_project_runners_from_project_members).and_return([])
-          expect(user).to receive(:ci_owned_project_runners_from_group_members).and_return([])
-          expect(user).to receive(:ci_owned_group_runners).and_return([])
+          expect(user).to receive(:ci_available_project_runners_from_project_members).and_return([])
+          expect(user).to receive(:ci_available_project_runners_from_group_members).and_return([])
+          expect(user).to receive(:ci_available_group_runners).and_return([])
 
-          ci_owned_runners
+          ci_available_runners
         end
       end
     end
   end
 
-  describe '#ci_owned_project_runners', feature_category: :runner do
+  describe '#ci_available_project_runners', feature_category: :runner do
     let_it_be_with_refind(:user) { create(:user) }
 
     let_it_be(:project1) { create(:project) }
@@ -6024,7 +6051,7 @@ RSpec.describe User, feature_category: :user_profile do
     let_it_be(:runner2) { create(:ci_runner, :project, projects: [project2]) }
     let_it_be(:runner3) { create(:ci_runner, :project, projects: [project3]) }
 
-    subject(:ci_owned_project_runners) { user.send :ci_owned_project_runners }
+    subject(:ci_available_project_runners) { user.send :ci_available_project_runners }
 
     context 'when the user has maintainer access' do
       before_all do
@@ -6057,7 +6084,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       it 'with size of project_ids' do
-        expect { ci_owned_project_runners }.to trigger_internal_events('query_ci_owned_project_runners_with_project_ids').with(
+        expect { ci_available_project_runners }.to trigger_internal_events('query_ci_available_project_runners_with_project_ids').with(
           user: user,
           additional_properties: {
             value: project_size

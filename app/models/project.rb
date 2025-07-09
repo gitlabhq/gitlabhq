@@ -2948,13 +2948,8 @@ class Project < ApplicationRecord
   end
 
   def self_or_ancestors_archived?
-    BatchLoader.for(id).batch(default_value: false) do |project_ids, loader|
-      Project
-        .self_or_ancestors_archived
-        .where(id: project_ids)
-        .pluck(:id)
-        .each { |project_id| loader.call(project_id, true) }
-    end
+    # We can remove `archived?` once we move the project archival to the `namespaces.archived` column
+    archived? || project_namespace.self_or_ancestors_archived?
   end
 
   def renamed?

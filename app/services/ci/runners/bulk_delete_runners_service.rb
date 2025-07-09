@@ -49,7 +49,7 @@ module Ci
       end
 
       def compute_authorized_runners
-        current_user.ci_owned_runners.load # preload the owned runners to avoid an N+1
+        current_user.ci_available_runners.load # preload the available runners to avoid an N+1
 
         authorized_runners, unauthorized_runners =
           runners.limit(RUNNER_LIMIT)

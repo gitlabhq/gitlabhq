@@ -81,6 +81,46 @@ RSpec.describe RapidDiffs::DiffFileHeaderComponent, type: :component, feature_ca
     expect(page.find(selector)).to have_text("+#{diff_file.added_lines} −#{diff_file.removed_lines}")
   end
 
+  context "with blob diff" do
+    before do
+      allow(diff_file).to receive(:binary?).and_return(true)
+      allow(diff_file).to receive(:stored_externally?).and_return(false)
+      allow(diff_file).to receive_message_chain(:old_blob, :size).and_return(100)
+      allow(diff_file).to receive_message_chain(:new_blob, :size).and_return(1024)
+    end
+
+    it "renders added blob size" do
+      allow(diff_file).to receive(:new_file?).and_return(true)
+      render_component
+      expect(page).to have_text("+1 KiB")
+    end
+
+    it "renders deleted blob size" do
+      allow(diff_file).to receive(:new_file?).and_return(false)
+      allow(diff_file).to receive(:deleted_file?).and_return(true)
+      render_component
+      expect(page).to have_text("−100 B")
+    end
+
+    context 'with changed blob' do
+      before do
+        allow(diff_file).to receive(:new_file?).and_return(false)
+        allow(diff_file).to receive(:deleted_file?).and_return(false)
+      end
+
+      it "renders blob size changed to more bytes" do
+        render_component
+        expect(page).to have_text("+924 B (1 KiB)")
+      end
+
+      it "renders blob size changed to less bytes changed" do
+        allow(diff_file).to receive_message_chain(:old_blob, :size).and_return(2048)
+        render_component
+        expect(page).to have_text("−1 KiB (1 KiB)")
+      end
+    end
+  end
+
   describe 'menu items' do
     let(:content_sha) { 'abc123' }
 

@@ -145,6 +145,7 @@ release-environments-deploy:
   variables:
     VERSIONS: "${VERSIONS}"
     ENVIRONMENT: "${ENVIRONMENT}"
+    OMNIBUS_PACKAGE_VERSION: "${OMNIBUS_PACKAGE_VERSION}"
   trigger:
     project: gitlab-com/gl-infra/release-environments
     branch: main

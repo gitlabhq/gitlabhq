@@ -434,12 +434,12 @@ class Namespace < ApplicationRecord
     !!namespace_settings&.archived?
   end
 
-  def self_or_ancestor_archived?
+  def self_or_ancestors_archived?
     if association(:namespace_settings_with_ancestors_inherited_settings).loaded?
       return !!namespace_settings_with_ancestors_inherited_settings&.archived
     end
 
-    self_and_ancestors.archived.exists?
+    self_and_ancestors(skope: Namespace).archived.exists?
   end
 
   def to_reference_base(from = nil, full: false, absolute_path: false)

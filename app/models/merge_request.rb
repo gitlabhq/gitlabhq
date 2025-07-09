@@ -415,7 +415,7 @@ class MergeRequest < ApplicationRecord
       :assignees, :author, :unresolved_notes, :labels, :milestone,
       :timelogs, :latest_merge_request_diff, :reviewers,
       :merge_schedule, :merge_user,
-      target_project: [:project_feature, :project_setting],
+      target_project: [:project_feature, :project_setting, { project_namespace: :namespace_settings_with_ancestors_inherited_settings }],
       metrics: [:latest_closed_by, :merged_by]
     )
   }

@@ -65,7 +65,7 @@ To change the syntax highlighting theme:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. In the **Syntax highlights** section, select a theme.
+1. In the **Syntax highlighting** section, select a theme.
 1. Select **Save changes**.
 
 To view the updated syntax highlighting theme, refresh your project's page.

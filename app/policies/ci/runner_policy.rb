@@ -7,7 +7,7 @@ module Ci
 
     with_options score: 20
     condition(:owned_runner) do
-      @user.owns_runner?(@subject)
+      @user.runner_available?(@subject)
     end
 
     condition(:creator) do

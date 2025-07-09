@@ -2086,31 +2086,35 @@ class User < ApplicationRecord
     Ci::ProjectMirror.from_union([projects, namespace_projects])
   end
 
-  def ci_owned_runners
-    @ci_owned_runners ||= if Feature.enabled?(:optimize_ci_owned_project_runners_query, self)
-                            Ci::Runner.from_union([ci_owned_project_runners, ci_owned_group_runners])
-                          else
-                            Ci::Runner.from_union([
-                              ci_owned_project_runners_from_project_members,
-                              ci_owned_project_runners_from_group_members,
-                              ci_owned_group_runners
-                            ])
-                          end
+  # Lists runners that are available to the user
+  # (group runners assigned to groups where the user has owner access to
+  # and project runners assigned to projects the user has maintainer access to)
+  def ci_available_runners
+    @ci_available_runners ||=
+      if Feature.enabled?(:optimize_ci_owned_project_runners_query, self)
+        Ci::Runner.from_union([ci_available_project_runners, ci_available_group_runners])
+      else
+        Ci::Runner.from_union([
+          ci_available_project_runners_from_project_members,
+          ci_available_project_runners_from_group_members,
+          ci_available_group_runners
+        ])
+      end
   end
 
-  def owns_runner?(runner)
+  def runner_available?(runner)
     runner = runner.__getobj__ if runner.is_a?(Ci::RunnerPresenter)
 
-    # NOTE: This is a workaround to the fact that `ci_owned_group_runners` does not return the group runners that the
+    # NOTE: This is a workaround to the fact that `ci_available_group_runners` does not return the group runners that the
     # user has access to in group A, when the user is owner of group B, and group B has been invited as owner
     # to group A. Instead it only returns group runners that belong to a group that the user is a direct owner of.
     # Ideally, we'd add a `min_access_level` argument to `User#authorized_groups`, similar to `User#authorized_projects`
-    # and that would get used by `ci_owned_group_runners`, but that would require deeper changes
+    # and that would get used by `ci_available_group_runners`, but that would require deeper changes
     # from the ~"group::authorization" team.
     # TODO: Remove this workaround when https://gitlab.com/gitlab-org/gitlab/-/issues/549985 is resolved
     return Ability.allowed?(self, :admin_runner, runner.owner) if runner.group_type?
 
-    ci_owned_runners.include?(runner)
+    ci_available_runners.include?(runner)
   end
 
   def notification_email_for(notification_group)
@@ -2886,13 +2890,13 @@ class User < ApplicationRecord
     ::Gitlab::Auth::Ldap::Access.allowed?(self)
   end
 
-  def ci_owned_project_runners_from_project_members
+  def ci_available_project_runners_from_project_members
     project_ids = ci_project_ids_for_project_members(Gitlab::Access::MAINTAINER)
 
     Ci::Runner.belonging_to_project(project_ids)
   end
 
-  def ci_owned_project_runners_from_group_members
+  def ci_available_project_runners_from_group_members
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::MAINTAINER).select(:namespace_id)
@@ -2912,20 +2916,20 @@ class User < ApplicationRecord
       .where('ci_runner_projects.project_id IN (SELECT project_id FROM cte_project_ids)')
   end
 
-  def ci_owned_project_runners
+  def ci_available_project_runners
     project_ids = project_authorizations.where(access_level: Gitlab::Access::MAINTAINER..).pluck(:project_id)
 
     # track the size of project_ids to optimise this query further in future
-    track_ci_owned_project_runners_query(project_ids.size)
+    track_ci_available_project_runners_query(project_ids.size)
 
     # Load all project IDs upfront to handle indirect project access through group invitations
     # and avoid CTE query when filtering runners for better performance
     Ci::Runner.belonging_to_project(project_ids)
   end
 
-  def track_ci_owned_project_runners_query(size_of_project_ids)
+  def track_ci_available_project_runners_query(size_of_project_ids)
     track_internal_event(
-      'query_ci_owned_project_runners_with_project_ids',
+      'query_ci_available_project_runners_with_project_ids',
       user: self,
       additional_properties: {
         value: size_of_project_ids
@@ -2933,7 +2937,7 @@ class User < ApplicationRecord
     )
   end
 
-  def ci_owned_group_runners
+  def ci_available_group_runners
     cte_namespace_ids = Gitlab::SQL::CTE.new(
       :cte_namespace_ids,
       ci_namespace_mirrors_for_group_members(Gitlab::Access::OWNER).select(:namespace_id)

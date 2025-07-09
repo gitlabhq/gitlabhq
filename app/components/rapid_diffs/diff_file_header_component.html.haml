@@ -51,10 +51,23 @@
           = helpers.gl_badge_tag(_('LFS'), variant: :neutral)
     .rd-diff-file-info
       .rd-diff-file-stats{ aria: { label: stats_label } }
-        %span.rd-lines-added +#{@diff_file.added_lines}
-        %span.rd-lines-removed −#{@diff_file.removed_lines}
-      .rd-diff-file-options-menu
-        - unless menu_items.empty?
+        - if @diff_file.binary?
+          - if @diff_file.new_file?
+            %span.rd-stats-added +#{pretty_print_bytes(@diff_file.new_blob.size)}
+          - elsif @diff_file.deleted_file?
+            %span.rd-stats-removed −#{pretty_print_bytes(@diff_file.old_blob.size)}
+          - else
+            - byte_diff = @diff_file.new_blob.size - @diff_file.old_blob.size
+            - if byte_diff > 0
+              %span.rd-stats-added +#{pretty_print_bytes(byte_diff)}
+            - elsif byte_diff < 0
+              %span.rd-stats-removed −#{pretty_print_bytes(byte_diff.abs)}
+            %span (#{pretty_print_bytes(@diff_file.new_blob.size)})
+        - else
+          %span.rd-stats-added +#{@diff_file.added_lines}
+          %span.rd-stats-removed −#{@diff_file.removed_lines}
+      - unless menu_items.empty?
+        .rd-diff-file-options-menu
           %div{ data: { options_menu: true } }
             -# <script> here is likely the most effective way to minimize bytes:
             -# https://gitlab.com/gitlab-org/gitlab/-/merge_requests/182850#note_2387011092

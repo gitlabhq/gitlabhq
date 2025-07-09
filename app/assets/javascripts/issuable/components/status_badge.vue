@@ -1,6 +1,7 @@
 <script>
 import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   STATUS_CLOSED,
   STATUS_LOCKED,
@@ -37,6 +38,7 @@ export default {
   components: {
     GlBadge,
   },
+  mixins: [glFeatureFlagsMixin()],
   props: {
     issuableType: {
       type: String,
@@ -48,10 +50,26 @@ export default {
       required: false,
       default: null,
     },
+    isDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     badgeProperties() {
       if (this.issuableType === TYPE_MERGE_REQUEST) {
+        if (
+          this.state === STATUS_OPEN &&
+          this.isDraft === true &&
+          this.glFeatures.showMergeRequestStatusDraft
+        ) {
+          return {
+            icon: 'merge-request',
+            text: __('Draft'),
+            variant: 'warning',
+          };
+        }
         return mergeRequestPropertiesMap[this.state];
       }
 

@@ -88,6 +88,11 @@ export default {
       required: false,
       default: false,
     },
+    isDraft: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     tabs: {
       type: Array,
       required: true,
@@ -177,7 +182,11 @@ export default {
         :class="{ 'container-limited': !isFluidLayout }"
       >
         <div class="gl-flex gl-w-full gl-items-center gl-gap-2">
-          <status-badge :issuable-type="$options.TYPE_MERGE_REQUEST" :state="badgeState.state" />
+          <status-badge
+            :issuable-type="$options.TYPE_MERGE_REQUEST"
+            :state="badgeState.state"
+            :is-draft="isDraft"
+          />
           <imported-badge v-if="isImported" />
           <a
             v-safe-html:[$options.safeHtmlConfig]="titleHtml"

@@ -2,6 +2,7 @@
 import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import workItemsWidgetMetadataQuery from '../graphql/queries/work_items_widget_metadata.query.graphql';
+import VisibilityChangeDetector from './visibility_change_detector.vue';
 
 export default {
   name: 'WorkItemsWidget',
@@ -9,6 +10,7 @@ export default {
     GlIcon,
     GlLink,
     GlBadge,
+    VisibilityChangeDetector,
   },
   mixins: [timeagoMixin],
   props: {
@@ -54,11 +56,16 @@ export default {
       return this.metadata?.authored?.nodes?.[0]?.updatedAt ?? null;
     },
   },
+  methods: {
+    reload() {
+      this.$apollo.queries.metadata.refetch();
+    },
+  },
 };
 </script>
 
 <template>
-  <div class="gl-border gl-rounded-lg gl-px-4 gl-py-1">
+  <visibility-change-detector class="gl-border gl-rounded-lg gl-px-4 gl-py-1" @visible="reload">
     <h4 class="gl-flex gl-items-center gl-gap-2">
       <gl-icon name="issues" :size="16" />{{ __('Issues') }}
     </h4>
@@ -100,5 +107,5 @@ export default {
         </template>
       </li>
     </ul>
-  </div>
+  </visibility-change-detector>
 </template>

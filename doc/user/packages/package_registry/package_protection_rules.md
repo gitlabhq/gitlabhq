@@ -17,16 +17,16 @@ title: Protected packages
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/416395) in GitLab 16.5 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - The protection rule setting **Push protected up to access level** [renamed](https://gitlab.com/gitlab-org/gitlab/-/issues/416382) to **Minimum access level for push** in GitLab 17.1.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.5.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/472655) in GitLab 17.6. Feature flag `packages_protected_packages` removed.
 - Conan protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323975) in GitLab 17.6 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_conan`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Maven protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323969) in GitLab 17.9 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_maven`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/516215) in GitLab 17.10 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_delete`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497082) in GitLab 17.11. Feature flag `packages_protected_packages_maven` removed.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497811) in GitLab 17.11. Feature flag `packages_protected_packages_conan` removed.
+- Maven protected packages became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497082) in GitLab 17.11. Feature flag `packages_protected_packages_maven` removed.
+- Conan protected packages became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/497811) in GitLab 17.11. Feature flag `packages_protected_packages_conan` removed.
 - NuGet protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323972) in GitLab 18.0 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_nuget`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Protected Helm charts [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323973) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_helm`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Generic protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323973) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_generic`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
+- Generic protected packages became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537971) in GitLab 18.2. Feature flag `packages_protected_packages_generic` removed.
 
 {{< /history >}}
 

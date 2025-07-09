@@ -313,7 +313,7 @@
 {"name":"hamlit","version":"2.15.0","platform":"java","checksum":"fda165464e59337ab7cda6304a66bfdb607bb7155f25566da19c9ee7b98e03d1"},
 {"name":"hamlit","version":"2.15.0","platform":"ruby","checksum":"d2e8505362338945fa309c68b2b8be07ebdc181200ec6021223567bf66dac38e"},
 {"name":"hana","version":"1.3.7","platform":"ruby","checksum":"5425db42d651fea08859811c29d20446f16af196308162894db208cac5ce9b0d"},
-{"name":"hashdiff","version":"1.1.0","platform":"ruby","checksum":"b5465f0e7375f1ee883f53a766ece4dbc764b7674a7c5ffd76e79b2f5f6fc9c9"},
+{"name":"hashdiff","version":"1.2.0","platform":"ruby","checksum":"c984f13e115bfc9953332e8e83bd9d769cfde9944e2d54e07eb9df7b76e140b5"},
 {"name":"hashie","version":"5.0.0","platform":"ruby","checksum":"9d6c4e51f2a36d4616cbc8a322d619a162d8f42815a792596039fc95595603da"},
 {"name":"health_check","version":"3.1.0","platform":"ruby","checksum":"10146508237dc54ed7e24c292d8ba7fb8f9590cf26c66e325b947438c4103b57"},
 {"name":"heapy","version":"0.2.0","platform":"ruby","checksum":"74141e845d61ffc7c1e8bf8b127c8cf94544ec7a1181aec613288682543585ea"},

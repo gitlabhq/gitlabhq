@@ -1,0 +1,9 @@
+---
+name: show_merge_request_status_draft
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/419516
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194864
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/550387
+milestone: '18.2'
+group: group::code review
+type: wip
+default_enabled: false

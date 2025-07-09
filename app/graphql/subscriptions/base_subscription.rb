@@ -2,6 +2,8 @@
 
 module Subscriptions
   class BaseSubscription < GraphQL::Schema::Subscription
+    include Gitlab::Graphql::VersionFilter::FutureFieldFallback
+
     object_class Types::BaseObject
     field_class Types::BaseField
 

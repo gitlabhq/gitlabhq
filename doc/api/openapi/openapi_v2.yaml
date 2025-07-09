@@ -37939,7 +37939,7 @@ paths:
       - runners
       operationId: deleteApiV4Runners
     get:
-      summary: List owned runners
+      summary: List available runners
       description: Get runners available for user
       produces:
       - application/json

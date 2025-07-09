@@ -27,7 +27,6 @@ describe('Packages Protection Rule Form', () => {
       packagesProtectedPackagesNuget: true,
       packagesProtectedPackagesDelete: true,
       packagesProtectedPackagesHelm: true,
-      packagesProtectedPackagesGeneric: true,
     },
   };
 
@@ -147,30 +146,6 @@ describe('Packages Protection Rule Form', () => {
           expect(packageTypeSelectOptions()).toEqual([
             'CONAN',
             'GENERIC',
-            'MAVEN',
-            'NPM',
-            'NUGET',
-            'PYPI',
-          ]);
-        });
-      });
-
-      describe('when feature flag packagesProtectedPackagesGeneric is disabled', () => {
-        it('contains available options without option "Generic"', () => {
-          mountComponent({
-            provide: {
-              ...defaultProvidedValues,
-              glFeatures: {
-                ...defaultProvidedValues.glFeatures,
-                packagesProtectedPackagesGeneric: false,
-              },
-            },
-          });
-
-          expect(findPackageTypeSelect().exists()).toBe(true);
-          expect(packageTypeSelectOptions()).toEqual([
-            'CONAN',
-            'HELM',
             'MAVEN',
             'NPM',
             'NUGET',

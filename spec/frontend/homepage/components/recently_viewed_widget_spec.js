@@ -263,7 +263,7 @@ describe('RecentlyViewedWidget', () => {
     });
 
     it('adds correct icon to issues', () => {
-      const issueItems = wrapper.vm.items.filter((item) => item.icon === 'work-item-issue');
+      const issueItems = wrapper.vm.items.filter((item) => item.icon === 'issues');
 
       expect(issueItems).toHaveLength(2);
       expect(issueItems[0].id).toBe('issue-1');
@@ -287,7 +287,7 @@ describe('RecentlyViewedWidget', () => {
       const icons = findItemIcons();
 
       expect(icons.at(0).props('name')).toBe('merge-request'); // First item is MR
-      expect(icons.at(1).props('name')).toBe('work-item-issue'); // Second item is issue
+      expect(icons.at(1).props('name')).toBe('issues'); // Second item is issue
     });
 
     it('renders tooltip components for each item', () => {

@@ -45,7 +45,7 @@ Here's an example of how you can use the tokens for runner registration:
 
 GitLab and the runner are then connected.
 
-## List owned runners
+## List available runners
 
 Get a list of runners available to the user.
 

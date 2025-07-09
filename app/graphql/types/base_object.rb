@@ -2,6 +2,8 @@
 
 module Types
   class BaseObject < GraphQL::Schema::Object
+    include Gitlab::Graphql::VersionFilter::FutureFieldFallback
+
     prepend Gitlab::Graphql::Present
     prepend Gitlab::Graphql::ExposePermissions
     prepend Gitlab::Graphql::MarkdownField

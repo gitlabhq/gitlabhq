@@ -56,12 +56,18 @@ module RapidDiffs
     end
 
     def stats_label
+      return false if @diff_file.binary?
+
       added = @diff_file.added_lines
       removed = @diff_file.removed_lines
       counters = []
       counters << (ns_('RapidDiffs|Added %d line.', 'RapidDiffs|Added %d lines.', added) % added) if added > 0
       counters << (ns_('RapidDiffs|Removed %d line.', 'RapidDiffs|Removed %d lines.', removed) % removed) if removed > 0
       counters.join(' ')
+    end
+
+    def pretty_print_bytes(size)
+      ActiveSupport::NumberHelper.number_to_human_size(size)
     end
   end
 end

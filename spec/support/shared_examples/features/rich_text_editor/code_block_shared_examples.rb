@@ -9,7 +9,7 @@ RSpec.shared_examples 'rich text editor - code blocks' do
     before do
       visit(profile_preferences_path)
 
-      find('.syntax-theme').choose('Dark')
+      find('[data-testid="syntax-highlighting-light-color-scheme"]').choose('Dark')
 
       wait_for_requests
 

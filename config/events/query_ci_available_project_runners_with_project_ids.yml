@@ -2,7 +2,7 @@
 description: Count of authorized projects used in user query for CI owned project runners
 internal_events: true
 status: active
-action: query_ci_owned_project_runners_with_project_ids
+action: query_ci_available_project_runners_with_project_ids
 identifiers:
 - user
 additional_properties:

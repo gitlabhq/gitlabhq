@@ -364,13 +364,11 @@ Project Owners can perform any listed action, and can delete pipelines:
 | Create [environments](../ci/environments/_index.md)                                                         |            |       |         |          |     ✓     |     ✓      |
 | Delete [environments](../ci/environments/_index.md)                                                         |            |       |         |          |     ✓     |     ✓      |
 | Stop [environments](../ci/environments/_index.md)                                                           |            |       |         |          |     ✓     |     ✓      |
-| Run CI/CD pipeline                                                                                          |            |       |         |          |     ✓     |     ✓      |
-| Run CI/CD pipeline for a protected branch <sup>6</sup>                                                      |            |       |         |          |     ✓     |     ✓      |
-| Run CI/CD job                                                                                               |            |       |         |          |     ✓     |     ✓      |
+| Run, rerun, or retry CI/CD pipeline or job                                                                  |            |       |         |          |     ✓     |     ✓      |
+| Run, rerun, or retry CI/CD pipeline or job for a protected branch <sup>6</sup>                              |            |       |         |          |     ✓     |     ✓      |
 | Delete job logs or job artifacts <sup>7</sup>                                                               |            |       |         |          |     ✓     |     ✓      |
 | Enable [review apps](../ci/review_apps/_index.md)                                                           |            |       |         |          |     ✓     |     ✓      |
 | Cancel jobs <sup>8</sup>                                                                                    |            |       |         |          |     ✓     |     ✓      |
-| Retry jobs                                                                                                  |            |       |         |          |     ✓     |     ✓      |
 | Read [Terraform](infrastructure/_index.md) state                                                            |            |       |         |          |     ✓     |     ✓      |
 | Run [interactive web terminals](../ci/interactive_web_terminal/_index.md)                                   |            |       |         |          |     ✓     |     ✓      |
 | Use pipeline editor                                                                                         |            |       |         |          |     ✓     |     ✓      |

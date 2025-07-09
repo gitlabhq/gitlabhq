@@ -14,6 +14,8 @@ module Gitlab
         from_params || from_user || fallback_organization
       end
 
+      private
+
       def from_params
         from_group_params || from_organization_params
       end
@@ -23,8 +25,6 @@ module Gitlab
 
         ::Organizations::Organization.with_user(user).first
       end
-
-      private
 
       def from_group_params
         path = params[:namespace_id] || params[:group_id]

@@ -45,7 +45,13 @@ RSpec.describe Gitlab::PDF::Security::ProjectVulnerabilitiesHistory, feature_cat
     it 'include the chart title' do
       render_chart
 
-      expect(pdf).to have_received(:text_box).with(s_('Vulnerability History'), any_args).once
+      expect(pdf).to have_received(:text_box)
+       .with('Vulnerability History', any_args).once
+
+      # rubocop:disable Layout/LineLength -- long text for title
+      expect(pdf).to have_received(:text_box)
+       .with('Historical view of open vulnerabilities in the default branch. Excludes vulnerabilities that were resolved or dismissed.', any_args).once
+      # rubocop:enable  Layout/LineLength
     end
 
     it 'renders the SVG chart' do

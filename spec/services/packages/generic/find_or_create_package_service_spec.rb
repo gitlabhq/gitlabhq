@@ -78,14 +78,6 @@ RSpec.describe Packages::Generic::FindOrCreatePackageService, feature_category: 
 
         shared_examples 'protected package' do
           it_behaves_like 'returning an error service response', message: 'Package protected.'
-
-          context 'when feateure flag :packages_protected_packages_generic is disabled' do
-            before do
-              stub_feature_flags(packages_protected_packages_generic: false)
-            end
-
-            it_behaves_like 'valid response for new generic package'
-          end
         end
 
         before do

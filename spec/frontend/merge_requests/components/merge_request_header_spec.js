@@ -37,6 +37,7 @@ describe('MergeRequestHeader component', () => {
       propsData: {
         initialState: 'opened',
         isImported,
+        isDraft: false,
       },
     });
   };
@@ -47,6 +48,7 @@ describe('MergeRequestHeader component', () => {
     expect(findStatusBadge().props()).toEqual({
       issuableType: 'merge_request',
       state: 'opened',
+      isDraft: false,
     });
   });
 
