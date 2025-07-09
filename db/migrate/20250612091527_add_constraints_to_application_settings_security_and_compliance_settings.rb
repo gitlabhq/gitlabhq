@@ -2,7 +2,7 @@
 
 class AddConstraintsToApplicationSettingsSecurityAndComplianceSettings < Gitlab::Database::Migration[2.3]
   disable_ddl_transaction!
-  milestone '18.1'
+  milestone '18.2'
 
   CONSTRAINT_NAME = 'check_security_and_compliance_settings_is_hash'
 

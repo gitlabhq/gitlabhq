@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AddSecurityAndComplianceSettingsToApplicationSettings < Gitlab::Database::Migration[2.3]
-  milestone '18.1'
+  milestone '18.2'
   disable_ddl_transaction!
 
   def change

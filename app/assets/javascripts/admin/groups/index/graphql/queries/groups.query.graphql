@@ -22,7 +22,7 @@ query adminGroupsQuery(
   ) {
     nodes {
       ...Group
-      rootStorageStatistics {
+      projectStatistics {
         storageSize
       }
     }

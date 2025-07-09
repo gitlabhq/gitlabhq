@@ -53,6 +53,11 @@ RSpec.shared_examples 'a redacted search results' do
             message: "redacted_search_results",
             current_user_id: user.id,
             query: search,
+            "meta.search.type": search_service.search_type,
+            "meta.search.level": search_service.level,
+            "meta.search.scope": search_service.scope,
+            "meta.search.group_id": anything,
+            "meta.search.project_id": anything,
             filtered: array_including(
               [
                 { class_name: 'Issue', id: unreadable.id, ability: :read_issue }

@@ -241,6 +241,41 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
     end
   end
 
+  describe '#hostname' do
+    context 'when snowplow is enabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: true)
+      end
+
+      it 'returns snowplow_collector_hostname' do
+        expect(subject.hostname).to eq('gitfoo.com')
+      end
+    end
+
+    context 'when snowplow is disabled' do
+      before do
+        stub_application_setting(snowplow_enabled?: false)
+      end
+
+      shared_examples 'hostname with staging' do |staging_env, host, expected_endpoint|
+        context "when staging_env=#{staging_env}, host=#{host}" do
+          before do
+            allow(Gitlab).to receive(:staging?).and_return(staging_env)
+            stub_config_setting(host: host) if host
+          end
+
+          it "returns #{expected_endpoint}" do
+            expect(subject.hostname).to eq(expected_endpoint)
+          end
+        end
+      end
+
+      it_behaves_like 'hostname with staging', true, nil, 'events-stg.gitlab.net'
+      it_behaves_like 'hostname with staging', false, 'gitlab-test.example.test', 'events-stg.gitlab.net'
+      it_behaves_like 'hostname with staging', false, 'example.com', 'events.gitlab.net'
+    end
+  end
+
   describe '#app_id' do
     subject { described_class.new.app_id }
 
@@ -258,11 +293,29 @@ RSpec.describe Gitlab::Tracking::Destinations::Snowplow, :do_not_stub_snowplow_b
         stub_application_setting(gitlab_dedicated_instance?: dedicated_instance)
       end
 
-      context 'when dedicated instance' do
-        let(:dedicated_instance) { true }
+      shared_examples 'app_id with staging' do |instance_type, staging_env, host, expected_app_id|
+        context "when #{instance_type}, staging_env=#{staging_env}, host=#{host}" do
+          let(:dedicated_instance) { instance_type == 'dedicated' }
 
-        it { is_expected.to eq('gitlab_dedicated') }
+          before do
+            allow(Gitlab).to receive(:staging?).and_return(staging_env)
+            stub_config_setting(host: host) if host
+          end
+
+          it { is_expected.to eq(expected_app_id) }
+        end
       end
+
+      # Dedicated instance tests
+      it_behaves_like 'app_id with staging', 'dedicated', false, 'example.com', 'gitlab_dedicated'
+      it_behaves_like 'app_id with staging', 'dedicated', true, nil, 'gitlab_dedicated_staging'
+      it_behaves_like 'app_id with staging', 'dedicated', false, 'gitlab-test.example.test',
+        'gitlab_dedicated_staging'
+
+      # Self-hosted instance tests
+      it_behaves_like 'app_id with staging', 'self-hosted', false, 'example.com', 'gitlab_sm'
+      it_behaves_like 'app_id with staging', 'self-hosted', true, nil, 'gitlab_sm_staging'
+      it_behaves_like 'app_id with staging', 'self-hosted', false, 'gitlab-test.example.test', 'gitlab_sm_staging'
 
       context 'when self-hosted instance' do
         let(:dedicated_instance) { false }

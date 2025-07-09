@@ -283,7 +283,6 @@ class SearchController < ApplicationController
       metadata['meta.search.filters.confidential'] = filter_params[:confidential]
       metadata['meta.search.filters.state'] = filter_params[:state]
       metadata['meta.search.force_search_results'] = params[:force_search_results]
-      metadata['meta.search.project_ids'] = params[:project_ids]
       metadata['meta.search.filters.language'] = filter_params[:language]
       metadata['meta.search.type'] = @search_type if @search_type.present?
       metadata['meta.search.level'] = @search_level if @search_level.present?

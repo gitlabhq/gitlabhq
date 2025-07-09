@@ -1151,11 +1151,12 @@ export default {
                 v-model="showSidebar"
                 :storage-key="$options.SHOW_SIDEBAR_STORAGE_KEY"
               />
-              <aside
+              <section
                 data-testid="work-item-overview-right-sidebar"
                 class="work-item-overview-right-sidebar"
                 :class="{ 'is-modal': isModal, 'md:gl-hidden': !showSidebar }"
               >
+                <h2 class="gl-sr-only">{{ s__('WorkItem|Attributes') }}</h2>
                 <work-item-attributes-wrapper
                   :class="{ 'gl-top-11': isDrawer }"
                   :full-path="workItemFullPath"
@@ -1165,7 +1166,7 @@ export default {
                   @error="updateError = $event"
                   @attributesUpdated="$emit('attributesUpdated', $event)"
                 />
-              </aside>
+              </section>
 
               <work-item-error-tracking
                 v-if="workItemErrorTracking.identifier"

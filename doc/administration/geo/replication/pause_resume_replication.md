@@ -17,6 +17,8 @@ title: Pausing and resuming replication
 Pausing and resuming of replication is only supported for Geo installations using a
 Linux package-managed database. External databases are not supported.
 
+**Do not pause replication** if the primary site has failed catastrophically and cannot be recovered. This can create unreachable recovery targets that prevent successful promotion of the secondary site.
+
 {{< /alert >}}
 
 In some circumstances, like during [upgrades](upgrading_the_geo_sites.md) or a

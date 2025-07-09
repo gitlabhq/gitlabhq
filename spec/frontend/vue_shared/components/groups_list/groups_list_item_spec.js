@@ -210,7 +210,7 @@ describe('GroupsListItem', () => {
     });
   });
 
-  describe('when group does not have rootStorageStatistics key', () => {
+  describe('when group does not have projectStatistics key', () => {
     beforeEach(() => {
       createComponent();
     });
@@ -220,10 +220,10 @@ describe('GroupsListItem', () => {
     });
   });
 
-  describe('when group has rootStorageStatistics key', () => {
+  describe('when group has projectStatistics key', () => {
     it('renders storage size in human size', () => {
       createComponent({
-        propsData: { group: { ...group, rootStorageStatistics: { storageSize: 3072 } } },
+        propsData: { group: { ...group, projectStatistics: { storageSize: 3072 } } },
       });
 
       expect(findStorageSize().text()).toBe('3.00 KiB');
@@ -232,7 +232,7 @@ describe('GroupsListItem', () => {
     describe('when storage size is null', () => {
       beforeEach(() => {
         createComponent({
-          propsData: { group: { ...group, rootStorageStatistics: { storageSize: null } } },
+          propsData: { group: { ...group, projectStatistics: { storageSize: null } } },
         });
       });
 

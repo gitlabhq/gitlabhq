@@ -130,10 +130,10 @@ export default {
         return null;
       }
 
-      return numberToHumanSize(this.group.rootStorageStatistics?.storageSize || 0);
+      return numberToHumanSize(this.group.projectStatistics?.storageSize || 0);
     },
     hasStorageSize() {
-      return Object.hasOwn(this.group, 'rootStorageStatistics');
+      return Object.hasOwn(this.group, 'projectStatistics');
     },
     hasActionDelete() {
       return (

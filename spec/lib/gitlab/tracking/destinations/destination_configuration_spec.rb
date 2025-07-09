@@ -24,12 +24,11 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
     context 'when snowplow is disabled' do
       before do
         stub_application_setting(snowplow_enabled?: false)
+        stub_config_setting(host: host)
       end
 
-      context 'with use_staging_endpoint_for_product_usage_events FF disabled' do
-        before do
-          stub_feature_flags(use_staging_endpoint_for_product_usage_events: false)
-        end
+      context 'on production instance' do
+        let(:host) { 'mysite.com' }
 
         it 'returns configuration with production endpoint' do
           expect(configuration.hostname).to eq('events.gitlab.net')
@@ -38,10 +37,8 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
         end
       end
 
-      context 'with use_staging_endpoint_for_product_usage_events FF enabled' do
-        before do
-          stub_feature_flags(use_staging_endpoint_for_product_usage_events: true)
-        end
+      context 'on GitLab qa instance' do
+        let(:host) { 'gitlab-123456789.test' }
 
         it 'returns configuration with staging endpoint' do
           expect(configuration.hostname).to eq('events-stg.gitlab.net')
@@ -284,6 +281,46 @@ RSpec.describe Gitlab::Tracking::Destinations::DestinationConfiguration, feature
 
     it 'returns the scheme from URI' do
       expect(configuration.protocol).to eq('https')
+    end
+  end
+
+  describe '#non_production_environment?' do
+    subject(:non_production_environment?) { described_class.non_production_environment? }
+
+    context 'when Gitlab.staging? is true' do
+      before do
+        allow(Gitlab).to receive(:staging?).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(non_production_environment?).to be_truthy
+      end
+    end
+
+    context 'when Gitlab.staging? is false' do
+      before do
+        allow(Gitlab).to receive(:staging?).and_return(false)
+      end
+
+      shared_examples 'staging check with host' do |host, expected_result|
+        context "with host '#{host}'" do
+          before do
+            stub_config_setting(host: host)
+          end
+
+          it "returns #{expected_result}" do
+            expect(non_production_environment?).to eq(expected_result)
+          end
+        end
+      end
+
+      it_behaves_like 'staging check with host', 'gitlab.test', true
+      it_behaves_like 'staging check with host', 'gitlab2-abc.test', true
+      it_behaves_like 'staging check with host', 'gitlab.example.test', true
+      it_behaves_like 'staging check with host', 'gitlab-gitaly-server.test', true
+      it_behaves_like 'staging check with host', 'gitlab.example.com', false
+      it_behaves_like 'staging check with host', 'example.test', false
+      it_behaves_like 'staging check with host', 'example.com', false
     end
   end
 end

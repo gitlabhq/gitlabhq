@@ -88,11 +88,13 @@ module Gitlab
         end
 
         def product_usage_event_app_id
-          if ::Gitlab::CurrentSettings.gitlab_dedicated_instance?
-            DEDICATED_APP_ID
-          else
-            SELF_MANAGED_APP_ID
-          end
+          app_id = if ::Gitlab::CurrentSettings.gitlab_dedicated_instance?
+                     DEDICATED_APP_ID
+                   else
+                     SELF_MANAGED_APP_ID
+                   end
+
+          Gitlab::Tracking::Destinations::DestinationConfiguration.non_production_environment? ? "#{app_id}_staging" : app_id
         end
 
         def disable_product_usage_event_logging?

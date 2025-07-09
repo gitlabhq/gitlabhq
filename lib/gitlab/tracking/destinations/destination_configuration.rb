@@ -17,6 +17,13 @@ module Gitlab
             new(snowplow_micro_uri)
           end
 
+          def non_production_environment?
+            host = Gitlab.config.gitlab.host
+            is_gitlab_qa_instance = host.start_with?('gitlab') && host.end_with?('.test')
+
+            Gitlab.staging? || is_gitlab_qa_instance
+          end
+
           private
 
           def snowplow_micro_uri
@@ -32,7 +39,7 @@ module Gitlab
               hostname = Gitlab::CurrentSettings.snowplow_collector_hostname
               addressable_uri = Addressable::URI.heuristic_parse(convert_if_bare_hostname(hostname), scheme: 'https')
               URI(addressable_uri.to_s)
-            elsif Feature.enabled?(:use_staging_endpoint_for_product_usage_events, :instance)
+            elsif non_production_environment?
               URI(PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT_STG)
             else
               URI(PRODUCT_USAGE_EVENT_COLLECT_ENDPOINT)

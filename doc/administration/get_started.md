@@ -233,12 +233,8 @@ To get assistance for GitLab Self-Managed:
 
 ## Support for GitLab SaaS
 
-If you use GitLab SaaS, you have several channels with which to get support and find answers.
-
-- Priority support: Gold and Silver GitLab SaaS customers receive priority support with tiered response times.
-  Learn more about [upgrading to priority support](https://about.gitlab.com/support/#upgrading-to-priority-support).
-- GitLab SaaS 24/7 monitoring: Our full team of site reliability and production engineers is always on.
-  Often, by the time you notice an issue, someone's already looking into it.
+GitLab SaaS has 24/7 monitoring. Our full team of site reliability and production engineers is always on.
+Often, by the time you notice an issue, someone's already looking into it.
 
 To get assistance for GitLab SaaS:
 

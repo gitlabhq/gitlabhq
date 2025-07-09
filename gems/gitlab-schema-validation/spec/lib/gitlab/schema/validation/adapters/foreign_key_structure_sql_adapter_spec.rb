@@ -11,14 +11,14 @@ RSpec.describe Gitlab::Schema::Validation::Adapters::ForeignKeyStructureSqlAdapt
     [
       [
         'ALTER TABLE ONLY public.issues ADD CONSTRAINT fk_05f1e72feb FOREIGN KEY (author_id) REFERENCES users (id) ' \
-        'ON DELETE SET NULL',
+          'ON DELETE SET NULL',
         'public.fk_05f1e72feb',
         'issues',
         'FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL'
       ],
       [
         'ALTER TABLE public.import_failures ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ' \
-        'ON DELETE CASCADE',
+          'ON DELETE CASCADE',
         'public.fk_9a9b9ba21c',
         'import_failures',
         'FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE'

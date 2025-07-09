@@ -57609,6 +57609,12 @@ msgstr ""
 msgid "SecurityReports|Change status"
 msgstr ""
 
+msgid "SecurityReports|Chart failed to initialize. Please refresh the page and try again."
+msgstr ""
+
+msgid "SecurityReports|Chart is still loading. Please try again in a few minutes."
+msgstr ""
+
 msgid "SecurityReports|Check the messages generated while parsing the following security reports, as they may prevent the results from being ingested by GitLab. Ensure the security report conforms to a supported %{helpPageLinkStart}JSON schema%{helpPageLinkEnd}."
 msgstr ""
 
@@ -70686,6 +70692,9 @@ msgstr ""
 msgid "WorkItem|At risk"
 msgstr ""
 
+msgid "WorkItem|Attributes"
+msgstr ""
+
 msgid "WorkItem|Author"
 msgstr ""
 
@@ -71442,6 +71451,21 @@ msgid "WorkItem|Usage"
 msgstr ""
 
 msgid "WorkItem|Usage:"
+msgstr ""
+
+msgid "WorkItem|Use for items that are actively being worked on."
+msgstr ""
+
+msgid "WorkItem|Use for items that are no longer relevant and will not be completed. Applying a canceled status will close the item."
+msgstr ""
+
+msgid "WorkItem|Use for items that are still in a proposal or ideation phase, not yet accepted or planned for work."
+msgstr ""
+
+msgid "WorkItem|Use for items that have been completed. Applying a done status will close the item."
+msgstr ""
+
+msgid "WorkItem|Use for planned work that is not actively being worked on."
 msgstr ""
 
 msgid "WorkItem|Used on types: %{workItemTypes}. Changes affect all items in all subgroups and projects."

@@ -23388,7 +23388,7 @@ CREATE TABLE security_policy_settings (
     id bigint NOT NULL,
     csp_namespace_id bigint,
     singleton boolean DEFAULT true NOT NULL,
-    CONSTRAINT check_singleton CHECK ((singleton IS TRUE))
+    organization_id bigint NOT NULL
 );
 
 COMMENT ON COLUMN security_policy_settings.singleton IS 'Always true, used for singleton enforcement';
@@ -37937,7 +37937,7 @@ CREATE INDEX index_security_policy_requirements_on_namespace_id ON security_poli
 
 CREATE INDEX index_security_policy_settings_on_csp_namespace_id ON security_policy_settings USING btree (csp_namespace_id);
 
-CREATE UNIQUE INDEX index_security_policy_settings_on_singleton ON security_policy_settings USING btree (singleton);
+CREATE UNIQUE INDEX index_security_policy_settings_on_organization_id ON security_policy_settings USING btree (organization_id);
 
 CREATE INDEX index_security_scans_for_non_purged_records ON security_scans USING btree (created_at, id) WHERE (status <> 6);
 
@@ -42501,6 +42501,9 @@ ALTER TABLE ONLY epics
 ALTER TABLE ONLY namespace_deletion_schedules
     ADD CONSTRAINT fk_013e35d75a FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY security_policy_settings
+    ADD CONSTRAINT fk_019d4dda87 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY environments
     ADD CONSTRAINT fk_01a033a308 FOREIGN KEY (merge_request_id) REFERENCES merge_requests(id) ON DELETE SET NULL;
 
@@ -44018,6 +44021,9 @@ ALTER TABLE ONLY merge_requests
 
 ALTER TABLE ONLY security_pipeline_execution_project_schedules
     ADD CONSTRAINT fk_a766128d99 FOREIGN KEY (security_policy_id) REFERENCES security_policies(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY security_policy_settings
+    ADD CONSTRAINT fk_a79f0f4501 FOREIGN KEY (csp_namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY snippet_statistics
     ADD CONSTRAINT fk_a8031c4c3e FOREIGN KEY (snippet_project_id) REFERENCES projects(id) ON DELETE CASCADE;

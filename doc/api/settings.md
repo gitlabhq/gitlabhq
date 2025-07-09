@@ -168,7 +168,8 @@ Example response:
   "concurrent_bitbucket_server_import_jobs_limit": 100,
   "silent_admin_exports_enabled": false,
   "top_level_group_creation_enabled": true,
-  "disable_invite_members": false
+  "disable_invite_members": false,
+  "enforce_pipl_compliance": true
 }
 ```
 
@@ -368,7 +369,8 @@ Example response:
   "concurrent_github_import_jobs_limit": 1000,
   "concurrent_bitbucket_import_jobs_limit": 100,
   "concurrent_bitbucket_server_import_jobs_limit": 100,
-  "silent_admin_exports_enabled": false
+  "silent_admin_exports_enabled": false,
+  "enforce_pipl_compliance": true
 }
 ```
 
@@ -802,6 +804,7 @@ to configure other related settings. These requirements are
 | `require_admin_two_factor_authentication` | boolean         | no | Allow administrators to require 2FA for all administrators on the instance. |
 | `secret_push_protection_available` | boolean         | no | Allow projects to enable secret push protection. This does not enable secret push protection. Ultimate only. |
 | `disable_invite_members` | boolean         | no | Disable invite members functionality for group. |
+| `enforce_pipl_compliance` | boolean | no | Sets whether pipl compliance is enforced for the saas application or not |
 
 ### Dormant project settings
 
