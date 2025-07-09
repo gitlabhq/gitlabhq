@@ -88,7 +88,10 @@ class UsersController < ApplicationController
       format.json do
         load_events
 
-        if Feature.enabled?(:profile_tabs_vue, current_user)
+        @is_personal_homepage = params[:is_personal_homepage].present? && Feature.enabled?(:personal_homepage,
+          current_user)
+
+        if Feature.enabled?(:profile_tabs_vue, current_user) && !@is_personal_homepage
           @events = if user.include_private_contributions?
                       @events
                     else
@@ -97,6 +100,8 @@ class UsersController < ApplicationController
 
           render json: ::Profile::EventSerializer.new(current_user: current_user, target_user: user)
                                                  .represent(@events)
+        elsif @is_personal_homepage && @events.empty?
+          # Return an empty response so that the personal homepage renders its empty state
         else
           pager_json("events/_events", @events.count, events: @events)
         end

@@ -31,7 +31,7 @@ Issue boards:
 - Visualize workload and progress across your entire process.
 
 Your issues appear as cards in vertical lists, organized by their assigned
-[labels](labels.md), [milestones](#milestone-lists), [iterations](#iteration-lists), or [assignees](#assignee-lists).
+[labels](labels.md), [milestones](#milestone-lists), [iterations](#iteration-lists), [assignees](#assignee-lists) or [status](#status-lists).
 
 Add metadata to your issues, then create the corresponding list for your existing issues.
 When you're ready, you can drag your issue cards from one list to another.
@@ -168,6 +168,7 @@ that belong to it. Types of lists include:
 - [**Assignee list**](#assignee-lists): all open issues assigned to a user.
 - [**Milestone list**](#milestone-lists): all open issues for a milestone.
 - [**Iteration list**](#iteration-lists): all open issues for an iteration.
+- [**Status list**](#status-lists): all issues having a status.
 
 A **Card** is a box on a list, and it represents an issue. You can drag cards from one list to
 another to change their label, assignee, or milestone. The information you can see on a
@@ -306,9 +307,7 @@ To add a milestone list:
 1. In the dropdown list, select a milestone.
 1. Select **Add to board**.
 
-Like the assignee lists, you're able to [drag issues](#move-issues-and-lists)
-to and from a milestone list to manipulate the milestone of the dragged issues.
-As in other list types, select the trash icon to remove a list.
+To change the milestone of issues, [drag issue cards](#move-issues-and-lists) to and from a milestone list.
 
 ![Milestone lists](img/issue_board_milestone_lists_v17_1.png)
 
@@ -334,10 +333,59 @@ To add an iteration list:
 1. In the dropdown list, select an iteration.
 1. Select **Add to board**.
 
-Like the milestone lists, you're able to [drag issues](#move-issues-and-lists)
-to and from a iteration list to manipulate the iteration of the dragged issues.
+To change the iteration of issues, [drag issue cards](#move-issues-and-lists) to and from an iteration list.
 
 ![Iteration lists](img/issue_board_iteration_lists_v17_1.png)
+
+### Status lists
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+Create lists of issues that have a specific status.
+Status lists help you organize issues by their workflow stage, such as **In progress** or **Done**.
+
+For more information about status, see [Status](../work_items/status.md).
+
+Status lists behave differently from other list types:
+
+- **Status lists**: Can include both open and closed issues, depending on whether the status maps to an open or closed state.
+- **Other lists** (like assignee or milestone): Always show only open issues.
+
+Prerequisites:
+
+- You must have at least the Planner role for the project.
+
+To add a status list:
+
+1. Select **New list**.
+1. Select **Status**.
+1. From the dropdown list, select the status.
+1. Select **Add to board**.
+
+The status list is added to the board and displays issues with that status.
+
+To change the status of issues, [drag issue cards](#move-issues-and-lists) to and from a status list.
+
+![Status list](img/issue_board_status_lists_v18_2.png)
 
 ### Group issues in swimlanes
 
@@ -533,7 +581,7 @@ To create a new list between two lists:
 
    ![creating a new list between two lists in an issue board](img/issue_board_add_list_between_lists_v17_6.png)
 
-1. Choose the label, user, milestone, or iteration to base the new list on.
+1. Choose the label, user, milestone, iteration, or status to base the new list on.
 1. Select **Add to board**.
 
 The new list is inserted in the same position on the board as the new list panel.
@@ -610,6 +658,7 @@ You can filter by the following:
 - Release
 - Type (issue/incident)
 - [Weight](issues/issue_weight.md)
+- [Status](../work_items/status.md)
 
 #### Filtering issues in a group board
 
@@ -702,6 +751,8 @@ A few things to remember:
 - Selecting the issue title inside a card takes you to that issue.
 - Selecting a label inside a card quickly filters the entire issue board
   and show only the issues from all lists that have that label.
+- When an issue is moved from a status list to an open list, the default open status is applied.
+  Similarly, when it's moved to a closed list, the default closed status is applied.
 - For performance and visibility reasons, each list shows the first 20 issues
   by default. If you have more than 20 issues, start scrolling down and the next
   20 appear.

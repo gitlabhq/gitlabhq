@@ -30,16 +30,6 @@ import {
 } from 'ee_else_ce/work_items/constants';
 import {
   findCurrentUserTodosWidget,
-  findDescriptionWidget,
-  findAssigneesWidget,
-  findLabelsWidget,
-  findWeightWidget,
-  findCrmContactsWidget,
-  findMilestoneWidget,
-  findIterationWidget,
-  findStartAndDueDateWidget,
-  findHealthStatusWidget,
-  findCustomFieldsWidget,
   findHierarchyWidget,
   findHierarchyWidgetChildren,
   findNotesWidget,
@@ -48,8 +38,6 @@ import {
   isNotesWidget,
   newWorkItemFullPath,
   newWorkItemId,
-  findColorWidget,
-  findStatusWidget,
   getWorkItemWidgets,
 } from '../utils';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
@@ -657,7 +645,6 @@ export const setNewWorkItemCache = async ({
   }
 
   const workItemTitleCase = convertEachWordToTitleCase(workItemType.split('_').join(' '));
-  const availableWidgets = widgetDefinitions?.flatMap((i) => i.type) || [];
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
   const isValidWorkItemTitle = workItemTitle.trim().length > 0;
@@ -668,249 +655,19 @@ export const setNewWorkItemCache = async ({
 
   const draftData = JSON.parse(getDraft(autosaveKey));
   const widgets = [];
-  let draftTitle = '';
-  let draftDescription = '';
 
-  // Experimental support for shared widget data across work item types
-  if (gon.features.workItemsBeta) {
-    const sharedCache = getNewWorkItemSharedCache({
-      workItemAttributesWrapperOrder,
-      widgetDefinitions,
-      fullPath,
-      workItemType,
-      isValidWorkItemDescription,
-      workItemDescription,
-      relatedItemId,
-    });
+  const sharedCache = getNewWorkItemSharedCache({
+    workItemAttributesWrapperOrder,
+    widgetDefinitions,
+    fullPath,
+    workItemType,
+    isValidWorkItemDescription,
+    workItemDescription,
+    relatedItemId,
+  });
 
-    draftTitle = sharedCache.draftTitle;
-    draftDescription = sharedCache.draftDescription;
-    widgets.push(...sharedCache.widgets);
-  } else {
-    const draftDescriptionWidget = findDescriptionWidget(draftData?.workspace?.workItem) || {};
-    draftTitle = draftData?.workspace?.workItem?.title || '';
-    draftDescription = draftDescriptionWidget?.description || null;
-
-    widgets.push({
-      type: WIDGET_TYPE_DESCRIPTION,
-      description: isValidWorkItemDescription ? workItemDescription : draftDescription,
-      descriptionHtml: '',
-      lastEditedAt: null,
-      lastEditedBy: null,
-      taskCompletionStatus: null,
-      __typename: 'WorkItemWidgetDescription',
-    });
-
-    workItemAttributesWrapperOrder.forEach((widgetName) => {
-      if (availableWidgets.includes(widgetName)) {
-        if (widgetName === WIDGET_TYPE_ASSIGNEES) {
-          const assigneesWidgetData = widgetDefinitions.find(
-            (definition) => definition.type === WIDGET_TYPE_ASSIGNEES,
-          );
-          widgets.push({
-            type: 'ASSIGNEES',
-            allowsMultipleAssignees: assigneesWidgetData.allowsMultipleAssignees || false,
-            canInviteMembers: assigneesWidgetData.canInviteMembers || false,
-            assignees: {
-              nodes: draftData
-                ? findAssigneesWidget(draftData?.workspace?.workItem)?.assignees.nodes || []
-                : [],
-              __typename: 'UserCoreConnection',
-            },
-            __typename: 'WorkItemWidgetAssignees',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_LINKED_ITEMS) {
-          widgets.push({
-            type: WIDGET_TYPE_LINKED_ITEMS,
-            blockingCount: 0,
-            blockedByCount: 0,
-            linkedItems: {
-              nodes: [],
-            },
-            __typename: 'WorkItemWidgetLinkedItems',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
-          widgets.push({
-            type: 'CRM_CONTACTS',
-            contactsAvailable: false,
-            contacts: {
-              nodes: draftData
-                ? findCrmContactsWidget(draftData?.workspace?.workItem)?.contacts.nodes || []
-                : [],
-              __typename: 'CustomerRelationsContactConnection',
-            },
-            __typename: 'WorkItemWidgetCrmContacts',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_LABELS) {
-          const labelsWidgetData = widgetDefinitions.find(
-            (definition) => definition.type === WIDGET_TYPE_LABELS,
-          );
-          widgets.push({
-            type: 'LABELS',
-            allowsScopedLabels: labelsWidgetData.allowsScopedLabels,
-            labels: {
-              nodes: draftData
-                ? findLabelsWidget(draftData?.workspace?.workItem)?.labels.nodes || []
-                : [],
-              __typename: 'LabelConnection',
-            },
-            __typename: 'WorkItemWidgetLabels',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_WEIGHT) {
-          const weightWidgetData = widgetDefinitions.find(
-            (definition) => definition.type === WIDGET_TYPE_WEIGHT,
-          );
-
-          widgets.push({
-            type: 'WEIGHT',
-            weight: draftData
-              ? findWeightWidget(draftData?.workspace?.workItem)?.weight || null
-              : null,
-            rolledUpWeight: 0,
-            rolledUpCompletedWeight: 0,
-            widgetDefinition: {
-              editable: weightWidgetData?.editable,
-              rollUp: weightWidgetData?.rollUp,
-            },
-            __typename: 'WorkItemWidgetWeight',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_MILESTONE) {
-          widgets.push({
-            type: 'MILESTONE',
-            milestone: draftData
-              ? findMilestoneWidget(draftData?.workspace?.workItem)?.milestone || null
-              : null,
-            projectMilestone: false,
-            __typename: 'WorkItemWidgetMilestone',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_ITERATION) {
-          widgets.push({
-            iteration: draftData
-              ? findIterationWidget(draftData?.workspace?.workItem)?.iteration || null
-              : null,
-            type: 'ITERATION',
-            __typename: 'WorkItemWidgetIteration',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_START_AND_DUE_DATE) {
-          const startDueDateDraft = draftData
-            ? findStartAndDueDateWidget(draftData?.workspace?.workItem)
-            : {};
-
-          widgets.push({
-            type: 'START_AND_DUE_DATE',
-            dueDate: startDueDateDraft?.dueDate || null,
-            startDate: startDueDateDraft?.startDate || null,
-            isFixed: startDueDateDraft?.isFixed || false,
-            rollUp: false,
-            __typename: 'WorkItemWidgetStartAndDueDate',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_PROGRESS) {
-          widgets.push({
-            type: 'PROGRESS',
-            progress: null,
-            updatedAt: null,
-            __typename: 'WorkItemWidgetProgress',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_HEALTH_STATUS) {
-          widgets.push({
-            type: 'HEALTH_STATUS',
-            healthStatus: draftData
-              ? findHealthStatusWidget(draftData?.workspace?.workItem)?.healthStatus || null
-              : null,
-            rolledUpHealthStatus: [],
-            __typename: 'WorkItemWidgetHealthStatus',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_COLOR) {
-          widgets.push({
-            type: 'COLOR',
-            color: draftData
-              ? findColorWidget(draftData?.workspace?.workItem)?.color || '#1068bf'
-              : '#1068bf',
-            textColor: '#FFFFFF',
-            __typename: 'WorkItemWidgetColor',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_STATUS) {
-          const { defaultOpenStatus } = widgetDefinitions.find(
-            (widget) => widget.type === WIDGET_TYPE_STATUS,
-          );
-          widgets.push({
-            type: 'STATUS',
-            status: draftData
-              ? findStatusWidget(draftData?.workspace?.workItem)?.status || defaultOpenStatus
-              : defaultOpenStatus,
-            __typename: 'WorkItemWidgetStatus',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_HIERARCHY) {
-          widgets.push({
-            type: 'HIERARCHY',
-            hasChildren: false,
-            hasParent: false,
-            parent: draftData
-              ? findHierarchyWidget(draftData?.workspace?.workItem)?.parent || null
-              : null,
-            depthLimitReachedByType: [],
-            rolledUpCountsByType: [],
-            children: {
-              nodes: [],
-              __typename: 'WorkItemConnection',
-            },
-            __typename: 'WorkItemWidgetHierarchy',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_TIME_TRACKING) {
-          widgets.push({
-            type: 'TIME_TRACKING',
-            timeEstimate: 0,
-            timelogs: {
-              nodes: [],
-              __typename: 'WorkItemTimelogConnection',
-            },
-            totalTimeSpent: 0,
-            __typename: 'WorkItemWidgetTimeTracking',
-          });
-        }
-
-        if (widgetName === WIDGET_TYPE_CUSTOM_FIELDS) {
-          const customFieldsWidgetData = widgetDefinitions.find(
-            (definition) => definition.type === WIDGET_TYPE_CUSTOM_FIELDS,
-          );
-
-          widgets.push({
-            type: WIDGET_TYPE_CUSTOM_FIELDS,
-            customFieldValues: draftData
-              ? findCustomFieldsWidget(draftData?.workspace?.workItem)?.customFieldValues || []
-              : customFieldsWidgetData?.customFieldValues ?? [],
-            __typename: 'WorkItemWidgetCustomFields',
-          });
-        }
-      }
-    });
-  }
+  const { draftTitle } = sharedCache;
+  widgets.push(...sharedCache.widgets);
 
   const cacheProvider = await getApolloProvider();
 

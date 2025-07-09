@@ -31716,6 +31716,9 @@ msgstr ""
 msgid "HomepageActivityWidget|The activity feed is not available. Please refresh the page to try again."
 msgstr ""
 
+msgid "Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here."
+msgstr ""
+
 msgid "Homepage|The number of merge requests is not available. Please refresh the page to try again."
 msgstr ""
 
@@ -68728,6 +68731,9 @@ msgid "VirtualRegistry|No upstreams yet"
 msgstr ""
 
 msgid "VirtualRegistry|Password (optional)"
+msgstr ""
+
+msgid "VirtualRegistry|Please provide a valid URL."
 msgstr ""
 
 msgid "VirtualRegistry|Registry types"

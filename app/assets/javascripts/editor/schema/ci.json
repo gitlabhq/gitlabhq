@@ -1028,6 +1028,52 @@
               ],
               "additionalProperties": false
             },
+            "aws_secrets_manager": {
+              "oneOf": [
+                {
+                  "type": "string",
+                  "description": "The ARN or name of the secret to retrieve. To retrieve a secret from another account, you must use an ARN."
+                },
+                {
+                  "type": "object",
+                  "markdownDescription": "Defines the secret to be fetched from AWS Secrets Manager. The secret_id refers to the ARN or name of the secret in AWS Secrets Manager. Version_id and version_stage are optional parameters that can be used to specify a specific version of the secret, else AWSCURRENT version will be returned.",
+                  "properties": {
+                    "secret_id": {
+                      "type": "string",
+                      "description": "The ARN or name of the secret to retrieve. To retrieve a secret from another account, you must use an ARN."
+                    },
+                    "version_id": {
+                      "type": "string",
+                      "description": "The unique identifier of the version of the secret to retrieve. If you include both this parameter and VersionStage, the two parameters must refer to the same secret version. If you don't specify either a VersionStage or VersionId, Secrets Manager returns the AWSCURRENT version."
+                    },
+                    "version_stage": {
+                      "type": "string",
+                      "description": "The staging label of the version of the secret to retrieve. If you include both this parameter and VersionStage, the two parameters must refer to the same secret version. If you don't specify either a VersionStage or VersionId, Secrets Manager returns the AWSCURRENT version."
+                    },
+                    "region": {
+                      "type": "string",
+                      "description": "The AWS region where the secret is stored. Use this to override the region for a specific secret. Defaults to AWS_REGION variable."
+                    },
+                    "role_arn": {
+                      "type": "string",
+                      "description": "The ARN of the IAM role to assume before retrieving the secret. Use this to override the ARN. Defaults to AWS_ROLE_ARN variable."
+                    },
+                    "role_session_name": {
+                      "type": "string",
+                      "description": "The name of the session to use when assuming the role. Use this to override the session name. Defaults to AWS_ROLE_SESSION_NAME variable."
+                    },
+                    "field": {
+                      "type": "string",
+                      "description": "The name of the field to retrieve from the secret. If not specified, the entire secret is retrieved."
+                    }
+                  },
+                  "required": [
+                    "secret_id"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
             "akeyless": {
               "type": "object",
               "properties": {
@@ -1073,6 +1119,11 @@
             {
               "required": [
                 "gcp_secret_manager"
+              ]
+            },
+            {
+              "required": [
+                "aws_secrets_manager"
               ]
             },
             {

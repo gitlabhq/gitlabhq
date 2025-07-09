@@ -31,10 +31,18 @@ export default {
       this.isLoading = true;
 
       try {
+        /**
+         * As part of this widget's first iteration, we have slightly changed how the `UsersController`
+         * controller behaves so that it returns an empty response when the user has no activity and
+         * the `is_personal_homepage` param is present. This is a temporary workaround until we can
+         * move away from an HTML endpoint and handle empty states more gracefully in the client.
+         * We'll need to remove the `is_personal_homepage` logic from `UsersController` once we have
+         * a proper GraphQL endpoint here.
+         */
         const { data } = await axios.get(
-          `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}`,
+          `/users/${encodeURIComponent(gon.current_username)}/activity?limit=${MAX_EVENTS}&is_personal_homepage=1`,
         );
-        this.activityFeedHtml = data.html;
+        this.activityFeedHtml = data?.html ?? null;
       } catch (e) {
         Sentry.captureException(e);
         this.hasError = true;
@@ -47,7 +55,7 @@ export default {
 </script>
 
 <template>
-  <visibility-change-detector @visible="reload">
+  <visibility-change-detector class="gl-px-4" @visible="reload">
     <h4>{{ __('Activity') }}</h4>
     <gl-skeleton-loader v-if="isLoading" :width="200">
       <rect width="5" height="3" rx="1" y="2" />
@@ -67,6 +75,13 @@ export default {
         'HomepageActivityWidget|The activity feed is not available. Please refresh the page to try again.',
       )
     }}</gl-alert>
+    <p v-else-if="!activityFeedHtml" data-testid="empty-state">
+      {{
+        s__(
+          'Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here.',
+        )
+      }}
+    </p>
     <ul
       v-else
       v-safe-html="activityFeedHtml"

@@ -588,7 +588,6 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/pagination/keyset/in_operator_optimization/query_builder.rb'
     - 'lib/gitlab/patch/database_config.rb'
     - 'lib/gitlab/patch/prependable.rb'
-    - 'lib/gitlab/popen.rb'
     - 'lib/gitlab/query_limiting/active_support_subscriber.rb'
     - 'lib/gitlab/quick_actions/extractor.rb'
     - 'lib/gitlab/quick_actions/issuable_actions.rb'

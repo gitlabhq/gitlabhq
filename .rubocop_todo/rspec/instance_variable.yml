@@ -81,7 +81,6 @@ RSpec/InstanceVariable:
     - 'spec/lib/gitlab/import_export/group/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/import_export/project/tree_restorer_spec.rb'
     - 'spec/lib/gitlab/patch/prependable_spec.rb'
-    - 'spec/lib/gitlab/popen_spec.rb'
     - 'spec/lib/gitlab/project_transfer_spec.rb'
     - 'spec/lib/gitlab/reference_extractor_spec.rb'
     - 'spec/lib/gitlab/tcp_checker_spec.rb'

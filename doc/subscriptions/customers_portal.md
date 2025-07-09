@@ -137,7 +137,7 @@ To revoke an invitation:
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/customers/sign_in).
 1. On the left sidebar, select **Billing account settings**.
 1. Scroll to the **Billing account managers** section.
-1. In the list, next to the invited user with the **Awaiting user signup** name, select **Remove**.
+1. In the list, next to the invited user with the **Awaiting user registration** name, select **Remove**.
 1. In the confirmation dialog, select **Remove** to revoke the invitation.
 
 ### Change your billing contact

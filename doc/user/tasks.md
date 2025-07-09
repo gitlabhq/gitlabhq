@@ -304,11 +304,56 @@ Prerequisites:
 By default, tasks are ordered by creation date.
 To reorder them, drag them around.
 
+## Change status
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+<!-- Turn off the future tense test because of "won't do". -->
+<!-- vale gitlab_base.FutureTense = NO -->
+
+You can assign a status to tasks to track their progress through your workflow. Status provides more granular tracking than the basic open/closed states, allowing you to use specific stages like **In progress**, **Done**, or **Won't do**.
+<!-- vale gitlab_base.FutureTense = YES -->
+
+For more information about status, including how to configure custom statuses, see [Status](work_items/status.md).
+
+Prerequisites:
+
+- You must have at least the Planner role for the project, be the author of the task, or be assigned to the task.
+
+To change the status of a task:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**, then select your task to view it.
+1. On the right sidebar, in the **Status** section, select **Edit**.
+1. From the dropdown list, select the status.
+
+The task's status updates immediately.
+
+You can also set the status by using the `/status` [quick action](project/quick_actions.md#issues-merge-requests-and-epics).
+
 ## Assign users to a task
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/334810) in GitLab 15.4.
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/169256) the minimum user role from Reporter to Planner in GitLab 17.7.
 
 {{< /history >}}

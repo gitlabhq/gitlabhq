@@ -16,6 +16,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   layout 'devise'
 
+  prepend_before_action :initialize_timer, only: :create
   prepend_before_action :check_captcha, only: :create
   before_action :ensure_first_name_and_last_name_not_empty, only: :create
   before_action :ensure_destroy_prerequisites_met, only: [:destroy]
@@ -36,18 +37,22 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    set_resource_fields
+    store_duration(:set_resource_fields) { set_resource_fields }
+
+    devise_call_start_time = current_monotonic_time
 
     super do |new_user|
       if new_user.persisted?
-        after_successful_create_hook(new_user)
+        store_duration(:devise_create_user, devise_call_start_time)
+        store_duration(:after_successful_create_hook) { after_successful_create_hook(new_user) }
       else
-        track_error(new_user)
+        store_duration(:track_error) { track_error(new_user) }
       end
     end
     # Devise sets a flash message on both successful & failed signups,
     # but we only want to show a message if the resource is blocked by a pending approval.
     flash[:notice] = nil unless allow_flash_content?(resource)
+    log_registration_metrics
   rescue Gitlab::Access::AccessDeniedError
     redirect_to(new_user_session_path)
   end
@@ -99,11 +104,11 @@ class RegistrationsController < Devise::RegistrationsController
 
   # overridden by EE module
   def after_successful_create_hook(user)
-    accept_pending_invitations
-    persist_accepted_terms_if_required(user)
-    execute_system_hooks(user)
-    notify_new_instance_access_request(user)
-    track_successful_user_creation(user)
+    store_duration(:accept_pending_invitations) { accept_pending_invitations }
+    store_duration(:persist_accepted_terms_if_required) { persist_accepted_terms_if_required(user) }
+    store_duration(:execute_system_hooks) { execute_system_hooks(user) }
+    store_duration(:notify_new_instance_access_request) { notify_new_instance_access_request(user) }
+    store_duration(:track_successful_user_creation) { track_successful_user_creation(user) }
   end
 
   def execute_system_hooks(user)
@@ -146,6 +151,47 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  def current_monotonic_time
+    ::Gitlab::Metrics::System.monotonic_time
+  end
+
+  def format_duration(duration)
+    duration.round(Gitlab::InstrumentationHelper::DURATION_PRECISION)
+  end
+
+  def initialize_timer
+    @overall_start_time = current_monotonic_time
+  end
+
+  def duration_statistics
+    @duration_statistics ||= {}
+  end
+
+  def store_duration(operation_name, start = nil, &block)
+    start ||= current_monotonic_time
+    output = yield if block
+    duration_key = :"#{operation_name}_duration_s"
+    duration_statistics[duration_key] = format_duration(current_monotonic_time - start)
+    output
+  rescue StandardError => e
+    # Log timing failure but don't break registration
+    Gitlab::AppJsonLogger.warn("Timing instrumentation failed for #{operation_name}: #{e.message}")
+    output
+  end
+
+  def log_registration_metrics
+    overall_duration = format_duration(current_monotonic_time - @overall_start_time)
+
+    Gitlab::AppJsonLogger.info(
+      event: 'user_registration_duration',
+      total_duration_s: overall_duration,
+      **@duration_statistics
+    )
+  rescue StandardError => e
+    # Log timing failure but don't break registration
+    Gitlab::AppJsonLogger.warn("Error logging registration metrics: #{e.message}")
+  end
 
   def onboarding_status_presenter
     Onboarding::StatusPresenter.new(onboarding_status_params, session['user_return_to'], resource)

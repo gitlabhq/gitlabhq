@@ -27,9 +27,7 @@ module Gitlab
 
     # Returns Result
     def popen_with_detail(cmd, path = nil, vars = {})
-      unless cmd.is_a?(Array)
-        raise "System commands must be given as an array of strings"
-      end
+      raise "System commands must be given as an array of strings" unless cmd.is_a?(Array)
 
       if cmd.one? && cmd.first.match?(/\s/)
         raise "System commands must be split into an array of space-separated values"
@@ -39,14 +37,12 @@ module Gitlab
       vars['PWD'] = path
       options = { chdir: path }
 
-      unless File.directory?(path)
-        FileUtils.mkdir_p(path)
-      end
+      FileUtils.mkdir_p(path) unless File.directory?(path)
 
       cmd_stdout = ''
       cmd_stderr = ''
       cmd_status = nil
-      start = Time.now
+      start = Time.now.to_f
 
       Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
         # stderr and stdout pipes can block if stderr/stdout aren't drained: https://bugs.ruby-lang.org/issues/9082
@@ -62,7 +58,7 @@ module Gitlab
         cmd_status = wait_thr.value
       end
 
-      Result.new(cmd, cmd_stdout, cmd_stderr, cmd_status, Time.now - start)
+      Result.new(cmd, cmd_stdout, cmd_stderr, cmd_status, Time.now.to_f - start)
     end
   end
 end

@@ -8,7 +8,7 @@ import {
   updateCacheAfterCreatingNote,
   updateCountsForParent,
 } from '~/work_items/graphql/cache_utils';
-import { findHierarchyWidget, findNotesWidget } from '~/work_items/utils';
+import { findHierarchyWidget, findNotesWidget, getWorkItemWidgets } from '~/work_items/utils';
 import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
 import { apolloProvider } from '~/graphql_shared/issuable_client';
@@ -236,40 +236,62 @@ describe('work items graphql cache utils', () => {
     });
   });
 
-  describe.each`
-    workItemsAlpha
-    ${false}
-    ${true}
-  `(
-    'setNewWorkItemCache with feature-flag workItemsAlpha: $workItemsAlpha',
-    ({ workItemsAlpha }) => {
-      let originalWindowLocation;
-      let mockWriteQuery;
+  describe('setNewWorkItemCache', () => {
+    let originalWindowLocation;
+    let mockWriteQuery;
 
-      beforeEach(() => {
-        originalWindowLocation = window.location;
-        delete window.location;
-        window.location = new URL('https://gitlab.example.com');
-        window.gon.current_user_id = 1;
-        window.gon.features = {
-          workItemsAlpha,
-        };
+    beforeEach(() => {
+      originalWindowLocation = window.location;
+      delete window.location;
+      window.location = new URL('https://gitlab.example.com');
+      window.gon.current_user_id = 1;
 
-        mockWriteQuery = jest.fn();
-        apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
+      mockWriteQuery = jest.fn();
+      apolloProvider.clients.defaultClient.cache.writeQuery = mockWriteQuery;
 
-        localStorage.setItem(
-          `autosave/new-gitlab-org-epic-draft`,
-          JSON.stringify(mockCreateWorkItemDraftData),
-        );
-      });
+      localStorage.setItem(
+        `autosave/new-gitlab-org-epic-draft`,
+        JSON.stringify(mockCreateWorkItemDraftData),
+      );
 
-      afterEach(() => {
-        window.location = originalWindowLocation;
-      });
+      localStorage.setItem(
+        `autosave/new-gitlab-org-widgets-draft`,
+        JSON.stringify(getWorkItemWidgets(mockCreateWorkItemDraftData)),
+      );
+    });
 
-      it('updates cache from localstorage to save cache data', async () => {
-        window.location.search = '';
+    afterEach(() => {
+      window.location = originalWindowLocation;
+    });
+
+    it('updates cache from localstorage to save cache data', async () => {
+      window.location.search = '';
+      await setNewWorkItemCache(mockNewWorkItemCache);
+      await waitForPromises();
+
+      expect(mockWriteQuery).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            workspace: expect.objectContaining({
+              workItem: expect.objectContaining({
+                title: mockCreateWorkItemDraftData.workspace.workItem.title,
+                widgets: expect.arrayContaining(restoredDraftDataWidgets),
+              }),
+            }),
+          }),
+        }),
+      );
+    });
+
+    it.each`
+      description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
+      ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+      ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
+      ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
+    `(
+      '$description when URL params include $locationSearchString',
+      async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
+        window.location.search = locationSearchString;
         await setNewWorkItemCache(mockNewWorkItemCache);
         await waitForPromises();
 
@@ -278,43 +300,16 @@ describe('work items graphql cache utils', () => {
             data: expect.objectContaining({
               workspace: expect.objectContaining({
                 workItem: expect.objectContaining({
-                  title: mockCreateWorkItemDraftData.workspace.workItem.title,
-                  widgets: expect.arrayContaining(restoredDraftDataWidgets),
+                  title: expectedTitle,
+                  widgets: expect.arrayContaining(expectedWidgets),
                 }),
               }),
             }),
           }),
         );
-      });
-
-      it.each`
-        description                         | locationSearchString          | expectedTitle                                           | expectedWidgets
-        ${'restores cache with empty form'} | ${'?vulnerability_id=1'}      | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-        ${'restores cache with empty form'} | ${'?discussion_to_resolve=1'} | ${''}                                                   | ${restoredDraftDataWidgetsEmpty}
-        ${'restores cache with draft'}      | ${'?type=ISSUE'}              | ${mockCreateWorkItemDraftData.workspace.workItem.title} | ${restoredDraftDataWidgets}
-      `(
-        '$description when URL params include $locationSearchString',
-        async ({ locationSearchString, expectedTitle, expectedWidgets }) => {
-          window.location.search = locationSearchString;
-          await setNewWorkItemCache(mockNewWorkItemCache);
-          await waitForPromises();
-
-          expect(mockWriteQuery).toHaveBeenCalledWith(
-            expect.objectContaining({
-              data: expect.objectContaining({
-                workspace: expect.objectContaining({
-                  workItem: expect.objectContaining({
-                    title: expectedTitle,
-                    widgets: expect.arrayContaining(expectedWidgets),
-                  }),
-                }),
-              }),
-            }),
-          );
-        },
-      );
-    },
-  );
+      },
+    );
+  });
 
   describe('updateCacheAfterCreatingNote', () => {
     const findDiscussions = ({ workspace }) =>

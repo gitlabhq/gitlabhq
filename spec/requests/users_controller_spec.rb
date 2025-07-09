@@ -271,6 +271,19 @@ RSpec.describe UsersController, feature_category: :user_management do
           expect(event).not_to include('ref', 'commit', 'target', 'resource_parent')
         end
       end
+
+      context 'when the request originates from the personal homepage' do
+        before do
+          stub_feature_flags(personal_homepage: true)
+          sign_in(user)
+        end
+
+        it 'returns an empty response if the user has no activity' do
+          get user_activity_url user.username, format: :json, is_personal_homepage: '1'
+
+          expect(response.body).to eq('')
+        end
+      end
     end
   end
 

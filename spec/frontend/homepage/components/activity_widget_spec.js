@@ -17,6 +17,7 @@ describe('ActivityWidget', () => {
 
   const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findEmptyState = () => wrapper.findByTestId('empty-state');
   const findEventsList = () => wrapper.findByTestId('events-list');
   const findDetector = () => wrapper.findComponent(VisibilityChangeDetector);
 
@@ -38,15 +39,19 @@ describe('ActivityWidget', () => {
 
     expect(findSkeletonLoader().exists()).toBe(true);
     expect(findAlert().exists()).toBe(false);
+    expect(findEmptyState().exists()).toBe(false);
     expect(findEventsList().exists()).toBe(false);
   });
 
   it('shows an alert if the request errors out', async () => {
-    mockAxios.onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10`).reply(500);
+    mockAxios
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .reply(500);
     createWrapper();
     await waitForPromises();
 
     expect(findAlert().exists()).toBe(true);
+    expect(findEmptyState().exists()).toBe(false);
     expect(findSkeletonLoader().exists()).toBe(false);
     expect(findEventsList().exists()).toBe(false);
     expect(Sentry.captureException).toHaveBeenCalled();
@@ -55,18 +60,33 @@ describe('ActivityWidget', () => {
     );
   });
 
+  it('shows an empty state if the user has no activity yet', async () => {
+    mockAxios
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .reply(200, '');
+    createWrapper();
+    await waitForPromises();
+
+    expect(findEmptyState().text()).toMatchInterpolatedText(
+      'Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here.',
+    );
+  });
+
   it('shows the events list when the request resolves', async () => {
     const EVENT_TESTID = 'mock-event';
     const EVENT_TEXT = 'Some event';
 
-    mockAxios.onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10`).reply(200, {
-      html: `<li data-testid="${EVENT_TESTID}">${EVENT_TEXT}</li>`,
-    });
+    mockAxios
+      .onGet(`/users/${MOCK_CURRENT_USERNAME}/activity?limit=10&is_personal_homepage=1`)
+      .reply(200, {
+        html: `<li data-testid="${EVENT_TESTID}">${EVENT_TEXT}</li>`,
+      });
     createWrapper();
     await waitForPromises();
 
     expect(findEventsList().exists()).toBe(true);
     expect(findAlert().exists()).toBe(false);
+    expect(findEmptyState().exists()).toBe(false);
     expect(findSkeletonLoader().exists()).toBe(false);
 
     expect(wrapper.findByTestId(EVENT_TESTID).exists()).toBe(true);

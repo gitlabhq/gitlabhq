@@ -457,8 +457,9 @@ documentation.
 
 When a request is rate limited, GitLab responds with a `429` status
 code. The client should wait before attempting the request again. There
-are also informational headers with this response detailed in
-[rate limiting responses](#rate-limiting-responses).
+may also be informational headers with this response detailed in
+[rate limiting responses](#rate-limiting-responses). Rate limiting responses
+for the Projects, Groups, and Users APIs do not include informational headers.
 
 The following table describes the rate limits for GitLab.com:
 

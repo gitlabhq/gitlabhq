@@ -7258,10 +7258,7 @@ export const restoredDraftDataWidgets = [
     taskCompletionStatus: null,
     __typename: 'WorkItemWidgetDescription',
   },
-  {
-    type: 'STATUS',
-    __typename: 'WorkItemWidgetStatus',
-  },
+  { type: 'STATUS', __typename: 'WorkItemWidgetStatus' },
   {
     type: 'LABELS',
     allowsScopedLabels: true,
@@ -7285,10 +7282,7 @@ export const restoredDraftDataWidgets = [
     weight: 5,
     rolledUpWeight: 0,
     rolledUpCompletedWeight: 0,
-    widgetDefinition: {
-      editable: false,
-      rollUp: true,
-    },
+    widgetDefinition: { editable: false, rollUp: true },
     __typename: 'WorkItemWidgetWeight',
   },
   {
@@ -7309,22 +7303,11 @@ export const restoredDraftDataWidgets = [
     type: 'LINKED_ITEMS',
     blockingCount: 0,
     blockedByCount: 0,
-    linkedItems: {
-      nodes: [],
-    },
+    linkedItems: { nodes: [] },
     __typename: 'WorkItemWidgetLinkedItems',
   },
-  {
-    type: 'COLOR',
-    color: '#1068bf',
-    textColor: '#FFFFFF',
-    __typename: 'WorkItemWidgetColor',
-  },
-  {
-    type: 'CUSTOM_FIELDS',
-    customFieldValues: [],
-    __typename: 'WorkItemWidgetCustomFields',
-  },
+  { type: 'COLOR', color: '#1068bf', textColor: '#FFFFFF', __typename: 'WorkItemWidgetColor' },
+  { type: 'CUSTOM_FIELDS', customFieldValues: [], __typename: 'WorkItemWidgetCustomFields' },
   {
     type: 'HIERARCHY',
     hasChildren: false,
@@ -7350,19 +7333,13 @@ export const restoredDraftDataWidgets = [
     },
     depthLimitReachedByType: [],
     rolledUpCountsByType: [],
-    children: {
-      nodes: [],
-      __typename: 'WorkItemConnection',
-    },
+    children: { nodes: [], __typename: 'WorkItemConnection' },
     __typename: 'WorkItemWidgetHierarchy',
   },
   {
     type: 'TIME_TRACKING',
     timeEstimate: 0,
-    timelogs: {
-      nodes: [],
-      __typename: 'WorkItemTimelogConnection',
-    },
+    timelogs: { nodes: [], __typename: 'WorkItemTimelogConnection' },
     totalTimeSpent: 0,
     __typename: 'WorkItemWidgetTimeTracking',
   },

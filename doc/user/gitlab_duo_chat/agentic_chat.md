@@ -2,7 +2,7 @@
 stage: AI-powered
 group: Duo Chat
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: GitLab Duo Agentic Chat in VS Code
+title: GitLab Duo Agentic Chat
 ---
 
 {{< details >}}
@@ -10,17 +10,27 @@ title: GitLab Duo Agentic Chat in VS Code
 - Tier: Premium, Ultimate
 - Add-on: GitLab Duo Core, Pro, or Enterprise
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 - LLMs: Anthropic [Claude Sonnet 4](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-sonnet-4)
 
 {{< /details >}}
 
 {{< history >}}
 
-- [Introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1. This feature is an [experiment](../../policy/development_stages_support.md).
-- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688) in GitLab 18.2.
+- GitLab Duo Agentic Chat on VS Code [introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1 as an [experiment](../../policy/development_stages_support.md) with a [flag](../../administration/feature_flags/_index.md) named `duo_agentic_chat`. Disabled by default.
+- GitLab Duo Agentic Chat on VS Code [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688) in GitLab 18.2.
+- GitLab Duo Agentic Chat in the GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
+- Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
+- GitLab Agentic Chat changed to beta in GitLab 18.2.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by feature flags.
+For more information, see the history.
+
+{{< /alert >}}
 
 GitLab Duo Agentic Chat is an enhanced version of GitLab Duo Chat that can autonomously
 perform actions on your behalf to answer complex questions more comprehensively.
@@ -40,26 +50,38 @@ files for you.
 For larger problems, like understanding a codebase or generating an implementation
 plan, use the [GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
 
-Agentic Chat is only available in the
-[GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/_index.md) version 6.15.1 or later.
-
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
 <!-- Video published on 2025-06-02 -->
 
-## Use Agentic Chat in VS Code
+## Use Agentic Chat
+
+You can use Agentic Chat in the GitLab UI or in VS Code.
 
 Prerequisites:
 
 - A GitLab Duo Core, Pro, or Enterprise add-on.
 - A Premium or Ultimate subscription.
 - You have an assigned seat for or access to GitLab Duo Chat.
-- You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
 - You have [turned on beta and experimental features](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) for your GitLab instance or group.
+
+### Use Agentic Chat in the GitLab UI
+
+To use Agentic Chat in the GitLab UI:
+
+1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
+1. Under the chat text box, turn on the **Agentic mode (Beta)** toggle.
+1. Enter your question in the chat text box and press <kbd>Enter</kbd> or select **Send**. It may take a few seconds for the interactive AI chat to produce an answer.
+1. Optional. Ask a follow-up question.
+
+### Use Agentic Chat in VS Code
+
+Prerequisites:
+
+- You have [installed and configured the GitLab Workflow extension for VS Code](../../editor_extensions/visual_studio_code/setup.md) version 6.15.1 or later.
 
 You can only use Agentic Chat in a project:
 
-- Open in VS Code.
 - Hosted on a GitLab instance.
 - That is part of a group that meets the prerequisites.
 
@@ -75,7 +97,7 @@ To use Agentic Chat:
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
 
-### Create custom rules
+#### Create custom rules
 
 {{< history >}}
 
@@ -126,6 +148,7 @@ Agentic Chat extends Chat capabilities with the following features:
   provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect Agentic Chat to
   external data sources and tools.
 - **Custom rules**: Conversations can follow any customised rules that you specify.
+- Agentic Chat in the GitLab UI only - **Commit creation**: Can create and push commits.
 
 ### Chat feature comparison
 

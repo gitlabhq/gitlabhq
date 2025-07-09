@@ -1706,7 +1706,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/patch/prependable_spec.rb'
     - 'spec/lib/gitlab/path_regex_spec.rb'
     - 'spec/lib/gitlab/performance_bar_spec.rb'
-    - 'spec/lib/gitlab/popen_spec.rb'
     - 'spec/lib/gitlab/process_supervisor_spec.rb'
     - 'spec/lib/gitlab/profiler_spec.rb'
     - 'spec/lib/gitlab/project_authorizations_spec.rb'

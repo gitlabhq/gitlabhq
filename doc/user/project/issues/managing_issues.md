@@ -114,7 +114,8 @@ To edit multiple issues at the same time:
 
 When bulk editing issues in a project, you can edit the following attributes:
 
-- Status (open or closed)
+- [Status](../../work_items/status.md)
+- State (open or closed)
 - [Assignees](managing_issues.md#assignees)
 - [Epic](../../group/epics/_index.md)
 - [Milestone](../milestones/_index.md)
@@ -156,6 +157,7 @@ To edit multiple issues at the same time:
 
 When bulk editing issues in a group, you can edit the following attributes:
 
+- [Status](../../work_items/status.md)
 - [Epic](../../group/epics/_index.md)
 - [Milestone](../milestones/_index.md)
 - [Iteration](../../group/iterations/_index.md)
@@ -958,6 +960,63 @@ until the issue is reopened.
 
 You can also set and clear health statuses using the `/health_status` and `/clear_health_status`
 [quick actions](../quick_actions.md#issues-merge-requests-and-epics).
+
+## Status
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+- Offering: GitLab.com, GitLab Self-Managed
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/543862) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `work_item_status_feature_flag`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
+<!-- Turn off the future tense test because of "won't do". -->
+<!-- vale gitlab_base.FutureTense = NO -->
+
+You can assign a status to issues to track their progress through your workflow.
+Status provides more granular tracking than the basic open/closed states, so you can use specific
+stages like **In progress**, **Done**, or **Won't do**.
+
+For more information about status, including how to configure custom statuses, see [Status](../../work_items/status.md).
+
+<!-- vale gitlab_base.FutureTense = YES -->
+
+### Change status
+
+Prerequisites:
+
+- You must have at least the Planner role for the project, be the author of the issue, or be assigned to the issue.
+
+To change the status of an issue:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**, then select your issue to view it.
+1. On the right sidebar, in the **Status** section, select **Edit**.
+1. From the dropdown list, select the status.
+
+The issue's status updates immediately.
+
+You can view the issue's status in:
+
+- The **Issues** page
+- An epic's **Child items** section
+- Cards on issue boards
+
+You can also set the status by using the `/status` [quick action](../quick_actions.md#issues-merge-requests-and-epics).
 
 ## Publish an issue
 
