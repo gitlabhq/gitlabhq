@@ -19,6 +19,16 @@ module Gitlab
               too_long: 'has too many items (maximum is %{count})'
             }
           end
+
+          def value
+            config.map do |file_path|
+              if file_path.start_with?('/')
+                file_path.sub(%r{^/+}, '')
+              else
+                file_path
+              end
+            end
+          end
         end
       end
     end

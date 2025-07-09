@@ -38,7 +38,7 @@ For further details on this additional data, see [vulnerability risk assessment 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.
 
-## Explaining a vulnerability
+## Vulnerability Explanation
 
 {{< details >}}
 
@@ -59,18 +59,13 @@ the top of the vulnerability's page.
 
 {{< /history >}}
 
-GitLab can help you with a vulnerability by using a large language model to:
+GitLab Duo Vulnerability Explanation can help you with a vulnerability by using a large language model to:
 
 - Summarize the vulnerability.
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch an overview](https://www.youtube.com/watch?v=MMVFvGrmMzw&list=PLFGfElNsQthZGazU1ZdfDpegu0HflunXW)
-
-### Vulnerability Explanation
-
-Explain a vulnerability with GitLab Duo Vulnerability Explanation. Use the explanation to better
-understand a vulnerability and its possible mitigation.
 
 Prerequisites:
 

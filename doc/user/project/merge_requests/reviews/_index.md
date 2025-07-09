@@ -246,7 +246,7 @@ You can also use the `/submit_review` [quick action](../../quick_actions.md) in 
 
 A reviewer [requesting changes](#submit-a-review) blocks a merge request from merging.
 When this happens, the merge request reports area shows the message
-**The change requests must be completed or resolved**. To unblock the merge request,
+**Change requests must be approved by the requesting user**. To unblock the merge request,
 the reviewer who requested changes should [re-review and approve](#re-request-a-review) the merge request.
 
 ### Remove a change request
@@ -269,7 +269,7 @@ To remove your change request without submitting a new review:
 1. Select **Code > Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
-1. Next to **The change requests must be completed or resolved**, select **Remove**:
+1. Next to **Change requests must be approved by the requesting user**, select **Remove**:
 
    ![A merge request that is blocked because a user requested changes](img/remove_v17_8.png)
 
@@ -282,14 +282,14 @@ another user with permission to merge the merge request can override this check:
 1. Select **Code > Merge requests** and find your merge request.
 1. Select the title of the merge request to view it.
 1. On the merge request **Overview**, scroll to the merge request reports area.
-1. Next to **The change requests must be completed or resolved**, select **Bypass**:
+1. Next to **Change requests must be approved by the requesting user**, select **Bypass**:
 
    ![A merge request that is blocked because a user requested changes](img/bypass_v17_2.png)
 
 1. The merge reports area shows `Merge with caution: Override added`. To see which check a user
    bypassed, select **Expand merge checks** ({{< icon name="chevron-lg-down" >}}) and find the
    check that contains a warning ({{< icon name="status_warning" >}}) icon. In this example, the
-   author bypassed **The change requests must be completed or resolved**:
+   author bypassed **Change requests must be approved by the requesting user**:
 
    ![This merge request contains a bypassed check, and should be merged with caution.](img/status_warning_v17_4.png)
 

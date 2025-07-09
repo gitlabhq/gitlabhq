@@ -691,7 +691,7 @@ To troubleshoot a failed CI/CD job from the job log:
 
 You can ask GitLab Duo Chat to explain a vulnerability when you are viewing a SAST vulnerability report.
 
-For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability).
+For more information, see [Explaining a vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation).
 
 ## Create a new conversation
 
@@ -794,7 +794,7 @@ These commands are dynamic and are available only in the GitLab UI when using Du
 | ---------------------- | ------------------------------------------------------------------------------------------------------------------ | ---- |
 | /summarize_comments    | Generate a summary of all comments on the current issue                                                            | Issues |
 | /troubleshoot          | [Troubleshoot failed CI/CD jobs with Root Cause Analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | Jobs |
-| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)      | Vulnerabilities |
+| /vulnerability_explain | [Explain current vulnerability](../application_security/vulnerabilities/_index.md#vulnerability-explanation)      | Vulnerabilities |
 | /new                   | [Create a new Chat conversation](_index.md#have-multiple-conversations-with-chat). GitLab 17.10 and later.         | All |
 
 ### IDE

@@ -165,7 +165,7 @@ curl --request POST \
 CI/CD variables in triggered pipelines display on each job's page, but only
 users with the Owner and Maintainer role can view the values.
 
-![Job variables in UI](img/trigger_variables_v11_6.png)
+![A configuration panel for a CI trigger for token 4e19 showing UPLOAD_TO_CI set to true](img/trigger_variables_v11_6.png)
 
 Using inputs to control pipeline behavior offers improved security and flexibility over CI/CD variables.
 

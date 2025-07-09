@@ -47,7 +47,7 @@ effective.
 
 For some vulnerabilities detected by SAST, GitLab can:
 
-- [Explain the vulnerability](../vulnerabilities/_index.md#explaining-a-vulnerability), using GitLab
+- [Explain the vulnerability](../vulnerabilities/_index.md#vulnerability-explanation), using GitLab
   Duo Chat.
 - [Resolve the vulnerability](../vulnerabilities/_index.md#vulnerability-resolution), using GitLab
   Duo Chat.

@@ -64,7 +64,7 @@ Follow this path to learn how to:
 - Automatically generate fix suggestions
 - Create merge requests to address security issues
 
-[Start here: Vulnerability explanation and resolution →](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability)
+[Start here: Vulnerability explanation and resolution →](../application_security/vulnerabilities/_index.md#vulnerability-explanation)
 
 {{< /tab >}}
 

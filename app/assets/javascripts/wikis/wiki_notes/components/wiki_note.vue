@@ -6,6 +6,7 @@ import DeleteNoteMutation from '~/wikis/graphql/notes/delete_wiki_page_note.muta
 import { clearDraft, getDraft } from '~/lib/utils/autosave';
 import { __ } from '~/locale';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
+import { getLocationHash } from '~/lib/utils/url_utility';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { createAlert } from '~/alert';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
@@ -101,18 +102,24 @@ export default {
     noteAnchorId() {
       return `note_${this.noteId}`;
     },
+    isTarget() {
+      return getLocationHash() === this.noteAnchorId;
+    },
     canAwardEmoji() {
       return this.note.userPermissions?.awardEmoji;
     },
     dynamicClasses() {
       return {
         timeLineEntryItem: {
+          'note note-wrapper note-comment': true,
           [`note-row-${this.noteId}`]: true,
           'gl-opacity-5 gl-pointer-events-none': this.isUpdating || this.isDeleting,
           'is-editable': this.canEdit,
           'internal-note': this.note.internal,
+          target: this.isTarget,
         },
         noteParent: {
+          'timeline-content': true,
           'gl-rounded-lg gl-border gl-border-section': !this.replyNote,
           'gl-ml-7': this.replyNote,
           'gl-bg-section gl-ml-8': !this.replyNote,
@@ -255,7 +262,6 @@ export default {
     :id="noteAnchorId"
     :class="dynamicClasses.timeLineEntryItem"
     :data-note-id="noteId"
-    class="note note-wrapper note-comment"
     data-testid="noteable-note-container"
   >
     <div class="timeline-avatar gl-float-left">

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GitlabSchema.types['Namespace'] do
+RSpec.describe GitlabSchema.types['Namespace'], feature_category: :shared do
   specify { expect(described_class.graphql_name).to eq('Namespace') }
 
   specify { expect(described_class.interfaces).to include(Types::TodoableInterface) }
@@ -12,7 +12,8 @@ RSpec.describe GitlabSchema.types['Namespace'] do
       id name path full_name full_path achievements_path description description_html visibility
       lfs_enabled request_access_enabled projects root_storage_statistics shared_runners_setting
       timelog_categories achievements work_item pages_deployments import_source_users work_item_types
-      sidebar work_item_description_templates ci_cd_settings avatar_url link_paths licensed_features
+      work_items_widgets sidebar work_item_description_templates ci_cd_settings avatar_url link_paths
+      licensed_features
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

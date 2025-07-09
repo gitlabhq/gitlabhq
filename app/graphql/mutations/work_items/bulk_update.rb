@@ -23,7 +23,7 @@ module Mutations
         experiment: { milestone: '18.2' }
       argument :ids, [::Types::GlobalIDType[::WorkItem]],
         required: true,
-        description: 'Global ID array of the issues that will be updated. ' \
+        description: 'Global ID array of the work items that will be updated. ' \
           "IDs that the user can\'t update will be ignored. A max of #{MAX_WORK_ITEMS} can be provided."
       argument :milestone_widget,
         ::Types::WorkItems::Widgets::MilestoneInputType,

@@ -24,7 +24,7 @@ describe('Merge request merge checks message component', () => {
     ${'merge_request_blocked'}      | ${'Merge request dependencies must be merged.'}
     ${'status_checks_must_pass'}    | ${'Status checks must pass.'}
     ${'jira_association_missing'}   | ${'Either the title or description must reference a Jira issue.'}
-    ${'requested_changes'}          | ${'The change requests must be completed or resolved.'}
+    ${'requested_changes'}          | ${'Change requests must be approved by the requesting user.'}
     ${'approvals_syncing'}          | ${'The merge request approvals are currently syncing.'}
     ${'locked_paths'}               | ${'All paths must be unlocked'}
     ${'locked_lfs_files'}           | ${'All LFS files must be unlocked.'}

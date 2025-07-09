@@ -25,7 +25,7 @@ are available on GitLab.com and GitLab Self-Managed only.
 | [Code Review](../project/merge_requests/duo_in_merge_requests.md#have-gitlab-duo-review-your-code) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | [Discussion Summary](../discussions/_index.md#summarize-issue-discussions-with-duo-chat) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | [Root Cause Analysis](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
-| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#explaining-a-vulnerability) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
+| [Vulnerability Explanation](../application_security/vulnerabilities/_index.md#vulnerability-explanation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | [Vulnerability Resolution](../application_security/vulnerabilities/_index.md#vulnerability-resolution) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes |
 | [GitLab Duo for the CLI](../../editor_extensions/gitlab_cli/_index.md#gitlab-duo-for-the-cli) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
 | [Merge Commit Message Generation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No |
@@ -45,6 +45,12 @@ and the status of those features, see the
 
 ## Beta and experimental features
 
+{{< history >}}
+
+- GitLab Duo Agentic Chat added in GitLab 18.2.
+
+{{< /history >}}
+
 The following features are not generally available.
 
 They require a Premium or Ultimate subscription and one of the available add-ons.
@@ -52,7 +58,8 @@ They require a Premium or Ultimate subscription and one of the available add-ons
 | Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q | GitLab.com | GitLab Self-Managed | GitLab Dedicated | GitLab Duo Self-Hosted |
 |---------|----------|---------|----------------|--------------------------|-----------|-------------|-----------|------------------------|
 | [Code Review Summary](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | Experiment | {{< icon name="dash-circle" >}} No | Experiment |
-| [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | N/A |
+| [Issue Description Generation](../project/issues/managing_issues.md#populate-an-issue-with-issue-description-generation) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | Not applicable |
 | [Merge Request Summary](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-by-summarizing-code-changes) | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Beta | Beta | {{< icon name="dash-circle" >}} No | Beta |
+| [GitLab Duo Agentic Chat](../gitlab_duo_chat/agentic_chat.md) | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="check-circle-filled" >}} Yes | {{< icon name="dash-circle" >}} No | Experiment | Experiment | {{< icon name="dash-circle" >}} No | {{< icon name="dash-circle" >}} No |
 
 [GitLab Duo Agent Platform](../duo_agent_platform/_index.md) is in private beta, does not require an add-on, and is not supported for GitLab Duo Self-Hosted.

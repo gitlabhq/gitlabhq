@@ -41,16 +41,16 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
     end
 
     it 'publishes activity events accordingly' do
-      if container.is_a?(Project)
+      if container.is_a?(PersonalSnippet)
+        expect { get :info_refs, params: params }
+          .not_to publish_event(Users::ActivityEvent)
+      else
         expect { get :info_refs, params: params }
           .to publish_event(Users::ActivityEvent)
           .with({
             user_id: user.id,
             namespace_id: project.root_ancestor.id
           })
-      else
-        expect { get :info_refs, params: params }
-          .not_to publish_event(Users::ActivityEvent)
       end
     end
   end

@@ -113,6 +113,12 @@ module Types
       experiment: { milestone: '18.1' },
       resolver: ::Resolvers::Namespaces::WorkItemsResolver
 
+    field :work_items_widgets,
+      null: true,
+      description: 'List of available widgets for the given work items.',
+      experiment: { milestone: '18.2' },
+      resolver: ::Resolvers::WorkItems::WidgetsResolver
+
     field :work_item_types, Types::WorkItems::TypeType.connection_type,
       resolver: Resolvers::WorkItems::TypesResolver,
       experiment: { milestone: '17.2' },

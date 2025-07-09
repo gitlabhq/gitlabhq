@@ -71,4 +71,4 @@ class ResourceStateEvent < ResourceEvent
   end
 end
 
-ResourceStateEvent.prepend_mod_with('ResourceStateEvent')
+ResourceStateEvent.prepend_mod

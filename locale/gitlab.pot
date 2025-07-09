@@ -12581,6 +12581,9 @@ msgstr ""
 msgid "Change path"
 msgstr ""
 
+msgid "Change requests must be approved by the requesting user."
+msgstr ""
+
 msgid "Change reviewers"
 msgstr ""
 
@@ -41492,6 +41495,9 @@ msgstr ""
 msgid "No more than %{max_frameworks} compliance frameworks can be updated at the same time."
 msgstr ""
 
+msgid "No more than %{max_work_items} work items can be loaded at the same time"
+msgstr ""
+
 msgid "No more than %{max_work_items} work items can be modified at the same time."
 msgstr ""
 
@@ -58508,6 +58514,12 @@ msgstr ""
 msgid "ServiceAccounts|The service account was updated."
 msgstr ""
 
+msgid "ServiceAccount|Group ID provided does not match the service account's group ID."
+msgstr ""
+
+msgid "ServiceAccount|Group with the provided ID not found."
+msgstr ""
+
 msgid "ServiceAccount|No more seats are available to create Service Account User"
 msgstr ""
 
@@ -58518,6 +58530,12 @@ msgid "ServiceAccount|User does not have permission to create a service account.
 msgstr ""
 
 msgid "ServiceAccount|User does not have permission to delete a service account."
+msgstr ""
+
+msgid "ServiceAccount|User does not have permission to update a service account."
+msgstr ""
+
+msgid "ServiceAccount|User is not a service account"
 msgstr ""
 
 msgid "ServiceAccount|You are not authorized to update service accounts in this namespace."
@@ -61886,6 +61904,9 @@ msgstr ""
 msgid "Target branches"
 msgstr ""
 
+msgid "Target group prevents forks that point outside this group"
+msgstr ""
+
 msgid "Target project cannot be equal to source project"
 msgstr ""
 
@@ -62545,9 +62566,6 @@ msgid "The branch or tag does not exist"
 msgstr ""
 
 msgid "The branch to merge into."
-msgstr ""
-
-msgid "The change requests must be completed or resolved."
 msgstr ""
 
 msgid "The comment you are editing has been changed by another user. Would you like to keep your changes and overwrite the new description or discard your changes?"
@@ -67315,9 +67333,6 @@ msgid "User invitation restrictions"
 msgstr ""
 
 msgid "User is blocked"
-msgstr ""
-
-msgid "User is not a service account"
 msgstr ""
 
 msgid "User is not allowed to resolve thread"

@@ -515,3 +515,4 @@ If a feature is not working or a feature button (for example, **`/troubleshoot`*
 ## Related topics
 
 - [GitLab Duo troubleshooting](../../user/gitlab_duo_chat/troubleshooting.md)
+- [Support Engineer Playbook and Common Issues](support_engineer_playbook.md)

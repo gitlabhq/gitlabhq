@@ -13102,7 +13102,7 @@ Input type: `WorkItemBulkUpdateInput`
 | <a id="mutationworkitembulkupdateconfidential"></a>`confidential` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatehealthstatuswidget"></a>`healthStatusWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHealthStatusInput`](#workitemwidgethealthstatusinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatehierarchywidget"></a>`hierarchyWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetHierarchyCreateInput`](#workitemwidgethierarchycreateinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
-| <a id="mutationworkitembulkupdateids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the issues that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
+| <a id="mutationworkitembulkupdateids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be updated. IDs that the user can't update will be ignored. A max of 100 can be provided. |
 | <a id="mutationworkitembulkupdateiterationwidget"></a>`iterationWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetIterationInput`](#workitemwidgetiterationinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
 | <a id="mutationworkitembulkupdatelabelswidget"></a>`labelsWidget` | [`WorkItemWidgetLabelsUpdateInput`](#workitemwidgetlabelsupdateinput) | Input for labels widget. |
 | <a id="mutationworkitembulkupdatemilestonewidget"></a>`milestoneWidget` {{< icon name="warning-solid" >}} | [`WorkItemWidgetMilestoneInput`](#workitemwidgetmilestoneinput) | **Deprecated**: **Status**: Experiment. Introduced in GitLab 18.2. |
@@ -21887,6 +21887,36 @@ An AI catalog agent version.
 | <a id="aicatalogagentversionuserprompt"></a>`userPrompt` | [`String`](#string) | User prompt for the agent. |
 | <a id="aicatalogagentversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
 
+### `AiCatalogFlow`
+
+An AI catalog flow.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
+| <a id="aicatalogflowdescription"></a>`description` | [`String!`](#string) | Description of the item. |
+| <a id="aicatalogflowid"></a>`id` | [`ID!`](#id) | ID of the item. |
+| <a id="aicatalogflowitemtype"></a>`itemType` | [`AiCatalogItemType!`](#aicatalogitemtype) | Type of the item. |
+| <a id="aicatalogflowname"></a>`name` | [`String!`](#string) | Name of the item. |
+| <a id="aicatalogflowproject"></a>`project` | [`Project`](#project) | Project for the item. |
+| <a id="aicatalogflowversions"></a>`versions` | [`AiCatalogItemVersionConnection`](#aicatalogitemversionconnection) | Versions of the item. (see [Connections](#connections)) |
+
+### `AiCatalogFlowVersion`
+
+An AI catalog flow version.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="aicatalogflowversioncreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the item version was created. |
+| <a id="aicatalogflowversionid"></a>`id` | [`ID!`](#id) | ID of the item version. |
+| <a id="aicatalogflowversionpublishedat"></a>`publishedAt` | [`Time`](#time) | Timestamp of when the item version was published. |
+| <a id="aicatalogflowversionupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the item version was updated. |
+| <a id="aicatalogflowversionversionname"></a>`versionName` | [`String`](#string) | Version name of the item version. |
+
 ### `AiConversationsThread`
 
 Conversation thread of the AI feature.
@@ -30654,6 +30684,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="groupworkitemsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
 
+##### `Group.workItemsWidgets`
+
+List of available widgets for the given work items.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`[String!]`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupworkitemswidgetsids"></a>`ids` | [`[WorkItemsTypeID!]!`](#workitemstypeid) | Global ID array of work items types to fetch available widgets for. A max of 100 IDs can be provided at a time. |
+
 ##### `Group.workspacesClusterAgents`
 
 Cluster agents in the namespace with workspaces capabilities.
@@ -34953,6 +35000,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespaceworkitemsverificationstatuswidget"></a>`verificationStatusWidget` | [`VerificationStatusFilterInput`](#verificationstatusfilterinput) | Input for verification status widget filter. Ignored if `work_items_alpha` is disabled. |
 | <a id="namespaceworkitemsweight"></a>`weight` | [`String`](#string) | Weight applied to the work item, "none" and "any" values are supported. |
 | <a id="namespaceworkitemsweightwildcardid"></a>`weightWildcardId` | [`WeightWildcardId`](#weightwildcardid) | Filter by weight ID wildcard. Incompatible with weight. |
+
+##### `Namespace.workItemsWidgets`
+
+List of available widgets for the given work items.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Returns [`[String!]`](#string).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceworkitemswidgetsids"></a>`ids` | [`[WorkItemsTypeID!]!`](#workitemstypeid) | Global ID array of work items types to fetch available widgets for. A max of 100 IDs can be provided at a time. |
 
 ##### `Namespace.workspacesClusterAgents`
 
@@ -44316,6 +44380,7 @@ Possible item types for AI items.
 | Value | Description |
 | ----- | ----------- |
 | <a id="aicatalogitemtypeagent"></a>`AGENT` | Agent. |
+| <a id="aicatalogitemtypeflow"></a>`FLOW` | Flow. |
 
 ### `AiConversationsThreadsConversationType`
 
@@ -49880,6 +49945,7 @@ An AI catalog item.
 Implementations:
 
 - [`AiCatalogAgent`](#aicatalogagent)
+- [`AiCatalogFlow`](#aicatalogflow)
 
 ##### Fields
 
@@ -49900,6 +49966,7 @@ An AI catalog item version.
 Implementations:
 
 - [`AiCatalogAgentVersion`](#aicatalogagentversion)
+- [`AiCatalogFlowVersion`](#aicatalogflowversion)
 
 ##### Fields
 

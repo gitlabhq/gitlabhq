@@ -92,6 +92,12 @@ authorization with each flow.
 
 ### Authorization code with Proof Key for Code Exchange (PKCE)
 
+{{< history >}}
+
+- Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
+
+{{< /history >}}
+
 The [PKCE RFC](https://www.rfc-editor.org/rfc/rfc7636#section-1.1) includes a
 detailed flow description, from authorization request through access token.
 The following steps describe our implementation of the flow.
@@ -120,7 +126,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    `/oauth/authorize` page with the following query parameters:
 
    ```plaintext
-   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES&code_challenge=CODE_CHALLENGE&code_challenge_method=S256
+   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES&code_challenge=CODE_CHALLENGE&code_challenge_method=S256&top_level_namespace_path=TOP_LEVEL_NAMESPACE
    ```
 
    This page asks the user to approve the request from the app to access their
@@ -128,6 +134,8 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
    redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#view-all-authorized-applications)
    is a space-separated list of scopes associated with the user.
    For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
+   The `top_level_namespace_path` is the top level namespace path associated with the project. This optional parameter
+   should be used when [SAML SSO](../user/group/saml_sso/_index.md) is configured for the associated group.
    The redirect includes the authorization `code`, for example:
 
    ```plaintext
@@ -188,6 +196,12 @@ You can now make requests to the API with the access token.
 
 ### Authorization code flow
 
+{{< history >}}
+
+- Group SAML SSO support for OAuth applications [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461212) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
+
+{{< /history >}}
+
 {{< alert type="note" >}}
 
 Check the [RFC spec](https://www.rfc-editor.org/rfc/rfc6749#section-4.1) for a
@@ -206,7 +220,7 @@ be used as a CSRF token.
    `/oauth/authorize` page with the following query parameters:
 
    ```plaintext
-   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES
+   https://gitlab.example.com/oauth/authorize?client_id=APP_ID&redirect_uri=REDIRECT_URI&response_type=code&state=STATE&scope=REQUESTED_SCOPES&top_level_namespace_path=TOP_LEVEL_NAMESPACE
    ```
 
    This page asks the user to approve the request from the app to access their
@@ -214,6 +228,8 @@ be used as a CSRF token.
    redirected back to the specified `REDIRECT_URI`. The [scope parameter](../integration/oauth_provider.md#view-all-authorized-applications)
    is a space-separated list of scopes associated with the user.
    For example,`scope=read_user+profile` requests the `read_user` and `profile` scopes.
+   The `top_level_namespace_path` is the top level namespace path associated with the project. This optional parameter
+   should be used when [SAML SSO](../user/group/saml_sso/_index.md) is configured for the associated group.
    The redirect includes the authorization `code`, for example:
 
    ```plaintext

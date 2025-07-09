@@ -12,6 +12,12 @@ title: GitLab Pages access control
 
 {{< /details >}}
 
+{{< history >}}
+
+- Group SAML SSO support for Pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/326288) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `ff_oauth_redirect_to_sso_login`. Disabled by default.
+
+{{< /history >}}
+
 You can enable Pages access control on your project
 if your administrator has [enabled the access control feature](../../../administration/pages/_index.md#access-control)
 on your GitLab instance. When enabled, only authenticated
@@ -48,6 +54,9 @@ For a demonstration, see [Pages access controls](https://www.youtube.com/watch?v
 The next time someone tries to access your website and the access control is
 enabled, they're presented with a page to sign in to GitLab and verify they
 can access the website.
+
+When [SAML SSO](../../group/saml_sso/_index.md) is configured for the associated group
+and the access control is enabled, users must authenticate using SSO before accessing the website.
 
 ## Restrict Pages access to project members for the group and its subgroups
 

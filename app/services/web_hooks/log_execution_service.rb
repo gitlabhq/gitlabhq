@@ -17,8 +17,8 @@ module WebHooks
     end
 
     def execute
-      update_hook_failure_state
       log_execution
+      update_hook_failure_state
     end
 
     private
@@ -63,19 +63,20 @@ module WebHooks
         hook.parent.update_last_webhook_failure(hook) if hook.parent
       end
     rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
-      raise if raise_lock_error?
+      # In case the lock is not obtained due to numerous concurrent requests,
+      # we do not attempt to update the hook status.
+      #
+      # This should be fine as if the lock is not obtained, it is likely due
+      # to many concurrent job executions, and eventually one of these should
+      # successfully obtain the lease and update the hook status.
+    rescue StandardError => e
+      # To avoid WebHookLog being created twice in case an exception is raised
+      # when updating the hook status and the job retried.
+      Gitlab::ErrorTracking.track_exception(e, hook_id: hook.id)
     end
 
     def lock_name
       "web_hooks:update_hook_failure_state:#{hook.id}"
-    end
-
-    # Allow an error to be raised after failing to obtain a lease only if the hook
-    # is not already in the correct failure state.
-    def raise_lock_error?
-      hook.reset # Reload so properties are guaranteed to be current.
-
-      hook.executable? != (response_category == :ok)
     end
   end
 end

@@ -9,8 +9,9 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
   let_it_be(:project2) { create(:project, :public, group: group) }
   let_it_be(:new_issue) { create(:issue, project: project2) }
   let_it_be_with_reload(:original_issue) { create(:issue, project: project1) }
+  let(:used_new_issue) { new_issue }
 
-  subject { described_class.new(user, original_issue, new_issue) }
+  subject { described_class.new(user, original_issue, used_new_issue) }
 
   it 'copies the resource label events' do
     resource_label_events = create_list(:resource_label_event, 2, issue: original_issue)
@@ -102,14 +103,51 @@ RSpec.describe Gitlab::Issuable::Clone::CopyResourceEventsService, feature_categ
       state_events = new_issue.reload.resource_state_events
       expect(state_events.size).to eq(3)
 
-      expect_state_event(state_events.first, issue: new_issue, state: 'opened')
-      expect_state_event(state_events.second, issue: new_issue, state: 'closed')
-      expect_state_event(state_events.third, issue: new_issue, state: 'reopened')
+      expect_state_event(state_events.first, issue: new_issue, state: 'opened', namespace_id: new_issue.namespace_id)
+      expect_state_event(state_events.second, issue: new_issue, state: 'closed', namespace_id: new_issue.namespace_id)
+      expect_state_event(state_events.third, issue: new_issue, state: 'reopened', namespace_id: new_issue.namespace_id)
+    end
+
+    context 'when new entity is a work item', :aggregate_failures do
+      let(:used_new_issue) { new_issue.becomes(::WorkItem) } # rubocop:disable Cop/AvoidBecomes -- Less expensive than creating a new entity
+
+      it 'copies existing state events as expected' do
+        subject.execute
+
+        state_events = used_new_issue.reload.resource_state_events
+        expect(state_events.size).to eq(3)
+        expect(state_events.pluck(:namespace_id)).to all(eq(project2.project_namespace_id))
+      end
+
+      context 'when it is a group level work item' do
+        let(:used_new_issue) { create(:work_item, :group_level, namespace: group) }
+
+        it 'copies existing state events as expected' do
+          subject.execute
+
+          state_events = used_new_issue.reload.resource_state_events
+          expect(state_events.size).to eq(3)
+          expect(state_events.pluck(:namespace_id)).to all(eq(group.id))
+        end
+      end
+    end
+
+    context 'when the new entity is not of a supported type' do
+      let(:used_new_issue) { create(:merge_request, source_project: project2) }
+
+      # No reason not to support merge requests other than it's not implemente yet. Should be fine to implement
+      # if necessary, in the future
+      it 'raises an unsupported type error' do
+        expect do
+          subject.execute
+        end.to raise_error(StandardError, 'Copying resource events for MergeRequest is not supported yet')
+      end
     end
 
     def expect_state_event(event, expected_attrs)
       expect(event.issue_id).to eq(expected_attrs[:issue]&.id)
       expect(event.state).to eq(expected_attrs[:state])
+      expect(event.namespace_id).to eq(expected_attrs[:namespace_id])
     end
   end
 end

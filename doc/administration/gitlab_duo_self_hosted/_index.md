@@ -81,7 +81,7 @@ of whether you can use these features with Duo Core or Duo Pro when
 | [Refactor Code](../../user/gitlab_duo_chat/examples.md#refactor-code-in-the-ide)                                  | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
 | [Fix Code](../../user/gitlab_duo_chat/examples.md#fix-code-in-the-ide)                                            | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.9 and later  | Generally available |
 | [Root Cause Analysis](../../user/gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) | {{< icon name="check-circle-filled" >}} Yes | GitLab 17.10 and later | Beta |
-| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#explaining-a-vulnerability)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
+| [Vulnerability Explanation](../../user/application_security/vulnerabilities/_index.md#vulnerability-explanation)     | {{< icon name="check-circle-filled" >}} Yes | GitLab 18.1 and later | Beta |
 
 For more examples of a question you can ask, see
 [Ask about GitLab](../../user/gitlab_duo_chat/examples.md).

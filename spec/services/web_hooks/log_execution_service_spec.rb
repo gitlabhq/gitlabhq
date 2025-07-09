@@ -79,32 +79,15 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
       end
 
       context 'when a lease cannot be obtained' do
-        where(:response_category, :executable, :needs_updating) do
-          :ok     | true  | false
-          :ok     | false | true
-          :failed | true  | true
-          :failed | false | false
-          :error  | true  | true
-          :error  | false | false
+        before do
+          stub_exclusive_lease_taken(lease_key)
         end
 
-        with_them do
-          subject(:service) { described_class.new(hook: project_hook, log_data: data, response_category: response_category) }
+        it 'creates the WebHookLog and skips hook state update' do
+          expect(project_hook).not_to receive(:backoff!)
+          expect(project_hook).not_to receive(:parent)
 
-          before do
-            # stub LOCK_RETRY to be 0 in order for tests to run quicker
-            stub_const("#{described_class.name}::LOCK_RETRY", 0)
-            stub_exclusive_lease_taken(lease_key, timeout: described_class::LOCK_TTL)
-            allow(project_hook).to receive(:executable?).and_return(executable)
-          end
-
-          it 'raises an error if the hook needs to be updated' do
-            if needs_updating
-              expect { service.execute }.to raise_error(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
-            else
-              expect { service.execute }.not_to raise_error
-            end
-          end
+          expect { service.execute }.to change { ::WebHookLog.count }.by(1)
         end
       end
     end
@@ -140,6 +123,20 @@ RSpec.describe WebHooks::LogExecutionService, feature_category: :webhooks do
         expect(project_hook).to receive(:backoff!)
 
         service.execute
+      end
+    end
+
+    context 'when an unexpected error occurs while updating hook status' do
+      let(:standard_error) { StandardError.new('Unexpected error') }
+
+      before do
+        allow(project_hook).to receive(:enable!).and_raise(standard_error)
+      end
+
+      it 'creates the WebHookLog and tracks the exception without raising an error' do
+        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(standard_error, hook_id: project_hook.id)
+
+        expect { service.execute }.to change { ::WebHookLog.count }.by(1)
       end
     end
 

@@ -222,9 +222,19 @@ these parameters:
 - `delayed_project_deletion` and `delayed_group_deletion` attributes removed in GitLab 16.0.
 - `user_email_lookup_limit` attribute [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136886) in GitLab 16.7.
 - `default_branch_protection` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/408314) in GitLab 17.0. Use `default_branch_protection_defaults` instead.
+- `throttle_unauthenticated_git_http_enabled`, `throttle_unauthenticated_git_http_period_in_seconds`, and `throttle_unauthenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147112) in GitLab 17.0.
 - `allow_all_integrations` and `allowed_integrations` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/issues/500610) in GitLab 17.6.
+- `throttle_authenticated_git_http_enabled`, `throttle_authenticated_git_http_period_in_seconds`, and `throttle_authenticated_git_http_requests_per_period` attributes [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/191552) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `git_authenticated_http_limit`. Disabled by default.
 
 {{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of authenticated Git HTTP rate limits is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Updates the current [application settings](#available-settings) for this GitLab instance.
 
@@ -754,6 +764,9 @@ to configure other related settings. These requirements are
 | `throttle_authenticated_api_enabled`                      | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
 | `throttle_authenticated_api_period_in_seconds`            | integer | required by:<br>`throttle_authenticated_api_enabled`            | Rate limit period (in seconds). |
 | `throttle_authenticated_api_requests_per_period`          | integer | required by:<br>`throttle_authenticated_api_enabled`            | Maximum requests per period per user. |
+| `throttle_authenticated_git_http_enabled`             | boolean | conditionally | If `true`, enforces the authenticated Git HTTP request rate limit. Default value: `false`. |
+| `throttle_authenticated_git_http_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |
+| `throttle_authenticated_git_http_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_authenticated_git_http_enabled` must be `true`. Default value: `3600`. |
 | `throttle_authenticated_packages_api_enabled`             | boolean | no                                                              | (**If enabled, requires**: `throttle_authenticated_packages_api_period_in_seconds` and `throttle_authenticated_packages_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_authenticated_packages_api_period_in_seconds`   | integer | required by:<br>`throttle_authenticated_packages_api_enabled`   | Rate limit period (in seconds). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_authenticated_packages_api_requests_per_period` | integer | required by:<br>`throttle_authenticated_packages_api_enabled`   | Maximum requests per period per user. View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
@@ -766,6 +779,9 @@ to configure other related settings. These requirements are
 | `throttle_unauthenticated_api_enabled`                    | boolean | no                                                              | (**If enabled, requires**: `throttle_unauthenticated_api_period_in_seconds` and `throttle_unauthenticated_api_requests_per_period`) Enable unauthenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). |
 | `throttle_unauthenticated_api_period_in_seconds`          | integer | required by:<br>`throttle_unauthenticated_api_enabled`          | Rate limit period in seconds. |
 | `throttle_unauthenticated_api_requests_per_period`        | integer | required by:<br>`throttle_unauthenticated_api_enabled`          | Max requests per period per IP. |
+| `throttle_unauthenticated_git_http_enabled`             | boolean | conditionally | If `true`, enforces the unauthenticated Git HTTP request rate limit. Default value: `false`. |
+| `throttle_unauthenticated_git_http_period_in_seconds`   | integer | no            | Rate limit period in seconds. `throttle_unauthenticated_git_http_enabled` must be `true`. Default value: `3600`. |
+| `throttle_unauthenticated_git_http_requests_per_period` | integer | no            | Maximum requests per period per user. `throttle_unauthenticated_git_http_enabled` must be `true`. Default value: `3600`. |
 | `throttle_unauthenticated_packages_api_enabled`           | boolean | no                                                              | (**If enabled, requires**: `throttle_unauthenticated_packages_api_period_in_seconds` and `throttle_unauthenticated_packages_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (for example, from crawlers or abusive bots). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_unauthenticated_packages_api_period_in_seconds` | integer | required by:<br>`throttle_unauthenticated_packages_api_enabled` | Rate limit period (in seconds). View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |
 | `throttle_unauthenticated_packages_api_requests_per_period` | integer | required by:<br>`throttle_unauthenticated_packages_api_enabled` | Maximum requests per period per user. View [package registry rate limits](../administration/settings/package_registry_rate_limits.md) for more details. |

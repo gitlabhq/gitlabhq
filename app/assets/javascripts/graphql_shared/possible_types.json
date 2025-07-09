@@ -4,10 +4,12 @@
     "ContainerProtectionTagRule"
   ],
   "AiCatalogItem": [
-    "AiCatalogAgent"
+    "AiCatalogAgent",
+    "AiCatalogFlow"
   ],
   "AiCatalogItemVersion": [
-    "AiCatalogAgentVersion"
+    "AiCatalogAgentVersion",
+    "AiCatalogFlowVersion"
   ],
   "AlertManagementIntegration": [
     "AlertManagementHttpIntegration",

@@ -95,7 +95,7 @@ Supported attributes:
 | ---------- | ------ | -------- | ----------- |
 | `name`     | string | no       | Name of the user. If not set, uses `Service account user`. |
 | `username` | string | no       | Username of the user account. If undefined, generates a name prepended with `service_account_`. |
-| `email`    | string | no       | Email of the user account. If undefined, generates a no-reply email address. |
+| `email`    | string | no       | Email of the user account. If undefined, generates a no-reply email address. Custom email addresses require confirmation, unless the email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
 
 Example request:
 
@@ -116,3 +116,48 @@ Example response:
 
 If the email address defined by the `email` attribute is already in use by another user,
 returns a `400 Bad request` error.
+
+## Update an instance service account
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196309/) in GitLab 18.2.
+
+{{< /history >}}
+
+Updates a specified instance service account.
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+```plaintext
+PATCH /service_accounts/:id
+```
+
+Parameters:
+
+| Attribute  | Type           | Required | Description                                                                                                                                                                                                               |
+|:-----------|:---------------|:---------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`       | integer        | yes      | ID of the service account.  |
+| `name`     | string         | no       | Name of the user.  |
+| `username` | string         | no       | Username of the user account. |
+| `email`    | string         | no       | Email of the user account. Custom email addresses require confirmation, unless the email confirmation settings are [turned off](../administration/settings/sign_up_restrictions.md#confirm-user-email). |
+
+Example request:
+
+```shell
+curl --request PATCH --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/service_accounts/57" --data "name=Updated Service Account email=updated_email@example.com"
+```
+
+Example response:
+
+```json
+{
+  "id": 57,
+  "username": "service_account_6018816a18e515214e0c34c2b33523fc",
+  "name": "Updated Service Account",
+  "email": "service_account_<random_hash>@noreply.gitlab.example.com",
+  "unconfirmed_email": "custom_email@example.com"
+}
+```

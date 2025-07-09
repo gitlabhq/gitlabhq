@@ -26,6 +26,14 @@ $bottom-padding: $gl-spacing-scale-6;
   }
 }
 
+.repository-tree-list-responsive {
+  width: var(--tree-width);
+
+  @include media-breakpoint-down(md) {
+    width: 250px;
+  }
+}
+
 .tree-holder {
   .nav-block {
     margin: $gl-spacing-scale-2 0 $gl-spacing-scale-5;

@@ -60,6 +60,7 @@ Store the exit code in a variable to avoid this behavior:
 ```yaml
 job:
   script:
+    - exit_code=0
     - false || exit_code=$?
     - if [ $exit_code -ne 0 ]; then echo "Previous command failed"; fi;
 ```
