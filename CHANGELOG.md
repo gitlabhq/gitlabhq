@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.11.6 (2025-07-09)
+
+### Fixed (3 changes)
+
+- [Fix incorrect redirect when branch doesn't include files](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5261940b88db1ba0078f8d5a68f8d553022e5cb7)
+- [Fix incompatible Rails cache version from 7.1 to 6.1](https://gitlab.com/gitlab-org/security/gitlab/-/commit/91a9adeec53343019e505416607f9c4606a26aec)
+- [Fix code owner validation for roles](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b5760803cdee7196c74726887b3fbad541af6a3a) **GitLab Enterprise Edition**
+
+### Security (4 changes)
+
+- [Revert "Merge branch..." from 17.11](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5f7dded039c6a95d0cad4e80950730e6600ae096) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5128))
+- [Fix XSS via blob rich viewer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ad8aefc5d97748a36211e673de10d4ea3c3528d7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5121))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed3b2358908fdf6a6cad1bab226a5d08de1ce926) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5117))
+- [Prevent linking fork if target group disallows external forks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8d2fe458b23e72778561d1dbb31d13fae68224f4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5104))
+
 ## 17.11.5 (2025-06-24)
 
 ### Changed (2 changes)
