@@ -46,3 +46,5 @@ module Members
     end
   end
 end
+
+Members::Projects::CreatorService.prepend_mod_with('Members::Projects::CreatorService')
