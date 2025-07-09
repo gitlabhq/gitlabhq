@@ -55678,9 +55678,6 @@ msgstr ""
 msgid "SecurityConfiguration|Security configuration"
 msgstr ""
 
-msgid "SecurityConfiguration|Security labels"
-msgstr ""
-
 msgid "SecurityConfiguration|Security testing"
 msgstr ""
 
@@ -55703,9 +55700,6 @@ msgid "SecurityConfiguration|Toggle secret push protection"
 msgstr ""
 
 msgid "SecurityConfiguration|Upgrade or start a free trial"
-msgstr ""
-
-msgid "SecurityConfiguration|Use security labels to classify projects by business context, security needs, and more. Categories are shared across your groups, enabling consistent and scalable classification of assets. These labels can help prioritize security efforts, filter dashboards, and apply consistent governance across projects."
 msgstr ""
 
 msgid "SecurityConfiguration|Using custom settings. You won't receive automatic updates on this variable. %{anchorStart}Restore to default%{anchorEnd}"
@@ -55986,7 +55980,22 @@ msgstr ""
 msgid "SecurityLabels|Cancel"
 msgstr ""
 
+msgid "SecurityLabels|Categories"
+msgstr ""
+
+msgid "SecurityLabels|Category details"
+msgstr ""
+
+msgid "SecurityLabels|Category locked"
+msgstr ""
+
 msgid "SecurityLabels|Color"
+msgstr ""
+
+msgid "SecurityLabels|Create category"
+msgstr ""
+
+msgid "SecurityLabels|Create label"
 msgstr ""
 
 msgid "SecurityLabels|Delete"
@@ -56010,13 +56019,46 @@ msgstr ""
 msgid "SecurityLabels|Edit security label"
 msgstr ""
 
+msgid "SecurityLabels|Limited edits allowed"
+msgstr ""
+
+msgid "SecurityLabels|Multiple selection"
+msgstr ""
+
 msgid "SecurityLabels|Name"
 msgstr ""
 
 msgid "SecurityLabels|Name is required"
 msgstr ""
 
+msgid "SecurityLabels|Security labels"
+msgstr ""
+
+msgid "SecurityLabels|Selection type"
+msgstr ""
+
+msgid "SecurityLabels|Single selection"
+msgstr ""
+
 msgid "SecurityLabels|Update label"
+msgstr ""
+
+msgid "SecurityLabels|Use security labels to categorize projects by business context, security needs, and more. Categories are shared across your groups, enabling consistent and scalable classification of assets. These labels can help prioritize security efforts, filter dashboards, and apply consistent governance across projects."
+msgstr ""
+
+msgid "SecurityLabels|View category settings and associated labels."
+msgstr ""
+
+msgid "SecurityLabels|View the labels available in this category"
+msgstr ""
+
+msgid "SecurityLabels|You cannot change the selection type after the category is created. To use a different selection type, create a new category."
+msgstr ""
+
+msgid "SecurityLabels|You cannot delete or edit this category. You cannot modify the labels."
+msgstr ""
+
+msgid "SecurityLabels|You cannot delete this category, but you can edit the labels."
 msgstr ""
 
 msgid "SecurityOrchestration| and "

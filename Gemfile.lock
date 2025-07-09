@@ -218,8 +218,8 @@ GEM
       nkf
       rexml
     RedCloth (4.3.4)
-    acme-client (2.0.21)
-      base64 (~> 0.2.0)
+    acme-client (2.0.22)
+      base64 (~> 0.2)
       faraday (>= 1.0, < 3.0.0)
       faraday-retry (>= 1.0, < 3.0.0)
     actioncable (7.1.5.1)

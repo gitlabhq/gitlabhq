@@ -119,12 +119,53 @@ except those captured by `runit`.
 | [Sentinel logs](#sentinel-logs)                 | {{< icon name="dotted-circle" >}} No  | {{< icon name="check-circle" >}} Yes  |
 | [Workhorse logs](#workhorse-logs)               | {{< icon name="check-circle" >}} Yes  | {{< icon name="check-circle" >}} Yes  |
 
+## Accessing logs on Helm chart installations
+
+On Helm chart installations, GitLab components send logs to `stdout`, which can be accessed by using `kubectl logs`.
+Logs are also available in the pod at `/var/log/gitlab` for the lifetime of the pod.
+
+### Pods with structured logs (subcomponent filtering)
+
+Some pods include a `subcomponent` field that identifies the specific log type:
+
+```shell
+# Webservice pod logs (Rails application)
+kubectl logs -l app=webservice -c webservice | jq 'select(."subcomponent"=="<subcomponent-key>")'
+
+# Sidekiq pod logs (background jobs)
+kubectl logs -l app=sidekiq | jq 'select(."subcomponent"=="<subcomponent-key>")'
+```
+
+The following log sections indicate the appropriate pod and subcomponent key where applicable.
+
+### Other pods
+
+For other GitLab components that don't use structured logs with subcomponents, you can access logs directly.
+
+To find available pod selectors:
+
+```shell
+# List all unique app labels in use
+kubectl get pods -o jsonpath='{range .items[*]}{.metadata.labels.app}{"\n"}{end}' | grep -v '^$' | sort | uniq
+
+# For pods with app labels
+kubectl logs -l app=<pod-selector>
+
+# For specific pods (when app labels aren't available)
+kubectl get pods
+kubectl logs <pod-name>
+```
+
+For more Kubernetes troubleshooting commands, see the [Kubernetes cheat sheet](https://docs.gitlab.com/charts/troubleshooting/kubernetes_cheat_sheet/).
+
 ## `production_json.log`
 
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/production_json.log` on Linux package installations.
 - `/home/git/gitlab/log/production_json.log` on self-compiled installations.
+
+On Helm Chart installations, the logs are available on the Webservice pods under the `subcomponent="production_json"` key.
 
 It contains a structured log for Rails controller requests received from
 GitLab, thanks to [Lograge](https://github.com/roidrage/lograge/).
@@ -322,6 +363,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/api_json.log` on Linux package installations.
 - `/home/git/gitlab/log/api_json.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Webservice pods under the `subcomponent="api_json"` key.
+
 It helps you see requests made directly to the API. For example:
 
 ```json
@@ -401,6 +444,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/application_json.log` on Linux package installations.
 - `/home/git/gitlab/log/application_json.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="application_json"` key.
+
 It helps you discover events happening in your instance such as user creation
 and project deletion. For example:
 
@@ -425,6 +470,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/integrations_json.log` on Linux package installations.
 - `/home/git/gitlab/log/integrations_json.log` on self-compiled installations.
+
+On Helm Chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="integrations_json"` key.
 
 It contains information about [integration](../../user/project/integrations/_index.md)
 activities, such as Jira, Asana, and irker services. It uses JSON format,
@@ -465,6 +512,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/kubernetes.log` on Linux package installations.
 - `/home/git/gitlab/log/kubernetes.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq pods under the `subcomponent="kubernetes"` key.
+
 It logs information related to [certificate-based clusters](../../user/project/clusters/_index.md), such as connectivity errors. Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 
 ## `git_json.log`
@@ -473,6 +522,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/git_json.log` on Linux package installations.
 - `/home/git/gitlab/log/git_json.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq pods under the `subcomponent="git_json"` key.
 
 GitLab has to interact with Git repositories, but in some rare cases
 something can go wrong. If this happens, you need to know exactly what
@@ -509,6 +560,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/audit_json.log` on Linux package installations.
 - `/home/git/gitlab/log/audit_json.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="audit_json"` key.
 
 Changes to group or project settings and memberships (`target_details`)
 are logged to this file. For example:
@@ -613,6 +666,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/sidekiq_client.log` on Linux package installations.
 - `/home/git/gitlab/log/sidekiq_client.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Webservice pods under the `subcomponent="sidekiq_client"` key.
 
 This file contains logging information about jobs before Sidekiq starts
 processing them, such as before being enqueued.
@@ -731,6 +786,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/importer.log` on Linux package installations.
 - `/home/git/gitlab/log/importer.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq pods under the `subcomponent="importer"` key.
+
 This file logs the progress of [project imports and migrations](../../user/project/import/_index.md).
 
 ## `exporter.log`
@@ -740,6 +797,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/exporter.log` on Linux package installations.
 - `/home/git/gitlab/log/exporter.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="exporter"` key.
+
 It logs the progress of the export process.
 
 ## `features_json.log`
@@ -748,6 +807,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/features_json.log` on Linux package installations.
 - `/home/git/gitlab/log/features_json.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="features_json"` key.
 
 The modification events from Feature flags in development of GitLab
 are recorded in this file. For example:
@@ -775,8 +836,10 @@ are recorded in this file. For example:
 
 This file is located at:
 
-- `/var/log/gitlab/gitlab-rails/ci_resource_group_json.log` on Linux package installations.
+- `/var/log/gitlab/gitlab-rails/ci_resource_groups_json.log` on Linux package installations.
 - `/home/git/gitlab/log/ci_resource_group_json.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="ci_resource_groups_json"` key.
 
 It contains information about [resource group](../../ci/resource_groups/_index.md) acquisition. For example:
 
@@ -807,6 +870,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/auth_json.log` on Linux package installations.
 - `/home/git/gitlab/log/auth_json.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="auth_json"` key.
+
 This file contains the JSON version of the logs in `auth.log`, for example:
 
 ```json
@@ -829,6 +894,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/graphql_json.log` on Linux package installations.
 - `/home/git/gitlab/log/graphql_json.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="graphql_json"` key.
+
 GraphQL queries are recorded in the file. For example:
 
 ```json
@@ -842,6 +909,13 @@ GraphQL queries are recorded in the file. For example:
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133371) in GitLab 16.5.
 
 {{< /history >}}
+
+This file is located at:
+
+- `/var/log/gitlab/gitlab-rails/clickhouse.log` on Linux package installations.
+- `/home/git/gitlab/log/clickhouse.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="clickhouse"` key.
 
 The `clickhouse.log` file logs information related to the
 [ClickHouse database client](../../integration/clickhouse.md) in GitLab.
@@ -878,6 +952,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/web_hooks.log` on Linux package installations.
 - `/home/git/gitlab/log/web_hooks.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq pods under the `subcomponent="web_hooks"` key.
 
 The back-off, disablement, and re-enablement events for Webhook are recorded in this file. For example:
 
@@ -928,10 +1004,13 @@ are generated in a location based on your installation method:
 {{< /details >}}
 
 Contains details of GitLab [Database Load Balancing](../postgresql/database_load_balancing.md).
+
 This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/database_load_balancing.log` on Linux package installations.
 - `/home/git/gitlab/log/database_load_balancing.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="database_load_balancing"` key.
 
 ## `zoekt.log`
 
@@ -954,6 +1033,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/zoekt.log` on Linux package installations.
 - `/home/git/gitlab/log/zoekt.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="zoekt"` key.
+
 ## `elasticsearch.log`
 
 {{< details >}}
@@ -964,10 +1045,14 @@ This file is located at:
 {{< /details >}}
 
 This file logs information related to the Elasticsearch Integration, including
-errors during indexing or searching Elasticsearch. This file is located at:
+errors during indexing or searching Elasticsearch.
+
+This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/elasticsearch.log` on Linux package installations.
 - `/home/git/gitlab/log/elasticsearch.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="elasticsearch"` key.
 
 Each line contains JSON that can be ingested by services like Elasticsearch and Splunk.
 Line breaks have been added to the following example line for clarity:
@@ -996,6 +1081,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/exceptions_json.log` on Linux package installations.
 - `/home/git/gitlab/log/exceptions_json.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="exceptions_json"` key.
+
 Each line contains JSON that can be ingested by Elasticsearch. For example:
 
 ```json
@@ -1022,6 +1109,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/service_measurement.log` on Linux package installations.
 - `/home/git/gitlab/log/service_measurement.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="service_measurement"` key.
+
 It contains only a single structured log with measurements for each service execution.
 It contains measurements such as the number of SQL calls, `execution_time`, `gc_stats`, and `memory usage`.
 
@@ -1040,15 +1129,12 @@ For example:
 
 {{< /details >}}
 
-Geo stores structured log messages in a `geo.log` file. For Linux package installations,
-this file is at `/var/log/gitlab/gitlab-rails/geo.log`.
+This file is located at:
 
-For Helm chart installations, it's stored in the Sidekiq pod, at `/var/log/gitlab/geo.log`.
-It can be read by either directly accessing the file, or by using `kubectl` to fetch the Sidekiq logs, and subsequently filtering the results by `"subcomponent"=="geo"`. The example below uses `jq` to grab only Geo logs:
+- `/var/log/gitlab/gitlab-rails/geo.log` on Linux package installations.
+- `/home/git/gitlab/log/geo.log` on self-compiled installations.
 
-```shell
-kubectl logs -l app=sidekiq --max-log-requests=50 | jq 'select(."subcomponent"=="geo")'
-```
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="geo"` key.
 
 This file contains information about when Geo attempts to sync repositories
 and files. Each line in the file contains a separate JSON entry that can be
@@ -1068,6 +1154,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/update_mirror_service_json.log` on Linux package installations.
 - `/home/git/gitlab/log/update_mirror_service_json.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq pods under the `subcomponent="update_mirror_service_json"` key.
 
 This file contains information about LFS errors that occurred during project mirroring.
 While we work to move other project mirroring errors into this log, the [general log](#productionlog)
@@ -1131,6 +1219,8 @@ The log file is located at:
 - `/var/log/gitlab/gitlab-rails/llm.log` on Linux package installations.
 - `/home/git/gitlab/log/llm.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Webservice pods under the `subcomponent="llm"` key.
+
 ## `epic_work_item_sync.log`
 
 {{< details >}}
@@ -1153,6 +1243,8 @@ This file is located at:
 - `/var/log/gitlab/gitlab-rails/epic_work_item_sync.log` on Linux package installations.
 - `/home/git/gitlab/log/epic_work_item_sync.log` on self-compiled installations.
 
+On Helm chart installations, the logs are available on the Sidekiq and Webservice pods under the `subcomponent="epic_work_item_sync"` key.
+
 ## `secret_push_protection.log`
 
 {{< details >}}
@@ -1174,6 +1266,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/secret_push_protection.log` on Linux package installations.
 - `/home/git/gitlab/log/secret_push_protection.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Webservice pods under the `subcomponent="secret_push_protection"` key.
 
 ## Registry logs
 
@@ -1245,6 +1339,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/product_usage_data.log` on Linux package installations.
 - `/home/git/gitlab/log/product_usage_data.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Webservice pods under the `subcomponent="product_usage_data"` key.
 
 It contains JSON-formatted logs of product usage events tracked through Snowplow. Each line in the file contains a separate JSON entry that can be ingested by services like Elasticsearch or Splunk. Line breaks were added to examples for legibility:
 
@@ -1362,7 +1458,7 @@ GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#mon
 
 For Linux package installations, the backup log is located at `/var/log/gitlab/gitlab-rails/backup_json.log`.
 
-For Helm chart installations, the backup log is stored in the Toolbox pod, at `/var/log/gitlab/backup_json.log`.
+On Helm chart installations, the backup log is stored in the Toolbox pod, at `/var/log/gitlab/backup_json.log`.
 
 This log is populated when a [GitLab backup is created](../backup_restore/_index.md). You can use this log to understand how the backup process performed.
 
@@ -1372,6 +1468,8 @@ This file is located at:
 
 - `/var/log/gitlab/gitlab-rails/performance_bar_json.log` on Linux package installations.
 - `/home/git/gitlab/log/performance_bar_json.log` on self-compiled installations.
+
+On Helm chart installations, the logs are available on the Sidekiq pods under the `subcomponent="performance_bar_json"` key.
 
 Performance bar statistics (currently only duration of SQL queries) are recorded
 in that file. For example:

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module KeysetPaginationHelpers
+module PaginationHelpers
   def pagination_links(response)
     link = response.headers['LINK']
     return unless link

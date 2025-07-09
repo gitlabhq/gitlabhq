@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-RSpec.describe KeysetPaginationHelpers, feature_category: :api do
+RSpec.describe PaginationHelpers, feature_category: :api do
   include described_class
 
   let(:headers) { { 'LINK' => %(<#{url}>; rel="#{rel}") } }
-  let(:response) { instance_double('HTTParty::Response', headers: headers) }
+  let(:response) { instance_double(HTTParty::Response, headers: headers) }
   let(:rel) { 'next' }
   let(:url) do
     'http://127.0.0.1:3000/api/v4/projects/7/audit_eve' \

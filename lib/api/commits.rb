@@ -477,8 +477,10 @@ module API
 
         # Gitaly RPC doesn't support pagination, but we still can limit the number of requested records
         # Example: per_page = 50, page = 3
-        # Limit will be set to 150 to capture enough records for Kaminari pagination to extract the right slice
-        limit = [per_page, Kaminari.config.max_per_page].min * page
+        # Limit will be set to 151 to capture enough records for Kaminari pagination to extract the right slice.
+        # 1 is added to the limit so that Kaminari knows there are more records and correctly sets the x-next-page
+        # and Link headers.
+        limit = ([per_page, Kaminari.config.max_per_page].min * page) + 1
 
         args = {
           type: declared_params[:type],
@@ -493,7 +495,9 @@ module API
 
         refs = Kaminari.paginate_array(refs)
 
-        present paginate(refs), with: Entities::BasicRef
+        # Due to the limit applied above to capture just enough records, disable x-total, x-total-page, and "last" link
+        # in the response header. Without this, the response headers would contain incorrect and misleading values.
+        present paginate(refs, without_count: true), with: Entities::BasicRef
       end
 
       desc 'Post comment to commit' do
