@@ -81,8 +81,8 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_cluster_description`: Set a description for the cluster. To create a reference to your GitLab project on your Civo cluster detail page, set this value to `$CI_PROJECT_URL`. This value helps you determine which project was responsible for provisioning the cluster you see on the Civo dashboard.
 - `TF_VAR_target_nodes_size`: Set the size of the nodes to use for the cluster
 - `TF_VAR_num_target_nodes`: Set the number of Kubernetes nodes.
-- `TF_VAR_agent_version`: Set the version of the GitLab agent.
-- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
+- `TF_VAR_agent_version`: Set the version of the GitLab agent for Kubernetes.
+- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent for Kubernetes.
 
 Refer to the [Civo Terraform provider](https://registry.terraform.io/providers/civo/civo/latest/docs/resources/kubernetes_cluster) and the [Kubernetes Terraform provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs) documentation for further resource options.
 

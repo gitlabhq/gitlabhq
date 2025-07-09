@@ -21,6 +21,7 @@ This checklist encourages us to confirm any changes have been analyzed to reduce
 
 * [ ] This MR is backporting a bug fix, documentation update, or spec fix, previously merged in the default branch.
 * [ ] The MR that fixed the bug on the default branch has been deployed to GitLab.com (not applicable for documentation or spec changes).
+* [ ] The MR title is descriptive (e.g. "Backport of 'title of default branch MR'"). This is important, since the title will be copied to the patch blog post.
 * [ ] This MR has a [severity label] assigned (if applicable).
 * [ ] Set the milestone of the merge request to match the target backport branch version.
 * [ ] This MR has been approved by a maintainer (only one approval is required).

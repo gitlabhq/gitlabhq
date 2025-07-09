@@ -27,7 +27,7 @@ To set up GitLab workspaces infrastructure:
 1. [Create a GitLab Agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token)
 1. [Configure GitLab OAuth](#configure-gitlab-oauth)
 1. [Configure CI/CD variables](#configure-cicd-variables)
-1. [Update GitLab agent configuration](#update-gitlab-agent-configuration)
+1. [Update the GitLab agent for Kubernetes configuration](#update-the-gitlab-agent-for-kubernetes-configuration)
 1. [Run the pipeline](#run-the-pipeline)
 1. [Configure DNS records](#configure-dns-records)
 1. [Authorize the agent](#authorize-the-agent)
@@ -148,9 +148,9 @@ For example, run:
    ssh-keygen -f ssh-host-key -N '' -t rsa
    ```
 
-## Create a GitLab Agent for Kubernetes token
+## Create a GitLab agent for Kubernetes token
 
-The GitLab Agent for Kubernetes connects your AWS Kubernetes cluster to GitLab.
+The GitLab agent for Kubernetes connects your AWS Kubernetes cluster to GitLab.
 
 To create a token for the agent:
 
@@ -202,7 +202,7 @@ To configure CI/CD variables:
    |------------------------------------------------|-------|
    | `AWS_ACCESS_KEY_ID`                            | AWS access key ID. |
    | `AWS_SECRET_ACCESS_KEY`                        | AWS secret access key. |
-   | `TF_VAR_agent_token`                           | GitLab Agent token for Kubernetes. |
+   | `TF_VAR_agent_token`                           | GitLab agent for Kubernetes token. |
    | `TF_VAR_kas_address`                           | GitLab Kubernetes Agent Server address. Required if on a GitLab Self-Managed instance. For example, `wss://kas.gitlab.com`. |
    | `TF_VAR_workspaces_proxy_auth_client_id`       | OAuth application client ID. |
    | `TF_VAR_workspaces_proxy_auth_client_secret`   | OAuth application secret. |
@@ -236,18 +236,18 @@ To configure CI/CD variables:
 
 Great job! You've configured all the necessary variables for your infrastructure deployment.
 
-## Update GitLab agent configuration
+## Update the GitLab agent for Kubernetes configuration
 
-Now, you need to configure the GitLab agent to support workspaces.
+Now, you need to configure the GitLab agent for Kubernetes to support workspaces.
 
-To update the GitLab agent configuration:
+To update the agent configuration:
 
 1. In your forked repository, open the `.gitlab/agents/gitlab-workspaces-agentk-eks/config.yaml` file.
 
    {{< alert type="note" >}}
 
    The directory that contains the `config.yaml` file must match the agent name you created in the
-   [Create a GitLab Agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token) step.
+   [Create a GitLab agent for Kubernetes token](#create-a-gitlab-agent-for-kubernetes-token) step.
 
    {{< /alert >}}
 
@@ -279,7 +279,7 @@ When the OpenTofu code runs, it creates these resources in AWS:
 
 - A Virtual Private Cloud (VPC).
 - An Elastic Kubernetes Service (EKS) cluster.
-- A GitLab Agent for Kubernetes Helm release.
+- A GitLab agent for Kubernetes Helm release.
 - A GitLab Workspaces Proxy Helm release.
 - An Ingress NGINX Helm release.
 
@@ -304,7 +304,7 @@ To configure DNS records:
 
 ## Authorize the agent
 
-Next, you'll authorize the GitLab agent to connect to your GitLab instance.
+Next, you'll authorize the GitLab agent for Kubernetes to connect to your GitLab instance.
 
 To authorize the agent:
 

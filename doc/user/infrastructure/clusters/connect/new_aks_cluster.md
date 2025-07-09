@@ -78,7 +78,7 @@ contains other variables that you can override according to your needs:
 - `TF_VAR_kubernetes_version`: Set the version of Kubernetes.
 - `TF_VAR_create_resource_group`: Allow to enable or disable the creation of a new resource group. (Default set to true).
 - `TF_VAR_resource_group_name`: Set the name of resource group.
-- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent.
+- `TF_VAR_agent_namespace`: Set the Kubernetes namespace for the GitLab agent for Kubernetes.
 
 See the [Azure Terraform provider](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs) and the [Kubernetes Terraform provider](https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs) documentation for further resource options.
 

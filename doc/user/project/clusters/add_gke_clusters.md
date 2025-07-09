@@ -32,7 +32,7 @@ hosted on Google Kubernetes Engine (GKE).
 ## Connect an existing GKE cluster
 
 If you already have a GKE cluster and want to connect it to GitLab,
-use the [GitLab agent](../../clusters/agent/_index.md).
+use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 
 ## Create a new GKE cluster from GitLab
 

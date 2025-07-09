@@ -1416,3 +1416,7 @@ Database/AvoidScopeTo:
   Enabled: true
   Include:
     - 'lib/gitlab/background_migration/**/*.rb'
+
+RSpec/RedundantMetatagType:
+  Include:
+    - '{,ee/,jh/}spec/**/*_spec.rb'

@@ -1127,7 +1127,7 @@ tls.Config{
 }
 ```
 
-This example was taken [from the GitLab agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
+This example was taken [from the GitLab agent for Kubernetes](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/871b52dc700f1a66f6644fbb1e78a6d463a6ff83/internal/tool/tlstool/tlstool.go#L72).
 
 For **Ruby**, you can use again [`HTTParty`](https://github.com/jnunemaker/httparty) and specify this time TLS 1.2 version alongside with the recommended ciphers:
 

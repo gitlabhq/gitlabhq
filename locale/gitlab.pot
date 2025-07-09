@@ -23666,6 +23666,9 @@ msgstr ""
 msgid "DuoChat|AI features are now available"
 msgstr ""
 
+msgid "DuoChat|Agentic mode (Beta)"
+msgstr ""
+
 msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
 msgstr ""
 
@@ -63734,6 +63737,9 @@ msgid "This epic cannot be added. It is already assigned to the parent epic."
 msgstr ""
 
 msgid "This epic cannot be added. One or more epics would exceed the maximum depth (%{max_depth}) from its most distant ancestor."
+msgstr ""
+
+msgid "This feature requires an Ultimate plan %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "This feature requires local storage to be enabled"

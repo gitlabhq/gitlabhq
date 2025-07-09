@@ -12,7 +12,7 @@ title: Kubernetes clusters
 
 {{< /details >}}
 
-To connect clusters to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
+To connect clusters to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 
 ## Certificate-based Kubernetes integration (deprecated)
 
@@ -36,7 +36,7 @@ It had the following issues:
 - Users were constantly reporting issues with features based on this model.
 
 For this reason, we started to build features based on a new model, the
-[GitLab agent](../../clusters/agent/_index.md).
+[GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 Maintaining both methods in parallel caused a lot of confusion
 and significantly increased the complexity to use, develop, maintain, and
 document them. For this reason, we decided to deprecate them to focus on the
@@ -49,7 +49,7 @@ scheduled yet.
 Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 for updates.
 
-If you need more time to migrate to GitLab agent, you can [enable the feature flag](../../../administration/feature_flags/_index.md)
+If you need more time to migrate to GitLab agent for Kubernetes, you can [enable the feature flag](../../../administration/feature_flags/_index.md)
 named `certificate_based_clusters`, which was [introduced in GitLab 15.0](../../../update/deprecations.md#gitlab-self-managed-certificate-based-integration-with-kubernetes).
 This feature flag re-enables the certificate-based Kubernetes integration.
 

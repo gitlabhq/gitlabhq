@@ -462,7 +462,7 @@ Example response:
 }
 ```
 
-## GitLab agent endpoints
+## GitLab agent for Kubernetes endpoints
 
 {{< history >}}
 
@@ -470,16 +470,16 @@ Example response:
 
 {{< /history >}}
 
-The following endpoints are used by the GitLab agent server (`kas`)
+The following endpoints are used by the GitLab agent server for Kubernetes (`kas`)
 for various purposes.
 
 These endpoints are all authenticated using JWT. The JWT secret is stored in a file
 specified in `config/gitlab.yml`. By default, the location is in the root of the
 GitLab Rails app in a file called `.gitlab_kas_secret`.
 
-### GitLab agent information
+### GitLab agent for Kubernetes information
 
-Called from GitLab agent server (`kas`) to retrieve agent
+Called from the GitLab agent server for Kubernetes (`kas`) to retrieve agent
 information for the given agent token. This returns the Gitaly connection
 information for the agent's project in order for `kas` to fetch and update
 the agent's configuration.
@@ -495,9 +495,9 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
      --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/agent_info"
 ```
 
-### GitLab agent project information
+### GitLab agent for Kubernetes project information
 
-Called from GitLab agent server (`kas`) to retrieve project
+Called from the GitLab agent server for Kubernetes (`kas`) to retrieve project
 information for the given agent token. This returns the Gitaly
 connection for the requested project. GitLab `kas` uses this to configure
 the agent to fetch Kubernetes resources from the project repository to
@@ -521,9 +521,9 @@ curl --request GET --header "Gitlab-Kas-Api-Request: <JWT token>" \
      --header "Authorization: Bearer <agent token>" "http://localhost:3000/api/v4/internal/kubernetes/project_info?id=7"
 ```
 
-### GitLab agent usage metrics
+### GitLab agent for Kubernetes usage metrics
 
-Called from GitLab agent server (`kas`) to increase the usage
+Called from the GitLab agent server for Kubernetes (`kas`) to increase the usage
 metric counters.
 
 | Attribute                                                                 | Type          | Required | Description                                                                                                                                                     |
@@ -554,9 +554,9 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" --header "Con
      --data '{"counters": {"k8s_api_proxy_request":1}}' "http://localhost:3000/api/v4/internal/kubernetes/usage_metrics"
 ```
 
-### GitLab agent events
+### GitLab agent for Kubernetes events
 
-Called from GitLab agent server (`kas`) to track events.
+Called from the GitLab agent server for Kubernetes (`kas`) to track events.
 
 | Attribute                                                                     | Type          | Required | Description                                                               |
 |:------------------------------------------------------------------------------|:--------------|:---------|:--------------------------------------------------------------------------|
@@ -596,7 +596,7 @@ curl --request POST \
 
 ### Create Starboard vulnerability
 
-Called from the GitLab agent server (`kas`) to create a security vulnerability
+Called from the GitLab agent server for Kubernetes (`kas`) to create a security vulnerability
 from a Starboard vulnerability report. This request is idempotent. Multiple requests with the same data
 create a single vulnerability. The response contains the UUID of the created vulnerability finding.
 
@@ -654,7 +654,7 @@ Example response:
 
 ### Resolve Starboard vulnerabilities
 
-Called from the GitLab agent server (`kas`) to resolve Starboard security vulnerabilities.
+Called from the GitLab agent server for Kubernetes (`kas`) to resolve Starboard security vulnerabilities.
 Accepts a list of finding UUIDs and marks all Starboard vulnerabilities not identified by
 the list as resolved.
 
@@ -677,7 +677,7 @@ curl --request POST --header "Gitlab-Kas-Api-Request: <JWT token>" \
 
 ### Scan Execution Policies
 
-Called from GitLab agent server (`kas`) to retrieve `scan_execution_policies`
+Called from GitLab agent server for Kubernetes (`kas`) to retrieve `scan_execution_policies`
 configured for the project belonging to the agent token. GitLab `kas` uses
 this to configure the agent to scan images in the Kubernetes cluster based on the policy.
 
@@ -710,7 +710,7 @@ Example response:
 
 ### Policy Configuration
 
-Called from GitLab agent server (`kas`) to retrieve `policies_configuration`
+Called from GitLab agent server for Kubernetes (`kas`) to retrieve `policies_configuration`
 configured for the project belonging to the agent token. GitLab `kas` uses
 this to configure the agent to scan images in the Kubernetes cluster based on the configuration.
 

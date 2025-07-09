@@ -14,7 +14,7 @@ title: Connect a cluster to GitLab
 
 The [certificate-based Kubernetes integration with GitLab](../_index.md)
 was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
-in GitLab 14.5. To connect your clusters, use the [GitLab agent](../../../clusters/agent/_index.md).
+in GitLab 14.5. To connect your clusters, use the [GitLab agent for Kubernetes](../../../clusters/agent/_index.md).
 
 ## Cluster levels (deprecated)
 

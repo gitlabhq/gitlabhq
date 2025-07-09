@@ -1329,7 +1329,7 @@ For example:
 
 {{< alert type="note" >}}
 
-We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy. 
+We recommend against using the raw logs for analysing feature usage, as the data quality has not yet been certified for accuracy.
 
 The list of events can change in each version based on new features or changes to existing features. Certified in-product adoption reports will be available after the data is ready for analysis.
 
@@ -1443,9 +1443,9 @@ For Linux package installations, GitLab Monitor logs are in `/var/log/gitlab/git
 
 For Linux package installations, GitLab Exporter logs are in `/var/log/gitlab/gitlab-exporter/current`.
 
-## GitLab agent server
+## GitLab agent server for Kubernetes
 
-For Linux package installations, GitLab agent server logs are
+For Linux package installations, GitLab agent server for Kubernetes logs are
 in `/var/log/gitlab/gitlab-kas/current`.
 
 ## Praefect logs

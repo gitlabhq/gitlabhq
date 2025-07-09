@@ -67,6 +67,11 @@ export default {
       required: false,
       default: false,
     },
+    bodyContentClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -122,6 +127,7 @@ export default {
     :actions="editingActions"
     :actions-toggle-text="__('Actions')"
     :border-color-class="borderColor"
+    :body-content-class="bodyContentClasses"
     @dropdownOpen="dropdownOpen = true"
     @dropdownClosed="dropdownOpen = false"
   >

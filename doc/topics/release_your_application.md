@@ -33,7 +33,7 @@ release features incrementally.
   It provides a set of ready-to-use templates that serve the vast majority of use cases.
 - [Auto Deploy](autodevops/stages.md#auto-deploy) is the DevOps stage dedicated to software
   deployment using GitLab CI/CD. Auto Deploy has built-in support for EC2 and ECS deployments.
-- Deploy to Kubernetes clusters by using the [GitLab agent](../user/clusters/agent/install/_index.md).
+- Deploy to Kubernetes clusters by using the [GitLab agent for Kubernetes](../user/clusters/agent/install/_index.md).
 - Use Docker images to run AWS commands from GitLab CI/CD, and a template to
   facilitate [deployment to AWS](../ci/cloud_deployment/_index.md).
 - Use GitLab CI/CD to target any type of infrastructure accessible by GitLab Runner.

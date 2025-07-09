@@ -221,7 +221,7 @@ A scheduled pipeline:
 | `cadence`  | `string` | true | Cron expression with limited options. For example, `0 0 * * *` creates a schedule to run every day at midnight (12:00 AM). | A whitespace-separated string containing five fields that represents the scheduled time. |
 | `timezone` | `string` | false | Time zone identifier (for example, `America/New_York`) | Time zone to apply to the cadence. Value must be an IANA Time Zone Database identifier. |
 | `time_window` | `object` | false |  | Distribution and duration settings for scheduled security scans. |
-| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents](../../clusters/agent/_index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
+| `agents` <sup>1</sup>   | `object` | true if either `branch_type` or `branches` fields do not exists  |  | The name of the [GitLab agents for Kubernetes](../../clusters/agent/_index.md) where [Operational Container Scanning](../../clusters/agent/vulnerabilities.md) runs. The object key is the name of the Kubernetes agent configured for your project in GitLab. |
 
 1. You must specify only one of `branches`, `branch_type`, or `agents`.
 

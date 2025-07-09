@@ -2,8 +2,8 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure the GitLab agent for workspaces.
-title: GitLab agent configuration
+description: Configure the GitLab agent for Kubernetes to support your workspace.
+title: GitLab agent for Kubernetes configuration
 ---
 
 {{< details >}}
@@ -21,12 +21,12 @@ title: GitLab agent configuration
 {{< /history >}}
 
 When you [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure),
-you must configure a GitLab agent to support workspaces. This guide assumes that a GitLab
+you must configure a GitLab agent for Kubernetes to support workspaces. This guide assumes that a GitLab
 agent is already installed in the Kubernetes cluster.
 
 Prerequisites:
 
-- You must complete the setup steps in [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md).
+- You must complete the setup steps in [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md).
 - The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set.
 
   {{< alert type="note" >}}
@@ -130,7 +130,7 @@ you can use any configured agent in `top-level-group` and in any of its subgroup
 You can configure the `user_access` module to access the connected Kubernetes cluster with your GitLab credentials.
 This module is configured and runs independently of the `remote_development` module.
 
-Be careful when configuring both `user_access` and `remote_development` in the same GitLab agent.
+Be careful when configuring both `user_access` and `remote_development` in the same agent.
 The `remote_development` clusters manage user credentials (such as personal access tokens) as Kubernetes Secrets.
 Any misconfiguration in `user_access` might cause this private data to be accessible over the Kubernetes API.
 
@@ -139,7 +139,7 @@ For more information about configuring `user_access`, see
 
 ## Related topics
 
-- [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md)
+- [Tutorial: Set up the GitLab for Kubernetes](set_up_gitlab_agent_and_proxies.md)
 - [Workspace settings](settings.md)
 - [Workspace configuration](configuration.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)

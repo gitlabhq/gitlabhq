@@ -38,7 +38,7 @@ For more information, see:
 ## Step 2: Interact with Kubernetes clusters
 
 The GitLab integration with Kubernetes helps you to install, configure, manage, deploy, and troubleshoot
-cluster applications. With the GitLab agent, you can connect clusters behind a firewall,
+cluster applications. With the GitLab agent for Kubernetes, you can connect clusters behind a firewall,
 have real-time access to API endpoints, perform pull-based or push-based deployments for production
 and non-production environments, and much more.
 

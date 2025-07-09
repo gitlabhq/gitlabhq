@@ -250,7 +250,7 @@ See [how to use the GitLab-KAS chart](https://docs.gitlab.com/charts/charts/gitl
 
 {{< /history >}}
 
-KAS proxies Kubernetes API requests to the GitLab agent with either:
+KAS proxies Kubernetes API requests to the GitLab agent for Kubernetes with either:
 
 - A [CI/CD job](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_ci_access.md).
 - [GitLab user credentials](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/master/doc/kubernetes_user_access.md).

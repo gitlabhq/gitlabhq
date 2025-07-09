@@ -103,8 +103,10 @@ export default {
     <work-item-attribute
       v-if="timeEstimate"
       anchor-id="time-estimate"
+      wrapper-component="button"
       :title="timeEstimate"
       title-component-class="gl-mr-3"
+      wrapper-component-class="gl-text-subtle gl-bg-transparent gl-border-0 gl-p-0 focus-visible:gl-focus-inset"
       :tooltip-text="__('Estimate')"
       tooltip-placement="top"
     >

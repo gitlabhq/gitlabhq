@@ -29,13 +29,13 @@ which you can customize to meet the specific needs of each project.
 Before you [create a workspace](#create-a-workspace), you must set up your infrastructure only once.
 To set up infrastructure for workspaces, regardless of cloud provider, you must:
 
-1. Set up a Kubernetes cluster that the GitLab agent supports.
+1. Set up a Kubernetes cluster that the [GitLab agent for Kubernetes](../clusters/agent/_index.md) supports.
    See the [supported Kubernetes versions](../clusters/agent/_index.md#supported-kubernetes-versions-for-gitlab-features).
 1. Ensure autoscaling for the Kubernetes cluster is enabled.
 1. In the Kubernetes cluster:
    1. Verify that a [default storage class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
       is defined so that volumes can be dynamically provisioned for each workspace.
-1. Complete all steps in the [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md).
+1. Complete all steps in the [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md).
 1. Optional. [Build and run containers in a workspace](#build-and-run-containers-in-a-workspace).
 1. Optional. [Configure support for private container registries](#configure-support-for-private-container-registries).
 1. Optional. [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
@@ -115,7 +115,7 @@ You also have access to the terminal and can install any necessary dependencies.
 The platform requirements for workspaces depend on your development needs.
 
 For basic workspace functionality, workspaces run on any `linux/amd64` Kubernetes cluster that supports
-the GitLab agent, regardless of the underlying operating system.
+the GitLab agent for Kubernetes, regardless of the underlying operating system.
 
 To choose a method that fits your platform requirements, see [Configure sudo access for a workspace](#configure-sudo-access-for-a-workspace).
 
@@ -142,7 +142,7 @@ To build and run containers in a workspace, see [configure sudo access for a wor
 To use images from private container registries:
 
 1. Create an [image pull secret in Kubernetes](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/).
-1. Add the `name` and `namespace` of this secret to the [GitLab agent configuration](gitlab_agent_configuration.md).
+1. Add the `name` and `namespace` of this secret to the [GitLab agent for Kubernetes configuration](gitlab_agent_configuration.md).
 
 For more information, see [`image_pull_secrets`](settings.md#image_pull_secrets).
 
@@ -177,7 +177,7 @@ and enables containers to run the same workloads as virtual machines.
 To configure sudo access with Sysbox:
 
 1. In your Kubernetes cluster, [install Sysbox](https://github.com/nestybox/sysbox#installation).
-1. Configure the GitLab agent for workspaces:
+1. Configure the GitLab agent for Kubernetes:
 
    - Set the default runtime class. In [`default_runtime_class`](settings.md#default_runtime_class),
      enter the runtime class for Sysbox. For example, `sysbox-runc`.
@@ -195,7 +195,7 @@ security of virtual machines.
 To configure sudo access with Kata Containers:
 
 1. In your Kubernetes cluster, [install Kata Containers](https://github.com/kata-containers/kata-containers/tree/main/docs/install).
-1. Configure the GitLab agent for workspaces:
+1. Configure the GitLab agent for Kubernetes:
 
    - Set the default runtime class. In [`default_runtime_class`](settings.md#default_runtime_class),
      enter the runtime class for Kata Containers. For example, `kata-qemu`.
@@ -210,7 +210,7 @@ container users from host users.
 To configure sudo access with user namespaces:
 
 1. In your Kubernetes cluster, [configure user namespaces](https://kubernetes.io/blog/2024/04/22/userns-beta/).
-1. Configure the GitLab agent for workspaces:
+1. Configure the GitLab agent for Kubernetes:
 
    - Set [`use_kubernetes_user_namespaces`](settings.md#use_kubernetes_user_namespaces) to `true`.
    - Set [`allow_privilege_escalation`](settings.md#allow_privilege_escalation) to `true`.
@@ -300,7 +300,7 @@ USER gitlab-workspaces
 
 ## Related topics
 
-- [Tutorial: Set up GitLab agent and proxies](set_up_gitlab_agent_and_proxies.md)
+- [Tutorial: Set up the GitLab agent for Kubernetes](set_up_gitlab_agent_and_proxies.md)
 - [Workspace settings](settings.md)
 - [Workspace configuration](configuration.md)
 - [Troubleshooting Workspaces](workspaces_troubleshooting.md)

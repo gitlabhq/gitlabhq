@@ -591,7 +591,7 @@ Example of response:
 }
 ```
 
-## Get GitLab agent by `CI_JOB_TOKEN`
+## Get GitLab agent for Kubernetes by `CI_JOB_TOKEN`
 
 Retrieve the job that generated the `CI_JOB_TOKEN`, along with a list of allowed
 [agents](../user/clusters/agent/_index.md).

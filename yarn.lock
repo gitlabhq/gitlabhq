@@ -1397,10 +1397,10 @@
     core-js "^3.29.1"
     mitt "^3.0.1"
 
-"@gitlab/duo-ui@^10.2.0":
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-10.2.0.tgz#78237b469f6fdc71a448ad4958dcae4a2f8d445b"
-  integrity sha512-nkAqp7Afqdwz3tALZdWQQXRdFadQM62z68mfdZSs1Jx+gkuhXggVPA8XG09GU+9GZ0rbQYytKzqEoJ46FJnciw==
+"@gitlab/duo-ui@^10.5.0":
+  version "10.5.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/duo-ui/-/duo-ui-10.5.0.tgz#dcaadac9b57eaf7a5aecb95ce03e8e4378b9298b"
+  integrity sha512-ANSngN/nJLQ21EYXyYmYWRFqWOXEZXdHYL1Sn7/hxwhXXMq9uKziSYN7GlXmn1TRh7qJy+dx1xAY/o9METD+Fw==
   dependencies:
     "@floating-ui/dom" "1.7.2"
     echarts "^5.3.2"
@@ -1440,7 +1440,7 @@
   resolved "https://registry.yarnpkg.com/@gitlab/fonts/-/fonts-1.3.0.tgz#df89c1bb6714e4a8a5d3272568aa4de7fb337267"
   integrity sha512-DoMUIN3DqjEn7wvcxBg/b7Ite5fTdF5EmuOZoBRo2j0UBGweDXmNBi+9HrTZs4cBU660dOxcf1hATFcG3npbPg==
 
-"@gitlab/noop@^1.0.1":
+"@gitlab/noop@^1.0.1", jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
   integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
@@ -9508,11 +9508,6 @@ istanbul-reports@^3.1.3:
   dependencies:
     html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0"
-
-jackspeak@^3.1.2, "jackspeak@npm:@gitlab/noop@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/noop/-/noop-1.0.1.tgz#71a831146ee02732b4a61d2d3c11204564753454"
-  integrity sha512-s++4wjMYeDvBp9IO59DBrWjy8SE/gFkjTDO5ck2W0S6Vv7OlqgErwL7pHngAnrSmTJAzyUG8wHGqo0ViS4jn5Q==
 
 jed@^1.1.1:
   version "1.1.1"

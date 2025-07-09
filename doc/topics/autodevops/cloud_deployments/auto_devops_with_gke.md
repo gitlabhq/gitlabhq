@@ -61,7 +61,7 @@ and apply for credit.
 To create a new cluster on Google Kubernetes Engine (GKE), use Infrastructure as Code (IaC) approach
 by following steps in [Create a Google GKE cluster](../../../user/infrastructure/clusters/connect/new_gke_cluster.md) guide.
 The guide requires you to create a new project that uses [Terraform](https://www.terraform.io/) to create a GKE cluster and install a GitLab agent for Kubernetes.
-This project is where configuration for GitLab agent resides.
+This project is where configuration for the GitLab agent for Kubernetes resides.
 
 ## Create an application project from a template
 

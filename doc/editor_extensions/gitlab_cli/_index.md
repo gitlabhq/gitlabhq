@@ -56,7 +56,7 @@ glab mr merge
 - [`glab changelog`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/changelog): Interact with the changelog API.
 - [`glab check-update`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/check-update): Check for updates to the CLI.
 - [`glab ci`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/ci): Work with GitLab CI/CD pipelines and jobs.
-- [`glab cluster`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/cluster): Manage GitLab Agents for Kubernetes and their clusters.
+- [`glab cluster`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/cluster): Manage GitLab agents for Kubernetes and their clusters.
 - [`glab completion`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/completion): Generate shell completion scripts.
 - [`glab config`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/config): Set and get CLI settings.
 - [`glab deploy-key`](https://gitlab.com/gitlab-org/cli/-/tree/main/docs/source/deploy-key): Manage deploy keys.

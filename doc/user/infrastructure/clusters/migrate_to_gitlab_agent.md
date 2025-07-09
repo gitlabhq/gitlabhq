@@ -166,7 +166,7 @@ To migrate from GitLab-managed clusters to GitLab-managed Kubernetes resources:
 
 ## Migrate from Auto DevOps
 
-In your Auto DevOps project, you can use the GitLab agent to connect with your Kubernetes cluster.
+In your Auto DevOps project, you can use the GitLab agent for Kubernetes to connect with your Kubernetes cluster.
 
 Prerequisites
 
@@ -223,7 +223,7 @@ agent, go through the following steps:
 
 ## Migrate a cluster management project
 
-See [how to use a cluster management project with the GitLab agent](../../clusters/management_project_template.md).
+See [how to use a cluster management project with the GitLab agent for Kubernetes](../../clusters/management_project_template.md).
 
 ## Migrate cluster monitoring features
 

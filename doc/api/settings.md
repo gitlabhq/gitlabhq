@@ -704,7 +704,7 @@ to configure other related settings. These requirements are
 | `login_recaptcha_protection_enabled`     | boolean          | no                                   | Enable reCAPTCHA for login. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for reCAPTCHA. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for reCAPTCHA. |
-| `receptive_cluster_agents_enabled`       | boolean          | no                                   | Enable receptive mode for GitLab Agents for Kubernetes. |
+| `receptive_cluster_agents_enabled`       | boolean          | no                                   | Enable receptive mode for GitLab agents for Kubernetes. |
 | `receive_max_input_size`                 | integer          | no                                   | Maximum push size (MB). |
 | `relation_export_batch_size`             | integer          | no                                   | The size of each batch when exporting batched relations. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194607) in GitLab 18.2. |
 | `remember_me_enabled`                    | boolean          | no                                   | Enable [**Remember me** setting](../administration/settings/account_and_limit_settings.md#configure-the-remember-me-option). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0. |

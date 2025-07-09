@@ -21,7 +21,7 @@ title: Deploy to a Kubernetes cluster with cluster certificates (deprecated)
 {{< alert type="warning" >}}
 
 This feature was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To connect your cluster to GitLab, use the [GitLab agent](../../clusters/agent/_index.md).
+To connect your cluster to GitLab, use the [GitLab agent for Kubernetes](../../clusters/agent/_index.md).
 To deploy with the agent, use the [CI/CD workflow](../../clusters/agent/ci_cd_workflow.md).
 
 {{< /alert >}}

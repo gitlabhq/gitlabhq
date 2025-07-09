@@ -39,14 +39,14 @@ Prerequisites:
 To update a Kubernetes cluster with GitLab CI/CD:
 
 1. Ensure you have a working Kubernetes cluster and the manifests are in a GitLab project.
-1. In the same GitLab project, [register and install the GitLab agent](install/_index.md).
+1. In the same GitLab project, [register and install the GitLab agent for Kubernetes](install/_index.md).
 1. [Update your `.gitlab-ci.yml` file](#update-your-gitlab-ciyml-file-to-run-kubectl-commands) to
    select the agent's Kubernetes context and run the Kubernetes API commands.
 1. Run your pipeline to deploy to or update the cluster.
 
 If you have multiple GitLab projects that contain Kubernetes manifests:
 
-1. [Install the GitLab agent](install/_index.md) in its own project, or in one of the
+1. [Install the GitLab agent for Kubernetes](install/_index.md) in its own project, or in one of the
    GitLab projects where you keep Kubernetes manifests.
 1. [Authorize agent access](#authorize-agent-access) in your GitLab projects.
 1. Optional. For added security, [use impersonation](#restrict-project-and-group-access-by-using-impersonation).

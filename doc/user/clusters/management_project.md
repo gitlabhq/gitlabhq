@@ -21,7 +21,7 @@ title: Cluster management project (deprecated)
 {{< alert type="warning" >}}
 
 The cluster management project was [deprecated](https://gitlab.com/groups/gitlab-org/configure/-/epics/8) in GitLab 14.5.
-To manage cluster applications, use the [GitLab agent](agent/_index.md)
+To manage cluster applications, use the [GitLab agent for Kubernetes](agent/_index.md)
 with the [Cluster Management Project Template](management_project_template.md).
 
 {{< /alert >}}
