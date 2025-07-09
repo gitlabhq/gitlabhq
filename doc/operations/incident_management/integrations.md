@@ -295,8 +295,12 @@ Example request payload:
 }
 ```
 
-> [!note]
-> When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example. When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
+{{< alert type="note" >}}
+
+When [triggering a test alert](#triggering-test-alerts), enter the whole payload as shown in the example.
+When [configuring custom mappings](#map-fields-in-custom-alerts), enter only the first item from the `alerts` array as the sample payload.
+
+{{< /alert >}}
 
 ## Authorization
 

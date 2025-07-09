@@ -3517,6 +3517,16 @@
   :idempotent: true
   :tags: []
   :queue_namespace:
+- :name: ci_slsa_publish_statement
+  :worker_name: Ci::Slsa::PublishStatementWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+  :queue_namespace:
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
   :feature_category: :job_artifacts

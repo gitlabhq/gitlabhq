@@ -4392,6 +4392,9 @@ msgstr ""
 msgid "AdminEmail|Subject is required."
 msgstr ""
 
+msgid "AdminGroups|%{planTitle} Plan"
+msgstr ""
+
 msgid "AdminLabels|Define your default set of project labels"
 msgstr ""
 

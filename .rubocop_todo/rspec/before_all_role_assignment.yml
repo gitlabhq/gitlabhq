@@ -795,7 +795,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'spec/features/search/user_searches_for_wiki_pages_spec.rb'
     - 'spec/features/user_can_display_performance_bar_spec.rb'
     - 'spec/features/user_sorts_things_spec.rb'
-    - 'spec/features/work_items/work_item_children_spec.rb'
     - 'spec/finders/alert_management/alerts_finder_spec.rb'
     - 'spec/finders/autocomplete/deploy_keys_with_write_access_finder_spec.rb'
     - 'spec/finders/autocomplete/routes_finder_spec.rb'

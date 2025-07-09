@@ -12,3 +12,4 @@ nonword: true
 scope: raw
 tokens:
   - '^ *(> )?(- )?\**(note|tip|caution|danger|warning|flag|disclaimer|details|history)\**:\**$'
+  - '(?<!markdown\n)^ *> \[![^\]]*\]'

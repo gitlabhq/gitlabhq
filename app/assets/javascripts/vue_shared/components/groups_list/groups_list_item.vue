@@ -45,6 +45,8 @@ export default {
     GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
     GroupListItemInactiveBadge,
+    GroupsListItemPlanBadge: () =>
+      import('ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -211,6 +213,7 @@ export default {
     <template #stats>
       <group-list-item-inactive-badge :group="group" />
       <gl-badge v-if="hasStorageSize" data-testid="storage-size">{{ storageSize }}</gl-badge>
+      <groups-list-item-plan-badge :group="group" />
       <list-item-stat
         v-if="showDescendantGroupsCount"
         :tooltip-text="$options.i18n.subgroups"

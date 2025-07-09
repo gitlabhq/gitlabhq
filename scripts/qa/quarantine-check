@@ -4,7 +4,14 @@
 require 'json'
 
 missing_issues = []
-missing_issue_message = %(\n*** The following quarantined tests are missing issue links:\n\n%s\n)
+missing_issue_message = <<~MSG
+  The following quarantined tests are missing issue links or types or are formatted incorrectly:
+
+  %s
+  Please ensure that every quarantined test has
+  `quarantine: { issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/<ISSUE_NUMBER>", type: "<TYPE>" }`
+  metadata tags with a valid issue link and type.
+MSG
 
 test_metadata_file = ARGV.shift
 
@@ -28,15 +35,19 @@ tests = data_hash['examples']
 tests.each do |test|
   next unless test['quarantine']
 
-  missing_issues.push(" ==> #{test['id']} - #{test['full_description']}\n") unless test['quarantine']['issue']
+  unless test['quarantine'].is_a?(Hash) && test['quarantine'].key?('issue') && test['quarantine'].key?('type')
+    missing_issues.push(" ==> #{test['id']} - #{test['full_description']}\n")
+  end
 end
 
 if missing_issues.empty?
   puts "\nNo errors found."
 else
-  puts "\n*** Quarantine format violations detected! ***\n"
+  puts "\e[31m"
+  puts "*** Quarantine format violations detected! ***\n\n"
 
-  puts missing_issue_message % missing_issues unless missing_issues.empty?
-  puts "See https://about.gitlab.com/handbook/engineering/infrastructure/test-platform/debugging-qa-test-failures/#quarantining-tests"
+  puts missing_issue_message % missing_issues.join unless missing_issues.empty?
+  puts "\nSee https://handbook.gitlab.com/handbook/engineering/testing/pipeline-triage/#long-term-quarantine"
+  puts "\e[0m"
   exit 1
 end

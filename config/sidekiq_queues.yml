@@ -237,6 +237,8 @@
   - 1
 - - ci_safe_disable_pipeline_variables
   - 1
+- - ci_slsa_publish_statement
+  - 1
 - - ci_unlock_pipelines_in_queue
   - 1
 - - ci_update_approval_rules_for_related_mrs

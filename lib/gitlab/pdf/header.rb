@@ -27,13 +27,11 @@ module Gitlab
           @pdf.bounding_box([0, @pdf.bounds.top], width: @halfway_point, height: @height) do
             logo_path = Rails.root.join('app/assets/images/gitlab_logo.png')
 
-            @pdf.image(
-              logo_path,
-              width: 21,
-              height: 21,
-              position: :left,
-              vposition: 6
-            )
+            begin
+              @pdf.image(logo_path, width: 21, height: 21, position: :left, vposition: 6)
+            rescue ArgumentError
+              nil
+            end
 
             @pdf.text_box(
               "GitLab",

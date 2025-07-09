@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import { GlAvatarLabeled, GlIcon, GlBadge } from '@gitlab/ui';
+import GroupsListItemPlanBadge from 'ee_component/vue_shared/components/groups_list/groups_list_item_plan_badge.vue';
 import axios from '~/lib/utils/axios_utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GroupsListItem from '~/vue_shared/components/groups_list/groups_list_item.vue';
@@ -567,5 +568,11 @@ describe('GroupsListItem', () => {
     createComponent();
 
     expect(findInactiveBadge().exists()).toBe(true);
+  });
+
+  it('renders plan badge', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(GroupsListItemPlanBadge).exists()).toBe(true);
   });
 });

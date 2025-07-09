@@ -943,8 +943,6 @@ Layout/LineLength:
     - 'ee/spec/features/burnup_charts_spec.rb'
     - 'ee/spec/features/dashboards/operations_spec.rb'
     - 'ee/spec/features/epic_boards/epic_boards_spec.rb'
-    - 'ee/spec/features/epics/epics_list_spec.rb'
-    - 'ee/spec/features/epics/issue_promotion_spec.rb'
     - 'ee/spec/features/geo_node_spec.rb'
     - 'ee/spec/features/google_analytics_datalayer_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/charts_spec.rb'

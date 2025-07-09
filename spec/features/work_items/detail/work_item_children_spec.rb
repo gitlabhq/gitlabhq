@@ -15,14 +15,13 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     # and we don't try to obtain an exclusive lease within a transaction.
     # See https://gitlab.com/gitlab-org/gitlab/-/issues/509629
     Users::Internal.support_bot_id
+    project.add_developer(user)
   end
 
   context 'for signed in user' do
     let(:child_item) { create(:work_item, :task, project: project) }
 
     before do
-      project.add_developer(user)
-
       sign_in(user)
 
       stub_feature_flags(work_items: true)
