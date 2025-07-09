@@ -434,7 +434,7 @@ architectures are designed to have enough memory in most cases to avoid the need
 
 ### Praefect PostgreSQL
 
-[Praefect requires its own database server](../gitaly/praefect.md#postgresql). To achieve full HA, a third-party PostgreSQL database solution is required.
+[Praefect requires its own database server](../gitaly/praefect/_index.md#postgresql). To achieve full HA, a third-party PostgreSQL database solution is required.
 
 We hope to offer a built-in solution for these restrictions in the future. In the meantime, a non-HA PostgreSQL server
 can be set up using the Linux package as the specifications reflect. For more details, see the following issues:

@@ -640,7 +640,7 @@ gitlab=# \q
 {{< alert type="warning" >}}
 
 In this architecture, having a single Gitaly server creates a single point of failure. Use
-[Gitaly Cluster](../../administration/gitaly/praefect.md) to remove this limitation.
+[Gitaly Cluster](../../administration/gitaly/praefect/_index.md) to remove this limitation.
 
 {{< /alert >}}
 

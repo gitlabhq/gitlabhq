@@ -42,8 +42,8 @@ module RapidDiffs
       diff_view == :parallel
     end
 
-    def empty_diff?
-      diffs_slice.nil? || diffs_slice.empty?
+    def empty_state_visible?
+      !diffs_stream_url && !lazy? && (diffs_slice.nil? || diffs_slice.empty?)
     end
 
     def browser_visible?

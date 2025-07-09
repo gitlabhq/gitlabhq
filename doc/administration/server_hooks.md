@@ -136,7 +136,7 @@ The location to copy the scripts to depends on where repositories are stored:
 - In GitLab 15.3 and later, new repositories are created using
   [Praefect-generated replica paths](gitaly/_index.md#praefect-generated-replica-paths),
   which are not the hashed storage path. The replica path can be identified by
-  [querying the Praefect repository metadata](gitaly/troubleshooting_gitaly_cluster.md#view-repository-metadata)
+  [querying the Praefect repository metadata](gitaly/praefect/troubleshooting.md#view-repository-metadata)
   using `-relative-path` to specify the expected GitLab hashed storage path.
 
 ## Create global server hooks for all repositories

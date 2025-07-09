@@ -1208,7 +1208,7 @@ are supported and can be added if needed.
 
 ## Configure Gitaly Cluster
 
-[Gitaly Cluster](../gitaly/praefect.md) is a GitLab-provided and recommended fault tolerant solution for storing Git
+[Gitaly Cluster](../gitaly/praefect/_index.md) is a GitLab-provided and recommended fault tolerant solution for storing Git
 repositories. In this configuration, every Git repository is stored on every Gitaly node in the cluster, with one being
 designated the primary, and failover occurs automatically if the primary node goes down.
 
@@ -1240,7 +1240,7 @@ The recommended cluster setup includes the following components:
   [internal load balancer](#configure-the-internal-load-balancer) is used.
 
 This section details how to configure the recommended standard setup in order.
-For more advanced setups refer to the [standalone Gitaly Cluster documentation](../gitaly/praefect.md).
+For more advanced setups refer to the [standalone Gitaly Cluster documentation](../gitaly/praefect/_index.md).
 
 ### Configure Praefect PostgreSQL
 
@@ -1414,7 +1414,7 @@ the details of each Gitaly node that makes up the cluster. Each storage is also 
 and this name is used in several areas of the configuration. In this guide, the name of the storage will be
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
 to use Gitaly Cluster, you might have to use a different name.
-Refer to the [Praefect documentation](../gitaly/praefect.md#praefect) for more information.
+Refer to the [Praefect documentation](../gitaly/praefect/_index.md#praefect) for more information.
 
 The following IPs will be used as an example:
 
@@ -1438,7 +1438,7 @@ To configure the Praefect nodes, on each one:
 
    <!--
    Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect.md
+   - https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/administration/gitaly/praefect/_index.md
    - all reference architecture pages
    -->
 

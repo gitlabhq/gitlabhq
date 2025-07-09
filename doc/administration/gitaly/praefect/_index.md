@@ -15,15 +15,15 @@ title: Configure Gitaly Cluster
 Configure Gitaly Cluster using either:
 
 - Gitaly Cluster configuration instructions available as part of
-  [reference architectures](../reference_architectures/_index.md) for installations of up to:
-  - [60 RPS or 3,000 users](../reference_architectures/3k_users.md#configure-gitaly-cluster).
-  - [100 RPS or 5,000 users](../reference_architectures/5k_users.md#configure-gitaly-cluster).
-  - [200 RPS or 10,000 users](../reference_architectures/10k_users.md#configure-gitaly-cluster).
-  - [500 RPS or 25,000 users](../reference_architectures/25k_users.md#configure-gitaly-cluster).
-  - [1000 RPS or 50,000 users](../reference_architectures/50k_users.md#configure-gitaly-cluster).
+  [reference architectures](../../reference_architectures/_index.md) for installations of up to:
+  - [60 RPS or 3,000 users](../../reference_architectures/3k_users.md#configure-gitaly-cluster).
+  - [100 RPS or 5,000 users](../../reference_architectures/5k_users.md#configure-gitaly-cluster).
+  - [200 RPS or 10,000 users](../../reference_architectures/10k_users.md#configure-gitaly-cluster).
+  - [500 RPS or 25,000 users](../../reference_architectures/25k_users.md#configure-gitaly-cluster).
+  - [1000 RPS or 50,000 users](../../reference_architectures/50k_users.md#configure-gitaly-cluster).
 - The custom configuration instructions that follow on this page.
 
-Smaller GitLab installations may need only [Gitaly itself](_index.md).
+Smaller GitLab installations may need only [Gitaly itself](../_index.md).
 
 {{< alert type="note" >}}
 
@@ -37,13 +37,13 @@ Gitaly Cluster is not yet supported in Kubernetes, Amazon ECS, or similar contai
 The minimum recommended configuration for a Gitaly Cluster requires:
 
 - 1 load balancer
-- 1 PostgreSQL server (a [supported version](../../install/requirements.md#postgresql))
+- 1 PostgreSQL server (a [supported version](../../../install/requirements.md#postgresql))
 - 3 Praefect nodes
 - 3 Gitaly nodes (1 primary, 2 secondary)
 
 {{< alert type="note" >}}
 
-[Disk requirements](_index.md#disk-requirements) apply to Gitaly nodes.
+[Disk requirements](../_index.md#disk-requirements) apply to Gitaly nodes.
 
 {{< /alert >}}
 
@@ -66,7 +66,7 @@ Network latency for Gitaly Cluster should ideally be measurable in single-digit 
 important for:
 
 - Gitaly node health checks. Nodes must be able to respond within 1 second.
-- Reference transactions that enforce [strong consistency](_index.md#strong-consistency). Lower latencies mean Gitaly
+- Reference transactions that enforce [strong consistency](../_index.md#strong-consistency). Lower latencies mean Gitaly
   nodes can agree on changes faster.
 
 Achieving acceptable latency between Gitaly nodes:
@@ -76,9 +76,9 @@ Achieving acceptable latency between Gitaly nodes:
   are designed for this type of synchronization. Latency of less than 2 ms should be sufficient for Gitaly Cluster.
 
 If you can't provide low network latencies for replication (for example, between distant locations), consider Geo. For
-more information, see [Comparison to Geo](_index.md#comparison-to-geo).
+more information, see [Comparison to Geo](../_index.md#comparison-to-geo).
 
-Gitaly Cluster [components](_index.md#components) communicate with each other over many routes. Your firewall rules must
+Gitaly Cluster [components](../_index.md#components) communicate with each other over many routes. Your firewall rules must
 allow the following for Gitaly Cluster to function properly:
 
 | From                   | To                     | Default port | TLS port |
@@ -176,7 +176,7 @@ with secure tokens as you complete the setup process.
    change it.
 1. `PGBOUNCER_SQL_PASSWORD_HASH`: the hash of password of the PgBouncer user.
    PgBouncer uses this password to connect to PostgreSQL. For more details
-   see [bundled PgBouncer](../postgresql/pgbouncer.md) documentation.
+   see [bundled PgBouncer](../../postgresql/pgbouncer.md) documentation.
 
 We note in the instructions below where these secrets are required.
 
@@ -199,7 +199,7 @@ following to `gitlab.rb` on each node:
 {{< alert type="note" >}}
 
 Do not store the GitLab application database and the Praefect
-database on the same PostgreSQL server if using [Geo](../geo/_index.md).
+database on the same PostgreSQL server if using [Geo](../../geo/_index.md).
 The replication state is internal to each instance of GitLab and should
 not be replicated.
 
@@ -213,7 +213,7 @@ Clustered database support for other databases (for example, Praefect and Geo da
 The following options are available:
 
 - For non-Geo installations, either:
-  - Use one of the documented [PostgreSQL setups](../postgresql/_index.md).
+  - Use one of the documented [PostgreSQL setups](../../postgresql/_index.md).
   - Use your own third-party database setup. This requires [manual setup](#manual-database-setup).
 - For Geo instances, either:
   - Set up a separate [PostgreSQL instance](https://www.postgresql.org/docs/16/high-availability.html).
@@ -221,7 +221,7 @@ The following options are available:
     [Relational Database Service](https://aws.amazon.com/rds/) is recommended.
 
 Setting up PostgreSQL creates empty Praefect tables. For more information, see the
-[relevant troubleshooting section](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
+[relevant troubleshooting section](troubleshooting.md#relation-does-not-exist-errors).
 
 #### Running GitLab and Praefect databases on the same server
 
@@ -320,7 +320,7 @@ praefect['configuration'] = {
 ```
 
 If you see Praefect database errors after configuring PostgreSQL, see
-[troubleshooting steps](troubleshooting_gitaly_cluster.md#relation-does-not-exist-errors).
+[troubleshooting steps](troubleshooting.md#relation-does-not-exist-errors).
 
 #### Reads distribution caching
 
@@ -404,7 +404,7 @@ To configure the additional connection, you must either:
 ##### Configure a new PgBouncer database with `pool_mode = session`
 
 You should use PgBouncer with `session` pool mode. You can use the
-[bundled PgBouncer](../postgresql/pgbouncer.md) or use an external PgBouncer and
+[bundled PgBouncer](../../postgresql/pgbouncer.md) or use an external PgBouncer and
 [configure it manually](https://www.pgbouncer.org/config.html).
 
 The following example uses the bundled PgBouncer and sets up two separate connection pools on the PostgreSQL host,
@@ -664,7 +664,7 @@ Updates to example must be made at:
 
    If you have data on an already existing storage called
    `default`, you should configure the virtual storage with another name and
-   [migrate the data to the Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
+   [migrate the data to the Gitaly Cluster storage](../_index.md#migrate-to-gitaly-cluster)
    afterwards.
 
    {{< /alert >}}
@@ -718,7 +718,7 @@ Updates to example must be made at:
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+   [reconfigure Praefect](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -742,7 +742,7 @@ Updates to example must be made at:
      additional configuration changes can be done and then reconfigure can be run manually.
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+   [reconfigure Praefect](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -750,7 +750,7 @@ Updates to example must be made at:
 
 1. To ensure that Praefect
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
-   [restart Praefect](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+   [restart Praefect](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl restart praefect
@@ -771,7 +771,7 @@ Updates to example must be made at:
 Praefect supports TLS encryption. To communicate with a Praefect instance that listens
 for secure connections, you must:
 
-- Ensure Gitaly is [configured for TLS](tls_support.md) and use a `tls://` URL scheme in the `gitaly_address`
+- Ensure Gitaly is [configured for TLS](../tls_support.md) and use a `tls://` URL scheme in the `gitaly_address`
   of the corresponding storage entry in the GitLab configuration.
 - Bring your own certificates because this isn't provided automatically. The certificate
   corresponding to each Praefect server must be installed on that Praefect server.
@@ -785,7 +785,7 @@ Note the following:
 - The certificate must specify the address you use to access the Praefect server. You must add the hostname or IP
   address as a Subject Alternative Name to the certificate.
 - When running Praefect sub-commands such as `dial-nodes` and `list-untracked-repositories` from the command line with
-  [Gitaly TLS enabled](tls_support.md), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
+  [Gitaly TLS enabled](../tls_support.md), you must set the `SSL_CERT_DIR` or `SSL_CERT_FILE`
   environment variable so that the Gitaly certificate is trusted. For example:
 
    ```shell
@@ -836,7 +836,7 @@ For Linux package installations:
    }
    ```
 
-1. Save the file and [reconfigure](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Save the file and [reconfigure](../../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 1. On the Praefect clients (including each Gitaly server), copy the certificates,
    or their certificate authority, into `/etc/gitlab/trusted-certs`:
@@ -857,7 +857,7 @@ For Linux package installations:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 For self-compiled installations:
 
@@ -891,7 +891,7 @@ For self-compiled installations:
            gitaly_address: tls://PRAEFECT_LOADBALANCER_HOST:3305
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
+1. Save the file and [restart GitLab](../../restart_gitlab.md#self-compiled-installations).
 1. Copy all Praefect server certificates, or their certificate authority, to the system
    trusted certificates on each Gitaly server so the Praefect server trusts the
    certificate when called by Gitaly servers:
@@ -911,7 +911,7 @@ For self-compiled installations:
    key_path = '/etc/gitlab/ssl/key.pem'
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
+1. Save the file and [restart GitLab](../../restart_gitlab.md#self-compiled-installations).
 
 #### Service discovery
 
@@ -1004,7 +1004,7 @@ You can also appoint an authoritative name server by setting it in this format:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 {{< /tab >}}
 
@@ -1022,7 +1022,7 @@ You can also appoint an authoritative name server by setting it in this format:
            gitaly_address: dns:PRAEFECT_SERVICE_DISCOVERY_ADDRESS:2305
    ```
 
-1. Save the file and [restart GitLab](../restart_gitlab.md#self-compiled-installations).
+1. Save the file and [restart GitLab](../../restart_gitlab.md#self-compiled-installations).
 
 {{< /tab >}}
 
@@ -1037,7 +1037,7 @@ by service discovery.
 
 Prerequisites:
 
-- One or more [Consul](../consul.md) servers to keep track of the Consul agents.
+- One or more [Consul](../../consul.md) servers to keep track of the Consul agents.
 
 1. On each Praefect server, add the following to your `/etc/gitlab/gitlab.rb`:
 
@@ -1055,7 +1055,7 @@ Prerequisites:
    }
    ```
 
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation).
 1. Repeat the previous steps on each Praefect server to use with
    service discovery.
 1. On the Praefect clients (except Gitaly servers), edit `gitlab_rails['repositories_storages']` in
@@ -1075,7 +1075,7 @@ Prerequisites:
    `praefect.service.consul` with `dig A praefect.service.consul @CONSUL_SERVER -p 8600`.
    Replace `CONSUL_SERVER` with the value configured previously and all Praefect node IP addresses
    should be present in the output.
-1. Save the file and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
+1. Save the file and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
 ### Gitaly
 
@@ -1112,7 +1112,7 @@ Particular attention should be shown to:
   `gitaly-2`, and `gitaly-3` as physical storage names.
 
 For more information on Gitaly server configuration, see our
-[Gitaly documentation](configure_gitaly.md#configure-gitaly-servers).
+[Gitaly documentation](../configure_gitaly.md#configure-gitaly-servers).
 
 1. SSH into the Gitaly node and login as root:
 
@@ -1180,7 +1180,7 @@ For more information on Gitaly server configuration, see our
 
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
         servers and any other Gitaly clients.
-     1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
+     1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
    - Method 2:
 
@@ -1218,7 +1218,7 @@ For more information on Gitaly server configuration, see our
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure Gitaly](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+   [reconfigure Gitaly](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1226,7 +1226,7 @@ For more information on Gitaly server configuration, see our
 
 1. To ensure that Gitaly
    [has updated its Prometheus listen address](https://gitlab.com/gitlab-org/gitaly/-/issues/2734),
-   [restart Gitaly](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+   [restart Gitaly](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl restart gitaly
@@ -1373,7 +1373,7 @@ Particular attention should be shown to:
    {{< alert type="warning" >}}
 
    If you have existing data stored on the default Gitaly storage,
-   you should [migrate the data to your Gitaly Cluster storage](_index.md#migrate-to-gitaly-cluster)
+   you should [migrate the data to your Gitaly Cluster storage](../_index.md#migrate-to-gitaly-cluster)
    first.
 
    {{< /alert >}}
@@ -1412,7 +1412,7 @@ Particular attention should be shown to:
 
      1. Copy `/etc/gitlab/gitlab-secrets.json` from the Gitaly client to same path on the Gitaly
         servers and any other Gitaly clients.
-     1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
+     1. [Reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation) on Gitaly servers.
 
    - Method 2:
 
@@ -1456,7 +1456,7 @@ Particular attention should be shown to:
    ]
    ```
 
-1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+1. Save the changes to `/etc/gitlab/gitlab.rb` and [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1503,13 +1503,13 @@ gitlab_rails['repositories_storages'] = {
 }
 ```
 
-See [Mixed Configuration](configure_gitaly.md#mixed-configuration) for further information on
+See [Mixed Configuration](../configure_gitaly.md#mixed-configuration) for further information on
 running multiple Gitaly storages.
 
 ### Grafana
 
 Grafana is included with GitLab, and can be used to monitor your Praefect
-cluster. See [Grafana Dashboard Service](../monitoring/performance/grafana_configuration.md)
+cluster. See [Grafana Dashboard Service](../../monitoring/performance/grafana_configuration.md)
 for detailed documentation.
 
 To get started quickly:
@@ -1527,7 +1527,7 @@ To get started quickly:
    ```
 
 1. Save the changes to `/etc/gitlab/gitlab.rb` and
-   [reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation):
+   [reconfigure GitLab](../../restart_gitlab.md#reconfigure-a-linux-package-installation):
 
    ```shell
    gitlab-ctl reconfigure
@@ -1623,7 +1623,7 @@ current assignments: gitaly-1, gitaly-2
 ### Repository storage recommendations
 
 The size of the required storage can vary between instances and depends on the set
-[replication factor](_index.md#replication-factor). You might want to include implementing
+[replication factor](../_index.md#replication-factor). You might want to include implementing
 repository storage redundancy.
 
 For a replication factor:
@@ -1721,7 +1721,7 @@ praefect['configuration'] = {
 
 Deletions were disabled by default prior to GitLab 15.9 due to a race condition with repository renames
 that can cause incorrect deletions, which is especially prominent in Geo instances as Geo performs more renames
-than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
+than instances without Geo. In GitLab 15.0 to 15.5, you should enable deletions only if the [`gitaly_praefect_generated_replica_paths` feature flag](../_index.md#praefect-generated-replica-paths) is enabled. The feature flag was removed in GitLab 15.6 making deletions always safe to enable.
 
 {{< /alert >}}
 

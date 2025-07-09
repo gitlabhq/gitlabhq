@@ -191,7 +191,7 @@ In the future this functionality may be changed, [refer to this Epic](https://gi
 
 {{< alert type="note" >}}
 
-This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
+This section focuses exclusively on the Praefect component, not its [required PostgreSQL database](../administration/gitaly/praefect/_index.md#postgresql). The [GitLab Linux package does not offer HA](https://gitlab.com/groups/gitlab-org/-/epics/7814) and subsequently Zero Downtime support for the Praefect database. A third party database solution is required to avoid downtime.
 
 {{< /alert >}}
 

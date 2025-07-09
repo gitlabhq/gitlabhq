@@ -30,7 +30,7 @@ access repositories through a physical or virtual storage.
 For more information on:
 
 - Configuring Gitaly, see [Configure Gitaly](gitaly/configure_gitaly.md).
-- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](gitaly/praefect.md).
+- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](gitaly/praefect/_index.md).
 
 ## Hashed storage
 

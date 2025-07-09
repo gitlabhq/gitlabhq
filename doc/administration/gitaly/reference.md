@@ -30,4 +30,4 @@ If you are configuring a Linux package installation, you must convert the exampl
 For more information on:
 
 - Configuring Gitaly, see [Configure Gitaly](configure_gitaly.md).
-- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
+- Configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect/_index.md).

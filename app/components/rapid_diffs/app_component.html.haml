@@ -24,7 +24,7 @@
     -# using label produces better results in VoiceOver than labelledby + hidden h2
     %section.rd-app-content{ aria: { label: content_label } }
       .rd-app-content-header{ data: { hidden_files_warning: true } }
-      - if empty_diff? && !lazy?
+      - if empty_state_visible?
         = render RapidDiffs::EmptyStateComponent.new
       .rd-app-code-theme.code.code-syntax-highlight-theme
         .rd-app-diffs-list
@@ -38,10 +38,11 @@
               = javascript_tag nonce: content_security_policy_nonce do
                 :plain
                   requestAnimationFrame(() => { window.performance.mark('rapid-diffs-first-diff-file-shown') })
-              - if diffs_list?
-                = diffs_list
-              - elsif !empty_diff?
-                = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?)
+              - unless empty_state_visible?
+                - if diffs_list?
+                  = diffs_list
+                - else
+                  = render RapidDiffs::DiffFileComponent.with_collection(diffs_slice, parallel_view: parallel_view?)
               - if diffs_stream_url
                 %div{ data: { stream_remaining_diffs: true } }
               - else

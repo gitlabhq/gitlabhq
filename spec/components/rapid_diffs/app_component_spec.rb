@@ -154,6 +154,7 @@ RSpec.describe RapidDiffs::AppComponent, type: :component, feature_category: :co
 
   context "when there are no diffs" do
     let(:diffs_slice) { [] }
+    let(:diffs_stream_url) { nil }
 
     it "renders empty state component" do
       render_component

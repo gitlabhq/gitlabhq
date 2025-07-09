@@ -42,7 +42,7 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
     describe '#diffs_stream_url' do
       subject(:url) { presenter.diffs_stream_url }
 
-      it { is_expected.to be_nil }
+      it { is_expected.to eq("#{base_path}/diffs_stream#{url_params}&view=#{diff_view}") }
     end
 
     describe '#reload_stream_url' do
@@ -55,7 +55,7 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   describe '#lazy?' do
     subject(:method) { presenter.lazy? }
 
-    it { is_expected.to be(true) }
+    it { is_expected.to be(false) }
   end
 
   describe '#should_sort_metadata_files?' do
@@ -68,6 +68,6 @@ RSpec.describe ::RapidDiffs::ComparePresenter, feature_category: :source_code_ma
   describe '#offset' do
     subject(:method) { presenter.send(:offset) }
 
-    it { is_expected.to be_nil }
+    it { is_expected.to eq(0) }
   end
 end

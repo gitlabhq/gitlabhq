@@ -2,7 +2,6 @@
 - container_class = fluid_layout ? '' : 'container-limited'
 - add_to_breadcrumbs s_("CompareRevisions|Compare revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]} to #{params[:to]}"
-- has_diff = @commits.present? || @diffs.present? && @diffs.diff_files.present?
 -# Only show commit list in the first page
 - hide_commit_list = params[:page].present? && params[:page] != '1'
 - add_page_specific_style 'page_bundles/merge_requests'
@@ -13,7 +12,7 @@
     .js-signature-container{ data: { 'signatures-path' => signatures_namespace_project_compare_index_path } }
       #js-compare-selector{ data: project_compare_selector_data(@project, @merge_request, params) }
 
-- if has_diff
+- if @commits.present?
   .container-fluid{ class: [container_class] }
     = render "projects/commits/commit_list" unless hide_commit_list
   .container-fluid

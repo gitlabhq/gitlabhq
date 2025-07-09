@@ -40,7 +40,7 @@ The following Rake tasks are available for use with GitLab:
 | [Integrity checks](check.md)                                                                          | Check the integrity of repositories, files, LDAP, and more. |
 | [LDAP maintenance](ldap.md)                                                                           | [LDAP](../auth/ldap/_index.md)-related tasks. |
 | [Password](password.md)                                                                               | Password management tasks. |
-| [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect.md)-related tasks. |
+| [Praefect Rake tasks](praefect.md)                                                                    | [Praefect](../gitaly/praefect/_index.md)-related tasks. |
 | [Project import/export](project_import_export.md)                                                     | Prepare for [project exports and imports](../../user/project/settings/import_export.md). |
 | [Sidekiq job migration](../sidekiq/sidekiq_job_migration.md)                                          | Migrate Sidekiq jobs scheduled for future dates to a new queue. |
 | [Service Desk email](service_desk_email.md)                                                           | Service Desk email-related tasks. |

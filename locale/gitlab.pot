@@ -2412,6 +2412,9 @@ msgstr ""
 msgid "AICatalog|Description is required."
 msgstr ""
 
+msgid "AICatalog|Edit"
+msgstr ""
+
 msgid "AICatalog|Edit agent"
 msgstr ""
 
@@ -2433,10 +2436,10 @@ msgstr ""
 msgid "AICatalog|Please consider my background in... When explaining concepts, use... My preferred format for responses is... Always include..."
 msgstr ""
 
-msgid "AICatalog|Prompt"
+msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
 msgstr ""
 
-msgid "AICatalog|Provide default instructions or context that will be included with every user interaction."
+msgid "AICatalog|Provide instructions or context that will be included for this run."
 msgstr ""
 
 msgid "AICatalog|Run"
@@ -15587,7 +15590,7 @@ msgstr ""
 msgid "Compliance Center|Violations"
 msgstr ""
 
-msgid "Compliance and security policy group for this instance"
+msgid "Compliance and security policy group"
 msgstr ""
 
 msgid "Compliance center"
@@ -22692,6 +22695,12 @@ msgstr ""
 msgid "Destination"
 msgstr ""
 
+msgid "Destination activated successfully."
+msgstr ""
+
+msgid "Destination deactivated successfully."
+msgstr ""
+
 msgid "Destination path"
 msgstr ""
 
@@ -26744,6 +26753,9 @@ msgid "Failed to update compliance requirement control. Error: %{error_message}"
 msgstr ""
 
 msgid "Failed to update compliance violation status. Please try again later."
+msgstr ""
+
+msgid "Failed to update destination status. Please try again."
 msgstr ""
 
 msgid "Failed to update framework"

@@ -32,7 +32,7 @@ module RapidDiffs
 
     override(:offset)
     def offset
-      nil
+      0
     end
   end
 end

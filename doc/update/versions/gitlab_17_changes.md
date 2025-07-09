@@ -556,7 +556,7 @@ The OpenSSL 3 upgrade has been postponed to GitLab 17.7.0.
 
   Then run `gitlab-ctl reconfigure`.
 
-  ALPN enforcement has been disabled again in [GitLab 17.5.5 and other versions](../../administration/gitaly/praefect.md#alpn-enforcement).
+  ALPN enforcement has been disabled again in [GitLab 17.5.5 and other versions](../../administration/gitaly/praefect/_index.md#alpn-enforcement).
   Upgrading to one of those versions removes the need to set `GRPC_ENFORCE_ALPN_ENABLED`.
 
 ## 17.3.0

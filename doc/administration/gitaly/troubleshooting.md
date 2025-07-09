@@ -13,7 +13,7 @@ title: Troubleshooting Gitaly
 {{< /details >}}
 
 Refer to the information below when troubleshooting Gitaly. For information on troubleshooting Gitaly Cluster (Praefect),
-see [Troubleshooting Gitaly Cluster](troubleshooting_gitaly_cluster.md).
+see [Troubleshooting Gitaly Cluster](praefect/troubleshooting.md).
 
 The following sections provide possible solutions to Gitaly errors.
 
@@ -348,7 +348,7 @@ This information in the logs is a gRPC call
 [error response code](https://grpc.github.io/grpc/core/md_doc_statuscodes.html).
 
 If this error occurs, even though
-[the Gitaly auth tokens are set up correctly](troubleshooting_gitaly_cluster.md#praefect-errors-in-logs),
+[the Gitaly auth tokens are set up correctly](praefect/troubleshooting.md#praefect-errors-in-logs),
 it's likely that the Gitaly servers are experiencing
 [clock drift](https://en.wikipedia.org/wiki/Clock_drift). The auth tokens sent to Gitaly include a timestamp. To be considered valid, Gitaly requires that timestamp to be within 60 seconds of the Gitaly server time.
 

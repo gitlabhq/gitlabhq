@@ -330,7 +330,7 @@ The following table outlines the major differences between Gitaly Cluster and Ge
 
 | Tool           | Nodes    | Locations | Latency tolerance                                                                                     | Failover                                                                    | Consistency                           | Provides redundancy for |
 |:---------------|:---------|:----------|:------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------|:--------------------------------------|:------------------------|
-| Gitaly Cluster | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](praefect.md#network-latency-and-connectivity) | [Automatic](praefect.md#automatic-failover-and-primary-election-strategies) | [Strong](_index.md#strong-consistency) | Data storage in Git     |
+| Gitaly Cluster | Multiple | Single    | [Less than 1 second, ideally single-digit milliseconds](praefect/_index.md#network-latency-and-connectivity) | [Automatic](praefect/_index.md#automatic-failover-and-primary-election-strategies) | [Strong](_index.md#strong-consistency) | Data storage in Git     |
 | Geo            | Multiple | Multiple  | Up to one minute                                                                                      | [Manual](../geo/disaster_recovery/_index.md)                                 | Eventual                              | Entire GitLab instance  |
 
 For more information, see:
@@ -450,7 +450,7 @@ cause problems on some file systems. In this case, `54771` hashes to
 
 #### Identify repositories on disk
 
-Use the [`praefect metadata`](troubleshooting_gitaly_cluster.md#view-repository-metadata) subcommand to:
+Use the [`praefect metadata`](praefect/troubleshooting.md#view-repository-metadata) subcommand to:
 
 - Retrieve a repository's virtual storage and relative path from the metadata store. After you have the hashed storage path, you can use the Rails
   console to retrieve the project path.
@@ -506,10 +506,10 @@ relative path of the repository in the metadata store.
 
 Gitaly Cluster consists of multiple components:
 
-- [Load balancer](praefect.md#load-balancer) for distributing requests and providing fault-tolerant access to
+- [Load balancer](praefect/_index.md#load-balancer) for distributing requests and providing fault-tolerant access to
   Praefect nodes.
-- [Praefect](praefect.md#praefect) nodes for managing the cluster and routing requests to Gitaly nodes.
-- [PostgreSQL database](praefect.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect.md#use-pgbouncer),
+- [Praefect](praefect/_index.md#praefect) nodes for managing the cluster and routing requests to Gitaly nodes.
+- [PostgreSQL database](praefect/_index.md#postgresql) for persisting cluster metadata and [PgBouncer](praefect/_index.md#use-pgbouncer),
   recommended for pooling Praefect's database connections.
 - Gitaly nodes to provide repository storage and Git access.
 
@@ -529,9 +529,9 @@ Gitaly Cluster provides the following features:
 - [Distributed reads](#distributed-reads) among Gitaly nodes.
 - [Strong consistency](#strong-consistency) of the secondary replicas.
 - [Replication factor](#replication-factor) of repositories for increased redundancy.
-- [Automatic failover](praefect.md#automatic-failover-and-primary-election-strategies) from the
+- [Automatic failover](praefect/_index.md#automatic-failover-and-primary-election-strategies) from the
   primary Gitaly node to secondary Gitaly nodes.
-- Reporting of possible [data loss](recovery.md#check-for-data-loss) if replication queue isn't empty.
+- Reporting of possible [data loss](praefect/recovery.md#check-for-data-loss) if replication queue isn't empty.
 
 Follow the [Gitaly Cluster epic](https://gitlab.com/groups/gitlab-org/-/epics/1489) for improvements
 including [horizontally distributing reads](https://gitlab.com/groups/gitlab-org/-/epics/2013).
@@ -585,11 +585,11 @@ replication factor:
 By default, Gitaly Cluster replicates repositories to every storage in a
 [virtual storage](#virtual-storage).
 
-For configuration information, see [Configure replication factor](praefect.md#configure-replication-factor).
+For configuration information, see [Configure replication factor](praefect/_index.md#configure-replication-factor).
 
 ### Configure Gitaly Cluster
 
-For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect.md).
+For more information on configuring Gitaly Cluster, see [Configure Gitaly Cluster](praefect/_index.md).
 
 ### Upgrade Gitaly Cluster
 
@@ -651,9 +651,9 @@ Before migrating to Gitaly Cluster:
 To migrate to Gitaly Cluster:
 
 1. Create the required storage. Refer to
-   [repository storage recommendations](praefect.md#repository-storage-recommendations).
-1. Create and configure [Gitaly Cluster](praefect.md).
-1. Configure the existing Gitaly instance [to use TCP](praefect.md#use-tcp-for-existing-gitlab-instances), if not already configured that way.
+   [repository storage recommendations](praefect/_index.md#repository-storage-recommendations).
+1. Create and configure [Gitaly Cluster](praefect/_index.md).
+1. Configure the existing Gitaly instance [to use TCP](praefect/_index.md#use-tcp-for-existing-gitlab-instances), if not already configured that way.
 1. [Move the repositories](../operations/moving_repositories.md#moving-repositories). To migrate to
    Gitaly Cluster, existing repositories stored outside Gitaly Cluster must be moved. There is no
    automatic migration, but the moves can be scheduled with the GitLab API.
