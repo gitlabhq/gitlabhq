@@ -2,6 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.1.2 (2025-07-09)
+
+### Fixed (5 changes)
+
+- [Rake Doctor Secrets: Fix WebHook error](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ce02068cccff230ffbef2f88b169902fe7f43bbf)
+- [Fix title on empty projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3ea74609f662c78433afcfe160a028a5bbbdf2fc)
+- [Show both author and committer in last commit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/52ba3c0f90dd0ebc4f6a27beab60588f091068af)
+- [Remove Sidekiq shutdown delay in ConcurrencyLimitSampler](https://gitlab.com/gitlab-org/security/gitlab/-/commit/03315bd4f35d87ff58220bf581158698ce163b72)
+- [Fix code owner validation for roles](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e797849679b80d660a34b65f11dd7506e9fdf35b) **GitLab Enterprise Edition**
+
+### Changed (2 changes)
+
+- [Fix the owner for sequence ci_builds_id_seq](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d594b6dc14fc5b2ed52f49e7d97d1a2363397185)
+- [Enable using glab for CI release](https://gitlab.com/gitlab-org/security/gitlab/-/commit/b91e1226900cbdbb1dfd53efd65c9cb2b6d2f64a)
+
+### Security (6 changes)
+
+- [Revert "Merge branch..." from 18.1](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5384ab91a8eaaa1cfe253eb093277f76cde48d09) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5126))
+- [Enforces invite_group_members permission when creating group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e3f78357e039d70c0eaf67d86f46cced28c8ce3b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5105))
+- [Enforces invite_project_members permission when creating project members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/064d8e2a0ce7a9c0191c9ec3ef7f43d1f25e8f29) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5108))
+- [Fix XSS via blob rich viewer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2cd8baa02ea37d89d2f7c67749947da520cb4ea1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5119))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1a79ece45035eec1d5daee10f89363be089ff069) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5114))
+- [Prevent linking fork if target group disallows external forks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3ccce42e662ce3849c8dde62975e21146d6ef0fa) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5102))
+
 ## 18.1.1 (2025-06-24)
 
 ### Security (5 changes)
