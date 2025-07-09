@@ -2,6 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 18.0.4 (2025-07-09)
+
+### Fixed (8 changes)
+
+- [Fix incorrect redirect when branch doesn't include files](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3e7fb0bdef7ebc8ac321646a94305eacfd93acc0)
+- [Fix title on empty projects](https://gitlab.com/gitlab-org/security/gitlab/-/commit/573d6691721b83db8122876d77397212646b251a)
+- [Show both author and committer in last commit](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c73962ffc8aab22c863062a62efc269b6dbc996)
+- [Backport "Add a spinner for a loading elipsis menu" to 18.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/c90dda26bce7b97e65c92308308b8cd77d7c7c73)
+- [Refactor blob commit info section](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ee9fbe3f711dfc7b2b51c492e8f24de2253ed698)
+- [Remove Sidekiq shutdown delay in ConcurrencyLimitSampler](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5c7648701f92856c839eb8d8dbf760fda8c2eac4)
+- [Fix code owner validation for roles](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2512b4869c9ba658e1c35246843c42aec2ddf555) **GitLab Enterprise Edition**
+- [Fix Protected Tags show page](https://gitlab.com/gitlab-org/security/gitlab/-/commit/aca613193dbda73c149411055c1bf46fae3447b6)
+
+### Security (6 changes)
+
+- [Revert "Merge branch..." from 18.0](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d6168858300ceeac41e4c824198e6a92146a205c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5127))
+- [Enforces invite_group_members permission when creating group members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1f301202958e3cc830ffa5682ae2f852de69a11b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5106))
+- [Enforces invite_project_members permission when creating project members](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cf62ff2ceaafae0229005adc818a0a094458e128) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5109))
+- [Fix XSS via blob rich viewer](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2638ec4db071db9862fad4e7d46d43cf9363d9c4) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5120))
+- [Fix CI ID Token claims for forked project MR jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/37d0e88ffaa631795f9ef1a37294f9b2a4ff7e36) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5116))
+- [Prevent linking fork if target group disallows external forks](https://gitlab.com/gitlab-org/security/gitlab/-/commit/48d6c2e6c4022e134d3074ed3de36788ce18175e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/5103))
+
 ## 18.0.3 (2025-06-24)
 
 ### Fixed (1 change)
