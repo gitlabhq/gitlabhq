@@ -146,7 +146,7 @@ export const fetchSidebarCount = ({ commit, state }, skipBlobs) => {
   return Promise.all(promises);
 };
 
-export const setQuery = async ({ state, commit, getters }, { key, value }) => {
+export const setQuery = async ({ state, commit, getters, dispatch }, { key, value }) => {
   commit(types.SET_QUERY, { key, value });
 
   if (SIDEBAR_PARAMS.includes(key)) {
@@ -157,13 +157,32 @@ export const setQuery = async ({ state, commit, getters }, { key, value }) => {
     setDataToLS(LS_REGEX_HANDLE, value);
   }
 
-  if (state.searchType === SEARCH_TYPE_ZOEKT && getters.currentScope === SCOPE_BLOB) {
-    const newUrl = setUrlParams({ ...state.query }, window.location.href, false, true);
+  const isZoektSearch =
+    state.searchType === SEARCH_TYPE_ZOEKT && getters.currentScope === SCOPE_BLOB;
+
+  if (isZoektSearch && key === 'search') {
+    const shouldResetPage = state.query?.page > 1 || state.urlQuery?.page > 1;
+    const query = shouldResetPage ? { ...state.query, page: 1 } : { ...state.query };
+    const newUrl = setUrlParams(query, window.location.href, true, true);
     document.title = buildDocumentTitle(state.query.search);
-    updateHistory({ state: state.query, title: state.query.search, url: newUrl, replace: false });
+
+    updateHistory({ state: query, title: state.query.search, url: newUrl, replace: true });
+
+    if (shouldResetPage) {
+      commit(types.SET_QUERY, { key: 'page', value: 1 });
+    }
 
     await nextTick();
-    fetchSidebarCount({ state, commit });
+    dispatch('fetchSidebarCount');
+  }
+
+  if (isZoektSearch && key === 'page') {
+    updateHistory({
+      state: state.query,
+      title: state.query.search,
+      url: setUrlParams({ ...state.query }, window.location.href, true, true),
+      replace: true,
+    });
   }
 };
 
