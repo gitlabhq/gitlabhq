@@ -45,7 +45,7 @@ module Ci
     IGNORED_STATUSES = %w[manual].to_set.freeze
     EXECUTING_STATUSES = %w[running canceling].freeze
     ALIVE_STATUSES = ORDERED_STATUSES - COMPLETED_STATUSES - BLOCKED_STATUS
-    CANCELABLE_STATUSES = (ALIVE_STATUSES + ['scheduled'] - ['canceling']).freeze
+    CANCELABLE_STATUSES = (ORDERED_STATUSES - COMPLETED_STATUSES - ['canceling']).freeze
     STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                       failed: 4, canceled: 5, skipped: 6, manual: 7,
                       scheduled: 8, preparing: 9, waiting_for_resource: 10,

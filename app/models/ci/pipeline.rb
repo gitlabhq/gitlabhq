@@ -35,7 +35,6 @@ module Ci
 
     DEFAULT_CONFIG_PATH = '.gitlab-ci.yml'
 
-    CANCELABLE_STATUSES = (Ci::HasStatus::CANCELABLE_STATUSES + ['manual']).freeze
     UNLOCKABLE_STATUSES = (Ci::Pipeline.completed_statuses + [:manual]).freeze
     # UI only shows 100+. TODO: pass constant to UI for SSoT
     COUNT_FAILED_JOBS_LIMIT = 101

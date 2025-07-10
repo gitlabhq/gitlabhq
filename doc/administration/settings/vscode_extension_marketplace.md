@@ -2,7 +2,7 @@
 stage: Create
 group: Remote Development
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-description: Configure VS Code Extension Marketplace for features on the GitLab self-managed instance.
+description: Configure VS Code Extension Marketplace for features on the GitLab Self-Managed instance.
 title: Configure VS Code Extension Marketplace
 ---
 
@@ -20,7 +20,7 @@ feature across your GitLab instance and configure which extension registry your 
 
 {{< alert type="note" >}}
 
-To access the VS Code Extension Marketplace, your web browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
 
 {{< /alert >}}
 

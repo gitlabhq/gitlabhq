@@ -138,7 +138,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
         Monthly/Weekly count of unique projects where internal_events_cli_used occurred
         Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
-        Monthly/Weekly/Total count of internal_events_cli_used occurrences
+        Total/Monthly/Weekly count of internal_events_cli_used occurrences
       TEXT
 
       with_cli_thread do
@@ -161,7 +161,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         ‣ Monthly count of unique users who triggered internal_events_cli_used
           Monthly/Weekly count of unique projects where internal_events_cli_used occurred
           Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
-          Monthly/Weekly/Total count of internal_events_cli_used occurrences
+          Total/Monthly/Weekly count of internal_events_cli_used occurrences
         ✘ Weekly count of unique users who triggered internal_events_cli_used (already defined)
         TEXT
 
@@ -186,7 +186,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         ‣ Monthly/Weekly count of unique users who triggered internal_events_cli_used
           Monthly/Weekly count of unique projects where internal_events_cli_used occurred
           Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred
-        ✘ Monthly/Weekly/Total count of internal_events_cli_used occurrences (already defined)
+        ✘ Total/Monthly/Weekly count of internal_events_cli_used occurrences (already defined)
         TEXT
 
         with_cli_thread do
@@ -240,7 +240,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       expected_output = <<~TEXT.chomp
       ‣ Monthly/Weekly count of unique users who triggered any of 2 events
         Monthly/Weekly count of unique namespaces where any of 2 events occurred
-        Monthly/Weekly/Total count of any of 2 events occurrences
+        Total/Monthly/Weekly count of any of 2 events occurrences
       ✘ Monthly/Weekly count of unique projects where any of 2 events occurred (already defined)
       TEXT
 
@@ -264,7 +264,7 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
       ])
 
       expected_output = <<~TEXT.chomp
-      ‣ Monthly/Weekly/Total count of internal_events_cli_opened occurrences
+      ‣ Total/Monthly/Weekly count of internal_events_cli_opened occurrences
       ✘ Monthly/Weekly count of unique users who triggered internal_events_cli_opened (user unavailable)
       ✘ Monthly/Weekly count of unique projects where internal_events_cli_opened occurred (project unavailable)
       ✘ Monthly/Weekly count of unique namespaces where internal_events_cli_opened occurred (namespace unavailable)
@@ -334,8 +334,8 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
         Monthly/Weekly count of unique users who triggered internal_events_cli_used where label/property/value is...
         Monthly/Weekly count of unique projects where internal_events_cli_used occurred where label/property/value is...
         Monthly/Weekly count of unique namespaces where internal_events_cli_used occurred where label/property/value is...
-        Monthly/Weekly/Total count of internal_events_cli_used occurrences
-        Monthly/Weekly/Total count of internal_events_cli_used occurrences where label/property/value is...
+        Total/Monthly/Weekly count of internal_events_cli_used occurrences
+        Total/Monthly/Weekly count of internal_events_cli_used occurrences where label/property/value is...
         Monthly/Weekly count of unique values for 'label' from internal_events_cli_used occurrences
         Monthly/Weekly count of unique values for 'property' from internal_events_cli_used occurrences
         Monthly/Weekly count of unique values for 'value' from internal_events_cli_used occurrences
@@ -376,8 +376,8 @@ RSpec.describe 'InternalEventsCli::Flows::MetricDefiner', :aggregate_failures, f
           Monthly/Weekly count of unique users who triggered any of 2 events where label/value/property is...
           Monthly/Weekly count of unique projects where any of 2 events occurred where label/value/property is...
           Monthly/Weekly count of unique namespaces where any of 2 events occurred where label/value/property is...
-          Monthly/Weekly/Total count of any of 2 events occurrences
-          Monthly/Weekly/Total count of any of 2 events occurrences where label/value/property is...
+          Total/Monthly/Weekly count of any of 2 events occurrences
+          Total/Monthly/Weekly count of any of 2 events occurrences where label/value/property is...
           Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences
           Monthly/Weekly count of unique values for 'value' from any of 2 events occurrences
           Monthly/Weekly count of unique values for 'label' from any of 2 events occurrences where value/property is...

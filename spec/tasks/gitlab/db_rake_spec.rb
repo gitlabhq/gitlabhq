@@ -27,6 +27,29 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     end
   end
 
+  shared_examples 'topology service unavailable' do |multiple_databases|
+    it 'skips loading the schema, seeding the database and altering cell sequences range' do
+      if multiple_databases
+        expect(Rake::Task['db:schema:load:main']).not_to receive(:invoke)
+        expect(Rake::Task['db:schema:load:ci']).not_to receive(:invoke)
+
+        expect(Rake::Task['db:migrate:main']).not_to receive(:invoke)
+        expect(Rake::Task['db:migrate:ci']).not_to receive(:invoke)
+      else
+        expect(Rake::Task['db:schema:load']).not_to receive(:invoke)
+        expect(Rake::Task['db:migrate']).not_to receive(:invoke)
+      end
+
+      expect(Rake::Task['gitlab:db:lock_writes']).not_to receive(:invoke)
+      expect(Rake::Task['db:seed_fu']).not_to receive(:invoke)
+      expect(Rake::Task['gitlab:db:alter_cell_sequences_range']).not_to receive(:invoke)
+
+      expect { run_rake_task('gitlab:db:configure') }.to(
+        raise_error('Error: Topology Service is `UNAVAILABLE`. Exiting DB configuration.')
+      )
+    end
+  end
+
   describe 'gitlab:db:sos task' do
     before do
       Rake::Task['gitlab:db:sos'].reenable
@@ -176,6 +199,7 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
     let(:configured_cell) { true }
     let(:skip_sequence_alteration) { false }
     let(:sequence_ranges) { [Gitlab::Cells::TopologyService::SequenceRange.new(minval: 1, maxval: 1000)] }
+    let(:topology_service_healthy) { true }
 
     before do
       stub_config(cell: { enabled: true, id: 1, database: { skip_sequence_alteration: skip_sequence_alteration } })
@@ -187,6 +211,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
 
       before do
         skip_if_database_exists(:ci)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+          allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+        end
 
         allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
           allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
@@ -316,6 +344,12 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             run_rake_task('gitlab:db:configure')
           end
         end
+
+        context 'when has cell configuration but topology service is unavailable' do
+          let(:topology_service_healthy) { false }
+
+          it_behaves_like 'topology service unavailable', false
+        end
       end
 
       context 'when geo is configured' do
@@ -357,6 +391,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         skip_if_shared_database(:ci)
 
         allow(Gitlab::Database).to receive(:database_base_models_with_gitlab_shared).and_return(base_models)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+          allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+        end
 
         allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
           allow(instance).to receive(:cell_sequence_ranges).and_return(sequence_ranges)
@@ -439,6 +477,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
             allow(ci_model.connection).to receive(:tables).and_return([])
 
+            allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+              allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+            end
+
             allow_next_instance_of(Gitlab::TopologyServiceClient::CellService) do |instance|
               allow(instance).to receive(:cell_sequence_ranges).and_return(nil)
             end
@@ -483,6 +525,17 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
             run_rake_task('gitlab:db:configure')
           end
         end
+
+        context 'when has cell configuration but topology service is unavailable' do
+          let(:topology_service_healthy) { false }
+
+          before do
+            allow(main_model.connection).to receive(:tables).and_return(%w[schema_migrations])
+            allow(ci_model.connection).to receive(:tables).and_return([])
+          end
+
+          it_behaves_like 'topology service unavailable', true
+        end
       end
 
       context 'when geo is configured' do
@@ -519,6 +572,10 @@ RSpec.describe 'gitlab:db namespace rake task', :silence_stdout, feature_categor
         allow(ActiveRecord::Base).to receive_message_chain('configurations.configs_for').and_return([main_config])
         allow(connection).to receive(:tables).and_return(%w[table1 table2])
         allow(Rake::Task['db:migrate']).to receive(:invoke)
+
+        allow_next_instance_of(Gitlab::TopologyServiceClient::HealthService) do |instance|
+          allow(instance).to receive(:service_healthy?).and_return(topology_service_healthy)
+        end
       end
 
       it 'migrates clickhouse database' do

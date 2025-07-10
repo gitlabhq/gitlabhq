@@ -17,6 +17,7 @@ module Gitlab
       gon.user_color_scheme             = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.markdown_surround_selection   = current_user&.markdown_surround_selection
       gon.markdown_automatic_lists      = current_user&.markdown_automatic_lists
+      gon.markdown_maintain_indentation = current_user&.markdown_maintain_indentation
       gon.math_rendering_limits_enabled = Gitlab::CurrentSettings.math_rendering_limits_enabled
 
       add_browsersdk_tracking
@@ -60,23 +61,33 @@ module Gitlab
 
       gon.diagramsnet_url = Gitlab::CurrentSettings.diagramsnet_url if Gitlab::CurrentSettings.diagramsnet_enabled
 
-      if current_user
-        gon.version = Gitlab::VERSION # publish version only for logged in users
-        gon.current_user_id = current_user.id
-        gon.current_username = current_user.username
-        gon.current_user_fullname = current_user.name
-        gon.current_user_avatar_url = current_user.avatar_url
-        gon.time_display_relative = current_user.time_display_relative
-        gon.time_display_format = current_user.time_display_format
-        gon.text_editor = current_user.user_preference&.text_editor if current_user.user_preference
-      end
-
       if current_organization && Feature.enabled?(:ui_for_organizations, current_user)
         gon.current_organization = current_organization.slice(:id, :name, :web_url, :avatar_url)
       end
 
-      # Initialize gon.features with any flags that should be
-      # made globally available to the frontend
+      add_gon_user_specific
+      add_gon_feature_flags
+    end
+
+    def add_gon_user_specific
+      return unless current_user
+
+      gon.version = Gitlab::VERSION # publish version only for logged in users
+      gon.current_user_id = current_user.id
+      gon.current_username = current_user.username
+      gon.current_user_fullname = current_user.name
+      gon.current_user_avatar_url = current_user.avatar_url
+      gon.time_display_relative = current_user.time_display_relative
+      gon.time_display_format = current_user.time_display_format
+
+      return unless current_user.user_preference
+
+      gon.text_editor = current_user.user_preference.text_editor
+    end
+
+    # Initialize gon.features with any flags that should be
+    # made globally available to the frontend
+    def add_gon_feature_flags
       push_frontend_feature_flag(:ui_for_organizations, current_user)
       push_frontend_feature_flag(:organization_switching, current_user)
       push_frontend_feature_flag(:find_and_replace, current_user)
@@ -87,6 +98,7 @@ module Gitlab
       push_frontend_feature_flag(:new_project_creation_form, current_user, type: :wip)
       push_frontend_feature_flag(:work_items_client_side_boards, current_user)
       push_frontend_feature_flag(:glql_work_items, current_user, type: :wip)
+      push_frontend_feature_flag(:continue_indented_text, current_user)
     end
 
     # Exposes the state of a feature flag to the frontend code.

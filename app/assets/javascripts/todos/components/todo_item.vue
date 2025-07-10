@@ -1,24 +1,19 @@
 <script>
-import { GlLink, GlIcon, GlFormCheckbox } from '@gitlab/ui';
+import { GlLink, GlFormCheckbox } from '@gitlab/ui';
 import { fallsBefore } from '~/lib/utils/datetime_utility';
 import { INSTRUMENT_TODO_ITEM_FOLLOW, TODO_STATE_DONE } from '../constants';
-import TodoItemTitle from './todo_item_title.vue';
 import TodoItemBody from './todo_item_body.vue';
 import TodoItemTimestamp from './todo_item_timestamp.vue';
 import TodoItemActions from './todo_item_actions.vue';
-import TodoItemTitleHiddenBySaml from './todo_item_title_hidden_by_saml.vue';
 
 export default {
   TRACK_ACTION: INSTRUMENT_TODO_ITEM_FOLLOW,
   components: {
     GlLink,
-    GlIcon,
     GlFormCheckbox,
-    TodoItemTitle,
     TodoItemBody,
     TodoItemTimestamp,
     TodoItemActions,
-    TodoItemTitleHiddenBySaml,
   },
   inject: ['currentTab'],
   props: {
@@ -40,9 +35,6 @@ export default {
   computed: {
     isHiddenBySaml() {
       return !this.todo.targetEntity;
-    },
-    titleComponent() {
-      return this.isHiddenBySaml ? TodoItemTitleHiddenBySaml : TodoItemTitle;
     },
     isDone() {
       return this.todo.state === TODO_STATE_DONE;
@@ -67,13 +59,13 @@ export default {
 
 <template>
   <li
-    class="gl-border-t gl-border-b gl-relative -gl-mt-px gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-bg-feedback-info"
+    class="gl-border-b gl-flex gl-gap-3 gl-px-5 gl-py-3 hover:gl-bg-feedback-info"
     :data-testid="`todo-item-${todo.id}`"
     :class="{ 'gl-bg-subtle': isDone }"
   >
     <gl-form-checkbox
       v-if="selectable"
-      class="gl-inline-block gl-pt-2"
+      class="gl-mt-1 gl-inline-block"
       :aria-label="__('Select')"
       :checked="selected"
       @change="(checked) => $emit('select-change', todo.id, checked)"
@@ -83,27 +75,17 @@ export default {
       :data-event-tracking="$options.TRACK_ACTION"
       :data-event-label="trackingLabel"
       :data-event-property="todo.action"
-      class="gl-flex gl-min-w-0 gl-flex-1 gl-flex-wrap gl-justify-end gl-gap-y-3 !gl-text-default !gl-no-underline sm:gl-flex-nowrap sm:gl-items-center"
+      class="gl-flex gl-min-w-0 gl-grow gl-flex-col gl-flex-nowrap gl-justify-between gl-gap-3 gl-gap-y-3 !gl-text-default !gl-no-underline sm:gl-flex-row sm:gl-items-center"
     >
-      <div
-        class="gl-w-64 gl-flex-grow-2 gl-self-center gl-overflow-hidden gl-overflow-x-auto sm:gl-w-auto"
-      >
-        <component
-          :is="titleComponent"
-          :todo="todo"
-          class="gl-flex gl-items-center gl-gap-2 gl-overflow-hidden gl-whitespace-nowrap gl-px-2 gl-pb-3 gl-pt-1 gl-text-sm gl-text-subtle sm:gl-mr-0 sm:gl-pr-4"
-        />
-        <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />
-      </div>
-
+      <todo-item-body :todo="todo" :is-hidden-by-saml="isHiddenBySaml" />
       <todo-item-timestamp
         :todo="todo"
         :is-snoozed="isSnoozed"
-        class="gl-w-full gl-whitespace-nowrap gl-px-2 sm:gl-w-auto"
+        class="gl-self-start gl-whitespace-nowrap sm:gl-w-auto"
       />
     </gl-link>
     <todo-item-actions
-      class="gl-self-start sm:gl-self-center"
+      class="gl-self-start"
       :todo="todo"
       :is-snoozed="isSnoozed"
       @change="$emit('change')"

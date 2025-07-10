@@ -217,7 +217,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
 
   describe 'state machine events' do
     describe 'start_cancel!' do
-      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:manual]
+      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym)
       # Invalid statuses are statuses that are COMPLETED_STATUSES or already canceling
       invalid_statuses = Ci::HasStatus::AVAILABLE_STATUSES.map(&:to_sym) - valid_statuses
 
@@ -242,7 +242,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
 
     describe 'finish_cancel!' do
-      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling]
+      valid_statuses = Ci::HasStatus::CANCELABLE_STATUSES.map(&:to_sym) + [:canceling]
       invalid_statuses = Ci::HasStatus::AVAILABLE_STATUSES.map(&:to_sym) - valid_statuses
       valid_statuses.each do |status|
         it "transitions from #{status} to canceling" do

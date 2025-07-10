@@ -3462,7 +3462,6 @@ RSpec/FeatureCategory:
     - 'spec/rubocop/cop/migration/datetime_spec.rb'
     - 'spec/rubocop/cop/migration/drop_table_spec.rb'
     - 'spec/rubocop/cop/migration/migration_record_spec.rb'
-    - 'spec/rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction_spec.rb'
     - 'spec/rubocop/cop/migration/prevent_strings_spec.rb'
     - 'spec/rubocop/cop/migration/refer_to_index_by_name_spec.rb'
     - 'spec/rubocop/cop/migration/remove_column_spec.rb'

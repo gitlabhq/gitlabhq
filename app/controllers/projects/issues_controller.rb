@@ -56,7 +56,6 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:work_item_planning_view, project&.group)
     push_force_frontend_feature_flag(:glql_integration, !!project&.glql_integration_feature_flag_enabled?)
     push_force_frontend_feature_flag(:glql_load_on_click, !!project&.glql_load_on_click_feature_flag_enabled?)
-    push_force_frontend_feature_flag(:continue_indented_text, !!project&.continue_indented_text_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, !!project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, !!project&.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:work_item_view_for_issues, project&.group)

@@ -165,9 +165,9 @@ export default {
 <template>
   <div>
     <status-badge v-if="showStatusBadge" :issuable-type="issuableType" :state="issuableState" />
-    <gl-icon v-if="icon" :name="icon" />
-    <div class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
+    <gl-icon v-if="icon" :name="icon" class="gl-shrink-0" :size="12" />
+    <span class="gl-overflow-hidden gl-text-ellipsis" data-testid="todo-title">
       {{ todoTitle }}
-    </div>
+    </span>
   </div>
 </template>

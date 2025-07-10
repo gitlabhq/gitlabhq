@@ -2,6 +2,8 @@
 key_path: counts.count_total_view_admin_runners_pageload_monthly
 description: Monthly count of total users who visit the admin runners page
 product_group: personal_productivity
+product_categories:
+- fleet_visibility
 performance_indicator_type: []
 value_type: number
 status: active

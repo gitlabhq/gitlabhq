@@ -27,7 +27,7 @@ export default {
       'Members|You cannot remove yourself from a personal project.',
     ),
     preventedBodyGroupMemberModelType: s__(
-      'Members|A group must have at least one owner. To leave this group, assign a new owner.',
+      'Members|Groups require a human Owner. Assign another human user as Owner to leave.',
     ),
   },
   components: { GlModal, GlForm, GlSprintf, UserDeletionObstaclesList },

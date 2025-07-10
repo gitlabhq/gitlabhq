@@ -23,7 +23,6 @@ InternalAffairs/UselessMessageAssertion:
     - 'spec/rubocop/cop/migration/avoid_finalize_background_migration_spec.rb'
     - 'spec/rubocop/cop/migration/batched_migration_base_class_spec.rb'
     - 'spec/rubocop/cop/migration/migration_with_milestone_spec.rb'
-    - 'spec/rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction_spec.rb'
     - 'spec/rubocop/cop/migration/prevent_single_statement_with_disable_ddl_transaction_spec.rb'
     - 'spec/rubocop/cop/migration/schema_addition_methods_no_post_spec.rb'
     - 'spec/rubocop/cop/performance/active_record_subtransaction_methods_spec.rb'

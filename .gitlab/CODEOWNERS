@@ -1412,6 +1412,7 @@ lib/gitlab/checks/
 /app/views/user_settings/passwords/
 /app/views/user_settings/personal_access_tokens/index.html.haml
 /app/views/user_settings/user_settings/authentication_log.haml
+/app/workers/authn/
 /app/workers/personal_access_tokens/
 /app/workers/resource_access_tokens/
 /config/initializers/01_secret_token.rb

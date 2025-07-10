@@ -715,12 +715,12 @@ class Group < Namespace
   def last_owner?(user)
     return false unless user
 
-    all_owners = member_owners_excluding_project_bots
+    all_owners = member_owners_excluding_project_bots_and_service_accounts
     last_owner_in_list?(user, all_owners)
   end
 
   # This is used in BillableMember Entity to
-  # avoid multiple "member_owners_excluding_project_bots" calls
+  # avoid multiple "member_owners_excluding_project_bots_and_service_accounts" calls
   # for each billable members
   def last_owner_in_list?(user, all_owners)
     return false unless user
@@ -730,18 +730,18 @@ class Group < Namespace
 
   # Excludes non-direct owners for top-level group
   # Excludes project_bots
-  def member_owners_excluding_project_bots
-    members_from_hiearchy = if root?
-                              members.non_minimal_access.without_invites_and_requests
-                            else
-                              members_with_parents(only_active_users: false)
-                            end
+  # Excludes service accounts
+  def member_owners_excluding_project_bots_and_service_accounts
+    members_from_hierarchy = if root?
+                               members.non_minimal_access.without_invites_and_requests
+                             else
+                               members_with_parents(only_active_users: false)
+                             end
 
     owners = []
-
-    members_from_hiearchy.all_owners.non_invite.each_batch do |relation|
+    members_from_hierarchy.all_owners.non_invite.each_batch do |relation|
       owners += relation.preload(:user, :source).load.reject do |member|
-        member.user.nil? || member.user.project_bot?
+        member.user.nil? || member.user.project_bot? || member.user.service_account?
       end
     end
 
@@ -1106,10 +1106,6 @@ class Group < Namespace
   def work_item_status_feature_available?
     feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :wip) &&
       licensed_feature_available?(:work_item_status)
-  end
-
-  def continue_indented_text_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:continue_indented_text, type: :wip)
   end
 
   def glql_integration_feature_flag_enabled?

@@ -82,11 +82,7 @@ class WorkItem < Issue
     end
 
     def alternative_reference_prefix_with_postfix
-      if Feature.enabled?(:extensible_reference_filters, Feature.current_request)
-        '[work_item:'
-      else
-        ''
-      end
+      '[work_item:'
     end
 
     def reference_pattern

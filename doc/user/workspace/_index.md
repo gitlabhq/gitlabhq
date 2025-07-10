@@ -360,8 +360,7 @@ Terminating the workspace revokes the token.
 
 Use the `GIT_CONFIG_COUNT`, `GIT_CONFIG_KEY_n`, and `GIT_CONFIG_VALUE_n`
 [environment variables](https://git-scm.com/docs/git-config/#Documentation/git-config.txt-GITCONFIGCOUNT)
-for Git authentication in the workspace. Git added support for these variables in Git 2.31, so the Git version
-you use in the workspace container must be 2.31 or later.
+for Git authentication in the workspace. These variables require Git 2.31 or later in the workspace container.
 
 ## Pod interaction in a cluster
 

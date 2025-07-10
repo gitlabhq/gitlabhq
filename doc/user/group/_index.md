@@ -238,7 +238,7 @@ When you leave a group:
 To leave a group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v})**.
+1. On the group overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Leave group**, then **Leave group** again.
 
 ## Delete a group

@@ -5,7 +5,7 @@ require 'fast_spec_helper'
 require_relative '../../../../scripts/internal_events/cli'
 
 RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_category: :service_ping do
-  let(:time_frame) { '7d' }
+  let(:time_frame) { ['7d'] }
   let(:identifier) { 'user' }
   let(:actions) { ['action_1'] }
   let(:filters) { nil }
@@ -34,7 +34,7 @@ RSpec.describe InternalEventsCli::NewMetric, :aggregate_failures, feature_catego
   end
 
   context 'when all time' do
-    let(:time_frame) { 'all' }
+    let(:time_frame) { ['all'] }
 
     it 'has expected description content' do
       expect(metric.description_prefix).to eq('Total count of unique users')

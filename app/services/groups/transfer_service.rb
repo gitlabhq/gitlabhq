@@ -73,6 +73,7 @@ module Groups
       end
 
       transfer_labels
+      transfer_status_data(old_root_ancestor_id)
       remove_paid_features_for_projects(old_root_ancestor_id)
       post_update_hooks(@updated_project_ids, old_root_ancestor_id)
       propagate_integrations
@@ -88,6 +89,9 @@ module Groups
         end
       end
     end
+
+    # Overridden in EE
+    def transfer_status_data(old_root_ancestor_id); end
 
     # Overridden in EE
     def post_update_hooks(updated_project_ids, old_root_ancestor_id)

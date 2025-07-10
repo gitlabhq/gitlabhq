@@ -127,7 +127,8 @@ The availability of this feature is controlled by a feature flag. For more infor
 
 {{< /alert >}}
 
-When viewing a file in your repository, GitLab shows a badge with the number of open merge requests that target the current branch and modify the file. This helps you identify files that have pending changes.
+When viewing a repository file, GitLab shows a badge with the number of open merge requests that target
+the current branch and modify the file. This helps you identify files that have pending changes.
 
 To view the open merge requests for a file:
 

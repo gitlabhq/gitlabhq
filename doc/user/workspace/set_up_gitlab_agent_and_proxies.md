@@ -6,6 +6,8 @@ description: Create a GitLab workspaces proxy to authenticate and authorize work
 title: 'Tutorial: Set up the GitLab agent for Kubernetes'
 ---
 
+<!-- vale gitlab_base.FutureTense = NO -->
+
 This tutorial shows you how to:
 
 - Set up the [GitLab agent for Kubernetes](../clusters/agent/_index.md)

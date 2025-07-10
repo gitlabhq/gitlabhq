@@ -100,36 +100,73 @@ RSpec.describe 'InternalEventsCli::Flows::UsageViewer', :aggregate_failures, fea
       TEXT
     end
 
-    before do
-      File.write(event1_filepath, File.read(event1_content))
-      File.write(
-        'config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml',
-        File.read('spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml')
-      )
+    context 'for single metric in string time_frame format' do
+      before do
+        File.write(event1_filepath, File.read(event1_content))
+        File.write(
+          'config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml')
+        )
+      end
+
+      it 'shows backend examples' do
+        queue_cli_inputs([
+          "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+          'internal_events_cli_used', # Filters to this event
+          "\n", # Select: config/events/internal_events_cli_used.yml
+          "\n", # Select: ruby/rails
+          "\e[B", # Arrow down to: rspec
+          "\n", # Select: rspec
+          "7\n", # Select: Manual testing: check current values of metrics from rails console (any data source)
+          "8\n", # Select: Data verification in Tableau
+          "Exit", # Filters to this item
+          "\n" # select: Exit
+        ])
+
+        with_cli_thread do
+          expect { plain_last_lines(200) }.to eventually_include_cli_text(
+            expected_example_prompt,
+            expected_rails_example,
+            expected_rspec_example,
+            expected_gdk_example,
+            expected_tableau_example
+          )
+        end
+      end
     end
 
-    it 'shows backend examples' do
-      queue_cli_inputs([
-        "3\n", # Enum-select: View Usage -- look at code examples for an existing event
-        'internal_events_cli_used', # Filters to this event
-        "\n", # Select: config/events/internal_events_cli_used.yml
-        "\n", # Select: ruby/rails
-        "\e[B", # Arrow down to: rspec
-        "\n", # Select: rspec
-        "7\n", # Select: Manual testing: check current values of metrics from rails console (any data source)
-        "8\n", # Select: Data verification in Tableau
-        "Exit", # Filters to this item
-        "\n" # select: Exit
-      ])
-
-      with_cli_thread do
-        expect { plain_last_lines(200) }.to eventually_include_cli_text(
-          expected_example_prompt,
-          expected_rails_example,
-          expected_rspec_example,
-          expected_gdk_example,
-          expected_tableau_example
+    context 'for single metric in array time_frame format' do
+      before do
+        File.write(event1_filepath, File.read(event1_content))
+        File.write(
+          'config/metrics/counts_all/count_distinct_user_id_from_internal_events_cli_used.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/ee_total_7d_single_event_array_metric.yml')
         )
+      end
+
+      it 'shows backend examples' do
+        queue_cli_inputs([
+          "3\n", # Enum-select: View Usage -- look at code examples for an existing event
+          'internal_events_cli_used', # Filters to this event
+          "\n", # Select: config/events/internal_events_cli_used.yml
+          "\n", # Select: ruby/rails
+          "\e[B", # Arrow down to: rspec
+          "\n", # Select: rspec
+          "7\n", # Select: Manual testing: check current values of metrics from rails console (any data source)
+          "8\n", # Select: Data verification in Tableau
+          "Exit", # Filters to this item
+          "\n" # select: Exit
+        ])
+
+        with_cli_thread do
+          expect { plain_last_lines(200) }.to eventually_include_cli_text(
+            expected_example_prompt,
+            expected_rails_example,
+            expected_rspec_example,
+            expected_gdk_example,
+            expected_tableau_example
+          )
+        end
       end
     end
   end

@@ -15,37 +15,58 @@ module InternalEventsCli
       #   disabled: [String] reason metrics are disabled
       def get_metric_options(events)
         selection = EventSelection.new(events)
+        available_options = []
+        disabled_options = []
 
         options = get_all_metric_options(selection.actions)
-        options = options.group_by do |metric|
-          [
-            metric.identifier.value,
-            conflicting_metric_exists?(metric),
-            metric.filters_expected?
-          ]
-        end
 
-        options = options.filter_map do |(identifier, defined, filtered), metrics|
+        options.each do |metric|
+          identifier = metric.identifier.value
+
           # Hide the filtered version of an option if unsupported; it just adds noise without value. Still,
           # showing unsupported options is valuable, because it advertises possibilities and explains why
           # those options aren't available.
-          next if filtered && !selection.can_be_unique?(identifier)
-          next if filtered && !selection.can_filter_when_unique?(identifier)
+          next if metric.filtered? && !selection.can_be_unique?(identifier)
+          next if metric.filtered? && !selection.can_filter_when_unique?(identifier)
           next if selection.exclude_filter_identifier?(identifier)
 
-          Option.new(
-            identifier: identifier,
+          option = Option.new(
+            metric: metric,
             events_name: selection.events_name,
-            filter_name: (selection.filter_name(identifier) if filtered),
-            metrics: metrics,
-            defined: defined,
-            supported: selection.can_be_unique?(identifier)
-          ).formatted
+            filter_name: (selection.filter_name(identifier) if metric.filtered?),
+            defined: false,
+            supported: true
+          )
+
+          conflicting_timeframes = get_conflicting_timeframes(metric)
+          available_timeframes = metric.time_frame.value - conflicting_timeframes
+
+          if conflicting_timeframes.any?
+            disabled_metric = metric.dup
+            disabled_metric[:time_frame] = conflicting_timeframes
+
+            disabled_option = option.dup
+            disabled_option.defined = true
+            disabled_option.metric = disabled_metric
+
+            disabled_options << disabled_option.formatted
+          end
+
+          next if available_timeframes.none?
+
+          metric[:time_frame] = available_timeframes.sort
+
+          if selection.can_be_unique?(identifier)
+            available_options << option.formatted
+          else
+            option.supported = false
+            disabled_options << option.formatted
+          end
         end
 
         # Push disabled options to the end for better skimability;
         # retain relative order for continuity
-        options.partition { |opt| !opt[:disabled] }.flatten
+        available_options + disabled_options
       end
 
       private
@@ -57,54 +78,32 @@ module InternalEventsCli
       # @return [Array<NewMetric>]
       def get_all_metric_options(actions)
         [
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'user'),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'user'),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'project'),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'project'),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'namespace'),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'namespace'),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'user', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'user', filters: []),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'project', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'project', filters: []),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'namespace', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'namespace', filters: []),
-          Metric.new(actions: actions, time_frame: '28d'),
-          Metric.new(actions: actions, time_frame: '7d'),
-          Metric.new(actions: actions, time_frame: '28d', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', filters: []),
-          Metric.new(actions: actions, time_frame: 'all'),
-          Metric.new(actions: actions, time_frame: 'all', filters: []),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'label'),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'label'),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'property'),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'property'),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'value'),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'value'),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'label', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'label', filters: []),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'property', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'property', filters: []),
-          Metric.new(actions: actions, time_frame: '28d', identifier: 'value', filters: []),
-          Metric.new(actions: actions, time_frame: '7d', identifier: 'value', filters: [])
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'user'),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'project'),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'namespace'),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'user', filters: []),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'project', filters: []),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'namespace', filters: []),
+          Metric.new(actions: actions, time_frame: %w[7d 28d all]),
+          Metric.new(actions: actions, time_frame: %w[7d 28d all], filters: []),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'label'),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'property'),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'value'),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'label', filters: []),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'property', filters: []),
+          Metric.new(actions: actions, time_frame: %w[7d 28d], identifier: 'value', filters: [])
         ]
       end
 
-      # Checks if there's an existing metric which has the same
-      # properties as the new one
-      #
-      # @param new_metric [NewMetric]
-      # @return [Boolean]
-      def conflicting_metric_exists?(new_metric)
-        # metrics with filters are conflict-free until new filters are defined
-        return false if new_metric.filters_expected?
+      def get_conflicting_timeframes(metric)
+        return [] if metric.filters_expected?
 
-        cli.global.metrics.any? do |existing_metric|
-          existing_metric.actions == new_metric.actions &&
-            existing_metric.time_frame == new_metric.time_frame.value &&
-            existing_metric.identifier == new_metric.identifier.value &&
-            !existing_metric.filtered?
-        end
+        cli.global.metrics.flat_map do |existing_metric|
+          next if existing_metric.filtered?
+          next unless (existing_metric.unique_ids & metric.unique_ids).any?
+
+          existing_metric.time_frame
+        end.compact.uniq
       end
 
       # Represents the attributes of set of events that depend on
@@ -182,7 +181,7 @@ module InternalEventsCli
       # @param metrics [Array<NewMetric>]
       # @option defined [Boolean] whether this metric already exists
       # @option supported [Boolean] whether unique metrics are supported for this identifier
-      Option = Struct.new(:identifier, :events_name, :filter_name, :metrics, :defined, :supported,
+      Option = Struct.new(:events_name, :filter_name, :metric, :defined, :supported,
         keyword_init: true) do
         include InternalEventsCli::Helpers::Formatting
 
@@ -193,16 +192,16 @@ module InternalEventsCli
           name = [time_frame_phrase, identifier_phrase, filter_phrase].compact.join(' ')
           name = format_help(name) if disabled
 
-          { name: name, disabled: disabled, value: metrics }.compact
+          { name: name, disabled: disabled, value: metric }.compact
         end
 
         def identifier
-          Metric::Identifier.new(self[:identifier])
+          metric.identifier
         end
 
         # ex) "Monthly/Weekly"
         def time_frame_phrase
-          phrase = metrics.map { |metric| metric.time_frame.description.capitalize }.join('/')
+          phrase = metric.time_frame.description
 
           disabled ? phrase : format_info(phrase)
         end

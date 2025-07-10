@@ -419,11 +419,7 @@ class Issue < ApplicationRecord
   end
 
   def self.alternative_reference_prefix_with_postfix
-    if Feature.enabled?(:extensible_reference_filters, Feature.current_request)
-      '[issue:'
-    else
-      ''
-    end
+    '[issue:'
   end
 
   def self.reference_postfix

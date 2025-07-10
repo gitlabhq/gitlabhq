@@ -10,6 +10,8 @@ additional_properties:
   label:
     description: The runner type, which can be `project_type`, `group_type`, or `instance_type`
 product_group: runner
+product_categories:
+- fleet_visibility
 milestone: '17.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/170483
 tiers:

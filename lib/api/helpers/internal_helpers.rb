@@ -141,9 +141,7 @@ module API
       end
 
       def include_ip_address_in_audit_event?(ip_address)
-        params[:protocol] == 'ssh' && ip_address && Feature.enabled?(
-          :stream_audit_events_remote_ip_proxy_protocol, project
-        )
+        params[:protocol] == 'ssh' && ip_address
       end
 
       private

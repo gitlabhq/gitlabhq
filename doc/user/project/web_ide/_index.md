@@ -268,7 +268,7 @@ functionality of the Web IDE. By default, the GitLab Web IDE instance is configu
 
 {{< alert type="note" >}}
 
-To access the VS Code Extension Marketplace, your web browser must be able to access the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
+To access the VS Code Extension Marketplace, your web browser must have access to the `.cdn.web-ide.gitlab-static.net` assets host. This security requirement ensures that third-party extensions run in isolation, and cannot access your account.
 
 {{< /alert >}}
 
@@ -313,9 +313,9 @@ With the Extensions Marketplace, you can add Vim keybindings to the Web IDE.
 To enable Vim keybindings, install the [Vim](https://open-vsx.org/extension/vscodevim/vim)
 extension. For more information, see [install an extension](#install-an-extension).
 
-#### ASCIIDoc Support
+#### AsciiDoc Support
 
-The [ASCIIDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) extension provides live preview, syntax highlighting, and snippets for ASCIIDoc files in the Web IDE. To use ASCIIDoc markup preview in the Web IDE, you must install the ASCIIDoc extension. For more information, see [install an extension](#install-an-extension).
+The [AsciiDoc](https://open-vsx.org/extension/asciidoctor/asciidoctor-vscode) extension provides live preview, syntax highlighting, and snippets for AsciiDoc files in the Web IDE. To use AsciiDoc markup preview in the Web IDE, you must install the AsciiDoc extension. For more information, see [install an extension](#install-an-extension).
 
 ## Related topics
 

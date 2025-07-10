@@ -433,7 +433,7 @@ Mark them for refinement:
 
 By this point in the tutorial, your **Backlog** board should look like this:
 
-![Example issue board](img/issue_board_demo_v16_10.png)
+![A backlog board with user stories distributed across iteration columns.](img/issue_board_demo_v16_10.png)
 
 In practice, you will use this board to sequence many stories into upcoming iterations.
 When your backlog grows, and you have dozens of stories spanning multiple features, it can be helpful

@@ -175,7 +175,7 @@ class CommitStatus < Ci::ApplicationRecord
 
     event :cancel do
       transition running: :canceling, if: :supports_canceling?
-      transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceled
+      transition CANCELABLE_STATUSES.map(&:to_sym) => :canceled
     end
 
     event :force_cancel do

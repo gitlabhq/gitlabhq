@@ -3,6 +3,8 @@ key_path: settings.project_runner_token_expiration_enabled
 description: >
   Tracks whether an expiration interval is defined for project runner authentication tokens
 product_group: runner
+product_categories:
+  - runner
 value_type: boolean
 status: active
 milestone: "17.11"

@@ -20,7 +20,7 @@ RSpec.describe Tooling::Danger::ChangeColumnDefault, feature_category: :tooling 
 
   describe '#add_comment_for_change_column_default' do
     let(:file_lines) { file_diff.map { |line| line.delete_prefix('+').delete_prefix('-') } }
-    let(:matching_lines) { [7, 9, 11] }
+    let(:matching_lines) { [5, 7, 9] }
 
     before do
       allow(change_column_default).to receive(:project_helper).and_return(fake_project_helper)

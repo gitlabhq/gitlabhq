@@ -145,6 +145,8 @@ namespace :gitlab do
     end
 
     def configure_pg_databases
+      check_topology_service_health!
+
       databases_with_tasks = ActiveRecord::Base.configurations.configs_for(env_name: Rails.env)
 
       databases_loaded = []
@@ -190,6 +192,20 @@ namespace :gitlab do
       end
 
       load_database
+    end
+
+    def check_topology_service_health!
+      return unless Gitlab.config.cell.enabled
+
+      if Gitlab.config.cell.database.skip_sequence_alteration
+        return puts 'Skipping Topology Service health check due to cell sequences alteration being disabled'
+      end
+
+      unless Gitlab::TopologyServiceClient::HealthService.new.service_healthy?
+        raise 'Error: Topology Service is `UNAVAILABLE`. Exiting DB configuration.'
+      end
+
+      puts 'Topology Service is HEALTHY.'
     end
 
     def alter_cell_sequences_range

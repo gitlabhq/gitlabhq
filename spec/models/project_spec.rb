@@ -9478,16 +9478,6 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
-  describe '#continue_indented_text_feature_flag_enabled?' do
-    let_it_be(:group_project) { create(:project, :in_subgroup) }
-
-    it_behaves_like 'checks parent group and self feature flag' do
-      let(:feature_flag_method) { :continue_indented_text_feature_flag_enabled? }
-      let(:feature_flag) { :continue_indented_text }
-      let(:subject_project) { group_project }
-    end
-  end
-
   describe '#work_items_beta_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 

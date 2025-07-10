@@ -641,6 +641,7 @@
 
 .code-rest-api-patterns: &code-rest-api-patterns
   - "{,ee/,jh/}lib/{,ee/,jh/}api/**/*"
+  - "{,ee/,jh/}app/policies/**/*"
   # Auto-generated files
   - "doc/api/openapi/openapi_v2.yaml"
 

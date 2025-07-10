@@ -3465,10 +3465,6 @@ class Project < ApplicationRecord
     group&.work_items_bulk_edit_feature_flag_enabled? || Feature.enabled?(:work_items_bulk_edit, self, type: :wip)
   end
 
-  def continue_indented_text_feature_flag_enabled?
-    group&.continue_indented_text_feature_flag_enabled? || Feature.enabled?(:continue_indented_text, self, type: :wip)
-  end
-
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

@@ -16,7 +16,7 @@ module InternalEventsCli
         'Type',
         'Events',
         'Scope',
-        'Descriptions',
+        'Description',
         'Copy event',
         'Group',
         'Categories',
@@ -30,7 +30,7 @@ module InternalEventsCli
       def initialize(cli, starting_event = nil)
         @cli = cli
         @selected_event_paths = Array(starting_event)
-        @metrics = []
+        @metric = nil
         @selected_filters = {}
       end
 
@@ -41,21 +41,24 @@ module InternalEventsCli
         return unless @selected_event_paths.any?
 
         prompt_for_metrics
+
+        return unless metric
+
         prompt_for_event_filters
-
-        return unless @metrics.any?
-
-        prompt_for_descriptions
+        prompt_for_description
+        prompt_for_metric_name
         defaults = prompt_for_copying_event_properties
         prompt_for_product_group(defaults)
         prompt_for_product_categories(defaults)
         prompt_for_url(defaults)
         prompt_for_tier(defaults)
-        outcomes = create_metric_files
-        prompt_for_next_steps(outcomes)
+        outcome = create_metric_file
+        prompt_for_next_steps(outcome)
       end
 
       private
+
+      attr_reader :metric
 
       # ----- Memoization Helpers -----------------
 
@@ -131,7 +134,7 @@ module InternalEventsCli
         cli.say selected_events_filter_options.join
         cli.say "\n"
 
-        @metrics = cli.select(
+        @metric = cli.select(
           'Which metrics do you want to add?',
           eligible_metrics,
           **select_opts,
@@ -139,7 +142,6 @@ module InternalEventsCli
           per_page: 20,
           &disabled_format_callback
         )
-        @metrics = reduce_metrics_by_time_frame(@metrics)
 
         assign_shared_attrs(:actions, :milestone) do
           {
@@ -150,9 +152,9 @@ module InternalEventsCli
       end
 
       def prompt_for_event_filters
-        return if @metrics.none?(&:filters_expected?)
+        return unless metric.filters_expected?
 
-        selected_unique_identifier = @metrics.first.identifier.value
+        selected_unique_identifier = metric.identifier.value
         event_count = selected_events.length
         previous_inputs = {
           'label' => nil,
@@ -183,42 +185,6 @@ module InternalEventsCli
         bulk_assign(filters: event_filters)
       end
 
-      def prompt_for_descriptions
-        default_description = nil
-        default_key = nil
-
-        separate_page_per_metric = @metrics.any? do |metric|
-          name_requirement_reason(metric)
-        end
-
-        @metrics.each_with_index do |metric, idx|
-          if idx == 0 || separate_page_per_metric
-            new_page!(on_step: 'Descriptions', steps: STEPS)
-
-            cli.say DESCRIPTION_INTRO
-            cli.say selected_event_descriptions.join
-          end
-
-          cli.say "\n"
-          cli.say format_prompt(format_subheader(
-            'DESCRIBING METRIC',
-            metric.technical_description,
-            idx,
-            @metrics.length
-          ))
-
-          prompt_for_description(metric, default_description).tap do |description|
-            default_description = description
-            metric.description = "#{metric.description_prefix} #{description}"
-          end
-
-          prompt_for_metric_name(metric, default_key)&.tap do |key|
-            default_key = key
-            metric.key = key
-          end
-        end
-      end
-
       def file_saved_context_message(attributes)
         format_prefix "  ", <<~TEXT.chomp
           - Visit #{format_info('https://metrics.gitlab.com')} to find dashboard links for this metric
@@ -228,6 +194,7 @@ module InternalEventsCli
 
       def metric_dashboard_links(attributes)
         time_frames = attributes['time_frame']
+
         unless time_frames.is_a?(Array)
           return "- Metric trend dashboard: #{format_info(metric_trend_path(attributes['key_path']))}"
         end
@@ -285,7 +252,7 @@ module InternalEventsCli
           TEXT
 
           potential_groups = [
-            *@metrics.map(&:product_group),
+            metric.product_group,
             *selected_events.map(&:product_group),
             defaults[:product_group]
           ]
@@ -320,18 +287,16 @@ module InternalEventsCli
         end
       end
 
-      def create_metric_files
-        @metrics.map.with_index do |metric, idx|
-          new_page!(on_step: 'Save files', steps: STEPS) # Repeat the same step but increment metric counter
+      def create_metric_file
+        new_page!(on_step: 'Save files', steps: STEPS) # Repeat the same step but increment metric counter
 
-          cli.say show_all_metric_paths(metric)
-          cli.say "\n"
+        cli.say show_all_metric_paths(metric)
+        cli.say "\n"
 
-          cli.say format_prompt(format_subheader('SAVING FILE', metric.description, idx, @metrics.length))
-          cli.say "\n"
+        cli.say format_prompt(format_subheader('SAVING FILE', metric.description))
+        cli.say "\n"
 
-          prompt_to_save_file(metric.file_path, metric.formatted_output)
-        end
+        prompt_to_save_file(metric.file_path, metric.formatted_output)
       end
 
       def show_all_metric_paths(metric)
@@ -348,11 +313,10 @@ module InternalEventsCli
         TEXT
       end
 
-      def prompt_for_next_steps(outcomes = [])
+      def prompt_for_next_steps(outcome = nil)
         new_page!
 
-        outcome = outcomes.any? ? outcomes.compact.join("\n") : '  No files saved.'
-        metric = @metrics.first
+        outcome ||= '  No files saved.'
 
         cli.say <<~TEXT
           #{divider}
@@ -414,19 +378,6 @@ module InternalEventsCli
 
           "  - #{event.action}#{format_help(filter_phrase)}\n"
         end
-      end
-
-      def reduce_metrics_by_time_frame(metrics)
-        # MetricOptions class returns one metric per time_frame value,
-        # here we merge them into a singular metric including all the time_frame values
-        return metrics unless metrics.length > 1
-
-        time_frames = metrics.map do |metric|
-          metric.time_frame.value
-        end
-
-        attributes = metrics.first.to_h.merge(time_frame: time_frames)
-        [Metric.new(**attributes)]
       end
 
       # Helper for #prompt_for_event_filters
@@ -508,7 +459,7 @@ module InternalEventsCli
         end
       end
 
-      # Helper for #prompt_for_descriptions
+      # Helper for #prompt_for_description
       def selected_event_descriptions
         selected_events.map do |event|
           filters = @selected_filters[event.action]
@@ -522,31 +473,41 @@ module InternalEventsCli
         end
       end
 
-      # Helper for #prompt_for_descriptions
-      def prompt_for_description(metric, default)
+      def prompt_for_description
+        new_page!(on_step: 'Description', steps: STEPS)
+
+        cli.say DESCRIPTION_INTRO
+        cli.say selected_event_descriptions.join
+
         description_start = format_info("#{metric.description_prefix}...")
 
         cli.say <<~TEXT
 
           #{input_opts[:prefix]} How would you describe this metric to a non-technical person? #{input_required_text}
 
+          #{format_info('Technical description:')} #{metric.technical_description}
+
         TEXT
 
-        prompt_for_text("  Finish the description: #{description_start}", default, multiline: true) do |q|
+        description = prompt_for_text("  Finish the description: #{description_start}", multiline: true) do |q|
           q.required true
           q.modify :trim
           q.messages[:required?] = DESCRIPTION_HELP
         end
+
+        metric.description = "#{metric.description_prefix} #{description}"
       end
 
-      # Helper for #prompt_for_descriptions
-      def prompt_for_metric_name(metric, default)
-        name_reason = name_requirement_reason(metric)
+      def prompt_for_metric_name
+        name_reason = name_requirement_reason
+
+        return unless name_reason
+
         default_name = metric.key.value
         display_name = metric.key.value("\e[0m[REPLACE ME]\e[36m")
         empty_name = metric.key.value('')
-
-        return unless name_reason
+        max_length = MAX_FILENAME_LENGTH - "#{empty_name}.yml".length
+        help_tokens = { name: default_name, count: max_length }
 
         cli.say <<~TEXT
 
@@ -557,10 +518,7 @@ module InternalEventsCli
 
         TEXT
 
-        max_length = MAX_FILENAME_LENGTH - "#{empty_name}.yml".length
-        help_tokens = { name: default_name, count: max_length }
-
-        prompt_for_text('  Replace with: ', default, multiline: true) do |q|
+        metric.key = prompt_for_text('  Replace with: ', multiline: true) do |q|
           q.required true
           q.messages[:required?] = name_reason[:help] % help_tokens
           q.messages[:valid?] = NAME_ERROR % help_tokens
@@ -572,8 +530,8 @@ module InternalEventsCli
         end
       end
 
-      # Helper for #prompt_for_descriptions
-      def name_requirement_reason(metric)
+      # Helper for #prompt_for_description
+      def name_requirement_reason
         if metric.filters.assigned?
           NAME_REQUIREMENT_REASONS[:filters]
         elsif metric.file_name.length > MAX_FILENAME_LENGTH
@@ -583,7 +541,7 @@ module InternalEventsCli
         end
       end
 
-      # Helper for #prompt_for_descriptions
+      # Helper for #prompt_for_description
       def conflicting_key_path?(key_path)
         cli.global.metrics.any? do |existing_metric|
           existing_metric.key_path == key_path
@@ -624,7 +582,6 @@ module InternalEventsCli
       # ----- Shared Helpers ----------------------
 
       def assign_shared_attrs(...)
-        metric = @metrics.first
         attrs = metric.to_h.slice(...)
         attrs = yield(metric) unless attrs.values.all?
 
@@ -638,7 +595,7 @@ module InternalEventsCli
       end
 
       def bulk_assign(attrs)
-        @metrics.each { |metric| metric.bulk_assign(attrs) }
+        metric.bulk_assign(attrs)
       end
     end
   end

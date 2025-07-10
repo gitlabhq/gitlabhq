@@ -536,9 +536,8 @@ For more information about `labels`, see
 
 {{< /history >}}
 
-Use this setting to automatically stop the agent's workspaces after the specified number of hours
-have passed, because the workspace last transitioned to an active state.
-An "active state" is defined as any non-stopped or non-terminated state.
+This setting automatically stops the agent's workspaces after they have been active for the specified
+number of hours. An active state is any non-stopped or non-terminated state.
 
 The timer for this setting starts when you create the workspace, and is reset every time you
 restart the workspace.

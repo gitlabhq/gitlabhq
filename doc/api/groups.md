@@ -1472,6 +1472,26 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
 
 ### Archive a group
 
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
+
 Archive a group.
 
 Prerequisites:
@@ -1551,6 +1571,26 @@ Example response:
 ```
 
 ### Unarchive a group
+
+{{< details >}}
+
+- Status: Experiment
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/481969) in GitLab 18.0 [with a flag](../administration/feature_flags/_index.md) named `archive_group`. Disabled by default. This feature is an [experiment](../policy/development_stages_support.md).
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+{{< /alert >}}
 
 Unarchive a group.
 

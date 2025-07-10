@@ -22,7 +22,7 @@ To use Code Suggestions, you need:
 - A GitLab Duo Core, Pro, or Enterprise add-on.
 - A Premium or Ultimate subscription.
 - If you have GitLab Duo Pro or Enterprise, an assigned seat.
-- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#change-gitlab-duo-core-availability).
+- If you have GitLab Duo Core, [IDE features turned on](../../../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
 - To confirm that Code Suggestions [supports your preferred language](supported_extensions.md#supported-languages-by-ide).
   Different IDEs support different languages.
 

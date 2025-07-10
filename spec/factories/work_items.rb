@@ -26,6 +26,11 @@ FactoryBot.define do
       closed_at { Time.now }
     end
 
+    trait :closed_as_duplicate do
+      closed
+      association :duplicated_to, factory: :work_item
+    end
+
     trait :group_level do
       project { nil }
       association :namespace, factory: :group

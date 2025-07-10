@@ -4,7 +4,9 @@ require 'spec_helper'
 
 RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects do
   let_it_be(:user) { create(:user) }
-  let_it_be(:project) { create(:project, :repository, :with_namespace_settings, namespace: user.namespace) }
+  let_it_be(:project) do
+    create(:project, :custom_repo, :with_namespace_settings, namespace: user.namespace, files: { 'README.txt' => '' })
+  end
 
   before do
     sign_in(user)
@@ -48,10 +50,6 @@ RSpec.describe 'Project active tab', :js, feature_category: :groups_and_projects
     before do
       root_ref = project.repository.root_ref
       visit project_tree_path(project, root_ref)
-
-      # Enabling Js in here causes more SQL queries to be caught by the query limiter.
-      # We are increasing the limit here so that the tests pass.
-      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(110)
     end
 
     it_behaves_like 'page has active tab', 'Code'

@@ -235,6 +235,7 @@ variables:
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json
+  JEST_MATCHING_TEST_FILES_PATH: jest/matching_test_files.txt
   GITLAB_WORKHORSE_FOLDER: "gitlab-workhorse"
   JOB_METRICS_FILE_PATH: "${CI_PROJECT_DIR}/tmp/job-metrics.json"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/report-master.json

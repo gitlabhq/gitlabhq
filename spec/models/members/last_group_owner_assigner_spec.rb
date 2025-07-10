@@ -151,11 +151,26 @@ RSpec.describe LastGroupOwnerAssigner, feature_category: :groups_and_projects do
 
     context 'when there are bot members' do
       context 'with a bot owner' do
-        specify do
+        before do
           create(:group_member, :owner, source: group, user: create(:user, :project_bot))
+        end
 
+        it 'marks the human member as the last owner' do
           expect { assigner.execute }.to change(group_member, :last_owner)
-            .from(nil).to(true)
+                                           .from(nil).to(true)
+        end
+      end
+    end
+
+    context 'when there are service account members' do
+      context 'with a service account owner' do
+        before do
+          create(:group_member, :owner, source: group, user: create(:user, :service_account))
+        end
+
+        it 'marks the human member as the last owner' do
+          expect { assigner.execute }.to change(group_member, :last_owner)
+                                           .from(nil).to(true)
         end
       end
     end

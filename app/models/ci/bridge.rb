@@ -61,11 +61,11 @@ module Ci
       end
 
       event :start_cancel do
-        transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual] => :canceling
+        transition CANCELABLE_STATUSES.map(&:to_sym) => :canceling
       end
 
       event :finish_cancel do
-        transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling] => :canceled
+        transition CANCELABLE_STATUSES.map(&:to_sym) + [:canceling] => :canceled
       end
 
       event :success do

@@ -564,24 +564,6 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           serializer.serialize_relation({ merge_requests: { include: [] } }, batch_ids: exportable.merge_requests.pluck(:id))
         end
       end
-
-      context 'when :keyset_paginate_exported_merge_requests is disabled' do
-        before do
-          stub_feature_flags(keyset_paginate_exported_merge_requests: false)
-        end
-
-        it 'calls json_writer.write_relation_array without using keyset pagination' do
-          expect(json_writer).to receive(:write_relation_array).with(
-            exportable_path,
-            :merge_requests,
-            exportable.merge_requests.map(&:to_json)
-          )
-
-          expect(Gitlab::Pagination::Keyset::Iterator).not_to receive(:new)
-
-          serializer.serialize_relation({ merge_requests: { include: [] } })
-        end
-      end
     end
 
     context 'when the record is a user' do

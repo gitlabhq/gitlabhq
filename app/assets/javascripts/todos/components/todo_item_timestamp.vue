@@ -52,7 +52,9 @@ export default {
 </script>
 
 <template>
-  <div class="gl-flex gl-gap-2 gl-text-sm gl-text-subtle sm:gl-flex-col sm:gl-gap-0">
+  <div
+    class="gl-flex gl-gap-2 gl-text-sm gl-text-subtle sm:gl-h-7 sm:gl-flex-col sm:gl-justify-center sm:gl-gap-0"
+  >
     <span class="gl-text-right">
       <todo-snoozed-timestamp
         v-if="todo.snoozedUntil"

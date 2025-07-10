@@ -230,10 +230,7 @@ module Gitlab
         # @param record_ids An optional array of record IDs that may be provided during
         #                   direct transfer batch export.
         def batch_ordering(records, key, record_ids)
-          if key == :merge_requests &&
-              (record_ids || Feature.disabled?(:keyset_paginate_exported_merge_requests, exportable))
-            return
-          end
+          return if key == :merge_requests && record_ids
 
           export_reorder = relations_schema[:export_reorder]&.dig(key)
           return unless export_reorder

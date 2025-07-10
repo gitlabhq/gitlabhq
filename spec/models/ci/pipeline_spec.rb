@@ -3601,6 +3601,27 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       end
     end
 
+    context 'when there is a manual action present in the pipeline' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline)
+        create(:ci_build, :running, pipeline: pipeline)
+      end
+
+      it 'is cancelable' do
+        expect(pipeline).to be_cancelable
+      end
+    end
+
+    context 'when there is only a manual action present in the pipeline' do
+      before do
+        create(:ci_build, :manual, pipeline: pipeline)
+      end
+
+      it 'is cancelable' do
+        expect(pipeline).to be_cancelable
+      end
+    end
+
     %i[success failed canceled].each do |status|
       context "when there is a build #{status}" do
         before do
@@ -3620,16 +3641,6 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
         it 'is not cancelable' do
           expect(pipeline.cancelable?).to be_falsey
         end
-      end
-    end
-
-    context 'when there is a manual action present in the pipeline' do
-      before do
-        create(:ci_build, :manual, pipeline: pipeline)
-      end
-
-      it 'is not cancelable' do
-        expect(pipeline).not_to be_cancelable
       end
     end
   end

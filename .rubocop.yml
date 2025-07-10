@@ -1061,13 +1061,6 @@ Migration/AsyncPostMigrateOnly:
     - db/**/*.rb
   EnforcedSince: 20240115115029
 
-Migration/PreventEnablingLockRetriesForTransactionalMigrations:
-  Enabled: true
-  Include:
-    - '{,ee/,jh/}db/**/*.rb'
-  Exclude:
-    - '{,ee/,jh/}db/click_house/**/*.rb'
-
 Gitlab/RailsLogger:
   Exclude:
     - 'spec/**/*.rb'

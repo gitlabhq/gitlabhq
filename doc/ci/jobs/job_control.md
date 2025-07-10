@@ -15,6 +15,7 @@ title: Control how jobs run
 Before a new pipeline starts, GitLab checks the pipeline configuration to determine
 which jobs can run in that pipeline. You can configure jobs to run depending on
 conditions like the value of variables or the pipeline type with [`rules`](job_rules.md).
+When using job rules, learn how to [avoid duplicate pipelines](job_rules.md#avoid-duplicate-pipelines). To control pipeline creation, use [workflow:rules](../yaml/workflow.md).
 
 ## Create a job that must be run manually
 

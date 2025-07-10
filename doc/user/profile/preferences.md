@@ -284,6 +284,18 @@ To add a new list item when you press the <kbd>Enter</kbd> key:
 1. Select the **Automatically add new list items** checkbox.
 1. Select **Save changes**.
 
+### Maintain cursor indentation
+
+Maintain the indentation when you press <kbd>Enter</kbd>. The cursor on the new line is automatically indented the same as the previous line. This setting works only in description and comment boxes.
+
+To add a new list item when you press the <kbd>Enter</kbd> key:
+
+1. On the left sidebar, select your avatar.
+1. Select **Preferences**.
+1. Scroll to the **Behavior** section.
+1. Select the **Maintain cursor indentation** checkbox.
+1. Select **Save changes**.
+
 ### Change the tab width
 
 Change the default size of tabs in diffs, blobs, and snippets. The Web IDE, file editor, and Markdown editor do not support this feature.

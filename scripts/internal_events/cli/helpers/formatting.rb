@@ -87,7 +87,7 @@ module InternalEventsCli
       # @param item [String] describes specific context ex) Chocolate Chip
       # @param count [Integer] ex) 2
       # @param total [Integer] ex) 3
-      def format_subheader(subject, item, count, total)
+      def format_subheader(subject, item, count = 1, total = 1)
         formatting_end = "\e[0m"
         suffix = formatting_end if subject[-formatting_end.length..] == formatting_end
 

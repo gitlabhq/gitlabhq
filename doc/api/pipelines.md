@@ -242,8 +242,7 @@ Example of response
 
 ## Get variables for a pipeline
 
-Get the variables of a pipeline. Does not include variables that come from a pipeline schedule.
-For more information, see [issue 250850](https://gitlab.com/gitlab-org/gitlab/-/issues/250850).
+Get the [pipeline variables](../ci/variables/_index.md#use-pipeline-variables) of a pipeline.
 
 ```plaintext
 GET /projects/:id/pipelines/:pipeline_id/variables

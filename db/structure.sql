@@ -25020,6 +25020,7 @@ CREATE TABLE user_preferences (
     extensions_marketplace_opt_in_url text,
     dark_color_scheme_id smallint,
     work_items_display_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    markdown_maintain_indentation boolean DEFAULT false NOT NULL,
     default_duo_add_on_assignment_id bigint,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),

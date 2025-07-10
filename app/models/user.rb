@@ -444,6 +444,7 @@ class User < ApplicationRecord
     :render_whitespace_in_code, :render_whitespace_in_code=,
     :markdown_surround_selection, :markdown_surround_selection=,
     :markdown_automatic_lists, :markdown_automatic_lists=,
+    :markdown_maintain_indentation, :markdown_maintain_indentation=,
     :diffs_deletion_color, :diffs_deletion_color=,
     :diffs_addition_color, :diffs_addition_color=,
     :use_new_navigation, :use_new_navigation=,

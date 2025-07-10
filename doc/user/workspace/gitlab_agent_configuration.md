@@ -47,7 +47,8 @@ Prerequisites:
 
 {{< /history >}}
 
-With the new authorization strategy that replaces the [legacy authorization strategy](#legacy-agent-authorization-strategy), group owners and administrators can control which cluster agents can be used for hosting workspaces in a group.
+The new authorization strategy replaces the [legacy authorization strategy](#legacy-agent-authorization-strategy).
+Group owners and administrators can control which cluster agents host workspaces in their group.
 
 For example, if the path to your workspace project is `top-level-group/subgroup-1/subgroup-2/workspace-project`, you can use any configured agent for either `top-level-group`, `subgroup-1` or `subgroup-2` group.
 

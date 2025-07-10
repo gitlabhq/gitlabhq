@@ -117,6 +117,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:markdown_automatic_lists).to(:user_preference) }
     it { is_expected.to delegate_method(:markdown_automatic_lists=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:markdown_maintain_indentation).to(:user_preference) }
+    it { is_expected.to delegate_method(:markdown_maintain_indentation=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:diffs_deletion_color).to(:user_preference) }
     it { is_expected.to delegate_method(:diffs_deletion_color=).to(:user_preference).with_arguments(:args) }
 

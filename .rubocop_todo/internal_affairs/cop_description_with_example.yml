@@ -92,7 +92,6 @@ InternalAffairs/CopDescriptionWithExample:
     - 'rubocop/cop/migration/migration_with_milestone.rb'
     - 'rubocop/cop/migration/prevent_adding_columns.rb'
     - 'rubocop/cop/migration/prevent_feature_flags_usage.rb'
-    - 'rubocop/cop/migration/prevent_global_enable_lock_retries_with_disable_ddl_transaction.rb'
     - 'rubocop/cop/migration/prevent_index_creation.rb'
     - 'rubocop/cop/migration/prevent_strings.rb'
     - 'rubocop/cop/migration/refer_to_index_by_name.rb'

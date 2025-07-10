@@ -1849,7 +1849,8 @@ GEM
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     sprite-factory (1.7.1)
-    sprockets (3.7.2)
+    sprockets (3.7.5)
+      base64
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.5.2)

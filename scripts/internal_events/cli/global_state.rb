@@ -18,6 +18,7 @@ module InternalEventsCli
           InternalEventsCli::NEW_METRIC_FIELDS,
           all_metric_paths
         )
+
         loaded_files.flat_map do |metric|
           # copy logic of Gitlab::Usage::MetricDefinition
           next metric unless metric.time_frame.is_a?(Array)

@@ -5,6 +5,7 @@ description: Total active Specific (Project) Runners
 product_group: runner
 product_categories:
 - fleet_visibility
+- runner
 value_type: number
 status: active
 milestone: "13.12"

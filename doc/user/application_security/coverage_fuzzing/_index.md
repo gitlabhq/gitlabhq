@@ -13,6 +13,8 @@ description: Coverage-guided fuzzing, random inputs, and unexpected behavior.
 
 {{< /details >}}
 
+## Getting started
+
 Coverage-guided fuzz testing sends random inputs to an instrumented version of your application in
 an effort to cause unexpected behavior. Such behavior indicates a bug that you should address.
 GitLab allows you to add coverage-guided fuzz testing to your pipelines. This helps you discover
@@ -25,43 +27,7 @@ you can run your coverage-guided fuzz testing as part your CI/CD workflow.
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [Coverage Fuzzing](https://www.youtube.com/watch?v=bbIenVVcjW0).
 
-## Coverage-guided fuzz testing process
-
-The fuzz testing process:
-
-1. Compiles the target application.
-1. Runs the instrumented application, using the `gitlab-cov-fuzz` tool.
-1. Parses and analyzes the exception information output by the fuzzer.
-1. Downloads the [corpus](../terminology/_index.md#corpus) from either:
-   - The previous pipelines.
-   - If `COVFUZZ_USE_REGISTRY` is set to `true`, the [corpus registry](#corpus-registry).
-1. Downloads crash events from previous pipeline.
-1. Outputs the parsed crash events and data to the `gl-coverage-fuzzing-report.json` file.
-1. Updates the corpus, either:
-   - In the job's pipeline.
-   - If `COVFUZZ_USE_REGISTRY` is set to `true`, in the corpus registry.
-
-The results of the coverage-guided fuzz testing are available in the CI/CD pipeline.
-
-## Supported fuzzing engines and languages
-
-You can use the following fuzzing engines to test the specified languages.
-
-| Language                                    | Fuzzing Engine                                                                                       | Example                                                                                                                         |
-|---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
-| C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
-| Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
-| Swift                                       | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
-| Rust                                        | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz)                            | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example)             |
-| Java (Maven only)<sup>1</sup>               | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
-| Java                                        | [JQF](https://github.com/rohanpadhye/JQF) (not preferred)                                            | [jqf-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example)              |
-| JavaScript                                  | [`jsfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz)                 | [jsfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/jsfuzz-fuzzing-example)         |
-| Python                                      | [`pythonfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/pythonfuzz)         | [pythonfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/pythonfuzz-fuzzing-example) |
-| AFL (any language that works on top of AFL) | [AFL](https://lcamtuf.coredump.cx/afl/)                                                              | [afl-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/afl-fuzzing-example)               |
-
-1. Support for Gradle is planned in [issue 409764](https://gitlab.com/gitlab-org/gitlab/-/issues/409764).
-
-## Confirm status of coverage-guided fuzz testing
+### Confirm status of coverage-guided fuzz testing
 
 To confirm the status of coverage-guided fuzz testing:
 
@@ -72,7 +38,7 @@ To confirm the status of coverage-guided fuzz testing:
    - **Enabled**
    - A prompt to upgrade to GitLab Ultimate.
 
-## Enable coverage-guided fuzz testing
+### Enable coverage-guided fuzz testing
 
 To enable coverage-guided fuzz testing, edit `.gitlab-ci.yml`:
 
@@ -121,34 +87,9 @@ job. If you include these keys in your own job, you must copy their original con
 - `artifacts`
 - `rules`
 
-### Available CI/CD variables
+## Understanding the results
 
-Use the following variables to configure coverage-guided fuzz testing in your CI/CD pipeline.
-
-{{< alert type="warning" >}}
-
-All customization of GitLab security scanning tools should be tested in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results, including
-a large number of false positives.
-
-{{< /alert >}}
-
-| CI/CD variable            | Description                                                                     |
-|---------------------------|---------------------------------------------------------------------------------|
-| `COVFUZZ_ADDITIONAL_ARGS` | Arguments passed to `gitlab-cov-fuzz`. Used to customize the behavior of the underlying fuzzing engine. Read the fuzzing engine's documentation for a complete list of arguments. |
-| `COVFUZZ_BRANCH`          | The branch on which long-running fuzzing jobs are to be run. On all other branches, only fuzzing regression tests are run. Default: Repository's default branch. |
-| `COVFUZZ_SEED_CORPUS`     | Path to a seed corpus directory. Default: empty. |
-| `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this value when using an offline environment. Default: `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
-| `COVFUZZ_USE_REGISTRY`    | Set to `true` to have the corpus stored in the GitLab corpus registry. The variables `COVFUZZ_CORPUS_NAME` and `COVFUZZ_GITLAB_TOKEN` are required if this variable is set to `true`. Default: `false`. |
-| `COVFUZZ_CORPUS_NAME`     | Name of the corpus to be used in the job. |
-| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) or [project access token](../../project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. |
-
-#### Seed corpus
-
-Files in the [seed corpus](../terminology/_index.md#seed-corpus) must be updated manually. They are
-not updated or overwritten by the coverage-guide fuzz testing job.
-
-## Output
+### Output
 
 Each fuzzing step outputs these artifacts:
 
@@ -162,7 +103,7 @@ Each fuzzing step outputs these artifacts:
 You can download the JSON report file from the CI/CD pipelines page. For more information, see
 [Downloading artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
-## Corpus registry
+### Corpus registry
 
 The corpus registry is a library of corpora. Corpora in a project's registry are available to
 all jobs in that project. A project-wide registry is a more efficient way to manage corpora than
@@ -175,7 +116,7 @@ When you download a corpus, the file is named `artifacts.zip`, regardless of the
 the corpus was initially uploaded. This file contains only the corpus, which is different to the
 artifacts files you can download from the CI/CD pipeline. Also, a project member with a Reporter or above privilege can download the corpus using the direct download link.
 
-### View details of the corpus registry
+#### View details of the corpus registry
 
 To view details of the corpus registry:
 
@@ -183,14 +124,14 @@ To view details of the corpus registry:
 1. Select **Secure > Security configuration**.
 1. In the **Coverage Fuzzing** section, select **Manage corpus**.
 
-### Create a corpus in the corpus registry
+#### Create a corpus in the corpus registry
 
 To create a corpus in the corpus registry, either:
 
 - Create a corpus in a pipeline
 - Upload an existing corpus file
 
-#### Create a corpus in a pipeline
+##### Create a corpus in a pipeline
 
 To create a corpus in a pipeline:
 
@@ -203,7 +144,7 @@ To create a corpus in a pipeline:
 After the `my_fuzz_target` job runs, the corpus is stored in the corpus registry, with the name
 provided by the `COVFUZZ_CORPUS_NAME` variable. The corpus is updated on every pipeline run.
 
-#### Upload a corpus file
+##### Upload a corpus file
 
 To upload an existing corpus file:
 
@@ -232,7 +173,7 @@ Prerequisites:
    - Set `COVFUZZ_CORPUS_NAME` to the name of the corpus.
    - Set `COVFUZZ_GITLAB_TOKEN` to the value of the personal access token.
 
-## Coverage-guided fuzz testing report
+### Coverage-guided fuzz testing report
 
 For detailed information about the `gl-coverage-fuzzing-report.json` file's format, read the
 [schema](https://gitlab.com/gitlab-org/security-products/security-report-schemas/-/blob/master/dist/coverage-fuzzing-report-format.json).
@@ -266,7 +207,106 @@ Example coverage-guided fuzzing report:
 }
 ```
 
-## Duration of coverage-guided fuzz testing
+### Interacting with the vulnerabilities
+
+After a vulnerability is found, you can [address it](../vulnerabilities/_index.md).
+The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
+artifacts. By selecting one of the detected vulnerabilities, you can see its details.
+
+![Coverage Fuzzing Security Report](img/coverage_fuzzing_report_v13_6.png)
+
+You can also view the vulnerability from the [Security Dashboard](../security_dashboard/_index.md),
+which shows an overview of all the security vulnerabilities in your groups, projects, and pipelines.
+
+Selecting the vulnerability opens a modal that provides additional information about the
+vulnerability:
+
+- Status: The vulnerability's status. As with any type of vulnerability, a coverage fuzzing
+  vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
+- Project: The project in which the vulnerability exists.
+- Crash type: The type of crash or weakness in the code. This typically maps to a [CWE](https://cwe.mitre.org/).
+- Crash state: A normalized version of the stack trace, containing the last three functions of the
+  crash (without random addresses).
+- Stack trace snippet: The last few lines of the stack trace, which shows details about the crash.
+- Identifier: The vulnerability's identifier. This maps to either a [CVE](https://cve.mitre.org/)
+  or [CWE](https://cwe.mitre.org/).
+- Severity: The vulnerability's severity. This can be Critical, High, Medium, Low, Info, or Unknown.
+- Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
+- Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
+  engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
+
+## Optimization
+
+Use the following customization options to optimize coverage-guided fuzz testing to your project.
+
+### Available CI/CD variables
+
+Use the following variables to configure coverage-guided fuzz testing in your CI/CD pipeline.
+
+{{< alert type="warning" >}}
+
+All customization of GitLab security scanning tools should be tested in a merge request before
+merging these changes to the default branch. Failure to do so can give unexpected results, including
+a large number of false positives.
+
+{{< /alert >}}
+
+| CI/CD variable            | Description                                                                     |
+|---------------------------|---------------------------------------------------------------------------------|
+| `COVFUZZ_ADDITIONAL_ARGS` | Arguments passed to `gitlab-cov-fuzz`. Used to customize the behavior of the underlying fuzzing engine. Read the fuzzing engine's documentation for a complete list of arguments. |
+| `COVFUZZ_BRANCH`          | The branch on which long-running fuzzing jobs are to be run. On all other branches, only fuzzing regression tests are run. Default: Repository's default branch. |
+| `COVFUZZ_SEED_CORPUS`     | Path to a seed corpus directory. Default: empty. |
+| `COVFUZZ_URL_PREFIX`      | Path to the `gitlab-cov-fuzz` repository cloned for use with an offline environment. You should only change this value when using an offline environment. Default: `https://gitlab.com/gitlab-org/security-products/analyzers/gitlab-cov-fuzz/-/raw`. |
+| `COVFUZZ_USE_REGISTRY`    | Set to `true` to have the corpus stored in the GitLab corpus registry. The variables `COVFUZZ_CORPUS_NAME` and `COVFUZZ_GITLAB_TOKEN` are required if this variable is set to `true`. Default: `false`. |
+| `COVFUZZ_CORPUS_NAME`     | Name of the corpus to be used in the job. |
+| `COVFUZZ_GITLAB_TOKEN`    | Environment variable configured with [personal access token](../../profile/personal_access_tokens.md#create-a-personal-access-token) or [project access token](../../project/settings/project_access_tokens.md#create-a-project-access-token) with API read/write access. |
+
+#### Seed corpus
+
+Files in the [seed corpus](../terminology/_index.md#seed-corpus) must be updated manually. They are
+not updated or overwritten by the coverage-guide fuzz testing job.
+
+### Coverage-guided fuzz testing process
+
+The fuzz testing process:
+
+1. Compiles the target application.
+1. Runs the instrumented application, using the `gitlab-cov-fuzz` tool.
+1. Parses and analyzes the exception information output by the fuzzer.
+1. Downloads the [corpus](../terminology/_index.md#corpus) from either:
+   - The previous pipelines.
+   - If `COVFUZZ_USE_REGISTRY` is set to `true`, the [corpus registry](#corpus-registry).
+1. Downloads crash events from previous pipeline.
+1. Outputs the parsed crash events and data to the `gl-coverage-fuzzing-report.json` file.
+1. Updates the corpus, either:
+   - In the job's pipeline.
+   - If `COVFUZZ_USE_REGISTRY` is set to `true`, in the corpus registry.
+
+The results of the coverage-guided fuzz testing are available in the CI/CD pipeline.
+
+## Roll out
+
+After you're comfortable using coverage-guided fuzz testing in a single project, you can take advantage of the following advanced features, including enabling testing in offline environments.
+
+### Supported fuzzing engines and languages
+
+You can use the following fuzzing engines to test the specified languages.
+
+| Language                                    | Fuzzing Engine                                                                                       | Example                                                                                                                         |
+|---------------------------------------------|------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------|
+| C/C++                                       | [libFuzzer](https://llvm.org/docs/LibFuzzer.html)                                                    | [c-cpp-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/c-cpp-fuzzing-example)                   |
+| Go                                          | [go-fuzz (libFuzzer support)](https://github.com/dvyukov/go-fuzz)                                    | [go-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example)                 |
+| Swift                                       | [libFuzzer](https://github.com/apple/swift/blob/master/docs/libFuzzerIntegration.md)                 | [swift-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/swift-fuzzing-example)           |
+| Rust                                        | [cargo-fuzz (libFuzzer support)](https://github.com/rust-fuzz/cargo-fuzz)                            | [rust-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/rust-fuzzing-example)             |
+| Java (Maven only)<sup>1</sup>               | [Javafuzz](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/javafuzz) (recommended) | [javafuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/javafuzz-fuzzing-example)     |
+| Java                                        | [JQF](https://github.com/rohanpadhye/JQF) (not preferred)                                            | [jqf-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/java-fuzzing-example)              |
+| JavaScript                                  | [`jsfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/jsfuzz)                 | [jsfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/jsfuzz-fuzzing-example)         |
+| Python                                      | [`pythonfuzz`](https://gitlab.com/gitlab-org/security-products/analyzers/fuzzers/pythonfuzz)         | [pythonfuzz-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/pythonfuzz-fuzzing-example) |
+| AFL (any language that works on top of AFL) | [AFL](https://lcamtuf.coredump.cx/afl/)                                                              | [afl-fuzzing-example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/afl-fuzzing-example)               |
+
+1. Support for Gradle is planned in [issue 409764](https://gitlab.com/gitlab-org/gitlab/-/issues/409764).
+
+### Duration of coverage-guided fuzz testing
 
 The available durations for coverage-guided fuzz testing are:
 
@@ -276,7 +316,7 @@ The available durations for coverage-guided fuzz testing are:
 
 For a complete example, read the [Go coverage-guided fuzzing example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example/-/blob/master/.gitlab-ci.yml).
 
-### Continuous coverage-guided fuzz testing
+#### Continuous coverage-guided fuzz testing
 
 It's also possible to run the coverage-guided fuzzing jobs longer and without blocking your main
 pipeline. This configuration uses the GitLab
@@ -321,11 +361,11 @@ This creates two jobs:
 
 The `covfuzz-ci.yml` is the same as that in the [original synchronous example](https://gitlab.com/gitlab-org/security-products/demos/coverage-fuzzing/go-fuzzing-example#running-go-fuzz-from-ci).
 
-## FIPS-enabled binary
+### FIPS-enabled binary
 
 [Starting in GitLab 15.0](https://gitlab.com/gitlab-org/gitlab/-/issues/352549) the coverage fuzzing binary is compiled with `golang-fips` on Linux x86 and uses OpenSSL as the cryptographic backend. For more details, see FIPS compliance at GitLab with Go.
 
-## Offline environment
+### Offline environment
 
 To use coverage fuzzing in an offline environment:
 
@@ -335,34 +375,6 @@ To use coverage fuzzing in an offline environment:
 1. For each fuzzing step, set `COVFUZZ_URL_PREFIX` to `${NEW_URL_GITLAB_COV_FUZ}/-/raw`, where
    `NEW_URL_GITLAB_COV_FUZ` is the URL of the private `gitlab-cov-fuzz` clone that you set up in the
    first step.
-
-## Interacting with the vulnerabilities
-
-After a vulnerability is found, you can [address it](../vulnerabilities/_index.md).
-The merge request widget lists the vulnerability and contains a button for downloading the fuzzing
-artifacts. By selecting one of the detected vulnerabilities, you can see its details.
-
-![Coverage Fuzzing Security Report](img/coverage_fuzzing_report_v13_6.png)
-
-You can also view the vulnerability from the [Security Dashboard](../security_dashboard/_index.md),
-which shows an overview of all the security vulnerabilities in your groups, projects, and pipelines.
-
-Selecting the vulnerability opens a modal that provides additional information about the
-vulnerability:
-
-- Status: The vulnerability's status. As with any type of vulnerability, a coverage fuzzing
-  vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
-- Project: The project in which the vulnerability exists.
-- Crash type: The type of crash or weakness in the code. This typically maps to a [CWE](https://cwe.mitre.org/).
-- Crash state: A normalized version of the stack trace, containing the last three functions of the
-  crash (without random addresses).
-- Stack trace snippet: The last few lines of the stack trace, which shows details about the crash.
-- Identifier: The vulnerability's identifier. This maps to either a [CVE](https://cve.mitre.org/)
-  or [CWE](https://cwe.mitre.org/).
-- Severity: The vulnerability's severity. This can be Critical, High, Medium, Low, Info, or Unknown.
-- Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
-- Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
-  engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
 
 ## Troubleshooting
 
