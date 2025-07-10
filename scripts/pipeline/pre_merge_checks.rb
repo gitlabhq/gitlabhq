@@ -128,19 +128,21 @@ class PreMergeChecks
   end
 
   def check_pipeline_identifier!(pipeline)
-    if pipeline.name.match?(TIER_IDENTIFIER_REGEX)
-      fail_check! <<~MSG unless pipeline.name.include?(REQUIRED_TIER_IDENTIFIER)
+    if pipeline.name.match?(TIER_IDENTIFIER_REGEX) && !pipeline.name.include?(REQUIRED_TIER_IDENTIFIER) # rubocop:disable Rails/NegateInclude -- Not executed in Rails context
+      fail_check! <<~MSG
         Expected latest pipeline (#{pipeline.web_url}) to be a tier-3 pipeline! Pipeline name was "#{pipeline.name}".
 
         Please ensure the MR has all the required approvals, start a new pipeline and put the MR back on the Merge Train.
       MSG
-    elsif pipeline.name.include?(PREDICTIVE_PIPELINE_IDENTIFIER)
-      fail_check! <<~MSG
-        Expected latest pipeline (#{pipeline.web_url}) not to be a predictive pipeline! Pipeline name was "#{pipeline.name}".
-
-        Please ensure the MR has all the required approvals, start a new pipeline and put the MR back on the Merge Train.
-      MSG
     end
+
+    return unless pipeline.name.include?(PREDICTIVE_PIPELINE_IDENTIFIER)
+
+    fail_check! <<~MSG
+      Expected latest pipeline (#{pipeline.web_url}) not to be a predictive pipeline! Pipeline name was "#{pipeline.name}".
+
+      Please ensure the MR has all the required approvals, start a new pipeline and put the MR back on the Merge Train.
+    MSG
   end
 
   def target_branch_is_stable_branch?

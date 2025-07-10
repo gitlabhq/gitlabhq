@@ -1180,6 +1180,25 @@ module Ci
       builds_in_self_and_project_descendants.with_artifacts(reports_scope)
     end
 
+    # Expired artifacts are still valid if
+    # "Keep artifacts from most recent successful jobs" is enabled
+    def downloadable_artifacts_in_self_and_project_descendants
+      hierarchy_builds = builds_in_self_and_project_descendants
+
+      artifacts = Ci::JobArtifact
+        .with_job
+        .where(job_id: hierarchy_builds.select(:id))
+        .downloadable
+        .in_partition(self)
+
+      non_expired = artifacts.not_expired
+
+      locked_pipeline_ids = self_and_project_descendants.artifacts_locked.select(:id)
+      from_locked_pipelines = artifacts.joins(:job).where(p_ci_builds: { commit_id: locked_pipeline_ids })
+
+      non_expired.or(from_locked_pipelines).distinct
+    end
+
     def builds_with_coverage
       builds.latest.with_coverage
     end

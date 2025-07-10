@@ -2121,7 +2121,12 @@ class MergeRequest < ApplicationRecord
   end
 
   def has_sast_reports?
-    !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    if Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.complete_or_manual? &&
+        !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(Ci::JobArtifact.of_report_type(:sast))&.exists?
+    else
+      !!diff_head_pipeline&.complete_or_manual_and_has_reports?(::Ci::JobArtifact.of_report_type(:sast))
+    end
   end
 
   def has_secret_detection_reports?
@@ -2657,6 +2662,8 @@ class MergeRequest < ApplicationRecord
   def report_type_enabled?(report_type)
     if report_type == :license_scanning
       ::Gitlab::LicenseScanning.scanner_for_pipeline(project, diff_head_pipeline).has_data?
+    elsif report_type == :sast && Feature.enabled?(:show_child_reports_in_mr_page, project)
+      !!diff_head_pipeline&.latest_report_builds_in_self_and_project_descendants(::Ci::JobArtifact.of_report_type(report_type))&.exists?
     else
       !!diff_head_pipeline&.batch_lookup_report_artifact_for_file_type(report_type)
     end

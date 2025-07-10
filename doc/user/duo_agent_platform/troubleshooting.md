@@ -2,40 +2,29 @@
 stage: AI-powered
 group: Duo Workflow
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
-title: Troubleshooting GitLab Duo Agent Platform
+title: Troubleshooting the software development flow
 ---
 
 {{< details >}}
 
-- Tier: Ultimate
-- Offering: GitLab.com
-- Status: Private beta
+- Tier: Premium, Ultimate
+- Add-on: GitLab Duo Core, Pro, or Enterprise
+- Offering: GitLab.com, GitLab Self-Managed
+- Status: Experiment
 
 {{< /details >}}
-
-{{< history >}}
-
-- [Name changed](https://gitlab.com/gitlab-org/gitlab/-/issues/551382) from `Workflow` to `Agent Platform` in GitLab 18.2. 
-
-{{< /history >}}
-
-{{< alert type="warning" >}}
-
-This feature is [a private beta](../../policy/development_stages_support.md) and is not intended for customer usage outside of initial design partners. We expect major changes to this feature.
-
-{{< /alert >}}
 
 ## General guidance
 
 If you encounter issues, ensure that you have:
 
 1. The latest version of the GitLab Workflow extension for VS Code.
-1. A project that meets the [prerequisites](_index.md#prerequisites).
+1. A project that meets the [prerequisites](software_development_flow.md#prerequisites).
 1. The repository open in VS Code.
 1. The branch checked out.
 
-For details on these steps, see [the prerequisites](_index.md#prerequisites) and
-[how to connect to your repository](_index.md#connect-to-your-repository).
+For details on these steps, see [the prerequisites](software_development_flow.md#prerequisites) and
+[how to connect to your repository](software_development_flow.md#connect-to-your-repository).
 
 ## View debugging logs
 
@@ -70,26 +59,6 @@ If the request fails or does not show the HTTP/2 protocol:
 
 To correct this issue, ask your network administrator to put `https://duo-workflow-svc.runway.gitlab.net/DuoWorkflow/ExecuteWorkflow`
 on the correct allowlist, or to exempt it from traffic inspection.
-
-## Docker setup
-
-If you encounter issues with your Docker setup, try the following steps.
-
-1. [Install Docker and set the socket file path](docker_set_up.md#install-docker-and-set-the-socket-file-path).
-1. Restart your container manager. For example, if you use Colima, `colima restart`.
-1. Pull the base Docker image:
-
-   ```shell
-   docker pull registry.gitlab.com/gitlab-org/duo-workflow/default-docker-image/workflow-generic-image:v0.0.4
-   ```
-
-1. For permission issues, ensure your operating system user has the necessary Docker permissions.
-1. Verify that Docker has internet connectivity by executing the command `docker image pull redhat/ubi8`.
-   If this does not work, the DNS configuration of Colima might be at fault.
-   Edit the DNS setting in `~/.colima/default/colima.yaml` to `dns: [1.1.1.1]` and then restart Colima with `colima restart`.
-1. Check the executor logs:
-   - Use `docker ps -a | grep duo-workflow` to get the list of containers and their ids.
-   - Use `docker logs <container_id>` to view the logs for the specific container.
 
 ## IDE configuration
 

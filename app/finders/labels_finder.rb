@@ -140,7 +140,6 @@ class LabelsFinder < UnionFinder
     @project
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def projects
     return @projects if defined?(@projects)
 
@@ -158,12 +157,11 @@ class LabelsFinder < UnionFinder
                   end
     end
 
-    @projects = @projects.where(id: params[:project_ids]) if projects?
-    @projects = @projects.reorder(nil)
+    @projects = @projects.id_in(params[:project_ids]) if projects?
+    @projects = @projects.without_order
 
     @projects
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def read_permission
     :read_label

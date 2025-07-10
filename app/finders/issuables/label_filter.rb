@@ -130,7 +130,7 @@ module Issuables
 
       Label
         .from_union([group_labels, project_labels], remove_duplicates: false)
-        .reorder(nil)
+        .without_order
         .pluck(:title, :id)
         .group_by(&:first)
         .values

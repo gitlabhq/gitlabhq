@@ -41,7 +41,7 @@ module Labels
           group_labels_applied_to_issues,
           group_labels_applied_to_merge_requests
         ])
-        .reorder(nil)
+        .without_order
         .distinct
     end
     # rubocop: enable CodeReuse/ActiveRecord
@@ -50,7 +50,7 @@ module Labels
     def group_labels_applied_to_issues
       @labels_applied_to_issues ||= Label.joins(:issues)
         .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'")
-        .where(issues: { project_id: project.id }).reorder(nil)
+        .where(issues: { project_id: project.id }).without_order
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -58,7 +58,7 @@ module Labels
     def group_labels_applied_to_merge_requests
       @labels_applied_to_mrs ||= Label.joins(:merge_requests)
         .joins("INNER JOIN namespaces on namespaces.id = labels.group_id AND namespaces.type = 'Group'")
-        .where(merge_requests: { target_project_id: project.id }).reorder(nil)
+        .where(merge_requests: { target_project_id: project.id }).without_order
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

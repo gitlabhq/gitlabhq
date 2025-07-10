@@ -53,7 +53,7 @@ module Members
       # Avoids an unnecessary SELECT when the group has no parents
       @source_ids ||=
         if group.has_parent?
-          group.self_and_ancestors.reorder(nil).select(:id)
+          group.self_and_ancestors.without_order.select(:id)
         else
           group.id
         end

@@ -3,7 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import SessionExpireModal from '~/authentication/sessions/components/session_expire_modal.vue';
 import { INTERVAL_SESSION_MODAL } from '~/authentication/sessions/constants';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 
 jest.useFakeTimers();
 jest.mock('~/lib/utils/url_utility');
@@ -94,11 +94,22 @@ describe('SessionExpireModal', () => {
       expect(findModal().text()).toBe(message);
     });
 
-    it('triggers a refresh of the current page', () => {
+    it('navigates to the singInUrl', () => {
       createComponent();
+      expect(findModal().props('actionPrimary')).toMatchObject({ text: 'Sign in' });
 
       findModal().vm.$emit('primary');
       expect(visitUrl).toHaveBeenCalledWith(signInUrl);
+    });
+
+    describe('when no signInUrl prop', () => {
+      it('triggers a refresh of the current page', () => {
+        createComponent({ signInUrl: null });
+        expect(findModal().props('actionPrimary')).toMatchObject({ text: 'Reload page' });
+
+        findModal().vm.$emit('primary');
+        expect(refreshCurrentPage).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

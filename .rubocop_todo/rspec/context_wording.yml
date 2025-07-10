@@ -744,7 +744,6 @@ RSpec/ContextWording:
     - 'ee/spec/support/shared_examples/services/merge_merge_requests_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/scoped_label_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/search_notes_shared_examples.rb'
-    - 'ee/spec/support/shared_examples/services/search_service_shared_examples.rb'
     - 'ee/spec/support/shared_examples/services/update_issuable_health_status_shared_examples.rb'
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
     - 'ee/spec/views/groups/edit.html.haml_spec.rb'

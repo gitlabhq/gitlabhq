@@ -62,7 +62,7 @@ module Snippets
     # rubocop: disable CodeReuse/ActiveRecord
     def snippet_counts
       @snippets_finder.execute
-        .reorder(nil)
+        .without_order
         .select(<<~SQL)
           count(case when snippets.visibility_level=#{Snippet::PUBLIC}
             and snippets.secret is FALSE then 1 else null end) as are_public,

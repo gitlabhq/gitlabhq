@@ -155,11 +155,9 @@ module Gitlab
       project.repository.commit(key) if Commit.valid_hash?(key)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
-      Project.where(id: project).select(:id).reorder(nil)
+      Project.id_in(project).select(:id).without_order
     end
-    # rubocop: enabled CodeReuse/ActiveRecord
 
     def filter_milestones_by_project(milestones)
       return Milestone.none unless Ability.allowed?(@current_user, :read_milestone, @project)

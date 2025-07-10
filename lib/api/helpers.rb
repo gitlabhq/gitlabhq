@@ -499,11 +499,9 @@ module API
       permitted_attrs.to_h
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_iid(items, iid)
-      items.where(iid: iid)
+      items.iid_in(iid)
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_title(items, title)

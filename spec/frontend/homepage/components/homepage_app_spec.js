@@ -16,6 +16,10 @@ describe('HomepageApp', () => {
   const findWorkItemsWidget = () => wrapper.findComponent(WorkItemsWidget);
   const findMergeRequestsFetchMetadataError = () =>
     wrapper.findByTestId('merge-requests-fetch-metadata-error');
+  const findWorkItemsFetchMetadataDesktopError = () =>
+    wrapper.findByTestId('work-items-fetch-metadata-desktop-error');
+  const findWorkItemsFetchMetadataMobileError = () =>
+    wrapper.findByTestId('work-items-fetch-metadata-mobile-error');
 
   function createWrapper() {
     wrapper = shallowMountExtended(HomepageApp, {
@@ -40,7 +44,7 @@ describe('HomepageApp', () => {
       });
     });
 
-    it('shows an alert of if `MergeRequestsWidget` fails to fetch the metadata', async () => {
+    it('shows an alert if `MergeRequestsWidget` fails to fetch the metadata', async () => {
       expect(findMergeRequestsFetchMetadataError().exists()).toBe(false);
 
       findMergeRequestsWidget().vm.$emit('fetch-metadata-error');
@@ -61,10 +65,40 @@ describe('HomepageApp', () => {
     });
   });
 
-  it('passes the correct props to the `WorkItemsWidget` component', () => {
-    expect(findWorkItemsWidget().props()).toEqual({
-      assignedToYouPath: MOCK_ASSIGNED_WORK_ITEMS_PATH,
-      authoredByYouPath: MOCK_AUTHORED_WORK_ITEMS_PATH,
+  describe('WorkItemsWidget', () => {
+    it('passes the correct props to the `WorkItemsWidget` component', () => {
+      expect(findWorkItemsWidget().props()).toEqual({
+        assignedToYouPath: MOCK_ASSIGNED_WORK_ITEMS_PATH,
+        authoredByYouPath: MOCK_AUTHORED_WORK_ITEMS_PATH,
+      });
     });
+
+    it('shows an alert if `WorkItemsWidget` fails to fetch the metadata', async () => {
+      expect(findWorkItemsFetchMetadataDesktopError().exists()).toBe(false);
+      expect(findWorkItemsFetchMetadataMobileError().exists()).toBe(false);
+
+      findWorkItemsWidget().vm.$emit('fetch-metadata-error');
+      await nextTick();
+
+      expect(findWorkItemsFetchMetadataDesktopError().text()).toBe(
+        'The number of issues is not available. Please refresh the page to try again.',
+      );
+      expect(findWorkItemsFetchMetadataMobileError().text()).toBe(
+        'The number of issues is not available. Please refresh the page to try again.',
+      );
+    });
+
+    it.each([findWorkItemsFetchMetadataDesktopError, findWorkItemsFetchMetadataMobileError])(
+      'hides the alert on dismiss',
+      async (alertFinder) => {
+        findWorkItemsWidget().vm.$emit('fetch-metadata-error');
+        await nextTick();
+        alertFinder().vm.$emit('dismiss');
+        await nextTick();
+
+        expect(findWorkItemsFetchMetadataDesktopError().exists()).toBe(false);
+        expect(findWorkItemsFetchMetadataMobileError().exists()).toBe(false);
+      },
+    );
   });
 });

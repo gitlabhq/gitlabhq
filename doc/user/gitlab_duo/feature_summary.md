@@ -10,7 +10,7 @@ The following features are generally available on GitLab.com, GitLab Self-Manage
 They require a Premium or Ultimate subscription and one of the available add-ons.
 
 The GitLab Duo with Amazon Q features are available as a separate add-on, and
-are available on GitLab.com and GitLab Self-Managed only.
+are available on GitLab Self-Managed only.
 
 | Feature | GitLab Duo Core | GitLab Duo Pro | GitLab Duo Enterprise | GitLab Duo with Amazon Q |
 |---------|----------|---------|----------------|--------------------------|

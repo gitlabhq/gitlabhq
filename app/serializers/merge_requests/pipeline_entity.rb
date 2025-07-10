@@ -30,8 +30,13 @@ class MergeRequests::PipelineEntity < Grape::Entity
     end
 
     expose :artifacts do |pipeline, options|
-      rel = pipeline.downloadable_artifacts
       project = pipeline.project
+
+      rel = if Feature.enabled?(:show_child_reports_in_mr_page, project)
+              pipeline.downloadable_artifacts_in_self_and_project_descendants
+            else
+              pipeline.downloadable_artifacts
+            end
 
       allowed_to_read_artifacts = rel.select { |artifact| can?(request.current_user, :read_job_artifacts, artifact) }
 

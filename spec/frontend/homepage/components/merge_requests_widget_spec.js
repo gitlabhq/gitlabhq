@@ -11,7 +11,6 @@ import mergeRequestsWidgetMetadataQuery from '~/homepage/graphql/queries/merge_r
 import VisibilityChangeDetector from '~/homepage/components/visibility_change_detector.vue';
 import { withItems, withoutItems } from './mocks/merge_requests_widget_metadata_query_mocks';
 
-jest.mock('~/alert');
 jest.mock('~/sentry/sentry_browser_wrapper');
 
 describe('MergeRequestsWidget', () => {

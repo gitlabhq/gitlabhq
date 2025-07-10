@@ -37,7 +37,7 @@ describe('HiddenFilesWarning', () => {
 
   it('does not render buttons when links are not provided', () => {
     createComponent({ plainDiffPath: undefined, emailPatchPath: undefined });
-    expect(wrapper.findAllComponents(GlButton).length).toBe(0);
+    expect(wrapper.findAllComponents(GlButton)).toHaveLength(0);
   });
 
   it('has a correct visible/total files text', () => {

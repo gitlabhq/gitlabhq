@@ -15614,6 +15614,27 @@ msgstr ""
 msgid "Compliance frameworks"
 msgstr ""
 
+msgid "Compliance report|Actions"
+msgstr ""
+
+msgid "Compliance report|Edit framework"
+msgstr ""
+
+msgid "Compliance report|Framework name"
+msgstr ""
+
+msgid "Compliance report|Policies"
+msgstr ""
+
+msgid "Compliance report|Projects"
+msgstr ""
+
+msgid "Compliance report|Requirements"
+msgstr ""
+
+msgid "Compliance report|Requirements without controls"
+msgstr ""
+
 msgid "Compliance requirement control successfully deleted"
 msgstr ""
 
@@ -27161,7 +27182,7 @@ msgstr ""
 msgid "File size exceeds preview limit."
 msgstr ""
 
-msgid "File suppressed by a .gitattributes entry or the file's encoding is unsupported."
+msgid "File suppressed by a .gitattributes entry, the file's encoding is unsupported, or the file size exceeds the limit."
 msgstr ""
 
 msgid "File too large. Secure files must be less than %{limit} MB."
@@ -31759,6 +31780,9 @@ msgid "HomepageActivityWidget|The activity feed is not available. Please refresh
 msgstr ""
 
 msgid "Homepage|Start creating merge requests, pushing code, commenting in issues, and doing other work to view a feed of your activity here."
+msgstr ""
+
+msgid "Homepage|The number of issues is not available. Please refresh the page to try again."
 msgstr ""
 
 msgid "Homepage|The number of merge requests is not available. Please refresh the page to try again."
@@ -54141,6 +54165,9 @@ msgstr ""
 msgid "SAML single sign-on for %{group_name}"
 msgstr ""
 
+msgid "SAML|Please, reload the page and sign in again, if necessary. To avoid data loss, if you have unsaved edits, dismiss the modal and copy the unsaved text before refreshing the page."
+msgstr ""
+
 msgid "SAML|Sign in to %{groupName}"
 msgstr ""
 
@@ -54160,9 +54187,6 @@ msgid "SAML|To allow %{strongOpen}%{group_name}%{strongClose} to manage your Git
 msgstr ""
 
 msgid "SAML|Your SAML session has expired"
-msgstr ""
-
-msgid "SAML|Your SAML session has expired. Please, reload the page and sign in again, if necessary."
 msgstr ""
 
 msgid "SAML|Your organization's SSO has been connected to your GitLab account"
@@ -58883,10 +58907,10 @@ msgstr ""
 msgid "Session ID"
 msgstr ""
 
-msgid "SessionExpire|Your session has expired"
+msgid "SessionExpire|Please, sign in again. To avoid data loss, if you have unsaved edits, dismiss the modal and copy the unsaved text before sign in again."
 msgstr ""
 
-msgid "SessionExpire|Your session has expired. Please, sign in again."
+msgid "SessionExpire|Your session has expired"
 msgstr ""
 
 msgid "Session|There was a error loading the user verification challenge. Refresh to try again."

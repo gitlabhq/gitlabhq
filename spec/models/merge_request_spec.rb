@@ -3214,14 +3214,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#has_sast_reports?' do
     subject { merge_request.has_sast_reports? }
 
-    let(:project) { create(:project, :repository) }
+    let_it_be(:project) { create(:project, :repository) }
 
     before do
       stub_licensed_features(sast: true)
     end
 
     context 'when head pipeline has sast reports' do
-      let(:merge_request) { create(:merge_request, :with_sast_reports, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, :with_sast_reports, source_project: project) }
 
       it { is_expected.to be_truthy }
 
@@ -3235,9 +3235,38 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
 
     context 'when head pipeline does not have sast reports' do
-      let(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
 
       it { is_expected.to be_falsey }
+    end
+
+    context 'when the child pipeline has sast reports' do
+      let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+      let_it_be(:pipeline) { create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+      let_it_be(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+      let_it_be(:child_build) { create(:ci_build, :sast_report, pipeline: child_pipeline) }
+
+      context 'when the pipeline is still running' do
+        let_it_be(:pipeline) { create(:ci_pipeline, :running, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+
+        it 'returns false if head pipeline is running' do
+          expect(subject).to eq(false)
+        end
+      end
+
+      it 'returns true if head pipeline is finished' do
+        expect(subject).to eq(true)
+      end
+
+      context 'when FF show_child_reports_in_mr_page is disabled' do
+        before do
+          stub_feature_flags(show_child_reports_in_mr_page: false)
+        end
+
+        it 'returns false regardless of child pipeline reports' do
+          expect(subject).to eq(false)
+        end
+      end
     end
   end
 
@@ -6453,9 +6482,9 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   describe '#enabled_reports' do
     let(:project) { create(:project, :repository) }
 
-    where(:report_type, :with_reports, :feature) do
-      :sast                | :with_sast_reports                | :sast
-      :secret_detection    | :with_secret_detection_reports    | :secret_detection
+    where(:report_type, :with_reports, :feature, :artifact_report) do
+      :sast              | :with_sast_reports             | :sast             | :sast_report
+      :secret_detection  | :with_secret_detection_reports | :secret_detection | :secret_detection_report
     end
 
     with_them do
@@ -6475,6 +6504,28 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         let(:merge_request) { create(:merge_request, source_project: project) }
 
         it { is_expected.to be_falsy }
+
+        context "but the child pipeline has reports" do
+          let(:pipeline) { create(:ci_pipeline, :success, sha: merge_request.diff_head_sha, merge_requests_as_head_pipeline: [merge_request]) }
+          let(:child_pipeline) { create(:ci_pipeline, :success, child_of: pipeline) }
+          let!(:child_build) { create(:ci_build, artifact_report, pipeline: child_pipeline) }
+
+          it 'returns true for sast reports' do
+            if feature == :sast
+              is_expected.to be_truthy
+            else
+              is_expected.to be_falsy
+            end
+          end
+
+          context 'with FF show_child_reports_in_mr_page disabled' do
+            before do
+              stub_feature_flags(show_child_reports_in_mr_page: false)
+            end
+
+            it { is_expected.to be_falsy }
+          end
+        end
       end
     end
   end

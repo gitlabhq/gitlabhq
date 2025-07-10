@@ -255,7 +255,7 @@ module Namespaces
         roots = Gitlab::ObjectHierarchy
           .new(Namespace.id_in(parent_ids))
           .base_and_ancestors
-          .reorder(nil)
+          .without_order
           .top_level
 
         Namespace.lock('FOR NO KEY UPDATE').select(:id).id_in(roots).order(id: :asc).load

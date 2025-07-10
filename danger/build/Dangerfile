@@ -1,0 +1,13 @@
+# frozen_string_literal: true
+
+modified_or_deleted_patches = helper.modified_files.select { |file| file.start_with?('patches/') } +
+  helper.deleted_files.select { |file| file.start_with?('patches/') }
+
+return if modified_or_deleted_patches.empty?
+
+message = "This merge request modifies or deletes an existing patch in the `patches` " \
+  "directory. Please ping `@gitlab-build` in a comment so that the cache with " \
+  "existing patch can be invalidated for various build pipelines once this MR is " \
+  "merged."
+
+warn message

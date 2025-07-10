@@ -47,7 +47,7 @@ files for you.
 - Can create and change local files.
 
 For larger problems, like understanding a codebase or generating an implementation
-plan, use the [GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
+plan, use the [software development flow of the GitLab Duo Agent Platform](../duo_agent_platform/_index.md).
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see [GitLab Duo Agentic Chat](https://youtu.be/uG9-QLAJrrg?si=c25SR7DoRAep7jvQ).
@@ -91,7 +91,7 @@ To use Agentic Chat:
 1. Under **Gitlab › Duo Agentic Chat: Enabled**, select the
    **Enable GitLab Duo Agentic Chat** checkbox.
 1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
-1. Optional. Select **Refresh page**, if prompted.
+1. Select **Refresh page** if prompted.
 1. In the message box, enter your question and press **Enter** or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
@@ -134,16 +134,16 @@ Conversations that existed before you created any custom rules do not follow tho
 
 Agentic Chat extends Chat capabilities with the following features:
 
-- **Project Search**: Can search through your projects to find relevant
+- **Project search**: Can search through your projects to find relevant
   issues, merge requests, and other artifacts using keyword-based search. Agentic
   Chat does not have semantic search capability.
-- **File Access**: Can read and list files in your local project without you
+- **File access**: Can read and list files in your local project without you
   needing to manually specify file paths.
-- **Create and Edit Files**: Can create files and edit multiple files in multiple locations.
+- **Create and edit files**: Can create files and edit multiple files in multiple locations.
   This affects the local files.
-- **Resource Retrieval**: Can automatically retrieve detailed information about
+- **Resource retrieval**: Can automatically retrieve detailed information about
   issues, merge requests, and pipeline logs of your current project.
-- **Multi-source Analysis**: Can combine information from multiple sources to
+- **Multi-source analysis**: Can combine information from multiple sources to
   provide more complete answers to complex questions. You can use [Model Context Protocol](../gitlab_duo/model_context_protocol/_index.md) to connect Agentic Chat to
   external data sources and tools.
 - **Custom rules**: Conversations can follow any customised rules that you specify.

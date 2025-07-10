@@ -19,7 +19,7 @@ module Banzai
             milestone_iids = fitered_ids&.pluck(:milestone_iid)&.compact
 
             if milestone_iids.present?
-              relation << find_milestones(parent, true, absolute_path: absolute_path).where(iid: milestone_iids)
+              relation << find_milestones(parent, true, absolute_path: absolute_path).iid_in(milestone_iids)
             end
 
             milestone_names = fitered_ids&.pluck(:milestone_name)&.compact

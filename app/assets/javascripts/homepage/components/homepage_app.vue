@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       hasMergeRequestsMetadataError: false,
+      hasWorkItemsMetadataError: false,
     };
   },
 };
@@ -57,15 +58,40 @@ export default {
             )
           }}</gl-alert
         >
+        <gl-alert
+          v-if="hasWorkItemsMetadataError"
+          variant="warning"
+          data-testid="work-items-fetch-metadata-desktop-error"
+          class="gl-hidden md:gl-block"
+          @dismiss="hasWorkItemsMetadataError = false"
+          >{{
+            s__(
+              'Homepage|The number of issues is not available. Please refresh the page to try again.',
+            )
+          }}</gl-alert
+        >
         <div class="gl-grid gl-grid-cols-1 gl-gap-5 lg:gl-grid-cols-2">
           <merge-requests-widget
             :review-requested-path="reviewRequestedPath"
             :assigned-to-you-path="assignedMergeRequestsPath"
             @fetch-metadata-error="hasMergeRequestsMetadataError = true"
           />
+          <gl-alert
+            v-if="hasWorkItemsMetadataError"
+            variant="warning"
+            data-testid="work-items-fetch-metadata-mobile-error"
+            class="gl-block md:gl-hidden"
+            @dismiss="hasWorkItemsMetadataError = false"
+            >{{
+              s__(
+                'Homepage|The number of issues is not available. Please refresh the page to try again.',
+              )
+            }}</gl-alert
+          >
           <work-items-widget
             :assigned-to-you-path="assignedWorkItemsPath"
             :authored-by-you-path="authoredWorkItemsPath"
+            @fetch-metadata-error="hasWorkItemsMetadataError = true"
           />
         </div>
         <todos-widget />

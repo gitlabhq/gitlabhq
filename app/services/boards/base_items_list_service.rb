@@ -53,13 +53,11 @@ module Boards
     end
 
     # We memoize the query here since the finder methods we use are quite complex. This does not memoize the result of the query.
-    # rubocop: disable CodeReuse/ActiveRecord
     def init_collection
       strong_memoize(:init_collection) do
-        filter(finder.execute).reorder(nil)
+        filter(finder.execute).without_order
       end
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter(items)
       # when grouping board issues by epics (used in board swimlanes)

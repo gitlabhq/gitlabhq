@@ -1,6 +1,7 @@
 <script>
 import { GlIcon, GlLink, GlBadge } from '@gitlab/ui';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import workItemsWidgetMetadataQuery from '../graphql/queries/work_items_widget_metadata.query.graphql';
 import VisibilityChangeDetector from './visibility_change_detector.vue';
 
@@ -37,20 +38,21 @@ export default {
       update({ currentUser }) {
         return currentUser;
       },
+      error(error) {
+        this.$emit('fetch-metadata-error');
+        Sentry.captureException(error);
+      },
     },
   },
   computed: {
-    isLoadingMetadata() {
-      return this.$apollo.queries.metadata.loading;
-    },
     assignedCount() {
-      return this.metadata?.assigned?.count ?? 0;
+      return this.metadata?.assigned?.count ?? '-';
     },
     assignedLastUpdatedAt() {
       return this.metadata?.assigned?.nodes?.[0]?.updatedAt ?? null;
     },
     authoredCount() {
-      return this.metadata?.authored?.count ?? 0;
+      return this.metadata?.authored?.count ?? '-';
     },
     authoredLastUpdatedAt() {
       return this.metadata?.authored?.nodes?.[0]?.updatedAt ?? null;
@@ -70,15 +72,13 @@ export default {
       <gl-icon name="issues" :size="16" />{{ __('Issues') }}
     </h4>
     <ul class="gl-list-none gl-p-0">
-      <li class="gl-flex gl-items-center gl-gap-3">
+      <li>
         <gl-link
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="assignedToYouPath"
         >
           {{ s__('HomePageWorkItemsWidget|Assigned to you') }}
-        </gl-link>
-        <template v-if="!isLoadingMetadata">
           <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
           <span
             v-if="assignedLastUpdatedAt"
@@ -86,17 +86,15 @@ export default {
             class="gl-ml-auto gl-text-sm gl-text-subtle"
             >{{ timeFormatted(assignedLastUpdatedAt) }}</span
           >
-        </template>
+        </gl-link>
       </li>
-      <li class="gl-flex gl-items-center gl-gap-3">
+      <li>
         <gl-link
           class="gl-flex gl-items-center gl-gap-3 gl-rounded-small gl-px-1 gl-py-1 !gl-no-underline hover:gl-bg-gray-10 dark:hover:gl-bg-alpha-light-8"
           variant="meta"
           :href="authoredByYouPath"
         >
           {{ s__('HomePageWorkItemsWidget|Authored by you') }}
-        </gl-link>
-        <template v-if="!isLoadingMetadata">
           <gl-badge data-testid="authored-count">{{ authoredCount }}</gl-badge>
           <span
             v-if="authoredLastUpdatedAt"
@@ -104,7 +102,7 @@ export default {
             class="gl-ml-auto gl-text-sm gl-text-subtle"
             >{{ timeFormatted(authoredLastUpdatedAt) }}</span
           >
-        </template>
+        </gl-link>
       </li>
     </ul>
   </visibility-change-detector>

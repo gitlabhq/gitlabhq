@@ -48,9 +48,6 @@ export default {
     },
   },
   computed: {
-    isLoadingMetadata() {
-      return this.$apollo.queries.metadata.loading;
-    },
     reviewRequestedCount() {
       return this.metadata.reviewRequestedMergeRequests?.count ?? '-';
     },
@@ -86,14 +83,12 @@ export default {
         >
           {{ __('Review requested') }}
           <gl-badge data-testid="review-requested-count">{{ reviewRequestedCount }}</gl-badge>
-          <template v-if="!isLoadingMetadata">
-            <span
-              v-if="reviewRequestedLastUpdatedAt"
-              data-testid="review-requested-last-updated-at"
-              class="gl-ml-auto gl-text-sm gl-text-subtle"
-              >{{ timeFormatted(reviewRequestedLastUpdatedAt) }}</span
-            >
-          </template>
+          <span
+            v-if="reviewRequestedLastUpdatedAt"
+            data-testid="review-requested-last-updated-at"
+            class="gl-ml-auto gl-text-sm gl-text-subtle"
+            >{{ timeFormatted(reviewRequestedLastUpdatedAt) }}</span
+          >
         </gl-link>
       </li>
       <li>
@@ -104,14 +99,12 @@ export default {
         >
           {{ __('Assigned to you') }}
           <gl-badge data-testid="assigned-count">{{ assignedCount }}</gl-badge>
-          <template v-if="!isLoadingMetadata">
-            <span
-              v-if="assignedLastUpdatedAt"
-              data-testid="assigned-last-updated-at"
-              class="gl-ml-auto gl-text-sm gl-text-subtle"
-              >{{ timeFormatted(assignedLastUpdatedAt) }}</span
-            >
-          </template>
+          <span
+            v-if="assignedLastUpdatedAt"
+            data-testid="assigned-last-updated-at"
+            class="gl-ml-auto gl-text-sm gl-text-subtle"
+            >{{ timeFormatted(assignedLastUpdatedAt) }}</span
+          >
         </gl-link>
       </li>
     </ul>

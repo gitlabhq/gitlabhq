@@ -4738,6 +4738,51 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     end
   end
 
+  describe '#downloadable_artifacts_in_self_and_project_descendants' do
+    let_it_be(:pipeline) { create(:ci_pipeline, :unlocked, project: project) }
+    let_it_be(:child_pipeline) { create(:ci_pipeline, :unlocked, child_of: pipeline) }
+    let_it_be(:grandchild_pipeline) { create(:ci_pipeline, :unlocked, child_of: child_pipeline) }
+
+    let_it_be(:parent_build) { create(:ci_build, :test_reports, pipeline: pipeline) }
+    let_it_be(:parent_build_not_downloadable) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+    let_it_be(:child_build) { create(:ci_build, :coverage_reports, pipeline: child_pipeline) }
+    let_it_be(:child_build_not_downloadable) { create(:ci_build, :trace_artifact, pipeline: child_pipeline) }
+    let_it_be(:grandchild_build) { create(:ci_build, :codequality_reports, pipeline: grandchild_pipeline) }
+
+    let_it_be(:unrelated_pipeline) { create(:ci_pipeline, project: create(:project)) }
+    let_it_be(:unrelated_build) { create(:ci_build, :test_reports, pipeline: unrelated_pipeline) }
+
+    let(:parent_artifact) { parent_build.job_artifacts.first }
+    let(:child_artifact) { child_build.job_artifacts.first }
+    let(:grandchild_artifact) { grandchild_build.job_artifacts.first }
+
+    subject { pipeline.downloadable_artifacts_in_self_and_project_descendants }
+
+    it 'returns downloadable parent artifact as well as downstream artifacts' do
+      expect(subject).to contain_exactly(parent_artifact, child_artifact, grandchild_artifact)
+    end
+
+    context 'when there are expired artifacts' do
+      before do
+        grandchild_artifact.update!(expire_at: 1.week.ago)
+      end
+
+      it 'does not return expired artifacts' do
+        expect(subject).to contain_exactly(parent_artifact, child_artifact)
+      end
+
+      context 'when the expired artifact belongs to a locked pipeline' do
+        before do
+          grandchild_pipeline.update!(locked: described_class.lockeds[:artifacts_locked])
+        end
+
+        it 'returns expired artifact' do
+          expect(subject).to contain_exactly(parent_artifact, child_artifact, grandchild_artifact)
+        end
+      end
+    end
+  end
+
   describe '#has_reports?' do
     subject { pipeline.has_reports?(Ci::JobArtifact.of_report_type(:test)) }
 

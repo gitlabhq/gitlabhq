@@ -1,7 +1,7 @@
 <script>
 import { GlModal } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import { visitUrl } from '~/lib/utils/url_utility';
+import { refreshCurrentPage, visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { INTERVAL_SESSION_MODAL } from '../constants';
 
@@ -20,7 +20,8 @@ export default {
     },
     signInUrl: {
       type: String,
-      required: true,
+      default: null,
+      required: false,
     },
     title: {
       type: String,
@@ -33,6 +34,12 @@ export default {
       modalId: uniqueId('expire-session-modal-'),
       showModal: false,
     };
+  },
+  computed: {
+    reload() {
+      const text = this.signInUrl ? __('Sign in') : __('Reload page');
+      return { text };
+    },
   },
   async created() {
     this.intervalId = setInterval(this.checkStatus, INTERVAL_SESSION_MODAL);
@@ -61,10 +68,13 @@ export default {
       }
     },
     goTo() {
-      visitUrl(this.signInUrl);
+      if (this.signInUrl) {
+        visitUrl(this.signInUrl);
+      } else {
+        refreshCurrentPage();
+      }
     },
   },
-  reload: { text: __('Sign in') },
   cancel: { text: __('Cancel') },
 };
 </script>
@@ -74,7 +84,7 @@ export default {
     v-model="showModal"
     :modal-id="modalId"
     :title="title"
-    :action-primary="$options.reload"
+    :action-primary="reload"
     :action-cancel="$options.cancel"
     aria-live="assertive"
     @primary="goTo"

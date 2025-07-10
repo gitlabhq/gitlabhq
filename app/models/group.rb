@@ -850,21 +850,21 @@ class Group < Namespace
   def members_with_descendants
     GroupMember
       .active_without_invites_and_requests
-      .where(source_id: self_and_descendants.reorder(nil).select(:id))
+      .where(source_id: self_and_descendants.without_order.select(:id))
   end
 
   # Returns all members that are part of the group, it's subgroups, and ancestor groups
   def hierarchy_members
     GroupMember
       .active_without_invites_and_requests
-      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+      .where(source_id: self_and_hierarchy.without_order.select(:id))
   end
 
   def hierarchy_members_with_inactive
     GroupMember
       .non_request
       .non_invite
-      .where(source_id: self_and_hierarchy.reorder(nil).select(:id))
+      .where(source_id: self_and_hierarchy.without_order.select(:id))
   end
 
   def descendant_project_members_with_inactive
@@ -876,8 +876,8 @@ class Group < Namespace
 
   def users_with_descendants
     User
-      .where(id: members_with_descendants.select(:user_id))
-      .reorder(nil)
+      .id_in(members_with_descendants.select(:user_id))
+      .without_order
   end
 
   def users_count

@@ -259,11 +259,9 @@ module Gitlab
       milestones.of_projects(authorized_project_ids_relation)
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def project_ids_relation
-      limit_projects.select(:id).reorder(nil)
+      limit_projects.select(:id).without_order
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     def issuable_params
       {}.tap do |params|
@@ -295,11 +293,9 @@ module Gitlab
         .pluck_primary_key
     end
 
-    # rubocop: disable CodeReuse/ActiveRecord
     def limited_count(relation)
-      relation.reorder(nil).limit(count_limit).size
+      relation.without_order.limit(count_limit).size
     end
-    # rubocop: enable CodeReuse/ActiveRecord
   end
 end
 

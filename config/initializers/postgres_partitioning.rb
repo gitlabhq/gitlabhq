@@ -60,7 +60,8 @@ if Gitlab.ee?
       Ai::ActiveContext::Code::Repository,
       Ai::KnowledgeGraph::EnabledNamespace,
       Ai::KnowledgeGraph::Replica,
-      Ai::KnowledgeGraph::Task
+      Ai::KnowledgeGraph::Task,
+      Ai::DuoWorkflows::Checkpoint
     ])
 else
   Gitlab::Database::Partitioning.register_tables(
