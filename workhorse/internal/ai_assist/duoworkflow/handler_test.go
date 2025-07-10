@@ -3,11 +3,12 @@ package duoworkflow
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
 	"github.com/gorilla/websocket"
-	"github.com/stretchr/testify/mock"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -24,18 +25,27 @@ func TestHandler(t *testing.T) {
 	t.Run("successful workflow execution", func(t *testing.T) {
 		server := setupTestServer(t)
 
-		mockAPI := &mockAPI{}
-		mockAPI.On("PreAuthorizeHandler", mock.Anything, "").Return(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			mockAPI.apiHandlerFunc(w, r, &api.Response{
-				DuoWorkflow: &api.DuoWorkflow{
-					ServiceURI: server.Addr,
-					Headers:    map[string]string{"Authorization": "Bearer test"},
-					Secure:     false,
-				},
-			})
-		}))
+		apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", api.ResponseContentType)
 
-		httpServer := httptest.NewServer(Handler(mockAPI))
+			w.WriteHeader(http.StatusOK)
+			_, err := w.Write([]byte(`{
+				"DuoWorkflow": {
+					"ServiceURI": "` + server.Addr + `",
+					"Headers": {"Authorization": "Bearer test"},
+					"Secure": false
+				}
+			}`))
+			assert.NoError(t, err)
+		}))
+		defer apiServer.Close()
+
+		apiURL, err := url.Parse(apiServer.URL)
+		require.NoError(t, err)
+
+		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+		httpServer := httptest.NewServer(Handler(apiClient))
 		defer httpServer.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -59,12 +69,17 @@ func TestHandler(t *testing.T) {
 	})
 
 	t.Run("unauthorized request", func(t *testing.T) {
-		mockAPI := &mockAPI{}
-		mockAPI.On("PreAuthorizeHandler", mock.Anything, "").Return(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(http.StatusUnauthorized)
 		}))
+		defer apiServer.Close()
 
-		server := httptest.NewServer(Handler(mockAPI))
+		apiURL, err := url.Parse(apiServer.URL)
+		require.NoError(t, err)
+
+		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+		server := httptest.NewServer(Handler(apiClient))
 		defer server.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(server.URL, "http") + "/duo"
@@ -80,23 +95,31 @@ func TestHandler(t *testing.T) {
 
 	t.Run("grpc server error", func(t *testing.T) {
 		server := setupTestServer(t)
-
 		server.execWorkflowHandler = func(_ pb.DuoWorkflow_ExecuteWorkflowServer) error {
 			return status.Error(codes.Internal, "internal server error")
 		}
 
-		mockAPI := &mockAPI{}
-		mockAPI.On("PreAuthorizeHandler", mock.Anything, "").Return(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			mockAPI.apiHandlerFunc(w, r, &api.Response{
-				DuoWorkflow: &api.DuoWorkflow{
-					ServiceURI: "localhost:8001",
-					Headers:    map[string]string{},
-					Secure:     false,
-				},
-			})
-		}))
+		apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", api.ResponseContentType)
 
-		httpServer := httptest.NewServer(Handler(mockAPI))
+			w.WriteHeader(http.StatusOK)
+			_, err := w.Write([]byte(`{
+				"DuoWorkflow": {
+					"ServiceURI": "` + server.Addr + `",
+					"Headers": {},
+					"Secure": false
+				}
+			}`))
+			assert.NoError(t, err)
+		}))
+		defer apiServer.Close()
+
+		apiURL, err := url.Parse(apiServer.URL)
+		require.NoError(t, err)
+
+		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+		httpServer := httptest.NewServer(Handler(apiClient))
 		defer httpServer.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -118,18 +141,27 @@ func TestHandler(t *testing.T) {
 	})
 
 	t.Run("invalid service URL", func(t *testing.T) {
-		mockAPI := &mockAPI{}
-		mockAPI.On("PreAuthorizeHandler", mock.Anything, "").Return(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			mockAPI.apiHandlerFunc(w, r, &api.Response{
-				DuoWorkflow: &api.DuoWorkflow{
-					ServiceURI: "invalid://url",
-					Headers:    map[string]string{},
-					Secure:     false,
-				},
-			})
-		}))
+		apiServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+			w.Header().Set("Content-Type", api.ResponseContentType)
 
-		httpServer := httptest.NewServer(Handler(mockAPI))
+			w.WriteHeader(http.StatusOK)
+			_, err := w.Write([]byte(`{
+				"DuoWorkflow": {
+					"ServiceURI": "invalid://url",
+					"Headers": {},
+					"Secure": false
+				}
+			}`))
+			assert.NoError(t, err)
+		}))
+		defer apiServer.Close()
+
+		apiURL, err := url.Parse(apiServer.URL)
+		require.NoError(t, err)
+
+		apiClient := api.NewAPI(apiURL, "test-version", http.DefaultTransport)
+
+		httpServer := httptest.NewServer(Handler(apiClient))
 		defer httpServer.Close()
 
 		wsURL := "ws" + strings.TrimPrefix(httpServer.URL, "http") + "/duo"
@@ -147,15 +179,4 @@ func TestHandler(t *testing.T) {
 			require.Equal(t, http.StatusInternalServerError, resp.StatusCode)
 		}
 	})
-}
-
-type mockAPI struct {
-	mock.Mock
-	apiHandlerFunc api.HandleFunc
-}
-
-func (m *mockAPI) PreAuthorizeHandler(handleFunc api.HandleFunc, _ string) http.Handler {
-	m.apiHandlerFunc = handleFunc
-	args := m.Called(handleFunc, "")
-	return args.Get(0).(http.Handler)
 }

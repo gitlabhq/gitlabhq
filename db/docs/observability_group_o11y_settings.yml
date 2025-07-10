@@ -1,0 +1,13 @@
+---
+table_name: observability_group_o11y_settings
+classes:
+- Observability::GroupO11ySetting
+feature_categories:
+- observability
+description: "Group-level o11y connection settings"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196316
+milestone: '18.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces
+table_size: small

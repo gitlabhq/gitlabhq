@@ -88,7 +88,7 @@ func NewClient(serverURI string, headers map[string]string, secure bool) (*Clien
 }
 
 // ExecuteWorkflow initiates a new workflow execution stream with the server.
-func (c *Client) ExecuteWorkflow(ctx context.Context) (WorkflowStream, error) {
+func (c *Client) ExecuteWorkflow(ctx context.Context) (pb.DuoWorkflow_ExecuteWorkflowClient, error) {
 	ctx = metadata.NewOutgoingContext(ctx, metadata.New(c.headers))
 
 	stream, err := c.grpcClient.ExecuteWorkflow(ctx)
@@ -99,9 +99,8 @@ func (c *Client) ExecuteWorkflow(ctx context.Context) (WorkflowStream, error) {
 		}
 		return nil, err
 	}
-	return &workflowStream{
-		stream: stream,
-	}, nil
+
+	return stream, nil
 }
 
 // Close terminates the connection to the workflow server.

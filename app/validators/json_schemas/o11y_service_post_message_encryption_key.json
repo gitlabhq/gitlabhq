@@ -1,0 +1,8 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "O11y Service Post Message Encryption Key",
+  "description": "Encryption key for o11y service post messages",
+  "type": "string",
+  "minLength": 1,
+  "maxLength": 510
+}

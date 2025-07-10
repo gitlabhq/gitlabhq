@@ -65,8 +65,16 @@ module QA
         parse_body(api_get_from("#{api_members_path}/all"))
       end
 
+      def list_users
+        parse_body(api_get_from(api_users_path))
+      end
+
       def find_member(username)
         list_members.find { |member| member[:username] == username }
+      end
+
+      def find_user(username)
+        list_users.find { |user| user[:username] == username }
       end
 
       def invite_group(group, access_level = AccessLevel::GUEST)
@@ -81,6 +89,10 @@ module QA
 
       def api_members_path
         "#{api_get_path}/members"
+      end
+
+      def api_users_path
+        "#{api_get_path}/users"
       end
 
       def api_share_path

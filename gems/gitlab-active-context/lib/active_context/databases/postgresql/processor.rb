@@ -55,7 +55,8 @@ module ActiveContext
         def process_prefix(conditions)
           relation = base_relation
           conditions.each do |key, value|
-            relation = relation.where("#{model.connection.quote_column_name(key)} LIKE ?", "#{value}%")
+            sanitized_value = model.sanitize_sql_like(value)
+            relation = relation.where("#{model.connection.quote_column_name(key)} LIKE ?", "#{sanitized_value}%")
           end
           relation
         end

@@ -18842,6 +18842,28 @@ CREATE SEQUENCE oauth_openid_requests_id_seq
 
 ALTER SEQUENCE oauth_openid_requests_id_seq OWNED BY oauth_openid_requests.id;
 
+CREATE TABLE observability_group_o11y_settings (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    o11y_service_url text NOT NULL,
+    o11y_service_user_email text NOT NULL,
+    o11y_service_password jsonb NOT NULL,
+    o11y_service_post_message_encryption_key jsonb NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    CONSTRAINT check_470a188df1 CHECK ((char_length(o11y_service_user_email) <= 255)),
+    CONSTRAINT check_9a69bf69bb CHECK ((char_length(o11y_service_url) <= 255))
+);
+
+CREATE SEQUENCE observability_group_o11y_settings_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE observability_group_o11y_settings_id_seq OWNED BY observability_group_o11y_settings.id;
+
 CREATE TABLE observability_logs_issues_connections (
     id bigint NOT NULL,
     issue_id bigint NOT NULL,
@@ -22647,7 +22669,8 @@ CREATE TABLE required_code_owners_sections (
     name text NOT NULL,
     protected_branch_project_id bigint,
     protected_branch_namespace_id bigint,
-    CONSTRAINT check_e58d53741e CHECK ((char_length(name) <= 1024))
+    CONSTRAINT check_e58d53741e CHECK ((char_length(name) <= 1024)),
+    CONSTRAINT check_e7c067043a CHECK ((num_nonnulls(protected_branch_namespace_id, protected_branch_project_id) = 1))
 );
 
 CREATE SEQUENCE required_code_owners_sections_id_seq
@@ -28234,6 +28257,8 @@ ALTER TABLE ONLY oauth_device_grants ALTER COLUMN id SET DEFAULT nextval('oauth_
 
 ALTER TABLE ONLY oauth_openid_requests ALTER COLUMN id SET DEFAULT nextval('oauth_openid_requests_id_seq'::regclass);
 
+ALTER TABLE ONLY observability_group_o11y_settings ALTER COLUMN id SET DEFAULT nextval('observability_group_o11y_settings_id_seq'::regclass);
+
 ALTER TABLE ONLY observability_logs_issues_connections ALTER COLUMN id SET DEFAULT nextval('observability_logs_issues_connections_id_seq'::regclass);
 
 ALTER TABLE ONLY observability_metrics_issues_connections ALTER COLUMN id SET DEFAULT nextval('observability_metrics_issues_connections_id_seq'::regclass);
@@ -30943,6 +30968,9 @@ ALTER TABLE ONLY oauth_device_grants
 
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT oauth_openid_requests_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY observability_group_o11y_settings
+    ADD CONSTRAINT observability_group_o11y_settings_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY observability_logs_issues_connections
     ADD CONSTRAINT observability_logs_issues_connections_pkey PRIMARY KEY (id);
@@ -36889,6 +36917,8 @@ CREATE UNIQUE INDEX index_oauth_device_grants_on_device_code ON oauth_device_gra
 CREATE UNIQUE INDEX index_oauth_device_grants_on_user_code ON oauth_device_grants USING btree (user_code);
 
 CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requests USING btree (access_grant_id);
+
+CREATE INDEX index_observability_group_o11y_settings_on_group_id ON observability_group_o11y_settings USING btree (group_id);
 
 CREATE INDEX index_observability_logs_issues_connections_on_project_id ON observability_logs_issues_connections USING btree (project_id);
 
@@ -46482,6 +46512,9 @@ ALTER TABLE ONLY namespace_details
 
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_rails_ccb7e4bc0b FOREIGN KEY (user_list_id) REFERENCES operations_user_lists(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY observability_group_o11y_settings
+    ADD CONSTRAINT fk_rails_cdcfbdd08d FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY members_deletion_schedules
     ADD CONSTRAINT fk_rails_ce06d97eb2 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;

@@ -33983,6 +33983,12 @@ msgstr ""
 msgid "InviteMembersModal|GitLab is better with colleagues!"
 msgstr ""
 
+msgid "InviteMembersModal|Group invite removed. It might take a few minutes for the changes to user access levels to take effect."
+msgstr ""
+
+msgid "InviteMembersModal|Group was successfully invited. It might take a few minutes for the changes to user access levels to take effect."
+msgstr ""
+
 msgid "InviteMembersModal|How about inviting a colleague or two to join you?"
 msgstr ""
 

@@ -134,6 +134,8 @@ class Group < Namespace
   has_many :dependency_proxy_blobs, class_name: 'DependencyProxy::Blob'
   has_many :dependency_proxy_manifests, class_name: 'DependencyProxy::Manifest'
 
+  has_one :observability_group_o11y_setting, class_name: 'Observability::GroupO11ySetting', inverse_of: :group
+
   has_one :deletion_schedule, class_name: 'GroupDeletionSchedule'
   delegate :deleting_user, :marked_for_deletion_on, to: :deletion_schedule, allow_nil: true
 

@@ -32,7 +32,7 @@ import {
 } from '~/lib/utils/http_status';
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnMemberInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 import { captureException } from '~/ci/runner/sentry_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -402,8 +402,8 @@ describe('InviteMembersModal', () => {
           expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
         });
 
-        it('calls reloadOnInvitationSuccess', () => {
-          expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+        it('calls reloadOnMemberInvitationSuccess', () => {
+          expect(reloadOnMemberInvitationSuccess).toHaveBeenCalled();
         });
 
         it('does not show the toast message', () => {
@@ -436,8 +436,8 @@ describe('InviteMembersModal', () => {
             expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
           });
 
-          it('does not call reloadOnInvitationSuccess', () => {
-            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+          it('does not call reloadOnMemberInvitationSuccess', () => {
+            expect(reloadOnMemberInvitationSuccess).not.toHaveBeenCalled();
           });
         });
       });
@@ -592,8 +592,8 @@ describe('InviteMembersModal', () => {
             expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
           });
 
-          it('does not call reloadOnInvitationSuccess', () => {
-            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+          it('does not call reloadOnMemberInvitationSuccess', () => {
+            expect(reloadOnMemberInvitationSuccess).not.toHaveBeenCalled();
           });
         });
       });
@@ -711,8 +711,8 @@ describe('InviteMembersModal', () => {
             expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
           });
 
-          it('does not call reloadOnInvitationSuccess', () => {
-            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+          it('does not call reloadOnMemberInvitationSuccess', () => {
+            expect(reloadOnMemberInvitationSuccess).not.toHaveBeenCalled();
           });
         });
       });
@@ -842,8 +842,8 @@ describe('InviteMembersModal', () => {
             expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
           });
 
-          it('does not call reloadOnInvitationSuccess', () => {
-            expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+          it('does not call reloadOnMemberInvitationSuccess', () => {
+            expect(reloadOnMemberInvitationSuccess).not.toHaveBeenCalled();
           });
 
           it('tracks successful invite when source is known', () => {

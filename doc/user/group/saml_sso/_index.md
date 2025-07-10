@@ -448,6 +448,7 @@ user is an [enterprise user](../../enterprise_user/_index.md) of the group.
 - **projects_limit** - The total number of personal projects an enterprise user can create.
   A value of `0` means the user cannot create new projects in their personal
   namespace. Default is `100000`.
+- **SessionNotOnOrAfter** - An ISO 8601 timestamp value that indicates when to end the user SAML session.
 
 #### Example SAML response
 
@@ -476,6 +477,33 @@ convert the information to XML. An example SAML response is shown here.
          <saml2:AttributeValue xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="xs:string">10</saml2:AttributeValue>
       </saml2:Attribute>
    </saml2:AttributeStatement>
+```
+
+### Customize SAML session timeout
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
+
+{{< /history >}}
+
+By default, GitLab ends SAML sessions after 24 hours. You can customize this duration with
+the `SessionNotOnOrAfter` attribute in the SAML2 AuthnStatement. This attribute contains an
+ISO 8601 timestamp value that indicates when to end the user session. When specified this
+value overrides the default SAML session timeout of 24 hours.
+
+This applies only to the SAML SSO session. If the [GitLab user session is configured](../../../administration/settings/account_and_limit_settings.md#session-duration) to expire
+earlier than the `SessionNotOnOrAfter` configuration, users will need to re-authenticate when
+their GitLab user session ends.
+
+#### Example response
+
+```xml
+   <saml:AuthnStatement SessionIndex="WDE5aBYjNEj_9IjCFiK0E1YelZT" SessionNotOnOrAfter="2025-08-25T01:23:45.067Z" AuthnInstant="2025-08-24T13:23:45.067Z">
+      <saml:AuthnContext>
+         <saml:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml:AuthnContextClassRef>
+      </saml:AuthnContext>
+   </saml:AuthnStatement>
 ```
 
 ### Bypass user email confirmation with verified domains

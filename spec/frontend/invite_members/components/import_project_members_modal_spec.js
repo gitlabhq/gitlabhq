@@ -16,7 +16,7 @@ import { HTTP_STATUS_CREATED, HTTP_STATUS_UNPROCESSABLE_ENTITY } from '~/lib/uti
 
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnMemberInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 
 import {
@@ -196,8 +196,8 @@ describe('ImportProjectMembersModal', () => {
         expect(displaySuccessfulInvitationAlert).toHaveBeenCalled();
       });
 
-      it('calls reloadOnInvitationSuccess', () => {
-        expect(reloadOnInvitationSuccess).toHaveBeenCalled();
+      it('calls reloadOnMemberInvitationSuccess', () => {
+        expect(reloadOnMemberInvitationSuccess).toHaveBeenCalled();
       });
 
       it('does not display the successful toastMessage', () => {
@@ -247,8 +247,8 @@ describe('ImportProjectMembersModal', () => {
         expect(displaySuccessfulInvitationAlert).not.toHaveBeenCalled();
       });
 
-      it('does not call reloadOnInvitationSuccess', () => {
-        expect(reloadOnInvitationSuccess).not.toHaveBeenCalled();
+      it('does not call reloadOnMemberInvitationSuccess', () => {
+        expect(reloadOnMemberInvitationSuccess).not.toHaveBeenCalled();
       });
 
       it('sets isLoading to false after success', () => {

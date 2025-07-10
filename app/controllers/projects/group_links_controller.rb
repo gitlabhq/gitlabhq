@@ -31,10 +31,13 @@ class Projects::GroupLinksController < Projects::ApplicationController
     if result.success?
       respond_to do |format|
         format.html do
+          message = s_('InviteMembersModal|Group invite removed. ' \
+            'It might take a few minutes for the changes to user access levels to take effect.')
+
           if can?(current_user, :admin_group, group_link.group)
-            redirect_to group_path(group_link.group), status: :found
+            redirect_to group_path(group_link.group), status: :found, notice: message
           elsif can?(current_user, :admin_project, group_link.project)
-            redirect_to project_project_members_path(project), status: :found
+            redirect_to project_project_members_path(project), status: :found, notice: message
           end
         end
         format.js { head :ok }

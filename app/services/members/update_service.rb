@@ -15,13 +15,13 @@ module Members
 
       members = Array.wrap(members)
 
-      old_access_level_expiry_map = members.to_h do |member|
-        [member.id, { human_access: member.human_access_labeled, expires_at: member.expires_at }]
+      old_values_map = members.to_h do |member|
+        [member.id, build_old_values_map(member)]
       end
 
       updated_members = update_members(members, permission)
       Member.transaction do
-        updated_members.each { |member| post_update(member, permission, old_access_level_expiry_map) }
+        updated_members.each { |member| post_update(member, permission, old_values_map[member.id]) }
       end
 
       prepare_response(members)
@@ -56,11 +56,8 @@ module Members
       member.tap(&:save!)
     end
 
-    def post_update(member, permission, old_access_level_expiry_map)
-      old_access_level = old_access_level_expiry_map[member.id][:human_access]
-      old_expiry = old_access_level_expiry_map[member.id][:expires_at]
-
-      after_execute(action: permission, old_access_level: old_access_level, old_expiry: old_expiry, member: member)
+    def post_update(member, permission, old_values_map)
+      after_execute(action: permission, old_values_map: old_values_map, member: member)
       enqueue_delete_todos(member) if downgrading_to_guest? # Deletes only confidential issues todos for guests
     end
 
@@ -98,6 +95,10 @@ module Members
 
     def prevent_downgrade_from_owner?(member)
       downgrading_from_owner?(member) && cannot_revoke_owner_responsibilities_from_member_in_project?(member)
+    end
+
+    def build_old_values_map(member)
+      { human_access: member.human_access_labeled, expires_at: member.expires_at }
     end
   end
 end

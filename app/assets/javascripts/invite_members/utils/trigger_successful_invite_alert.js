@@ -2,9 +2,11 @@ import { createAlert } from '~/alert';
 import AccessorUtilities from '~/lib/utils/accessor';
 
 import {
-  TOAST_MESSAGE_LOCALSTORAGE_KEY,
+  MEMBER_INVITE_LOCALSTORAGE_KEY,
+  MEMBER_INVITE_MESSAGE_SUCCESSFUL,
+  GROUP_INVITE_LOCALSTORAGE_KEY,
+  GROUP_INVITE_MESSAGE_SUCCESSFUL,
   MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY,
-  TOAST_MESSAGE_SUCCESSFUL,
   QUEUED_MESSAGE_SUCCESSFUL,
 } from '../constants';
 
@@ -14,18 +16,17 @@ export function displaySuccessfulInvitationAlert() {
   }
 
   const messages = [];
+  const successMessages = {
+    [MEMBER_INVITE_LOCALSTORAGE_KEY]: MEMBER_INVITE_MESSAGE_SUCCESSFUL,
+    [GROUP_INVITE_LOCALSTORAGE_KEY]: GROUP_INVITE_MESSAGE_SUCCESSFUL,
+    [MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY]: QUEUED_MESSAGE_SUCCESSFUL,
+  };
 
-  const appendSuccessfulMessage = Boolean(localStorage.getItem(TOAST_MESSAGE_LOCALSTORAGE_KEY));
-  if (appendSuccessfulMessage) {
-    localStorage.removeItem(TOAST_MESSAGE_LOCALSTORAGE_KEY);
-    messages.push(TOAST_MESSAGE_SUCCESSFUL);
-  }
-  const appendQueuedMessage = Boolean(
-    localStorage.getItem(MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY),
-  );
-  if (appendQueuedMessage) {
-    localStorage.removeItem(MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY);
-    messages.push(QUEUED_MESSAGE_SUCCESSFUL);
+  for (const [localStorageKey, successMessage] of Object.entries(successMessages)) {
+    if (localStorage.getItem(localStorageKey)) {
+      localStorage.removeItem(localStorageKey);
+      messages.push(successMessage);
+    }
   }
 
   if (messages.length) {
@@ -33,9 +34,16 @@ export function displaySuccessfulInvitationAlert() {
   }
 }
 
-export function reloadOnInvitationSuccess() {
+export function reloadOnMemberInvitationSuccess() {
   if (AccessorUtilities.canUseLocalStorage()) {
-    localStorage.setItem(TOAST_MESSAGE_LOCALSTORAGE_KEY, 'true');
+    localStorage.setItem(MEMBER_INVITE_LOCALSTORAGE_KEY, 'true');
+  }
+  window.location.reload();
+}
+
+export function reloadOnGroupInvitationSuccess() {
+  if (AccessorUtilities.canUseLocalStorage()) {
+    localStorage.setItem(GROUP_INVITE_LOCALSTORAGE_KEY, 'true');
   }
   window.location.reload();
 }

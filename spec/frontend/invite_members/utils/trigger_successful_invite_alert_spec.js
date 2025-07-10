@@ -1,13 +1,16 @@
 import {
   displaySuccessfulInvitationAlert,
   markLocalStorageForQueuedAlert,
-  reloadOnInvitationSuccess,
+  reloadOnMemberInvitationSuccess,
+  reloadOnGroupInvitationSuccess,
 } from '~/invite_members/utils/trigger_successful_invite_alert';
 import {
   MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY,
   QUEUED_MESSAGE_SUCCESSFUL,
-  TOAST_MESSAGE_LOCALSTORAGE_KEY,
-  TOAST_MESSAGE_SUCCESSFUL,
+  MEMBER_INVITE_LOCALSTORAGE_KEY,
+  GROUP_INVITE_LOCALSTORAGE_KEY,
+  MEMBER_INVITE_MESSAGE_SUCCESSFUL,
+  GROUP_INVITE_MESSAGE_SUCCESSFUL,
 } from '~/invite_members/constants';
 import { createAlert } from '~/alert';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
@@ -18,20 +21,31 @@ useLocalStorageSpy();
 
 describe('Display Successful Invitation Alert', () => {
   it('does not show an alert if localStorage key not present', () => {
-    localStorage.removeItem(TOAST_MESSAGE_LOCALSTORAGE_KEY);
+    localStorage.removeItem(MEMBER_INVITE_LOCALSTORAGE_KEY);
 
     displaySuccessfulInvitationAlert();
 
     expect(createAlert).not.toHaveBeenCalled();
   });
 
-  it('shows an alert with successful message when localStorage success key is present', () => {
-    localStorage.setItem(TOAST_MESSAGE_LOCALSTORAGE_KEY, 'true');
+  it('shows an alert with successful message member invite key is present in localStorage', () => {
+    localStorage.setItem(MEMBER_INVITE_LOCALSTORAGE_KEY, 'true');
 
     displaySuccessfulInvitationAlert();
 
     expect(createAlert).toHaveBeenCalledWith({
-      message: TOAST_MESSAGE_SUCCESSFUL,
+      message: MEMBER_INVITE_MESSAGE_SUCCESSFUL,
+      variant: 'info',
+    });
+  });
+
+  it('shows an alert with successful message group invite key is present in localStorage', () => {
+    localStorage.setItem(GROUP_INVITE_LOCALSTORAGE_KEY, 'true');
+
+    displaySuccessfulInvitationAlert();
+
+    expect(createAlert).toHaveBeenCalledWith({
+      message: GROUP_INVITE_MESSAGE_SUCCESSFUL,
       variant: 'info',
     });
   });
@@ -48,30 +62,48 @@ describe('Display Successful Invitation Alert', () => {
   });
 
   it('shows an alert with both successful and queued mesages localStorage has both keys', () => {
-    localStorage.setItem(TOAST_MESSAGE_LOCALSTORAGE_KEY, 'true');
+    localStorage.setItem(MEMBER_INVITE_LOCALSTORAGE_KEY, 'true');
     localStorage.setItem(MEMBERS_WITH_QUEUED_STATUS_LOCALSTORAGE_KEY, 'true');
     displaySuccessfulInvitationAlert();
 
     expect(createAlert).toHaveBeenCalledWith({
-      message: `${TOAST_MESSAGE_SUCCESSFUL} ${QUEUED_MESSAGE_SUCCESSFUL}`,
+      message: `${MEMBER_INVITE_MESSAGE_SUCCESSFUL} ${QUEUED_MESSAGE_SUCCESSFUL}`,
       variant: 'info',
     });
   });
 });
 
-describe('Reload On Invitation Success', () => {
+describe('Reload On Member Invitation Success', () => {
   beforeAll(() => {
     useMockLocationHelper();
   });
 
   it('sets localStorage value', () => {
-    reloadOnInvitationSuccess();
+    reloadOnMemberInvitationSuccess();
 
-    expect(localStorage.setItem).toHaveBeenCalledWith(TOAST_MESSAGE_LOCALSTORAGE_KEY, 'true');
+    expect(localStorage.setItem).toHaveBeenCalledWith(MEMBER_INVITE_LOCALSTORAGE_KEY, 'true');
   });
 
   it('calls window.location.reload', () => {
-    reloadOnInvitationSuccess();
+    reloadOnMemberInvitationSuccess();
+
+    expect(window.location.reload).toHaveBeenCalled();
+  });
+});
+
+describe('Reload On Group Invitation Success', () => {
+  beforeAll(() => {
+    useMockLocationHelper();
+  });
+
+  it('sets localStorage value', () => {
+    reloadOnGroupInvitationSuccess();
+
+    expect(localStorage.setItem).toHaveBeenCalledWith(GROUP_INVITE_LOCALSTORAGE_KEY, 'true');
+  });
+
+  it('calls window.location.reload', () => {
+    reloadOnGroupInvitationSuccess();
 
     expect(window.location.reload).toHaveBeenCalled();
   });

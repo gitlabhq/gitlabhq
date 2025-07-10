@@ -27,7 +27,7 @@ import eventHub from '../event_hub';
 import { getInvalidFeedbackMessage } from '../utils/get_invalid_feedback_message';
 import {
   displaySuccessfulInvitationAlert,
-  reloadOnInvitationSuccess,
+  reloadOnMemberInvitationSuccess,
   markLocalStorageForQueuedAlert,
 } from '../utils/trigger_successful_invite_alert';
 import ModalConfetti from './confetti.vue';
@@ -340,7 +340,7 @@ export default {
       this.track('invite_successful', { label: this.source });
 
       if (this.reloadPageOnSubmit) {
-        reloadOnInvitationSuccess();
+        reloadOnMemberInvitationSuccess();
       } else {
         this.showSuccessMessage();
       }

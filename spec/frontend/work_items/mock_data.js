@@ -7819,6 +7819,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
                     name: 'To do',
+                    description: null,
                     iconName: 'status-waiting',
                     color: '#737278',
                     position: 0,
@@ -7827,6 +7828,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
                     name: 'In progress',
+                    description: null,
                     iconName: 'status-running',
                     color: '#1f75cb',
                     position: 0,
@@ -7835,6 +7837,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
                     name: 'Done',
+                    description: null,
                     iconName: 'status-success',
                     color: '#108548',
                     position: 0,
@@ -7843,6 +7846,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
                     name: "Won't do",
+                    description: null,
                     iconName: 'status-cancelled',
                     color: '#DD2B0E',
                     position: 0,
@@ -7851,6 +7855,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
                     name: 'Duplicate',
+                    description: null,
                     iconName: 'status-cancelled',
                     color: '#DD2B0E',
                     position: 10,
@@ -7860,6 +7865,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                 defaultOpenStatus: {
                   id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
                   name: 'To do',
+                  description: null,
                   iconName: 'status-waiting',
                   color: '#737278',
                   position: 0,
@@ -8283,6 +8289,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
                     name: 'To do',
+                    description: null,
                     iconName: 'status-waiting',
                     color: '#737278',
                     position: 0,
@@ -8291,6 +8298,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/2',
                     name: 'In progress',
+                    description: null,
                     iconName: 'status-running',
                     color: '#1f75cb',
                     position: 0,
@@ -8299,6 +8307,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/3',
                     name: 'Done',
+                    description: null,
                     iconName: 'status-success',
                     color: '#108548',
                     position: 0,
@@ -8307,6 +8316,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/4',
                     name: "Won't do",
+                    description: null,
                     iconName: 'status-cancelled',
                     color: '#DD2B0E',
                     position: 0,
@@ -8315,6 +8325,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                   {
                     id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/5',
                     name: 'Duplicate',
+                    description: null,
                     iconName: 'status-cancelled',
                     color: '#DD2B0E',
                     position: 10,
@@ -8324,6 +8335,7 @@ export const namespaceWorkItemTypesQueryResponse = {
                 defaultOpenStatus: {
                   id: 'gid://gitlab/WorkItems::Statuses::SystemDefined::Status/1',
                   name: 'To do',
+                  description: null,
                   iconName: 'status-waiting',
                   color: '#737278',
                   position: 0,

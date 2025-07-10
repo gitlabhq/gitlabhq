@@ -2,7 +2,7 @@
 
 class UserProjectAccessChangedService
   DELAY = 1.hour
-  MEDIUM_DELAY = 10.minutes
+  MEDIUM_DELAY = 1.minute
 
   HIGH_PRIORITY = :high
   MEDIUM_PRIORITY = :medium

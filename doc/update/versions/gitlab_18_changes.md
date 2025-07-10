@@ -20,6 +20,10 @@ Ensure you review these instructions for:
 
 For more information about upgrading GitLab Helm Chart, see [the release notes for 9.0](https://docs.gitlab.com/charts/releases/9_0/).
 
+## Issues to be aware of when upgrading from 16.11
+
+- [PostgreSQL 14 is not supported starting from GitLab 18](../deprecations.md#postgresql-14-and-15-no-longer-supported). Upgrade PostgreSQL to at least version 16.8 before upgrading to GitLab 18.0 or later.
+
 ## 18.1.0
 
 ### Geo installations 18.1.0

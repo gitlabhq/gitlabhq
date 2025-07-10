@@ -137,7 +137,6 @@ require (
 	github.com/shabbyrobe/gocovmerge v0.0.0-20230507112040-c3350d9342df // indirect
 	github.com/shirou/gopsutil/v3 v3.21.12 // indirect
 	github.com/spiffe/go-spiffe/v2 v2.5.0 // indirect
-	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/tinylib/msgp v1.1.2 // indirect
 	github.com/tklauser/go-sysconf v0.3.9 // indirect
 	github.com/tklauser/numcpus v0.3.0 // indirect

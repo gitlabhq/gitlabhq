@@ -1586,6 +1586,23 @@ Example configuration:
 
 For information on automatically managing GitLab group membership, see [SAML Group Sync](../user/group/saml_sso/group_sync.md).
 
+### Customize SAML session timeout
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/262074) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `saml_timeout_supplied_by_idp_override`.
+
+{{< /history >}}
+
+By default, GitLab ends SAML sessions after 24 hours. You can customize this duration with
+the `SessionNotOnOrAfter` attribute in the SAML2 AuthnStatement. This attribute contains an
+ISO 8601 timestamp value that indicates when to end the user session. When specified this
+value overrides the default SAML session timeout of 24 hours.
+
+This applies only to the SAML SSO session. If the [GitLab user session is configured](../administration/settings/account_and_limit_settings.md#session-duration) to expire
+earlier than the `SessionNotOnOrAfter` configuration, users will need to re-authenticate when
+their GitLab user session ends.
+
 ## Bypass two-factor authentication
 
 {{< history >}}
@@ -3037,7 +3054,7 @@ In the following example, the value of `uid` attribute in the SAML response is s
 ## Assertion encryption (optional)
 
 Encrypting the SAML assertion is optional but recommended. This adds an additional layer of protection
-to prevent unencrypted data being logged or intercepted by malicious actors. 
+to prevent unencrypted data being logged or intercepted by malicious actors.
 
 {{< alert type="note" >}}
 
