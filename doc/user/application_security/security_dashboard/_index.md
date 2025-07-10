@@ -168,6 +168,28 @@ The Security Center displays a maximum of 100 projects, so you may need to use t
 
 After you remove projects, the security dashboard and vulnerability report no longer show the vulnerabilities found in those projects' default branches.
 
+## Exporting
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196607) in GitLab 18.2. Enabled by default.
+
+{{< /history >}}
+
+You can export a PDF file that includes details of the vulnerabilities listed in the security dashboard.
+
+Charts in the export include:
+
+- Vulnerabilities over time
+- Project security status
+- Project's security dashboard
+
+### Export details
+
+To export the details of all vulnerabilities listed in the security dashboard, select **Export**.
+
+When the exported details are available, GitLab sends you an email. To download the exported details, select the link in the email.
+
 ## Related topics
 
 - [Vulnerability reports](../vulnerability_report/_index.md)

@@ -360,7 +360,7 @@ module Ci
         end
       end
 
-      after_transition any => ::Ci::Pipeline.completed_statuses do |pipeline|
+      after_transition any => ::Ci::Pipeline.completed_with_manual_statuses do |pipeline|
         next unless pipeline.bridge_waiting?
 
         pipeline.run_after_commit do
@@ -1132,7 +1132,7 @@ module Ci
     end
 
     def bridge_waiting?
-      source_bridge&.dependent?
+      source_bridge&.has_strategy?
     end
 
     def child?

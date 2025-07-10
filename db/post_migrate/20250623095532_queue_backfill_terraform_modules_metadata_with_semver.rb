@@ -6,23 +6,14 @@ class QueueBackfillTerraformModulesMetadataWithSemver < Gitlab::Database::Migrat
   restrict_gitlab_migration gitlab_schema: :gitlab_main
 
   MIGRATION = 'BackfillTerraformModulesMetadataWithSemver'
-  DELAY_INTERVAL = 2.minutes
-  BATCH_SIZE = 5000
-  SUB_BATCH_SIZE = 250
-  BATCH_CLASS_NAME = 'LooseIndexScanBatchingStrategy'
 
+  # To be re-enqueued by:
+  # db/post_migrate/20250708101955_requeue_backfill_terraform_modules_metadata_with_semver.rb
   def up
-    queue_batched_background_migration(
-      MIGRATION,
-      :packages_packages,
-      :project_id,
-      batch_size: BATCH_SIZE,
-      sub_batch_size: SUB_BATCH_SIZE,
-      batch_class_name: BATCH_CLASS_NAME
-    )
+    # no-op
   end
 
   def down
-    delete_batched_background_migration(MIGRATION, :packages_packages, :project_id, [])
+    # no-op
   end
 end

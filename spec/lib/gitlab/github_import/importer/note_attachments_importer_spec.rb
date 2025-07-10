@@ -8,7 +8,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
   let_it_be(:project) { create(:project, import_source: 'nickname/public-test-repo') }
 
   let(:note_text) { Gitlab::GithubImport::Representation::NoteText.from_db_record(record) }
-  let(:client) { instance_double('Gitlab::GithubImport::Client') }
+  let(:client) { instance_double(Gitlab::GithubImport::Client) }
 
   let(:doc_url) { 'https://github.com/nickname/public-test-repo/files/9020437/git-cheat-sheet.txt' }
   let(:image_url) { 'https://user-images.githubusercontent.com/6833842/0cf366b61ef2.jpeg' }
@@ -140,6 +140,39 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteAttachmentsImporter, feature_
 
         record.reload
         expect(record.note).to include("[link to other project blob file](#{other_project_blob_url})")
+      end
+
+      context 'when the attachment is video media' do
+        let(:media_attachment_url) { 'https://github.com/user-attachments/assets/media-attachment' }
+        let(:text) { media_attachment_url }
+        let(:record) { create(:note, project: project, note: text) }
+        let(:tmp_stub_media_attachment) { Tempfile.create('media-attachment.mp4') }
+        let(:uploader_hash) do
+          { alt: nil,
+            url: '/uploads/test-secret/video.mp4',
+            markdown: nil }
+        end
+
+        before do
+          allow(Gitlab::GithubImport::AttachmentsDownloader).to receive(:new).with(media_attachment_url,
+            options: options)
+            .and_return(downloader_stub)
+          allow(downloader_stub).to receive(:perform).and_return(tmp_stub_media_attachment)
+
+          allow_next_instance_of(FileUploader) do |uploader|
+            allow(uploader).to receive(:to_h).and_return(uploader_hash)
+          end
+
+          allow(downloader_stub).to receive(:delete).once
+          allow(client).to receive_message_chain(:octokit, :access_token).and_return(access_token)
+        end
+
+        it 'changes standalone attachment link to correct markdown' do
+          importer.execute
+
+          record.reload
+          expect(record.note).to include("![media_attachment](/uploads/test-secret/video.mp4)")
+        end
       end
     end
   end

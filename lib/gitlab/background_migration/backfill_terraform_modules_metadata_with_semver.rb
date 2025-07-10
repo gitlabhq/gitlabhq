@@ -5,16 +5,10 @@ module Gitlab
     class BackfillTerraformModulesMetadataWithSemver < BatchedMigrationJob
       TERRAFORM_MODULE_PACKAGE_TYPE = 12
       INSTALLABLE_STATUS = [0, 1].freeze
-      BATCH_SIZE = 250
 
       operation_name :backfill_terraform_modules_metadata_with_semver
       feature_category :package_registry
-
-      class Package < ::ApplicationRecord
-        include EachBatch
-
-        self.table_name = 'packages_packages'
-      end
+      scope_to ->(relation) { relation.where(package_type: TERRAFORM_MODULE_PACKAGE_TYPE, status: INSTALLABLE_STATUS) } # rubocop:disable Database/AvoidScopeTo -- scoped columns are backed by an index
 
       class ModuleMetadatum < ::ApplicationRecord
         self.table_name = 'packages_terraform_module_metadata'
@@ -25,22 +19,12 @@ module Gitlab
       end
 
       def perform
-        distinct_each_batch do |batch|
-          project_ids = batch.pluck(batch_column)
-          process_packages_for_projects(project_ids)
+        each_sub_batch do |sub_batch|
+          process_batch_of_packages(sub_batch)
         end
       end
 
       private
-
-      def process_packages_for_projects(project_ids)
-        Package
-          .select(:id, :project_id, :version)
-          .where(project_id: project_ids, package_type: TERRAFORM_MODULE_PACKAGE_TYPE, status: INSTALLABLE_STATUS)
-          .each_batch(of: BATCH_SIZE) do |pkgs|
-          process_batch_of_packages(pkgs)
-        end
-      end
 
       def process_batch_of_packages(pkgs)
         metadata = pkgs.filter_map do |pkg|

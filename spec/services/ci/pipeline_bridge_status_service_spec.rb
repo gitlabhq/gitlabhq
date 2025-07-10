@@ -19,7 +19,7 @@ RSpec.describe Ci::PipelineBridgeStatusService, feature_category: :continuous_in
       end
 
       it 'calls inherit_status_from_downstream on upstream bridge' do
-        expect(bridge).to receive(:inherit_status_from_downstream!).with(pipeline)
+        expect(bridge).to receive(:inherit_status_from_downstream).with(pipeline)
 
         subject
       end

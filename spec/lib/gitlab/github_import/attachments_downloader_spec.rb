@@ -125,6 +125,26 @@ RSpec.describe Gitlab::GithubImport::AttachmentsDownloader, feature_category: :i
         expect(File.exist?(file.path)).to eq(true)
       end
 
+      context 'when attachment is a video media file' do
+        let(:file_url) { "https://github.com/user-attachments/assets/73433gh3" }
+        let(:redirect_url) { "https://github-production-user-asset-6210df.s3.amazonaws.com/73433gh3.mov" }
+        let(:sample_response) do
+          instance_double(HTTParty::Response, redirection?: true, headers: { location: redirect_url })
+        end
+
+        it 'updates the filename and the filepath' do
+          expect(::Import::Clients::HTTP).to receive(:get).with(file_url, { follow_redirects: false })
+           .and_return sample_response
+
+          expect(Gitlab::HTTP).to receive(:perform_request)
+            .with(Net::HTTP::Get, redirect_url, stream_body: true).and_yield(chunk_double)
+
+          file = downloader.perform
+
+          expect(file.path).to include(File.basename(URI.parse(redirect_url).path))
+        end
+      end
+
       context 'when url is not a redirection' do
         let(:file_url) { "https://github.com/test/project/assets/142635249/4b9f9c90-f060-4845-97cf-b24c558bcb11.jpg" }
 

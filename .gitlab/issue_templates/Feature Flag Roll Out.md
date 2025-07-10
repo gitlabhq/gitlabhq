@@ -43,6 +43,10 @@ Note: Please make sure to run the chatops commands in the Slack channel that get
 
 If you encounter end-to-end test failures and are unable to diagnose them, you may reach out to the [`#s_developer_experience` Slack channel](https://gitlab.enterprise.slack.com/archives/C07TWBRER7H) for assistance. Note that end-to-end test failures on `staging-ref` [don't block deployments](https://about.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#how-to-use-staging-ref).
 
+### Before production rollout
+
+- [ ] If the change is significant and you wanted to announce in [#whats-happening-at-gitlab](https://gitlab.enterprise.slack.com/archives/C0259241C), it best to do it before rollout to `gitlab-org/gitlab-com`.
+
 ### Specific rollout on production
 
 For visibility, all `/chatops` commands that target production must be executed in the [`#production` Slack channel](https://gitlab.slack.com/archives/C101F3796)

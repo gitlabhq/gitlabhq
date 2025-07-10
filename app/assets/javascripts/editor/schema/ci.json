@@ -752,7 +752,10 @@
               "additionalProperties": false,
               "properties": {
                 "user": {
-                  "type": ["string", "integer"],
+                  "type": [
+                    "string",
+                    "integer"
+                  ],
                   "minLength": 1,
                   "maxLength": 255,
                   "description": "Username or UID to use for the container. It also supports the UID:GID format."
@@ -846,7 +849,10 @@
                 "additionalProperties": false,
                 "properties": {
                   "user": {
-                    "type": ["string", "integer"],
+                    "type": [
+                      "string",
+                      "integer"
+                    ],
                     "minLength": 1,
                     "maxLength": 255,
                     "description": "Username or UID to use for the container. It also supports the UID:GID format."
@@ -2462,10 +2468,11 @@
                   "type": "string"
                 },
                 "strategy": {
-                  "description": "You can mirror the pipeline status from the triggered pipeline to the source bridge job by using strategy: depend",
+                  "description": "You can mirror or depend on the pipeline status from the triggered pipeline to the source bridge job by using strategy: `depend` or `mirror`",
                   "type": "string",
                   "enum": [
-                    "depend"
+                    "depend",
+                    "mirror"
                   ]
                 },
                 "inputs": {
@@ -2646,10 +2653,11 @@
                   ]
                 },
                 "strategy": {
-                  "description": "You can mirror the pipeline status from the triggered pipeline to the source bridge job by using strategy: depend",
+                  "description": "You can mirror or depend on the pipeline status from the triggered pipeline to the source bridge job by using strategy: `depend` or `mirror`",
                   "type": "string",
                   "enum": [
-                    "depend"
+                    "depend",
+                    "mirror"
                   ]
                 },
                 "forward": {

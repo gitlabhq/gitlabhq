@@ -216,6 +216,12 @@ production: &base
     # this setting should be toggled from the admin pages in the UI.
     # initial_gitlab_product_usage_data: true
 
+  ## Openbao settings
+  ## Optional: Configure custom OpenBao server URL
+  ## If not specified, defaults to GitLab's host with port 8200
+  # openbao:
+    # url: https://vault.company.com:8200  # Example for external server
+
   ## Custom claim values for JWT ID Tokens
   # ci_id_tokens:
     # issuer_url: <custom-issuer-url>

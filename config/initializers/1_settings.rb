@@ -774,9 +774,6 @@ Settings.cron_jobs['version_version_check_cron']['args'] = {
 Settings.cron_jobs['import_placeholder_user_cleanup_worker'] ||= {}
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['cron'] ||= "0 0 * * *"
 Settings.cron_jobs['import_placeholder_user_cleanup_worker']['job_class'] = 'Import::PlaceholderUserCleanupWorker'
-Settings.cron_jobs['authn_oauth_access_token_cleanup_worker'] ||= {}
-Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['cron'] ||= '5 6 * * *'
-Settings.cron_jobs['authn_oauth_access_token_cleanup_worker']['job_class'] = 'Authn::OauthAccessTokenCleanupWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -935,6 +932,9 @@ Gitlab.ee do
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker'] ||= {}
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['cron'] ||= '* * * * *'
   Settings.cron_jobs['security_pipeline_execution_policies_schedule_worker']['job_class'] = 'Security::PipelineExecutionPolicies::ScheduleWorker'
+  Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker'] ||= {}
+  Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['cron'] ||= '0 * * * *'
+  Settings.cron_jobs['users_security_policy_bot_cleanup_cron_worker']['job_class'] = 'Users::SecurityPolicyBotCleanupCronWorker'
   Settings.cron_jobs['security_scans_purge_worker'] ||= {}
   Settings.cron_jobs['security_scans_purge_worker']['cron'] ||= '0 */4 * * 6,0'
   Settings.cron_jobs['security_scans_purge_worker']['job_class'] = 'Security::Scans::PurgeWorker'

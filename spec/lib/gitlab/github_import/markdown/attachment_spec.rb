@@ -13,7 +13,7 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
       let(:url) { "https://github.com/nickname/public-test-repo/files/3/git-cheat-sheet.#{doc_extension}" }
       let(:name) { FFaker::Lorem.word }
       let(:markdown_node) do
-        instance_double('CommonMarker::Node', url: url, to_plaintext: name, type: :link)
+        instance_double(CommonMarker::Node, url: url, to_plaintext: name, type: :link)
       end
 
       it 'returns instance with attachment info' do
@@ -49,7 +49,7 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
       let(:url) { "https://user-images.githubusercontent.com/1/uuid-1.#{image_extension}" }
       let(:name) { FFaker::Lorem.word }
       let(:markdown_node) do
-        instance_double('CommonMarker::Node', url: url, to_plaintext: name, type: :image)
+        instance_double(CommonMarker::Node, url: url, to_plaintext: name, type: :image)
       end
 
       it 'returns instance with attachment info' do
@@ -101,7 +101,7 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
       let(:url) { "https://user-images.githubusercontent.com/1/uuid-1.#{image_extension}" }
       let(:img) { "<img width=\"248\" alt=\"#{name}\" src=\"#{url}\">" }
       let(:markdown_node) do
-        instance_double('CommonMarker::Node', string_content: img, type: :inline_html)
+        instance_double(CommonMarker::Node, string_content: img, type: :inline_html)
       end
 
       it 'returns instance with attachment info' do
@@ -115,6 +115,20 @@ RSpec.describe Gitlab::GithubImport::Markdown::Attachment, feature_category: :im
         let(:img) { "<img width=\"248\" alt=\"#{name}\">" }
 
         it { expect(described_class.from_markdown(markdown_node)).to eq nil }
+      end
+    end
+
+    context "when it's a video media attachment" do
+      let(:media_attachment_url) { "https://github.com/user-attachments/assets/73433gh" }
+      let(:markdown_node) do
+        instance_double(CommonMarker::Node, to_plaintext: media_attachment_url, type: :text)
+      end
+
+      it 'returns an attachment object with the download url and default name' do
+        attachment = described_class.from_markdown(markdown_node)
+
+        expect(attachment.name).to be("media_attachment")
+        expect(attachment.url).to eq media_attachment_url
       end
     end
   end

@@ -137,8 +137,40 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
     end
   end
 
+  context 'when bridge has strategy:mirror and has to mirror the status of the upstream pipeline' do
+    let(:project) { create(:project, :repository) }
+    let(:upstream_pipeline) { create(:ci_pipeline, :success, project: project) }
+    let(:bridge) { create(:ci_bridge, :success, :strategy_mirror, pipeline: upstream_pipeline) }
+
+    before do
+      downstream_pipeline = create(:ci_pipeline, :success, project: project)
+      create(:ci_build, :allowed_to_fail, :failed, pipeline: downstream_pipeline)
+      create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
+    end
+
+    it 'matches correct core status' do
+      expect(factory.core_status).to be_a Gitlab::Ci::Status::Success
+    end
+
+    it 'matches correct extended statuses' do
+      expect(factory.extended_statuses)
+        .to eq [Gitlab::Ci::Status::Bridge::Retryable, Gitlab::Ci::Status::Bridge::SuccessWarning]
+    end
+
+    it 'fabricates status with correct details' do
+      expect(status.icon).to eq 'status_warning'
+      expect(status.group).to eq 'success-with-warnings'
+      expect(status.label).to eq 'success with warnings'
+      expect(status.status_tooltip).to eq 'passed (success with warnings)'
+    end
+  end
+
   context 'when the bridge is successful and therefore retryable' do
     let(:bridge) { create(:ci_bridge, :success) }
+
+    before do
+      create(:ci_sources_pipeline, pipeline: create(:ci_pipeline), source_job: bridge)
+    end
 
     it 'matches correct core status' do
       expect(factory.core_status).to be_a Gitlab::Ci::Status::Success

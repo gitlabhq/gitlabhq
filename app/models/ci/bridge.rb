@@ -52,6 +52,10 @@ module Ci
         transition all => :scheduled
       end
 
+      event :skip do
+        transition all => :skipped
+      end
+
       event :actionize do
         transition created: :manual
       end
@@ -64,16 +68,20 @@ module Ci
         transition CANCELABLE_STATUSES.map(&:to_sym) + [:manual, :canceling] => :canceled
       end
 
-      event :inherit_success do
+      event :success do
         transition all => :success
       end
 
-      event :inherit_finish_cancel do
+      event :canceled do
         transition all => :canceled
       end
 
-      event :inherit_failed do
+      event :failed do
         transition all => :failed
+      end
+
+      event :manual do
+        transition all => :manual
       end
     end
 
@@ -97,19 +105,6 @@ module Ci
         allow_failure stage_idx
         yaml_variables when environment description needs_attributes
         scheduling_type ci_stage partition_id].freeze
-    end
-
-    def inherit_status_from_downstream!(pipeline)
-      case pipeline.status
-      when 'success'
-        inherit_success!
-      when 'canceled'
-        inherit_finish_cancel!
-      when 'failed', 'skipped'
-        inherit_failed!
-      else
-        false
-      end
     end
 
     def has_downstream_pipeline?
@@ -244,6 +239,16 @@ module Ci
       end
     end
 
+    def has_strategy?
+      mirrored? || dependent?
+    end
+
+    def mirrored?
+      strong_memoize(:mirrored) do
+        options&.dig(:trigger, :strategy) == 'mirror'
+      end
+    end
+
     def dependent?
       strong_memoize(:dependent) do
         options&.dig(:trigger, :strategy) == 'depend'
@@ -303,7 +308,45 @@ module Ci
       end
     end
 
+    def inherit_status_from_downstream(pipeline)
+      if pipeline.source_bridge.mirrored?
+        inherit_mirrored_status_from_downstream!(pipeline)
+      else
+        inherit_dependent_status_from_downstream!(pipeline)
+      end
+    end
+
     private
+
+    def inherit_mirrored_status_from_downstream!(pipeline)
+      case pipeline.status
+      when 'success'
+        success!
+      when 'canceled'
+        canceled!
+      when 'failed'
+        failed!
+      when 'manual'
+        manual!
+      when 'skipped'
+        skip!
+      else
+        false
+      end
+    end
+
+    def inherit_dependent_status_from_downstream!(pipeline)
+      case pipeline.status
+      when 'success'
+        success!
+      when 'canceled'
+        canceled!
+      when 'failed', 'skipped'
+        failed!
+      else
+        false
+      end
+    end
 
     def expose_protected_group_variables?
       return true if downstream_project.nil?

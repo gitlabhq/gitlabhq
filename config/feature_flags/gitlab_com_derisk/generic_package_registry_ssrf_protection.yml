@@ -1,0 +1,10 @@
+---
+name: generic_package_registry_ssrf_protection
+description:
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/520294
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193902
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/547452
+milestone: '18.2'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

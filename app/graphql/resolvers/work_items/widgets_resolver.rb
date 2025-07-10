@@ -29,6 +29,7 @@ module Resolvers
       def resolve(ids:)
         ::WorkItems::Type
           .id_in(ids.map(&:model_id))
+          .with_widget_definition_preload
           .reduce(Set.new) do |result, type|
             types = type.widgets(resource_parent).map { |widget| widget.widget_type.upcase }
             result.union(types)

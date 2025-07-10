@@ -90,6 +90,12 @@ The high-level workflow for enforcing policies globally across all subgroups and
 
 {{< /details >}}
 
+{{< alert type="note" >}}
+
+In GitLab Self-Managed, you can also use [compliance and security policy (CSP) groups](centralized_security_policy_management.md) to enforce security policies across your instance.
+
+{{< /alert >}}
+
 Prerequisites:
 
 - You must have the Owner role or a [custom role](../../custom_roles/_index.md) with the

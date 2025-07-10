@@ -5782,143 +5782,19 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   end
 
   describe '#reset_source_bridge!' do
-    subject(:reset_bridge) { pipeline.reset_source_bridge!(current_user) }
+    subject(:reset_source_bridge) { pipeline.reset_source_bridge!(current_user) }
 
-    context 'with downstream pipeline' do
-      let_it_be(:owner) { project.first_owner }
+    let_it_be(:owner) { project.first_owner }
 
-      let!(:first_upstream_pipeline) { create(:ci_pipeline, user: owner) }
-      let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :created, project: project, user: owner) }
+    let_it_be_with_reload(:pipeline) { create(:ci_pipeline, :created, project: project, user: owner) }
+    let!(:upstream_pipeline) { create(:ci_pipeline, user: owner) }
 
-      let!(:bridge) do
-        create_bridge(
-          upstream: first_upstream_pipeline,
-          downstream: pipeline,
-          depends: true
-        )
-      end
-
-      context 'when the user has permissions for the processable' do
-        let(:current_user) { owner }
-
-        context 'when the downstream has strategy: depend' do
-          it 'enqueues the source bridge and marks it as pending' do
-            expect { reset_bridge }
-              .to change { bridge.reload.status }
-              .to('pending')
-          end
-
-          context 'with subsequent jobs' do
-            let!(:after_bridge_job) { add_bridge_dependant_job }
-            let!(:bridge_dependant_dag_job) { add_bridge_dependant_dag_job }
-
-            it 'changes subsequent job statuses to created' do
-              expect { reset_bridge }
-                .to change { after_bridge_job.reload.status }
-                .from('skipped').to('created')
-                .and change { bridge_dependant_dag_job.reload.status }
-                .from('skipped').to('created')
-            end
-
-            context 'when the user is not the build user' do
-              let(:current_user) { create(:user) }
-
-              before do
-                project.add_maintainer(current_user)
-              end
-
-              it 'changes subsequent jobs user' do
-                expect { reset_bridge }
-                  .to change { after_bridge_job.reload.user }
-                  .from(owner).to(current_user)
-                  .and change { bridge_dependant_dag_job.reload.user }
-                  .from(owner).to(current_user)
-              end
-            end
-          end
-
-          context 'when the upstream pipeline pipeline has a dependent upstream pipeline' do
-            let(:upstream_of_upstream) { create(:ci_pipeline, project: create(:project)) }
-            let!(:upstream_bridge) do
-              create_bridge(
-                upstream: upstream_of_upstream,
-                downstream: first_upstream_pipeline,
-                depends: true
-              )
-            end
-
-            it 'marks all source bridges as pending' do
-              expect { reset_bridge }
-                .to change { bridge.reload.status }
-                .from('skipped').to('pending')
-                .and change { upstream_bridge.reload.status }
-                .from('skipped').to('pending')
-            end
-          end
-
-          context 'without strategy: depend' do
-            let!(:upstream_pipeline) { create(:ci_pipeline) }
-            let!(:bridge) do
-              create_bridge(
-                upstream: first_upstream_pipeline,
-                downstream: pipeline,
-                depends: false
-              )
-            end
-
-            it 'does not touch source bridge' do
-              expect { reset_bridge }.to not_change { bridge.status }
-            end
-
-            context 'when the upstream pipeline has a dependent upstream pipeline' do
-              let!(:upstream_bridge) do
-                create_bridge(
-                  upstream: create(:ci_pipeline, project: create(:project)),
-                  downstream: first_upstream_pipeline,
-                  depends: true
-                )
-              end
-
-              it 'does not touch any source bridge' do
-                expect { reset_bridge }.to not_change { bridge.status }
-                  .and not_change { upstream_bridge.status }
-              end
-            end
-          end
-
-          context 'when the source bridge has a resource group' do
-            before do
-              bridge.update!(resource_group: create(:ci_resource_group, project: bridge.project))
-            end
-
-            it 'enqueues the source bridge and marks it as waiting_for_resource' do
-              expect { reset_bridge }
-                .to change { bridge.reload.status }
-                .to('waiting_for_resource')
-            end
-          end
-        end
-
-        context 'when the current user is not the bridge user' do
-          let(:current_user) { create(:user) }
-
-          before do
-            project.add_maintainer(current_user)
-          end
-
-          it 'changes bridge user to current user' do
-            expect { reset_bridge }
-              .to change { bridge.reload.user }
-              .from(owner).to(current_user)
-          end
-        end
-      end
-
+    shared_examples 'does not change bridge status if there are no permissions' do
       context 'when the user does not have permissions for the processable' do
         let(:current_user) { create(:user) }
 
         it 'does not change bridge status' do
-          expect { reset_bridge }.to not_change { bridge.status }
+          expect { reset_source_bridge }.to not_change { bridge.status }
         end
 
         context 'with subsequent jobs' do
@@ -5926,7 +5802,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           let!(:bridge_dependant_dag_job) { add_bridge_dependant_dag_job }
 
           it 'does not change job statuses' do
-            expect { reset_bridge }.to not_change { after_bridge_job.reload.status }
+            expect { reset_source_bridge }.to not_change { after_bridge_job.reload.status }
               .and not_change { bridge_dependant_dag_job.reload.status }
           end
         end
@@ -5935,8 +5811,158 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
           let(:current_user) { create(:user) }
 
           it 'does not change bridge user' do
-            expect { reset_bridge }
+            expect { reset_source_bridge }
               .to not_change { bridge.reload.user }
+          end
+        end
+      end
+    end
+
+    shared_examples 'enqueues the source bridge and changes the status' do
+      it 'enqueues the source bridge and marks it as pending' do
+        expect { reset_source_bridge }
+          .to change { bridge.reload.status }
+          .to('pending')
+      end
+
+      context 'with subsequent jobs' do
+        let!(:after_bridge_job) { add_bridge_dependant_job }
+        let!(:bridge_dependant_dag_job) { add_bridge_dependant_dag_job }
+
+        it 'changes subsequent job statuses to `created`' do
+          expect { reset_source_bridge }
+            .to change { after_bridge_job.reload.status }
+            .from('skipped').to('created')
+            .and change { bridge_dependant_dag_job.reload.status }
+            .from('skipped').to('created')
+        end
+
+        context 'when the user is not the build user' do
+          let(:current_user) { create(:user) }
+
+          before do
+            project.add_maintainer(current_user)
+          end
+
+          it 'updates the user for subsequent jobsr' do
+            expect { reset_source_bridge }
+              .to change { after_bridge_job.reload.user }
+              .from(owner).to(current_user)
+              .and change { bridge_dependant_dag_job.reload.user }
+              .from(owner).to(current_user)
+          end
+        end
+      end
+
+      context 'when the source bridge has a resource group' do
+        before do
+          bridge.update!(resource_group: create(:ci_resource_group, project: bridge.project))
+        end
+
+        it 'enqueues the source bridge and marks it as waiting_for_resource' do
+          expect { reset_source_bridge }
+            .to change { bridge.reload.status }
+            .to('waiting_for_resource')
+        end
+      end
+    end
+
+    context 'when the downstream has strategy: depend' do
+      let!(:bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, status: 'created', user: current_user) }
+      let_it_be(:current_user) { owner }
+
+      before do
+        create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
+      end
+
+      it_behaves_like 'enqueues the source bridge and changes the status'
+      it_behaves_like 'does not change bridge status if there are no permissions'
+
+      context 'when the upstream pipeline has an upstream bridge that is dependant on status' do
+        let(:upstream_of_upstream) { create(:ci_pipeline, project: create(:project)) }
+        let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream, user: owner) }
+
+        before do
+          create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: upstream_bridge)
+        end
+
+        it 'marks all source bridges as pending' do
+          expect { reset_source_bridge }
+            .to change { bridge.reload.status }
+            .from('created').to('pending')
+            .and change { upstream_bridge.reload.status }
+            .from('created').to('pending')
+        end
+      end
+    end
+
+    context 'when the downstream has strategy: mirror' do
+      let!(:bridge) { create(:ci_bridge, :strategy_mirror, pipeline: upstream_pipeline, status: 'created', user: current_user) }
+      let_it_be(:current_user) { owner }
+
+      before do
+        create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
+      end
+
+      it_behaves_like 'enqueues the source bridge and changes the status'
+      it_behaves_like 'does not change bridge status if there are no permissions'
+
+      context 'when the upstream pipeline has an upstream bridge that mirrors the status' do
+        let(:upstream_of_upstream) { create(:ci_pipeline, project: create(:project)) }
+        let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_of_upstream, user: owner) }
+
+        before do
+          create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: upstream_bridge)
+        end
+
+        it 'marks all source bridges as pending' do
+          expect { reset_source_bridge }
+            .to change { bridge.reload.status }
+            .from('created').to('pending')
+            .and change { upstream_bridge.reload.status }
+            .from('created').to('pending')
+        end
+      end
+    end
+
+    context 'without a strategy' do
+      let!(:bridge)  { create(:ci_bridge, pipeline: create(:ci_pipeline), user: owner) }
+      let_it_be(:current_user) { owner }
+
+      before do
+        create(:ci_sources_pipeline, pipeline: pipeline, source_job: bridge)
+      end
+
+      it 'does not change the stuatus of the source bridge' do
+        expect { reset_source_bridge }.to not_change { bridge.status }
+      end
+
+      context 'when there is an upstream pipeline that has an upstream bridge with a strategy' do
+        context 'when the strategy is `depend`' do
+          let!(:upstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
+          let!(:upstream_bridge) { create(:ci_bridge, :strategy_depend, pipeline: upstream_pipeline, user: owner) }
+
+          before do
+            create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: bridge)
+          end
+
+          it 'does not change the status of any source bridge' do
+            expect { reset_source_bridge }.to not_change { bridge.status }
+              .and not_change { upstream_bridge.status }
+          end
+        end
+
+        context 'when the strategy is `mirror`' do
+          let!(:upstream_pipeline) { create(:ci_pipeline, project: create(:project)) }
+          let!(:upstream_bridge) { create(:ci_bridge, :strategy_mirror, pipeline: upstream_pipeline, user: owner) }
+
+          before do
+            create(:ci_sources_pipeline, pipeline: upstream_pipeline, source_job: bridge)
+          end
+
+          it 'does not change the status of any source bridge' do
+            expect { reset_source_bridge }.to not_change { bridge.status }
+              .and not_change { upstream_bridge.status }
           end
         end
       end
@@ -5945,22 +5971,13 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
     private
 
     def add_bridge_dependant_job
-      create(:ci_build, :skipped, pipeline: first_upstream_pipeline, stage_idx: bridge.stage_idx + 1, user: owner)
+      create(:ci_build, :skipped, pipeline: upstream_pipeline, stage_idx: bridge.stage_idx + 1, user: owner)
     end
 
     def add_bridge_dependant_dag_job
-      create(:ci_build, :skipped, name: 'dependant-build-1', pipeline: first_upstream_pipeline, user: owner).tap do |build|
+      create(:ci_build, :skipped, name: 'dependant-build-1', pipeline: upstream_pipeline, user: owner).tap do |build|
         create(:ci_build_need, build: build, name: bridge.name)
       end
-    end
-
-    def create_bridge(upstream:, downstream:, depends: false)
-      options = depends ? { trigger: { strategy: 'depend' } } : {}
-
-      bridge = create(:ci_bridge, pipeline: upstream, status: 'skipped', options: options, user: owner)
-      create(:ci_sources_pipeline, pipeline: downstream, source_job: bridge)
-
-      bridge
     end
   end
 

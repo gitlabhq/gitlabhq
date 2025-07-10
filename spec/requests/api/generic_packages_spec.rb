@@ -1148,8 +1148,19 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
       end
 
       context 'when direct download is disabled' do
-        let(:dispositon_header) do
+        let(:disposition_header) do
           "attachment; filename=\"#{package_file.file_name}\"; filename*=UTF-8\'\'#{package_file.file_name}"
+        end
+
+        let(:expected_headers) do
+          {
+            allow_localhost: true,
+            allowed_endpoints: [],
+            response_headers: {
+              'Content-Disposition' => disposition_header
+            },
+            ssrf_filter: true
+          }
         end
 
         before do
@@ -1158,13 +1169,15 @@ RSpec.describe API::GenericPackages, feature_category: :package_registry do
 
         it 'sends a file with response-content-disposition and filename' do
           expect(::Gitlab::Workhorse).to receive(:send_url)
-            .with(instance_of(String), { response_headers: { 'Content-Disposition' => dispositon_header } })
+            .with(instance_of(String), expected_headers)
             .and_call_original
 
           download
 
           expect(response).to have_gitlab_http_status(:ok)
         end
+
+        it_behaves_like 'package registry SSRF protection'
       end
     end
 

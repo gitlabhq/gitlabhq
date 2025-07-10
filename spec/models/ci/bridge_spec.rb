@@ -293,33 +293,82 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
   end
 
-  describe '#inherit_status_from_downstream!' do
-    let(:downstream_pipeline) { build(:ci_pipeline, status: downstream_status) }
+  describe '#inherit_status_from_downstream' do
+    let(:downstream_pipeline) { create(:ci_pipeline, status: downstream_status) }
 
     before do
       bridge.status = 'pending'
       create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
     end
 
-    subject { bridge.inherit_status_from_downstream!(downstream_pipeline) }
+    subject { bridge.inherit_status_from_downstream(downstream_pipeline) }
 
-    context 'when status is not supported' do
-      (::Ci::Pipeline::AVAILABLE_STATUSES - ::Ci::Pipeline::COMPLETED_STATUSES).map(&:to_s).each do |status|
-        context "when status is #{status}" do
-          let(:downstream_status) { status }
+    shared_examples 'returns false for unsupported statuses' do
+      let(:downstream_status) { 'canceling' }
 
-          it 'returns false' do
-            expect(subject).to eq(false)
+      it 'returns false' do
+        expect(subject).to eq(false)
+      end
+
+      it 'does not change the bridge status' do
+        expect { subject }.not_to change { bridge.status }.from('pending')
+      end
+    end
+
+    context 'when status is not supported for a strategy' do
+      context 'when strategy is `mirror`' do
+        let(:options) { { trigger: { project: 'my/project', strategy: 'mirror' } } }
+
+        it_behaves_like 'returns false for unsupported statuses'
+      end
+
+      context 'when strategy is `depend`' do
+        let(:options) { { trigger: { project: 'my/project', strategy: 'depend' } } }
+
+        it_behaves_like 'returns false for unsupported statuses'
+      end
+    end
+
+    context 'when the bridge has strategy: mirror' do
+      let(:options) { { trigger: { project: 'my/project', strategy: 'mirror' } } }
+
+      %w[success failed canceled skipped manual].each do |bridge_starting_status|
+        context "when initial bridge status is #{bridge_starting_status}" do
+          before do
+            bridge.status = bridge_starting_status
+            create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
           end
 
-          it 'does not change the bridge status' do
-            expect { subject }.not_to change { bridge.status }.from('pending')
+          using RSpec::Parameterized::TableSyntax
+          where(:downstream_status, :expected_bridge_status) do
+            [
+              %w[success success],
+              %w[canceled canceled],
+              %w[failed failed],
+              %w[manual manual],
+              %w[skipped skipped]
+            ]
+          end
+
+          with_them do
+            it 'inherits the downstream status' do
+              perform_transition = -> { subject }
+              if bridge.status == expected_bridge_status
+                expect { perform_transition.call }.not_to change { bridge.status }
+              else
+                expect { perform_transition.call }.to change { bridge.status }
+                  .from(bridge_starting_status)
+                  .to(expected_bridge_status)
+              end
+            end
           end
         end
       end
     end
 
-    context 'when status is supported' do
+    context 'when the bridge has strategy: depend' do
+      let(:options) { { trigger: { project: 'my/project', strategy: 'depend' } } }
+
       using RSpec::Parameterized::TableSyntax
 
       where(:downstream_status, :upstream_status) do
@@ -336,37 +385,71 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
           expect { subject }.to change { bridge.status }.from('pending').to(upstream_status)
         end
       end
-    end
 
-    Ci::HasStatus::COMPLETED_STATUSES.each do |bridge_starting_status|
-      context "when initial bridge status is a completed status #{bridge_starting_status}" do
-        before do
-          bridge.status = bridge_starting_status
-          create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
-        end
+      %w[success failed canceled skipped].each do |bridge_starting_status|
+        context "when initial bridge status is {bridge_starting_status}" do
+          before do
+            bridge.status = bridge_starting_status
+            create(:ci_sources_pipeline, pipeline: downstream_pipeline, source_job: bridge)
+          end
 
-        using RSpec::Parameterized::TableSyntax
-        where(:downstream_status, :expected_bridge_status) do
-          [
-            %w[success success],
-            %w[failed failed],
-            %w[skipped failed]
-          ]
-        end
+          using RSpec::Parameterized::TableSyntax
+          where(:downstream_status, :expected_bridge_status) do
+            [
+              %w[success success],
+              %w[failed failed],
+              %w[skipped failed]
+            ]
+          end
 
-        with_them do
-          it 'inherits the downstream status' do
-            perform_transition = -> { subject }
-            if bridge.status == expected_bridge_status
-              expect { perform_transition.call }.not_to change { bridge.status }
-            else
-              expect { perform_transition.call }.to change { bridge.status }
-                .from(bridge_starting_status)
-                .to(expected_bridge_status)
+          with_them do
+            it 'inherits the downstream status' do
+              perform_transition = -> { subject }
+              if bridge.status == expected_bridge_status
+                expect { perform_transition.call }.not_to change { bridge.status }
+              else
+                expect { perform_transition.call }.to change { bridge.status }
+                  .from(bridge_starting_status)
+                  .to(expected_bridge_status)
+              end
             end
           end
         end
       end
+    end
+  end
+
+  describe '#has_strategy' do
+    subject { bridge.has_strategy? }
+
+    context 'when bridge has no strategy' do
+      it { is_expected.to be false }
+    end
+
+    context 'when bridge has `strategy: mirror`' do
+      let(:options) { { trigger: { project: 'my/project', strategy: 'mirror' } } }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when bridge has `strategy: depend`' do
+      let(:options) { { trigger: { project: 'my/project', strategy: 'depend' } } }
+
+      it { is_expected.to be true }
+    end
+  end
+
+  describe '#mirrored?' do
+    subject { bridge.mirrored? }
+
+    context 'when bridge has `strategy: mirror`' do
+      let(:options) { { trigger: { project: 'my/project', strategy: 'mirror' } } }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when bridge does not have `strategy: mirror`' do
+      it { is_expected.to be false }
     end
   end
 

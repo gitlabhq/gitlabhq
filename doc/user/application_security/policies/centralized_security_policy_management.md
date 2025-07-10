@@ -57,6 +57,12 @@ To set up centralized security policy management, you designate a CSP group and 
 
 For more information, see [instance-wide compliance and security policy management](../../../security/compliance_security_policy_management.md).
 
+### Enable global approval groups
+
+To support approval groups globally across your instance, you must:
+
+- Enable `security_policy_global_group_approvers_enabled` in your [GitLab instance application settings](../../../api/settings.md).
+
 ### Create security policies in the CSP group
 
 To create the policies:

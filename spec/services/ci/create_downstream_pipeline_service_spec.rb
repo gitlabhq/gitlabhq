@@ -405,16 +405,27 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
           expect(subject).to be_success
         end
 
-        context 'when bridge uses "depend" strategy' do
+        context 'when bridge has strategy: depend' do
           let(:trigger) do
             {
               trigger: { include: 'child-pipeline.yml', strategy: 'depend' }
             }
           end
 
-          it 'update the bridge job to running status' do
+          it 'updates the bridge status to `running`' do
             expect { subject }.to change { bridge.status }.from('pending').to('running')
-            expect(subject).to be_success
+          end
+        end
+
+        context 'when bridge has strategy: mirror' do
+          let(:trigger) do
+            {
+              trigger: { include: 'child-pipeline.yml', strategy: 'mirror' }
+            }
+          end
+
+          it 'updates the bridge status to `running`' do
+            expect { subject }.to change { bridge.status }.from('pending').to('running')
           end
         end
 

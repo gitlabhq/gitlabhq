@@ -22,7 +22,13 @@ module Gitlab
 
           new_text = note_text.attachments.reduce(note_text.text) do |text, attachment|
             new_url = gitlab_attachment_link(attachment)
-            text.gsub(attachment.url, new_url)
+
+            # we need to update video media file links with the correct markdown format
+            if new_url.end_with?(*supported_video_media_types)
+              text.gsub(attachment.url, "![media_attachment](#{new_url})")
+            else
+              text.gsub(attachment.url, new_url)
+            end
           end
 
           update_note_record(new_text)
@@ -41,6 +47,11 @@ module Gitlab
           else # url to other GitHub project
             attachment.url
           end
+        end
+
+        def supported_video_media_types
+          @supported_video_media_types ||=
+            ::Gitlab::GithubImport::AttachmentsDownloader::SUPPORTED_VIDEO_MEDIA_TYPES.map { |ext| ".#{ext}" }
         end
 
         # From: https://github.com/login/test-import-attachments-source/blob/main/example.md

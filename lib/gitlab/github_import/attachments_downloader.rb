@@ -12,6 +12,7 @@ module Gitlab
       FILENAME_SIZE_LIMIT = 255 # chars before the extension
       DEFAULT_FILE_SIZE_LIMIT = Gitlab::CurrentSettings.max_attachment_size.megabytes
       TMP_DIR = File.join(Dir.tmpdir, 'github_attachments').freeze
+      SUPPORTED_VIDEO_MEDIA_TYPES = %w[mov mp4 webm].freeze
 
       attr_reader :file_url, :filename, :file_size_limit, :options
 
@@ -28,6 +29,15 @@ module Gitlab
         validate_filepath
 
         download_url = get_assets_download_redirection_url
+
+        parsed_file_name = File.basename(URI.parse(download_url).path)
+
+        # if the file is a media type, we update both the @filename and @filepath with the filetype extension
+        if parsed_file_name.end_with?(*SUPPORTED_VIDEO_MEDIA_TYPES.map { |ext| ".#{ext}" })
+          @filename = ensure_filename_size(parsed_file_name)
+          add_extension_to_file_path(filename)
+        end
+
         file = download_from(download_url)
 
         validate_symlink
@@ -89,6 +99,10 @@ module Gitlab
           mkdir_p dir
           File.join(dir, filename)
         end
+      end
+
+      def add_extension_to_file_path(filename)
+        @filepath = "#{filepath}#{File.extname(filename)}"
       end
     end
   end

@@ -142,7 +142,8 @@ module API
         present_carrierwave_file!(
           package_file.file,
           supports_direct_download: supports_direct_download,
-          content_disposition: content_disposition
+          content_disposition: content_disposition,
+          extra_send_url_params: ::Packages::SsrfProtection.params_for(package_file.package)
         )
       end
 

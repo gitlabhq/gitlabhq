@@ -295,6 +295,7 @@
     "MergeRequestReviewer",
     "Namespace",
     "Project",
+    "ProjectComplianceViolation",
     "UserCore",
     "Vulnerability",
     "WikiPage",
