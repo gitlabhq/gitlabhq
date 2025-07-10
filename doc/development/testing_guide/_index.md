@@ -37,6 +37,10 @@ changes should be tested.
 Everything you should know about [how to write good tests](best_practices.md): Test Design, RSpec, FactoryBot,
 system tests, parameterized tests etc.
 
+## Testing Strategy
+
+[Testing strategy document](testing_strategy.md) defines the blueprint for GitLab automated testing — where tests run, when they execute, and what they block across the development lifecycle. 
+
 ## Frontend testing standards and style guidelines
 
 Everything you should know about [how to write good Frontend tests](frontend_testing.md): Jest,
