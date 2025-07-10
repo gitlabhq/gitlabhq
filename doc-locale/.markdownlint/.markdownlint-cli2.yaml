@@ -18,7 +18,7 @@ config:
     code_blocks: false
     tables: false
     headings: true
-    heading_line_length: 100
+    heading_line_length: 300
     line_length: 1800
   no-duplicate-heading:             # MD024
     siblings_only: true

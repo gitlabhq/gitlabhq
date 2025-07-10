@@ -1517,7 +1517,7 @@ In the following cases, consider using file system data transfer or snapshots as
 
 {{< alert type="warning" >}}
 
-Gitaly Cluster [does not support snapshot backups](../gitaly/_index.md#snapshot-backup-and-recovery).
+Gitaly Cluster [does not support snapshot backups](../gitaly/praefect/_index.md#snapshot-backup-and-recovery).
 
 {{< /alert >}}
 

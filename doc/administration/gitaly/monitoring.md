@@ -273,7 +273,7 @@ available from which metrics can be scraped:
 
 The following metrics are available from the `/metrics` endpoint:
 
-- `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](_index.md#distributed-reads).
+- `gitaly_praefect_read_distribution`, a counter to track [distribution of reads](praefect/_index.md#distributed-reads).
   It has two labels:
 
   - `virtual_storage`.
@@ -288,7 +288,7 @@ The following metrics are available from the `/metrics` endpoint:
 - `gitaly_praefect_connections_total`, the total number of connections to Praefect.
 - `gitaly_praefect_method_types`, a count of accessor and mutator RPCs per node.
 
-To monitor [strong consistency](_index.md#strong-consistency), you can use the following Prometheus metrics:
+To monitor [strong consistency](praefect/_index.md#strong-consistency), you can use the following Prometheus metrics:
 
 - `gitaly_praefect_transactions_total`, the number of transactions created and voted on.
 - `gitaly_praefect_subtransactions_per_transaction_total`, the number of times nodes cast a vote for

@@ -2611,7 +2611,7 @@ Supported attributes:
 ## Get the path to repository storage
 
 Get the path to repository storage for specified project if Gitaly Cluster is not being used. If Gitaly Cluster is being used, see
-[Praefect-generated replica paths](../administration/gitaly/_index.md#praefect-generated-replica-paths).
+[Praefect-generated replica paths](../administration/gitaly/praefect/_index.md#praefect-generated-replica-paths).
 
 Available for administrators only.
 

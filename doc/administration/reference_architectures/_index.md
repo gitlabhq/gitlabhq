@@ -714,7 +714,7 @@ For more information, see the following documentation:
 
 - [Redis to multi-node Redis w/ Redis Sentinel](../redis/replication_and_failover.md#switching-from-an-existing-single-machine-installation)
 - [Postgres to multi-node Postgres w/ Consul + PgBouncer](../postgresql/moving.md)
-- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/_index.md#migrate-to-gitaly-cluster)
+- [Gitaly to Gitaly Cluster w/ Praefect](../gitaly/praefect/_index.md#migrate-to-gitaly-cluster)
 
 ### Upgrades
 

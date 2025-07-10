@@ -35,7 +35,6 @@ As part of this phase, teams decide if [approved models](../ai_architecture.md#m
 #### Resources
 
 - [AI architecture overview](../ai_architecture.md)
-- [AI evaluation and testing (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/)
 
 ### Develop
 
@@ -74,7 +73,7 @@ Teams implement evaluation strategies covering multiple aspects of the quality o
 
 #### Key Activities
 
-- [Functional testing (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_functional_test_strategy/)
+- [Functional testing](../testing_guide/testing_ai_features.md)
 - Performance testing
 - Security and safety validation
 - [Dataset creation](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/guidelines/create_dataset.md) and [management](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/datasets/-/blob/main/doc/dataset_management.md)
@@ -83,7 +82,6 @@ Teams implement evaluation strategies covering multiple aspects of the quality o
 #### Resources
 
 - [Testing and validation](testing_and_validation.md)
-- [AI evaluation and testing (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/)
 
 ### Launch & Monitor
 

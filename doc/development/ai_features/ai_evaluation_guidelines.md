@@ -8,7 +8,7 @@ title: AI Evaluation Guidelines
 Unlike traditional software systems that behave more-or-less predictably, minor input changes can cause AI-powered systems to produce significantly different outputs. This unpredictability stems from the non-deterministic nature of AI-generated responses. Traditional software testing methods are not designed to handle such variability, which is why AI evaluation has become essential. AI evaluation is a data-driven, quantitative process that analyzes AI outputs to assess system performance, quality, and reliability.
 
 The [Centralized Evaluation Framework (CEF)](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library) provides a streamlined, unified approach to evaluating AI features at GitLab.
-It is essential to [our strategy for ensuring the quality of our AI-powered features (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation).
+It is essential to our strategy for ensuring the quality of our AI-powered features.
 
 Conceptually, there are three parts to an evaluation:
 
@@ -113,7 +113,6 @@ Similar to the [AI feature development process](ai_feature_development_playbook.
 ## Additional resources
 
 - [AI evaluation tooling](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation): The group containing AI evaluation tooling used at GitLab.
-- [AI evaluation and testing strategy (internal)](https://internal.gitlab.com/handbook/product/ai-strategy/ai-integration-effort/ai_testing_and_evaluation/): An overview of how testing and evaluation combine in our strategy for ensuring the quality of AI-powered features.
 - [LangSmith Evaluations YouTube playlist](https://www.youtube.com/playlist?list=PLfaIDFEXuae0um8Fj0V4dHG37fGFU8Q5S):
   Deep dive on evaluation with LangSmith.
 - [LangSmith Evaluation Cookbook](https://github.com/langchain-ai/langsmith-cookbook/blob/main/README.md#testing--evaluation):

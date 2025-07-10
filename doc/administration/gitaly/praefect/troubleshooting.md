@@ -117,7 +117,7 @@ To determine the primary node of a repository, use the [`praefect metadata`](#vi
 
 ## View repository metadata
 
-Gitaly Cluster maintains a [metadata database](../_index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
+Gitaly Cluster maintains a [metadata database](_index.md#components) about the repositories stored on the cluster. Use the `praefect metadata` subcommand
 to inspect the metadata for troubleshooting.
 
 You can retrieve a repository's metadata by its Praefect-assigned repository ID:
@@ -127,7 +127,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 ```
 
 When the physical path on the physical storage starts with `@cluster`, you can
-[find the repository ID in the physical path](../_index.md#praefect-generated-replica-paths).
+[find the repository ID in the physical path](_index.md#praefect-generated-replica-paths).
 
 You can also retrieve a repository's metadata by its virtual storage and relative path:
 
@@ -216,7 +216,7 @@ The documented examples specify `-virtual-storage default`. Check the Praefect s
 
 ## Check that repositories are in sync
 
-Is [some cases](../_index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
+Is [some cases](_index.md#known-issues) the Praefect database can get out of sync with the underlying Gitaly nodes. To check that
 a given repository is fully synced on all nodes, run the [`gitlab:praefect:replicas` Rake task](../../raketasks/praefect.md#replica-checksums) on your Rails node.
 This Rake task checksums the repository on all Gitaly nodes.
 

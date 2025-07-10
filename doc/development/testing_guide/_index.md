@@ -86,4 +86,8 @@ Everything you should know about [how to test migrations](testing_migrations_gui
 
 How we track our [test suite run results](test_results_tracking.md).
 
+## Testing AI features
+
+Practices to keep in mind when [testing AI-powered features](testing_ai_features.md).
+
 [Return to Development documentation](../_index.md)
