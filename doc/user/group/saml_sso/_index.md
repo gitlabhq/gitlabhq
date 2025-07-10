@@ -492,9 +492,9 @@ the `SessionNotOnOrAfter` attribute in the SAML2 AuthnStatement. This attribute 
 ISO 8601 timestamp value that indicates when to end the user session. When specified this
 value overrides the default SAML session timeout of 24 hours.
 
-This applies only to the SAML SSO session. If the [GitLab user session is configured](../../../administration/settings/account_and_limit_settings.md#session-duration) to expire
-earlier than the `SessionNotOnOrAfter` configuration, users will need to re-authenticate when
-their GitLab user session ends.
+If the instance has a custom [session duration](../../../administration/settings/account_and_limit_settings.md#session-duration) configured
+that is earlier than the `SessionNotOnOrAfter` timestamp, users must re-authenticate
+when their GitLab user session ends.
 
 #### Example response
 

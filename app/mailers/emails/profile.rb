@@ -149,6 +149,26 @@ module Emails
       )
     end
 
+    def deploy_token_about_to_expire_email(user, token_name, project, params = {})
+      params = params.with_indifferent_access
+
+      @user = user
+      @project = project
+      @target_url = project_settings_repository_url(project, anchor: "js-deploy-tokens")
+      @days_to_expire = params.fetch(:days_to_expire, DeployToken::DAYS_TO_EXPIRE)
+      @token_name = token_name
+      @user_role = project.team.owner?(user) ? _('an Owner') : _('a Maintainer')
+
+      email_with_layout(
+        to: @user.notification_email_or_default,
+        subject: subject(
+          _("Your deploy token will expire in %{days_to_expire} days or less") % {
+            days_to_expire: @days_to_expire
+          }
+        )
+      )
+    end
+
     def ssh_key_expired_email(user, fingerprints)
       return unless user&.active?
 

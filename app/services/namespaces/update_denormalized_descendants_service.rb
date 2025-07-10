@@ -81,6 +81,8 @@ module Namespaces
           namespace: namespace,
           self_and_descendant_group_ids: ids[:self_and_descendant_group_ids].sort,
           all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:all_project_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+            .order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
           outdated_at: descendants.outdated_at
         )
       end
@@ -92,7 +94,9 @@ module Namespaces
       Namespaces::Descendants.upsert_with_consistent_data(
         namespace: namespace,
         self_and_descendant_group_ids: ids[:self_and_descendant_group_ids].sort,
-        all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+        all_project_ids: Project.where(project_namespace_id: ids[:all_project_ids]).order(:id).pluck_primary_key, # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+        all_unarchived_project_ids: Project.self_and_ancestors_non_archived.where(project_namespace_id: ids[:all_project_ids]) # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
+          .order(:id).pluck_primary_key # rubocop: disable CodeReuse/ActiveRecord -- Service specific record lookup
       )
     end
 

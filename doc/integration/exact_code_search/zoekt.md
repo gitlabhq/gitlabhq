@@ -379,6 +379,12 @@ To define the retry interval for failed namespaces:
 
 ## Run Zoekt on a separate server
 
+{{< history >}}
+
+- Authentication for Zoekt [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389749) in GitLab 16.3.
+
+{{< /history >}}
+
 Prerequisites:
 
 - You must have administrator access to the instance.
@@ -387,11 +393,6 @@ To run Zoekt on a different server than GitLab:
 
 1. [Change the Gitaly listening interface](../../administration/gitaly/configure_gitaly.md#change-the-gitaly-listening-interface).
 1. [Install Zoekt](#install-zoekt).
-
-Zoekt does not support any authentication, so ensure:
-
-- The Zoekt instance is not publicly accessible.
-- Only the GitLab server has access to the Zoekt server through firewall policies or IP rules.
 
 ## Troubleshooting
 

@@ -59,6 +59,8 @@ class NamespaceSetting < ApplicationRecord
 
   before_validation :normalize_default_branch_name
 
+  after_update :invalidate_namespace_descendants_cache, if: -> { saved_change_to_archived? }
+
   chronic_duration_attr :runner_token_expiration_interval_human_readable, :runner_token_expiration_interval
   chronic_duration_attr :subgroup_runner_token_expiration_interval_human_readable, :subgroup_runner_token_expiration_interval
   chronic_duration_attr :project_runner_token_expiration_interval_human_readable, :project_runner_token_expiration_interval
@@ -170,6 +172,12 @@ class NamespaceSetting < ApplicationRecord
 
   def subgroup?
     !!namespace&.subgroup?
+  end
+
+  def invalidate_namespace_descendants_cache
+    return if namespace.is_a?(Namespaces::UserNamespace)
+
+    Namespaces::Descendants.expire_recursive_for(namespace)
   end
 end
 

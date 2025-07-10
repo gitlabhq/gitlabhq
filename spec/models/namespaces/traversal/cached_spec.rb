@@ -95,15 +95,20 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
 
     let_it_be(:project1) { create(:project, group: group) }
     let_it_be(:project2) { create(:project, group: subsubgroup) }
+    let_it_be(:project3) { create(:project, group: subsubgroup, archived: true) }
 
-    # deliberately making self_and_descendant_group_ids different from  the actual
-    # self_and_descendant_ids so we can verify that the cached query is running.
+    # deliberately making the created record different from the actual
+    # data so we can verify that the cached query is running.
+    # self_and_descendant_group_ids should be [group.id, subgroup.id, subsubgroup.id]
+    # all_project_ids should be [project1.id, project2.id, project3.id]
+    # all_unarchived_project_ids should be [project1.id, project2.id]
     let_it_be_with_refind(:namespace_descendants) do
       create(:namespace_descendants,
         :up_to_date,
         namespace: group,
         self_and_descendant_group_ids: [group.id, subgroup.id],
-        all_project_ids: [project1.id]
+        all_project_ids: [project1.id],
+        all_unarchived_project_ids: [project1.id]
       )
     end
 
@@ -137,7 +142,8 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
           ids = group.self_and_descendant_ids(skope: Namespace).pluck(:id)
 
           expect(ids).to contain_exactly(
-            group.id, subgroup.id, subsubgroup.id, project1.project_namespace.id, project2.project_namespace.id
+            group.id, subgroup.id, subsubgroup.id, project1.project_namespace.id, project2.project_namespace.id,
+            project3.project_namespace.id
           )
         end
       end
@@ -154,7 +160,7 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
         it 'returns the values from the uncached all_project_ids query' do
           namespace_descendants.update!(outdated_at: Time.current)
 
-          expect(ids.sort).to eq([project1.id, project2.id])
+          expect(ids.sort).to eq([project1.id, project2.id, project3.id])
         end
       end
 
@@ -164,7 +170,45 @@ RSpec.describe Namespaces::Traversal::Cached, feature_category: :database do
         end
 
         it 'returns the values from the uncached all_project_ids query' do
-          expect(ids.sort).to eq([project1.id, project2.id])
+          expect(ids.sort).to eq([project1.id, project2.id, project3.id])
+        end
+      end
+    end
+
+    describe '#all_unarchived_project_ids' do
+      subject(:ids) { group.all_unarchived_project_ids.pluck(:id) }
+
+      it 'returns the cached values' do
+        expect(ids).to eq(namespace_descendants.all_unarchived_project_ids)
+      end
+
+      context 'when the cache is outdated' do
+        before do
+          namespace_descendants.update!(outdated_at: Time.current)
+        end
+
+        it 'returns the values from the uncached all_unarchived_project_ids query' do
+          expect(ids).to match_array([project1.id, project2.id])
+        end
+
+        context 'when group is archived' do
+          before do
+            group.archive
+          end
+
+          it 'excludes all descendants projects' do
+            expect(ids).to be_empty
+          end
+        end
+      end
+
+      context 'when the group_hierarchy_optimization feature flag is disabled' do
+        before do
+          stub_feature_flags(group_hierarchy_optimization: false)
+        end
+
+        it 'returns the values from the uncached all_unarchived_project_ids query' do
+          expect(ids).to match_array([project1.id, project2.id])
         end
       end
     end

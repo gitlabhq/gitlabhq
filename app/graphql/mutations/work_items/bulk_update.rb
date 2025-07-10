@@ -40,10 +40,17 @@ module Mutations
         experiment: { milestone: '18.2' }
 
       argument :parent_id, ::Types::GlobalIDType[::WorkItems::Parent],
-        required: true,
+        required: false,
         description: 'Global ID of the parent to which the bulk update will be scoped. ' \
           'The parent can be a project. The parent can also be a group (Premium and Ultimate only). ' \
-          'Example `WorkItemsParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.'
+          'Example `WorkItemsParentID` are `"gid://gitlab/Project/1"` and `"gid://gitlab/Group/1"`.',
+        deprecated: { milestone: '18.2', reason: 'Use full_path instead' }
+
+      argument :full_path, GraphQL::Types::ID,
+        required: false,
+        description: 'Full path of the project or group (Premium and Ultimate only) containing the work items that ' \
+          'will be updated. User paths are not supported.',
+        experiment: { milestone: '18.2' }
 
       argument :labels_widget,
         ::Types::WorkItems::Widgets::LabelsUpdateInputType,
@@ -59,6 +66,8 @@ module Mutations
         null: true,
         description: 'Number of work items that were successfully updated.'
 
+      validates exactly_one_of: [:full_path, :parent_id]
+
       def ready?(**args)
         if args[:ids].size > MAX_WORK_ITEMS
           raise Gitlab::Graphql::Errors::ArgumentError,
@@ -71,8 +80,8 @@ module Mutations
         super
       end
 
-      def resolve(ids:, parent_id:, **attributes)
-        parent = parent_for!(parent_id)
+      def resolve(ids:, parent_id: nil, full_path: nil, **attributes)
+        parent = resource_parent!(parent_id, full_path)
 
         result = ::WorkItems::BulkUpdateService.new(
           parent: parent,
@@ -90,13 +99,21 @@ module Mutations
 
       private
 
-      def parent_for!(parent_id)
-        strong_memoize_with(:parent_for, parent_id) do
-          parent = GitlabSchema.find_by_gid(parent_id).sync
-          raise_resource_not_available_error! unless current_user.can?("read_#{parent.to_ability_name}", parent)
+      def resource_parent!(parent_id, full_path)
+        strong_memoize_with(:resource_parent, parent_id, full_path) do
+          parent = parent_id ? GitlabSchema.find_by_gid(parent_id).sync : find_parent_by_full_path(full_path)
+
+          unless parent && current_user.can?("read_#{parent.to_ability_name}", parent)
+            raise_resource_not_available_error!
+          end
 
           parent
         end
+      end
+
+      def find_parent_by_full_path(full_path)
+        # Note: Group support is added in the EE module. For CE, we only support bulk edit for projects
+        ::Gitlab::Graphql::Loaders::FullPathModelLoader.new(::Project, full_path).find.sync
       end
     end
   end

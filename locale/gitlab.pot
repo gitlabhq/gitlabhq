@@ -11595,7 +11595,7 @@ msgstr ""
 msgid "BulkImport|Import groups by direct transfer"
 msgstr ""
 
-msgid "BulkImport|Import user memberships"
+msgid "BulkImport|Import user memberships. %{helpLink}"
 msgstr ""
 
 msgid "BulkImport|Import with projects"
@@ -11679,9 +11679,6 @@ msgstr ""
 msgid "BulkImport|Select the groups you want to import."
 msgstr ""
 
-msgid "BulkImport|Select whether user memberships in groups and projects are imported."
-msgstr ""
-
 msgid "BulkImport|Showing %{start} - %{end} of %{total}"
 msgstr ""
 
@@ -11731,6 +11728,9 @@ msgid "BulkImport|View import results"
 msgstr ""
 
 msgid "BulkImport|View placeholders"
+msgstr ""
+
+msgid "BulkImport|What can I import?"
 msgstr ""
 
 msgid "BulkImport|You cannot import projects with this group. To import projects, reconfigure the source GitLab instance or group. %{linkStart}Learn more%{linkEnd}."
@@ -72097,6 +72097,9 @@ msgstr ""
 msgid "You are out of Pages parallel deployments. Delete some existing deployments to be able to create new ones. %{link}."
 msgstr ""
 
+msgid "You are receiving this email because you are %{role} of the project."
+msgstr ""
+
 msgid "You are receiving this email because you are an Owner of the Group."
 msgstr ""
 
@@ -72172,6 +72175,9 @@ msgstr ""
 msgid "You can create a new one or check them in your %{link_start}access tokens%{link_end} settings."
 msgstr ""
 
+msgid "You can create a new one or check them in your %{link_start}deploy tokens%{link_end} settings."
+msgstr ""
+
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
 msgstr ""
 
@@ -72182,6 +72188,9 @@ msgid "You can create a new one or check them in your SSH keys settings %{ssh_ke
 msgstr ""
 
 msgid "You can create a new one or check them in your access token settings: %{target_url}"
+msgstr ""
+
+msgid "You can create a new one or check them in your deploy tokens settings: %{target_url}"
 msgstr ""
 
 msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}."
@@ -73008,6 +73017,9 @@ msgstr ""
 msgid "Your current password is required to register a two-factor authenticator app."
 msgstr ""
 
+msgid "Your deploy token will expire in %{days_to_expire} days or less"
+msgstr ""
+
 msgid "Your deployment services will be broken, you will need to manually fix the services after renaming."
 msgstr ""
 
@@ -73143,6 +73155,12 @@ msgid "Your profile"
 msgstr ""
 
 msgid "Your project %{project_name} has been marked for deletion and will be removed in %{days}."
+msgstr ""
+
+msgid "Your project deploy token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{project_path}%{codeClose} will expire in %{days_to_expire} or less."
+msgstr ""
+
+msgid "Your project deploy token %{token_name} for %{project_path} will expire in %{days_to_expire} or less."
 msgstr ""
 
 msgid "Your projects"
@@ -73315,6 +73333,9 @@ msgstr ""
 msgid "`start_time` should precede `end_time`"
 msgstr ""
 
+msgid "a Maintainer"
+msgstr ""
+
 msgid "a deleted user"
 msgstr ""
 
@@ -73389,6 +73410,9 @@ msgid "already has a \"created\" issue link"
 msgstr ""
 
 msgid "already shared with this group"
+msgstr ""
+
+msgid "an Owner"
 msgstr ""
 
 msgid "and"

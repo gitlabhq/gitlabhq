@@ -590,4 +590,45 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
       it { is_expected.to be(jwt_enabled?) }
     end
   end
+
+  describe 'descendants cache invalidation' do
+    context 'when cached record is present' do
+      let_it_be_with_reload(:cache) { create(:namespace_descendants, namespace: group) }
+
+      it 'invalidates the cache when archived changes to true' do
+        expect { namespace_settings.update!(archived: true) }.to change { cache.reload.outdated_at }.from(nil)
+      end
+
+      it 'invalidates the cache when archived changes to false' do
+        namespace_settings.update!(archived: true)
+        cache.update!(outdated_at: nil) # reset cache to be valid again
+
+        expect { namespace_settings.update!(archived: false) }.to change { cache.reload.outdated_at }.from(nil)
+      end
+
+      it 'does not invalidate cache when other attributes change' do
+        expect { namespace_settings.update!(emails_enabled: true) }.not_to change { cache.reload.outdated_at }
+      end
+    end
+
+    context 'when namespace is UserNamespace' do
+      let(:user_namespace) { create(:user_namespace) }
+      let!(:namespace_settings) { create(:namespace_settings, namespace: user_namespace) }
+      let!(:cache) { create(:namespace_descendants, namespace: user_namespace) }
+
+      it 'does not invalidate cache' do
+        expect { user_namespace.namespace_settings.update!(archived: true) }.not_to change { cache.reload.outdated_at }
+      end
+    end
+
+    context 'when parent group has cached record' do
+      let(:parent_group) { create(:group) }
+      let(:child_group) { create(:group, parent: parent_group) }
+      let!(:parent_cache) { create(:namespace_descendants, namespace: parent_group) }
+
+      it 'invalidates the parent cache when child is archived' do
+        expect { child_group.namespace_settings.update!(archived: true) }.to change { parent_cache.reload.outdated_at }.from(nil)
+      end
+    end
+  end
 end

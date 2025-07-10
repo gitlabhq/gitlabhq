@@ -199,6 +199,9 @@ const defaultJsOptions = {
     // Ensure that changing supported browsers will refresh the cache
     // in order to not pull in outdated files that import core-js
     SUPPORTED_BROWSERS_HASH,
+    // An EXPLICIT_VUE_VERSION changes how we alias certain packages
+    // use a different cache to prevent issues when switching between versions
+    EXPLICIT_VUE_VERSION,
   ].join('|'),
   cacheCompression: false,
 };
@@ -216,29 +219,37 @@ const vueLoaderOptions = {
   ].join('|'),
 };
 
-let shouldExcludeFromCompliling = (modulePath) =>
-  /node_modules|vendor[\\/]assets/.test(modulePath) &&
-  !/\.vue\.js/.test(modulePath) &&
-  !/graphql-ws/.test(modulePath);
+const shouldExcludeFromCompiling = (modulePath) => {
+  // file with .vue.js extension
+  if (/\.vue\.js$/.test(modulePath)) {
+    return false;
+  }
+
+  // graphql-ws
+  if (/graphql-ws/.test(modulePath)) {
+    return false;
+  }
+
+  // GitLab UI source files (in node_modules)
+  if (new RegExp(path.join(ROOT_PATH, 'node_modules/@gitlab/ui/src')).test(modulePath)) {
+    return false;
+  }
+
+  // Exclude other ./node_modules and ./vendor/assets modules
+  return (
+    new RegExp(path.join(ROOT_PATH, 'node_modules')).test(modulePath) ||
+    new RegExp(path.join(ROOT_PATH, 'vendor/assets')).test(modulePath)
+  );
+};
+
 // We explicitly set VUE_VERSION
 // Use @gitlab-ui from source to allow us to dig differences
 // between Vue.js 2 and Vue.js 3 while using built gitlab-ui by default
 if (EXPLICIT_VUE_VERSION) {
   Object.assign(alias, {
-    '@gitlab/ui/src/tokens/build/js': path.join(
-      ROOT_PATH,
-      'node_modules/@gitlab/ui/src/tokens/build/js',
-    ),
-    '@gitlab/ui/dist': '@gitlab/ui/src',
-    '@gitlab/ui': '@gitlab/ui/src',
+    '@gitlab/ui/dist/charts$': '@gitlab/ui/src/charts',
+    '@gitlab/ui$': '@gitlab/ui/src',
   });
-
-  const originalShouldExcludeFromCompliling = shouldExcludeFromCompliling;
-
-  shouldExcludeFromCompliling = (modulePath) =>
-    originalShouldExcludeFromCompliling(modulePath) &&
-    !/node_modules[\\/]@gitlab[\\/]ui/.test(modulePath) &&
-    !/node_modules[\\/]bootstrap-vue[\\/]src[\\/]vue\.js/.test(modulePath);
 }
 
 if (USE_VUE3) {
@@ -426,7 +437,7 @@ module.exports = {
       },
       {
         test: /\.(js|cjs)$/,
-        exclude: shouldExcludeFromCompliling,
+        exclude: shouldExcludeFromCompiling,
         use: [
           {
             loader: 'thread-loader',
@@ -439,7 +450,10 @@ module.exports = {
           },
           {
             loader: 'babel-loader',
-            options: defaultJsOptions,
+            options: {
+              plugins: ['@babel/plugin-transform-logical-assignment-operators'],
+              ...defaultJsOptions,
+            },
           },
         ],
       },

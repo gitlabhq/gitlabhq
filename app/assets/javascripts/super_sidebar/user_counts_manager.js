@@ -30,7 +30,7 @@ function updateCounts(payload = {}) {
 let broadcastChannel = null;
 
 function broadcastUserCounts(data) {
-  broadcastChannel?.postMessage(data);
+  broadcastChannel?.postMessage({ ...data });
 }
 
 async function retrieveUserCountsFromApi() {

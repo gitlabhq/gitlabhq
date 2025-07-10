@@ -931,6 +931,8 @@
   - 1
 - - security_analyzers_status_setting_changed_update
   - 1
+- - security_collect_policies_limit_audit_events
+  - 1
 - - security_configuration_set_group_secret_push_protection
   - 1
 - - security_create_security_policy_project

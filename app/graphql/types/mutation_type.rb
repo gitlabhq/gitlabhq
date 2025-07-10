@@ -209,6 +209,7 @@ module Types
     mount_mutation Mutations::Ci::PipelineTrigger::Delete, experiment: { milestone: '16.3' }
     mount_mutation Mutations::Ci::PipelineTrigger::Update, experiment: { milestone: '16.3' }
     mount_mutation Mutations::Ci::ProjectCiCdSettingsUpdate
+    mount_mutation Mutations::Ci::SafeDisablePipelineVariables
     mount_mutation Mutations::Ci::Runner::BulkDelete, experiment: { milestone: '15.3' }
     mount_mutation Mutations::Ci::Runner::BulkPause, experiment: { milestone: '17.11' }
     mount_mutation Mutations::Ci::Runner::Cache::Clear

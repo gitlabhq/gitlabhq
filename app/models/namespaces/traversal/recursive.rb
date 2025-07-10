@@ -25,6 +25,12 @@ module Namespaces
       end
       alias_method :recursive_all_project_ids, :all_project_ids
 
+      def all_unarchived_project_ids
+        namespace = user_namespace? ? self : recursive_self_and_descendant_ids
+        Project.self_and_ancestors_non_archived.where(namespace: namespace).select(:id)
+      end
+      alias_method :recursive_all_unarchived_project_ids, :all_unarchived_project_ids
+
       # Returns all ancestors, self, and descendants of the current namespace.
       def self_and_hierarchy
         object_hierarchy(self.class.where(id: id))

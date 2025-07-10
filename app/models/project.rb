@@ -169,6 +169,8 @@ class Project < ApplicationRecord
 
   after_save :reload_project_namespace_details
 
+  after_save :invalidate_namespace_cache, if: :saved_change_to_archived?
+
   use_fast_destroy :build_trace_chunks
 
   has_many :project_topics, -> { order(:id) }, class_name: 'Projects::ProjectTopic'
@@ -3875,6 +3877,10 @@ class Project < ApplicationRecord
     return unless (previous_changes.keys & %w[description description_html cached_markdown_version]).any? && project_namespace.namespace_details.present?
 
     project_namespace.namespace_details.reset
+  end
+
+  def invalidate_namespace_cache
+    Namespaces::Descendants.expire_for([namespace_id])
   end
 
   # SyncEvents are created by PG triggers (with the function `insert_projects_sync_event`)

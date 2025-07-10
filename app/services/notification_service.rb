@@ -123,6 +123,16 @@ class NotificationService
     mailer.access_token_revoked_email(user, token_name, source).deliver_later
   end
 
+  # Notify the owner of the deploy token, when it is about to expire
+  def deploy_token_about_to_expire(user, token_name, project, params = {})
+    return unless user.can?(:receive_notifications)
+    return unless project.team.owner?(user) || project.team.maintainer?(user)
+
+    log_info("Notifying user about expiring deploy tokens", user)
+
+    mailer.deploy_token_about_to_expire_email(user, token_name, project, params).deliver_later
+  end
+
   # Notify the user when at least one of their ssh key has expired today
   def ssh_key_expired(user, fingerprints)
     return unless user.can?(:receive_notifications)

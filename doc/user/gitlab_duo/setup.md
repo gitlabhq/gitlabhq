@@ -36,7 +36,14 @@ This page focuses on how to configure a GitLab Self-Managed instance if you're u
   Network firewalls can cause lag or delay.
 - [Silent Mode](../../administration/silent_mode/_index.md) must not be turned on.
 - You must [activate your instance with an activation code](../../administration/license.md#activate-gitlab-ee).
-- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions may continue to work, however the experience may be degraded.
+
+  {{< alert type="note" >}}
+
+  You cannot use an [offline license](https://about.gitlab.com/pricing/licensing-faq/cloud-licensing/#what-is-an-offline-cloud-license) or a legacy license.
+
+  {{< /alert >}}
+
+- GitLab Duo requires GitLab 17.2 and later for the best user experience and results. Earlier versions might continue to work, however the experience may be degraded.
 
 GitLab Duo features that are experimental or beta are turned off by default
 and [must be turned on](turn_on_off.md#turn-on-beta-and-experimental-features).

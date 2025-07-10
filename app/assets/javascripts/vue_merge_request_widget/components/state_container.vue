@@ -72,7 +72,7 @@ export default {
 
 <template>
   <div
-    class="mr-widget-body media gl-relative gl-flex gl-items-center gl-py-4 gl-pl-5 gl-pr-4"
+    class="mr-widget-body media gl-flex gl-items-center gl-py-4 gl-pl-5 gl-pr-4"
     :class="wrapperClasses"
     v-on="$listeners"
   >
@@ -88,7 +88,7 @@ export default {
     </div>
     <template v-else>
       <slot name="icon">
-        <status-icon class="gl-z-1" :status="status" />
+        <status-icon :status="status" />
       </slot>
       <div class="gl-flex gl-w-full">
         <div
@@ -108,13 +108,13 @@ export default {
           class="gl-font-size-0 gl-flex gl-gap-3"
         >
           <slot name="actions">
-            <actions v-if="actions.length" :tertiary-buttons="actions" class="gl-z-1" />
+            <actions v-if="actions.length" :tertiary-buttons="actions" />
           </slot>
         </div>
         <div
           v-if="isCollapsible"
           :class="{ 'md:gl-hidden': !collapseOnDesktop }"
-          class="gl-border-l gl-z-1 gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
+          class="gl-border-l gl-ml-3 gl-h-6 gl-border-l-section gl-pl-3"
         >
           <gl-button
             v-gl-tooltip
@@ -131,13 +131,6 @@ export default {
           </gl-button>
         </div>
       </div>
-      <button
-        v-if="isCollapsible"
-        class="gl-absolute gl-inset-0 gl-border-0 gl-bg-transparent"
-        tabindex="-1"
-        aria-hidden="true"
-        @click="() => $emit('toggle')"
-      ></button>
     </template>
   </div>
 </template>

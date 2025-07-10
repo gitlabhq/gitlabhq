@@ -22,7 +22,6 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __, n__, sprintf } from '~/locale';
 import { HTTP_STATUS_TOO_MANY_REQUESTS } from '~/lib/utils/http_status';
 import PaginationBar from '~/vue_shared/components/pagination_bar/pagination_bar.vue';
-import HelpPopover from '~/vue_shared/components/help_popover.vue';
 import { getGroupPathAvailability } from '~/rest_api';
 import axios from '~/lib/utils/axios_utils';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -73,7 +72,6 @@ export default {
     ImportActionsCell,
     ImportHistoryLink,
     PaginationBar,
-    HelpPopover,
     PageHeading,
     EmptyResult,
   },
@@ -652,8 +650,10 @@ export default {
   visibilityRulesHelpPath: helpPagePath('user/group/import/_index', {
     anchor: 'visibility-rules',
   }),
+  importMembershipHelpPath: helpPagePath('user/group/import/direct_transfer_migrations', {
+    anchor: 'select-the-groups-and-projects-to-import',
+  }),
   popoverOptions: { title: __('What is listed here?') },
-  learnMoreOptions: { title: s__('BulkImport|Import user memberships') },
   i18n,
   LOCAL_STORAGE_KEY: 'gl-bulk-imports-status-page-size-v1',
 };
@@ -809,17 +809,14 @@ export default {
                 data-testid="toggle-import-user-memberships"
                 class="gl-mr-2 gl-pt-3"
               >
-                {{ s__('BulkImport|Import user memberships') }}
+                <gl-sprintf :message="s__('BulkImport|Import user memberships. %{helpLink}')">
+                  <template #helpLink>
+                    <gl-link :href="$options.importMembershipHelpPath" target="_blank">{{
+                      s__('BulkImport|What can I import?')
+                    }}</gl-link>
+                  </template>
+                </gl-sprintf>
               </gl-form-checkbox>
-              <help-popover :options="$options.learnMoreOptions">
-                <gl-sprintf
-                  :message="
-                    s__(
-                      'BulkImport|Select whether user memberships in groups and projects are imported.',
-                    )
-                  "
-                />
-              </help-popover>
             </div>
           </div>
         </div>

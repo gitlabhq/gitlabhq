@@ -27,6 +27,14 @@ module Namespaces
       connection.execute(sanitize_sql_array([sql, namespace_ids, namespace_ids, Time.current]))
     end
 
+    def self.expire_recursive_for(group)
+      # Expire `group` and all ancestors
+      expire_for([group.id])
+
+      # Expire all subgroups
+      Namespaces::Descendants.where(namespace_id: group.self_and_descendant_ids).update_all(outdated_at: Time.current)
+    end
+
     def self.load_outdated_batch(batch_size)
       where
         .not(outdated_at: nil)
@@ -35,14 +43,16 @@ module Namespaces
         .pluck_primary_key
     end
 
-    def self.upsert_with_consistent_data(namespace:, self_and_descendant_group_ids:, all_project_ids:, outdated_at: nil)
+    def self.upsert_with_consistent_data(
+      namespace:, self_and_descendant_group_ids:, all_project_ids:, all_unarchived_project_ids:, outdated_at: nil)
       query = <<~SQL
         INSERT INTO namespace_descendants
-        (namespace_id, traversal_ids, self_and_descendant_group_ids, all_project_ids, outdated_at, calculated_at)
+        (namespace_id, traversal_ids, self_and_descendant_group_ids, all_project_ids, all_unarchived_project_ids, outdated_at, calculated_at)
         VALUES
         (
           ?,
           ARRAY[?]::bigint[],
+          ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
           ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
           ARRAY_REMOVE(ARRAY[?]::bigint[], NULL),
           NULL,
@@ -53,6 +63,7 @@ module Namespaces
           traversal_ids = EXCLUDED.traversal_ids,
           self_and_descendant_group_ids = EXCLUDED.self_and_descendant_group_ids,
           all_project_ids = EXCLUDED.all_project_ids,
+          all_unarchived_project_ids = EXCLUDED.all_unarchived_project_ids,
           #{handle_outdated_at(outdated_at)}
           calculated_at = EXCLUDED.calculated_at
       SQL
@@ -63,6 +74,7 @@ module Namespaces
         namespace.traversal_ids,
         self_and_descendant_group_ids,
         all_project_ids,
+        all_unarchived_project_ids,
         Time.current
       ]))
     end

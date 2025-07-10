@@ -5247,6 +5247,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '#invalidate_namespace_cache' do
+    let_it_be(:project) { create(:project) }
+
+    it 'calls Namespaces::Descendants.expire_for when archived is changed' do
+      expect(Namespaces::Descendants).to receive(:expire_for).with([project.namespace.id])
+
+      project.update!(archived: true)
+    end
+  end
+
   describe 'inside_path' do
     let!(:project1) { create(:project, namespace: create(:namespace, path: 'name_pace')) }
     let!(:project2) { create(:project) }

@@ -11,7 +11,7 @@
           = wiki_sort_controls(@wiki, params[:direction])
 
       - if can?(current_user, :create_wiki, @project)
-        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, SecureRandom.uuid, random_title: true), variant: :confirm) do
+        = render Pajamas::ButtonComponent.new(href: wiki_page_path(@wiki, SecureRandom.uuid, random_title: true, view: 'create'), variant: :confirm) do
           = s_("Wiki|New page")
 
       #js-vue-wiki-more-actions{ data: {

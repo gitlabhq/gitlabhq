@@ -8,7 +8,7 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
   let_it_be(:subsub_group) { create(:group, parent: subgroup) }
 
   let_it_be(:project1) { create(:project, group: subgroup) }
-  let_it_be(:project2) { create(:project, group: subsub_group) }
+  let_it_be(:project2) { create(:project, group: subsub_group, archived: true) }
 
   let_it_be_with_reload(:cache) do
     create(:namespace_descendants,
@@ -18,7 +18,8 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
       # outdated values:
       traversal_ids: [group.id + 100, subgroup.id],
       self_and_descendant_group_ids: [],
-      all_project_ids: [project1.id]
+      all_project_ids: [project1.id],
+      all_unarchived_project_ids: [project1.id]
     )
   end
 
@@ -35,6 +36,7 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
       traversal_ids: [group.id, subgroup.id],
       self_and_descendant_group_ids: [subgroup.id, subsub_group.id],
       all_project_ids: [project1.id, project2.id],
+      all_unarchived_project_ids: [project1.id],
       outdated_at: nil
     )
 
@@ -109,6 +111,7 @@ RSpec.describe Namespaces::UpdateDenormalizedDescendantsService, feature_categor
         traversal_ids: [group.id, subgroup.id],
         self_and_descendant_group_ids: [subgroup.id, subsub_group.id],
         all_project_ids: [project1.id, project2.id],
+        all_unarchived_project_ids: [project1.id],
         outdated_at: nil
       )
     end

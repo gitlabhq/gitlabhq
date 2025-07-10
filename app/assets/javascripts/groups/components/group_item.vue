@@ -6,6 +6,7 @@ import {
   GlPopover,
   GlLink,
   GlTooltipDirective,
+  GlAnimatedChevronRightDownIcon,
 } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -34,6 +35,7 @@ export default {
     GlLoadingIcon,
     GlPopover,
     GlLink,
+    GlAnimatedChevronRightDownIcon,
     UserAccessRoleBadge,
     ItemTypeIcon,
     ItemActions,
@@ -108,9 +110,6 @@ export default {
     toggleAriaLabel() {
       return this.group.isOpen ? this.$options.i18n.collapse : this.$options.i18n.expand;
     },
-    toggleIconName() {
-      return this.group.isOpen ? 'chevron-down' : 'chevron-right';
-    },
   },
   methods: {
     onClickRowGroup(e) {
@@ -161,9 +160,11 @@ export default {
           :aria-expanded="String(group.isOpen)"
           category="tertiary"
           data-testid="nested-groups-project-list-item-toggle-button"
-          :icon="toggleIconName"
+          class="btn-icon"
           @click.stop="onClickRowGroup"
-        />
+        >
+          <gl-animated-chevron-right-down-icon :is-on="group.isOpen" />
+        </gl-button>
         <div v-else class="gl-h-7 gl-w-7"></div>
         <item-type-icon :item-type="group.type" />
       </div>
