@@ -25,7 +25,7 @@ describe('Value stream analytics utils', () => {
     describe('transforms the data as expected', () => {
       it('returns an array of stages', () => {
         expect(Array.isArray(response)).toBe(true);
-        expect(response.length).toBe(stages.length);
+        expect(response).toHaveLength(stages.length);
       });
 
       it('selects the correct stage', () => {

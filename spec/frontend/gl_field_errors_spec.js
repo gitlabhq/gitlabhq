@@ -24,24 +24,24 @@ describe('GL Style Field Errors', () => {
 
   it('should select the correct input elements', () => {
     expect(testContext.$form).toBeDefined();
-    expect(testContext.$form.length).toBe(1);
+    expect(testContext.$form).toHaveLength(1);
     expect(testContext.fieldErrors).toBeDefined();
     const { inputs } = testContext.fieldErrors.state;
 
-    expect(inputs.length).toBe(7);
+    expect(inputs).toHaveLength(7);
   });
 
   it('should ignore elements with custom error handling', () => {
     const customErrorFlag = 'gl-field-error-ignore';
     const customErrorElem = $(`.${customErrorFlag}`);
 
-    expect(customErrorElem.length).toBe(1);
+    expect(customErrorElem).toHaveLength(1);
 
     const customErrors = testContext.fieldErrors.state.inputs.filter((input) => {
       return input.inputElement.hasClass(customErrorFlag);
     });
 
-    expect(customErrors.length).toBe(0);
+    expect(customErrors).toHaveLength(0);
   });
 
   it('should not show any errors before submit attempt', () => {
@@ -51,7 +51,7 @@ describe('GL Style Field Errors', () => {
 
     const errorsShown = testContext.$form.find('.gl-field-error-outline');
 
-    expect(errorsShown.length).toBe(0);
+    expect(errorsShown).toHaveLength(0);
   });
 
   it('should show errors when input valid is submitted', () => {
@@ -63,7 +63,7 @@ describe('GL Style Field Errors', () => {
 
     const errorsShown = testContext.$form.find('.gl-field-error-outline');
 
-    expect(errorsShown.length).toBe(5);
+    expect(errorsShown).toHaveLength(5);
   });
 
   it('should properly track validity state on input after invalid submission attempt', () => {

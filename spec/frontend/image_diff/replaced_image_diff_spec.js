@@ -287,7 +287,7 @@ describe('ReplacedImageDiff', () => {
       });
 
       it('should clear imageBadges', () => {
-        expect(replacedImageDiff.imageBadges.length).toEqual(0);
+        expect(replacedImageDiff.imageBadges).toHaveLength(0);
       });
 
       it('should call renderNewView', () => {

@@ -43,7 +43,7 @@ describe('CandidatesTable', () => {
   });
 
   it('renders the correct number of rows', () => {
-    expect(findTableRows().length).toBe(2);
+    expect(findTableRows()).toHaveLength(2);
   });
 
   it('renders the correct information in the id column', () => {

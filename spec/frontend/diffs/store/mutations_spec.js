@@ -58,7 +58,7 @@ describe('DiffsStoreMutations', () => {
 
       mutations[types.SET_DIFF_FILES](state, ['file', 'another file']);
 
-      expect(state.diffFiles.length).toEqual(2);
+      expect(state.diffFiles).toHaveLength(2);
     });
 
     it('should not set anything except diffFiles in state', () => {
@@ -309,7 +309,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
@@ -356,7 +356,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].discussions).toHaveLength(1);
       expect(state.diffFiles[0].discussions[0].id).toEqual(1);
     });
 
@@ -406,7 +406,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
 
       mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
@@ -414,7 +414,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
@@ -464,7 +464,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
 
       mutations[types.SET_LINE_DISCUSSIONS_FOR_FILE](state, {
@@ -476,7 +476,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].notes.length).toBe(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].notes).toHaveLength(1);
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].resolved).toBe(true);
     });
 
@@ -542,7 +542,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toBe(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
     });
 
     it('should add legacy discussions to the given line', () => {
@@ -590,7 +590,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode,
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(1);
       expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions[0].id).toEqual(1);
     });
 
@@ -672,7 +672,7 @@ describe('DiffsStoreMutations', () => {
         diffPositionByLineCode: null,
       });
 
-      expect(state.diffFiles[0].discussions.length).toEqual(1);
+      expect(state.diffFiles[0].discussions).toHaveLength(1);
     });
 
     describe('expanded state', () => {
@@ -928,7 +928,7 @@ describe('DiffsStoreMutations', () => {
         lineCode: 'ABC_1',
       });
 
-      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions.length).toEqual(0);
+      expect(state.diffFiles[0][INLINE_DIFF_LINES_KEY][0].discussions).toHaveLength(0);
     });
   });
 
@@ -1332,7 +1332,7 @@ describe('DiffsStoreMutations', () => {
 
       mutations[types.ADD_DRAFT_TO_FILE](state, { filePath: 'path', draft: 'test' });
 
-      expect(state.diffFiles[0].drafts.length).toEqual(1);
+      expect(state.diffFiles[0].drafts).toHaveLength(1);
       expect(state.diffFiles[0].drafts[0]).toEqual('test');
     });
   });

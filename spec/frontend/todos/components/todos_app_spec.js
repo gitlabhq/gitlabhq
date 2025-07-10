@@ -60,13 +60,13 @@ describe('TodosApp', () => {
   ignoreConsoleMessages([/\[Vue warn\]: \(deprecation TRANSITION_GROUP_ROOT\)/]);
 
   it('should have a tracking event for each tab', () => {
-    expect(STATUS_BY_TAB.length).toBe(INSTRUMENT_TAB_LABELS.length);
+    expect(STATUS_BY_TAB).toHaveLength(INSTRUMENT_TAB_LABELS.length);
   });
 
   it('shows a loading state while fetching todos', () => {
     createComponent();
 
-    expect(findTodoItems().length).toBe(0);
+    expect(findTodoItems()).toHaveLength(0);
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(true);
   });
 
@@ -74,7 +74,7 @@ describe('TodosApp', () => {
     createComponent();
     await waitForPromises();
 
-    expect(findTodoItems().length).toBe(todosResponse.data.currentUser.todos.nodes.length);
+    expect(findTodoItems()).toHaveLength(todosResponse.data.currentUser.todos.nodes.length);
     expect(wrapper.findComponent(GlLoadingIcon).exists()).toBe(false);
   });
 

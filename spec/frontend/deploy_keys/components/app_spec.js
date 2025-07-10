@@ -102,7 +102,7 @@ describe('Deploy keys app component', () => {
       },
     });
     await mountComponent();
-    expect(findKeyPanels().length).toBe(3);
+    expect(findKeyPanels()).toHaveLength(3);
   });
 
   describe.each`

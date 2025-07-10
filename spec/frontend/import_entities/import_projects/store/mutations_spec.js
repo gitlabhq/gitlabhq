@@ -38,7 +38,7 @@ describe('import_projects store mutations', () => {
     });
 
     it('removes current repositories list', () => {
-      expect(state.repositories.length).toBe(0);
+      expect(state.repositories).toHaveLength(0);
     });
 
     it('resets pagintation', () => {

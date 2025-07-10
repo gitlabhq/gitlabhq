@@ -120,10 +120,10 @@ describe('AwardsHandler', () => {
 
       const $emojiMenu = $('.emoji-menu');
 
-      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu).toHaveLength(1);
       expect($emojiMenu.hasClass('is-visible')).toBe(true);
-      expect($emojiMenu.find('.js-emoji-menu-search').length).toBe(1);
-      expect($('.js-awards-block.current').length).toBe(1);
+      expect($emojiMenu.find('.js-emoji-menu-search')).toHaveLength(1);
+      expect($('.js-awards-block.current')).toHaveLength(1);
     });
 
     it('should also show emoji menu for the smiley icon in notes', async () => {
@@ -131,7 +131,7 @@ describe('AwardsHandler', () => {
 
       const $emojiMenu = $('.emoji-menu');
 
-      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu).toHaveLength(1);
     });
 
     it('should remove emoji menu when body is clicked', async () => {
@@ -140,9 +140,9 @@ describe('AwardsHandler', () => {
       const $emojiMenu = $('.emoji-menu');
       $('body').click();
 
-      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu).toHaveLength(1);
       expect($emojiMenu.hasClass('is-visible')).toBe(false);
-      expect($('.js-awards-block.current').length).toBe(0);
+      expect($('.js-awards-block.current')).toHaveLength(0);
     });
 
     it('should not remove emoji menu when search is clicked', async () => {
@@ -151,9 +151,9 @@ describe('AwardsHandler', () => {
       const $emojiMenu = $('.emoji-menu');
       $('.emoji-search').click();
 
-      expect($emojiMenu.length).toBe(1);
+      expect($emojiMenu).toHaveLength(1);
       expect($emojiMenu.hasClass('is-visible')).toBe(true);
-      expect($('.js-awards-block.current').length).toBe(1);
+      expect($('.js-awards-block.current')).toHaveLength(1);
     });
   });
 
@@ -163,7 +163,7 @@ describe('AwardsHandler', () => {
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart');
       const $emojiButton = $votesBlock.find('[data-name=heart]');
 
-      expect($emojiButton.length).toBe(1);
+      expect($emojiButton).toHaveLength(1);
       expect($emojiButton.next('.js-counter').text()).toBe('1');
       expect($votesBlock.hasClass('hidden')).toBe(false);
     });
@@ -174,7 +174,7 @@ describe('AwardsHandler', () => {
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart');
       const $emojiButton = $votesBlock.find('[data-name=heart]');
 
-      expect($emojiButton.length).toBe(0);
+      expect($emojiButton).toHaveLength(0);
     });
 
     it('should decrement the emoji counter', () => {
@@ -184,7 +184,7 @@ describe('AwardsHandler', () => {
       $emojiButton.next('.js-counter').text(5);
       awardsHandler.addAwardToEmojiBar($votesBlock, 'heart');
 
-      expect($emojiButton.length).toBe(1);
+      expect($emojiButton).toHaveLength(1);
       expect($emojiButton.next('.js-counter').text()).toBe('4');
     });
   });
@@ -222,10 +222,10 @@ describe('AwardsHandler', () => {
       const $votesBlock = $('.js-awards-block').eq(0);
       awardsHandler.addAward($votesBlock, awardUrl, 'fire');
 
-      expect($votesBlock.find('[data-name=fire]').length).toBe(1);
+      expect($votesBlock.find('[data-name=fire]')).toHaveLength(1);
       awardsHandler.removeEmoji($votesBlock.find('[data-name=fire]').closest('button'));
 
-      expect($votesBlock.find('[data-name=fire]').length).toBe(0);
+      expect($votesBlock.find('[data-name=fire]')).toHaveLength(0);
     });
   });
 
@@ -346,12 +346,12 @@ describe('AwardsHandler', () => {
         const $block = $('.js-awards-block');
         const $emoji = $menu.find(`.emoji-menu-list:not(.frequent-emojis) ${emojiSelector}`);
 
-        expect($emoji.length).toBe(1);
-        expect($block.find(emojiSelector).length).toBe(0);
+        expect($emoji).toHaveLength(1);
+        expect($block.find(emojiSelector)).toHaveLength(0);
         $emoji.click();
 
         expect($menu.hasClass('.is-visible')).toBe(false);
-        expect($block.find(emojiSelector).length).toBe(1);
+        expect($block.find(emojiSelector)).toHaveLength(1);
       });
     };
 
@@ -369,7 +369,7 @@ describe('AwardsHandler', () => {
       );
       $emoji.click();
 
-      expect($block.find(emojiSelector).length).toBe(0);
+      expect($block.find(emojiSelector)).toHaveLength(0);
     });
   });
 

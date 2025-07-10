@@ -44,7 +44,7 @@ describe('Vue translate filter', () => {
     const { wrappers } = wrapper.findAll('span');
 
     // Just to ensure that the rendering actually worked;
-    expect(wrappers.length).toBe(10);
+    expect(wrappers).toHaveLength(10);
 
     for (const span of wrappers) {
       expect(span.text().trim()).toBe(span.attributes()['data-expected']);

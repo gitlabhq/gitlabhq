@@ -35,7 +35,7 @@ describe('CI Templates', () => {
     });
 
     it('renders all suggested templates', () => {
-      expect(findTemplateNames().length).toBe(3);
+      expect(findTemplateNames()).toHaveLength(3);
       expect(wrapper.text()).toContain('Android', 'Bash', 'C++');
     });
 

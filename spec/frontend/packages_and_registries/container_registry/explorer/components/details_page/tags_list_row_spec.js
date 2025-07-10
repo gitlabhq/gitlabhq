@@ -401,14 +401,14 @@ describe('tags list row', () => {
         mountComponent();
         await nextTick();
 
-        expect(findDetailsRows().length).toBe(3);
+        expect(findDetailsRows()).toHaveLength(3);
       });
 
       it('has 2 details rows when revision is empty', async () => {
         mountComponent({ tag: { ...tag, revision: '' } });
         await nextTick();
 
-        expect(findDetailsRows().length).toBe(2);
+        expect(findDetailsRows()).toHaveLength(2);
       });
 
       describe.each`
@@ -470,7 +470,7 @@ describe('tags list row', () => {
         mountComponent({ tag: { ...tag, digest: null } });
 
         await nextTick();
-        expect(findDetailsRows().length).toBe(0);
+        expect(findDetailsRows()).toHaveLength(0);
       });
     });
   });

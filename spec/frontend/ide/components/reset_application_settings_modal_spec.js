@@ -68,7 +68,7 @@ describe('ResetApplicationSettingsModal', () => {
       await waitForPromises();
       await nextTick();
 
-      expect(mockAxios.history.post.length).toBe(1);
+      expect(mockAxios.history.post).toHaveLength(1);
       expect(mockAxios.history.post[0].url).toBe(MOCK_RESET_APPLICATION_SETTINGS_PATH);
     });
 

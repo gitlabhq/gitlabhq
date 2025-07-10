@@ -46,7 +46,7 @@ describe('EnvironmentActions Component', () => {
 
   it('should render a dropdown button with 2 icons', () => {
     createComponent();
-    expect(wrapper.findComponent(GlDisclosureDropdown).findAllComponents(GlIcon).length).toBe(2);
+    expect(wrapper.findComponent(GlDisclosureDropdown).findAllComponents(GlIcon)).toHaveLength(2);
   });
 
   it('should render a dropdown button with aria-label description', () => {

@@ -79,7 +79,7 @@ describe('TaskList', () => {
     it('should call taskList method with disable param', () => {
       taskList.disableTaskListItems();
 
-      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(2);
+      expect(document.querySelectorAll('.task-list-item input:disabled')).toHaveLength(2);
     });
   });
 
@@ -88,8 +88,8 @@ describe('TaskList', () => {
       taskList.disableTaskListItems();
       taskList.enableTaskListItems();
 
-      expect(document.querySelectorAll('.task-list-item input:enabled').length).toEqual(1);
-      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(1);
+      expect(document.querySelectorAll('.task-list-item input:enabled')).toHaveLength(1);
+      expect(document.querySelectorAll('.task-list-item input:disabled')).toHaveLength(1);
     });
   });
 
@@ -99,8 +99,8 @@ describe('TaskList', () => {
 
       taskList.enable();
 
-      expect(document.querySelectorAll('.task-list-item input:enabled').length).toEqual(1);
-      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(1);
+      expect(document.querySelectorAll('.task-list-item input:enabled')).toHaveLength(1);
+      expect(document.querySelectorAll('.task-list-item input:disabled')).toHaveLength(1);
 
       expect($(document).on).toHaveBeenCalledWith(
         'tasklist:changed',
@@ -116,7 +116,7 @@ describe('TaskList', () => {
 
       taskList.disable();
 
-      expect(document.querySelectorAll('.task-list-item input:disabled').length).toEqual(2);
+      expect(document.querySelectorAll('.task-list-item input:disabled')).toHaveLength(2);
 
       expect($(document).off).toHaveBeenCalledWith(
         'tasklist:changed',

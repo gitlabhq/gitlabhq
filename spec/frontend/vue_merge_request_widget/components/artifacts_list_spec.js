@@ -23,7 +23,7 @@ describe('Artifacts List', () => {
   });
 
   it('renders list of artifacts', () => {
-    expect(wrapper.findAll('tbody tr').length).toEqual(data.artifacts.length);
+    expect(wrapper.findAll('tbody tr')).toHaveLength(data.artifacts.length);
   });
 
   it('renders link for the artifact', () => {

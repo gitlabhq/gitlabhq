@@ -33,13 +33,13 @@ describe('PerformanceGraph', () => {
     it('renders the correct data', () => {
       createWrapper();
 
-      expect(findLineChart().props('data').length).toBe(MOCK_METRICS.length);
+      expect(findLineChart().props('data')).toHaveLength(MOCK_METRICS.length);
       expect(findLineChart().props('data')[0].name).toBe('auc');
       expect(findLineChart().props('data')[1].name).toBe('l1_ratio');
       expect(findLineChart().props('data')[2].name).toBe('rmse');
-      expect(findLineChart().props('data')[0].data.length).toBe(4);
-      expect(findLineChart().props('data')[1].data.length).toBe(5);
-      expect(findLineChart().props('data')[2].data.length).toBe(1);
+      expect(findLineChart().props('data')[0].data).toHaveLength(4);
+      expect(findLineChart().props('data')[1].data).toHaveLength(5);
+      expect(findLineChart().props('data')[2].data).toHaveLength(1);
     });
 
     it('sorts the data by created_at in ascending order', () => {

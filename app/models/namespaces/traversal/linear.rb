@@ -130,7 +130,7 @@ module Namespaces
       def descendants
         return super unless use_traversal_ids?
 
-        self_and_descendants.where.not(id: id)
+        self_and_descendants.id_not_in(id)
       end
 
       def self_and_hierarchy
@@ -253,12 +253,12 @@ module Namespaces
         ].compact
 
         roots = Gitlab::ObjectHierarchy
-          .new(Namespace.where(id: parent_ids))
+          .new(Namespace.id_in(parent_ids))
           .base_and_ancestors
           .reorder(nil)
           .top_level
 
-        Namespace.lock('FOR NO KEY UPDATE').select(:id).where(id: roots).order(id: :asc).load
+        Namespace.lock('FOR NO KEY UPDATE').select(:id).id_in(roots).order(id: :asc).load
       end
 
       # Search this namespace's lineage. Bound inclusively by top node.

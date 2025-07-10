@@ -832,7 +832,7 @@ describe('Ref selector component', () => {
       selectFirstBranch();
       await nextTick();
 
-      expect(findCountBadges().length).toBe(2);
+      expect(findCountBadges()).toHaveLength(2);
       expect(findCountBadges().at(0).text()).toBe('2');
       expect(findCountBadges().at(1).text()).toBe('3');
     });
@@ -902,7 +902,7 @@ describe('Ref selector component', () => {
         (item) => item.text().includes(defaultBranchName) && item.text().includes('default'),
       );
 
-      expect(defaultBranchItem.length).toBe(1);
+      expect(defaultBranchItem).toHaveLength(1);
     });
   });
 });

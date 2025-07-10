@@ -400,8 +400,8 @@ describe('Global Search Store Getters', () => {
     const expectUniqueAutocompleteResults = (result) => {
       expect(result).toStrictEqual(MOCK_GROUPED_AUTOCOMPLETE_OPTIONS);
 
-      expect(findGroupItems(result, 'Users').length).toBe(totalResults);
-      expect(findGroupItems(result, 'Projects').length).toBe(totalProjects);
+      expect(findGroupItems(result, 'Users')).toHaveLength(totalResults);
+      expect(findGroupItems(result, 'Projects')).toHaveLength(totalProjects);
     };
 
     describe('without duplicates', () => {

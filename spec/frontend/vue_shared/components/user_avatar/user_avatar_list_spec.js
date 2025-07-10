@@ -129,7 +129,7 @@ describe('UserAvatarList', () => {
 
       const links = wrapper.findAllComponents(UserAvatarLink);
 
-      expect(links.length).toEqual(props.items.length);
+      expect(links).toHaveLength(props.items.length);
     });
 
     it('does not show button', () => {
@@ -150,7 +150,7 @@ describe('UserAvatarList', () => {
 
       const links = wrapper.findAllComponents(UserAvatarLink);
 
-      expect(links.length).toEqual(TEST_BREAKPOINT);
+      expect(links).toHaveLength(TEST_BREAKPOINT);
     });
 
     it('does not emit any event on mount', async () => {
@@ -169,7 +169,7 @@ describe('UserAvatarList', () => {
       it('renders all avatars', () => {
         const links = wrapper.findAllComponents(UserAvatarLink);
 
-        expect(links.length).toEqual(props.items.length);
+        expect(links).toHaveLength(props.items.length);
       });
 
       it('emits the `expanded` event', () => {
@@ -185,7 +185,7 @@ describe('UserAvatarList', () => {
           await nextTick();
           const links = wrapper.findAllComponents(UserAvatarLink);
 
-          expect(links.length).toEqual(TEST_BREAKPOINT);
+          expect(links).toHaveLength(TEST_BREAKPOINT);
         });
 
         it('emits the `collapsed` event', () => {

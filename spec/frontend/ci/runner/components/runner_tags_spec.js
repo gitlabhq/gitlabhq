@@ -38,7 +38,7 @@ describe('RunnerTags', () => {
     it('Displays all tags', () => {
       expect(wrapper.text()).toMatchInterpolatedText('tag1 tag2 tag3');
 
-      expect(findTags().length).toBe(3);
+      expect(findTags()).toHaveLength(3);
 
       expect(findTagAt(0).props('tag')).toBe('tag1');
       expect(findTagAt(1).props('tag')).toBe('tag2');
@@ -56,7 +56,7 @@ describe('RunnerTags', () => {
     it('Displays limited tags', () => {
       expect(wrapper.text()).toMatchInterpolatedText('tag1 +2 more');
 
-      expect(findTags().length).toBe(1);
+      expect(findTags()).toHaveLength(1);
       expect(findTagAt(0).props('tag')).toBe('tag1');
 
       expect(findButton().text()).toBe('+2 more');
@@ -68,7 +68,7 @@ describe('RunnerTags', () => {
 
       expect(wrapper.text()).toMatchInterpolatedText('tag1 tag2 tag3');
 
-      expect(findTags().length).toBe(3);
+      expect(findTags()).toHaveLength(3);
       expect(findTagAt(0).props('tag')).toBe('tag1');
       expect(findTagAt(1).props('tag')).toBe('tag2');
       expect(findTagAt(2).props('tag')).toBe('tag3');

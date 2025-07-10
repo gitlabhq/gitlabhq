@@ -80,7 +80,7 @@ describe('EnvironmentsFolderAppComponent', () => {
 
   it('should show skeletons while loading', () => {
     createWrapper();
-    expect(findSkeletonLoaders().length).toBe(3);
+    expect(findSkeletonLoaders()).toHaveLength(3);
   });
 
   describe('when environments are loaded', () => {
@@ -91,12 +91,12 @@ describe('EnvironmentsFolderAppComponent', () => {
 
     it('should list environments in folder', () => {
       const items = findEnvironmentItems();
-      expect(items.length).toBe(resolvedFolder.environments.length);
+      expect(items).toHaveLength(resolvedFolder.environments.length);
     });
 
     it('should render active and stopped tabs', () => {
       const tabs = findTabs();
-      expect(tabs.length).toBe(2);
+      expect(tabs).toHaveLength(2);
     });
 
     [

@@ -22,7 +22,7 @@ describe('TagsLoader component', () => {
 
   it('produces the correct amount of loaders', () => {
     mountComponent();
-    expect(findGlSkeletonLoaders().length).toBe(1);
+    expect(findGlSkeletonLoaders()).toHaveLength(1);
   });
 
   it('has the correct props', () => {

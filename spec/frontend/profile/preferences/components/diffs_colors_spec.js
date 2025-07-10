@@ -78,7 +78,7 @@ describe('DiffsColors component', () => {
 
       const colorPickers = findColorPickers();
 
-      expect(colorPickers.length).toBe(2);
+      expect(colorPickers).toHaveLength(2);
       expect(colorPickers.at(0).props()).toMatchObject({
         label: 'Color for removed lines',
         value: '#ff0000',

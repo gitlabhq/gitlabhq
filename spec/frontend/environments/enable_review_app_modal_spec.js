@@ -33,7 +33,7 @@ describe('Enable Review Apps Modal', () => {
     });
 
     it('displays instructions', () => {
-      expect(findInstructions().length).toBe(7);
+      expect(findInstructions()).toHaveLength(7);
       expect(findInstructionAt(0).text()).toContain(i18n.instructions.step1);
     });
 

@@ -42,7 +42,7 @@ describe('highlightCurrentUser', () => {
     it('highlights current user', () => {
       highlightCurrentUser(elements);
 
-      expect(elements.length).toBe(2);
+      expect(elements).toHaveLength(2);
       expect(elements[0]).not.toHaveClass('current-user');
       expect(elements[1]).toHaveClass('current-user');
     });

@@ -208,7 +208,7 @@ describe('WorkItemChildrenWrapper', () => {
       expect(document.body.classList.contains('is-dragging')).toBe(true);
 
       wrapper.findComponent(Draggable).vm.$emit('end', dragParams);
-      expect(wrapper.emitted('drop').length).toBe(1);
+      expect(wrapper.emitted('drop')).toHaveLength(1);
       await nextTick();
 
       expect(document.body.classList.contains('is-dragging')).toBe(false);

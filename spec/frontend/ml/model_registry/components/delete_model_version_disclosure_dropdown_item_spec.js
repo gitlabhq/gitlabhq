@@ -72,7 +72,7 @@ describe('DeleteModelVersionDisclosureDropdownItem', () => {
     it('emits delete-model-version event when primary action is clicked', () => {
       findModal().vm.$emit('primary');
 
-      expect(wrapper.emitted('delete-model-version').length).toEqual(1);
+      expect(wrapper.emitted('delete-model-version')).toHaveLength(1);
     });
   });
 });

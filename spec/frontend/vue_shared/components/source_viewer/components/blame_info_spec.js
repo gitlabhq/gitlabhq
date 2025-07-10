@@ -19,7 +19,7 @@ describe('BlameInfo component', () => {
   const findCommitInfoComponents = () => wrapper.findAllComponents(CommitInfo);
 
   it('renders a CommitInfo component for each blame entry', () => {
-    expect(findCommitInfoComponents().length).toBe(BLAME_DATA_MOCK.length);
+    expect(findCommitInfoComponents()).toHaveLength(BLAME_DATA_MOCK.length);
   });
 
   it.each(BLAME_DATA_MOCK)(

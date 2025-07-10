@@ -214,6 +214,6 @@ describe('StatesTable', () => {
       return createComponent();
     });
 
-    expect(findActions().length).toEqual(defaultProps.states.length);
+    expect(findActions()).toHaveLength(defaultProps.states.length);
   });
 });

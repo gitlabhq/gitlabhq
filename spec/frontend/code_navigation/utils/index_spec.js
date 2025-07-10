@@ -88,14 +88,14 @@ describe('addInteractionClass', () => {
     it('does not wrap text nodes by default', () => {
       addInteractionClass(params);
       const spans = findAllSpans();
-      expect(spans.length).toBe(0);
+      expect(spans).toHaveLength(0);
     });
 
     it('wraps text nodes if wrapTextNodes is true', () => {
       addInteractionClass({ ...params, wrapTextNodes: true });
       const spans = findAllSpans();
 
-      expect(spans.length).toBe(3);
+      expect(spans).toHaveLength(3);
       expect(spans[0].textContent).toBe(' ');
       expect(spans[1].textContent).toBe('Text');
       expect(spans[2].textContent).toBe(' ');

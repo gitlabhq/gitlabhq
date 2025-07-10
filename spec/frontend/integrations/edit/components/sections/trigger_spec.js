@@ -25,7 +25,7 @@ describe('IntegrationSectionTrigger', () => {
       createComponent();
 
       const fields = findAllTriggerFields();
-      expect(fields.length).toBe(mockIntegrationProps.triggerEvents.length);
+      expect(fields).toHaveLength(mockIntegrationProps.triggerEvents.length);
       fields.wrappers.forEach((field, index) => {
         expect(field.props('event')).toBe(mockIntegrationProps.triggerEvents[index]);
       });

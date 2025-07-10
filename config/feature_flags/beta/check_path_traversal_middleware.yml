@@ -1,8 +1,10 @@
 ---
 name: check_path_traversal_middleware
+description: Enable middleware that detects and blocks path traversal attempts in HTTP requests
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/13437
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123477
 rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415460
 milestone: '16.5'
-type: development
 group: group::package registry
-default_enabled: false
+type: beta
+default_enabled: true

@@ -110,11 +110,11 @@ describe('PagesDeployments', () => {
     });
 
     it('renders a list for all primary deployments', () => {
-      expect(findAllPrimaryDeployments().length).toBe(10);
+      expect(findAllPrimaryDeployments()).toHaveLength(10);
     });
 
     it('renders a list for all parallel deployments', () => {
-      expect(findAllParallelDeployments().length).toBe(10);
+      expect(findAllParallelDeployments()).toHaveLength(10);
     });
   });
 

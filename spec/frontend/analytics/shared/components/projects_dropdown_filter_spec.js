@@ -218,8 +218,8 @@ describe('ProjectsDropdownFilter component', () => {
     });
 
     it('hides the unhighlighted items that do not match the string', () => {
-      expect(wrapper.find(`[name="Selected"]`).findAllComponents(GlListboxItem).length).toBe(1);
-      expect(wrapper.find(`[name="Unselected"]`).findAllComponents(GlListboxItem).length).toBe(0);
+      expect(wrapper.find(`[name="Selected"]`).findAllComponents(GlListboxItem)).toHaveLength(1);
+      expect(wrapper.find(`[name="Unselected"]`).findAllComponents(GlListboxItem)).toHaveLength(0);
     });
   });
 

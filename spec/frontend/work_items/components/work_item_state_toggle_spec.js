@@ -265,7 +265,7 @@ describe('Work Item State toggle button component', () => {
       });
       await waitForPromises();
 
-      expect(findBlockedByModal().findAllComponents(GlLink).length).toEqual(
+      expect(findBlockedByModal().findAllComponents(GlLink)).toHaveLength(
         blockersWithClosed.length - 1,
       );
     });

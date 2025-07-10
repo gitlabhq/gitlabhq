@@ -128,7 +128,7 @@ describe('retrieval of emojis.json', () => {
   });
 
   const assertCorrectLocalStorage = () => {
-    expect(localStorage.length).toBe(1);
+    expect(localStorage).toHaveLength(1);
     expect(localStorage.getItem(CACHE_KEY)).toBe(
       JSON.stringify({ data: mockEmojiData, EMOJI_VERSION }),
     );
@@ -151,7 +151,7 @@ describe('retrieval of emojis.json', () => {
       await initEmojiMap();
 
       assertEmojiBeingLoadedCorrectly();
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       assertCorrectLocalStorage();
     });
   });
@@ -165,7 +165,7 @@ describe('retrieval of emojis.json', () => {
 
     it('should not call the API and not mutate the localStorage', () => {
       assertEmojiBeingLoadedCorrectly();
-      expect(mock.history.get.length).toBe(0);
+      expect(mock.history.get).toHaveLength(0);
       expect(localStorage.setItem).not.toHaveBeenCalled();
       assertCorrectLocalStorage();
     });
@@ -183,7 +183,7 @@ describe('retrieval of emojis.json', () => {
 
     it('should call the API and store results in localStorage', () => {
       assertEmojiBeingLoadedCorrectly();
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       assertCorrectLocalStorage();
     });
   });
@@ -197,7 +197,7 @@ describe('retrieval of emojis.json', () => {
 
     it('should call the API and store results in localStorage', () => {
       assertEmojiBeingLoadedCorrectly();
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       assertCorrectLocalStorage();
     });
   });
@@ -211,7 +211,7 @@ describe('retrieval of emojis.json', () => {
 
     it('should call the API and store results in localStorage', () => {
       assertEmojiBeingLoadedCorrectly();
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       assertCorrectLocalStorage();
     });
   });
@@ -230,8 +230,8 @@ describe('retrieval of emojis.json', () => {
 
     it('should call API but not store the results', () => {
       assertEmojiBeingLoadedCorrectly();
-      expect(mock.history.get.length).toBe(1);
-      expect(localStorage.length).toBe(0);
+      expect(mock.history.get).toHaveLength(1);
+      expect(localStorage).toHaveLength(0);
       expect(localStorage.setItem).toHaveBeenCalledTimes(1);
       expect(localStorage.setItem).toHaveBeenCalledWith(
         CACHE_KEY,
@@ -275,12 +275,12 @@ describe('retrieval of emojis.json', () => {
       // Load emoji the old way to pre-populate the cache
       let res = await prevImplementation();
       expect(res).toEqual(mockEmojiData);
-      expect(mock.history.get.length).toBe(1);
+      expect(mock.history.get).toHaveLength(1);
       localStorage.setItem.mockClear();
 
       // Load emoji the new way
       await initEmojiMap();
-      expect(mock.history.get.length).toBe(2);
+      expect(mock.history.get).toHaveLength(2);
       assertEmojiBeingLoadedCorrectly();
       assertCorrectLocalStorage();
       localStorage.setItem.mockClear();
@@ -288,7 +288,7 @@ describe('retrieval of emojis.json', () => {
       // Load emoji the old way to pre-populate the cache
       res = await prevImplementation();
       expect(res).toEqual(mockEmojiData);
-      expect(mock.history.get.length).toBe(3);
+      expect(mock.history.get).toHaveLength(3);
       expect(localStorage.setItem.mock.calls).toEqual([
         [CACHE_VERSION_KEY, EMOJI_VERSION],
         [CACHE_KEY, JSON.stringify(mockEmojiData)],
@@ -297,7 +297,7 @@ describe('retrieval of emojis.json', () => {
       // Load emoji the old way should work again (and be taken from the cache)
       res = await prevImplementation();
       expect(res).toEqual(mockEmojiData);
-      expect(mock.history.get.length).toBe(3);
+      expect(mock.history.get).toHaveLength(3);
     });
   });
 });

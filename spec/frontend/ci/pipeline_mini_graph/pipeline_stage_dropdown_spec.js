@@ -193,7 +193,7 @@ describe('PipelineStageDropdown', () => {
         const { name } = jobs.data.ciPipelineStage.jobs.nodes[5];
         wrapper.findComponent(GlSearchBoxByType).vm.$emit('input', name);
         await nextTick();
-        expect(findJobDropdownItems().length).toBe(1);
+        expect(findJobDropdownItems()).toHaveLength(1);
       });
     });
 

@@ -1340,20 +1340,40 @@ efficient:
 ```ruby
 class AddSecretToSomething < Gitlab::Database::Migration[2.1]
   def change
-    add_column :something, :secret, :jsonb
+    add_column :something, :secret, :jsonb, null: true
   end
 end
 ```
 
-When storing encrypted attributes in a JSONB column, it's good to add a length validation that
-[follows the Active Record Encryption recommendations](https://guides.rubyonrails.org/active_record_encryption.html#important-about-storage-and-column-size).
-For most encrypted attributes, a 510 max length should be enough.
+When storing encrypted attributes in a JSONB column, you need to:
+
+1. Add JSON schema validation
+1. Add length validation following [Active Record Encryption recommendations](https://guides.rubyonrails.org/active_record_encryption.html#important-about-storage-and-column-size)
+1. Allow `nil` values if the attribute is optional
+
+### Model Configuration
 
 ```ruby
 class Something < ApplicationRecord
   encrypts :secret
-  validates :secret, length: { maximum: 510 }
+  validates :secret,
+            json_schema: { filename: 'something_secret' },
+            allow_nil: true,
+            length: { maximum: 510 }
 end
+```
+
+### JSON Schema
+
+Create a JSON schema file at `config/json_schemas/something_secret.json`:
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Secret Configuration",
+  "type": "string",
+  "description": "Encrypted secret value"
+}
 ```
 
 ## Testing

@@ -47,43 +47,43 @@ describe('ImportHistoryTableRowStats component', () => {
       createComponent();
     });
     it('renders a row for each item and each nested item', () => {
-      expect(findAllTableRows().length).toBe(totalDataRows);
+      expect(findAllTableRows()).toHaveLength(totalDataRows);
 
-      expect(findAllTopLevelRows().length).toBe(apiItems.length);
+      expect(findAllTopLevelRows()).toHaveLength(apiItems.length);
 
       const itemsWithNestedRows = countItemsAndNested(apiItems, (i) => i.nestedRow);
-      expect(findAllNestedRows().length).toBe(itemsWithNestedRows);
+      expect(findAllNestedRows()).toHaveLength(itemsWithNestedRows);
     });
     it('renders correct number of sources', () => {
-      expect(findAllSources().length).toBe(totalDataRows);
+      expect(findAllSources()).toHaveLength(totalDataRows);
     });
     it('renders correct number of destinations', () => {
-      expect(findAllDestinations().length).toBe(totalDataRows);
+      expect(findAllDestinations()).toHaveLength(totalDataRows);
     });
     it('renders a GlAvatarLabeled for each item where userAvatarProps is defined', () => {
       const itemsWithAvatarProps = countItemsAndNested(apiItems, (i) => i.userAvatarProps);
-      expect(findAllGlAvatarLabeled().length).toBe(itemsWithAvatarProps);
+      expect(findAllGlAvatarLabeled()).toHaveLength(itemsWithAvatarProps);
     });
     it('renders a TimeAgoTooltip for each row', () => {
-      expect(findAllTimeago().length).toBe(totalDataRows);
+      expect(findAllTimeago()).toHaveLength(totalDataRows);
     });
     it('renders status icon for each row that has status_name defined', () => {
       const itemsWithStatus = countItemsAndNested(apiItems, (i) => i.status_name);
-      expect(findallStatusBadges().length).toBe(itemsWithStatus);
+      expect(findallStatusBadges()).toHaveLength(itemsWithStatus);
     });
     it('renders stats for all items that have at least 1 stat', () => {
       const itemsWithStats = countItemsAndNested(
         apiItems,
         (i) => i.stats && Object.keys(i.stats).length,
       );
-      expect(findAllStats().length).toBe(itemsWithStats);
+      expect(findAllStats()).toHaveLength(itemsWithStats);
     });
     it('renders errors for all items that have at least 1 error but no stats', () => {
       const itemsWithErrors = countItemsAndNested(
         apiItems,
         (i) => i.has_failures && !(i.stats && Object.keys(i.stats).length),
       );
-      expect(findAllErrors().length).toBe(itemsWithErrors);
+      expect(findAllErrors()).toHaveLength(itemsWithErrors);
     });
   });
 });

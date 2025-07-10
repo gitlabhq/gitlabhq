@@ -36,8 +36,8 @@ describe('Commit form modal getters', () => {
       ];
       const state = { projects };
 
-      expect(state.projects.length).toBe(3);
-      expect(getters.sortedProjects(state).length).toBe(2);
+      expect(state.projects).toHaveLength(3);
+      expect(getters.sortedProjects(state)).toHaveLength(2);
       expect(getters.sortedProjects(state)).toEqual(projects.slice(1));
     });
   });

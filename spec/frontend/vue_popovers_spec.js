@@ -43,8 +43,8 @@ describe('VuePopovers', () => {
   });
 
   it('starts with only JsHooks', () => {
-    expect(findJsHooks().length).toBe(popovers.length);
-    expect(findPopovers().length).toBe(0);
+    expect(findJsHooks()).toHaveLength(popovers.length);
+    expect(findPopovers()).toHaveLength(0);
   });
 
   describe('when mounted', () => {
@@ -53,8 +53,8 @@ describe('VuePopovers', () => {
     });
 
     it('replaces JsHook with Popovers and triggers', () => {
-      expect(findJsHooks().length).toBe(0);
-      expect(findPopovers().length).toBe(popovers.length);
+      expect(findJsHooks()).toHaveLength(0);
+      expect(findPopovers()).toHaveLength(popovers.length);
     });
 
     it('passes along props to gl-popover', () => {

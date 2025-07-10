@@ -70,7 +70,7 @@ describe('Commits List', () => {
 
       // The last commit header should be removed
       // since the previous one has the same data-day value.
-      expect(commitsList.processCommits(data).find('li.commit-header').length).toBe(0);
+      expect(commitsList.processCommits(data).find('li.commit-header')).toHaveLength(0);
     });
   });
 

@@ -123,7 +123,9 @@ describe('UserProfileSnippetsTab', () => {
 
     it('renders a snippet row for each snippet', () => {
       expect(findSnippetRows().exists()).toBe(true);
-      expect(findSnippetRows().length).toBe(MOCK_USER_SNIPPETS_RES.data.user.snippets.nodes.length);
+      expect(findSnippetRows()).toHaveLength(
+        MOCK_USER_SNIPPETS_RES.data.user.snippets.nodes.length,
+      );
     });
 
     it('does not render empty state', () => {

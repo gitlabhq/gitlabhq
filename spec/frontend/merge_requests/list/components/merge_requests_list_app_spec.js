@@ -270,19 +270,20 @@ describe('Merge requests list app', () => {
       it('only requests fresh data if the cache has become stale', async () => {
         // Prime the target cache
         await wrapper.vm.fetchBranches('target');
-        expect(axiosMock.history.get.length).toBe(1);
+
+        expect(axiosMock.history.get).toHaveLength(1);
 
         jest.advanceTimersByTime(1000);
 
         // Only load from the cache since it has not expired yet
         await wrapper.vm.fetchBranches('target');
-        expect(axiosMock.history.get.length).toBe(1);
+        expect(axiosMock.history.get).toHaveLength(1);
 
         jest.advanceTimersByTime(BRANCH_LIST_REFRESH_INTERVAL);
 
         // Refresh the cache since the expiration date has passed
         await wrapper.vm.fetchBranches('target');
-        expect(axiosMock.history.get.length).toBe(2);
+        expect(axiosMock.history.get).toHaveLength(2);
       });
     });
 

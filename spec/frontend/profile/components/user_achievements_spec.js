@@ -44,7 +44,7 @@ describe('UserAchievements', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAllByTestId('user-achievement').length).toBe(0);
+    expect(wrapper.findAllByTestId('user-achievement')).toHaveLength(0);
   });
 
   it('renders no achievements when none are present', async () => {
@@ -54,7 +54,7 @@ describe('UserAchievements', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAllByTestId('user-achievement').length).toBe(0);
+    expect(wrapper.findAllByTestId('user-achievement')).toHaveLength(0);
   });
 
   it('renders count for achievements awarded more than once', async () => {
@@ -117,6 +117,6 @@ describe('UserAchievements', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAllByTestId('achievement-description').length).toBe(0);
+    expect(wrapper.findAllByTestId('achievement-description')).toHaveLength(0);
   });
 });

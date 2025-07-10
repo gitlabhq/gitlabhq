@@ -226,7 +226,7 @@ describe('DropLab DropDown', () => {
       it('does not select element', () => {
         DropDown.prototype.clickEvent.call(testContext.dropdown, testContext.event);
 
-        expect(testContext.ignoredButton.closest.mock.calls.length).toBe(1);
+        expect(testContext.ignoredButton.closest.mock.calls).toHaveLength(1);
         expect(testContext.ignoredButton.closest).toHaveBeenCalledWith('.droplab-item-ignore');
         expect(testContext.dropdown.addSelectedClass).not.toHaveBeenCalled();
       });
@@ -427,7 +427,7 @@ describe('DropLab DropDown', () => {
     });
 
     it('should call .renderChildren for each data item', () => {
-      expect(testContext.dropdown.renderChildren.mock.calls.length).toBe(testContext.data.length);
+      expect(testContext.dropdown.renderChildren.mock.calls).toHaveLength(testContext.data.length);
     });
 
     it('sets the renderableList .innerHTML', () => {

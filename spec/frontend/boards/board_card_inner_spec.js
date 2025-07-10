@@ -349,7 +349,7 @@ describe('Board card component', () => {
     });
 
     it('renders all three assignees', () => {
-      expect(wrapper.findAll('.board-card-assignee .gl-avatar').length).toEqual(3);
+      expect(wrapper.findAll('.board-card-assignee .gl-avatar')).toHaveLength(3);
     });
 
     describe('more than three assignees', () => {
@@ -377,7 +377,7 @@ describe('Board card component', () => {
       });
 
       it('renders two assignees', () => {
-        expect(wrapper.findAll('.board-card-assignee .gl-avatar').length).toEqual(2);
+        expect(wrapper.findAll('.board-card-assignee .gl-avatar')).toHaveLength(2);
       });
 
       it('renders 99+ avatar counter', async () => {
@@ -412,7 +412,7 @@ describe('Board card component', () => {
     });
 
     it('does not render list label but renders all other labels', () => {
-      expect(wrapper.findAllComponents(GlLabel).length).toBe(1);
+      expect(wrapper.findAllComponents(GlLabel)).toHaveLength(1);
       const label = wrapper.findComponent(GlLabel);
       expect(label.props('title')).toEqual(label1.title);
       expect(label.props('description')).toEqual(label1.description);
@@ -424,7 +424,7 @@ describe('Board card component', () => {
 
       await nextTick();
 
-      expect(wrapper.findAllComponents(GlLabel).length).toBe(1);
+      expect(wrapper.findAllComponents(GlLabel)).toHaveLength(1);
       expect(wrapper.text()).not.toContain('closed');
     });
   });
@@ -453,7 +453,7 @@ describe('Board card component', () => {
       });
 
       it('emits setFilters event', () => {
-        expect(wrapper.emitted('setFilters').length).toBe(1);
+        expect(wrapper.emitted('setFilters')).toHaveLength(1);
       });
     });
 

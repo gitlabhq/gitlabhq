@@ -36,7 +36,7 @@ describe('AbuseReportsApp', () => {
     createComponent();
 
     expect(findEmptyState().exists()).toBe(false);
-    expect(findAbuseReportRows().length).toBe(mockAbuseReports.length);
+    expect(findAbuseReportRows()).toHaveLength(mockAbuseReports.length);
   });
 
   it('renders empty state when there are no reports', () => {

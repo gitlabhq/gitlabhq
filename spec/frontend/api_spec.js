@@ -315,7 +315,7 @@ describe('Api', () => {
 
       return new Promise((resolve) => {
         Api.groups(query, options, (response) => {
-          expect(response.length).toBe(1);
+          expect(response).toHaveLength(1);
           expect(response[0].name).toBe('test');
           resolve();
         });
@@ -336,7 +336,7 @@ describe('Api', () => {
       ]);
 
       return Api.groupLabels(expectedGroup, options).then((res) => {
-        expect(res.length).toBe(1);
+        expect(res).toHaveLength(1);
         expect(res[0].name).toBe('Foo Label');
       });
     });
@@ -354,7 +354,7 @@ describe('Api', () => {
 
       return new Promise((resolve) => {
         Api.namespaces(query, {}, (response) => {
-          expect(response.length).toBe(1);
+          expect(response).toHaveLength(1);
           expect(response[0].name).toBe('test');
           resolve();
         });
@@ -376,7 +376,7 @@ describe('Api', () => {
 
       return new Promise((resolve) => {
         Api.projects(query, options, (response) => {
-          expect(response.length).toBe(1);
+          expect(response).toHaveLength(1);
           expect(response[0].name).toBe('test');
           resolve();
         });
@@ -395,7 +395,7 @@ describe('Api', () => {
 
       return new Promise((resolve) => {
         Api.projects(query, options, (response) => {
-          expect(response.length).toBe(1);
+          expect(response).toHaveLength(1);
           expect(response[0].name).toBe('test');
           resolve();
         });
@@ -428,7 +428,7 @@ describe('Api', () => {
       ]);
 
       return Api.projectUsers('gitlab-org/gitlab-ce', query, options).then((response) => {
-        expect(response.length).toBe(1);
+        expect(response).toHaveLength(1);
         expect(response[0].name).toBe('test');
       });
     });
@@ -442,7 +442,7 @@ describe('Api', () => {
       const mockData = [{ source_branch: 'foo' }, { source_branch: 'bar' }];
       mock.onGet(expectedUrl).reply(HTTP_STATUS_OK, mockData);
       return Api.projectMergeRequests(projectPath).then(({ data }) => {
-        expect(data.length).toEqual(2);
+        expect(data).toHaveLength(2);
         expect(data[0].source_branch).toBe('foo');
         expect(data[1].source_branch).toBe('bar');
       });
@@ -456,7 +456,7 @@ describe('Api', () => {
       mock.onGet(expectedUrl, { params }).reply(HTTP_STATUS_OK, mockData);
 
       return Api.projectMergeRequests(projectPath, params).then(({ data }) => {
-        expect(data.length).toEqual(1);
+        expect(data).toHaveLength(1);
         expect(data[0].source_branch).toBe('bar');
       });
     });
@@ -504,7 +504,7 @@ describe('Api', () => {
       ]);
 
       return Api.projectMergeRequestVersions(projectPath, mergeRequestId).then(({ data }) => {
-        expect(data.length).toBe(1);
+        expect(data).toHaveLength(1);
         expect(data[0].id).toBe(123);
       });
     });
@@ -563,7 +563,7 @@ describe('Api', () => {
       ]);
 
       return Api.projectMilestones(projectId, options).then(({ data }) => {
-        expect(data.length).toBe(1);
+        expect(data).toHaveLength(1);
         expect(data[0].title).toBe('milestone1');
       });
     });
@@ -675,7 +675,7 @@ describe('Api', () => {
       ]);
 
       return Api.groupProjects(groupId, query, {}).then((response) => {
-        expect(response.data.length).toBe(1);
+        expect(response.data).toHaveLength(1);
         expect(response.data[0].name).toBe('test');
       });
     });
@@ -787,7 +787,7 @@ describe('Api', () => {
 
       return new Promise((resolve) => {
         Api.issueTemplates(namespace, project, templateType, (_, response) => {
-          expect(response.length).toBe(1);
+          expect(response).toHaveLength(1);
           const { key, name, content } = response[0];
           expect(key).toBe('Template1');
           expect(name).toBe('Template 1');
@@ -857,7 +857,7 @@ describe('Api', () => {
       ]);
 
       return Api.users(query, options).then(({ data }) => {
-        expect(data.length).toBe(1);
+        expect(data).toHaveLength(1);
         expect(data[0].name).toBe('test');
       });
     });
@@ -918,7 +918,7 @@ describe('Api', () => {
 
       return new Promise((resolve) => {
         Api.userProjects(userId, query, options, (response) => {
-          expect(response.length).toBe(1);
+          expect(response).toHaveLength(1);
           expect(response[0].name).toBe('test');
           resolve();
         });
@@ -938,7 +938,7 @@ describe('Api', () => {
       ]);
 
       return Api.commitPipelines(projectId, commitSha).then(({ data }) => {
-        expect(data.length).toBe(1);
+        expect(data).toHaveLength(1);
         expect(data[0].name).toBe('test');
       });
     });
@@ -1372,7 +1372,7 @@ describe('Api', () => {
       ]);
 
       return Api.tags(projectId, query, options).then(({ data }) => {
-        expect(data.length).toBe(1);
+        expect(data).toHaveLength(1);
         expect(data[0].name).toBe('test');
       });
     });

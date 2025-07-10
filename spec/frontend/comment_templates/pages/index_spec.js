@@ -39,7 +39,7 @@ describe('Comment templates index page component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAllComponents(ListItem).length).toBe(0);
+    expect(wrapper.findAllComponents(ListItem)).toHaveLength(0);
   });
 
   it('renders list of comment templates', async () => {
@@ -49,7 +49,7 @@ describe('Comment templates index page component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAllComponents(ListItem).length).toBe(2);
+    expect(wrapper.findAllComponents(ListItem)).toHaveLength(2);
     expect(wrapper.findAllComponents(ListItem).at(0).props('template')).toEqual(
       expect.objectContaining(savedReplies[0]),
     );

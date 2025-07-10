@@ -69,7 +69,7 @@ module Gitlab
             label_id = label_ids.first
 
             @updates[:remove_label_ids] =
-              quick_action_target.labels.on_project_boards(quick_action_target.project_id).where.not(id: label_id).pluck(:id) # rubocop: disable CodeReuse/ActiveRecord
+              quick_action_target.labels.on_project_boards(quick_action_target.project_id).id_not_in(label_id).pluck(:id) # rubocop: disable CodeReuse/ActiveRecord
             @updates[:add_label_ids] = [label_id]
 
             message = _("Moved issue to %{label} column in the board.") % { label: labels_to_reference(labels).first }

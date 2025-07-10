@@ -44,7 +44,7 @@ describe('Commits message dropdown component', () => {
   const findFirstDropdownElement = () => findDropdownElements().at(0);
 
   it('should have 3 elements in dropdown list', () => {
-    expect(findDropdownElements().length).toBe(3);
+    expect(findDropdownElements()).toHaveLength(3);
   });
 
   it('should have correct message for the first dropdown list element', () => {

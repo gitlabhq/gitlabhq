@@ -96,7 +96,7 @@ describe('fetchLogsTree', () => {
       fetchLogsTree(client, '', '0', resolver),
       fetchLogsTree(client, '', '0', resolver),
     ]).then(() => {
-      expect(axios.get.mock.calls.length).toEqual(1);
+      expect(axios.get.mock.calls).toHaveLength(1);
     }));
 
   it('calls axios for each path', () =>
@@ -104,7 +104,7 @@ describe('fetchLogsTree', () => {
       fetchLogsTree(client, '', '0', resolver),
       fetchLogsTree(client, '/test', '0', resolver),
     ]).then(() => {
-      expect(axios.get.mock.calls.length).toEqual(2);
+      expect(axios.get.mock.calls).toHaveLength(2);
     }));
 
   it('calls entry resolver', () =>

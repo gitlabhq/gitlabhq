@@ -61,7 +61,7 @@ describe('ModelsTable', () => {
   });
 
   it('renders the correct number of rows', () => {
-    expect(findTableRows().length).toBe(1);
+    expect(findTableRows()).toHaveLength(1);
   });
 
   it('renders the model name link correctly', () => {

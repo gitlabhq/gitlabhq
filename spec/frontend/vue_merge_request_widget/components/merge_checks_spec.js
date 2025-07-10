@@ -188,7 +188,7 @@ describe('Merge request merge checks component', () => {
 
     wrapper.vm.toggleCollapsed();
 
-    expect(wrapper.vm.sortedChecks.length).toBe(2);
+    expect(wrapper.vm.sortedChecks).toHaveLength(2);
     expect(wrapper.vm.sortedChecks[0].status).toBe('FAILED');
     expect(wrapper.vm.sortedChecks[1].status).toBe('SUCCESS');
   });
@@ -209,7 +209,7 @@ describe('Merge request merge checks component', () => {
 
     const mergeChecks = wrapper.findAllByTestId('merge-check');
 
-    expect(mergeChecks.length).toBe(1);
+    expect(mergeChecks).toHaveLength(1);
   });
 
   describe('expansion', () => {
@@ -228,23 +228,23 @@ describe('Merge request merge checks component', () => {
     });
 
     it('shows failed checks before user expands section', () => {
-      expect(findMergeChecks().length).toBe(1);
+      expect(findMergeChecks()).toHaveLength(1);
     });
 
     it('shows all checks when user expands section', async () => {
       await wrapper.findByTestId('widget-toggle').trigger('click');
 
-      expect(findMergeChecks().length).toBe(2);
+      expect(findMergeChecks()).toHaveLength(2);
     });
 
     it('shows failed checks when user collapses section', async () => {
       await wrapper.findByTestId('widget-toggle').trigger('click');
 
-      expect(findMergeChecks().length).toBe(2);
+      expect(findMergeChecks()).toHaveLength(2);
 
       await wrapper.findByTestId('widget-toggle').trigger('click');
 
-      expect(findMergeChecks().length).toBe(1);
+      expect(findMergeChecks()).toHaveLength(1);
     });
   });
 

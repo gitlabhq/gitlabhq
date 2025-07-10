@@ -274,7 +274,7 @@ describe('Vue test utils helpers', () => {
                 resultWrapper.options === wrapper.options,
             ),
           ).toBe(true);
-          expect(result.length).toBe(3);
+          expect(result).toHaveLength(3);
         });
       });
 
@@ -287,7 +287,7 @@ describe('Vue test utils helpers', () => {
           const result = wrapper[findMethod](text, options);
 
           expect(result).toBeInstanceOf(VTUWrapperArray);
-          expect(result.length).toBe(0);
+          expect(result).toHaveLength(0);
         });
       });
     });
@@ -311,7 +311,7 @@ describe('Vue test utils helpers', () => {
       it('mounts component and provides extended queries', () => {
         const wrapper = mountExtended(FakeComponent);
         expect(wrapper.text()).toBe('Foo Bar');
-        expect(wrapper.findAllByTestId('fake-id').length).toBe(2);
+        expect(wrapper.findAllByTestId('fake-id')).toHaveLength(2);
       });
     });
 
@@ -319,7 +319,7 @@ describe('Vue test utils helpers', () => {
       it('shallow mounts component and provides extended queries', () => {
         const wrapper = shallowMountExtended(FakeComponent);
         expect(wrapper.text()).toBe('Foo');
-        expect(wrapper.findAllByTestId('fake-id').length).toBe(1);
+        expect(wrapper.findAllByTestId('fake-id')).toHaveLength(1);
       });
     });
   });

@@ -31,6 +31,6 @@ describe('Sidebar reviewers inputs component', () => {
 
     factory();
 
-    expect(wrapper.findAll('input[type="hidden"]').length).toBe(2);
+    expect(wrapper.findAll('input[type="hidden"]')).toHaveLength(2);
   });
 });

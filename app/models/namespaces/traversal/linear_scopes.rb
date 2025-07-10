@@ -90,7 +90,7 @@ module Namespaces
 
           if upto
             upto_ancestor_ids = unscoped.where(id: upto).select(unnest_func(Arel.sql('traversal_ids')))
-            records = records.where.not(id: upto_ancestor_ids)
+            records = records.id_not_in(upto_ancestor_ids)
           end
 
           records

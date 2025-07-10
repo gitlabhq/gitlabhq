@@ -257,7 +257,7 @@ describe('BaseToken', () => {
         wrapper = createComponent({ props, mountFn: shallowMountExtended, stubs: {} });
 
         expect(findMockSuggestionList().exists()).toBe(true);
-        expect(getMockSuggestionListSuggestions().length).toEqual(maxSuggestions);
+        expect(getMockSuggestionListSuggestions()).toHaveLength(maxSuggestions);
       });
     });
 

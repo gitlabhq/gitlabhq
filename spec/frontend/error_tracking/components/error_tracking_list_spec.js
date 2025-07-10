@@ -142,7 +142,7 @@ describe('ErrorTrackingList', () => {
     });
 
     it('shows list of errors in a table', () => {
-      expect(findErrorListRows().length).toEqual(store.state.list.errors.length);
+      expect(findErrorListRows()).toHaveLength(store.state.list.errors.length);
     });
 
     it('shows user count', () => {
@@ -250,7 +250,7 @@ describe('ErrorTrackingList', () => {
 
     it('shows empty table', () => {
       expect(findLoadingIcon().exists()).toBe(false);
-      expect(findErrorListRows().length).toEqual(1);
+      expect(findErrorListRows()).toHaveLength(1);
       expect(findSortDropdown().exists()).toBe(true);
     });
 
@@ -273,7 +273,7 @@ describe('ErrorTrackingList', () => {
       expect(wrapper.findComponent(GlEmptyState).exists()).toBe(true);
       expect(findLoadingIcon().exists()).toBe(false);
       expect(findErrorListTable().exists()).toBe(false);
-      expect(dropdownsArray().length).toBe(0);
+      expect(dropdownsArray()).toHaveLength(0);
     });
   });
 
@@ -444,7 +444,7 @@ describe('ErrorTrackingList', () => {
 
       await nextTick();
       const dropdownItems = wrapper.findAll('[data-testid="recent-searches-dropdown"] li');
-      expect(dropdownItems.length).toBe(3);
+      expect(dropdownItems).toHaveLength(3);
       expect(dropdownItems.at(0).text()).toBe('great');
       expect(dropdownItems.at(1).text()).toBe('search');
     });

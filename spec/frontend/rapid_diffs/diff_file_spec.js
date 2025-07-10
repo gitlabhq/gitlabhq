@@ -171,7 +171,7 @@ describe('DiffFile Web Component', () => {
         <diff-file data-file-data="{}"><div></div></diff-file>
       `;
       const instances = DiffFile.getAll();
-      expect(instances.length).toBe(2);
+      expect(instances).toHaveLength(2);
       instances.forEach((instance) => expect(instance).toBeInstanceOf(DiffFile));
       // properly run destruction callbacks
       instances.forEach((instance) => instance.mount(app));

@@ -315,7 +315,7 @@ describe('Badges store actions', () => {
       badgeInForm.linkUrl = "https://example.com?param=<script>alert('XSS')</script>";
 
       await actions.renderBadge({ state, dispatch });
-      expect(axios.get.mock.calls.length).toBe(1);
+      expect(axios.get.mock.calls).toHaveLength(1);
       const url = axios.get.mock.calls[0][0];
 
       expect(url).toContain(

@@ -33,7 +33,7 @@ describe('initRecaptchaScript', () => {
 
     it('is memoized', () => {
       expect(initRecaptchaScript()).toBe(result);
-      expect(document.head.querySelectorAll('script').length).toBe(1);
+      expect(document.head.querySelectorAll('script')).toHaveLength(1);
     });
 
     describe('when onload is triggered', () => {

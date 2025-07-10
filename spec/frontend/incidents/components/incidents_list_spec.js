@@ -153,11 +153,11 @@ describe('Incidents List', () => {
     });
 
     it('renders rows based on provided data', () => {
-      expect(findTableRows().length).toBe(mockIncidents.length);
+      expect(findTableRows()).toHaveLength(mockIncidents.length);
     });
 
     it('renders a createdAt with timeAgo component per row', () => {
-      expect(findTimeAgo().length).toBe(mockIncidents.length);
+      expect(findTimeAgo()).toHaveLength(mockIncidents.length);
     });
 
     it('renders a link to the incident as the incident title', () => {
@@ -185,14 +185,14 @@ describe('Incidents List', () => {
       });
 
       it('renders a closed icon for closed incidents', () => {
-        expect(findClosedIcon().length).toBe(
+        expect(findClosedIcon()).toHaveLength(
           mockIncidents.filter(({ state }) => state === 'closed').length,
         );
       });
     });
 
     it('renders severity per row', () => {
-      expect(findSeverity().length).toBe(mockIncidents.length);
+      expect(findSeverity()).toHaveLength(mockIncidents.length);
     });
 
     describe('Escalation status', () => {
@@ -200,7 +200,7 @@ describe('Incidents List', () => {
         const statuses = findEscalationStatus().wrappers;
         const expectedStatuses = ['Triggered', 'Acknowledged', 'Resolved', I18N.noEscalationStatus];
 
-        expect(statuses.length).toBe(mockIncidents.length);
+        expect(statuses).toHaveLength(mockIncidents.length);
         statuses.forEach((status, index) => {
           expect(status.text()).toEqual(expectedStatuses[index]);
           expect(status.classes('gl-truncate')).toBe(true);

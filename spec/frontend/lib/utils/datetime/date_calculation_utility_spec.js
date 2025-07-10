@@ -273,7 +273,7 @@ describe('getSundays', () => {
     const dateOfSundays = [3, 10, 17, 24, 31];
     const sundays = getSundays(new Date(2017, 11, 1));
 
-    expect(sundays.length).toBe(5);
+    expect(sundays).toHaveLength(5);
     sundays.forEach((sunday, index) => {
       expect(sunday.getDate()).toBe(dateOfSundays[index]);
     });
@@ -292,7 +292,7 @@ describe('getTimeframeWindowFrom', () => {
     ];
     const timeframe = getTimeframeWindowFrom(startDate, 5);
 
-    expect(timeframe.length).toBe(5);
+    expect(timeframe).toHaveLength(5);
     timeframe.forEach((timeframeItem, index) => {
       expect(timeframeItem.getFullYear()).toBe(mockTimeframe[index].getFullYear());
       expect(timeframeItem.getMonth()).toBe(mockTimeframe[index].getMonth());
@@ -311,7 +311,7 @@ describe('getTimeframeWindowFrom', () => {
     ];
     const timeframe = getTimeframeWindowFrom(startDate, -5);
 
-    expect(timeframe.length).toBe(5);
+    expect(timeframe).toHaveLength(5);
     timeframe.forEach((timeframeItem, index) => {
       expect(timeframeItem.getFullYear()).toBe(mockTimeframe[index].getFullYear());
       expect(timeframeItem.getMonth()).toBe(mockTimeframe[index].getMonth());
@@ -423,7 +423,7 @@ describe('getDatesInRange', () => {
 
     const range = getDatesInRange(d1, d2);
 
-    expect(range.length).toEqual(31);
+    expect(range).toHaveLength(31);
   });
 
   it('applies mapper function if provided fro each item in range', () => {

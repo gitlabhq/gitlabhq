@@ -81,7 +81,7 @@ describe('Smart Virtual List', () => {
     });
 
     it('renders all children list elements', () => {
-      expect(wrapper.findAll('li').length).toEqual(listLength);
+      expect(wrapper.findAll('li')).toHaveLength(listLength);
     });
   });
 

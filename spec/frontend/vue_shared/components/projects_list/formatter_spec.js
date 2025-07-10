@@ -40,6 +40,6 @@ describe('formatGraphQLProjects', () => {
       isPersonal: false,
     });
 
-    expect(formattedProjects.length).toBe(projects.length);
+    expect(formattedProjects).toHaveLength(projects.length);
   });
 });

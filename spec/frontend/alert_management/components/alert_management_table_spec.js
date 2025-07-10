@@ -290,7 +290,7 @@ describe('AlertManagementTable', () => {
           },
           loading: false,
         });
-        expect(findDateFields().length).toBe(1);
+        expect(findDateFields()).toHaveLength(1);
       });
 
       it('should not display time ago dates when values not provided', () => {

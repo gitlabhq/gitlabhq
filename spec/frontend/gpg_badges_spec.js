@@ -108,7 +108,7 @@ describe('GpgBadges', () => {
     expect(document.querySelector('.js-loading-signature-badge:empty')).toBe(null);
     const spinners = document.querySelectorAll('.js-loading-signature-badge span.gl-spinner');
 
-    expect(spinners.length).toBe(1);
+    expect(spinners).toHaveLength(1);
   });
 
   it('replaces the loading spinner', async () => {

@@ -55,7 +55,7 @@ describe('GroupItemComponent', () => {
         const classes = ['is-open', 'has-children', 'has-description', 'being-removed'];
         const { rowClass } = wrapper.vm;
 
-        expect(Object.keys(rowClass).length).toBe(classes.length);
+        expect(Object.keys(rowClass)).toHaveLength(classes.length);
         Object.keys(rowClass).forEach((className) => {
           expect(classes.indexOf(className)).toBeGreaterThan(-1);
         });

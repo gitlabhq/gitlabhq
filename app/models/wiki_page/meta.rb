@@ -241,7 +241,7 @@ class WikiPage
       return unless container_id.present? && canonical_slug.present?
 
       offending = self.class.with_canonical_slug(canonical_slug).where(container_key => container_id)
-      offending = offending.where.not(id: id) if persisted?
+      offending = offending.id_not_in(id) if persisted?
 
       return unless offending.exists?
 

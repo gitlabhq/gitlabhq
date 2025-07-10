@@ -95,7 +95,7 @@ describe('Import details table', () => {
       it('sets items and pagination info', async () => {
         await waitForPromises();
 
-        expect(findGlTableRows().length).toBe(mockImportFailures.length);
+        expect(findGlTableRows()).toHaveLength(mockImportFailures.length);
         expect(findPaginationBar().props('pageInfo')).toMatchObject({
           page: mockHeaders['x-page'],
           perPage: mockHeaders['x-per-page'],
@@ -159,7 +159,7 @@ describe('Import details table', () => {
       it('sets items and pagination info', async () => {
         await waitForPromises();
 
-        expect(findGlTableRows().length).toBe(mockImportFailures.length);
+        expect(findGlTableRows()).toHaveLength(mockImportFailures.length);
         expect(findPaginationBar().props('pageInfo')).toMatchObject({
           page: mockHeaders['x-page'],
           perPage: mockHeaders['x-per-page'],

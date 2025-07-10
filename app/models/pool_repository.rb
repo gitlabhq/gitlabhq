@@ -96,7 +96,7 @@ class PoolRepository < ApplicationRecord
   def unlink_repository(repository, disconnect: true)
     repository.disconnect_alternates if disconnect
 
-    if member_projects.where.not(id: repository.project.id).exists?
+    if member_projects.id_not_in(repository.project.id).exists?
       true
     else
       mark_obsolete

@@ -87,7 +87,7 @@ describe('CollapsedAssigneeList component', () => {
     });
 
     it('returns just two collapsed users', () => {
-      expect(findAssignees().length).toBe(2);
+      expect(findAssignees()).toHaveLength(2);
     });
   });
 
@@ -111,7 +111,7 @@ describe('CollapsedAssigneeList component', () => {
       });
 
       it('returns one collapsed users', () => {
-        expect(findAssignees().length).toBe(1);
+        expect(findAssignees()).toHaveLength(1);
       });
     });
 

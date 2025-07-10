@@ -27,7 +27,7 @@ describe('error tracking settings form', () => {
 
   describe('an empty form', () => {
     it('is rendered', () => {
-      expect(wrapper.findAllComponents(GlFormInput).length).toBe(2);
+      expect(wrapper.findAllComponents(GlFormInput)).toHaveLength(2);
       expect(wrapper.findComponent(GlFormInput).attributes('id')).toBe('error-tracking-api-host');
       expect(wrapper.findAllComponents(GlFormInput).at(1).attributes('id')).toBe(
         'error-tracking-token',

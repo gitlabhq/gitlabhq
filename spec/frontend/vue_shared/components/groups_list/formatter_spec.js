@@ -38,7 +38,7 @@ describe('formatGraphQLGroups', () => {
       hasChildren: false,
       customProperty: firstMockGroup.fullName,
     });
-    expect(formattedGroups.length).toBe(organizationGroups.length);
+    expect(formattedGroups).toHaveLength(organizationGroups.length);
   });
 
   it('correctly formats the groups without edit, delete, and leave permissions', () => {
@@ -57,6 +57,6 @@ describe('formatGraphQLGroups', () => {
       availableActions: [],
     });
 
-    expect(formattedGroups.length).toBe(organizationGroups.length);
+    expect(formattedGroups).toHaveLength(organizationGroups.length);
   });
 });

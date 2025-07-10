@@ -145,7 +145,7 @@ describe('DiscussionFilter component', () => {
     });
 
     it('renders the all filters', () => {
-      expect(wrapper.findAll('.discussion-filter-container .gl-new-dropdown-item').length).toBe(
+      expect(wrapper.findAll('.discussion-filter-container .gl-new-dropdown-item')).toHaveLength(
         discussionFiltersMock.length,
       );
     });

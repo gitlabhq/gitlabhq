@@ -33,7 +33,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.RECEIVE_DELETE_BADGE_ERROR, dummyBadge.id);
 
-      expect(store.state.badges.length).toBe(badgeCount);
+      expect(store.state.badges).toHaveLength(badgeCount);
       expect(store.state.badges[0].isDeleting).toBe(false);
       expect(store.state.badges[1].isDeleting).toBe(false);
       expect(store.state.badges[2].isDeleting).toBe(true);
@@ -177,7 +177,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.RECEIVE_UPDATED_BADGE, newBadge);
 
-      expect(store.state.badges.length).toBe(badgeCount);
+      expect(store.state.badges).toHaveLength(badgeCount);
       expect(store.state.badges[badgeIndex]).toStrictEqual(newBadge);
     });
   });
@@ -216,7 +216,7 @@ describe('Badges store mutations', () => {
 
       store.commit(types.REQUEST_DELETE_BADGE, dummyBadge.id);
 
-      expect(store.state.badges.length).toBe(badgeCount);
+      expect(store.state.badges).toHaveLength(badgeCount);
       expect(store.state.badges[0].isDeleting).toBe(false);
       expect(store.state.badges[1].isDeleting).toBe(true);
       expect(store.state.badges[2].isDeleting).toBe(true);

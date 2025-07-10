@@ -72,7 +72,7 @@ describe('diff_with_note', () => {
     });
 
     it('shows diff lines', () => {
-      expect(selectors.diffRows.length).toBe(12);
+      expect(selectors.diffRows).toHaveLength(12);
     });
 
     it('shows notes row', () => {

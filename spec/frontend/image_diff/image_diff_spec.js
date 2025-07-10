@@ -245,7 +245,7 @@ describe('ImageDiff', () => {
     it('should call renderBadge for each discussionEl', () => {
       const discussionEls = element.querySelectorAll('.note-container .discussion-notes .notes');
 
-      expect(imageDiff.renderBadge.mock.calls.length).toEqual(discussionEls.length);
+      expect(imageDiff.renderBadge.mock.calls).toHaveLength(discussionEls.length);
     });
   });
 
@@ -265,7 +265,7 @@ describe('ImageDiff', () => {
     });
 
     it('should populate imageBadges', () => {
-      expect(imageDiff.imageBadges.length).toEqual(1);
+      expect(imageDiff.imageBadges).toHaveLength(1);
     });
 
     describe('renderCommentBadge', () => {
@@ -306,7 +306,7 @@ describe('ImageDiff', () => {
     });
 
     it('should add imageBadge to imageBadges', () => {
-      expect(imageDiff.imageBadges.length).toEqual(1);
+      expect(imageDiff.imageBadges).toHaveLength(1);
     });
 
     it('should call addImageBadge', () => {
@@ -344,7 +344,7 @@ describe('ImageDiff', () => {
 
         expect(imageBadgeEls[0].textContent).toEqual('1');
         expect(imageBadgeEls[1].textContent).toEqual('2');
-        expect(imageBadgeEls.length).toEqual(2);
+        expect(imageBadgeEls).toHaveLength(2);
       });
 
       it('should call updateDiscussionBadgeNumber', () => {
@@ -357,7 +357,7 @@ describe('ImageDiff', () => {
     });
 
     it('should remove badge from imageBadges', () => {
-      expect(imageDiff.imageBadges.length).toEqual(2);
+      expect(imageDiff.imageBadges).toHaveLength(2);
     });
 
     it('should remove imageBadgeEl', () => {

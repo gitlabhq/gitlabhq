@@ -129,7 +129,7 @@ describe('Import Project Form', () => {
     it('renders a selectable item for all available options', () => {
       createComponent();
 
-      expect(findImportOptionItems().length).toBe(2);
+      expect(findImportOptionItems()).toHaveLength(2);
       expect(findImportOptionItem(0).attributes('value')).toEqual('gitlab');
       expect(findImportOptionItem(1).attributes('value')).toEqual('github');
     });
@@ -144,7 +144,7 @@ describe('Import Project Form', () => {
           },
         });
 
-        expect(findImportOptionItems().length).toBe(1);
+        expect(findImportOptionItems()).toHaveLength(1);
         expect(findImportOptionItem(0).attributes('value')).toEqual('manifest');
       });
 
@@ -158,7 +158,7 @@ describe('Import Project Form', () => {
           },
         });
 
-        expect(findImportOptionItems().length).toBe(0);
+        expect(findImportOptionItems()).toHaveLength(0);
       });
     });
   });

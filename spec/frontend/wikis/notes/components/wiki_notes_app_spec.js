@@ -135,7 +135,7 @@ describe('WikiNotesApp', () => {
     createWrapper();
     const skeletonNotes = wrapper.findAllComponents(SkeletonNote);
 
-    expect(skeletonNotes.length).toBe(5);
+    expect(skeletonNotes).toHaveLength(5);
   });
 
   it('should render Comment Form correctly', () => {
@@ -180,12 +180,12 @@ describe('WikiNotesApp', () => {
 
     it('should not render any discussions', () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
-      expect(wikiDiscussions.length).toBe(0);
+      expect(wikiDiscussions).toHaveLength(0);
     });
 
     it('should not render any skeleton notes', () => {
       const skeletonNotes = wrapper.findAllComponents(SkeletonNote);
-      expect(skeletonNotes.length).toBe(0);
+      expect(skeletonNotes).toHaveLength(0);
     });
 
     it('should attempt to fetch Discussions when retry button is clicked', async () => {
@@ -222,7 +222,7 @@ describe('WikiNotesApp', () => {
     it('should render discussions correctly', () => {
       const wikiDiscussions = wrapper.findAllComponents(WikiDiscussion);
 
-      expect(wikiDiscussions.length).toBe(3);
+      expect(wikiDiscussions).toHaveLength(3);
       expect(wikiDiscussions.at(0).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
       expect(wikiDiscussions.at(1).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');
       expect(wikiDiscussions.at(2).props('noteableId')).toEqual('gid://gitlab/WikiPage/1');

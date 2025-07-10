@@ -47,7 +47,7 @@ describe('Blob Header Viewer Switcher', () => {
     });
 
     it('renders exactly 2 buttons with predefined actions', () => {
-      expect(buttons.length).toBe(2);
+      expect(buttons).toHaveLength(2);
       [SIMPLE_BLOB_VIEWER_TITLE, RICH_BLOB_VIEWER_TITLE].forEach((title, i) => {
         expect(buttons.at(i).attributes('title')).toBe(title);
       });

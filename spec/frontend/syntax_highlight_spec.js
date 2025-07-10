@@ -43,7 +43,7 @@ describe('Syntax Highlighter', () => {
         expect(fn('.parent')).not.toHaveClass('code-syntax-highlight-theme');
         expect(fn('.foo')).not.toHaveClass('code-syntax-highlight-theme');
 
-        expect(document.querySelectorAll('.code-syntax-highlight-theme').length).toBe(2);
+        expect(document.querySelectorAll('.code-syntax-highlight-theme')).toHaveLength(2);
       });
 
       it('prevents an infinite loop when no matches exist', () => {

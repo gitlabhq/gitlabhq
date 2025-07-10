@@ -107,7 +107,7 @@ describe('CiResourcesListItem', () => {
       createComponent();
 
       const markdown = findMarkdown();
-      expect(markdown.props().markdown.length).toBe(260);
+      expect(markdown.props().markdown).toHaveLength(260);
     });
 
     it('hides the resource description on mobile devices', () => {

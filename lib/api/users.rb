@@ -410,20 +410,18 @@ module API
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes
       end
-      # rubocop: disable CodeReuse/ActiveRecord
+
       put ":id", feature_category: :user_profile do
         authenticated_as_admin!
 
-        user = User.find_by(id: params.delete(:id))
+        user = User.find_by_id(params.delete(:id))
         not_found!('User') unless user
 
         conflict!('Email has already been taken') if params[:email] &&
-          User.by_any_email(params[:email].downcase)
-              .where.not(id: user.id).exists?
+          User.by_any_email(params[:email].downcase).id_not_in(user.id).exists?
 
         conflict!('Username has already been taken') if params[:username] &&
-          User.by_username(params[:username])
-              .where.not(id: user.id).exists?
+          User.by_username(params[:username]).id_not_in(user.id).exists?
 
         user_params = declared_params(include_missing: false)
 
@@ -451,7 +449,6 @@ module API
           render_validation_error!(user)
         end
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       desc "Disable two factor authentication for a user. Available only for admins" do
         detail 'This feature was added in GitLab 15.2'

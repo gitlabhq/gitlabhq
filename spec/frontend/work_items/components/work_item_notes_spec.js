@@ -234,7 +234,7 @@ describe('WorkItemNotes component', () => {
 
       // Preview note should not be rendered when modal is open
       const discussions = wrapper.findAllComponents(WorkItemDiscussion);
-      expect(discussions.length).toBe(0);
+      expect(discussions).toHaveLength(0);
 
       // Should still show loading state
       expect(findNotesLoading().exists()).toBe(true);
@@ -259,7 +259,7 @@ describe('WorkItemNotes component', () => {
 
       // Preview note should not be rendered when modal is open
       const discussions = wrapper.findAllComponents(WorkItemDiscussion);
-      expect(discussions.length).toBe(0);
+      expect(discussions).toHaveLength(0);
 
       // Should still show loading state
       expect(findNotesLoading().exists()).toBe(true);

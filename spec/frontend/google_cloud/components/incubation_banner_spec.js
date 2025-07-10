@@ -27,7 +27,7 @@ describe('google_cloud/components/incubation_banner', () => {
 
   describe('has relevant gl-links', () => {
     it('three in total', () => {
-      expect(findLinks().length).toBe(3);
+      expect(findLinks()).toHaveLength(3);
     });
 
     it('contains feature request link', () => {

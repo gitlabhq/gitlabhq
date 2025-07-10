@@ -64,7 +64,7 @@ describe('WorkItemDevelopmentRelationshipList', () => {
       }),
     });
 
-    expect(findAllMergeRequests().length).toBe(3);
+    expect(findAllMergeRequests()).toHaveLength(3);
 
     expect(findAllMergeRequests().at(0).props('itemContent')).toEqual(
       expect.objectContaining({

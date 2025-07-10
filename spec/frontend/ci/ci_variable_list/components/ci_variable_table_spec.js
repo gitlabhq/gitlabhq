@@ -260,7 +260,7 @@ describe('Ci variable table', () => {
         });
 
         it('hides alert', () => {
-          expect(findLimitReachedAlerts().length).toBe(0);
+          expect(findLimitReachedAlerts()).toHaveLength(0);
         });
       });
 
@@ -268,7 +268,7 @@ describe('Ci variable table', () => {
         it('hides alert when limit has not been reached', () => {
           createComponent({ provide });
 
-          expect(findLimitReachedAlerts().length).toBe(0);
+          expect(findLimitReachedAlerts()).toHaveLength(0);
         });
 
         it('shows alert when limit has been reached', () => {
@@ -282,7 +282,7 @@ describe('Ci variable table', () => {
             props: { maxVariableLimit: mockMaxVariableLimit },
           });
 
-          expect(findLimitReachedAlerts().length).toBe(2);
+          expect(findLimitReachedAlerts()).toHaveLength(2);
 
           expect(findLimitReachedAlerts().at(0).props('dismissible')).toBe(false);
           expect(findLimitReachedAlerts().at(0).text()).toContain(exceedsVariableLimitText);

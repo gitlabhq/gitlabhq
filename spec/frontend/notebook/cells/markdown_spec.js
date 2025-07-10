@@ -135,10 +135,10 @@ describe('Markdown component', () => {
 
       await nextTick();
       const images = wrapper.vm.$el.querySelectorAll('img');
-      expect(images.length).toBe(5);
+      expect(images).toHaveLength(5);
 
       const columns = wrapper.vm.$el.querySelectorAll('td');
-      expect(columns.length).toBe(6);
+      expect(columns).toHaveLength(6);
 
       expect(columns[0].textContent).toEqual('Hello ');
       expect(columns[1].textContent).toEqual('Test ');

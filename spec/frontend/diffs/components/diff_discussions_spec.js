@@ -50,8 +50,8 @@ describe('DiffDiscussions', () => {
       expect(findNoteableDiscussion().exists()).toBe(true);
       expect(wrapper.findComponent(DiscussionNotes).exists()).toBe(true);
       expect(
-        wrapper.findComponent(DiscussionNotes).findAllComponents(TimelineEntryItem).length,
-      ).toBe(discussionsMockData.notes.length);
+        wrapper.findComponent(DiscussionNotes).findAllComponents(TimelineEntryItem),
+      ).toHaveLength(discussionsMockData.notes.length);
     });
   });
 

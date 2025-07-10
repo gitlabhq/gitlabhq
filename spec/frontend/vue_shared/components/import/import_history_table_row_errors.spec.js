@@ -23,12 +23,12 @@ describe('ImportHistoryTableRowStats component', () => {
 
   it('does not render any errors if there are no failures', () => {
     createComponent({ item: apiItems[0] });
-    expect(findErrors().length).toEqual(0);
+    expect(findErrors()).toHaveLength(0);
   });
 
   it('renders an error for each failure in the item data', () => {
     createComponent();
-    expect(findErrors().length).toEqual(apiItems[1].failures.length);
+    expect(findErrors()).toHaveLength(apiItems[1].failures.length);
   });
 
   describe('alert', () => {
@@ -36,10 +36,10 @@ describe('ImportHistoryTableRowStats component', () => {
       createComponent();
     });
     it('renders GlAlert', () => {
-      expect(findAlerts().length).toEqual(apiItems[1].failures.length);
+      expect(findAlerts()).toHaveLength(apiItems[1].failures.length);
     });
     it('renders GlLink', () => {
-      expect(findLinks().length).toEqual(apiItems[1].failures.length);
+      expect(findLinks()).toHaveLength(apiItems[1].failures.length);
     });
     it('uses custom link_text if provided', () => {
       createComponent({ item: apiItems[3] });
@@ -49,6 +49,6 @@ describe('ImportHistoryTableRowStats component', () => {
 
   it('renders raw if it exists', () => {
     createComponent({ item: apiItems[3] });
-    expect(findRaws().length).toEqual(1);
+    expect(findRaws()).toHaveLength(1);
   });
 });

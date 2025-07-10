@@ -38,7 +38,7 @@ describe('UncollapsedAssigneeList component', () => {
     });
 
     it('only has one user', () => {
-      expect(wrapper.findAllComponents(AssigneeAvatarLink).length).toBe(1);
+      expect(wrapper.findAllComponents(AssigneeAvatarLink)).toHaveLength(1);
     });
 
     it('calls the AssigneeAvatarLink with the proper props', () => {
@@ -75,7 +75,7 @@ describe('UncollapsedAssigneeList component', () => {
       });
 
       it('shows truncated users', () => {
-        expect(wrapper.findAllComponents(AssigneeAvatarLink).length).toBe(DEFAULT_RENDER_COUNT);
+        expect(wrapper.findAllComponents(AssigneeAvatarLink)).toHaveLength(DEFAULT_RENDER_COUNT);
       });
 
       describe('when more button is clicked', () => {
@@ -90,7 +90,7 @@ describe('UncollapsedAssigneeList component', () => {
         });
 
         it('shows all users', () => {
-          expect(wrapper.findAllComponents(AssigneeAvatarLink).length).toBe(
+          expect(wrapper.findAllComponents(AssigneeAvatarLink)).toHaveLength(
             DEFAULT_RENDER_COUNT + 1,
           );
         });
@@ -112,7 +112,7 @@ describe('UncollapsedAssigneeList component', () => {
         { mrAttentionRequests: true },
       );
 
-      expect(wrapper.findAll('[data-testid="username"]').length).toBe(numberOfUsers);
+      expect(wrapper.findAll('[data-testid="username"]')).toHaveLength(numberOfUsers);
     });
   });
 });

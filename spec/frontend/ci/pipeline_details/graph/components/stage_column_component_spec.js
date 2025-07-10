@@ -80,7 +80,7 @@ describe('stage column component', () => {
     });
 
     it('should render the provided groups', () => {
-      expect(findAllStageColumnGroups().length).toBe(mockGroups.length);
+      expect(findAllStageColumnGroups()).toHaveLength(mockGroups.length);
     });
 
     it('should emit updateMeasurements event on mount', () => {
@@ -138,9 +138,9 @@ describe('stage column component', () => {
     });
 
     it('shows failed jobs grouped', () => {
-      expect(findAllStageColumnFailedGroups().length).toBe(1);
+      expect(findAllStageColumnFailedGroups()).toHaveLength(1);
       expect(findAllStageColumnFailedTitle().text()).toEqual('Failed jobs');
-      expect(findAllStageColumnGroups().length).toBe(1);
+      expect(findAllStageColumnGroups()).toHaveLength(1);
     });
   });
 

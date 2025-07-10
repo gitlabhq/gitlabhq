@@ -128,7 +128,7 @@ module Backup
       end
 
       def skipped_path_relation
-        Project.where.not(id: Project.where_full_path_in(skip_paths).or(
+        Project.id_not_in(Project.where_full_path_in(skip_paths).or(
           Project.where(namespace_id: Namespace.where_full_path_in(skip_paths).self_and_descendants)
         ))
       end

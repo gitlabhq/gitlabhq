@@ -59,7 +59,7 @@ describe('Snippet view app', () => {
       },
     });
     const blobs = wrapper.findAllComponents(SnippetBlob);
-    expect(blobs.length).toBe(2);
+    expect(blobs).toHaveLength(2);
     expect(blobs.at(0).props('blob')).toEqual(Blob);
     expect(blobs.at(1).props('blob')).toEqual(BinaryBlob);
   });

@@ -141,7 +141,7 @@ describe('OpenMrBadge', () => {
           targetBranch: ['main'],
         });
 
-        expect(findAllMergeRequestItems().length).toEqual(2);
+        expect(findAllMergeRequestItems()).toHaveLength(2);
         expect(findLoader().exists()).toBe(false);
       });
 

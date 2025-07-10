@@ -163,7 +163,7 @@ describe('issue_comment_form component', () => {
         //   not necessarily that there aren't any at all.
         // We want to check here that there are none found, so we use the
         //   raw wrapper array length instead.
-        expect(findErrorAlerts().length).toBe(0);
+        expect(findErrorAlerts()).toHaveLength(0);
       });
 
       it.each`
@@ -188,7 +188,7 @@ describe('issue_comment_form component', () => {
           await findCommentButton().trigger('click');
           await waitForPromises();
           const errorAlerts = findErrorAlerts();
-          expect(errorAlerts.length).toBe(errors.length);
+          expect(errorAlerts).toHaveLength(errors.length);
           errors.forEach((msg, index) => {
             const alert = errorAlerts[index];
 
@@ -217,7 +217,7 @@ describe('issue_comment_form component', () => {
         it('renders an error message', () => {
           const errorAlerts = findErrorAlerts();
 
-          expect(errorAlerts.length).toBe(1);
+          expect(errorAlerts).toHaveLength(1);
 
           expect(errorAlerts[0].text()).toBe(
             sprintf(COMMENT_FORM.error, { reason: 'error 1 and error 2' }),
@@ -242,7 +242,7 @@ describe('issue_comment_form component', () => {
 
         let errorAlerts = findErrorAlerts();
 
-        expect(errorAlerts.length).toBe(commandErrors.length);
+        expect(errorAlerts).toHaveLength(commandErrors.length);
 
         // dismiss the second error
         extendedWrapper(errorAlerts[1]).findByTestId('close-icon').trigger('click');
@@ -251,7 +251,7 @@ describe('issue_comment_form component', () => {
         // Refresh the list of alerts
         errorAlerts = findErrorAlerts();
 
-        expect(errorAlerts.length).toBe(commandErrors.length - 1);
+        expect(errorAlerts).toHaveLength(commandErrors.length - 1);
         // We want to know that the *correct* error was dismissed, not just that any one is gone
         expect(errorAlerts[0].text()).toBe(commandErrors[0]);
         expect(errorAlerts[1].text()).toBe(commandErrors[2]);

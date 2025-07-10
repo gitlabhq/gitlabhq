@@ -87,7 +87,7 @@ describe('CommentTypeDropdown component', () => {
     findDiscussionListboxOption().trigger('click');
 
     expect(wrapper.emitted('change')[0]).toEqual([constants.COMMENT]);
-    expect(wrapper.emitted('change').length).toEqual(1);
+    expect(wrapper.emitted('change')).toHaveLength(1);
   });
 
   it('Should emit `click` event when clicking on the action button', () => {

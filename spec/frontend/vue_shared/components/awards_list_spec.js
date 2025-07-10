@@ -227,7 +227,7 @@ describe('vue_shared/components/awards_list', () => {
     });
 
     it('has no award buttons', () => {
-      expect(findAwardButtons().length).toBe(0);
+      expect(findAwardButtons()).toHaveLength(0);
     });
   });
 
@@ -258,7 +258,7 @@ describe('vue_shared/components/awards_list', () => {
     it('disables award buttons', () => {
       const buttons = findAwardButtons();
 
-      expect(buttons.length).toBe(TEST_AWARDS_LENGTH);
+      expect(buttons).toHaveLength(TEST_AWARDS_LENGTH);
       expect(buttons.wrappers.every((x) => x.classes('disabled'))).toBe(true);
     });
   });

@@ -25,13 +25,13 @@ describe('Super sidebar utils spec', () => {
     it.each([undefined, null, []])('returns empty array if `items` is %s', (items) => {
       const result = getTopFrequentItems(items);
 
-      expect(result.length).toBe(0);
+      expect(result).toHaveLength(0);
     });
 
     it('returns the requested amount of items', () => {
       const result = getTopFrequentItems(unsortedFrequentItems, maxItems);
 
-      expect(result.length).toBe(maxItems);
+      expect(result).toHaveLength(maxItems);
     });
 
     it('sorts frequent items in order of frequency and lastAccessedOn', () => {

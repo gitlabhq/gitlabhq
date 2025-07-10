@@ -29,7 +29,7 @@ describe('date_picker behavior', () => {
   it('Instantiates Pickaday for every instance of a .datepicker class', () => {
     initDatePickers();
 
-    expect(pikadayMock.mock.calls.length).toEqual(2);
+    expect(pikadayMock.mock.calls).toHaveLength(2);
     expect(parseMock.mock.calls).toEqual([['2020-10-01'], ['']]);
   });
 });

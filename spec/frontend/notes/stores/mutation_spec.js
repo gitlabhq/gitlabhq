@@ -39,14 +39,14 @@ describe('Notes Store mutations', () => {
       mutations.ADD_NEW_NOTE(state, note);
       expect(state).toEqual(expect.objectContaining({ discussions: [noteData] }));
 
-      expect(state.discussions.length).toBe(1);
+      expect(state.discussions).toHaveLength(1);
     });
 
     it('should not add the same note to the notes array', () => {
       mutations.ADD_NEW_NOTE(state, note);
       mutations.ADD_NEW_NOTE(state, note);
 
-      expect(state.discussions.length).toBe(1);
+      expect(state.discussions).toHaveLength(1);
     });
 
     it('trims first character from truncated_diff_lines', () => {
@@ -73,14 +73,14 @@ describe('Notes Store mutations', () => {
     it('should add a reply to a specific discussion', () => {
       mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
 
-      expect(state.discussions[0].notes.length).toEqual(4);
+      expect(state.discussions[0].notes).toHaveLength(4);
     });
 
     it('should not add the note if it already exists in the discussion', () => {
       mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
       mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
 
-      expect(state.discussions[0].notes.length).toEqual(4);
+      expect(state.discussions[0].notes).toHaveLength(4);
     });
   });
 
@@ -92,7 +92,7 @@ describe('Notes Store mutations', () => {
 
       mutations.DELETE_NOTE(state, toDelete);
 
-      expect(state.discussions[0].notes.length).toEqual(lengthBefore - 1);
+      expect(state.discussions[0].notes).toHaveLength(lengthBefore - 1);
     });
   });
 
@@ -150,7 +150,7 @@ describe('Notes Store mutations', () => {
 
       mutations.REMOVE_PLACEHOLDER_NOTES(state);
 
-      expect(state.discussions[0].notes.length).toEqual(lengthBefore);
+      expect(state.discussions[0].notes).toHaveLength(lengthBefore);
     });
   });
 
@@ -227,7 +227,7 @@ describe('Notes Store mutations', () => {
       expect(state.discussions[0].id).toEqual(note.id);
       expect(state.discussions[1].notes[0].note).toBe(legacyNote.notes[0].note);
       expect(state.discussions[2].notes[0].note).toBe(legacyNote.notes[1].note);
-      expect(state.discussions.length).toEqual(3);
+      expect(state.discussions).toHaveLength(3);
     });
 
     it('adds truncated_diff_lines if discussion is a diffFile', () => {
@@ -338,7 +338,7 @@ describe('Notes Store mutations', () => {
       };
       mutations.TOGGLE_AWARD(state, data);
 
-      expect(state.discussions[0].award_emoji.length).toEqual(2);
+      expect(state.discussions[0].award_emoji).toHaveLength(2);
     });
   });
 
@@ -882,7 +882,7 @@ describe('Notes Store mutations', () => {
     it('removes info for all suggestions from a batch', () => {
       mutations.CLEAR_SUGGESTION_BATCH(state);
 
-      expect(state.batchSuggestionsInfo.length).toEqual(0);
+      expect(state.batchSuggestionsInfo).toHaveLength(0);
     });
   });
 

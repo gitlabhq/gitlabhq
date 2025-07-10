@@ -181,7 +181,7 @@ describe('MlExperimentsShow', () => {
     });
 
     it('renders the correct tabs', () => {
-      expect(findTabs().findAllComponents(GlTab).length).toBe(3);
+      expect(findTabs().findAllComponents(GlTab)).toHaveLength(3);
     });
 
     it('renders metadata tab', () => {

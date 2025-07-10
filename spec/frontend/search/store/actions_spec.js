@@ -565,7 +565,7 @@ describe('Global Search Store Actions', () => {
     it('should not request anything', async () => {
       await testAction({ action: actions.fetchSidebarCount, state, expectedMutations: [] });
 
-      expect(mock.history.get.length).toBe(0);
+      expect(mock.history.get).toHaveLength(0);
     });
   });
 

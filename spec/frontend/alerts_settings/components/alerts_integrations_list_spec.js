@@ -59,7 +59,7 @@ describe('AlertIntegrationsList', () => {
   });
 
   it('renders an an edit and delete button for each integration', () => {
-    expect(findTableComponent().findAllComponents(GlButton).length).toBe(4);
+    expect(findTableComponent().findAllComponents(GlButton)).toHaveLength(4);
   });
 
   describe('integration status', () => {

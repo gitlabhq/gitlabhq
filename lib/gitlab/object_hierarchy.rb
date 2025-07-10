@@ -25,11 +25,9 @@ module Gitlab
 
     # Returns the set of descendants of a given relation, but excluding the given
     # relation
-    # rubocop: disable CodeReuse/ActiveRecord
     def descendants
-      base_and_descendants.where.not(id: descendants_base.select(:id))
+      base_and_descendants.id_not_in(descendants_base.select(:id))
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns the maximum depth starting from the base
     # A base object with no children has a maximum depth of `1`
@@ -43,11 +41,9 @@ module Gitlab
     # Passing an `upto` will stop the recursion once the specified parent_id is
     # reached. So all ancestors *lower* than the specified ancestor will be
     # included.
-    # rubocop: disable CodeReuse/ActiveRecord
     def ancestors(upto: nil, hierarchy_order: nil)
-      base_and_ancestors(upto: upto, hierarchy_order: hierarchy_order).where.not(id: ancestors_base.select(:id))
+      base_and_ancestors(upto: upto, hierarchy_order: hierarchy_order).id_not_in(ancestors_base.select(:id))
     end
-    # rubocop: enable CodeReuse/ActiveRecord
 
     # Returns a relation that includes the ancestors_base set of objects
     # and all their ancestors (recursively).

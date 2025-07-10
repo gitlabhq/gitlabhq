@@ -226,7 +226,7 @@ describe('Design management index page', () => {
       createComponent({ allVersions: [mockVersion] });
 
       expect(findDesignsWrapper().exists()).toBe(true);
-      expect(findDesigns().length).toBe(3);
+      expect(findDesigns()).toHaveLength(3);
       expect(findDesignToolbarWrapper().exists()).toBe(true);
       expect(findDesignUploadButton().exists()).toBe(true);
     });

@@ -109,7 +109,7 @@ describe('Job Log Header Line', () => {
       wrapper.trigger('click');
 
       await nextTick();
-      expect(wrapper.emitted().toggleLine.length).toBe(1);
+      expect(wrapper.emitted().toggleLine).toHaveLength(1);
     });
   });
 

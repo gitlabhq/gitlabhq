@@ -101,7 +101,7 @@ module Organizations
     def ensure_user_has_an_organization
       return unless user
 
-      return unless user.organization_users.where.not(id: id).empty?
+      return unless user.organization_users.id_not_in(id).empty?
 
       errors.add(:base, _('A user must associate with at least one organization'))
     end

@@ -91,7 +91,7 @@ describe('Diff File Options Menu', () => {
 
     const items = Array.from(get('menuItems'));
 
-    expect(items.length).toBe(1);
+    expect(items).toHaveLength(1);
     expect(items[0].textContent.trim()).toBe(item1.text);
     expect(items[0].querySelector('a').getAttribute('href')).toBe(item1.path);
   });

@@ -31,7 +31,7 @@ describe('Assignee component', () => {
       const collapsedChildren = findCollapsedChildren();
       const userIcon = collapsedChildren.at(0).findComponent(GlIcon);
 
-      expect(collapsedChildren.length).toBe(1);
+      expect(collapsedChildren).toHaveLength(1);
       expect(collapsedChildren.at(0).attributes('aria-label')).toBe('None');
       expect(userIcon.exists()).toBe(true);
       expect(userIcon.props('name')).toBe('user');
@@ -78,7 +78,7 @@ describe('Assignee component', () => {
       const collapsedChildren = findCollapsedChildren();
       const assignee = collapsedChildren.at(0);
 
-      expect(collapsedChildren.length).toBe(1);
+      expect(collapsedChildren).toHaveLength(1);
       expect(assignee.findComponent(GlAvatar).props('src')).toBe(UsersMock.user.avatar);
       expect(assignee.findComponent(GlAvatar).props('alt')).toBe(`${UsersMock.user.name}'s avatar`);
 
@@ -96,7 +96,7 @@ describe('Assignee component', () => {
 
       const collapsedChildren = findCollapsedChildren();
 
-      expect(collapsedChildren.length).toBe(2);
+      expect(collapsedChildren).toHaveLength(2);
 
       const first = collapsedChildren.at(0);
 
@@ -122,7 +122,7 @@ describe('Assignee component', () => {
 
       const collapsedChildren = findCollapsedChildren();
 
-      expect(collapsedChildren.length).toBe(2);
+      expect(collapsedChildren).toHaveLength(2);
 
       const first = collapsedChildren.at(0);
 

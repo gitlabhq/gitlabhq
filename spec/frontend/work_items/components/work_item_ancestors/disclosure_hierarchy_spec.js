@@ -34,7 +34,7 @@ describe('DisclosurePath', () => {
 
   describe('renders the list of items', () => {
     it('renders the correct number of items', () => {
-      expect(listItems().length).toBe(mockDisclosureHierarchyItems.length);
+      expect(listItems()).toHaveLength(mockDisclosureHierarchyItems.length);
     });
 
     it('renders the items in the correct order', () => {
@@ -81,7 +81,7 @@ describe('DisclosurePath', () => {
 
     describe('renders items and dropdown', () => {
       it('renders 2 items', () => {
-        expect(listItems().length).toBe(2);
+        expect(listItems()).toHaveLength(2);
       });
 
       it('renders first and last items', () => {
@@ -93,7 +93,7 @@ describe('DisclosurePath', () => {
 
       it('renders dropdown with the rest of the items passed down', () => {
         expect(findDropdown().exists()).toBe(true);
-        expect(findDropdown().props('items').length).toBe(mockDisclosureHierarchyItems.length - 2);
+        expect(findDropdown().props('items')).toHaveLength(mockDisclosureHierarchyItems.length - 2);
       });
 
       it('renders tooltip with text passed as prop', () => {
@@ -117,7 +117,7 @@ describe('DisclosurePath', () => {
       });
 
       it('renders 1 item', () => {
-        expect(listItems().length).toBe(1);
+        expect(listItems()).toHaveLength(1);
       });
 
       it('renders last item', () => {
@@ -128,7 +128,7 @@ describe('DisclosurePath', () => {
 
       it('renders dropdown with the rest of the items passed down', () => {
         expect(findDropdown().exists()).toBe(true);
-        expect(findDropdown().props('items').length).toBe(mockDisclosureHierarchyItems.length - 1);
+        expect(findDropdown().props('items')).toHaveLength(mockDisclosureHierarchyItems.length - 1);
       });
 
       describe('when there is one item', () => {
@@ -147,7 +147,7 @@ describe('DisclosurePath', () => {
         });
 
         it('renders 1 item', () => {
-          expect(listItems().length).toBe(1);
+          expect(listItems()).toHaveLength(1);
         });
 
         it('does not render dropdown', () => {

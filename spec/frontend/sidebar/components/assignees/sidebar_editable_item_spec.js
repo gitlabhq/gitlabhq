@@ -117,7 +117,7 @@ describe('boards sidebar remove issue', () => {
 
     await nextTick();
 
-    expect(wrapper.emitted().open.length).toBe(1);
+    expect(wrapper.emitted().open).toHaveLength(1);
   });
 
   it('does not emits events when collapsing with false `emitEvent`', async () => {

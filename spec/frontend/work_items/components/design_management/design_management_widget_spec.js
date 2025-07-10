@@ -290,15 +290,15 @@ describe('DesignWidget', () => {
     await waitForPromises();
 
     expect(queryHandler).toHaveBeenCalled();
-    expect(findAllDesignItems().length).toBe(length);
-    expect(findDesignCheckboxes().length).toBe(length);
+    expect(findAllDesignItems()).toHaveLength(length);
+    expect(findDesignCheckboxes()).toHaveLength(length);
   });
 
   it('renders text if all designs are archived', async () => {
     createComponent({ designCollectionQueryHandler: allDesignsArchivedQueryHandler });
     await waitForPromises();
 
-    expect(findAllDesignItems().length).toBe(0);
+    expect(findAllDesignItems()).toHaveLength(0);
     expect(wrapper.text()).toContain(ALL_DESIGNS_ARCHIVED_TEXT);
   });
 
@@ -349,7 +349,7 @@ describe('DesignWidget', () => {
     });
 
     it('does not render the design checkboxes', () => {
-      expect(wrapper.findAllByTestId('design-checkbox').length).toBe(0);
+      expect(wrapper.findAllByTestId('design-checkbox')).toHaveLength(0);
     });
   });
 
@@ -540,7 +540,7 @@ describe('DesignWidget', () => {
 
         document.dispatchEvent(event);
 
-        expect(wrapper.emitted('upload').length).toBe(3);
+        expect(wrapper.emitted('upload')).toHaveLength(3);
         expect(wrapper.emitted('upload')[0][0][0].name).toBe('image_2025-05-01_18_18_19.png');
         expect(wrapper.emitted('upload')[1][0][0].name).toBe('image_2025-05-01_18_18_19_1.png');
         expect(wrapper.emitted('upload')[2][0][0].name).toBe('image_2025-05-01_18_18_19_2.png');

@@ -79,7 +79,7 @@ describe('IncidentTimelineEventList', () => {
         mountComponent({ propsData: { eventTags } });
 
         expect(findEventTags().exists()).toBe(Boolean(expected));
-        expect(findEventTags().length).toBe(eventTags.length);
+        expect(findEventTags()).toHaveLength(eventTags.length);
       });
     });
 

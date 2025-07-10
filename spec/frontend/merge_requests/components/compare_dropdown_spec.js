@@ -63,7 +63,7 @@ describe('Merge requests compare dropdown component', () => {
 
     await waitForPromises();
     const items = wrapper.findAll('[role="option"]');
-    expect(items.length).toBe(2);
+    expect(items).toHaveLength(2);
     expect(items.at(0).text()).toBe('root/gitlab-test');
     expect(items.at(1).text()).toBe('gitlab-org/gitlab-test');
   });
@@ -98,6 +98,6 @@ describe('Merge requests compare dropdown component', () => {
 
     await waitForPromises();
 
-    expect(wrapper.findAll('[role="option"]').length).toBe(1);
+    expect(wrapper.findAll('[role="option"]')).toHaveLength(1);
   });
 });

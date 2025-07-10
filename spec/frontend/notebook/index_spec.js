@@ -35,7 +35,7 @@ describe('Notebook component', () => {
     });
 
     it('renders cells', () => {
-      expect(vm.$el.querySelectorAll('.cell').length).toBe(json.cells.length);
+      expect(vm.$el.querySelectorAll('.cell')).toHaveLength(json.cells.length);
     });
 
     it('renders markdown cell', () => {
@@ -57,7 +57,7 @@ describe('Notebook component', () => {
     });
 
     it('renders cells', () => {
-      expect(vm.$el.querySelectorAll('.cell').length).toBe(jsonWithRawCell.cells.length);
+      expect(vm.$el.querySelectorAll('.cell')).toHaveLength(jsonWithRawCell.cells.length);
     });
   });
 
@@ -69,7 +69,7 @@ describe('Notebook component', () => {
     });
 
     it('renders cells', () => {
-      expect(vm.$el.querySelectorAll('.cell').length).toBe(
+      expect(vm.$el.querySelectorAll('.cell')).toHaveLength(
         jsonWithWorksheet.worksheets[0].cells.length,
       );
     });

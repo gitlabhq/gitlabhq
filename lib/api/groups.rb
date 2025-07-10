@@ -38,7 +38,6 @@ module API
         use :pagination
       end
 
-      # rubocop: disable CodeReuse/ActiveRecord
       def find_groups(params, parent_id = nil)
         find_params = params.slice(*allowable_find_params)
 
@@ -52,11 +51,10 @@ module API
           find_params.fetch(:all_available, current_user&.can_read_all_resources?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
-        groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
+        groups = groups.id_not_in(params[:skip_groups]) if params[:skip_groups].present?
 
         order_groups(groups).with_api_scopes
       end
-      # rubocop: enable CodeReuse/ActiveRecord
 
       def allowable_find_params
         [:all_available,

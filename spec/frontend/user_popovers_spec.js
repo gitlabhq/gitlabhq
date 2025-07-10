@@ -68,7 +68,7 @@ describe('User Popovers', () => {
         triggerEvent('mouseover', el);
       });
 
-      expect(findPopovers().length).toBe(0);
+      expect(findPopovers()).toHaveLength(0);
     });
   });
 
@@ -94,7 +94,7 @@ describe('User Popovers', () => {
       });
 
       it('for initial links', () => {
-        expect(findPopovers().length).toBe(linksWithUsers.length);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length);
       });
 
       it('for elements added after initial load', () => {
@@ -109,7 +109,7 @@ describe('User Popovers', () => {
           triggerEvent(eventType, link);
         });
 
-        expect(findPopovers().length).toBe(linksWithUsers.length + addedLinks.length);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length + addedLinks.length);
       });
 
       it('for non-link elements', () => {
@@ -120,11 +120,11 @@ describe('User Popovers', () => {
 
         jest.runOnlyPendingTimers();
 
-        expect(findPopovers().length).toBe(linksWithUsers.length);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length);
 
         triggerEvent(eventType, div);
 
-        expect(findPopovers().length).toBe(linksWithUsers.length + 1);
+        expect(findPopovers()).toHaveLength(linksWithUsers.length + 1);
       });
     });
 
@@ -134,7 +134,7 @@ describe('User Popovers', () => {
       triggerEvent('mouseover', groupLink);
       jest.runOnlyPendingTimers();
 
-      expect(findPopovers().length).toBe(0);
+      expect(findPopovers()).toHaveLength(0);
     });
 
     // TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/18442
@@ -145,7 +145,7 @@ describe('User Popovers', () => {
       triggerEvent('mouseover', projectLink);
       jest.runOnlyPendingTimers();
 
-      expect(findPopovers().length).toBe(0);
+      expect(findPopovers()).toHaveLength(0);
     });
 
     it('does not initialize the user popovers twice for the same element', () => {
@@ -158,7 +158,7 @@ describe('User Popovers', () => {
         jest.runOnlyPendingTimers();
       });
 
-      expect(findPopovers().length).toBe(1);
+      expect(findPopovers()).toHaveLength(1);
     });
 
     describe.each(['focusin', 'mouseover'])(

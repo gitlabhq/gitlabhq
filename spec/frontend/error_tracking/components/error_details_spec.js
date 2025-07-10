@@ -212,8 +212,8 @@ describe('ErrorDetails', () => {
       });
 
       it('should not convert interpolated text to html entities', () => {
-        expect(findReportedText().findAll('script').length).toEqual(0);
-        expect(findReportedText().findAll('strong').length).toEqual(1);
+        expect(findReportedText().findAll('script')).toHaveLength(0);
+        expect(findReportedText().findAll('strong')).toHaveLength(1);
       });
 
       it('should render text instead of converting to html entities', () => {
@@ -225,13 +225,13 @@ describe('ErrorDetails', () => {
       it('should show language and error level badges', async () => {
         const detailedError = { tags: { level: 'error', logger: 'ruby' } };
         await createComponent({ detailedError });
-        expect(wrapper.findAllComponents(GlBadge).length).toBe(2);
+        expect(wrapper.findAllComponents(GlBadge)).toHaveLength(2);
       });
 
       it('should NOT show the badge if the tag is not present', async () => {
         const detailedError = { tags: { level: 'error', logger: null } };
         await createComponent({ detailedError });
-        expect(wrapper.findAllComponents(GlBadge).length).toBe(1);
+        expect(wrapper.findAllComponents(GlBadge)).toHaveLength(1);
       });
 
       it.each(Object.keys(severityLevel))(

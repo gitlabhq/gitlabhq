@@ -128,7 +128,7 @@ describe('List Selector spec', () => {
 
     it('does not call query when search box has not received an input', () => {
       expect(Api.projectUsers).not.toHaveBeenCalled();
-      expect(findAllUserComponents().length).toBe(0);
+      expect(findAllUserComponents()).toHaveLength(0);
     });
 
     describe('namespace dropdown rendering', () => {
@@ -150,7 +150,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a user component for each selected item', () => {
-        expect(findAllUserComponents().length).toBe(selectedItems.length);
+        expect(findAllUserComponents()).toHaveLength(selectedItems.length);
         expect(findAllUserComponents().at(0).props()).toMatchObject({
           data: selectedUser,
           canDelete: true,
@@ -180,11 +180,11 @@ describe('List Selector spec', () => {
 
     it('does not call query when search box has not received an input', () => {
       expect(groupsAutocompleteQuerySuccess).not.toHaveBeenCalled();
-      expect(findAllGroupComponents().length).toBe(0);
+      expect(findAllGroupComponents()).toHaveLength(0);
     });
 
     it('renders two namespace dropdown items', () => {
-      expect(findNamespaceDropdown().props('items').length).toBe(2);
+      expect(findNamespaceDropdown().props('items')).toHaveLength(2);
     });
 
     it('does not render namespace dropdown with disableNamespaceDropdown prop set to true', () => {
@@ -231,7 +231,7 @@ describe('List Selector spec', () => {
         });
 
         it('renders a group component for each search result', () => {
-          expect(findAllGroupComponents().length).toBe(searchResponse.length);
+          expect(findAllGroupComponents()).toHaveLength(searchResponse.length);
         });
 
         it('emits an event when a search result is selected', () => {
@@ -329,7 +329,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a group component for each search result', () => {
-        expect(findAllGroupComponents().length).toBe(searchResponse.length);
+        expect(findAllGroupComponents()).toHaveLength(searchResponse.length);
       });
 
       it('emits an event when a search result is selected', () => {
@@ -353,7 +353,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a group component for each selected item', () => {
-        expect(findAllGroupComponents().length).toBe(selectedItems.length);
+        expect(findAllGroupComponents()).toHaveLength(selectedItems.length);
         expect(findAllGroupComponents().at(0).props()).toMatchObject({
           data: selectedGroup,
           canDelete: true,
@@ -415,7 +415,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a group component for each search result', () => {
-        expect(findAllDeployKeyComponents().length).toBe(deployKeysItems.length);
+        expect(findAllDeployKeyComponents()).toHaveLength(deployKeysItems.length);
       });
 
       it('emits a select event when a search result is selected', () => {
@@ -437,7 +437,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a deploy key component for each search result', () => {
-        expect(findAllDeployKeyComponents().length).toBe(deployKeysItems.length);
+        expect(findAllDeployKeyComponents()).toHaveLength(deployKeysItems.length);
       });
     });
 
@@ -458,7 +458,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a deploy key component for each selected item', () => {
-        expect(findAllDeployKeyComponents().length).toBe(selectedItems.length);
+        expect(findAllDeployKeyComponents()).toHaveLength(selectedItems.length);
         expect(findAllDeployKeyComponents().at(0).props()).toMatchObject({
           data: selectedKey,
           canDelete: true,
@@ -510,7 +510,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a project component for each search result', () => {
-        expect(findAllProjectComponents().length).toBe(searchResponse.length);
+        expect(findAllProjectComponents()).toHaveLength(searchResponse.length);
       });
     });
 
@@ -525,7 +525,7 @@ describe('List Selector spec', () => {
       });
 
       it('renders a group component for each selected item', () => {
-        expect(findAllGroupComponents().length).toBe(selectedItems.length);
+        expect(findAllGroupComponents()).toHaveLength(selectedItems.length);
         expect(findAllGroupComponents().at(0).props()).toMatchObject({
           data: selectedGroup,
           canDelete: true,

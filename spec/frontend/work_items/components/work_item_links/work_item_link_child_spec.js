@@ -333,7 +333,7 @@ describe('WorkItemLinkChild', () => {
       expect(wrapper.emitted('drag')).toEqual([['Task']]);
 
       findTreeChildren().vm.$emit('drop');
-      expect(wrapper.emitted('drop').length).toBe(1);
+      expect(wrapper.emitted('drop')).toHaveLength(1);
     });
 
     it.each`

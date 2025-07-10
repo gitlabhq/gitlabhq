@@ -112,11 +112,11 @@ describe('AutocompleteCache', () => {
 
     it('overwrites the cache with the new data from the endpoint', async () => {
       // Initially confirm the cache was hydrated
-      expect(autocompleteCache.cache.get(url).length).toBe(data.length);
+      expect(autocompleteCache.cache.get(url)).toHaveLength(data.length);
 
       await autocompleteCache.updateLocalCache(url);
 
-      expect(autocompleteCache.cache.get(url).length).toBe(updatedData.length);
+      expect(autocompleteCache.cache.get(url)).toHaveLength(updatedData.length);
     });
   });
 

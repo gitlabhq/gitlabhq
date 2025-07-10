@@ -301,7 +301,7 @@ describe('DiffFile', () => {
       expect(el.id).toEqual(file_hash);
       expect(el.classList.contains('diff-file')).toEqual(true);
 
-      expect(el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
+      expect(el.querySelectorAll('.diff-content.hidden')).toHaveLength(0);
       expect(el.querySelector('.js-file-title')).toBeDefined();
       expect(wrapper.findComponent(DiffFileHeaderComponent).exists()).toBe(true);
       expect(el.querySelector('.js-syntax-highlight')).toBeDefined();
@@ -340,7 +340,7 @@ describe('DiffFile', () => {
         createComponent();
         makeFileAutomaticallyCollapsed();
 
-        expect(findDiffContentArea(wrapper).element.children.length).toBe(1);
+        expect(findDiffContentArea(wrapper).element.children).toHaveLength(1);
         expect(wrapper.classes('has-body')).toBe(true);
       });
 
@@ -348,7 +348,7 @@ describe('DiffFile', () => {
         createComponent();
         makeFileManuallyCollapsed();
 
-        expect(findDiffContentArea(wrapper).element.children.length).toBe(1);
+        expect(findDiffContentArea(wrapper).element.children).toHaveLength(1);
         expect(wrapper.classes('has-body')).toBe(true);
       });
     });
@@ -384,7 +384,7 @@ describe('DiffFile', () => {
         createComponent();
         await nextTick();
 
-        expect(findDiffContentArea(wrapper).element.children.length).toBe(0);
+        expect(findDiffContentArea(wrapper).element.children).toHaveLength(0);
       });
 
       it('should not have the class `has-body` to present the header differently', () => {

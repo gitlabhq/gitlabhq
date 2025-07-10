@@ -40,6 +40,6 @@ describe('initDiscussionTab', () => {
     jest.spyOn(initImageDiffHelper, 'initImageDiff').mockImplementation(() => {});
     initDiscussionTab();
 
-    expect(initImageDiffHelper.initImageDiff.mock.calls.length).toEqual(2);
+    expect(initImageDiffHelper.initImageDiff.mock.calls).toHaveLength(2);
   });
 });

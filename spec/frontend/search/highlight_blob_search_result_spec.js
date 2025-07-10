@@ -14,6 +14,6 @@ describe('search/highlight_blob_search_result', () => {
   it('highlights lines with search term occurrence', () => {
     setHighlightClass(searchKeyword);
 
-    expect(document.querySelectorAll('.js-blob-result .hll').length).toBe(4);
+    expect(document.querySelectorAll('.js-blob-result .hll')).toHaveLength(4);
   });
 });

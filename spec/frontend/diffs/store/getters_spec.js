@@ -288,15 +288,14 @@ describe('Diffs Module Getters', () => {
           {},
           {},
           { discussions: [discussionMock] },
-        )(diffFileMock).length,
-      ).toEqual(1);
+        )(diffFileMock),
+      ).toHaveLength(1);
     });
 
     it('returns an empty array when no discussions are found in the given diff', () => {
       expect(
-        getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [] })(diffFileMock)
-          .length,
-      ).toEqual(0);
+        getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [] })(diffFileMock),
+      ).toHaveLength(0);
     });
   });
 

@@ -49,14 +49,14 @@ describe('Variable values listbox', () => {
 
     await nextTick();
 
-    expect(findListboxItems().length).toBe(1);
+    expect(findListboxItems()).toHaveLength(1);
     expect(findListboxItems().at(0).text()).toContain(searchString);
 
     search('');
 
     await nextTick();
 
-    expect(findListboxItems().length).toBe(3);
+    expect(findListboxItems()).toHaveLength(3);
   });
 
   it('filters options with fuzzy filtering', async () => {
@@ -66,7 +66,7 @@ describe('Variable values listbox', () => {
 
     await nextTick();
 
-    expect(findListboxItems().length).toBe(1);
+    expect(findListboxItems()).toHaveLength(1);
     expect(findListboxItems().at(0).text()).toBe('production');
   });
 });

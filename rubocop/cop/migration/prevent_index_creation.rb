@@ -63,7 +63,7 @@ module RuboCop
         PATTERN
 
         def on_casgn(node)
-          @forbidden_tables_used = !!forbidden_constant_defined?(node)
+          @forbidden_tables_used ||= !!forbidden_constant_defined?(node)
         end
 
         def on_def(node)
@@ -84,10 +84,12 @@ module RuboCop
         end
 
         def offense?(node)
-          add_index?(node) ||
-            add_concurrent_index?(node) ||
-            prepare_async_index?(node) ||
-            any_constant_used_with_forbidden_tables?(node)
+          return true if add_index?(node)
+          return true if add_concurrent_index?(node)
+          return true if prepare_async_index?(node)
+          return true if any_constant_used_with_forbidden_tables?(node)
+
+          false
         end
 
         def any_constant_used_with_forbidden_tables?(node)

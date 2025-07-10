@@ -400,7 +400,7 @@ describe('UserMenu component', () => {
             });
 
             it('does not call the callout dismiss endpoint', () => {
-              expect(mockAxios.history.post.length).toBe(0);
+              expect(mockAxios.history.post).toHaveLength(0);
             });
 
             it('does not manually proceed to the URL', () => {

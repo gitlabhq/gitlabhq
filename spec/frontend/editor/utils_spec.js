@@ -26,9 +26,9 @@ describe('Source Editor utils', () => {
     });
 
     it('removes all child nodes from an element', () => {
-      expect(el.children.length).toBe(1);
+      expect(el.children).toHaveLength(1);
       utils.clearDomElement(el);
-      expect(el.children.length).toBe(0);
+      expect(el.children).toHaveLength(0);
     });
   });
 

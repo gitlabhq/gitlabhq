@@ -154,7 +154,7 @@ describe('BindInOut', () => {
     });
 
     it('should call .init for each element', () => {
-      expect(BindInOut.init.mock.calls.length).toEqual(3);
+      expect(BindInOut.init.mock.calls).toHaveLength(3);
     });
 
     it('should return an array of instances', () => {
