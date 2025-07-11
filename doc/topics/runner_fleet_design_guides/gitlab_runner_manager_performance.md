@@ -42,7 +42,11 @@ It handles:
 - **Pod lifecycle management**: Manages worker pod provisioning and cleanup
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+    accTitle: GitLab Runner manager pod architecture
+    accDescr: The manager pod polls GitLab for jobs, creates job pods through the Kubernetes API, manages the S3 cache, and forwards logs from job pods to GitLab.
+
     subgraph "External Services"
         GL[GitLab Instance]
         S3[S3 Cache Storage]
@@ -105,13 +109,17 @@ To configure monitoring for the Operator, see [Monitor GitLab Runner Operator](h
 Effective monitoring is crucial for maintaining optimal manager pod performance.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart TD
+    accTitle: Metrics collection and monitoring flow
+    accDescr: The manager pod exposes metrics, Prometheus scrapes the metrics using PodMonitor configuration, Grafana visualizes the data, and Alertmanager notifies operators.
+
     subgraph "Metrics Collection Flow"
         MP[Manager Pod<br/>:9252/metrics]
         PM[PodMonitor]
         P[Prometheus]
         G[Grafana]
-        A[AlertManager]
+        A[Alertmanager]
 
         MP -->|Expose Metrics| PM
         PM -->|Scrape| P
@@ -281,8 +289,11 @@ to stress test the manager pod's log processing capabilities.
 | 100           | 657m           | 369 MB            |
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 xychart-beta
-    title "Manager Pod Resource Usage vs Concurrent Jobs"
+    accTitle: Manager pod resource usage compared to concurrent jobs
+    accDescr: Chart showing CPU usage (10-610 millicores) and memory usage (50-300 MB) that scale with concurrent jobs (0-100).
+
     x-axis [0, 25, 50, 75, 100]
     y-axis "Resource Usage" 0 --> 700
     line "CPU (millicores)" [10, 160, 310, 460, 610]
@@ -486,7 +497,11 @@ performance and prevent resource contention. This isolation prevents job pods
 from disrupting critical manager pod operations.
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TB
+    accTitle: Kubernetes node segregation architecture
+    accDescr: Node segregation with manager pods on dedicated manager nodes and job pods on worker nodes, separated by taints.
+
     subgraph "Kubernetes Cluster"
         subgraph "Manager Nodes"
             MN1[Manager Node 1<br/>Taint: runner.gitlab.com/manager]

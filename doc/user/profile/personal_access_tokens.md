@@ -353,7 +353,7 @@ You can subscribe to an iCalendar endpoint which contains events at the expiry d
 
 ### Create a service account personal access token with no expiry date
 
-You can [create a personal access token for a service account](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
+You can [create a personal access token for a service account](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account) with no expiry date. These personal access tokens never expire, unlike non-service account personal access tokens.
 
 {{< alert type="note" >}}
 

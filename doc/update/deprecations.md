@@ -990,6 +990,25 @@ and will be moved to the JiHu GitLab codebase.
 
 <div class="deprecation breaking-change" data-milestone="19.0">
 
+### `bin_path` and `use_bundled_binaries` configuration options in Gitaly
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.2</span>
+- Removal in GitLab <span class="milestone">19.0</span> ([breaking change](https://docs.gitlab.com/update/terminology/#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9181).
+
+</div>
+
+Support for using `bin_path` and `use_bundled_binaries` configuration options in Gitaly is deprecated and will be
+removed in GitLab 19.0.
+
+The Git binaries provided by Gitaly will be the only supported way to execute Git.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="19.0">
+
 ### `ciJobTokenScopeAddProject` GraphQL mutation is deprecated
 
 <div class="deprecation-notes">

@@ -36,15 +36,15 @@ Service accounts:
 - Do not use a seat.
 - Cannot sign in to GitLab through the UI.
 - Are identified in the group and project membership as service accounts.
-- Do not receive notification emails without [adding a custom email address](../../api/user_service_accounts.md#create-an-instance-service-account).
+- Do not receive notification emails without [adding a custom email address](../../api/service_accounts.md#create-an-instance-service-account).
 - Are not [billable users](../../subscriptions/self_managed/_index.md#billable-users) or [internal users](../../administration/internal_users.md).
 - Cannot be used with [trial versions](https://gitlab.com/-/trial_registrations/new?glm_source=docs.gitlab.com&glm_content=free-user-limit-faq/ee/user/free_user_limit.html) of GitLab.com.
 - Can be used with trial versions of GitLab Self-Managed and GitLab Dedicated.
 
 You can also manage service accounts through the API.
 
-- For instance service accounts, use the [service account users API](../../api/user_service_accounts.md).
-- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
+- For instance service accounts, use the [service account users API](../../api/service_accounts.md).
+- For group service accounts, use the [group service accounts API](../../api/service_accounts.md).
 
 ## Prerequisites
 
@@ -172,7 +172,7 @@ contributions can include activity such as merge requests, issues, groups, and p
 You can also delete service accounts through the API.
 
 - For instance service accounts, use the [users API](../../api/users.md#delete-a-user).
-- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md#delete-a-group-service-account).
+- For group service accounts, use the [group service accounts API](../../api/service_accounts.md#delete-a-group-service-account).
 
 ## View and manage personal access tokens for a service account
 
@@ -185,7 +185,7 @@ The personal access tokens page displays information about the personal access t
 You can also manage personal access tokens for service accounts through the API.
 
 - For instance service accounts, use the [personal access tokens API](../../api/personal_access_tokens.md).
-- For group service accounts, use the [group service accounts API](../../api/group_service_accounts.md).
+- For group service accounts, use the [group service accounts API](../../api/service_accounts.md).
 
 To view the personal access tokens page for a service account:
 

@@ -931,7 +931,7 @@ Example response:
 {{< alert type="warning" >}}
 
 This endpoint is scheduled for removal in GitLab 18.3 (August 11th, 2025).
-Use [`GET /groups/:id/saml_users`](#list-all-saml-users) and [`GET /groups/:id/service_accounts`](group_service_accounts.md#list-all-group-service-accounts) instead.
+Use [`GET /groups/:id/saml_users`](#list-all-saml-users) and [`GET /groups/:id/service_accounts`](service_accounts.md#list-all-group-service-accounts) instead.
 
 {{< /alert >}}
 

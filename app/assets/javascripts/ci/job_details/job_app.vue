@@ -339,7 +339,6 @@ export default {
         <empty-state
           v-if="!hasJobLog || showUpdateVariablesState"
           :illustration-path="emptyStateIllustration.image"
-          :illustration-size-class="emptyStateIllustration.size"
           :is-retryable="isJobRetryable"
           :job-id="job.id"
           :job-name="jobName"

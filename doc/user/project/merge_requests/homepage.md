@@ -19,7 +19,11 @@ shows you which merge requests need your attention first, regardless of whether 
 the work of someone else. The workflow view groups merge requests by their stage in this review process:
 
 ```mermaid
+%%{init: { "fontFamily": "GitLab Sans" }}%%
 flowchart LR
+    accTitle: Merge request review workflow
+    accDescr: Flow from merge request creation through review, approval, and merge stages with decision points for reviewers and approvals.
+
     A[Your<br>merge request] --> B{Reviewers<br>added?}
     B-->|Yes| D[<strong>Review<br>requested</strong>]
     B -.->|No| C[<strong>Assigned<br>to you</strong>]

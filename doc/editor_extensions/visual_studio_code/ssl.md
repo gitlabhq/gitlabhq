@@ -22,8 +22,12 @@ Prerequisites:
    the system certificate store, and changes all node `http` requests to trust the certificates:
 
    ```mermaid
-   graph LR;
-   A[Self-signed CA] -- signed --> B[Your GitLab instance certificate]
+   %%{init: { "fontFamily": "GitLab Sans" }}%%
+   graph LR
+      accTitle: Self-signed certificate chain
+      accDescr: Shows a self-signed CA that signs the GitLab instance certificate.
+
+      A[Self-signed CA] -- signed --> B[Your GitLab instance certificate]
    ```
 
    For more information, see [Self-signed certificate error when installing Python support in WSL](https://github.com/microsoft/vscode/issues/131836#issuecomment-909983815) in the Visual Studio Code issue tracker.

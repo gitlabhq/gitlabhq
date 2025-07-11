@@ -13264,9 +13264,6 @@ msgstr ""
 msgid "CiVariables|Learn how to %{linkStart}restrict CI/CD variables to specific environments%{linkEnd} for better security."
 msgstr ""
 
-msgid "CiVariables|Manual job empty state image"
-msgstr ""
-
 msgid "CiVariables|Masked"
 msgstr ""
 

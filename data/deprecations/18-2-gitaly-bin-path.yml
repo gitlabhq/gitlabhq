@@ -1,0 +1,16 @@
+- title: "`bin_path` and `use_bundled_binaries` configuration options in Gitaly"
+  removal_milestone: "19.0"
+  announcement_milestone: "18.2"
+  breaking_change: true
+  reporter: divya_gitlab
+  stage: data-access
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/9181
+  impact: low
+  scope: project
+  resolution_role: Admin
+  manual_task: false
+  body: |
+    Support for using `bin_path` and `use_bundled_binaries` configuration options in Gitaly is deprecated and will be
+    removed in GitLab 19.0.
+
+    The Git binaries provided by Gitaly will be the only supported way to execute Git.

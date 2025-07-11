@@ -208,11 +208,11 @@ This token authenticates the service account token used to manage GitLab deploym
 
 To create the service account token:
 
-1. [Create a service account user](../../api/user_service_accounts.md#create-an-instance-service-account).
+1. [Create a service account user](../../api/service_accounts.md#create-an-instance-service-account).
 1. [Add the service account to a group or project](../../api/members.md#add-a-member-to-a-group-or-project)
    by using your personal access token.
 1. [Add the service account to protected environments](../../ci/environments/protected_environments.md#protecting-environments).
-1. [Generate a service account token](../../api/group_service_accounts.md#create-a-personal-access-token-for-a-group-service-account)
+1. [Generate a service account token](../../api/service_accounts.md#create-a-personal-access-token-for-a-group-service-account)
    by using your personal access token.
 1. Copy the service account token value.
 
