@@ -13,7 +13,7 @@ module API
             :unique_host,
             :root_directory,
             :primary_domain,
-            :top_level_namespace_path
+            :root_namespace_id
         end
       end
     end

@@ -19,6 +19,7 @@ module Gitlab
               MissingIndexes,
               MissingTriggers,
               MissingForeignKeys,
+              MissingSequences,
               DifferentDefinitionTables,
               DifferentDefinitionIndexes,
               DifferentDefinitionTriggers,

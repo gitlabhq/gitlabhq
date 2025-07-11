@@ -192,7 +192,6 @@ RSpec/VerifiedDoubleReference:
     - 'spec/services/commits/commit_patch_service_spec.rb'
     - 'spec/services/error_tracking/issue_update_service_spec.rb'
     - 'spec/services/import/github/cancel_project_import_service_spec.rb'
-    - 'spec/services/import/github/gists_import_service_spec.rb'
     - 'spec/services/incident_management/timeline_events/create_service_spec.rb'
     - 'spec/services/issues/close_service_spec.rb'
     - 'spec/services/merge_requests/after_create_service_spec.rb'

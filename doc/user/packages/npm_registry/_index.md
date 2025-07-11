@@ -27,16 +27,15 @@ You don't need to authenticate if the project or the group is public.
 If the project is internal, you must be a registered user on the GitLab instance.
 An anonymous user cannot pull packages from an internal project.
 
-To authenticate, you can use:
+To authenticate, you can use either:
 
-- A [personal access token](../../profile/personal_access_tokens.md)
+- A [personal access token](../../profile/personal_access_tokens.md), [group access token](../../../user/group/settings/group_access_tokens.md), or [project access token](../../../user/project/settings/project_access_tokens.md)
   with the scope set to `api`.
 - A [deploy token](../../project/deploy_tokens/_index.md) with the scope set to
   `read_package_registry`, `write_package_registry`, or both.
-- A [CI/CD job token](../../../ci/jobs/ci_job_token.md).
+- A [CI/CD job token](../../../ci/jobs/ci_job_token.md) if you want to publish packages with a CI/CD pipeline.
 
 If your organization uses two-factor authentication (2FA), you must use a personal access token with the scope set to `api`.
-If you want to publish a package with a CI/CD pipeline, you must use a CI/CD job token.
 For more information, review the [guidance on tokens](../package_registry/supported_functionality.md#authenticate-with-the-registry).
 
 Do not use authentication methods other than the methods documented here. Undocumented authentication methods might be removed in the future.

@@ -70,9 +70,10 @@
         "null"
       ]
     },
-    "top_level_namespace_path": {
+    "root_namespace_id": {
       "type": [
-        "string"
+        "integer",
+        "null"
       ]
     }
   },

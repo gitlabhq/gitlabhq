@@ -23984,6 +23984,66 @@ msgstr ""
 msgid "DuoEnterprise|You now have access to GitLab Duo Enterprise, which boosts your efficiency and effectiveness by reducing the time required to write and understand code."
 msgstr ""
 
+msgid "DuoFeatures|Add each exclusion on a separate line."
+msgstr ""
+
+msgid "DuoFeatures|Allows the specified file in the specified directory, even if excluded by previous rules"
+msgstr ""
+
+msgid "DuoFeatures|Cancel"
+msgstr ""
+
+msgid "DuoFeatures|Delete exclusion rule?"
+msgstr ""
+
+msgid "DuoFeatures|Do you want to delete this exclusion rule?"
+msgstr ""
+
+msgid "DuoFeatures|Excludes all .env files"
+msgstr ""
+
+msgid "DuoFeatures|Excludes all .key files in any subdirectory"
+msgstr ""
+
+msgid "DuoFeatures|Excludes entire secrets directory"
+msgstr ""
+
+msgid "DuoFeatures|Excludes the specified file"
+msgstr ""
+
+msgid "DuoFeatures|Failed to delete the exclusion rule. Try again."
+msgstr ""
+
+msgid "DuoFeatures|Files or directories"
+msgstr ""
+
+msgid "DuoFeatures|GitLab Duo context exclusions"
+msgstr ""
+
+msgid "DuoFeatures|Manage Exclusions"
+msgstr ""
+
+msgid "DuoFeatures|Manage exclusions"
+msgstr ""
+
+msgid "DuoFeatures|No exclusion rules defined. Add a rule to exclude files from GitLab Duo context."
+msgstr ""
+
+msgid "DuoFeatures|Pattern"
+msgstr ""
+
+msgid "DuoFeatures|Save exclusions"
+msgstr ""
+
+msgid "DuoFeatures|Specify project files and directories that GitLab Duo will not access. Excluded content is never sent to AI models. %{linkStart}learn more%{linkEnd}."
+msgstr ""
+
+msgid "DuoFeatures|The exclusion rule was deleted."
+msgstr ""
+
+msgid "DuoFeatures|View examples of exclusions."
+msgstr ""
+
 msgid "DuoProDiscover|A single platform integrates the best AI model for each use case across the entire development workflow."
 msgstr ""
 

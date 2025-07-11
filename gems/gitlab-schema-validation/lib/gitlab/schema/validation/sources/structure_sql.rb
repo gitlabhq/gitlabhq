@@ -32,6 +32,10 @@ module Gitlab
             table_map[table_name]
           end
 
+          def fetch_sequence_by_name(sequence_name)
+            sequence_map[sequence_name]
+          end
+
           def index_exists?(index_name)
             !!fetch_index_by_name(index_name)
           end
@@ -48,12 +52,28 @@ module Gitlab
             !!fetch_table_by_name(table_name)
           end
 
+          def sequence_exists?(sequence_name)
+            !!fetch_sequence_by_name(sequence_name)
+          end
+
           def indexes
             @indexes ||= map_with_default_schema(index_statements, SchemaObjects::Index)
           end
 
           def triggers
             @triggers ||= map_with_default_schema(trigger_statements, SchemaObjects::Trigger)
+          end
+
+          def sequences
+            sequence_map.values
+          end
+
+          def sequence_map
+            @sequences ||= begin
+              parser = Gitlab::Schema::Validation::Sources::SequenceStructureSqlParser.new(
+                parsed_structure_file, schema_name)
+              parser.execute.transform_values! { |sequence| SchemaObjects::Sequence.new(sequence) }
+            end
           end
 
           def foreign_keys
@@ -132,7 +152,7 @@ module Gitlab
           end
 
           def parsed_structure_file
-            PgQuery.parse(File.read(structure_file_path))
+            @parsed_structure_file ||= PgQuery.parse(File.read(structure_file_path))
           end
 
           def map_with_default_schema(statements, validation_class)

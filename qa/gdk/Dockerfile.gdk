@@ -1,29 +1,40 @@
+ARG MISE_DATA_DIR=/home/gdk/.local/share/mise
+ARG GDK_DIR=/home/gdk/gitlab-development-kit
+
 ARG GDK_SHA=ee1e28c9048d9adba0c575b78adf868eeb70e26f
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 
 FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/mise-bootstrapped-verify/main:${GDK_BASE_TAG_PREFIX}${GDK_SHA} AS base
 
+ARG MISE_DATA_DIR
+ARG GDK_DIR
 ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true \
-    TOOL_VERSION_MANAGER=mise
+    MISE_DATA_DIR=${MISE_DATA_DIR} \
+    MISE_TRUSTED_CONFIG_PATHS=${GDK_DIR}
 
 # Disable idiomatic version files like .ruby-version by default and only rely on .tool-versions
 RUN mise settings add idiomatic_version_file_enable_tools "[]"
 
-# Clone GDK at specific sha and bootstrap packages
+# Clone GDK at specific sha
 #
 ARG GDK_SHA
 RUN set -eux; \
     git clone --depth 1 https://gitlab.com/gitlab-org/gitlab-development-kit.git && cd gitlab-development-kit; \
     git fetch --depth 1 origin ${GDK_SHA} && git -c advice.detachedHead=false checkout ${GDK_SHA}; \
-    mkdir gitlab \
-    && make bootstrap \
-    && sudo apt-get autoclean
+    mkdir gitlab
 
-WORKDIR /home/gdk/gitlab-development-kit
+WORKDIR ${GDK_DIR}
 
 COPY --chown=gdk:gdk qa/gdk/gdk.yml ./
+
+# Bootstrap gdk
+RUN set -eux; \
+    make bootstrap \
+    && sudo apt-get autoclean \
+    && rm -rf ${MISE_DATA_DIR}/downloads \
+    && rm -rf ${MISE_DATA_DIR}/installs/ruby/*/lib/ruby/gems/*/cache
 
 # Build gitlab-shell
 #
@@ -32,8 +43,7 @@ FROM base AS gitlab-shell
 COPY --chown=gdk:gdk GITLAB_SHELL_VERSION ./gitlab/
 RUN make gitlab-shell-setup \
     && cd gitlab-shell \
-    && go clean -cache -modcache -r \
-    && rm -rf /home/gdk/.local/share/mise/installs/ruby/*/lib/ruby/gems/*/cache
+    && go clean -cache -modcache -r
 
 # Build gitlab-workhorse
 #
@@ -64,24 +74,35 @@ FROM base AS gitlab-gems
 COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
-RUN set -x \
-    && make gitlab-asdf-install \
+RUN set -eux; \
+    make gitlab-asdf-install \
     && make .gitlab-bundle \
-    && cd gitlab \
-    && rm -rf /home/gdk/.local/share/mise/installs/ruby/*/lib/ruby/gems/*/cache
+    && rm -rf ${MISE_DATA_DIR}/installs/ruby/*/lib/ruby/gems/*/cache
 
 # Install gitlab npm dependencies
 #
 FROM base AS gitlab-node-modules
 
-COPY --chown=gdk:gdk package.json yarn.lock ./gitlab/
+COPY --chown=gdk:gdk package.json yarn.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk scripts/frontend/postinstall.js ./gitlab/scripts/frontend/postinstall.js
 COPY --chown=gdk:gdk scripts/frontend/preinstall.mjs ./gitlab/scripts/frontend/preinstall.mjs
 RUN make .gitlab-yarn && yarn cache clean
 
+# Build gitlab-topology-service
+#
+FROM base AS gitlab-topology-service
+RUN make gitlab-topology-service-setup
+
+# Build gitlab-http-router
+#
+FROM base AS gitlab-http-router
+RUN make gitlab-http-router-setup
+
 # Build final image
 #
 FROM base AS gdk
+
+ARG GDK_DIR
 
 # Set global defaults so we can initialize empty git repo
 RUN git config --global init.defaultBranch master \
@@ -89,19 +110,26 @@ RUN git config --global init.defaultBranch master \
     && git config --global user.name "gdk"
 
 # Copy all components from separate docker stages
-COPY --from=gitlab-shell --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab-shell ./gitlab-shell/
-COPY --from=gitaly --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitaly ./gitaly/
-COPY --from=workhorse --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab/workhorse ./gitlab/workhorse/
-COPY --from=gitlab-gems --chown=gdk:gdk /home/gdk/.local/share/mise/installs/ruby /home/gdk/.local/share/mise/installs/ruby/
-COPY --from=gitlab-node-modules --chown=gdk:gdk /home/gdk/gitlab-development-kit/gitlab/node_modules ./gitlab/node_modules/
+COPY --from=gitlab-shell --chown=gdk:gdk ${GDK_DIR}/gitlab-shell ./gitlab-shell/
+COPY --from=gitlab-http-router --chown=gdk:gdk ${GDK_DIR}/gitlab-http-router ./gitlab-http-router
+COPY --from=gitaly --chown=gdk:gdk ${GDK_DIR}/gitaly ./gitaly/
+COPY --from=workhorse --chown=gdk:gdk ${GDK_DIR}/gitlab/workhorse ./gitlab/workhorse/
+COPY --from=gitlab-node-modules --chown=gdk:gdk ${GDK_DIR}/gitlab/node_modules ./gitlab/node_modules/
+# TODO: Check if skipping setup can be added same way as gitaly and other services, otherwise 'make all' rebuilds topology-service on all rails code changes
+# https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/2802
+COPY --from=gitlab-topology-service --chown=gdk:gdk ${GDK_DIR}/gitlab-topology-service ./gitlab-topology-service
+# Copy all mise tools and gems for main rails app
+COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/installs/ ${MISE_DATA_DIR}/installs/
+COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/shims/ ${MISE_DATA_DIR}/shims/
+COPY --from=gitlab-gems --chown=gdk:gdk ${MISE_DATA_DIR}/plugins/ ${MISE_DATA_DIR}/plugins/
 
 # Copy code
 COPY --chown=gdk:gdk ./ ./gitlab/
 COPY --chown=gdk:gdk qa/gdk/entrypoint ../
 
 # Create custom hook for E2E tests
-RUN mkdir -p /home/gdk/gitlab-development-kit/gitaly-custom-hooks/pre-receive.d
-COPY --chown=gdk:gdk --chmod=700 qa/gdk/pre-receive /home/gdk/gitlab-development-kit/gitaly-custom-hooks/pre-receive.d
+RUN mkdir -p ${GDK_DIR}/gitaly-custom-hooks/pre-receive.d
+COPY --chown=gdk:gdk --chmod=700 qa/gdk/pre-receive ${GDK_DIR}/gitaly-custom-hooks/pre-receive.d
 
 # Set up GDK
 RUN set -eux; \
@@ -112,8 +140,6 @@ RUN set -eux; \
     gdk config set gitaly.skip_setup true \
     && gdk config set workhorse.skip_setup true \
     && gdk config set gitlab_shell.skip_setup true \
-    && cp .ruby-version ./gitlab/ \
-    && cp .tool-versions ./gitlab/ \
     && make redis/redis.conf all \
     && gdk kill \
     && rm -rf ./gitlab/.git

@@ -6,10 +6,10 @@ module Gitlab
       class OauthResourceOwnerRedirectResolver
         include ::Gitlab::Routing
 
-        attr_reader :top_level_namespace_path
+        attr_reader :root_namespace_id
 
-        def initialize(top_level_namespace_path)
-          @top_level_namespace_path = top_level_namespace_path
+        def initialize(root_namespace_id)
+          @root_namespace_id = root_namespace_id
         end
 
         def resolve_redirect_url

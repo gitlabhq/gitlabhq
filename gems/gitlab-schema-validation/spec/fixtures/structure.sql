@@ -1,3 +1,7 @@
+CREATE SEQUENCE missing_sequence;
+CREATE SEQUENCE shared_audit_event_id_seq;
+CREATE SEQUENCE abuse_events_id_seq;
+
 CREATE INDEX missing_index ON events USING btree (created_at, author_id);
 
 CREATE UNIQUE INDEX wrong_index ON table_name (column_name, column_name_2);

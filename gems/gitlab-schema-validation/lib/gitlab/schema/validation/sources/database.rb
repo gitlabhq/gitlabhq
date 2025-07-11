@@ -27,6 +27,10 @@ module Gitlab
             table_map[table_name]
           end
 
+          def fetch_sequence_by_name(sequence_name)
+            sequence_map[sequence_name]
+          end
+
           def index_exists?(index_name)
             index = index_map[index_name]
 
@@ -59,6 +63,10 @@ module Gitlab
             true
           end
 
+          def sequence_exists?(sequence_name)
+            !!fetch_sequence_by_name(sequence_name)
+          end
+
           def indexes
             index_map.values
           end
@@ -73,6 +81,10 @@ module Gitlab
 
           def tables
             table_map.values
+          end
+
+          def sequences
+            sequence_map.values
           end
 
           private
@@ -110,6 +122,12 @@ module Gitlab
               columns = stmt.map { |column| SchemaObjects::Column.new(Adapters::ColumnDatabaseAdapter.new(column)) }
 
               SchemaObjects::Table.new(stmt.first['table_name'], columns)
+            end
+          end
+
+          def sequence_map
+            @sequence_map ||= fetch_sequences.transform_values! do |stmt|
+              SchemaObjects::Sequence.new(Adapters::SequenceDatabaseAdapter.new(stmt.first))
             end
           end
 
@@ -186,6 +204,44 @@ module Gitlab
             # rubocop:enable Rails/SquishedSQLHeredocs
 
             connection.exec_query(sql, [connection.current_schema])
+          end
+
+          # Fetch all the sequences
+          def fetch_sequences
+            # rubocop:disable Rails/SquishedSQLHeredocs
+            sql = <<~SQL
+              SELECT
+                c.relname AS sequence_name,
+                n.nspname AS schema,
+                pg_catalog.pg_get_userbyid(c.relowner) AS user_owner,
+                s.seqstart AS start_value,
+                s.seqincrement AS increment_by,
+                s.seqmin AS min_value,
+                s.seqmax AS max_value,
+                s.seqcycle AS cycle,
+                s.seqcache AS cache_size,
+                pg_catalog.obj_description(c.oid, 'pg_class') AS comment,
+                CASE
+                  WHEN d.refobjid IS NOT NULL THEN
+                    ref_class.relname || '.' || ref_attr.attname
+                  ELSE NULL
+                END AS owned_by_column
+              FROM pg_catalog.pg_class c
+              INNER JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+              LEFT JOIN pg_catalog.pg_sequence s ON s.seqrelid = c.oid
+              LEFT JOIN pg_catalog.pg_depend d ON d.objid = c.oid
+                AND d.deptype = 'a'
+                AND d.classid = 'pg_class'::regclass
+              LEFT JOIN pg_catalog.pg_class ref_class ON ref_class.oid = d.refobjid
+              LEFT JOIN pg_catalog.pg_attribute ref_attr ON ref_attr.attrelid = d.refobjid
+                AND ref_attr.attnum = d.refobjsubid
+              WHERE c.relkind = 'S'
+                AND n.nspname IN ($1, $2)
+              ORDER BY c.relname, n.nspname
+            SQL
+            # rubocop:enable Rails/SquishedSQLHeredocs
+
+            connection.exec_query(sql, schemas).group_by { |seq| "#{seq['schema']}.#{seq['sequence_name']}" }
           end
         end
       end

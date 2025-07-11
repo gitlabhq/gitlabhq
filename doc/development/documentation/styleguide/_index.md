@@ -144,7 +144,8 @@ Do not add an `H1` heading in Markdown because there can be only one for each pa
 
 ### Description lists in Markdown
 
-To define terms or differentiate between options, use description lists.
+To define terms or differentiate between options, use description lists. For a list of UI elements,
+use a regular [list](#lists) instead of a description list.
 
 Do not mix description lists with other styles.
 
@@ -509,6 +510,8 @@ Use bold for:
 - UI elements with a visible label. Match the text and capitalization of the label.
 - Navigation paths.
 
+Do not use bold for keywords or emphasis.
+
 UI elements include:
 
 - Buttons
@@ -530,16 +533,16 @@ To make text bold, wrap it with double asterisks (`**`). For example:
 1. Select **Cancel**.
 ```
 
-When you use bold format for UI elements or keywords, place any punctuation outside the bold tag.
+When you use bold format for UI elements, place any punctuation outside the bold tag.
 This rule includes periods, commas, colons, and right-angle brackets (`>`).
 
-The punctuation is part of the sentence structure rather than the UI element or keyword that you're emphasizing.
+The punctuation is part of the sentence structure rather than the UI element that you're emphasizing.
 
-Include punctuation in the bold tag when it's part of the UI element or keyword itself.
+Include punctuation in the bold tag when it's part of the UI element itself.
 
 For example:
 
-- `**Option**: This an option description.`
+- `**Start a review**: This a description of the button that starts a review.`
 - `Select **Overview** > **Users**.`
 
 ### Inline code
@@ -638,6 +641,14 @@ Use lists to present information in a format that is easier to scan.
   - Do this thing.
   - Do this other thing.
   ```
+
+- Do not use [bold](#bold) formatting to define keywords or concepts in a list. Use bold for UI element labels only. For example:
+
+  - `**Start a review**: This a description of the button that starts a review.`
+  - `Offline environments: This is a description of offline environments.`
+
+  For keywords and concepts, consider a [reference topic](../topic_types/reference.md) or
+  [description list](#description-lists-in-markdown) for alternative formatting.
 
 ### Choose between an ordered or unordered list
 
@@ -781,7 +792,7 @@ To turn on the setting:
 
 - In the UI:
 
-  1. In the VS Code menu, go to **Code > Settings > Settings**.
+  1. In the VS Code menu, go to **Code** > **Settings** > **Settings**.
   1. Search for `Limit Last Column Length`.
   1. In the **Limit Last Column Length** dropdown list, select **Follow header row length**.
 
@@ -1125,7 +1136,7 @@ elements:
 
 ### Names for UI elements
 
-All UI elements [should be **bold**](#bold).
+All UI elements [should be **bold**](#bold). The `>` in the navigation path should not be bold.
 
 Guidance for individual UI elements is in [the word list](word_list.md).
 
@@ -1139,7 +1150,7 @@ To open project settings:
 
 ```markdown
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1147,7 +1158,7 @@ To open group settings:
 
 ```markdown
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1156,7 +1167,7 @@ To open settings for a top-level group:
 ```markdown
 1. On the left sidebar, select **Search or go to** and find your group.
    This group must be at the top level.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1164,7 +1175,7 @@ To open either project or group settings:
 
 ```markdown
 1. On the left sidebar, select **Search or go to** and find your project or group.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 ```
 
@@ -1184,7 +1195,7 @@ To open the **Admin** area:
 
 ```markdown
 1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 ```
 
 You do not have to repeat `On the left sidebar` in your second step.
@@ -1262,7 +1273,7 @@ Use the phrase **Complete the fields**.
 For example:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Repository**.
+1. Select **Settings** > **Repository**.
 1. Expand **Push rules**.
 1. Complete the fields.
 

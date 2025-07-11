@@ -31,6 +31,7 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   subject(:lookup_path) do
     described_class.new(
       deployment: deployment,
+      root_namespace_id: project.namespace.root_ancestor.id,
       trim_prefix: trim_prefix,
       access_control: access_control
     )
@@ -49,12 +50,6 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   describe '#project_id' do
     it 'delegates to Project#id' do
       expect(lookup_path.project_id).to eq(project.id)
-    end
-  end
-
-  describe '#top_level_namespace_path' do
-    it 'returns the top level namespace path' do
-      expect(lookup_path.top_level_namespace_path).to eq(group.path)
     end
   end
 
@@ -85,7 +80,9 @@ RSpec.describe Pages::LookupPath, feature_category: :pages do
   end
 
   describe '#https_only' do
-    subject(:lookup_path) { described_class.new(deployment: deployment, domain: domain) }
+    subject(:lookup_path) do
+      described_class.new(deployment: deployment, root_namespace_id: project.namespace.root_ancestor.id, domain: domain)
+    end
 
     context 'when no domain provided' do
       let(:domain) { nil }

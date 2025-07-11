@@ -4,9 +4,10 @@ module Pages
   class LookupPath
     include Gitlab::Utils::StrongMemoize
 
-    def initialize(deployment:, domain: nil, trim_prefix: nil, access_control: false)
+    def initialize(deployment:, root_namespace_id:, domain: nil, trim_prefix: nil, access_control: false)
       @deployment = deployment
       @project = deployment.project
+      @root_namespace_id = root_namespace_id
       @domain = domain
       @trim_prefix = trim_prefix || @project.full_path
       @access_control = access_control
@@ -71,15 +72,9 @@ module Pages
     end
     strong_memoize_attr :primary_domain
 
-    def top_level_namespace_path
-      project_path = project.full_path
-      project_path.split('/').first
-    end
-    strong_memoize_attr :top_level_namespace_path
-
     private
 
-    attr_reader :project, :deployment, :trim_prefix, :domain
+    attr_reader :project, :root_namespace_id, :deployment, :trim_prefix, :domain
 
     def prefix_value
       return deployment.path_prefix if project.pages_url_builder.is_namespace_homepage?

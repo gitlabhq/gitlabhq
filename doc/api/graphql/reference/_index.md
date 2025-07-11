@@ -2252,6 +2252,30 @@ Input type: `AiCatalogAgentCreateInput`
 | <a id="mutationaicatalogagentcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationaicatalogagentcreateitem"></a>`item` | [`AiCatalogItem`](#aicatalogitem) | Item created. |
 
+### `Mutation.aiCatalogAgentDelete`
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `AiCatalogAgentDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentdeleteid"></a>`id` | [`AiCatalogItemID!`](#aicatalogitemid) | Global ID of the catalog Agent to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaicatalogagentdeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaicatalogagentdeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationaicatalogagentdeletesuccess"></a>`success` | [`Boolean!`](#boolean) | Returns true if catalog Agent was successfully deleted. |
+
 ### `Mutation.aiDuoWorkflowCreate`
 
 {{< details >}}
@@ -13356,6 +13380,33 @@ Input type: `WorkItemExportInput`
 | <a id="mutationworkitemexportclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemexporterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 | <a id="mutationworkitemexportmessage"></a>`message` | [`String`](#string) | Export request result message. |
+
+### `Mutation.workItemHierarchyAddChildrenItems`
+
+Adds children to a given work item's hierarchy by Global ID.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemHierarchyAddChildrenItemsInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemhierarchyaddchildrenitemschildrenids"></a>`childrenIds` | [`[WorkItemID!]!`](#workitemid) | Global IDs of children work items. |
+| <a id="mutationworkitemhierarchyaddchildrenitemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemhierarchyaddchildrenitemsid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemhierarchyaddchildrenitemsaddedchildren"></a>`addedChildren` | [`[WorkItem!]!`](#workitem) | Work items that were added as children. |
+| <a id="mutationworkitemhierarchyaddchildrenitemsclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemhierarchyaddchildrenitemserrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
 
 ### `Mutation.workItemRemoveLinkedItems`
 
@@ -36763,6 +36814,7 @@ Project-level settings for product analytics provider.
 | <a id="projectdetailedimportstatus"></a>`detailedImportStatus` | [`DetailedImportStatus`](#detailedimportstatus) | Detailed import status of the project. |
 | <a id="projectdora"></a>`dora` | [`Dora`](#dora) | Project's DORA metrics. |
 | <a id="projectduoagenticchatavailable"></a>`duoAgenticChatAvailable` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 18.1. **Status**: Experiment. User access to Duo agentic Chat feature. |
+| <a id="projectduocontextexclusionsettings"></a>`duoContextExclusionSettings` {{< icon name="warning-solid" >}} | [`DuoContextExclusionSettings`](#duocontextexclusionsettings) | **Introduced** in GitLab 18.2. **Status**: Experiment. Settings for excluding files from Duo context. |
 | <a id="projectduofeaturesenabled"></a>`duoFeaturesEnabled` {{< icon name="warning-solid" >}} | [`Boolean`](#boolean) | **Introduced** in GitLab 16.9. **Status**: Experiment. Indicates whether GitLab Duo features are enabled for the project. |
 | <a id="projectduoworkflowstatuscheck"></a>`duoWorkflowStatusCheck` {{< icon name="warning-solid" >}} | [`DuoWorkflowEnablement`](#duoworkflowenablement) | **Introduced** in GitLab 17.7. **Status**: Experiment. Indicates whether Duo Agent Platform is enabled for the project. |
 | <a id="projectexplorecatalogpath"></a>`exploreCatalogPath` {{< icon name="warning-solid" >}} | [`String`](#string) | **Introduced** in GitLab 17.6. **Status**: Experiment. Path to the project catalog resource. |

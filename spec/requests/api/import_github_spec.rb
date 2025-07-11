@@ -351,9 +351,10 @@ RSpec.describe API::ImportGithub, feature_category: :importers do
 
     context 'when rate limit reached' do
       before do
-        allow(Import::Github::GistsImportService)
-          .to receive(:new).with(user, client, access_params)
-          .and_raise(Gitlab::GithubImport::RateLimitError)
+        allow_next_instance_of(Import::Github::GistsImportService) do |service|
+          allow(service).to receive(:execute)
+            .and_return({ status: :error, message: 'GitHub API rate limit exceeded', http_status: 429 })
+        end
       end
 
       it 'returns 429 error' do

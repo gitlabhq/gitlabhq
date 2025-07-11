@@ -1,5 +1,7 @@
+import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import GitlabDuoSettings from '~/pages/projects/shared/permissions/components/gitlab_duo_settings.vue';
+import ExclusionSettings from '~/pages/projects/shared/permissions/components/exclusion_settings.vue';
 import { parseBoolean } from '~/lib/utils/common_utils';
 
 const defaultProps = {
@@ -10,12 +12,15 @@ const defaultProps = {
   amazonQAutoReviewEnabled: false,
   duoFeaturesLocked: false,
   licensedAiFeaturesAvailable: true,
+  duoContextExclusionSettings: {
+    exclusion_rules: ['*.log', 'node_modules/'],
+  },
 };
 
 describe('GitlabDuoSettings', () => {
   let wrapper;
 
-  const mountComponent = (props = {}, mountFn = mountExtended) => {
+  const mountComponent = (props = {}, provide = {}, mountFn = mountExtended) => {
     const propsData = {
       ...defaultProps,
       ...props,
@@ -23,6 +28,12 @@ describe('GitlabDuoSettings', () => {
 
     return mountFn(GitlabDuoSettings, {
       propsData,
+      provide: {
+        glFeatures: {
+          useDuoContextExclusion: true,
+          ...provide,
+        },
+      },
     });
   };
 
@@ -30,9 +41,21 @@ describe('GitlabDuoSettings', () => {
   const findSaveButton = () => wrapper.findByTestId('gitlab-duo-save-button');
   const findDuoSettings = () => wrapper.findByTestId('duo-settings');
   const findDuoCascadingLockIcon = () => wrapper.findByTestId('duo-cascading-lock-icon');
+  const findExclusionSettings = () => wrapper.findComponent(ExclusionSettings);
+  const findExclusionRulesHiddenInputs = () =>
+    wrapper.findAll(
+      'input[name="project[project_setting_attributes][duo_context_exclusion_settings][exclusion_rules][]"]',
+    );
 
   beforeEach(() => {
     wrapper = mountComponent();
+  });
+
+  afterEach(() => {
+    if (wrapper) {
+      wrapper.destroy();
+      wrapper = null;
+    }
   });
 
   it('renders the component correctly', () => {
@@ -139,7 +162,7 @@ describe('GitlabDuoSettings', () => {
     });
 
     describe('when areDuoSettingsLocked is true', () => {
-      beforeEach(() => {
+      it('shows CascadingLockIcon when cascadingSettingsData is provided', () => {
         wrapper = mountComponent({
           cascadingSettingsData: {
             lockedByAncestor: false,
@@ -148,13 +171,18 @@ describe('GitlabDuoSettings', () => {
           },
           duoFeaturesLocked: true,
         });
-      });
-
-      it('shows CascadingLockIcon when cascadingSettingsData is provided', () => {
         expect(findDuoCascadingLockIcon().exists()).toBe(true);
       });
 
       it('passes correct props to CascadingLockIcon', () => {
+        wrapper = mountComponent({
+          cascadingSettingsData: {
+            lockedByAncestor: false,
+            lockedByApplicationSetting: false,
+            ancestorNamespace: null,
+          },
+          duoFeaturesLocked: true,
+        });
         expect(findDuoCascadingLockIcon().props()).toMatchObject({
           isLockedByGroupAncestor: false,
           isLockedByApplicationSettings: false,
@@ -192,6 +220,151 @@ describe('GitlabDuoSettings', () => {
         labelFor: null,
         locked: false,
       });
+    });
+  });
+
+  describe('ExclusionSettings', () => {
+    it('renders ExclusionSettings component when duo features are available', () => {
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: true },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(true);
+      expect(findExclusionSettings().props('exclusionRules')).toEqual(['*.log', 'node_modules/']);
+    });
+
+    it('does not render ExclusionSettings when duo features are not available', () => {
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: false },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(false);
+    });
+
+    it('does not render ExclusionSettings when feature flag is disabled', () => {
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: true },
+        { useDuoContextExclusion: false },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(false);
+    });
+
+    it('updates exclusion rules when ExclusionSettings emits update', async () => {
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: true },
+        { useDuoContextExclusion: true },
+      );
+      const newRules = ['*.log', 'node_modules/', '*.tmp'];
+
+      const exclusionSettings = findExclusionSettings();
+      expect(exclusionSettings.exists()).toBe(true);
+
+      await exclusionSettings.vm.$emit('update', newRules);
+
+      expect(wrapper.vm.exclusionRules).toEqual(newRules);
+    });
+
+    it('renders hidden inputs for exclusion rules form submission', () => {
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: true },
+        { useDuoContextExclusion: true },
+      );
+      const hiddenInputs = findExclusionRulesHiddenInputs();
+
+      expect(hiddenInputs).toHaveLength(2);
+      expect(hiddenInputs.at(0).attributes('value')).toBe('*.log');
+      expect(hiddenInputs.at(1).attributes('value')).toBe('node_modules/');
+    });
+
+    it('updates hidden inputs when exclusion rules change', async () => {
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: true },
+        { useDuoContextExclusion: true },
+      );
+      const newRules = ['*.tmp', 'cache/'];
+
+      const exclusionSettings = findExclusionSettings();
+      expect(exclusionSettings.exists()).toBe(true);
+
+      await exclusionSettings.vm.$emit('update', newRules);
+
+      const hiddenInputs = findExclusionRulesHiddenInputs();
+      expect(hiddenInputs).toHaveLength(2);
+      expect(hiddenInputs.at(0).attributes('value')).toBe('*.tmp');
+      expect(hiddenInputs.at(1).attributes('value')).toBe('cache/');
+
+      const nullHiddenInput = wrapper.findByTestId('exclusion-rule-input-null');
+      expect(nullHiddenInput.exists()).toBe(false);
+    });
+
+    it('handles empty exclusion rules', () => {
+      wrapper = mountComponent(
+        {
+          licensedAiFeaturesAvailable: true,
+          duoContextExclusionSettings: { exclusion_rules: [] },
+        },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(true);
+      expect(findExclusionSettings().props('exclusionRules')).toEqual([]);
+      expect(findExclusionRulesHiddenInputs()).toHaveLength(0);
+
+      // Check that a null hidden input is created for empty exclusion rules
+      const nullHiddenInput = wrapper.findByTestId('exclusion-rule-input-null');
+      expect(nullHiddenInput.exists()).toBe(true);
+    });
+
+    it('handles missing duo context exclusion settings', () => {
+      wrapper = mountComponent(
+        {
+          licensedAiFeaturesAvailable: true,
+          duoContextExclusionSettings: {},
+        },
+        { useDuoContextExclusion: true },
+      );
+
+      expect(findExclusionSettings().exists()).toBe(true);
+      expect(findExclusionSettings().props('exclusionRules')).toEqual([]);
+    });
+
+    it('submits form after DOM is updated when exclusion rules are updated', async () => {
+      // Create a mock form element
+      const mockForm = document.createElement('form');
+      const mockSubmit = jest.fn();
+      mockForm.submit = mockSubmit;
+
+      // Mock the closest method to return our mock form
+      const mockClosest = jest.fn().mockReturnValue(mockForm);
+
+      wrapper = mountComponent(
+        { licensedAiFeaturesAvailable: true },
+        { useDuoContextExclusion: true },
+      );
+
+      // Mock the $el.closest method
+      wrapper.vm.$el.closest = mockClosest;
+
+      const newRules = ['*.log', 'node_modules/', '*.tmp'];
+      const exclusionSettings = findExclusionSettings();
+
+      // Emit the update event
+      await exclusionSettings.vm.$emit('update', newRules);
+
+      // Wait for nextTick to ensure DOM updates are processed
+      await nextTick();
+
+      // Verify that closest was called with 'form'
+      expect(mockClosest).toHaveBeenCalledWith('form');
+
+      // Verify that form.submit() was called
+      expect(mockSubmit).toHaveBeenCalled();
+
+      // Verify that exclusion rules were updated
+      expect(wrapper.vm.exclusionRules).toEqual(newRules);
     });
   });
 });

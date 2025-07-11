@@ -24,6 +24,7 @@ RSpec.describe Gitlab::Schema::Validation::Validators::Base, feature_category: :
           Gitlab::Schema::Validation::Validators::MissingIndexes,
           Gitlab::Schema::Validation::Validators::MissingTriggers,
           Gitlab::Schema::Validation::Validators::MissingForeignKeys,
+          Gitlab::Schema::Validation::Validators::MissingSequences,
           Gitlab::Schema::Validation::Validators::DifferentDefinitionTables,
           Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes,
           Gitlab::Schema::Validation::Validators::DifferentDefinitionTriggers,

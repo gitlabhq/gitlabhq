@@ -151,18 +151,22 @@ Agentic Chat extends Chat capabilities with the following features:
 
 ### Chat feature comparison
 
-| Capability | Chat | Agentic Chat |
-|------------|------| -------------|
-| Ask general programming questions | Yes | Yes |
-| Get answers about currently open file in the editor | Yes | Yes. Provide the path of the file in your question. |
-| Provide context about specified files | Yes. Use `/include` to add a file to the conversation. | Yes. Provide the path of the file in your question. |
-| Autonomously search project contents | No | Yes |
-| Autonomously create files and change files | No | Yes. Ask it to change files. Note, it may overwrite changes that you have made manually and have not committed, yet. |
-| Retrieve issues and MRs without specifying IDs | No | Yes. Search by other criteria. For example, an MR or issue's title or assignee. |
-| Combine information from multiple sources | No | Yes |
-| Analyze pipeline logs | Yes. Requires Duo Enterprise add-on. | Yes |
-| Restart a conversation | Yes. Use `/reset`. | Yes. Use `/reset`. |
-| Delete a conversation | Yes. Use `/clear`.| No. |
+| Capability                                              | Chat |                                                         Agentic Chat                                                                                                          |
+| ------------                                            |------|                                                         -------------                                                                                                          |
+| Ask general programming questions |                       Yes  |                                                          Yes                                                                                                                   |
+| Get answers about currently open file in the editor |     Yes  |                                                          Yes. Provide the path of the file in your question.                                                                   |
+| Provide context about specified files |                   Yes. Use `/include` to add a file to the conversation. |        Yes. Provide the path of the file in your question.                                                                   |
+| Autonomously search project contents |                    No |                                                            Yes                                                                                                                   |
+| Autonomously create files and change files |              No |                                                            Yes. Ask it to change files. Note, it may overwrite changes that you have made manually and have not committed, yet.  |
+| Retrieve issues and MRs without specifying IDs |          No |                                                            Yes. Search by other criteria. For example, an MR or issue's title or assignee.                                       |
+| Combine information from multiple sources |               No |                                                            Yes                                                                                                                   |
+| Analyze pipeline logs |                                   Yes. Requires Duo Enterprise add-on. |                          Yes                                                                                                                   |
+| Restart a conversation |                                  Yes. Use `/reset`. |                                            Yes. Use `/reset`.                                                                                                    |
+| Delete a conversation |                                   Yes. Use `/clear`.|                                             No                                                                                                                    |
+| Create issues and MRs |                                   No |                                                            Yes                                                                                                                   |
+| Use Git |                                                 No |                                                            Yes, IDEs only                                                                                                        |
+| Run Shell commands |                                      No |                                                            Yes, IDEs only                                                                                                        |
+| Run MCP tools |                                      No |                                                            Yes, IDEs only                                                                                                          |
 
 ## Use cases
 

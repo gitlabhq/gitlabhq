@@ -173,12 +173,10 @@ $merge-request-sticky-header-height: 45px;
 
       &::after {
         content: '';
+        top: $calc-application-header-height;
         height: $merge-request-sticky-header-height;
         @include translucent-glass-background;
-        @apply gl-border-b gl-absolute gl-z-0 gl-hidden gl-top-0;
-
-        left: calc((100% + var(--application-bar-left) - 100vw) / 2);
-        width: calc(100vw - var(--application-bar-left));
+        @apply gl-border-b gl-fixed gl-left-0 gl-right-0 gl-z-0 gl-hidden;
       }
 
       @container sticky-header scroll-state(stuck: top) {

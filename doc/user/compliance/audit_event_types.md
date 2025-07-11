@@ -546,6 +546,8 @@ Audit event types belong to the following product categories.
 | [`policy_violations_detected`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193482) | Security policy violation is detected in the merge request | {{< icon name="dotted-circle" >}} No | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/549811) | Project |
 | [`policy_violations_resolved`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/193482) | Security policy violations are resolved in the merge request | {{< icon name="dotted-circle" >}} No | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/549812) | Project |
 | [`policy_yaml_invalidated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196721) | The policy YAML is invalidated in security policy project | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/work_items/550892) | Project |
+| [`security_policy_access_token_push_bypass`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196249) | Branch push that is blocked by a security policy is bypassed for configured access token | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/549644) | Project |
+| [`security_policy_service_account_push_bypass`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196249) | Branch push that is blocked by a security policy is bypassed for configured service account | {{< icon name="check-circle" >}} Yes | GitLab [18.2](https://gitlab.com/gitlab-org/gitlab/-/issues/549644) | Project |
 
 ### Security testing configuration
 

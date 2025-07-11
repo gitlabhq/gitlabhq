@@ -40,6 +40,7 @@ describe('ExtendedDashboardPanel', () => {
     it('sets the default props for the dashboard panel', () => {
       expect(findDashboardPanel().props()).toStrictEqual({
         containerClass: 'grid-stack-item-content',
+        bodyContentClass: '',
         borderColorClass: '',
         title: '',
         titleIcon: '',

@@ -248,6 +248,7 @@ module Types
     mount_mutation Mutations::WorkItems::LinkedItems::Remove, experiment: { milestone: '16.3' }
     mount_mutation Mutations::WorkItems::AddClosingMergeRequest, experiment: { milestone: '17.1' }
     mount_mutation Mutations::WorkItems::Hierarchy::Reorder, experiment: { milestone: '17.3' }
+    mount_mutation Mutations::WorkItems::Hierarchy::AddChildrenItems, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::BulkUpdate, experiment: { milestone: '17.4' }
     mount_mutation Mutations::WorkItems::BulkMove, experiment: { milestone: '18.2' }
     mount_mutation Mutations::WorkItems::UserPreference::Update, experiment: { milestone: '17.10' }

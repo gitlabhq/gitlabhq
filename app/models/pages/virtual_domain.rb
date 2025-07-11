@@ -18,7 +18,8 @@ module Pages
     end
 
     def lookup_paths
-      projects.flat_map { |project| lookup_paths_for(project) }
+      root_namespace_id = @namespace&.root_ancestor&.id
+      projects.flat_map { |project| lookup_paths_for(project, root_namespace_id) }
     end
 
     private
@@ -33,10 +34,11 @@ module Pages
       @namespace&.pages_access_control_trie&.covered?(project.namespace.traversal_ids)
     end
 
-    def lookup_paths_for(project)
+    def lookup_paths_for(project, root_namespace_id)
       deployments_for(project).map do |deployment|
         Pages::LookupPath.new(
           deployment: deployment,
+          root_namespace_id: root_namespace_id,
           trim_prefix: trim_prefix,
           domain: domain,
           access_control: access_control_for(project)

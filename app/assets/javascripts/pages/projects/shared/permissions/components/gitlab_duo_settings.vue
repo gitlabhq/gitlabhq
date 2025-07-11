@@ -5,6 +5,7 @@ import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { __, s__ } from '~/locale';
 import { duoHelpPath, amazonQHelpPath } from '../constants';
 import ProjectSettingRow from './project_setting_row.vue';
+import ExclusionSettings from './exclusion_settings.vue';
 
 export default {
   i18n: {
@@ -17,6 +18,7 @@ export default {
     GlButton,
     ProjectSettingRow,
     CascadingLockIcon,
+    ExclusionSettings,
   },
   mixins: [glFeatureFlagMixin()],
   props: {
@@ -50,11 +52,17 @@ export default {
       required: false,
       default: false,
     },
+    duoContextExclusionSettings: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
   },
   data() {
     return {
       autoReviewEnabled: this.amazonQAutoReviewEnabled,
       duoEnabled: this.duoFeaturesEnabled,
+      exclusionRules: this.duoContextExclusionSettings?.exclusion_rules || [],
     };
   },
   computed: {
@@ -76,12 +84,18 @@ export default {
 
       return null;
     },
+    shouldShowExclusionSettings() {
+      return this.licensedAiFeaturesAvailable && this.showDuoContextExclusion;
+    },
     showCascadingButton() {
       return (
         this.duoFeaturesLocked &&
         this.cascadingSettingsData &&
         Object.keys(this.cascadingSettingsData).length
       );
+    },
+    showDuoContextExclusion() {
+      return this.glFeatures.useDuoContextExclusion;
     },
   },
   watch: {
@@ -91,6 +105,14 @@ export default {
       } else {
         this.autoReviewEnabled = false;
       }
+    },
+  },
+  methods: {
+    handleExclusionRulesUpdate(rules) {
+      this.exclusionRules = rules;
+      this.$nextTick(() => {
+        this.$el.closest('form')?.submit();
+      });
     },
   },
 };
@@ -152,6 +174,33 @@ export default {
         </project-setting-row>
       </div>
     </project-setting-row>
+
+    <exclusion-settings
+      v-if="shouldShowExclusionSettings"
+      :exclusion-rules="exclusionRules"
+      @update="handleExclusionRulesUpdate"
+    />
+
+    <!-- Hidden inputs for form submission -->
+    <div v-if="exclusionRules.length > 0">
+      <input
+        v-for="(rule, index) in exclusionRules"
+        :key="index"
+        type="hidden"
+        :name="`project[project_setting_attributes][duo_context_exclusion_settings][exclusion_rules][]`"
+        :value="rule"
+      />
+    </div>
+
+    <!-- need to use a null for empty array due to strong params deep_munge -->
+    <div v-if="exclusionRules.length === 0">
+      <input
+        type="hidden"
+        :name="`project[project_setting_attributes][duo_context_exclusion_settings][exclusion_rules]`"
+        data-testid="exclusion-rule-input-null"
+        :value="null"
+      />
+    </div>
 
     <template #footer>
       <gl-button
