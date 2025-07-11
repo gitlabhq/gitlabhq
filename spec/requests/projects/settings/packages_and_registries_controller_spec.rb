@@ -32,7 +32,6 @@ RSpec.describe Projects::Settings::PackagesAndRegistriesController, feature_cate
       end
 
       it_behaves_like 'pushed feature flag', :packages_protected_packages_helm
-      it_behaves_like 'pushed feature flag', :packages_protected_packages_nuget
       it_behaves_like 'pushed feature flag', :packages_protected_packages_delete
       it_behaves_like 'pushed feature flag', :container_registry_protected_containers_delete
     end

@@ -28,13 +28,8 @@ module ActiveContext
       private
 
       def preflight_checks
-        unless ActiveContext::Config.indexing_enabled?
-          log 'indexing disabled. Execution is skipped.'
-          return false
-        end
-
-        unless adapter
-          log 'adapter not configured. Execution is skipped.'
+        unless ActiveContext.indexing?
+          log 'indexing disabled in config and adapter not configured. Execution is skipped.'
           return false
         end
 

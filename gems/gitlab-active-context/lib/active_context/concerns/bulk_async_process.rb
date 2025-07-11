@@ -11,7 +11,7 @@ module ActiveContext
       extend ActiveSupport::Concern
 
       def perform(*args)
-        return false unless ActiveContext::Config.indexing_enabled?
+        return false unless ActiveContext.indexing?
 
         if args.empty?
           enqueue_all_shards

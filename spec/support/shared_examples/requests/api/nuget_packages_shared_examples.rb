@@ -899,14 +899,6 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
 
         expect(json_response).to include 'message' => '403 Forbidden - Package protected.'
       end
-
-      context 'when feature flag :packages_protected_packages_nuget is disabled' do
-        before do
-          stub_feature_flags(packages_protected_packages_nuget: false)
-        end
-
-        it_behaves_like 'successful nuget upload'
-      end
     end
 
     context 'for personal access token' do

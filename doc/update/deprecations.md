@@ -1212,6 +1212,29 @@ In GitLab 18.6, we'll replace the compliance standards adherence dashboard with 
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="18.5">
+
+## GitLab 18.5
+
+<div class="deprecation " data-milestone="18.5">
+
+### Support for OpenSearch 1.x in advanced search
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">18.2</span>
+- Removal in GitLab <span class="milestone">18.5</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/554530).
+
+</div>
+
+The [maintenance window for OpenSearch 1.x](https://opensearch.org/releases/#maintenance-policy) has ended.
+For GitLab Self-Managed and GitLab Dedicated, administrators must upgrade their OpenSearch instance
+to use advanced search.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="18.3">
 
 ## GitLab 18.3

@@ -31,9 +31,7 @@ module Types
 
         value 'NUGET',
           value: 'nuget',
-          experiment: { milestone: '18.0' },
-          description: 'Packages of the NuGet format. ' \
-            'Available only when feature flag `packages_protected_packages_nuget` is enabled.'
+          description: 'Packages of the NuGet format.'
 
         value 'PYPI',
           value: 'pypi',

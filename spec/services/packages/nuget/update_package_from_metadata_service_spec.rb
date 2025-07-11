@@ -385,14 +385,6 @@ RSpec.describe Packages::Nuget::UpdatePackageFromMetadataService, :clean_gitlab_
 
       shared_examples 'protected package' do
         it_behaves_like 'raising an', described_class::ProtectedPackageError, with_message: "Package 'DummyProject.DummyPackage' with version '1.0.0' is protected"
-
-        context 'when feature flag :packages_protected_packages_nuget is disabled' do
-          before do
-            stub_feature_flags(packages_protected_packages_nuget: false)
-          end
-
-          it_behaves_like 'updates package and package file and creates metadatum'
-        end
       end
 
       where(:package_name_pattern, :minimum_access_level_for_push, :package_creator, :package_publishing_actor, :shared_examples_name) do

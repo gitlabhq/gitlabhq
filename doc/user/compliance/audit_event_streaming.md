@@ -47,51 +47,6 @@ the streaming destination.
 
 {{< /alert >}}
 
-## Activate or deactivate streaming destinations
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537096) in GitLab 18.2.
-
-{{< /history >}}
-
-You can temporarily deactivate audit event streaming to a destination without deleting the destination configuration. When a streaming destination is deactivated:
-
-- Audit events stop streaming to that destination immediately.
-- The destination configuration is preserved.
-- You can reactivate the destination at any time.
-- Other active destinations continue to receive events.
-
-### Deactivate a streaming destination
-
-Prerequisites:
-
-- Owner role for a top-level group.
-
-To deactivate a streaming destination:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the stream to expand.
-1. Clear the **Active** checkbox.
-1. Select **Save** to deactivate the streaming destination.
-
-The destination shows as **Inactive** and stops receiving audit events.
-
-### Activate a streaming destination
-
-To reactivate a previously deactivated streaming destination:
-
-1. On the left sidebar, at the bottom, select **Admin**.
-1. Select **Monitoring > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the stream to expand.
-1. Select the **Active** checkbox.
-1. Select **Save** to activate the streaming destination.
-
-The destination resumes receiving audit events immediately.
-
 ## HTTP destinations
 
 Prerequisites:
@@ -121,19 +76,6 @@ To add streaming destinations to a top-level group:
    20 headers per streaming destination.
 1. After all headers have been filled out, select **Add** to add the new streaming destination.
 
-### List HTTP destinations
-
-Prerequisites:
-
-- Owner role for a group.
-
-To list the streaming destinations for a top-level group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the stream to expand it and see all the custom HTTP headers.
-
 ### Update an HTTP destination
 
 Prerequisites:
@@ -160,35 +102,6 @@ To update a streaming destination's custom HTTP headers:
 1. To make the header active, select the **Active** checkbox. The header will be sent with the audit event.
 1. Select **Add header** to create a new name and value pair. Enter as many name and value pairs as required. You can add up to
    20 headers per streaming destination.
-1. Select **Save** to update the streaming destination.
-
-### Delete an HTTP destination
-
-Delete streaming destinations for a top-level group. When the last destination is successfully deleted, streaming is
-disabled for the top-level group.
-
-Prerequisites:
-
-- Owner role for a group.
-
-To delete a streaming destination:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the stream to expand.
-1. Select **Delete destination**.
-1. Confirm by selecting **Delete destination** in the dialog.
-
-To delete only the custom HTTP headers for a streaming destination:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the stream to expand.
-1. Locate the **Custom HTTP headers** table.
-1. Locate the header that you wish to remove.
-1. To the right of the header, select **Delete** ({{< icon name="remove" >}}).
 1. Select **Save** to update the streaming destination.
 
 ### Verify event authenticity
@@ -312,19 +225,6 @@ To add Google Cloud Logging streaming destinations to a top-level group:
 1. Enter a random string to use as a log ID for the new destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add** to add the new streaming destination.
 
-### List Google Cloud Logging destinations
-
-Prerequisites:
-
-- Owner role for a top-level group.
-
-To list Google Cloud Logging streaming destinations for a top-level group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the Google Cloud Logging stream to expand and see all the fields.
-
 ### Update a Google Cloud Logging destination
 
 {{< history >}}
@@ -348,21 +248,6 @@ To update Google Cloud Logging streaming destinations to a top-level group:
 1. Enter a random string to update the log ID for the destination. You can use this later to filter log results in Google Cloud.
 1. Select **Add a new private key** and enter a Google private key to update the private key.
 1. Select **Save** to update the streaming destination.
-
-### Delete a Google Cloud Logging streaming destination
-
-Prerequisites:
-
-- Owner role for a top-level group.
-
-To delete Google Cloud Logging streaming destinations to a top-level group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the Google Cloud Logging stream to expand.
-1. Select **Delete destination**.
-1. Confirm by selecting **Delete destination** in the dialog.
 
 ## AWS S3 destinations
 
@@ -396,53 +281,120 @@ To add AWS S3 streaming destinations to a top-level group:
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **AWS S3** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
-1. Enter the Access Key ID, Secret Access Key, Bucket Name, and AWS Region from previously-created AWS access key and bucket to add to the new destination.
+1. Enter the **Access Key ID**, **Secret Access Key**, **Bucket Name**, and **AWS Region** from previously-created AWS
+   access key and bucket to add to the new destination.
 1. Select **Add** to add the new streaming destination.
 
-### List AWS S3 destinations
+### Update an AWS S3 destination
 
 Prerequisites:
 
 - Owner role for a top-level group.
 
-To list AWS S3 streaming destinations for a top-level group:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Secure > Audit events**.
-1. On the main area, select the **Streams** tab.
-1. Select the AWS S3 stream to expand and see all the fields.
-
-### Update a AWS S3 destination
-
-Prerequisites:
-
-- Owner role for a top-level group.
-
-To update AWS S3 streaming destinations to a top-level group:
+To update an AWS S3 streaming destination to a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand.
 1. Enter a random string to use as a name for the destination.
-1. Enter the Access Key ID, Secret Access Key, Bucket Name, and AWS Region from previously-created AWS access key and bucket to update the destination.
-1. Select **Add a new Secret Access Key** and enter a AWS Secret Access Key to update the Secret Access Key.
-1. Select **Save** to update the streaming destination.
+1. To update the destination, enter the **Access Key ID**, **Secret Access Key**, **Bucket Name**, and **AWS Region**
+   from previously-created AWS access key and bucket.
+1. To update the Secret Access Key, select **Add a new Secret Access Key** and enter a AWS Secret Access Key.
+1. Select **Save**.
 
-### Delete a AWS S3 streaming destination
+## List streaming destinations
 
 Prerequisites:
 
 - Owner role for a top-level group.
 
-To delete AWS S3 streaming destinations to a top-level group:
+To list streaming destinations for a top-level group:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Secure > Audit events**.
 1. On the main area, select the **Streams** tab.
-1. Select the AWS S3 stream to expand.
+1. Select the stream to expand.
+
+## Activate or deactivate streaming destinations
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/537096) in GitLab 18.2.
+
+{{< /history >}}
+
+You can temporarily deactivate audit event streaming to a destination without deleting the destination configuration. When a streaming destination is deactivated:
+
+- Audit events stop streaming to that destination immediately.
+- The destination configuration is preserved.
+- You can reactivate the destination at any time.
+- Other active destinations continue to receive events.
+
+### Deactivate a streaming destination
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To deactivate a streaming destination:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
+1. Clear the **Active** checkbox.
+1. Select **Save**.
+
+The destination stops receiving audit events.
+
+### Activate a streaming destination
+
+To reactivate a previously deactivated streaming destination:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
+1. Select the **Active** checkbox.
+1. Select **Save**.
+
+The destination resumes receiving audit events immediately.
+
+## Delete streaming destinations
+
+Delete streaming destinations for a top-level group. When the last destination is successfully deleted, streaming is
+disabled for the top-level group.
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To delete streaming destinations to a top-level group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
 1. Select **Delete destination**.
-1. Confirm by selecting **Delete destination** in the dialog.
+1. To confirm, select **Delete destination**.
+
+### Delete only custom HTTP headers
+
+Prerequisites:
+
+- Owner role for a top-level group.
+
+To delete only the custom HTTP headers for a streaming destination:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Secure > Audit events**.
+1. On the main area, select the **Streams** tab.
+1. Select the stream to expand.
+1. Locate the **Custom HTTP headers** table.
+1. Locate the header that you wish to remove.
+1. To the right of the header, select **Delete** ({{< icon name="remove" >}}).
+1. Select **Save**.
 
 ## Related topics
 

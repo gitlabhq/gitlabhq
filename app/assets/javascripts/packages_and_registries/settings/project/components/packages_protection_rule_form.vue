@@ -120,11 +120,8 @@ export default {
         { value: 'MAVEN', text: s__('PackageRegistry|Maven') },
         { value: 'CONAN', text: s__('PackageRegistry|Conan') },
         { value: 'GENERIC', text: s__('PackageRegistry|Generic') },
+        { value: 'NUGET', text: s__('PackageRegistry|NuGet') },
       ];
-
-      if (this.glFeatures.packagesProtectedPackagesNuget) {
-        packageTypeOptions.push({ value: 'NUGET', text: s__('PackageRegistry|NuGet') });
-      }
 
       if (this.glFeatures.packagesProtectedPackagesHelm) {
         packageTypeOptions.push({ value: 'HELM', text: s__('PackageRegistry|Helm') });

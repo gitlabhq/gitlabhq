@@ -27,6 +27,7 @@ title: Protected packages
 - Protected Helm charts [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323973) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_helm`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Generic protected packages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/323973) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `packages_protected_packages_generic`. Disabled by default. This feature is an [experiment](../../../policy/development_stages_support.md).
 - Generic protected packages became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/537971) in GitLab 18.2. Feature flag `packages_protected_packages_generic` removed.
+- NuGet protected packages became [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/524145) in GitLab 18.2. Feature flag `packages_protected_packages_nuget` removed.
 
 {{< /history >}}
 

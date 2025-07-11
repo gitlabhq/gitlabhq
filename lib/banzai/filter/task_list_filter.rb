@@ -59,8 +59,15 @@ module Banzai
 
       override :render_item_checkbox
       def render_item_checkbox(item)
+        stripped_source = item.source.sub(ItemPattern, '').strip
+        text = stripped_source.partition(/\<(ol|ul)/)
+        source = ActionView::Base.full_sanitizer.sanitize(text[0])
+        truncated_source = source.truncate(100, separator: ' ', omission: '…')
+        aria_label = format(_('Check option: %{option}'), option: truncated_source)
+
         %(<task-button></task-button><input type="checkbox"
           class="task-list-item-checkbox"
+          aria-label="#{CGI.escapeHTML(aria_label)}"
           #{'checked="checked"' if item.complete?}
           #{'data-inapplicable' if inapplicable?(item)}
           disabled="disabled"/>)
