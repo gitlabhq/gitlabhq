@@ -449,9 +449,6 @@ describe('init markdown', () => {
 
         beforeEach(() => {
           enterEvent = new KeyboardEvent('keydown', { key: 'Enter', cancelable: true });
-          gon.features = {
-            continueIndentedText: true,
-          };
         });
 
         // Note that the `  a` tests use an invisible newline followed by a space, `0A20`

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Two factor auths', feature_category: :system_access do
   include Spec::Support::Helpers::ModalHelpers
+  include Features::TwoFactorHelpers
 
   context 'when signed in' do
     let(:invalid_current_pwd_msg) { 'You must provide a valid current password' }
@@ -18,11 +19,11 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
       it 'requires the current password to set up two factor authentication', :js do
         visit profile_two_factor_auth_path
 
-        register_2fa(user.current_otp, '123')
+        otp_authenticator_registration(user.current_otp, '123')
 
         expect(page).to have_selector('.gl-alert-title', text: invalid_current_pwd_msg, count: 1)
 
-        register_2fa(user.reload.current_otp, user.password)
+        otp_authenticator_registration(user.reload.current_otp, user.password)
 
         expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
 
@@ -38,8 +39,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         it 'does not require the current password to set up two factor authentication', :js do
           visit profile_two_factor_auth_path
 
-          fill_in 'pin_code', with: user.current_otp
-          click_button 'Register with two-factor app'
+          otp_authenticator_registration(user.current_otp)
 
           expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
 
@@ -56,8 +56,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         it 'renders a error alert with a link to the troubleshooting section' do
           visit profile_two_factor_auth_path
 
-          fill_in 'pin_code', with: '123'
-          click_button 'Register with two-factor app'
+          otp_authenticator_registration('123')
 
           expect(page).to have_link('Try the troubleshooting steps here.', href: help_page_path('user/profile/account/two_factor_authentication_troubleshooting.md'))
         end
@@ -119,8 +118,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
           it 'renders alert for global settings' do
             visit profile_two_factor_auth_path
 
-            fill_in 'pin_code', with: '123'
-            click_button 'Register with two-factor app'
+            otp_authenticator_registration('123')
 
             expect(page).to have_content('The global settings require you to enable Two-Factor Authentication for your account. You need to do this before ')
           end
@@ -132,7 +130,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
           it 'renders a error alert with a link to the troubleshooting section' do
             visit profile_two_factor_auth_path
 
-            register_2fa(user.current_otp, 'abc')
+            otp_authenticator_registration(user.current_otp, 'abc')
             click_button 'Register with two-factor app'
 
             expect(page).to have_content(
@@ -149,12 +147,12 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
       it 'requires the current_password to delete the OTP authenticator', :js do
         visit profile_two_factor_auth_path
 
-        click_button _('Delete one-time password authenticator')
+        find_button(_('Delete one-time password authenticator')).click
         modal_submit('wrong_password')
 
         expect(page).to have_selector('.gl-alert-title', text: invalid_current_pwd_msg, count: 1)
 
-        click_button _('Delete one-time password authenticator')
+        find_button(_('Delete one-time password authenticator')).click
         modal_submit(user.password)
 
         expect(page).to have_content(_('One-time password authenticator has been deleted!'))
@@ -195,7 +193,7 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
         it 'does not require the current_password to delete the OTP authenticator', :js do
           visit profile_two_factor_auth_path
 
-          click_button _('Delete one-time password authenticator')
+          find_button(_('Delete one-time password authenticator')).click
           modal_submit_without_password
 
           expect(page).to have_content(_('One-time password authenticator has been deleted!'))
@@ -220,13 +218,6 @@ RSpec.describe 'Two factor auths', feature_category: :system_access do
           expect(page).to have_content('Please copy, download, or print your recovery codes before proceeding.')
         end
       end
-    end
-
-    def register_2fa(pin, password)
-      fill_in 'pin_code', with: pin
-      fill_in 'current_password', with: password
-
-      click_button 'Register with two-factor app'
     end
 
     def modal_submit(password)

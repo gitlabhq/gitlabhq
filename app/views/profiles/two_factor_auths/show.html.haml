@@ -15,57 +15,62 @@
 
 = render ::Layouts::PageHeadingComponent.new(title, options: { class: 'gl-mb-3' })
 
-= render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
-  - c.with_description do
-    = _('Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
-    - if current_user.two_factor_otp_enabled?
-      = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
-    - else
-      - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
-      = register_2fa_token.html_safe
-      = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'enable-a-one-time-password-authenticator'), target: '_blank', rel: 'noopener noreferrer'
-  - c.with_body do
-    - if current_user.two_factor_otp_enabled?
-      .gl-inline-block.gl-w-full.sm:gl-w-auto
-        .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
+- if Feature.enabled?(:redesign_user_account_otp, current_user)
+  = render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
+    - c.with_body do
+      = render 'otp_registration', {troubleshooting_link: troubleshooting_link}
+- else
+  = render ::Layouts::SettingsSectionComponent.new(_('Register a one-time password authenticator')) do |c|
+    - c.with_description do
+      = _('Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA).')
+      - if current_user.two_factor_otp_enabled?
+        = _("You've already enabled two-factor authentication using a one-time password authenticator. In order to register a different device, you must first delete this authenticator.")
+      - else
+        - register_2fa_token = _('We recommend using cloud-based authenticator applications that can restore access if you lose your hardware device.')
+        = register_2fa_token.html_safe
+        = link_to _('What are some examples?'), help_page_path('user/profile/account/two_factor_authentication.md', anchor: 'enable-a-one-time-password-authenticator'), target: '_blank', rel: 'noopener noreferrer'
+    - c.with_body do
+      - if current_user.two_factor_otp_enabled?
+        .gl-inline-block.gl-w-full.sm:gl-w-auto
+          .js-two-factor-action-confirm{ data: delete_otp_authenticator_data(current_password_required?) }
 
-    - else
-      .gl-inline-block.gl-p-3.gl-pb-2.gl-mb-5{ style: 'background: #fff' }
-        = raw @qr_code
-      .gl-mb-5
-        = render Pajamas::CardComponent.new do |c|
-          - c.with_body do
-            %h3.gl-mt-0.gl-mt-0.gl-mb-3.gl-font-bold.gl-leading-reset.gl-text-base.gl-text-default
-              = _("Can't scan the code?")
-            %p.gl-mt-0.gl-mb-3
-              = _("To add the entry manually, provide the following details to the application on your phone.")
-            %p.gl-my-0
-              = _('Account: %{account}') % { account: @account_string }
-            %p.gl-my-0{ data: { testid: 'otp-secret-content' } }
-              = _('Key:')
-              %code.two-factor-secret= current_user.otp_secret.scan(/.{4}/).join(' ')
-            %p.gl-mb-0.two-factor-new-manual-content
-              = _('Time based: Yes')
-      = form_tag profile_two_factor_auth_path, method: :post do |f|
-        - if @otp_error
-          = render Pajamas::AlertComponent.new(title: @otp_error[:message],
-            variant: :danger,
-            alert_options: { class: 'gl-mb-3' },
-            dismissible: false) do |c|
+      - else
+        .gl-inline-block.gl-p-3.gl-pb-2.gl-mb-5{ style: 'background: #fff' }
+          = raw @qr_code
+        .gl-mb-5
+          = render Pajamas::CardComponent.new do |c|
             - c.with_body do
-              = troubleshooting_link
-        - if current_password_required?
+              %h3.gl-mt-0.gl-mt-0.gl-mb-3.gl-font-bold.gl-leading-reset.gl-text-base.gl-text-default
+                = _("Can't scan the code?")
+              %p.gl-mt-0.gl-mb-3
+                = _("To add the entry manually, provide the following details to the application on your phone.")
+              %p.gl-my-0
+                = _('Account: %{account}') % { account: @account_string }
+              %p.gl-my-0{ data: { testid: 'otp-secret-content' } }
+                = _('Key:')
+                %code.two-factor-secret= current_user.otp_secret.scan(/.{4}/).join(' ')
+              %p.gl-mb-0.two-factor-new-manual-content
+                = _('Time based: Yes')
+        = form_tag profile_two_factor_auth_path, method: :post do |f|
+          - if @otp_error
+            = render Pajamas::AlertComponent.new(title: @otp_error[:message],
+              variant: :danger,
+              alert_options: { class: 'gl-mb-3' },
+              dismissible: false) do |c|
+              - c.with_body do
+                = troubleshooting_link
+          - if current_password_required?
+            .form-group
+              = label_tag :current_password, _('Current password'), class: 'label-bold'
+              = password_field_tag :current_password, nil, autocomplete: 'current-password', required: true, class: 'form-control gl-form-input', data: { testid: 'current-password-field' }
+              %p.form-text.gl-text-subtle
+                = _('Your current password is required to register a two-factor authenticator app.')
           .form-group
-            = label_tag :current_password, _('Current password'), class: 'label-bold'
-            = password_field_tag :current_password, nil, autocomplete: 'current-password', required: true, class: 'form-control gl-form-input', data: { testid: 'current-password-field' }
-            %p.form-text.gl-text-subtle
-              = _('Your current password is required to register a two-factor authenticator app.')
-        .form-group
-          = label_tag :pin_code, _('Enter verification code'), class: "label-bold"
-          = text_field_tag :pin_code, nil, autocomplete: 'off', inputmode: 'numeric', class: "form-control gl-form-input", required: true, data: { testid: 'pin-code-field' }
-        .gl-mt-3
-          = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'register-2fa-app-button' } }) do
-            = _('Register with two-factor app')
+            = label_tag :pin_code, _('Enter verification code'), class: "label-bold"
+            = text_field_tag :pin_code, nil, autocomplete: 'off', inputmode: 'numeric', class: "form-control gl-form-input", required: true, data: { testid: 'pin-code-field' }
+          .gl-mt-3
+            = render Pajamas::ButtonComponent.new(type: :submit, variant: :confirm, button_options: { data: { testid: 'register-2fa-app-button' } }) do
+              = _('Register with two-factor app')
 
 = render ::Layouts::SettingsSectionComponent.new(_('Register a WebAuthn device')) do |c|
   - c.with_description do

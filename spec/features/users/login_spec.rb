@@ -6,6 +6,7 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
   include TermsHelper
   include UserLoginHelper
   include SessionHelpers
+  include Features::TwoFactorHelpers
 
   before do
     stub_authentication_activity_metrics(debug: true)
@@ -1006,15 +1007,12 @@ RSpec.describe 'Login', :with_current_organization, :clean_gitlab_redis_sessions
           # page is shown.
           wait_for_requests
 
+          click_button _('Register authenticator')
           otp_secret = page.find('.two-factor-secret').text.gsub('Key:', '').delete(' ')
           current_otp = ROTP::TOTP.new(otp_secret).now
+          click_button _('Cancel')
 
-          fill_in 'pin_code', with: current_otp
-          fill_in 'current_password', with: user.password
-
-          click_button 'Register with two-factor app'
-          click_button 'Copy codes'
-          click_link 'Proceed'
+          otp_authenticator_registration_and_copy_codes(current_otp, user.password)
 
           expect(page).to have_current_path(profile_account_path, ignore_query: true)
           expect(page).to have_content('You have set up 2FA for your account! If you lose access to your 2FA device, you can use your recovery codes to access your account. Alternatively, if you upload an SSH key, you can use that key to generate additional recovery codes.')

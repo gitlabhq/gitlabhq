@@ -36,6 +36,7 @@ const mockDiscussion = (...children) => {
         lastEditedBy: null,
         url: 'https://path/to/2/',
         awardEmoji: null,
+        internal: false,
         userPermissions: {
           adminNote: true,
           awardEmoji: true,
@@ -69,6 +70,9 @@ describe('WikiNotesApp', () => {
             wikiPage: {
               id: 'gid://gitlab/WikiPage/1',
               title: 'home',
+              userPermissions: {
+                markNoteAsInternal: true,
+              },
               discussions: {
                 nodes: [mockDiscussion('Discussion 1')],
               },
@@ -94,6 +98,9 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            userPermissions: {
+              markNoteAsInternal: true,
+            },
             discussions: {
               nodes: [mockDiscussion('Discussion 1')],
             },
@@ -213,6 +220,9 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            userPermissions: {
+              markNoteAsInternal: true,
+            },
             discussions,
           },
         },
@@ -260,6 +270,9 @@ describe('WikiNotesApp', () => {
           wikiPage: {
             id: 'gid://gitlab/WikiPage/1',
             title: 'home',
+            userPermissions: {
+              markNoteAsInternal: true,
+            },
             discussions,
           },
         },

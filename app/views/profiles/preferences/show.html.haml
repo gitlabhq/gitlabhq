@@ -144,11 +144,10 @@
         = f.gitlab_ui_checkbox_component :markdown_automatic_lists,
           s_('Preferences|Automatically add new list items'),
           help_text: html_escape(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} in a list adds a new item below.')) % { kbdOpen: '<kbd>'.html_safe, kbdClose: '</kbd>'.html_safe }
-      - if Feature.enabled?(:continue_indented_text, current_user)
-        .form-group
-          = f.gitlab_ui_checkbox_component :markdown_maintain_indentation,
-            s_('Preferences|Maintain indentation'),
-            help_text: safe_format(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line.'), tag_pair(tag.kbd, :kbdOpen, :kbdClose))
+      .form-group
+        = f.gitlab_ui_checkbox_component :markdown_maintain_indentation,
+          s_('Preferences|Maintain indentation'),
+          help_text: safe_format(s_('Preferences|When you type in a description or comment box, pressing %{kbdOpen}Enter%{kbdClose} creates a new line indented the same as the previous line.'), tag_pair(tag.kbd, :kbdOpen, :kbdClose))
       .form-group
         = f.label :tab_width, s_('Preferences|Tab width'), class: 'label-bold'
         = f.number_field :tab_width,

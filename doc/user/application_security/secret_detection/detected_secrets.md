@@ -18,6 +18,9 @@ This table lists the secrets detected by:
 - Client-side secret detection
 - Secret push protection
 
+Secret detection rules are updated in the [default ruleset](https://gitlab.com/gitlab-org/security-products/secret-detection/secret-detection-rules/-/tree/main).
+Detected secrets with patterns that have been removed or updated remain open so you can triage them.
+
 <!-- markdownlint-disable MD034 -->
 <!-- markdownlint-disable MD044 -->
 <!-- vale gitlab_base.SentenceSpacing = NO -->

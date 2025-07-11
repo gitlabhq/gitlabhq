@@ -277,7 +277,7 @@ module Ci
     end
 
     def manual_confirmation_message
-      options[:manual_confirmation] if manual_job?
+      options[:manual_confirmation] if manual_job? && playable?
     end
 
     def redis_state

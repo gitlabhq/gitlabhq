@@ -43426,6 +43426,9 @@ msgstr ""
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
 msgstr ""
 
+msgid "One-time password authenticator (OTP)"
+msgstr ""
+
 msgid "One-time password authenticator has been deleted!"
 msgstr ""
 
@@ -51404,6 +51407,9 @@ msgid "Register a one-time password authenticator"
 msgstr ""
 
 msgid "Register a one-time password authenticator or a WebAuthn device first."
+msgstr ""
+
+msgid "Register authenticator"
 msgstr ""
 
 msgid "Register device"

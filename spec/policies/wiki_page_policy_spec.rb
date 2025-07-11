@@ -16,7 +16,7 @@ RSpec.describe WikiPagePolicy, feature_category: :wiki do
     subject(:policy) { described_class.new(user, wiki_page) }
 
     where(:project_level, :feature_access_level, :membership, :admin_mode, :expected_count) do
-      permission_table_for_guest_feature_access
+      permission_table_for_notes_feature_access
     end
 
     with_them do
@@ -24,12 +24,20 @@ RSpec.describe WikiPagePolicy, feature_category: :wiki do
         enable_admin_mode!(user) if admin_mode
         update_feature_access_level(project, feature_access_level)
 
-        if expected_count == 1
+        if expected_count == 2
+          expect(policy).to be_allowed(:mark_note_as_internal)
+          expect(policy).to be_allowed(:read_wiki_page)
+          expect(policy).to be_allowed(:read_note)
+          expect(policy).to be_allowed(:create_note)
+          expect(policy).to be_allowed(:update_subscription)
+        elsif expected_count == 1
+          expect(policy).to be_disallowed(:mark_note_as_internal)
           expect(policy).to be_allowed(:read_wiki_page)
           expect(policy).to be_allowed(:read_note)
           expect(policy).to be_allowed(:create_note)
           expect(policy).to be_allowed(:update_subscription)
         else
+          expect(policy).to be_disallowed(:mark_note_as_internal)
           expect(policy).to be_disallowed(:read_wiki_page)
           expect(policy).to be_disallowed(:read_note)
           expect(policy).to be_disallowed(:create_note)

@@ -624,17 +624,25 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
 
   describe 'manual_confirmation_message' do
     context 'when job is manual' do
-      subject { build(:ci_build, :manual, :with_manual_confirmation) }
+      subject(:job) { build(:ci_build, :manual, :with_manual_confirmation) }
 
       it 'return manual_confirmation from option' do
-        expect(subject.manual_confirmation_message).to eq('Please confirm. Do you want to proceed?')
+        expect(job.manual_confirmation_message).to eq('Please confirm. Do you want to proceed?')
+      end
+
+      context "when job is not playable because it's archived" do
+        before do
+          allow(job).to receive(:archived?).and_return(true)
+        end
+
+        it { expect(job.manual_confirmation_message).to be_nil }
       end
     end
 
     context 'when job is not manual' do
-      subject { build(:ci_build) }
+      subject(:job) { build(:ci_build) }
 
-      it { expect(subject.manual_confirmation_message).to be_nil }
+      it { expect(job.manual_confirmation_message).to be_nil }
     end
   end
 

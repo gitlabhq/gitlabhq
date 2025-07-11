@@ -285,6 +285,7 @@ export default {
             :note-id="noteId"
             :noteable-type="noteableType"
             :email-participant="note.externalAuthor"
+            :is-internal-note="note.internal"
           >
             <span class="gl-hidden sm:gl-inline">&middot;</span>
           </note-header>

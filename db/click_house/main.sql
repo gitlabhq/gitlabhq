@@ -304,6 +304,49 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE hierarchy_work_items
+(
+    `traversal_path` String,
+    `id` Int64,
+    `title` String DEFAULT '',
+    `author_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `updated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `milestone_id` Nullable(Int64),
+    `iid` Nullable(Int64),
+    `updated_by_id` Nullable(Int64),
+    `weight` Nullable(Int64),
+    `confidential` Bool DEFAULT false,
+    `due_date` Nullable(Date32),
+    `moved_to_id` Nullable(Int64),
+    `time_estimate` Nullable(Int64) DEFAULT 0,
+    `relative_position` Nullable(Int64),
+    `last_edited_at` Nullable(DateTime64(6, 'UTC')),
+    `last_edited_by_id` Nullable(Int64),
+    `closed_at` Nullable(DateTime64(6, 'UTC')),
+    `closed_by_id` Nullable(Int64),
+    `state_id` Int8 DEFAULT 1,
+    `duplicated_to_id` Nullable(Int64),
+    `promoted_to_epic_id` Nullable(Int64),
+    `health_status` Nullable(Int8),
+    `sprint_id` Nullable(Int64),
+    `blocking_issues_count` Int64 DEFAULT 0,
+    `upvotes_count` Int64 DEFAULT 0,
+    `work_item_type_id` Int64,
+    `namespace_id` Int64,
+    `start_date` Nullable(Date32),
+    `label_ids` Array(Int64) DEFAULT [],
+    `assignee_ids` Array(Int64) DEFAULT [],
+    `custom_status_id` Int64,
+    `system_defined_status_id` Int64,
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY (traversal_path, work_item_type_id, id)
+ORDER BY (traversal_path, work_item_type_id, id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE namespace_traversal_paths
 (
     `id` Int64 DEFAULT 0,
@@ -389,6 +432,19 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_issue_assignees
+(
+    `user_id` Int64,
+    `issue_id` Int64,
+    `namespace_id` Int64,
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (issue_id, user_id)
+ORDER BY (issue_id, user_id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE siphon_issues
 (
     `id` Int64,
@@ -438,6 +494,22 @@ CREATE TABLE siphon_issues
     `project_id_convert_to_bigint` Nullable(Int64),
     `promoted_to_epic_id_convert_to_bigint` Nullable(Int64),
     `updated_by_id_convert_to_bigint` Nullable(Int64),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY id
+ORDER BY id
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE siphon_label_links
+(
+    `id` Int64,
+    `label_id` Nullable(Int64),
+    `target_id` Nullable(Int64),
+    `target_type` Nullable(String),
+    `created_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `updated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
     `_siphon_deleted` Bool DEFAULT false
 )
@@ -735,6 +807,22 @@ PRIMARY KEY id
 ORDER BY id
 SETTINGS index_granularity = 8192;
 
+CREATE TABLE siphon_work_item_current_statuses
+(
+    `id` Int64,
+    `namespace_id` Int64,
+    `work_item_id` Int64,
+    `system_defined_status_id` Int64,
+    `custom_status_id` Int64,
+    `updated_at` DateTime64(6, 'UTC'),
+    `_siphon_replicated_at` DateTime64(6, 'UTC') DEFAULT now(),
+    `_siphon_deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(_siphon_replicated_at, _siphon_deleted)
+PRIMARY KEY (work_item_id, id)
+ORDER BY (work_item_id, id)
+SETTINGS index_granularity = 8192;
+
 CREATE TABLE subscription_user_add_on_assignment_versions
 (
     `id` UInt64,
@@ -807,6 +895,21 @@ CREATE TABLE user_addon_assignments_history
 )
 ENGINE = AggregatingMergeTree
 ORDER BY (namespace_path, user_id, assignment_id)
+SETTINGS index_granularity = 8192;
+
+CREATE TABLE work_item_label_links
+(
+    `id` Int64,
+    `label_id` Int64,
+    `work_item_id` Int64,
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC') DEFAULT now(),
+    `deleted` Bool DEFAULT false
+)
+ENGINE = ReplacingMergeTree(version, deleted)
+PRIMARY KEY (work_item_id, label_id, id)
+ORDER BY (work_item_id, label_id, id)
 SETTINGS index_granularity = 8192;
 
 CREATE MATERIALIZED VIEW ci_finished_builds_aggregated_queueing_delay_percentiles_by_owner_mv TO ci_finished_builds_aggregated_queueing_delay_percentiles_by_owner
@@ -1129,6 +1232,185 @@ FROM cte
 LEFT JOIN group_lookups ON group_lookups.id = cte.group_id
 LEFT JOIN project_lookups ON project_lookups.id = cte.project_id;
 
+CREATE MATERIALIZED VIEW hierarchy_work_items_mv TO hierarchy_work_items
+(
+    `traversal_path` String,
+    `id` Int64,
+    `title` String,
+    `author_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `milestone_id` Nullable(Int64),
+    `iid` Nullable(Int64),
+    `updated_by_id` Nullable(Int64),
+    `weight` Nullable(Int64),
+    `confidential` Bool,
+    `due_date` Nullable(Date32),
+    `moved_to_id` Nullable(Int64),
+    `time_estimate` Nullable(Int64),
+    `relative_position` Nullable(Int64),
+    `last_edited_at` Nullable(DateTime64(6, 'UTC')),
+    `last_edited_by_id` Nullable(Int64),
+    `closed_at` Nullable(DateTime64(6, 'UTC')),
+    `closed_by_id` Nullable(Int64),
+    `state_id` Int8,
+    `duplicated_to_id` Nullable(Int64),
+    `promoted_to_epic_id` Nullable(Int64),
+    `health_status` Nullable(Int8),
+    `sprint_id` Nullable(Int64),
+    `blocking_issues_count` Int64,
+    `upvotes_count` Int64,
+    `work_item_type_id` Int64,
+    `namespace_id` Int64,
+    `start_date` Nullable(Date32),
+    `label_ids` Array(Int64),
+    `assignee_ids` Array(Int64),
+    `custom_status_id` Int64,
+    `system_defined_status_id` Int64,
+    `version` DateTime64(6, 'UTC'),
+    `deleted` Bool
+)
+AS WITH
+    cte AS
+    (
+        SELECT *
+        FROM siphon_issues
+    ),
+    namespace_paths AS
+    (
+        SELECT *
+        FROM
+        (
+            SELECT
+                id,
+                argMax(traversal_path, version) AS traversal_path,
+                argMax(deleted, version) AS deleted
+            FROM namespace_traversal_paths
+            WHERE id IN (
+                SELECT DISTINCT namespace_id
+                FROM cte
+            )
+            GROUP BY id
+        )
+        WHERE deleted = false
+    ),
+    collected_label_ids AS
+    (
+        SELECT
+            work_item_id,
+            arraySort(groupArray(label_id)) AS label_ids
+        FROM
+        (
+            SELECT
+                work_item_id,
+                label_id,
+                id,
+                argMax(deleted, version) AS deleted
+            FROM work_item_label_links
+            WHERE work_item_id IN (
+                SELECT id
+                FROM cte
+            )
+            GROUP BY
+                work_item_id,
+                label_id,
+                id
+        )
+        WHERE deleted = false
+        GROUP BY work_item_id
+    ),
+    collected_assignee_ids AS
+    (
+        SELECT
+            issue_id,
+            arraySort(groupArray(user_id)) AS user_ids
+        FROM
+        (
+            SELECT
+                issue_id,
+                user_id,
+                argMax(_siphon_deleted, _siphon_replicated_at) AS _siphon_deleted
+            FROM siphon_issue_assignees
+            WHERE issue_id IN (
+                SELECT id
+                FROM cte
+            )
+            GROUP BY
+                issue_id,
+                user_id
+        )
+        WHERE _siphon_deleted = false
+        GROUP BY issue_id
+    ),
+    collected_custom_status_records AS
+    (
+        SELECT
+            work_item_id,
+            max(system_defined_status_id) AS system_defined_status_id,
+            max(custom_status_id) AS custom_status_id
+        FROM
+        (
+            SELECT
+                work_item_id,
+                id,
+                argMax(system_defined_status_id, _siphon_replicated_at) AS system_defined_status_id,
+                argMax(custom_status_id, _siphon_replicated_at) AS custom_status_id,
+                argMax(_siphon_deleted, _siphon_replicated_at) AS _siphon_deleted
+            FROM siphon_work_item_current_statuses
+            GROUP BY
+                work_item_id,
+                id
+        )
+        WHERE _siphon_deleted = false
+        GROUP BY work_item_id
+    ),
+    finalized AS
+    (
+        SELECT
+            multiIf(cte.namespace_id != 0, namespace_paths.traversal_path, '0/') AS traversal_path,
+            cte.id AS id,
+            cte.title,
+            cte.author_id,
+            cte.created_at,
+            cte.updated_at,
+            cte.milestone_id,
+            cte.iid,
+            cte.updated_by_id,
+            cte.weight,
+            cte.confidential,
+            cte.due_date,
+            cte.moved_to_id,
+            cte.time_estimate,
+            cte.relative_position,
+            cte.last_edited_at,
+            cte.last_edited_by_id,
+            cte.closed_at,
+            cte.closed_by_id,
+            cte.state_id,
+            cte.duplicated_to_id,
+            cte.promoted_to_epic_id,
+            cte.health_status,
+            cte.sprint_id,
+            cte.blocking_issues_count,
+            cte.upvotes_count,
+            cte.work_item_type_id,
+            cte.namespace_id,
+            cte.start_date,
+            collected_label_ids.label_ids AS label_ids,
+            collected_assignee_ids.user_ids AS assignee_ids,
+            collected_custom_status_records.custom_status_id AS custom_status_id,
+            collected_custom_status_records.system_defined_status_id AS system_defined_status_id,
+            cte._siphon_replicated_at AS version,
+            cte._siphon_deleted AS deleted
+        FROM cte
+        LEFT JOIN namespace_paths ON namespace_paths.id = cte.namespace_id
+        LEFT JOIN collected_assignee_ids ON collected_assignee_ids.issue_id = cte.id
+        LEFT JOIN collected_label_ids ON collected_label_ids.work_item_id = cte.id
+        LEFT JOIN collected_custom_status_records ON collected_custom_status_records.work_item_id = cte.id
+    )
+SELECT *
+FROM finalized;
+
 CREATE MATERIALIZED VIEW namespace_traversal_paths_mv TO namespace_traversal_paths
 (
     `id` Int64,
@@ -1203,4 +1485,25 @@ GROUP BY
     namespace_path,
     user_id,
     purchase_id,
-    add_on_name
+    add_on_name;
+
+CREATE MATERIALIZED VIEW work_item_label_links_mv TO work_item_label_links
+(
+    `id` Int64,
+    `label_id` Nullable(Int64),
+    `work_item_id` Nullable(Int64),
+    `created_at` DateTime64(6, 'UTC'),
+    `updated_at` DateTime64(6, 'UTC'),
+    `version` DateTime64(6, 'UTC'),
+    `deleted` Bool
+)
+AS SELECT
+    id,
+    label_id,
+    target_id AS work_item_id,
+    created_at,
+    updated_at,
+    _siphon_replicated_at AS version,
+    _siphon_deleted AS deleted
+FROM siphon_label_links
+WHERE (target_type = 'Issue') AND (target_id IS NOT NULL) AND (label_id IS NOT NULL)

@@ -90,6 +90,31 @@ RSpec.describe 'Adding a Note', feature_category: :team_planning do
       end
     end
 
+    context 'for a wiki page' do
+      let_it_be_with_reload(:wiki_page_meta) { create(:wiki_page_meta, :for_wiki_page, container: project) }
+      let(:noteable) { wiki_page_meta }
+      let(:mutation) { graphql_mutation(:create_note, variables) }
+      let(:variables_extra) { {} }
+      let(:variables) do
+        {
+          noteable_id: GitlabSchema.id_from_object(noteable).to_s,
+          body: body
+        }.merge(variables_extra)
+      end
+
+      context 'when using internal param' do
+        let(:variables_extra) { { internal: true } }
+
+        it_behaves_like 'a Note mutation with confidential notes'
+
+        context 'when user does not have permission' do
+          let(:current_user) { user }
+
+          it_behaves_like 'a Note mutation when the user does not have permission'
+        end
+      end
+    end
+
     context 'for an issue' do
       let_it_be_with_reload(:issue) { create(:issue, project: project) }
       let(:noteable) { issue }

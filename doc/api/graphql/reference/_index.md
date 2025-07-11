@@ -43484,6 +43484,7 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="wikipagepermissionscreatenote"></a>`createNote` | [`Boolean!`](#boolean) | If `true`, the user can perform `create_note` on this resource. |
+| <a id="wikipagepermissionsmarknoteasinternal"></a>`markNoteAsInternal` | [`Boolean!`](#boolean) | If `true`, the user can perform `mark_note_as_internal` on this resource. |
 | <a id="wikipagepermissionsreadwikipage"></a>`readWikiPage` | [`Boolean!`](#boolean) | If `true`, the user can perform `read_wiki_page` on this resource. |
 
 ### `WorkItem`

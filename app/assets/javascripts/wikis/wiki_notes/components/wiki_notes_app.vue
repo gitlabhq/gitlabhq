@@ -45,6 +45,7 @@ export default {
       result({ data }) {
         this.noteableId = data?.wikiPage?.id || '';
         this.discussions = cloneDeep(data?.wikiPage?.discussions?.nodes) || [];
+        this.userPermissions = data?.wikiPage?.userPermissions || {};
       },
     },
   },
@@ -52,6 +53,7 @@ export default {
     return {
       wikiPage: {},
       noteableId: '',
+      userPermissions: {},
       loadingFailed: false,
       placeholderNote: {},
       slotKeys: ['comments', 'place-holder-note', 'form'],
@@ -175,6 +177,7 @@ export default {
           v-if="!isLoading"
           :noteable-id="noteableId"
           :note-id="noteableId"
+          :can-set-internal-note="userPermissions.markNoteAsInternal"
           @creating-note:start="setPlaceHolderNote"
           @creating-note:done="removePlaceholder"
           @creating-note:success="(discussion) => updateCache({ discussion })"
