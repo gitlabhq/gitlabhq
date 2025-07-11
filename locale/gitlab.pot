@@ -5871,6 +5871,9 @@ msgstr ""
 msgid "AiImpactAnalytics|Code Suggestions: Usage"
 msgstr ""
 
+msgid "AiImpactAnalytics|Data available after upgrade to GitLab 18.0. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "AiImpactAnalytics|Duo Chat: Usage"
 msgstr ""
 
@@ -16172,6 +16175,12 @@ msgstr ""
 msgid "ComplianceReport|Failed"
 msgstr ""
 
+msgid "ComplianceReport|Failed to load the compliance violation. Refresh the page and try again."
+msgstr ""
+
+msgid "ComplianceReport|Failed to update compliance violation status. Please try again later."
+msgstr ""
+
 msgid "ComplianceReport|Failed to update violation status. Please try again."
 msgstr ""
 
@@ -16200,6 +16209,9 @@ msgid "ComplianceReport|However, there is still a configured compliance pipeline
 msgstr ""
 
 msgid "ComplianceReport|Less than 2 approvers"
+msgstr ""
+
+msgid "ComplianceReport|Location"
 msgstr ""
 
 msgid "ComplianceReport|Migrate pipeline to a policy"
@@ -16265,6 +16277,9 @@ msgstr ""
 msgid "ComplianceReport|Start by adding a compliance framework to your group."
 msgstr ""
 
+msgid "ComplianceReport|Status"
+msgstr ""
+
 msgid "ComplianceReport|There are no compliance frameworks."
 msgstr ""
 
@@ -16302,6 +16317,9 @@ msgid "ComplianceReport|View the framework details"
 msgstr ""
 
 msgid "ComplianceReport|Violated control and framework"
+msgstr ""
+
+msgid "ComplianceReport|Violation status updated successfully."
 msgstr ""
 
 msgid "ComplianceReport|We are replacing the violations report with a new version that includes enhanced features for your compliance workflow."
@@ -24574,9 +24592,6 @@ msgstr ""
 msgid "EmailParticipantsWarning|and %{moreCount} more"
 msgstr ""
 
-msgid "EmailVerification|Update your email to a valid permanent address. If you use a temporary email, you won't be able to sign in later."
-msgstr ""
-
 msgid "Emails"
 msgstr ""
 
@@ -26740,9 +26755,6 @@ msgstr ""
 msgid "Failed to load the Web IDE"
 msgstr ""
 
-msgid "Failed to load the compliance violation. Refresh the page and try again."
-msgstr ""
-
 msgid "Failed to load work items. Please try again."
 msgstr ""
 
@@ -26867,9 +26879,6 @@ msgid "Failed to update compliance requirement"
 msgstr ""
 
 msgid "Failed to update compliance requirement control. Error: %{error_message}"
-msgstr ""
-
-msgid "Failed to update compliance violation status. Please try again later."
 msgstr ""
 
 msgid "Failed to update destination status. Please try again."
@@ -32120,9 +32129,6 @@ msgstr[1] ""
 msgid "IdentityVerification|A code has already been sent to this email address. Check your spam folder or enter another email address."
 msgstr ""
 
-msgid "IdentityVerification|A new code has been sent to your updated email address."
-msgstr ""
-
 msgid "IdentityVerification|A new code has been sent."
 msgstr ""
 
@@ -32262,9 +32268,6 @@ msgid "IdentityVerification|The code has expired. Send a new code and try again.
 msgstr ""
 
 msgid "IdentityVerification|The code is incorrect. Enter it again, or send a new code."
-msgstr ""
-
-msgid "IdentityVerification|Update email"
 msgstr ""
 
 msgid "IdentityVerification|Verification code"

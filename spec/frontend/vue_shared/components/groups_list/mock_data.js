@@ -10,6 +10,7 @@ export const groups = [
     id: 1,
     fullName: 'Gitlab Org',
     fullPath: 'gitlab-org',
+    relativeWebUrl: '/gitlab-org',
     parent: null,
     webUrl: 'http://127.0.0.1:3000/groups/gitlab-org',
     descriptionHtml:
@@ -37,6 +38,7 @@ export const groups = [
     id: 2,
     fullName: 'Gitlab Org / test subgroup',
     fullPath: 'gitlab-org/test-subgroup',
+    relativeWebUrl: '/gitlab-org/test-subgroup',
     parent: {
       id: 1,
     },

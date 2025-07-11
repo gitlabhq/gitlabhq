@@ -55,8 +55,10 @@ metrics:
 
 ## Advanced Example
 
-An advanced example of an OpenMetrics text file (from the [Prometheus documentation](https://github.com/prometheus/docs/blob/master/content/docs/instrumenting/exposition_formats.md#text-format-example))
-renders in the merge request widget as:
+For OpenMetrics text format specifications and examples, see the
+[Prometheus documentation](https://prometheus.io/docs/instrumenting/exposition_formats/#text-format-example).
+
+Metrics display in the merge request widget as:
 
 ![Metrics Reports Advanced](img/metrics_reports_advanced_v13_0.png)
 

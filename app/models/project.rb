@@ -3465,6 +3465,10 @@ class Project < ApplicationRecord
     group&.work_items_bulk_edit_feature_flag_enabled? || Feature.enabled?(:work_items_bulk_edit, self, type: :wip)
   end
 
+  def markdown_placeholders_feature_flag_enabled?
+    group&.markdown_placeholders_feature_flag_enabled? || Feature.enabled?(:markdown_placeholders, self, type: :gitlab_com_derisk)
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

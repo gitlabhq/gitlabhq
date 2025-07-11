@@ -1108,6 +1108,10 @@ class Group < Namespace
       licensed_feature_available?(:work_item_status)
   end
 
+  def markdown_placeholders_feature_flag_enabled?
+    feature_flag_enabled_for_self_or_ancestor?(:markdown_placeholders, type: :gitlab_com_derisk)
+  end
+
   def glql_integration_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
   end

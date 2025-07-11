@@ -11,6 +11,7 @@ export default {
     formInputGroupProps() {
       return {
         'data-testid': 'created-access-token-field',
+        autocomplete: 'off', // Avoids the revealed token to be added to the search field
       };
     },
   },

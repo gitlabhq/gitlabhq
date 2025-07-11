@@ -59,6 +59,7 @@ describe('ProjectsListItem', () => {
     avatarUrl: 'avatar.jpg',
     avatarLabel: mockProject.nameWithNamespace,
     isForked: false,
+    relativeWebUrl: `/${mockProject.fullPath}`,
   };
 
   const defaultPropsData = {
@@ -115,7 +116,7 @@ describe('ProjectsListItem', () => {
 
     expect(avatarLabeled.props()).toMatchObject({
       label: project.nameWithNamespace,
-      labelLink: project.webUrl,
+      labelLink: project.relativeWebUrl,
     });
 
     expect(avatarLabeled.attributes()).toMatchObject({
@@ -202,7 +203,7 @@ describe('ProjectsListItem', () => {
     createComponent();
 
     expect(findStarsStat().props()).toEqual({
-      href: `${project.webUrl}/-/starrers`,
+      href: `${project.relativeWebUrl}/-/starrers`,
       tooltipText: 'Stars',
       a11yText: `${project.avatarLabel} has ${project.starCount} stars`,
       iconName: 'star-o',
@@ -279,7 +280,7 @@ describe('ProjectsListItem', () => {
 
     it('renders merge requests count', () => {
       expect(findMergeRequestsStat().props()).toEqual({
-        href: `${project.webUrl}/-/merge_requests`,
+        href: `${project.relativeWebUrl}/-/merge_requests`,
         tooltipText: 'Merge requests',
         a11yText: `${project.avatarLabel} has 5 open merge requests`,
         iconName: 'merge-request',
@@ -324,7 +325,7 @@ describe('ProjectsListItem', () => {
 
     it('renders issues count', () => {
       expect(findIssuesStat().props()).toEqual({
-        href: `${project.webUrl}/-/issues`,
+        href: `${project.relativeWebUrl}/-/issues`,
         tooltipText: 'Issues',
         a11yText: `${project.avatarLabel} has ${project.openIssuesCount} open issues`,
         iconName: 'issues',
@@ -369,7 +370,7 @@ describe('ProjectsListItem', () => {
 
     it('renders forks count', () => {
       expect(findForksStat().props()).toEqual({
-        href: `${project.webUrl}/-/forks`,
+        href: `${project.relativeWebUrl}/-/forks`,
         a11yText: `${project.avatarLabel} has ${project.forksCount} forks`,
         tooltipText: 'Forks',
         iconName: 'fork',

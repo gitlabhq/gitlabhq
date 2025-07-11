@@ -98,6 +98,31 @@ For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/ep
 
 {{< /alert >}}
 
+**Duo RCA: Usage**: Monthly user engagement with Duo Root Cause Analysis.
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/513252) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `duo_rca_usage_rate`. Disabled by default.
+
+{{< /history >}}
+
+{{< alert type="flag" >}}
+
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing.
+
+{{< /alert >}}
+
+This metric tracks the percentage of Duo users who select [**Troubleshoot** to analyze failed CI/CD jobs](../gitlab_duo_chat/examples.md#from-a-merge-request).
+
+{{< alert type="note" >}}
+
+Usage rate for Duo RCA is calculated with data starting from GitLab 18.0.
+For more information, see [epic 15025](https://gitlab.com/groups/gitlab-org/-/epics/15025).
+
+{{< /alert >}}
+
 ## View AI impact analytics
 
 Prerequisites:

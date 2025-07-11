@@ -173,8 +173,8 @@ describe('Merge requests list app', () => {
     const projectId = 1;
     const fullPath = 'gitlab-org/gitlab';
     const allBranchesPath = `/api/${apiVersion}/projects/${encodeURIComponent(fullPath)}/repository/branches`;
-    const sourceBranchPath = `/-/autocomplete/merge_request_source_branches.json?project_id=${projectId}`;
-    const targetBranchPath = `/-/autocomplete/merge_request_target_branches.json?project_id=${projectId}`;
+    const sourceBranchPath = '/-/autocomplete/merge_request_source_branches.json';
+    const targetBranchPath = '/-/autocomplete/merge_request_target_branches.json';
     let axiosMock;
 
     beforeEach(() => {
@@ -186,10 +186,7 @@ describe('Merge requests list app', () => {
 
     describe('with no projectId', () => {
       it('uses the generic "all branches" endpoint', async () => {
-        const queryResponse = getQueryResponse;
-        queryResponse.data.namespace.id = null;
-
-        createComponent({ response: queryResponse });
+        createComponent({ provide: { namespaceId: null } });
 
         await waitForPromises();
         await wrapper.vm.fetchBranches();
@@ -200,17 +197,33 @@ describe('Merge requests list app', () => {
 
     describe('with projectId', () => {
       it.each`
-        branchPath          | fetchArgs
-        ${targetBranchPath} | ${['target']}
-        ${sourceBranchPath} | ${['source']}
-        ${allBranchesPath}  | ${['']}
+        branchPath                                       | fetchArgs
+        ${`${targetBranchPath}?project_id=${projectId}`} | ${['target']}
+        ${`${sourceBranchPath}?project_id=${projectId}`} | ${['source']}
+        ${allBranchesPath}                               | ${['']}
       `(
         'selects the correct path ($branchPath) given the arguments $fetchArgs',
         async ({ branchPath, fetchArgs }) => {
-          const queryResponse = getQueryResponse;
-          queryResponse.data.namespace.id = projectId;
+          createComponent({ provide: { namespaceId: projectId } });
+          await waitForPromises();
 
-          createComponent({ response: queryResponse });
+          await wrapper.vm.fetchBranches(...fetchArgs);
+
+          expect(axiosMock.history.get[0].url).toBe(branchPath);
+        },
+      );
+    });
+
+    describe('when in a group', () => {
+      it.each`
+        branchPath                                     | fetchArgs
+        ${`${targetBranchPath}?group_id=${projectId}`} | ${['target']}
+        ${`${sourceBranchPath}?group_id=${projectId}`} | ${['source']}
+        ${allBranchesPath}                             | ${['']}
+      `(
+        'selects the correct path ($branchPath) given the arguments $fetchArgs',
+        async ({ branchPath, fetchArgs }) => {
+          createComponent({ provide: { isProject: false, namespaceId: projectId } });
           await waitForPromises();
 
           await wrapper.vm.fetchBranches(...fetchArgs);

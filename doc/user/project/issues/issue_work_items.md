@@ -63,3 +63,15 @@ The new issues experience includes these improvements:
      When you change an issue to an epic, the epic is created in the parent group because epics can
      only exist in groups.
 - **Development**: Merge requests, branches, and feature flags related to this item are shown in a single list.
+
+## Work item Markdown reference
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).

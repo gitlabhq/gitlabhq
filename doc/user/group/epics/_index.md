@@ -114,6 +114,18 @@ following blog posts:
 If you run into any issues while trying out this change, you can use the
 [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/494462) to provide more details.
 
+## Work item Markdown reference
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../../markdown.md#gitlab-specific-references).
+
 ## Related topics
 
 - [Manage epics](manage_epics.md) and multi-level child epics.

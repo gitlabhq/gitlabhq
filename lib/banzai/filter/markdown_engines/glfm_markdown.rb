@@ -22,6 +22,7 @@ module Banzai
           math_code: true,
           math_dollars: true,
           multiline_block_quotes: true,
+          placeholder_detection: true,
           relaxed_autolinks: true,
           sourcepos: true,
           smart: false,
@@ -50,13 +51,18 @@ module Banzai
 
         def render_options
           return MINIMUM_MARKDOWN if minimum_markdown_enabled?
-          return OPTIONS unless sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled?
+
+          unless sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled? ||
+              placeholders_disabled?
+            return OPTIONS
+          end
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
             header_ids: headers_disabled? ? nil : OPTIONS[:header_ids],
             autolink: !autolink_disabled?,
             relaxed_autolinks: !autolink_disabled?,
+            placeholder_detection: !placeholders_disabled?,
             unsafe: !raw_html_disabled?
           )
         end
@@ -75,6 +81,13 @@ module Banzai
 
         def minimum_markdown_enabled?
           context[:minimum_markdown]
+        end
+
+        def placeholders_disabled?
+          return true unless context[:project]&.markdown_placeholders_feature_flag_enabled? ||
+            context[:group]&.markdown_placeholders_feature_flag_enabled?
+
+          context[:disable_placeholders] || context[:broadcast_message_placeholders]
         end
       end
     end

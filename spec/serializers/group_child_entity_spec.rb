@@ -25,6 +25,7 @@ RSpec.describe GroupChildEntity, feature_category: :groups_and_projects do
 
     %w[id
        full_name
+       full_path
        avatar_url
        name
        description

@@ -2431,9 +2431,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     let_it_be_with_refind(:group) { create(:group, owners: user1) }
     let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
-    let_it_be_with_refind(:project1) { create(:project, namespace: group) }
-    let_it_be_with_refind(:project2) { create(:project, namespace: group) }
-    let_it_be_with_refind(:project3) { create(:project, namespace: group_2) }
 
     before do
       stub_feature_flags(archive_group: true)
@@ -2447,7 +2444,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when authenticated as owner' do
-      it 'archives the group and all of its projects', :aggregate_failures do
+      it 'archives the group', :aggregate_failures do
         expect_log_keys(
           caller_id: "POST /api/:version/groups/:id/archive",
           route: "/api/:version/groups/:id/archive",
@@ -2460,8 +2457,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['id']).to eq(group.id)
         expect(json_response['archived']).to be true
         expect(group.namespace_settings.reload.archived).to eq(true)
-        expect(project1.reload.archived?).to be true
-        expect(project2.reload.archived?).to be true
       end
     end
 
@@ -2475,25 +2470,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq("Group is already archived!")
-      end
-    end
-
-    context 'when authenticated as owner and project is shared with the group' do
-      before do
-        project3.project_group_links.create!(
-          group_id: group.id,
-          group_access: Gitlab::Access::DEVELOPER,
-          expires_at: 1.month.from_now
-        )
-      end
-
-      it 'does not archive the shared project', :aggregate_failures do
-        post api("/groups/#{group.id}/archive", user1)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(project1.reload.archived?).to be true
-        expect(project2.reload.archived?).to be true
-        expect(project3.reload.archived?).to be false
       end
     end
 
@@ -2522,15 +2498,10 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
     let_it_be_with_refind(:group) { create(:group, owners: user1) }
     let_it_be_with_refind(:group_2) { create(:group, owners: user1) }
-    let_it_be_with_refind(:project1) { create(:project, namespace: group) }
-    let_it_be_with_refind(:project2) { create(:project, namespace: group) }
-    let_it_be_with_refind(:project3) { create(:project, namespace: group_2) }
 
     before_all do
       stub_feature_flags(archive_group: true)
       group.namespace_settings.update!(archived: true)
-      project1.update!(archived: true)
-      project2.update!(archived: true)
     end
 
     context 'when unauthenticated' do
@@ -2541,7 +2512,7 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
     end
 
     context 'when authenticated as owner and group is archived' do
-      it 'unarchives the group and all of its projects', :aggregate_failures do
+      it 'unarchives the group', :aggregate_failures do
         expect_log_keys(
           caller_id: "POST /api/:version/groups/:id/unarchive",
           route: "/api/:version/groups/:id/unarchive",
@@ -2554,8 +2525,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response['id']).to eq(group.id)
         expect(json_response['archived']).to be false
         expect(group.namespace_settings.reload.archived).to eq(false)
-        expect(project1.reload.archived?).to be false
-        expect(project2.reload.archived?).to be false
       end
     end
 
@@ -2569,30 +2538,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
 
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
         expect(json_response['message']).to eq("Group is already unarchived!")
-      end
-    end
-
-    context 'when authenticated as owner and project is shared with the group' do
-      before do
-        project3.project_group_links.create!(
-          group_id: group.id,
-          group_access: Gitlab::Access::DEVELOPER,
-          expires_at: 1.month.from_now
-        )
-
-        group.namespace_settings.update!(archived: true)
-        project1.update!(archived: true)
-        project2.update!(archived: true)
-        project3.update!(archived: true)
-      end
-
-      it 'does not unarchive the shared project', :aggregate_failures do
-        post api("/groups/#{group.id}/unarchive", user1)
-
-        expect(response).to have_gitlab_http_status(:success)
-        expect(project1.reload.archived?).to be false
-        expect(project2.reload.archived?).to be false
-        expect(project3.reload.archived?).to be true
       end
     end
 

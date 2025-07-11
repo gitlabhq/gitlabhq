@@ -60,14 +60,4 @@ const unwrapStagesWithNeedsAndLookup = (denodedStages) => {
   return { stages: nodes, lookup: lookupMap };
 };
 
-const unwrapStagesWithNeeds = (denodedStages) => {
-  return unwrapStagesWithNeedsAndLookup(denodedStages).stages;
-};
-
-export {
-  unwrapGroups,
-  unwrapJobWithNeeds,
-  unwrapNodesWithName,
-  unwrapStagesWithNeeds,
-  unwrapStagesWithNeedsAndLookup,
-};
+export { unwrapGroups, unwrapJobWithNeeds, unwrapNodesWithName, unwrapStagesWithNeedsAndLookup };

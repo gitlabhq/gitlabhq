@@ -151,53 +151,6 @@ RSpec.describe 'Email Verification On Login', :clean_gitlab_redis_rate_limiting,
       end
     end
 
-    describe 'updating the email address' do
-      it 'offers to update the email address' do
-        perform_enqueued_jobs do
-          # When logging in
-          gitlab_sign_in(user)
-
-          # Expect an instructions email to be sent with a code
-          code = expect_instructions_email_and_extract_code
-
-          # It shows an update email button
-          expect(page).to have_button s_('IdentityVerification|Update email')
-
-          # Click Update email button
-          click_button s_('IdentityVerification|Update email')
-
-          # Try to update with another user's email address
-          fill_in _('Email'), with: another_user.email
-          click_button s_('IdentityVerification|Update email')
-          expect(page).to have_content('Email has already been taken')
-
-          # Update to a unique email address
-          fill_in _('Email'), with: new_email
-          click_button s_('IdentityVerification|Update email')
-          expect(page).to have_content(s_('IdentityVerification|A new code has been sent to ' \
-                                          'your updated email address.'))
-          expect_log_message('Instructions Sent', 2)
-
-          new_code = expect_email_changed_notification_to_old_address_and_instructions_email_to_new_address
-
-          # Verify the old code is different from the new code
-          expect(code).not_to eq(new_code)
-          verify_code(new_code)
-
-          # Expect the user to be unlocked
-          expect_user_to_be_unlocked
-          expect_user_to_be_confirmed
-
-          # When logging in again
-          gitlab_sign_out
-          gitlab_sign_in(user)
-
-          # It does not show an update email button anymore
-          expect(page).not_to have_button s_('IdentityVerification|Update email')
-        end
-      end
-    end
-
     describe 'verification errors' do
       it 'rate limits verifications' do
         perform_enqueued_jobs do

@@ -696,11 +696,13 @@ export default {
       const fullDraftAutosaveKey = getNewWorkItemAutoSaveKey({
         fullPath,
         workItemType,
+        relatedItemId: this.relatedItemId,
       });
       clearDraft(fullDraftAutosaveKey);
 
       const widgetsAutosaveKey = getNewWorkItemWidgetsAutoSaveKey({
         fullPath,
+        relatedItemId: this.relatedItemId,
       });
       clearDraft(widgetsAutosaveKey);
     },
@@ -1238,6 +1240,7 @@ export default {
               :work-item-iid="workItemIid"
               :work-item-type="selectedWorkItemTypeName"
               :full-path="selectedProjectFullPath"
+              :is-work-item-closed="false"
               @updateWidgetDraft="handleUpdateWidgetDraft"
               @error="$emit('error', $event)"
             />

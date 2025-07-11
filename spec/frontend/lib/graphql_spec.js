@@ -1,6 +1,10 @@
+import { HttpLink } from '@apollo/client/core';
 import getPipelineDetails from 'shared_queries/pipelines/get_pipeline_details.query.graphql';
-import { stripWhitespaceFromQuery, typePolicies } from '~/lib/graphql';
+import createDefaultClient, { stripWhitespaceFromQuery, typePolicies } from '~/lib/graphql';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { defaultOrganization as currentOrganization } from 'jest/organizations/mock_data';
+
+jest.mock('@apollo/client/core');
 
 describe('stripWhitespaceFromQuery', () => {
   const operationName = 'getPipelineDetails';
@@ -56,5 +60,43 @@ describe('stripWhitespaceFromQuery', () => {
 describe('typePolicies', () => {
   it('includes a policy for Blob', () => {
     expect(typePolicies.Blob).toEqual(expect.objectContaining({ keyFields: ['webPath'] }));
+  });
+});
+
+describe('createDefaultClient', () => {
+  afterEach(() => {
+    window.gon = {};
+  });
+
+  describe('when gon.current_organization is available', () => {
+    beforeEach(() => {
+      window.gon = {
+        current_organization: currentOrganization,
+      };
+    });
+
+    it('adds X-GitLab-Organization-ID header', () => {
+      createDefaultClient();
+
+      expect(HttpLink).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.objectContaining({ 'X-GitLab-Organization-ID': currentOrganization.id }),
+        }),
+      );
+    });
+  });
+
+  describe('when gon.current_organization is not available', () => {
+    it('does not add X-GitLab-Organization-ID header', () => {
+      createDefaultClient();
+
+      expect(HttpLink).toHaveBeenCalledWith(
+        expect.objectContaining({
+          headers: expect.not.objectContaining({
+            'X-GitLab-Organization-ID': currentOrganization.id,
+          }),
+        }),
+      );
+    });
   });
 });

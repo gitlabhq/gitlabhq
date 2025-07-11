@@ -10,6 +10,7 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
       maxAccessLevel: accessLevel,
       descendantGroupsCount,
       children,
+      fullPath,
       ...group
     }) => {
       const baseGroup = {
@@ -24,6 +25,8 @@ export const formatGraphQLGroups = (groups, callback = () => {}) =>
         children: children?.length ? formatGraphQLGroups(children, callback) : [],
         childrenLoading: false,
         hasChildren: Boolean(descendantGroupsCount),
+        fullPath,
+        relativeWebUrl: `/${fullPath}`,
       };
 
       return {

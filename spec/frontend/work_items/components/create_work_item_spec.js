@@ -8,6 +8,7 @@ import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
+import { clearDraft, updateDraft } from '~/lib/utils/autosave';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
@@ -54,6 +55,12 @@ jest.mock('~/work_items/utils', () => {
   return {
     ...jest.requireActual('~/work_items/utils'),
     updateDraftWorkItemType: jest.fn(),
+  };
+});
+jest.mock('~/lib/utils/autosave', () => {
+  return {
+    ...jest.requireActual('~/lib/utils/autosave'),
+    clearDraft: jest.fn(),
   };
 });
 
@@ -241,18 +248,15 @@ describe('Create work item component', () => {
     it('Default', async () => {
       createComponent();
       await waitForPromises();
-      const typeSpecificAutosaveKey = `autosave/new-full-path-epic-draft`;
-      const sharedWidgetsAutosaveKey = 'autosave/new-full-path-widgets-draft';
+      const typeSpecificAutosaveKey = `new-full-path-epic-draft`;
+      const sharedWidgetsAutosaveKey = 'new-full-path-widgets-draft';
 
       findCancelButton().vm.$emit('click');
       await nextTick();
 
-      // clearDraft internally calls localStorage.removeItem twice per key,
-      // first with actual keyname, and then with `keyname/lockVersion`.
-      // We're only interested in actual call to remove by keyname.
-      expect(localStorage.removeItem).toHaveBeenCalledTimes(4);
-      expect(localStorage.removeItem).toHaveBeenNthCalledWith(1, typeSpecificAutosaveKey);
-      expect(localStorage.removeItem).toHaveBeenNthCalledWith(3, sharedWidgetsAutosaveKey);
+      expect(clearDraft).toHaveBeenCalledTimes(2);
+      expect(clearDraft).toHaveBeenNthCalledWith(1, typeSpecificAutosaveKey);
+      expect(clearDraft).toHaveBeenNthCalledWith(2, sharedWidgetsAutosaveKey);
       expect(setNewWorkItemCache).toHaveBeenCalled();
     });
 
@@ -492,6 +496,27 @@ describe('Create work item component', () => {
           },
         ],
       ]);
+    });
+
+    it('clears autosave draft on successful mutation', async () => {
+      const typeSpecificAutosaveKey = 'new-full-path-epic-related-22-draft';
+      const sharedWidgetsAutosaveKey = 'new-full-path-related-22-widgets-draft';
+      updateDraft(typeSpecificAutosaveKey, JSON.stringify({ foo: 'bar' }));
+      updateDraft(sharedWidgetsAutosaveKey, JSON.stringify({ foo: 'bar' }));
+      createComponent({
+        props: {
+          relatedItem: mockRelatedItem,
+        },
+      });
+      await waitForPromises();
+
+      findTitleInput().vm.$emit('updateDraft', 'Test title');
+      await waitForPromises();
+      await submitCreateForm();
+
+      expect(clearDraft).toHaveBeenCalledTimes(2);
+      expect(clearDraft).toHaveBeenNthCalledWith(1, typeSpecificAutosaveKey);
+      expect(clearDraft).toHaveBeenNthCalledWith(2, sharedWidgetsAutosaveKey);
     });
 
     it('emits workItemCreated for confidential work item', async () => {

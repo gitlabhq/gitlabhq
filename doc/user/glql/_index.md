@@ -135,7 +135,7 @@ This source should render a table like the one below:
 
 - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/508956) in GitLab 17.7: Configuring the presentation layer using YAML front matter is deprecated.
 - Parameters `title` and `description` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/183709) in GitLab 17.10.
-- Support for sorting GLQL views [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/178) in GitLab 18.2.
+- Sorting and pagination [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502701) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -149,7 +149,7 @@ Supported parameters:
 | `description` | None                        | An optional description to display below the title. |
 | `display`     | `table`                     | How to display the data. Supported options: `table`, `list`, or `orderedList`. |
 | `fields`      | `title`                     | A comma-separated list of [fields](fields.md#fields-in-glql-views) to include in the view. |
-| `limit`       | `100`                       | How many items to display. The maximum value is `100`. |
+| `limit`       | `100`                       | How many items to display on the first page. The maximum value is `100`. |
 | `sort`        | `updated desc`              | The [field to sort the data by](fields.md#fields-to-sort-glql-views-by) followed by a sort order (`asc` or `desc`). |
 | `title`       | `GLQL table` or `GLQL list` | A title displayed at the top of the GLQL view. |
 
@@ -165,6 +165,19 @@ sort: due asc
 query: project = "gitlab-org/gitlab" AND assignee = currentUser() AND state = opened
 ```
 ````
+
+#### Pagination
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502701) in GitLab 18.2.
+
+{{< /history >}}
+
+GLQL views display the first page of results by default.
+The `limit` parameter controls the number of items shown.
+
+To load the next page, in the last row, select **Load more**.
 
 #### Field functions
 

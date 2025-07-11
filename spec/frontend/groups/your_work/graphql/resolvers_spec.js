@@ -61,7 +61,7 @@ describe('your work groups resolver', () => {
     expect(nodes[0]).toMatchObject({
       __typename: TYPENAME_GROUP,
       id: convertToGraphQLId(TYPENAME_GROUP, mockGroup.id),
-      fullPath: '/frontend-fixtures-group',
+      fullPath: 'frontend-fixtures-group',
       fullName: 'frontend-fixtures-group',
       parent: { id: null },
       webUrl: mockGroup.web_url,

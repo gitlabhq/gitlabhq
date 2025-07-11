@@ -13,7 +13,6 @@ import {
   I18N_RESEND_LINK,
   I18N_EMAIL_RESEND_SUCCESS,
   I18N_GENERIC_ERROR,
-  I18N_UPDATE_EMAIL,
   I18N_HELP_TEXT,
   I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
   I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
@@ -23,10 +22,8 @@ import {
   FAILURE_RESPONSE,
 } from '../constants';
 import EmailForm from './email_form.vue';
-import UpdateEmail from './update_email.vue';
 
 const VERIFY_TOKEN_FORM = 'VERIFY_TOKEN_FORM';
-const UPDATE_EMAIL_FORM = 'UPDATE_EMAIL_FORM';
 const SEND_TO_SECONDARY_EMAIL_FORM = 'SEND_TO_SECONDARY_EMAIL_FORM';
 
 export default {
@@ -39,7 +36,6 @@ export default {
     GlButton,
     GlLink,
     EmailForm,
-    UpdateEmail,
   },
   mixins: [glFeatureFlagsMixin()],
   props: {
@@ -57,10 +53,6 @@ export default {
     },
     resendPath: {
       type: String,
-      required: true,
-    },
-    isOfferEmailReset: {
-      type: Boolean,
       required: true,
     },
   },
@@ -167,7 +159,6 @@ export default {
     inputLabel: I18N_INPUT_LABEL,
     submitButton: I18N_SUBMIT_BUTTON,
     resendLink: I18N_RESEND_LINK,
-    updateEmail: I18N_UPDATE_EMAIL,
     helpText: I18N_HELP_TEXT,
     sendToSecondaryEmailButtonText: I18N_SEND_TO_SECONDARY_EMAIL_BUTTON_TEXT,
     sendToSecondaryEmailGuide: I18N_SEND_TO_SECONDARY_EMAIL_GUIDE,
@@ -175,7 +166,6 @@ export default {
   },
   forms: {
     verifyTokenForm: VERIFY_TOKEN_FORM,
-    updateEmailForm: UPDATE_EMAIL_FORM,
     sendToSecondaryEmailForm: SEND_TO_SECONDARY_EMAIL_FORM,
   },
 };
@@ -183,9 +173,8 @@ export default {
 
 <template>
   <div>
-    <update-email v-if="activeForm === $options.forms.updateEmailForm" @verifyToken="verifyToken" />
     <email-form
-      v-else-if="activeForm === $options.forms.sendToSecondaryEmailForm"
+      v-if="activeForm === $options.forms.sendToSecondaryEmailForm"
       :form-info="$options.i18n.sendToSecondaryEmailGuide"
       :submit-text="$options.i18n.resendLink"
       @submit-email="sendToSecondaryEmail"
@@ -224,14 +213,6 @@ export default {
         <gl-button block variant="link" class="gl-mt-3 gl-h-7" @click="() => resend()">{{
           $options.i18n.resendLink
         }}</gl-button>
-        <gl-button
-          v-if="isOfferEmailReset"
-          block
-          variant="link"
-          class="gl-mt-3 gl-h-7"
-          @click="() => (activeForm = $options.forms.updateEmailForm)"
-          >{{ $options.i18n.updateEmail }}</gl-button
-        >
       </section>
       <p class="gl-mt-3 gl-text-subtle">
         <gl-sprintf :message="$options.i18n.helpText">

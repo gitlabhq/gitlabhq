@@ -23689,6 +23689,7 @@ CREATE TABLE snippet_repository_storage_moves (
     error_message text,
     snippet_project_id bigint,
     snippet_organization_id bigint,
+    CONSTRAINT check_4b127f0a5d CHECK ((num_nonnulls(snippet_organization_id, snippet_project_id) = 1)),
     CONSTRAINT check_a42ab83060 CHECK ((char_length(error_message) <= 256)),
     CONSTRAINT snippet_repository_storage_moves_destination_storage_name CHECK ((char_length(destination_storage_name) <= 255)),
     CONSTRAINT snippet_repository_storage_moves_source_storage_name CHECK ((char_length(source_storage_name) <= 255))

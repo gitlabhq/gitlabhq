@@ -36,6 +36,7 @@ describe('formatGraphQLGroups', () => {
       children: [],
       childrenLoading: false,
       hasChildren: false,
+      relativeWebUrl: `/${firstMockGroup.fullPath}`,
       customProperty: firstMockGroup.fullName,
     });
     expect(formattedGroups).toHaveLength(organizationGroups.length);

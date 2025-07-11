@@ -442,6 +442,10 @@ class Namespace < ApplicationRecord
     self_and_ancestors(skope: Namespace).archived.exists?
   end
 
+  def ancestors_archived?
+    ancestors.archived.exists?
+  end
+
   def to_reference_base(from = nil, full: false, absolute_path: false)
     if full || cross_namespace_reference?(from)
       absolute_path ? "/#{full_path}" : full_path

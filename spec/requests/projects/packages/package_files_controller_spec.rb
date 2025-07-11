@@ -25,6 +25,38 @@ RSpec.describe Projects::Packages::PackageFilesController, feature_category: :pa
         .to eq(%(attachment; filename="#{filename}"; filename*=UTF-8''#{filename}))
     end
 
+    it 'logs content type determination' do
+      expect(Gitlab::AppJsonLogger).to receive(:info).with(
+        determined_content_type: 'application/zip'
+      )
+
+      subject
+    end
+
+    shared_examples 'not log' do
+      it 'does not enable log' do
+        expect(Gitlab::AppJsonLogger).not_to receive(:info)
+
+        subject
+      end
+    end
+
+    context 'when package type is not generic' do
+      before do
+        package.update!(package_type: 'npm')
+      end
+
+      it_behaves_like 'not log'
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(packages_generic_package_content_type: false)
+      end
+
+      it_behaves_like 'not log'
+    end
+
     context 'with remote object storage' do
       let(:package_file) { create(:package_file, :object_storage, package: package, file_name: filename) }
 

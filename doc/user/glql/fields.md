@@ -39,7 +39,7 @@ With GitLab Query Language (GLQL), fields are used to:
 You use fields in three GLQL components:
 
 - **`query`** - Set conditions to determine which items to retrieve
-- **`fields`** - Specify which columns and details appear in your view  
+- **`fields`** - Specify which columns and details appear in your view
 - **`sort`** - Order items by specific criteria
 
 The following sections describe the available fields for each component.
@@ -77,7 +77,10 @@ The table below provides an overview of all available query fields and their spe
 | [Milestone](#milestone)                 | `milestone`                                  | `=`, `in`, `!=`           | Issues, epics, merge requests |
 | [Project](#project)                     | `project`                                    | `=`                       | Issues, merge requests |
 | [Reviewers](#reviewers)                 | `reviewer`, `reviewers`, `reviewedBy`        | `=`, `!=`                 | Merge requests |
+| [Source branch](#source-branch)         | `sourceBranch`                               | `=`, `in`, `!=`           | Merge requests |
 | [State](#state)                         | `state`                                      | `=`                       | Issues, epics, merge requests |
+| [Status](#status)                       | `status`                                     | `=`                       | Issues |
+| [Target branch](#target-branch)         | `targetBranch`                               | `=`, `in`, `!=`           | Merge requests |
 | [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, merge requests |
 | [Updated at](#updated-at)               | `updated`, `updatedAt`                       | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
 | [Weight](#weight)                       | `weight`                                     | `=`, `!=`                 | Issues        |
@@ -930,6 +933,42 @@ The table below provides an overview of all available query fields and their spe
   type = MergeRequest and reviewer = currentUser()
   ```
 
+### Source branch
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
+
+{{< /history >}}
+
+**Description:** Query merge requests by their source branch.
+
+**Allowed value types:** `String`, `List`
+
+**Additional details**:
+
+- `List` values are only supported with the `in` and `!=` operators.
+
+**Examples**:
+
+- List all merge requests from a specific branch:
+
+  ```plaintext
+  type = MergeRequest and sourceBranch = "feature/new-feature"
+  ```
+
+- List all merge requests from multiple branches:
+
+  ```plaintext
+  type = MergeRequest and sourceBranch in ("main", "develop")
+  ```
+
+- List all merge requests that are not from a specific branch:
+
+  ```plaintext
+  type = MergeRequest and sourceBranch != "main"
+  ```
+
 ### State
 
 {{< history >}}
@@ -975,6 +1014,68 @@ The table below provides an overview of all available query fields and their spe
 
   ```plaintext
   type = MergeRequest and state = merged
+  ```
+
+### Status
+
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
+
+{{< /history >}}
+
+**Description:** Query issues by their status.
+
+**Allowed value types:** `String`
+
+**Examples**:
+
+- List all issues with status "To do":
+
+  ```plaintext
+  status = "To do"
+  ```
+
+### Target branch
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
+
+{{< /history >}}
+
+**Description:** Query merge requests by their target branch.
+
+**Allowed value types:** `String`, `List`
+
+**Additional details**:
+
+- `List` values are only supported with the `in` and `!=` operators.
+
+**Examples**:
+
+- List all merge requests targeting a specific branch:
+
+  ```plaintext
+  type = MergeRequest and targetBranch = "feature/new-feature"
+  ```
+
+- List all merge requests targeting multiple branches:
+
+  ```plaintext
+  type = MergeRequest and targetBranch in ("main", "develop")
+  ```
+
+- List all merge requests that are not targeting a specific branch:
+
+  ```plaintext
+  type = MergeRequest and targetBranch != "main"
   ```
 
 ### Type
@@ -1078,6 +1179,12 @@ The table below provides an overview of all available query fields and their spe
 
 ### Weight
 
+{{< details >}}
+
+- Tier: Premium, Ultimate
+
+{{< /details >}}
+
 **Description**: Query issues by their weight.
 
 **Allowed value types**:
@@ -1107,10 +1214,11 @@ The table below provides an overview of all available query fields and their spe
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) `iteration` in GitLab 17.6.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) support for `merge requests` in GitLab 17.8.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) `last comment` in GitLab 17.11.
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) support for `epics` in GitLab 18.1.
+- Field `iteration` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-haskell/-/issues/74) in GitLab 17.6.
+- Support for merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/491246) in GitLab 17.8.
+- Field `lastComment` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/512154) in GitLab 17.11.
+- Support for epics [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
+- Fields `status`, `sourceBranch`, `targetBranch`, `sourceProject`, and `targetProject` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197407) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -1130,20 +1238,26 @@ for example, `fields: title, state, health, epic, milestone, weight, updated`.
 | Description      | `description`                         | Issues, epics, merge requests | Display the description of the object |
 | Draft            | `draft`                               | Merge requests                | Display `Yes` or `No` indicating whether the merge request is in draft state |
 | Due date         | `due`, `dueDate`                      | Issues, epics                 | Display time until the object is due |
+| Epic             | `epic`                                | Issues                        | Display a link to the epic for the issue. Available for Premium and Ultimate tiers |
 | Health status    | `health`, `healthStatus`              | Issues                        | Display a badge indicating the health status of the object |
 | ID               | `id`                                  | Issues, epics, merge requests | Display the ID of the object |
-| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object |
+| Iteration        | `iteration`                           | Issues                        | Display the iteration associated with the object. Available for Premium and Ultimate tiers |
 | Labels           | `label`, `labels`                     | Issues, epics, merge requests | Display labels associated with the object. Can accept parameters to filter specific labels, for example `labels("workflow::*", "backend")` |
 | Last comment     | `lastComment`                         | Issues, epics, merge requests | Display the last comment made on the object |
 | Merged at        | `merged`, `mergedAt`                  | Merge requests                | Display time since the merge request was merged |
 | Milestone        | `milestone`                           | Issues, epics, merge requests | Display the milestone associated with the object |
 | Reviewers        | `reviewer`, `reviewers`               | Merge requests                | Display users assigned to review the merge request |
+| Source branch    | `sourceBranch`                        | Merge requests                | Display the source branch of the merge request |
+| Source project   | `sourceProject`                       | Merge requests                | Display the source project of the merge request |
 | Start date       | `start`, `startDate`                  | Epics                         | Display the start date of the epic |
 | State            | `state`                               | Issues, epics, merge requests | Display a badge indicating the state of the object. For issues and epics, values are `Open` or `Closed`. For merge requests, values are `Open`, `Closed`, or `Merged` |
+| Status           | `status`                              | Issues                        | Display a badge indicating the status of the issue. For example, "To do" or "Complete". Available in the Premium and Ultimate tiers. |
+| Target branch    | `targetBranch`                        | Merge requests                | Display the target branch of the merge request |
+| Target project   | `targetProject`                       | Merge requests                | Display the target project of the merge request |
 | Title            | `title`                               | Issues, epics, merge requests | Display the title of the object |
 | Type             | `type`                                | Issues                        | Display the work item type, for example `Issue`, `Task`, or `Objective` |
 | Updated at       | `updated`, `updatedAt`                | Issues, epics, merge requests | Display time since the object was last updated |
-| Weight           | `weight`                              | Issues                        | Display the weight of the object |
+| Weight           | `weight`                              | Issues                        | Display the weight of the object. Available in the Premium and Ultimate tiers. |
 
 ## Fields to sort GLQL views by
 

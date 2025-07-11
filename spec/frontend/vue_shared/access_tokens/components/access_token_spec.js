@@ -37,6 +37,7 @@ describe('AccessToken', () => {
       copyButtonTitle: 'Copy token',
       formInputGroupProps: {
         'data-testid': 'created-access-token-field',
+        autocomplete: 'off',
       },
       initialVisibility: false,
       readonly: true,

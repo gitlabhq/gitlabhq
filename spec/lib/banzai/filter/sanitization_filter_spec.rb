@@ -149,6 +149,24 @@ RSpec.describe Banzai::Filter::SanitizationFilter, feature_category: :markdown d
       expect(filter(html).to_html).to eq(output)
     end
 
+    it 'allows `data-placeholder` attributes on `span`, `a` and `img` elements' do
+      html = <<-HTML
+      <span class="code" data-placeholder="true">something</span>
+      <a href="example.com" class="code" data-placeholder="true">something</a>
+      <img src="example.com" class="code" data-placeholder="true" />
+      <div data-placeholder-text="true" data-placeholder="true">something</div>
+      HTML
+
+      output = <<-HTML
+      <span data-placeholder="true">something</span>
+      <a href="example.com" data-placeholder="true">something</a>
+      <img src="example.com" data-placeholder="true">
+      <div>something</div>
+      HTML
+
+      expect(filter(html).to_html).to eq(output)
+    end
+
     it 'allows the `data-sourcepos` attribute globally' do
       exp = %q(<p data-sourcepos="1:1-1:10">foo/bar.md</p>)
       act = filter(exp)

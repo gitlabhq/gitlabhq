@@ -1,5 +1,4 @@
 import { CI_CONFIG_STATUS_INVALID, CI_CONFIG_STATUS_VALID } from '~/ci/pipeline_editor/constants';
-import { unwrapStagesWithNeeds } from '~/ci/pipeline_details/utils/unwrapping_utils';
 import { DOCS_URL_IN_EE_DIR } from 'jh_else_ce/lib/utils/url_utility';
 
 export const commonOptions = {
@@ -117,7 +116,7 @@ const mockJobFields = {
   when: 'on_success',
   only: { refs: ['branches', 'tags'], __typename: 'CiJobLimitType' },
   except: null,
-  needs: { nodes: [], __typename: 'CiConfigNeedConnection' },
+  needs: [{ name: 'test', __typename: 'CiConfigNeed' }],
   __typename: 'CiConfigJob',
 };
 
@@ -148,6 +147,83 @@ export const mockIncludes = [
     __typename: 'CiConfigInclude',
   },
 ];
+
+// Mock result of the graphql mutation at:
+// app/assets/javascripts/ci/pipeline_editor/graphql/mutations/ci_lint.mutation.graphql
+export const mockCiLintMutationResponse = {
+  data: {
+    ciLint: {
+      config: {
+        errors: [],
+        warnings: [],
+        includes: mockIncludes,
+        mergedYaml: mockCiYml,
+        status: CI_CONFIG_STATUS_VALID,
+        stages: [
+          {
+            name: 'test',
+            groups: [
+              {
+                id: 'group-1',
+                name: 'job_test_1',
+                size: 1,
+                jobs: [
+                  {
+                    ...mockJobFields,
+                    name: 'job_test_1',
+                    script: ['echo "test 1"'],
+                    stage: 'test',
+                    __typename: 'CiConfigJobV2',
+                  },
+                ],
+                __typename: 'CiConfigGroupV2',
+              },
+              {
+                id: 'group-2',
+                name: 'job_test_2',
+                size: 1,
+                jobs: [
+                  {
+                    name: 'job_test_2',
+                    script: ['echo "test 2"'],
+                    stage: 'test',
+                    ...mockJobFields,
+                    __typename: 'CiConfigJobV2',
+                  },
+                ],
+                __typename: 'CiConfigGroupV2',
+              },
+            ],
+            __typename: 'CiConfigStageV2',
+          },
+          {
+            name: 'build',
+            groups: [
+              {
+                name: 'job_build',
+                size: 1,
+                jobs: [
+                  {
+                    name: 'job_build',
+                    script: ['echo "build"'],
+                    stage: 'build',
+                    ...mockJobFields,
+                    __typename: 'CiConfigJobV2',
+                  },
+                ],
+                __typename: 'CiConfigGroupV2',
+              },
+            ],
+
+            __typename: 'CiConfigStageV2',
+          },
+        ],
+        __typename: 'CiConfigV2',
+      },
+      errors: [],
+    },
+  },
+};
 
 // Mock result of the graphql query at:
 // app/assets/javascripts/ci/pipeline_editor/graphql/queries/ci_config.graphql
@@ -233,11 +309,10 @@ export const mockCiConfigQueryResponse = {
   },
 };
 
-export const mergeUnwrappedCiConfig = (mergedConfig) => {
-  const { ciConfig } = mockCiConfigQueryResponse.data;
+export const mockMergedConfig = (mergedConfig) => {
+  const { config } = mockCiLintMutationResponse.data.ciLint;
   return {
-    ...ciConfig,
-    stages: unwrapStagesWithNeeds(ciConfig.stages.nodes),
+    ...config,
     ...mergedConfig,
   };
 };

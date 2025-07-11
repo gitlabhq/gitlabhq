@@ -706,9 +706,11 @@ describe('DiffFile', () => {
     );
 
     it.each`
-      discussions                                                               | exists   | existsText
-      ${[]}                                                                     | ${false} | ${'does not'}
-      ${[{ id: 1, position: { position_type: 'file' }, expandedOnDiff: true }]} | ${true}  | ${'does'}
+      discussions                                                                                                                                      | exists   | existsText
+      ${[]}                                                                                                                                            | ${false} | ${'does not'}
+      ${[{ id: 1, position: { position_type: 'file' }, expandedOnDiff: true }]}                                                                        | ${true}  | ${'does'}
+      ${[{ id: 1, position: { position_type: 'file' }, expandedOnDiff: false }]}                                                                       | ${false} | ${'does not'}
+      ${[{ id: 1, position: { position_type: 'file' }, expandedOnDiff: true }, { id: 1, position: { position_type: 'file' }, expandedOnDiff: false }]} | ${true}  | ${'does'}
     `('discussions $existsText exist for $discussions', ({ discussions, exists }) => {
       const file = {
         ...getReadableFile(),
@@ -721,22 +723,13 @@ describe('DiffFile', () => {
       expect(wrapper.findByTestId('diff-file-discussions').exists()).toEqual(exists);
     });
 
-    it('hides discussions when expandedOnDiff is false', () => {
-      const file = {
-        ...getReadableFile(),
-        discussions: [{ id: 1, position: { position_type: 'file' }, expandedOnDiff: false }],
-      };
-
-      useLegacyDiffs().diffFiles = [file];
-      createComponent();
-
-      expect(wrapper.findByTestId('diff-file-discussions').exists()).toEqual(false);
-    });
-
     it('shows diff file drafts', () => {
       const file = {
         ...getReadableFile(),
-        discussions: [{ id: 1, position: { position_type: 'file' }, expandedOnDiff: true }],
+        discussions: [
+          { id: 1, position: { position_type: 'file' }, expandedOnDiff: false },
+          { id: 1, position: { position_type: 'file' }, expandedOnDiff: true },
+        ],
       };
 
       authenticate();
@@ -765,7 +758,7 @@ describe('DiffFile', () => {
         ...getReadableFile(),
         discussions: [
           { id: 1, position: { position_type: 'file' }, expandedOnDiff: false },
-          { id: 2, position: { position_type: 'file' }, expandedOnDiff: false },
+          { id: 2, position: { position_type: 'file' }, expandedOnDiff: true },
         ],
       };
 
@@ -774,7 +767,7 @@ describe('DiffFile', () => {
 
       wrapper.findComponent(DiffFileDiscussionExpansion).vm.$emit('toggle');
 
-      expect(useLegacyDiffs().toggleFileDiscussion).toHaveBeenCalledTimes(2);
+      expect(useLegacyDiffs().toggleFileDiscussion).toHaveBeenCalledTimes(1);
     });
 
     describe('when note-form emits `handleFormUpdate`', () => {

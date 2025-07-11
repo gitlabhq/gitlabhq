@@ -18,7 +18,7 @@ import {
   EDITOR_APP_STATUS_VALID,
 } from '~/ci/pipeline_editor/constants';
 import {
-  mergeUnwrappedCiConfig,
+  mockMergedConfig,
   mockCiTroubleshootingPath,
   mockCiYml,
   mockYmlHelpPagePath,
@@ -49,7 +49,7 @@ describe('Validation segment component', () => {
         ciTroubleshootingPath: mockCiTroubleshootingPath,
       },
       propsData: {
-        ciConfig: mergeUnwrappedCiConfig(),
+        ciConfig: mockMergedConfig(),
         ciFileContent: mockCiYml,
         ...props,
       },
@@ -140,7 +140,7 @@ describe('Validation segment component', () => {
       beforeEach(() => {
         createComponent({
           props: {
-            ciConfig: mergeUnwrappedCiConfig({
+            ciConfig: mockMergedConfig({
               status: CI_CONFIG_STATUS_INVALID,
               errors: [firstError, secondError],
             }),
@@ -167,7 +167,7 @@ describe('Validation segment component', () => {
       beforeEach(() => {
         createComponent({
           props: {
-            ciConfig: mergeUnwrappedCiConfig({
+            ciConfig: mockMergedConfig({
               status: CI_CONFIG_STATUS_INVALID,
               errors: [evilError],
             }),

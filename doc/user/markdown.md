@@ -82,6 +82,7 @@ The following features are not found in standard Markdown:
 - [Front matter](#front-matter)
 - [GitLab-specific references](#gitlab-specific-references)
 - [Includes](#includes)
+- [Placeholders](#placeholders)
 - [Inline diffs](#inline-diff)
 - [Math equations and symbols written in LaTeX](#math-equations)
 - [Strikethrough](#emphasis)
@@ -745,6 +746,10 @@ When rendered, the example looks similar to:
 
 - Autocomplete for wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/442229) in GitLab 16.11.
 - Ability to reference labels from groups [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455120) in GitLab 17.1.
+- Ability to reference issues, epics, and work items with `[work_item:NUMBER]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.2.
+
+- Ability to reference issues, epics, and work items with `[work_item:123]` syntax [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- Ability to reference issues, epics, and work items with `[work_item:123]` syntax [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
 
 {{< /history >}}
 
@@ -764,10 +769,11 @@ GitLab Flavored Markdown recognizes the following:
 | Specific group                                                                       | `@group_name`                                         |                                                |                                    |
 | Entire team                                                                          | [`@all`](discussions/_index.md#mentioning-all-members) |                                                |                                    |
 | Project                                                                              | `namespace/project>`                                  |                                                |                                    |
-| Issue                                                                                | ``#123``                                              | `namespace/project#123`                        | `project#123`                      |
+| Issue                                                                                | ``#123`` or `[issue:123]` | `namespace/project#123` or `[issue:namespace/project/123]` | `project#123` or `[issue:project/123]` |
+| [Work item](work_items/_index.md)                                                    | `[work_item:123]` | `[work_item:namespace/project/123]` | `[work_item:project/123]` |
 | Merge request                                                                        | `!123`                                                | `namespace/project!123`                        | `project!123`                      |
 | Snippet                                                                              | `$123`                                                | `namespace/project$123`                        | `project$123`                      |
-| [Epic](group/epics/_index.md)                                                        | `#123` or `&123`  | `group1/subgroup#123` or `group1/subgroup&123` | |
+| [Epic](group/epics/_index.md)                                                        | `#123` or `&123` or `[work_item:123]` | `group1/subgroup#123` or `group1/subgroup&123` or `[work_item:group1/subgroup/123]` | |
 | [Iteration](group/iterations/_index.md)                                              | `*iteration:"iteration title"`                        |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by ID<sup>1</sup>                    | `[cadence:123]`                                       |                                                |                                    |
 | [Iteration cadence](group/iterations/_index.md) by title (one word)<sup>1</sup>      | `[cadence:plan]`                                      |                                                |                                    |
@@ -1960,6 +1966,33 @@ When rendered, the example looks similar to:
 > var s = "JavaScript syntax highlighting";
 > alert(s);
 > ```
+
+## Placeholders
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/14389) in GitLab 18.2 [with a flag](../administration/feature_flags/_index.md) named `markdown_placeholders`. Disabled by default.
+
+{{< /history >}}
+
+Placeholders can be used to display certain types of changeable data, such as a project's title
+or latest tag. They are filled in each time the Markdown is rendered.
+
+The syntax is `%{PLACEHOLDER}`.
+
+| Placeholder               | Example value       | Description |
+|---------------------------|---------------------|-------------|
+| `%{gitlab_server}`        | `gitlab.com`        | Server of a project |
+| `%{gitlab_pages_domain}`  | `pages.gitlab.com`  | Domain hosting GitLab Pages |
+| `%{project_path}`         | `gitlab-org/gitlab` | Path of a project including the parent groups |
+| `%{project_name}`         | `gitlab`            | Name of a project |
+| `%{project_id}`           | `278964`            | Database ID associated with a project |
+| `%{project_namespace}`    | `gitlab-org`        | Project namespace of a project |
+| `%{project_title}`        | `GitLab`            | Title of a project |
+| `%{group_name}`           | `gitlab-org`        | Group of a project |
+| `%{default_branch}`       | `master`            | Default branch name configured for a project’s repository |
+| `%{commit_sha}`           | `ad10e011ce65492322037633ebc054efde37b143` | ID of the most recent commit to the default branch of a project’s repository |
+| `%{latest_tag}`           | `v17.10.7-ee`       | Latest tag added to the project’s repository |
 
 ## Escape characters
 

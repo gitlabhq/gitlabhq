@@ -1,9 +1,10 @@
 <script>
-import MarkdownField from '~/vue_shared/components/markdown/field.vue';
+import { __, s__ } from '~/locale';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 
 export default {
   components: {
-    MarkdownField,
+    MarkdownEditor,
   },
   props: {
     markdownPreviewPath: {
@@ -19,34 +20,47 @@ export default {
       required: false,
       default: '',
     },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      formFieldProps: {
+        id: 'snippet-description',
+        name: 'snippet-description',
+        placeholder: s__('Snippets|Describe what your snippet does or how to use it…'),
+        'data-testid': 'snippet-description-field',
+        'aria-label': __('Description'),
+      },
+    };
+  },
+  computed: {
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
+    },
   },
 };
 </script>
 <template>
   <div class="form-group">
-    <label for="snippet-description">{{ s__('Snippets|Description (optional)') }}</label>
-    <markdown-field
-      :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath"
-      :textarea-value="value"
-    >
-      <template #textarea>
-        <textarea
-          id="snippet-description"
-          ref="textarea"
-          :value="value"
-          rows="3"
-          class="note-textarea js-gfm-input js-autosize markdown-area !gl-min-h-0"
-          dir="auto"
-          data-testid="snippet-description-field"
-          data-supports-quick-actions="false"
-          :aria-label="__('Description')"
-          :placeholder="s__('Snippets|Describe what your snippet does or how to use it…')"
-          v-bind="$attrs"
-          @input="$emit('input', $event.target.value)"
-        >
-        </textarea>
-      </template>
-    </markdown-field>
+    <div class="common-note-form">
+      <label for="snippet-description">{{ s__('Snippets|Description (optional)') }}</label>
+      <markdown-editor
+        ref="markdownEditor"
+        class="gl-mt-3"
+        :value="value"
+        :render-markdown-path="markdownPreviewPath"
+        :markdown-docs-path="markdownDocsPath"
+        :form-field-props="formFieldProps"
+        :enable-autocomplete="enableAutocomplete"
+        :autocomplete-data-sources="autocompleteDataSources"
+        supports-quick-actions
+        autofocus
+        @input="$emit('input', $event)"
+      />
+    </div>
   </div>
 </template>

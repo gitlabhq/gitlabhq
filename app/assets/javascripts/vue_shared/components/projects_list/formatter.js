@@ -11,6 +11,7 @@ export const formatGraphQLProjects = (projects, callback = () => {}) =>
       forkingAccessLevel,
       maxAccessLevel: accessLevel,
       group,
+      fullPath,
       ...project
     }) => {
       const baseProject = {
@@ -25,6 +26,8 @@ export const formatGraphQLProjects = (projects, callback = () => {}) =>
         accessLevel,
         availableActions: availableGraphQLProjectActions(project),
         isPersonal: group === null,
+        fullPath,
+        relativeWebUrl: `/${fullPath}`,
       };
 
       return {

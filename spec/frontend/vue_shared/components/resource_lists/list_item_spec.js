@@ -56,7 +56,7 @@ describe('ListItem', () => {
 
     expect(avatarLabeled.props()).toMatchObject({
       label: resource.avatarLabel,
-      labelLink: resource.webUrl,
+      labelLink: resource.relativeWebUrl,
     });
 
     expect(avatarLabeled.attributes()).toMatchObject({

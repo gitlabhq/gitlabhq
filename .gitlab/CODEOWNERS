@@ -1920,7 +1920,7 @@ ee/app/workers/ai/repository_xray/
 /jh/doc/
 
 [Geo]
-/doc/**/geo/ @gitlab-org/geo-team/geo-backend
+/doc/**/geo/ @luciezhao @nhxnguyen
 /ee/**/geo/ @gitlab-org/geo-team/geo-backend
 /qa/**/geo/ @gitlab-org/geo-team/geo-backend
 geo_* @gitlab-org/geo-team/geo-backend

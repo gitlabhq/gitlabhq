@@ -6,6 +6,7 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
   include ContainerRegistryHelpers
   include ProjectForksHelper
   include ReloadHelpers
+  using RSpec::Parameterized::TableSyntax
 
   let_it_be(:group_sti_name) { Group.sti_name }
   let_it_be(:project_sti_name) { Namespaces::ProjectNamespace.sti_name }
@@ -1066,6 +1067,49 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
           expect { namespace.self_or_ancestors_archived? }.not_to raise_error
           expect(namespace.self_or_ancestors_archived?).to be false
         end
+      end
+    end
+  end
+
+  describe '#ancestors_archived?' do
+    let(:grandparent) { create(:group) }
+    let(:parent) { create(:group, parent: grandparent) }
+    let(:namespace) { create(:group, parent: parent) }
+
+    where(:namespace_archived, :parent_archived, :grandparent_archived, :expected_result) do
+      true  | false | false | false
+      true  | false | true  | true
+      true  | true  | false | true
+      true  | true  | true  | true
+      false | true  | true  | true
+      false | true  | false | true
+      false | false | true  | true
+      false | false | false | false
+    end
+
+    with_them do
+      before do
+        namespace.namespace_settings.update!(archived: namespace_archived)
+        parent.namespace_settings.update!(archived: parent_archived)
+        grandparent.namespace_settings.update!(archived: grandparent_archived)
+      end
+
+      it 'returns the expected result' do
+        expect(namespace.ancestors_archived?).to eq(expected_result)
+      end
+    end
+
+    context 'when group has no parent' do
+      let_it_be(:root) { create(:group) }
+
+      it 'returns false when archived' do
+        root.namespace_settings.update!(archived: true)
+        expect(root.ancestors_archived?).to eq(false)
+      end
+
+      it 'returns false when not archived' do
+        root.namespace_settings.update!(archived: false)
+        expect(root.ancestors_archived?).to eq(false)
       end
     end
   end

@@ -137,6 +137,18 @@ To toggle the sorting order between ascending and descending:
 For more information about sorting logic, see
 [Sorting and ordering issue lists](../project/issues/sorting_issue_lists.md).
 
+## Work item Markdown reference
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/352861) in GitLab 18.1 [with a flag](../../administration/feature_flags/_index.md) named `extensible_reference_filters`. Disabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197052) in GitLab 18.2. Feature flag `extensible_reference_filters` removed.
+
+{{< /history >}}
+
+You can reference work items in GitLab Flavored Markdown fields with `[work_item:123]`.
+For more information, see [GitLab-specific references](../markdown.md#gitlab-specific-references).
+
 ## Related topics
 
 - [Linked issues](../project/issues/related_issues.md)

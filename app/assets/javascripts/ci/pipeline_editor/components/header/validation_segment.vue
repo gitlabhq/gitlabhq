@@ -113,7 +113,7 @@ export default {
       {{ $options.i18n.loading }}
     </div>
     <span v-else data-testid="validation-segment">
-      <span class="gl-flex gl-max-w-full gl-items-center gl-gap-4">
+      <span class="gl-flex gl-max-w-full gl-items-center gl-gap-2">
         <gl-icon :name="icon" class="gl-ml-1" />
         <gl-sprintf :message="message">
           <template v-if="hasLink" #link="{ content }">

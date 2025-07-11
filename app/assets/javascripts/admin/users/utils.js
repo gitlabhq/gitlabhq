@@ -3,10 +3,11 @@ import getSoloOwnedOrganizationsQuery from '~/admin/users/graphql/queries/get_so
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import {
-  TOKENS,
+  TOKEN_CONFIGS,
   SOLO_OWNED_ORGANIZATIONS_EMPTY,
   SOLO_OWNED_ORGANIZATIONS_REQUESTED_COUNT,
 } from 'ee_else_ce/admin/users/constants';
+import { OPERATOR_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export const generateUserPaths = (paths, id) => {
   return Object.fromEntries(
@@ -22,34 +23,32 @@ export const generateUserPaths = (paths, id) => {
 
 /**
  * Initialize token values based on the URL parameters
- * @param {string} query - document.location.searchd
  *
- * @returns {{tokens: Array<string|Token>, sort: string}}
+ * @returns {{tokenValues: Array<string|Token>, sort: string}}
  */
-export function initializeValuesFromQuery(query = document.location.search) {
-  const tokens = [];
+export function initializeValuesFromQuery() {
+  const tokenValues = [];
 
-  const { filter, search_query: searchQuery, sort } = queryToObject(query);
+  const { filter, search_query: searchQuery, sort } = queryToObject(window.location.search);
 
   if (filter) {
-    const token = TOKENS.find(({ options }) => options.some(({ value }) => value === filter));
+    const tokenConfig = TOKEN_CONFIGS.find(({ options }) =>
+      options.some(({ value }) => value === filter),
+    );
 
-    if (token) {
-      tokens.push({
-        type: token.type,
-        value: {
-          data: filter,
-          operator: token.operators[0].value,
-        },
+    if (tokenConfig) {
+      tokenValues.push({
+        type: tokenConfig.type,
+        value: { data: filter, operator: OPERATOR_IS },
       });
     }
   }
 
   if (searchQuery) {
-    tokens.push(searchQuery);
+    tokenValues.push(searchQuery);
   }
 
-  return { tokens, sort };
+  return { tokenValues, sort };
 }
 
 export const getSoloOwnedOrganizations = async (apolloClient, userId) => {

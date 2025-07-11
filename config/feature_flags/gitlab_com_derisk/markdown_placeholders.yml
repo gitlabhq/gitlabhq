@@ -1,0 +1,10 @@
+---
+name: markdown_placeholders
+description: Render markdown placeholder variables
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/14389
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/194934
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/544860
+milestone: '18.2'
+group: group::knowledge
+type: gitlab_com_derisk
+default_enabled: false
