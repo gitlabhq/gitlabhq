@@ -13,24 +13,40 @@ title: Monitor your GitLab Dedicated instance
 
 {{< /details >}}
 
-GitLab delivers [application logs](../logs/_index.md) to an Amazon S3 bucket in the GitLab tenant account, which can be shared with you.
+GitLab delivers [application logs](../logs/_index.md) to an Amazon S3 bucket in the GitLab
+tenant account, which can be shared with you.
+To access these logs, you must provide AWS Identity and Access Management (IAM) Amazon Resource
+Names (ARNs) that uniquely identify your AWS users or roles.
 
-Logs stored in the S3 bucket are retained indefinitely, until the one year retention policy is fully enforced. GitLab team members can view more information in confidential issue [483](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483).
+Logs stored in the S3 bucket are retained indefinitely.
+
+GitLab team members can view more information about the proposed retention policy in
+this confidential issue: `https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/483`.
 
 ## Request access to application logs
 
-To gain read only access to the S3 bucket with your application logs:
+To gain read-only access to the S3 bucket with your application logs:
 
-1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the title `Customer Log Access`.
-1. In the body of the ticket, include a list of IAM Principal Amazon Resource Names (ARNs) that require access to the logs from the S3 bucket. The ARNs can be for users or roles.
+1. Open a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650)
+   with the title `Customer Log Access`.
+1. In the body of the ticket, include a list of IAM ARNs for the users or roles that require
+   access to the logs. Specify the full ARN path without wildcards (`*`). For example:
 
-   {{< alert type="note" >}}
+   - User: `arn:aws:iam::123456789012:user/username`
+   - Role: `arn:aws:iam::123456789012:role/rolename`
 
-   Specify the full ARN path without wildcards (`*`). Wildcard characters are not supported. GitLab team members can read more about the proposed feature to add wildcard support in this confidential issue: [7010](https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010).
+{{< alert type="note" >}}
 
-   {{< /alert >}}
+Only IAM user and role ARNs are supported.
+Security Token Service (STS) ARNs (`arn:aws:sts::...`) cannot be used.
 
-GitLab provides the name of the S3 bucket. Your authorized users or roles can then access all objects in the bucket. To verify access, you can use the [AWS CLI](https://aws.amazon.com/cli/).
+{{< /alert >}}
+
+GitLab provides the name of the S3 bucket. Your authorized users or roles can then access all objects in the bucket.
+To verify access, you can use the [AWS CLI](https://aws.amazon.com/cli/).
+
+GitLab team members can view more information about the proposed feature to add wildcard support in this
+confidential issue: `https://gitlab.com/gitlab-com/gl-infra/gitlab-dedicated/team/-/issues/7010`.
 
 ## Find your S3 bucket name
 

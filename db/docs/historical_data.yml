@@ -11,3 +11,4 @@ introduced_by_url: https://dev.gitlab.org/gitlab/gitlab-ee/-/merge_requests/390
 milestone: '7.11'
 gitlab_schema: gitlab_main
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553459

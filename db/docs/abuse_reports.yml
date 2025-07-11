@@ -9,3 +9,4 @@ introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/cba7f20dc8614d1
 milestone: '7.13'
 gitlab_schema: gitlab_main
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553435

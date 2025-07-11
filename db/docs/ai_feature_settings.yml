@@ -10,3 +10,4 @@ milestone: '17.1'
 gitlab_schema: gitlab_main
 notes: Used only for self-managed. Not used in GitLab.com, nor Cells
 table_size: small
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553438
