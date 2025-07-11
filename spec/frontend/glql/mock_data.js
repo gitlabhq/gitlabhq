@@ -1,3 +1,15 @@
+export const MOCK_PROJECT = {
+  __typename: 'Project',
+  nameWithNamespace: 'GitLab Org / GitLab Test',
+  webUrl: 'https://gitlab.com/gitlab-org/gitlab-test',
+};
+
+export const MOCK_GROUP = {
+  __typename: 'Group',
+  fullName: 'GitLab Org',
+  webUrl: 'https://gitlab.com/gitlab-org',
+};
+
 export const MOCK_ISSUE = {
   __typename: 'Issue',
   webUrl: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/1',
@@ -44,6 +56,21 @@ export const MOCK_MILESTONE = {
 
 export const MOCK_ITERATION = {
   __typename: 'Iteration',
+};
+
+export const MOCK_WORK_ITEM_TYPE = {
+  __typename: 'WorkItemType',
+  iconName: 'issue-type-issue',
+  name: 'Issue',
+};
+
+export const MOCK_STATUS = {
+  __typename: 'WorkItemStatus',
+  category: 'to_do',
+  color: '#737278',
+  description: null,
+  iconName: 'status-waiting',
+  name: 'To do',
 };
 
 export const MOCK_ISSUES = {

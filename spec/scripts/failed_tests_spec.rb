@@ -6,6 +6,7 @@ require_relative '../../scripts/failed_tests'
 RSpec.describe FailedTests do
   let(:report_file) { 'spec/fixtures/scripts/test_report.json' }
   let(:options) { described_class::DEFAULT_OPTIONS.merge(previous_tests_report_path: report_file) }
+  let(:frontend_failure_path) { 'path/to/fail_file_spec.js' }
   let(:failure_path) { 'path/to/fail_file_spec.rb' }
   let(:other_failure_path) { 'path/to/fail_file_spec_2.rb' }
   let(:output_directory) { described_class::DEFAULT_OPTIONS[:output_directory] }
@@ -44,6 +45,16 @@ RSpec.describe FailedTests do
               'file' => other_failure_path
             }
           ]
+        },
+        {
+          'failed_count' => 1,
+          'name' => 'jest unit 1/11',
+          'test_cases' => [
+            {
+              'status' => 'failed',
+              'file' => frontend_failure_path
+            }
+          ]
         }
       ]
     }
@@ -61,39 +72,41 @@ RSpec.describe FailedTests do
         allow(subject).to receive(:file_contents_as_json).and_return(file_contents_as_json)
       end
 
-      it 'writes the file for the suite' do
+      it 'writes files for respective test suites' do
         expect(File).to receive(:write)
           .with(File.join(output_directory, "rspec_failed_tests.txt"),
             "#{failure_path} #{other_failure_path}")
         expect(File).to receive(:write)
+          .with(File.join(output_directory, "rspec_all_failed_tests.txt"),
+            "#{failure_path} #{other_failure_path}")
+        expect(File).to receive(:write)
           .with(File.join(output_directory, "rspec_ee_failed_tests.txt"),
             failure_path)
+        expect(File).to receive(:write)
+          .with(File.join(output_directory, "jest_failed_tests.txt"),
+            frontend_failure_path)
 
         subject.output_failed_tests
       end
 
-      context 'with single_output enabled' do
-        subject { described_class.new(options.merge(single_output: true)) }
-
-        it 'writes only the consolidated file' do
-          expect(File).to receive(:write)
-            .with(File.join(output_directory, "rspec_all_failed_tests.txt"),
-              "#{failure_path} #{other_failure_path}")
-
-          subject.output_failed_tests
-        end
-      end
-
-      context 'when given a valid format' do
+      context 'when given a valid format(json)' do
         subject { described_class.new(options.merge(format: :json)) }
 
-        it 'writes the file for the suite' do
+        it 'writes list of failed test files for respective tests suites' do
           expected_rspec_content = Gitlab::Json.pretty_generate([
             { 'status' => 'failed', 'file' => failure_path, 'job_url' => nil },
             { 'status' => 'failed', 'file' => other_failure_path, 'job_url' => nil }
           ])
           expected_rspec_ee_content = Gitlab::Json.pretty_generate([
             { 'status' => 'failed', 'file' => failure_path, 'job_url' => nil }
+          ])
+          expected_rspec_all_content = Gitlab::Json.pretty_generate([
+            { 'status' => 'failed', 'file' => failure_path, 'job_url' => nil },
+            { 'status' => 'failed', 'file' => failure_path, 'job_url' => nil },
+            { 'status' => 'failed', 'file' => other_failure_path, 'job_url' => nil }
+          ])
+          expected_jest_content = Gitlab::Json.pretty_generate([
+            { 'status' => 'failed', 'file' => frontend_failure_path, 'job_url' => nil }
           ])
 
           expect(File).to receive(:write)
@@ -102,26 +115,14 @@ RSpec.describe FailedTests do
           expect(File).to receive(:write)
             .with(File.join(output_directory, "rspec_ee_failed_tests.json"),
               expected_rspec_ee_content)
+          expect(File).to receive(:write)
+            .with(File.join(output_directory, "rspec_all_failed_tests.json"),
+              expected_rspec_all_content)
+          expect(File).to receive(:write)
+            .with(File.join(output_directory, "jest_failed_tests.json"),
+              expected_jest_content)
 
           subject.output_failed_tests
-        end
-
-        context 'with single_output enabled' do
-          subject { described_class.new(options.merge(format: :json, single_output: true)) }
-
-          it 'writes consolidated json file' do
-            expected_content = Gitlab::Json.pretty_generate([
-              { 'status' => 'failed', 'file' => failure_path, 'job_url' => nil },
-              { 'status' => 'failed', 'file' => failure_path, 'job_url' => nil },
-              { 'status' => 'failed', 'file' => other_failure_path, 'job_url' => nil }
-            ])
-
-            expect(File).to receive(:write)
-              .with(File.join(output_directory, "rspec_all_failed_tests.json"),
-                expected_content)
-
-            subject.output_failed_tests
-          end
         end
       end
 
@@ -190,15 +191,15 @@ RSpec.describe FailedTests do
       }
     end
 
-    context 'with single_output enabled and duplicate files across suites' do
-      subject { described_class.new(options.merge(single_output: true)) }
+    context 'with duplicate test files in multiple test suites' do
+      subject { described_class.new(options) }
 
       before do
         allow(subject).to receive(:file_contents_as_json).and_return(duplicate_failures_json)
         allow(File).to receive(:write)
       end
 
-      it 'deduplicates file paths in oneline format' do
+      it 'deduplicates test file paths in oneline format' do
         expect(File).to receive(:write)
           .with(File.join(output_directory, "rspec_all_failed_tests.txt"),
             "#{user_spec} #{project_spec} #{issue_spec}")
@@ -216,8 +217,7 @@ RSpec.describe FailedTests do
           '--output-directory', '/custom/output',
           '--format', 'json',
           '--rspec-pg-regex', 'custom.*pg',
-          '--rspec-ee-pg-regex', 'custom.*ee',
-          '--single-output'
+          '--rspec-ee-pg-regex', 'custom.*ee'
         ])
 
         expect(options[:previous_tests_report_path]).to eq '/custom/report.json'
@@ -225,7 +225,6 @@ RSpec.describe FailedTests do
         expect(options[:format]).to eq 'json'
         expect(options[:rspec_pg_regex]).to eq(/custom.*pg/)
         expect(options[:rspec_ee_pg_regex]).to eq(/custom.*ee/)
-        expect(options[:single_output]).to be true
       end
 
       it 'uses default values when no options provided' do
@@ -236,7 +235,6 @@ RSpec.describe FailedTests do
         expect(options[:format]).to eq :oneline
         expect(options[:rspec_pg_regex]).to eq(/rspec .+ pg16( .+)?/)
         expect(options[:rspec_ee_pg_regex]).to eq(/rspec-ee .+ pg16( .+)?/)
-        expect(options[:single_output]).to be false
       end
 
       it 'handles help option by exiting' do

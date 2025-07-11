@@ -102,4 +102,11 @@ export default class Sorter {
 
     return this.#sort();
   }
+
+  clone(items) {
+    const sorter = new Sorter(items);
+    sorter.#options = { ...this.#options };
+    sorter.#sort();
+    return sorter;
+  }
 }

@@ -10,7 +10,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillSentNotificationsAfterPartit
   let(:p_sent_notifications) { partitioned_table(:sent_notifications_7abbf02cb6) }
   let(:organization) { table(:organizations).create!(name: 'organization', path: 'organization') }
 
-  let(:user) { table(:users).create!(email: 'email@example.com', username: 'user1', projects_limit: 10) }
+  let(:user) do
+    table(:users).create!(email: 'email@example.com', username: 'user1', projects_limit: 10,
+      organization_id: organization.id)
+  end
 
   let(:mr_namespace) do
     namespaces.create!(name: "mr", path: "mr", organization_id: organization.id)

@@ -232,6 +232,11 @@ export default {
       required: false,
       default: false,
     },
+    hiddenMetadataKeys: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -409,6 +414,7 @@ export default {
           :prevent-redirect="preventRedirect"
           :is-active="isIssuableActive(issuable)"
           :detail-loading="detailLoading"
+          :hidden-metadata-keys="hiddenMetadataKeys"
           @checked-input="handleIssuableCheckedInput(issuable, $event)"
           @select-issuable="$emit('select-issuable', $event)"
         >

@@ -15,6 +15,8 @@ import UserPresenter from '~/glql/components/presenters/user.vue';
 import NullPresenter from '~/glql/components/presenters/null.vue';
 import CollectionPresenter from '~/glql/components/presenters/collection.vue';
 import IterationPresenter from 'ee_else_ce/glql/components/presenters/iteration.vue';
+import StatusPresenter from 'ee_else_ce/glql/components/presenters/status.vue';
+import TypePresenter from '~/glql/components/presenters/type.vue';
 import Presenter, { componentForField } from '~/glql/core/presenter';
 import {
   MOCK_EPIC,
@@ -30,6 +32,8 @@ import {
   MOCK_ITERATION,
   MOCK_MR_AUTHOR,
   MOCK_WORK_ITEM,
+  MOCK_STATUS,
+  MOCK_WORK_ITEM_TYPE,
 } from '../mock_data';
 
 const MOCK_LINK = { title: 'title', webUrl: 'url' };
@@ -55,6 +59,8 @@ describe('componentForField', () => {
     ${'work_item'} | ${MOCK_WORK_ITEM}       | ${IssuablePresenter}   | ${'IssuablePresenter'}
     ${'epic'}      | ${MOCK_EPIC}            | ${IssuablePresenter}   | ${'IssuablePresenter'}
     ${'iteration'} | ${MOCK_ITERATION}       | ${IterationPresenter}  | ${'IterationPresenter'}
+    ${'status'}    | ${MOCK_STATUS}          | ${StatusPresenter}     | ${'StatusPresenter'}
+    ${'type'}      | ${MOCK_WORK_ITEM_TYPE}  | ${TypePresenter}       | ${'TypePresenter'}
   `('returns $presenterName for data type: $dataType', ({ field, presenter }) => {
     expect(componentForField(field)).toBe(presenter);
   });
@@ -65,6 +71,7 @@ describe('componentForField', () => {
       ${'healthStatus'} | ${'onTrack'}     | ${HealthPresenter} | ${'HealthPresenter'}
       ${'state'}        | ${'opened'}      | ${StatePresenter}  | ${'StatePresenter'}
       ${'lastComment'}  | ${'lastComment'} | ${HtmlPresenter}   | ${'HtmlPresenter'}
+      ${'type'}         | ${'TASK'}        | ${TypePresenter}   | ${'TypePresenter'}
     `('returns $presenterName for field name: $fieldName', ({ fieldName, field, presenter }) => {
       expect(componentForField(field, fieldName)).toBe(presenter);
     });

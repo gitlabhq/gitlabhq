@@ -13102,6 +13102,34 @@ Input type: `WorkItemAddLinkedItemsInput`
 | <a id="mutationworkitemaddlinkeditemsmessage"></a>`message` | [`String`](#string) | Linked items update result message. |
 | <a id="mutationworkitemaddlinkeditemsworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemBulkMove`
+
+Allows move several work items.
+
+{{< details >}}
+**Introduced** in GitLab 18.2.
+**Status**: Experiment.
+{{< /details >}}
+
+Input type: `WorkItemBulkMoveInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitembulkmoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitembulkmoveids"></a>`ids` | [`[WorkItemID!]!`](#workitemid) | Global ID array of the work items that will be moved. IDs that the user can't move will be ignored. A max of 100 can be provided. |
+| <a id="mutationworkitembulkmovesourcefullpath"></a>`sourceFullPath` | [`String!`](#string) | Full path of the source namespace. For example, `gitlab-org/gitlab-foss`. |
+| <a id="mutationworkitembulkmovetargetfullpath"></a>`targetFullPath` | [`String!`](#string) | Full path of the target namespace. For example, `gitlab-org/gitlab-foss`. Only project namespaces are supported. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitembulkmoveclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitembulkmoveerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during the mutation. |
+| <a id="mutationworkitembulkmovemovedworkitemcount"></a>`movedWorkItemCount` | [`Int`](#int) | Number of work items that were successfully moved. |
+
 ### `Mutation.workItemBulkUpdate`
 
 Allows updating several properties for a set of work items.

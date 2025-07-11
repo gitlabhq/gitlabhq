@@ -1,0 +1,12 @@
+---
+api_type:
+attr: sdrs_jwt_signing_key
+clusterwide: true
+column: sdrs_jwt_signing_key
+db_type: jsonb
+default:
+description:
+encrypted: true
+gitlab_com_different_than_default: false
+jihu: false
+not_null: false

@@ -1,14 +1,27 @@
 <script>
-import { GlAlert, GlButton, GlModal, GlIntersectionObserver } from '@gitlab/ui';
+import {
+  GlAlert,
+  GlButton,
+  GlModal,
+  GlIntersectionObserver,
+  GlIcon,
+  GlLink,
+  GlSprintf,
+  GlExperimentBadge,
+} from '@gitlab/ui';
 import { __, sprintf } from '~/locale';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { renderMarkdown } from '~/notes/utils';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { InternalEvents } from '~/tracking';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { copyGLQLNodeAsGFM } from '../../utils/copy_as_gfm';
-import { executeAndPresentQuery, presentPreview } from '../../core';
+import { executeAndPresentQuery, presentPreview, loadMore } from '../../core';
 import Counter from '../../utils/counter';
 import { eventHubByKey } from '../../utils/event_hub_factory';
+import GlqlFooter from './footer.vue';
+import GlqlActions from './actions.vue';
+import GlqlFootnote from './footnote.vue';
 
 const MAX_GLQL_BLOCKS = 20;
 
@@ -18,7 +31,15 @@ export default {
     GlAlert,
     GlButton,
     GlModal,
+    GlIcon,
+    GlLink,
+    GlSprintf,
+    GlExperimentBadge,
     GlIntersectionObserver,
+    CrudComponent,
+    GlqlFooter,
+    GlqlFootnote,
+    GlqlActions,
   },
   directives: {
     SafeHtml,
@@ -44,8 +65,8 @@ export default {
       },
 
       loadOnClick: true,
-      presenterPreview: null,
-      presenterComponent: null,
+      previewPresenter: null,
+      finalPresenter: null,
       error: {
         variant: 'warning',
         title: null,
@@ -54,9 +75,31 @@ export default {
       },
 
       preClasses: 'code highlight code-syntax-highlight-theme',
+
+      isCollapsed: false,
     };
   },
   computed: {
+    data() {
+      return this.finalPresenter?.data || {};
+    },
+    config() {
+      return this.finalPresenter?.config || this.previewPresenter?.config || {};
+    },
+    isPreview() {
+      return !this.finalPresenter;
+    },
+    title() {
+      return (
+        this.config.title || (this.config.display === 'table' ? __('GLQL table') : __('GLQL list'))
+      );
+    },
+    showEmptyState() {
+      return this.data.nodes?.length === 0 && !this.isPreview;
+    },
+    showCopyContentsAction() {
+      return Boolean(this.data.count) && !this.isCollapsed && !this.isPreview;
+    },
     hasError() {
       return this.error.title || this.error.message;
     },
@@ -68,14 +111,14 @@ export default {
   async mounted() {
     this.loadOnClick = this.glFeatures.glqlLoadOnClick;
 
-    this.eventHub.$on('dropdownAction', this.onDropdownAction.bind(this));
+    this.eventHub.$on('viewSource', this.viewSource.bind(this));
+    this.eventHub.$on('copySource', this.copySource.bind(this));
+    this.eventHub.$on('copyAsGFM', this.copyAsGFM.bind(this));
+    this.eventHub.$on('reload', this.reload.bind(this));
+    this.eventHub.$on('loadMore', this.loadMore.bind(this));
   },
 
   methods: {
-    onDropdownAction(action, ...data) {
-      if (typeof this[action] === 'function') this[action](...data);
-    },
-
     viewSource({ title }) {
       Object.assign(this.queryModalSettings, { title, show: true });
     },
@@ -92,27 +135,40 @@ export default {
       await copyGLQLNodeAsGFM(this.$refs.presenter.$el);
     },
 
+    async loadMore() {
+      try {
+        const data = await loadMore(this.query, this.data.pageInfo.endCursor);
+        this.finalPresenter.data.pageInfo = data.pageInfo;
+        this.finalPresenter.data.nodes.push(...data.nodes);
+
+        this.eventHub.$emit('loadMoreComplete', this.finalPresenter.data);
+      } catch (error) {
+        this.handleQueryError(__('Unable to load the next page.'));
+        this.eventHub.$emit('loadMoreError');
+      }
+    },
+
     loadGlqlBlock() {
-      if (this.presenterComponent || this.presenterPreview) return;
+      if (this.finalPresenter || this.previewPresenter) return;
 
       if (this.glFeatures.glqlLoadOnClick || this.checkGlqlBlocksCount()) {
-        this.presentPreview();
-        this.loadPresenterComponent();
+        this.loadPreviewPresenter();
+        this.loadFinalPresenter();
       }
     },
 
     reloadGlqlBlock() {
-      this.presenterComponent = null;
-      this.presenterPreview = null;
+      this.finalPresenter = null;
+      this.previewPresenter = null;
 
       this.dismissAlert();
-      this.presentPreview();
-      this.loadPresenterComponent();
+      this.loadPreviewPresenter();
+      this.loadFinalPresenter();
     },
 
-    async loadPresenterComponent() {
+    async loadFinalPresenter() {
       try {
-        this.presenterComponent = await executeAndPresentQuery(this.query, this.queryKey);
+        this.finalPresenter = await executeAndPresentQuery(this.query, this.queryKey);
         this.trackRender();
       } catch (error) {
         switch (error.networkError?.statusCode) {
@@ -128,11 +184,11 @@ export default {
       }
     },
 
-    async presentPreview() {
+    async loadPreviewPresenter() {
       this.dismissAlert();
 
       try {
-        this.presenterPreview = await presentPreview(this.query, this.queryKey);
+        this.previewPresenter = await presentPreview(this.query, this.queryKey);
       } catch (error) {
         this.handleQueryError(error.message);
       }
@@ -209,7 +265,7 @@ export default {
     <template v-if="hasError">
       <gl-alert
         :variant="error.variant"
-        class="gl-my-3"
+        class="!gl-my-3"
         :primary-button-text="error.action"
         @dismiss="dismissAlert"
         @primaryAction="reloadGlqlBlock"
@@ -230,8 +286,41 @@ export default {
       >{{ $options.i18n.loadGlqlView }}</gl-button><code class="gl-opacity-2">{{ query }}</code></pre>
     </div>
     <gl-intersection-observer v-else @appear="loadGlqlBlock">
-      <component :is="presenterComponent" v-if="presenterComponent" ref="presenter" />
-      <component :is="presenterPreview" v-else-if="presenterPreview && !hasError" />
+      <template v-if="finalPresenter || previewPresenter">
+        <crud-component
+          :anchor-id="queryKey"
+          :title="title"
+          :description="config.description"
+          :count="data.count"
+          is-collapsible
+          persist-collapsed-state
+          class="!gl-mt-5"
+          :body-class="{ '!gl-m-0 !gl-p-0': data.count || isPreview }"
+          @collapsed="isCollapsed = true"
+          @expanded="isCollapsed = false"
+        >
+          <template #actions>
+            <glql-actions :show-copy-contents="showCopyContentsAction" :modal-title="title" />
+          </template>
+
+          <component :is="finalPresenter.component" v-if="finalPresenter" ref="presenter" />
+          <component :is="previewPresenter.component" v-else-if="previewPresenter && !hasError" />
+          <div
+            v-if="data.count && data.nodes.length < data.count"
+            class="gl-border-t gl-border-section gl-p-3"
+          >
+            <glql-footer :count="data.nodes.length" :total-count="data.count" />
+          </div>
+
+          <template v-if="showEmptyState" #empty>
+            {{ __('No data found for this query.') }}
+          </template>
+
+          <template #footer>
+            <glql-footnote />
+          </template>
+        </crud-component>
+      </template>
       <div v-else-if="hasError" class="markdown-code-block gl-relative">
         <pre :class="preClasses"><code>{{ query }}</code></pre>
       </div>

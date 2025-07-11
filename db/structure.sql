@@ -437,6 +437,7 @@ CREATE TABLE users (
     onboarding_in_progress boolean DEFAULT false NOT NULL,
     color_mode_id smallint DEFAULT 1 NOT NULL,
     composite_identity_enforced boolean DEFAULT false NOT NULL,
+    organization_id bigint DEFAULT 1 NOT NULL,
     CONSTRAINT check_061f6f1c91 CHECK ((project_view IS NOT NULL)),
     CONSTRAINT check_0dd5948e38 CHECK ((user_type IS NOT NULL)),
     CONSTRAINT check_3a60c18afc CHECK ((hide_no_password IS NOT NULL)),
@@ -9580,7 +9581,10 @@ CREATE TABLE application_settings (
     tmp_asset_proxy_secret_key jsonb,
     editor_extensions jsonb DEFAULT '{}'::jsonb NOT NULL,
     security_and_compliance_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
+    sdrs_url text,
     default_profile_preferences jsonb DEFAULT '{}'::jsonb NOT NULL,
+    sdrs_enabled boolean DEFAULT false NOT NULL,
+    sdrs_jwt_signing_key jsonb,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -9622,6 +9626,7 @@ CREATE TABLE application_settings (
     CONSTRAINT check_85a39b68ff CHECK ((char_length(encrypted_ci_jwt_signing_key_iv) <= 255)),
     CONSTRAINT check_8dca35398a CHECK ((char_length(public_runner_releases_url) <= 255)),
     CONSTRAINT check_8e7df605a1 CHECK ((char_length(cube_api_base_url) <= 512)),
+    CONSTRAINT check_9a42a7cfdd CHECK ((char_length(sdrs_url) <= 255)),
     CONSTRAINT check_9a719834eb CHECK ((char_length(secret_detection_token_revocation_url) <= 255)),
     CONSTRAINT check_9c6c447a13 CHECK ((char_length(maintenance_mode_message) <= 255)),
     CONSTRAINT check_a5704163cc CHECK ((char_length(secret_detection_revocation_token_types_url) <= 255)),
@@ -18976,25 +18981,6 @@ CREATE SEQUENCE onboarding_progresses_id_seq
 
 ALTER SEQUENCE onboarding_progresses_id_seq OWNED BY onboarding_progresses.id;
 
-CREATE TABLE operations_feature_flag_scopes (
-    id bigint NOT NULL,
-    feature_flag_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    active boolean NOT NULL,
-    environment_scope character varying DEFAULT '*'::character varying NOT NULL,
-    strategies jsonb DEFAULT '[{"name": "default", "parameters": {}}]'::jsonb NOT NULL
-);
-
-CREATE SEQUENCE operations_feature_flag_scopes_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE operations_feature_flag_scopes_id_seq OWNED BY operations_feature_flag_scopes.id;
-
 CREATE TABLE operations_feature_flags (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -28269,8 +28255,6 @@ ALTER TABLE ONLY observability_traces_issues_connections ALTER COLUMN id SET DEF
 
 ALTER TABLE ONLY onboarding_progresses ALTER COLUMN id SET DEFAULT nextval('onboarding_progresses_id_seq'::regclass);
 
-ALTER TABLE ONLY operations_feature_flag_scopes ALTER COLUMN id SET DEFAULT nextval('operations_feature_flag_scopes_id_seq'::regclass);
-
 ALTER TABLE ONLY operations_feature_flags ALTER COLUMN id SET DEFAULT nextval('operations_feature_flags_id_seq'::regclass);
 
 ALTER TABLE ONLY operations_feature_flags_clients ALTER COLUMN id SET DEFAULT nextval('operations_feature_flags_clients_id_seq'::regclass);
@@ -30985,9 +30969,6 @@ ALTER TABLE ONLY observability_traces_issues_connections
 
 ALTER TABLE ONLY onboarding_progresses
     ADD CONSTRAINT onboarding_progresses_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY operations_feature_flag_scopes
-    ADD CONSTRAINT operations_feature_flag_scopes_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY operations_feature_flags_clients
     ADD CONSTRAINT operations_feature_flags_clients_pkey PRIMARY KEY (id);
@@ -35830,8 +35811,6 @@ CREATE INDEX index_external_status_checks_protected_branches_on_project_id ON ex
 
 CREATE INDEX index_f4903d2246 ON instance_type_ci_runner_machines USING btree (organization_id);
 
-CREATE UNIQUE INDEX index_feature_flag_scopes_on_flag_id_and_environment_scope ON operations_feature_flag_scopes USING btree (feature_flag_id, environment_scope);
-
 CREATE UNIQUE INDEX index_feature_flags_clients_on_project_id_and_token_encrypted ON operations_feature_flags_clients USING btree (project_id, token_encrypted);
 
 CREATE UNIQUE INDEX index_feature_gates_on_feature_key_and_key_and_value ON feature_gates USING btree (feature_key, key, value);
@@ -37862,7 +37841,7 @@ CREATE INDEX index_routes_on_path_trigram ON routes USING gin (path gin_trgm_ops
 
 CREATE UNIQUE INDEX index_routes_on_source_type_and_source_id ON routes USING btree (source_type, source_id);
 
-CREATE UNIQUE INDEX index_saml_group_links_on_group_id_and_saml_group_name ON saml_group_links USING btree (group_id, saml_group_name);
+CREATE UNIQUE INDEX index_saml_group_links_on_group_id_saml_group_name_provider ON saml_group_links USING btree (group_id, saml_group_name, provider);
 
 CREATE INDEX index_saml_group_links_on_member_role_id ON saml_group_links USING btree (member_role_id);
 
@@ -38473,6 +38452,8 @@ CREATE INDEX index_users_on_managing_group_id ON users USING btree (managing_gro
 CREATE INDEX index_users_on_name ON users USING btree (name);
 
 CREATE INDEX index_users_on_name_trigram ON users USING gin (name gin_trgm_ops);
+
+CREATE INDEX index_users_on_organization_id ON users USING btree (organization_id);
 
 CREATE INDEX index_users_on_public_email_excluding_null_and_empty ON users USING btree (public_email) WHERE (((public_email)::text <> ''::text) AND (public_email IS NOT NULL));
 
@@ -44485,6 +44466,9 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY dependency_proxy_manifest_states
     ADD CONSTRAINT fk_d79f184865 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY users
+    ADD CONSTRAINT fk_d7b9ff90af FOREIGN KEY (organization_id) REFERENCES organizations(id) NOT VALID;
+
 ALTER TABLE p_ci_pipelines
     ADD CONSTRAINT fk_d80e161c54 FOREIGN KEY (ci_ref_id) REFERENCES ci_refs(id) ON DELETE SET NULL;
 
@@ -46200,9 +46184,6 @@ ALTER TABLE ONLY customer_relations_organizations
 
 ALTER TABLE ONLY ai_agent_version_attachments
     ADD CONSTRAINT fk_rails_a4ed49efb5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY operations_feature_flag_scopes
-    ADD CONSTRAINT fk_rails_a50a04d0a4 FOREIGN KEY (feature_flag_id) REFERENCES operations_feature_flags(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY duo_workflows_events
     ADD CONSTRAINT fk_rails_a55845e9fa FOREIGN KEY (workflow_id) REFERENCES duo_workflows_workflows(id) ON DELETE CASCADE;

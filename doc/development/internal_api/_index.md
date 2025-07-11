@@ -1573,6 +1573,35 @@ The `PUT` operation replaces all group members. Any existing members not include
 
 {{< /alert >}}
 
+#### Delete a SCIM group
+
+Removes SCIM management from existing SAML group links by clearing the SCIM group ID. This endpoint also schedules background cleanup of SCIM group membership tracking records.
+
+```plaintext
+DELETE /api/scim/v2/application/Groups/:id
+```
+
+Parameters:
+
+| Attribute    | Type   | Required | Description               |
+| ------------ | ------ | -------- | ------------------------- |
+| `id`         | string | yes      | SCIM group ID (UUID format). |
+
+Example request:
+
+```shell
+curl --verbose --request DELETE "https://gitlab.example.com/api/scim/v2/application/Groups/86e7d437-1a55-4731-b3a3-2867fb4d2a94" \
+     --header "Authorization: Bearer <your_scim_token>" --header "Content-Type: application/scim+json"
+```
+
+Returns an empty response with a `204` status code if successful.
+
+{{< alert type="note" >}}
+
+This endpoint does not delete GitLab groups. It only removes SCIM management from SAML group links with the specified SCIM group ID, allowing identity providers to deprovision unneeded SCIM groups.
+
+{{< /alert >}}
+
 ### Available filters
 
 They match an expression as specified in [the RFC7644 filtering section](https://www.rfc-editor.org/rfc/rfc7644#section-3.4.2.2).

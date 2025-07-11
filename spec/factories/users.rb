@@ -35,6 +35,8 @@ FactoryBot.define do
 
         user.assign_personal_namespace(org)
       end
+
+      user.organization ||= evaluator.in_organization
     end
 
     trait :without_default_org do

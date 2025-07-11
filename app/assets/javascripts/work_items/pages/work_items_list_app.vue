@@ -102,6 +102,7 @@ import {
   WORK_ITEM_TYPE_NAME_ISSUE,
   WORK_ITEM_TYPE_NAME_KEY_RESULT,
   WORK_ITEM_TYPE_NAME_OBJECTIVE,
+  METADATA_KEYS,
 } from '../constants';
 import getUserWorkItemsDisplaySettingsPreferences from '../graphql/get_user_preferences.query.graphql';
 
@@ -213,12 +214,20 @@ export default {
   apollo: {
     displaySettings: {
       query: getUserWorkItemsDisplaySettingsPreferences,
+      variables() {
+        return {
+          namespace: this.rootPageFullPath,
+        };
+      },
       update(data) {
-        return (
-          data?.currentUser?.userPreferences?.workItemsDisplaySettings ?? {
-            shouldOpenItemsInSidePanel: true,
-          }
-        );
+        const commonPreferences = data?.currentUser?.userPreferences?.workItemsDisplaySettings ?? {
+          shouldOpenItemsInSidePanel: true,
+        };
+        const namespacePreferences = data?.currentUser?.workItemPreferences?.displaySettings ?? {};
+        return {
+          commonPreferences,
+          namespacePreferences,
+        };
       },
       skip() {
         return !this.isSignedIn;
@@ -356,8 +365,8 @@ export default {
       });
     },
     workItemDrawerEnabled() {
-      const shouldOpenItemsInSidePanel = this.displaySettings?.shouldOpenItemsInSidePanel ?? true;
-
+      const shouldOpenItemsInSidePanel =
+        this.displaySettings.commonPreferences?.shouldOpenItemsInSidePanel ?? true;
       if (!shouldOpenItemsInSidePanel) return false;
 
       if (this.glFeatures.workItemViewForIssues) {
@@ -680,6 +689,9 @@ export default {
     preselectedWorkItemType() {
       return this.isEpicsList ? WORK_ITEM_TYPE_NAME_EPIC : WORK_ITEM_TYPE_NAME_ISSUE;
     },
+    hiddenMetadataKeys() {
+      return this.displaySettings?.namespacePreferences?.hiddenMetadataKeys || [];
+    },
   },
   watch: {
     eeWorkItemUpdateCount() {
@@ -979,6 +991,9 @@ export default {
       this.refetchItems({ refetchCounts: true });
     },
   },
+  constants: {
+    METADATA_KEYS,
+  },
 };
 </script>
 
@@ -1029,6 +1044,7 @@ export default {
         use-keyset-pagination
         :prevent-redirect="workItemDrawerEnabled"
         :detail-loading="detailLoading"
+        :hidden-metadata-keys="hiddenMetadataKeys"
         @click-tab="handleClickTab"
         @dismiss-alert="error = undefined"
         @filter="handleFilter"
@@ -1039,7 +1055,10 @@ export default {
         @select-issuable="handleToggle"
       >
         <template #user-preference>
-          <work-item-user-preferences :display-settings="displaySettings" />
+          <work-item-user-preferences
+            :display-settings="displaySettings"
+            :full-path="rootPageFullPath"
+          />
         </template>
         <template v-if="!isPlanningViewsEnabled" #nav-actions>
           <div class="gl-flex gl-gap-3">
@@ -1105,6 +1124,7 @@ export default {
           <issue-card-time-info
             :issue="issuable"
             :is-work-item-list="true"
+            :hidden-metadata-keys="hiddenMetadataKeys"
             :detail-loading="detailLoading"
           />
         </template>
@@ -1154,7 +1174,10 @@ export default {
         </template>
 
         <template #health-status="{ issuable = {} }">
-          <work-item-health-status :issue="issuable" />
+          <work-item-health-status
+            v-if="!hiddenMetadataKeys.includes($options.constants.METADATA_KEYS.HEALTH)"
+            :issue="issuable"
+          />
         </template>
       </issuable-list>
     </template>

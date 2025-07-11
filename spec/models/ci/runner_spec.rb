@@ -1585,6 +1585,7 @@ RSpec.describe Ci::Runner, type: :model, factory_default: :keep, feature_categor
       let(:routing_payload) do
         {
           c: 1,
+          o: creator.organization_id.to_s(36),
           u: creator.id.to_s(36),
           t: described_class.runner_types[runner_type].to_s(36),
           **resource_payload

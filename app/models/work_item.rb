@@ -202,6 +202,29 @@ class WorkItem < Issue
         .preload(preload)
         .reorder(linked_items_keyset_order)
     end
+
+    def find_on_namespaces(ids:, resource_parent:)
+      return none if resource_parent.nil?
+
+      group_namespaces = resource_parent.self_and_descendants.select(:id) if resource_parent.is_a?(Group)
+
+      project_namespaces =
+        if resource_parent.is_a?(Project)
+          Project.id_in(resource_parent)
+        else
+          resource_parent.all_projects
+        end.select('projects.project_namespace_id as id')
+
+      namespaces = Namespace.from_union(
+        [group_namespaces, project_namespaces].compact,
+        remove_duplicates: false
+      )
+
+      Gitlab::SQL::CTE.new(:work_item_ids_cte, id_in(ids))
+        .apply_to(all)
+        .in_namespaces_with_cte(namespaces)
+        .includes(:work_item_type)
+    end
   end
 
   def create_dates_source_from_current_dates

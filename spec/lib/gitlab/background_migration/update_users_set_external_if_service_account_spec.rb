@@ -5,14 +5,17 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::UpdateUsersSetExternalIfServiceAccount, feature_category: :system_access do
   describe "#perform" do
     let(:users_table) { table(:users) }
+    let(:organizations_table) { table(:organizations) }
+    let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
+
     let(:service_account_user) do
       users_table.create!(username: 'john_doe', email: 'johndoe@gitlab.com',
-        user_type: HasUserType::USER_TYPES[:service_account], projects_limit: 5)
+        user_type: HasUserType::USER_TYPES[:service_account], projects_limit: 5, organization_id: organization.id)
     end
 
     let(:service_user) do
       users_table.create!(username: 'john_doe2', email: 'johndoe2@gitlab.com',
-        user_type: HasUserType::USER_TYPES[:service_user], projects_limit: 5)
+        user_type: HasUserType::USER_TYPES[:service_user], projects_limit: 5, organization_id: organization.id)
     end
 
     let(:table_name) { :users }

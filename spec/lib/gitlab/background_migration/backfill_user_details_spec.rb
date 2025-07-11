@@ -5,15 +5,22 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetails, schema: 20240716191121, feature_category: :acquisition do
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
+  let(:organizations) { table(:organizations) }
 
+  let!(:organization) { organizations.create!(name: 'organization', path: 'organization') }
   let!(:first_user) do
     users.create!(name: 'bob', email: 'bob@example.com', projects_limit: 1).tap do |record|
       user_details.create!(user_id: record.id)
     end
   end
 
-  let!(:user_without_details) { users.create!(name: 'foo', email: 'foo@example.com', projects_limit: 1) }
-  let!(:multiple_user_without_details) { users.create!(name: 'foo2', email: 'foo2@example.com', projects_limit: 1) }
+  let!(:user_without_details) do
+    users.create!(name: 'foo', email: 'foo@example.com', projects_limit: 1)
+  end
+
+  let!(:multiple_user_without_details) do
+    users.create!(name: 'foo2', email: 'foo2@example.com', projects_limit: 1)
+  end
 
   subject(:migration) do
     described_class.new(

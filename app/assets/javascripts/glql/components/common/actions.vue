@@ -36,20 +36,19 @@ export default {
       return [
         {
           text: __('View source'),
-          action: () =>
-            this.eventHub.$emit('dropdownAction', 'viewSource', { title: this.modalTitle }),
+          action: () => this.eventHub.$emit('viewSource', { title: this.modalTitle }),
         },
         {
           text: __('Copy source'),
-          action: () => this.eventHub.$emit('dropdownAction', 'copySource'),
+          action: () => this.eventHub.$emit('copySource'),
         },
         this.showCopyContents && {
           text: __('Copy contents'),
-          action: () => this.eventHub.$emit('dropdownAction', 'copyAsGFM'),
+          action: () => this.eventHub.$emit('copyAsGFM'),
         },
         {
           text: __('Reload'),
-          action: () => this.eventHub.$emit('dropdownAction', 'reload'),
+          action: () => this.eventHub.$emit('reload'),
         },
       ].filter(identity);
     },

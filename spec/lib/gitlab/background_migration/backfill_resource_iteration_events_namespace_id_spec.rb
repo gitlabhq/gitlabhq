@@ -47,7 +47,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillResourceIterationEventsNames
     )
   end
 
-  let(:user) { table(:users).create!(username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 2) }
+  let(:user) do
+    table(:users).create!(username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 2,
+      organization_id: organization.id)
+  end
 
   let!(:issue_resource_event1) do
     resource_iteration_events.create!(

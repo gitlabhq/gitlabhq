@@ -1,11 +1,8 @@
 <script>
 import { GlIcon, GlLink, GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
-import { __ } from '~/locale';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import { eventHubByKey } from '../../utils/event_hub_factory';
 import Sorter from '../../core/sorter';
 import ThResizable from '../common/th_resizable.vue';
-import GlqlFooter from '../common/footer.vue';
-import GlqlActions from '../common/actions.vue';
 
 export default {
   name: 'TablePresenter',
@@ -14,10 +11,7 @@ export default {
     GlLink,
     GlSprintf,
     GlSkeletonLoader,
-    GlqlFooter,
     ThResizable,
-    CrudComponent,
-    GlqlActions,
   },
   inject: ['presenter', 'queryKey'],
   props: {
@@ -31,7 +25,7 @@ export default {
       type: Object,
       validator: ({ fields }) => Array.isArray(fields) && fields.length > 0,
     },
-    isPreview: {
+    showPreview: {
       required: false,
       type: Boolean,
       default: false,
@@ -44,100 +38,80 @@ export default {
       items,
       fields: this.config.fields,
       sorter: new Sorter(items),
-      isCollapsed: false,
+      eventHub: eventHubByKey(this.queryKey),
+      isLoadingMore: false,
+      pageSize: 5,
     };
   },
-  computed: {
-    title() {
-      return this.config.title || __('GLQL table');
-    },
-    showCopyContentsAction() {
-      return Boolean(this.items.length) && !this.isCollapsed && !this.isPreview;
-    },
-    showEmptyState() {
-      return !this.items.length && !this.isPreview;
-    },
-  },
-  async mounted() {
-    await this.$nextTick();
+  mounted() {
+    this.eventHub.$on('loadMore', (pageSize) => {
+      this.pageSize = pageSize;
+      this.isLoadingMore = true;
+    });
+
+    this.eventHub.$on('loadMoreComplete', (newData) => {
+      this.items = newData.nodes.slice();
+      this.sorter = this.sorter.clone(this.items);
+      this.isLoadingMore = false;
+    });
+
+    this.eventHub.$on('loadMoreError', () => {
+      this.isLoadingMore = false;
+    });
   },
 };
 </script>
 <template>
-  <crud-component
-    :anchor-id="queryKey"
-    :title="title"
-    :description="config.description"
-    :count="items.length"
-    is-collapsible
-    persist-collapsed-state
-    class="!gl-my-5"
-    :body-class="{ '!gl-m-0 !gl-p-0': items.length || isPreview }"
-    @collapsed="isCollapsed = true"
-    @expanded="isCollapsed = false"
-  >
-    <template #actions>
-      <glql-actions :show-copy-contents="showCopyContentsAction" :modal-title="title" />
-    </template>
-    <div class="gl-table-shadow">
-      <table class="!gl-my-0 gl-overflow-y-hidden">
-        <thead class="!gl-border-b gl-text-sm dark:!gl-border-b-default">
-          <tr>
-            <th-resizable
-              v-for="(field, fieldIndex) in fields"
+  <div class="gl-table-shadow">
+    <table class="!gl-my-0 gl-overflow-y-hidden">
+      <thead class="!gl-border-b !gl-border-section gl-text-sm">
+        <tr>
+          <th-resizable
+            v-for="(field, fieldIndex) in fields"
+            :key="field.key"
+            class="gl-whitespace-nowrap !gl-border-section !gl-bg-subtle !gl-px-5 !gl-py-3 !gl-text-subtle gl-text-subtle dark:!gl-bg-strong"
+          >
+            <div
+              :data-testid="`column-${fieldIndex}`"
+              class="gl-cursor-pointer"
+              @click="sorter.sortBy(field.key)"
+            >
+              {{ field.label }}
+              <gl-icon
+                v-if="sorter.options.fieldName === field.key"
+                :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
+              />
+            </div>
+          </th-resizable>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(item, itemIndex) in items"
+          :key="item.id"
+          :data-testid="`table-row-${itemIndex}`"
+        >
+          <td
+            v-for="field in fields"
+            :key="field.key"
+            class="!gl-border-l-0 !gl-border-r-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
+          >
+            <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
+            <component :is="presenter.forField(item, field.key)" />
+          </td>
+        </tr>
+        <template v-if="showPreview || isLoadingMore">
+          <tr v-for="i in pageSize" :key="i">
+            <td
+              v-for="field in fields"
               :key="field.key"
-              class="gl-whitespace-nowrap !gl-bg-subtle !gl-px-5 !gl-py-3 !gl-text-subtle gl-text-subtle dark:!gl-border-default dark:!gl-bg-strong"
+              class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 !gl-border-section gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
             >
-              <div
-                :data-testid="`column-${fieldIndex}`"
-                class="gl-cursor-pointer"
-                @click="sorter.sortBy(field.key)"
-              >
-                {{ field.label }}
-                <gl-icon
-                  v-if="sorter.options.fieldName === field.key"
-                  :name="sorter.options.ascending ? 'arrow-up' : 'arrow-down'"
-                />
-              </div>
-            </th-resizable>
+              <gl-skeleton-loader :width="60" :lines="1" :equal-width-lines="true" />
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          <template v-if="isPreview">
-            <tr v-for="i in 5" :key="i">
-              <td
-                v-for="field in fields"
-                :key="field.key"
-                class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
-              >
-                <gl-skeleton-loader :width="120" :lines="1" />
-              </td>
-            </tr>
-          </template>
-          <template v-else-if="items.length">
-            <tr
-              v-for="(item, itemIndex) in items"
-              :key="item.id"
-              :data-testid="`table-row-${itemIndex}`"
-            >
-              <td
-                v-for="field in fields"
-                :key="field.key"
-                class="!gl-border-l-0 !gl-border-r-0 !gl-border-t-0 gl-bg-subtle !gl-px-5 !gl-py-3 gl-transition-colors"
-              >
-                <!-- eslint-disable-next-line @gitlab/vue-no-new-non-primitive-in-template -->
-                <component :is="presenter.forField(item, field.key)" />
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
-    </div>
-
-    <template v-if="showEmptyState" #empty>
-      {{ __('No data found for this query.') }}
-    </template>
-
-    <template #footer><glql-footer /></template>
-  </crud-component>
+        </template>
+      </tbody>
+    </table>
+  </div>
 </template>

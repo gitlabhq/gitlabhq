@@ -26,7 +26,7 @@ export default {
     };
   },
   methods: {
-    trackEvent(label, language) {
+    trackViewSource(label, language) {
       this.track(EVENT_ACTION, { label, property: language });
     },
     isUnsupportedLanguage(language) {
@@ -37,7 +37,7 @@ export default {
       return LEGACY_FALLBACKS.includes(language) || isUnsupportedLanguage;
     },
     handleUnsupportedLanguage(language) {
-      this.trackEvent(EVENT_LABEL_FALLBACK, language);
+      this.trackViewSource(EVENT_LABEL_FALLBACK, language);
       this?.onError();
     },
     async handleLFSBlob(externalStorageUrl, rawPath, language) {

@@ -963,6 +963,8 @@
   - 1
 - - security_policies_project_transfer
   - 1
+- - security_policies_skip_pipelines_audit
+  - 1
 - - security_process_scan_result_policy
   - 1
 - - security_recreate_orchestration_configuration

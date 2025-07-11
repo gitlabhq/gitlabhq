@@ -44504,6 +44504,9 @@ definitions:
         type: integer
         format: int32
         example: 12
+      provider:
+        type: string
+        example: saml
   postApiV4Groups:
     type: object
     properties:

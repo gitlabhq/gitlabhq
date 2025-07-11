@@ -1,24 +1,27 @@
-import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlDisclosureDropdown, GlToggle, GlDisclosureDropdownItem } from '@gitlab/ui';
+import { shallowMount } from '@vue/test-utils';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import WorkItemsListPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
+import WorkItemUserPreferences from '~/work_items/components/shared/work_item_user_preferences.vue';
 import updateWorkItemsDisplaySettings from '~/work_items/graphql/update_user_preferences.mutation.graphql';
-import workItemDisplaySettingsQuery from '~/work_items/graphql/get_user_preferences.query.graphql';
+import updateWorkItemListUserPreference from '~/work_items/graphql/update_work_item_list_user_preferences.mutation.graphql';
+import getUserWorkItemsDisplaySettingsPreferences from '~/work_items/graphql/get_user_preferences.query.graphql';
+import { WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS } from '~/work_items/constants';
 
 Vue.use(VueApollo);
 
 jest.mock('~/alert');
 
-const updatedUserPreferences = {
-  __typename: 'UserPreferences',
-  workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+// Mock data
+const mockDisplaySettings = {
+  commonPreferences: { shouldOpenItemsInSidePanel: true },
+  namespacePreferences: { hiddenMetadataKeys: [] },
 };
 
-const originalUserPreferences = {
+const mockCacheData = {
   currentUser: {
     __typename: 'User',
     id: 'gid://gitlab/User/1',
@@ -26,66 +29,121 @@ const originalUserPreferences = {
       __typename: 'UserPreferences',
       workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
     },
+    workItemPreferences: {
+      __typename: 'WorkItemPreferences',
+      displaySettings: { hiddenMetadataKeys: [] },
+    },
   },
 };
 
-describe('WorkItemsListPreferences', () => {
+describe('WorkItemUserPreferences', () => {
   let wrapper;
   let mockApolloProvider;
 
+  // Mock handlers
   const successHandler = jest.fn().mockResolvedValue({
     data: {
       userPreferencesUpdate: {
         __typename: 'UserPreferencesUpdatePayload',
-        userPreferences: updatedUserPreferences,
+        userPreferences: {
+          __typename: 'UserPreferences',
+          workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+        },
         errors: [],
       },
     },
   });
 
-  const createComponent = ({ props = {}, provide = {}, mutationHandler = successHandler } = {}) => {
-    mockApolloProvider = createMockApollo([[updateWorkItemsDisplaySettings, mutationHandler]]);
+  const namespacePreferencesHandler = jest.fn().mockResolvedValue({
+    data: {
+      workItemUserPreferenceUpdate: {
+        __typename: 'WorkItemUserPreferenceUpdatePayload',
+        errors: [],
+        userPreferences: {
+          __typename: 'UserPreferences',
+          displaySettings: { hiddenMetadataKeys: ['assignee'] },
+        },
+      },
+    },
+  });
+
+  const createComponent = ({
+    props = {},
+    provide = {},
+    mutationHandler = successHandler,
+    namespaceHandler = namespacePreferencesHandler,
+  } = {}) => {
+    mockApolloProvider = createMockApollo([
+      [updateWorkItemsDisplaySettings, mutationHandler],
+      [updateWorkItemListUserPreference, namespaceHandler],
+    ]);
+
+    // Set up cache with initial data
     mockApolloProvider.clients.defaultClient.cache.writeQuery({
-      query: workItemDisplaySettingsQuery,
-      data: originalUserPreferences,
+      query: getUserWorkItemsDisplaySettingsPreferences,
+      variables: { namespace: 'gitlab-org/gitlab' },
+      data: mockCacheData,
     });
 
-    wrapper = shallowMount(WorkItemsListPreferences, {
+    wrapper = shallowMount(WorkItemUserPreferences, {
       apolloProvider: mockApolloProvider,
       propsData: {
-        displaySettings: { shouldOpenItemsInSidePanel: true },
+        displaySettings: mockDisplaySettings,
+        fullPath: 'gitlab-org/gitlab',
         ...props,
       },
-      provide: { isSignedIn: true, ...provide },
+      provide: {
+        isSignedIn: true,
+        isGroup: false,
+        ...provide,
+      },
     });
   };
 
   const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
-  const findToggle = () => wrapper.findComponent(GlToggle);
-  const findDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findDropdownItems = () => wrapper.findAllComponents(GlDisclosureDropdownItem);
+  const findToggles = () => wrapper.findAllComponents(GlToggle);
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
   describe('when user is signed in', () => {
-    it('renders dropdown with toggle', () => {
+    beforeEach(() => {
       createComponent();
-      expect(findDropdown().exists()).toBe(true);
-      expect(findToggle().exists()).toBe(true);
     });
 
-    it('renders toggle with correct initial value', () => {
-      createComponent();
-      expect(findToggle().props('value')).toBe(true);
+    it('renders dropdown with correct props', () => {
+      expect(findDropdown().exists()).toBe(true);
+      expect(findDropdown().props('toggleText')).toBe('Display options');
+    });
+
+    it('renders toggles for all applicable metadata fields', () => {
+      const toggles = findToggles();
+      // All metadata fields + side panel toggle
+      expect(toggles).toHaveLength(WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.length + 1);
     });
 
     it('handles empty displaySettings gracefully', () => {
-      createComponent({ props: { displaySettings: {} } });
-      expect(findToggle().props('value')).toBe(true); // defaults to true
+      createComponent({
+        props: {
+          displaySettings: {
+            commonPreferences: {},
+            namespacePreferences: {},
+          },
+        },
+      });
+
+      const sidePanelToggle = findToggles().at(findToggles().length - 1);
+      expect(sidePanelToggle.props('value')).toBe(true); // defaults to true
     });
 
-    describe('when toggle is clicked', () => {
-      it('saves preference and updates Apollo Client cache on success', async () => {
-        createComponent();
+    describe('side panel preference toggle', () => {
+      it('updates cache and calls mutation on toggle', async () => {
+        const dropdownItems = findDropdownItems();
+        const sidePanelItem = dropdownItems.at(dropdownItems.length - 1);
 
-        findDropdownItem().vm.$emit('action');
+        sidePanelItem.vm.$emit('action');
         await waitForPromises();
 
         expect(successHandler).toHaveBeenCalledWith({
@@ -93,33 +151,33 @@ describe('WorkItemsListPreferences', () => {
             workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
           },
         });
+
+        // Verify cache was updated
         const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
-          query: workItemDisplaySettingsQuery,
+          query: getUserWorkItemsDisplaySettingsPreferences,
+          variables: { namespace: 'gitlab-org/gitlab' },
         });
-        expect(updatedCacheData).toEqual({
-          currentUser: {
-            ...originalUserPreferences.currentUser,
-            userPreferences: updatedUserPreferences,
-          },
+
+        expect(updatedCacheData.currentUser.userPreferences.workItemsDisplaySettings).toEqual({
+          shouldOpenItemsInSidePanel: false,
         });
       });
 
       it('shows loading state while saving', async () => {
-        createComponent();
+        const dropdownItems = findDropdownItems();
+        const sidePanelItem = dropdownItems.at(dropdownItems.length - 1);
+        const sidePanelToggle = findToggles().at(findToggles().length - 1);
 
-        // Store the initial state
-        expect(findToggle().props('isLoading')).toBe(false);
+        expect(sidePanelToggle.props('isLoading')).toBe(false);
 
-        findDropdownItem().vm.$emit('action');
+        sidePanelItem.vm.$emit('action');
         await nextTick();
 
-        // Check loading state
-        expect(findToggle().props('isLoading')).toBe(true);
+        expect(sidePanelToggle.props('isLoading')).toBe(true);
 
         await waitForPromises();
 
-        // Check state after loading
-        expect(findToggle().props('isLoading')).toBe(false);
+        expect(sidePanelToggle.props('isLoading')).toBe(false);
       });
 
       it('handles mutation errors gracefully', async () => {
@@ -128,7 +186,10 @@ describe('WorkItemsListPreferences', () => {
 
         createComponent({ mutationHandler: errorHandler });
 
-        findDropdownItem().vm.$emit('action');
+        const dropdownItems = findDropdownItems();
+        const sidePanelItem = dropdownItems.at(dropdownItems.length - 1);
+
+        sidePanelItem.vm.$emit('action');
         await waitForPromises();
 
         expect(createAlert).toHaveBeenCalledWith({
@@ -136,23 +197,73 @@ describe('WorkItemsListPreferences', () => {
           captureError: true,
           error,
         });
-        expect(wrapper.emitted('displaySettingsChanged')).toBeUndefined();
       });
     });
 
-    describe('dropdown visibility', () => {
-      beforeEach(() => {
-        createComponent();
+    describe('metadata field toggles', () => {
+      it('renders toggles for group-applicable metadata fields in group context', () => {
+        createComponent({ provide: { isGroup: true } });
+        const toggles = findToggles();
+        const groupApplicableFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
+          (field) => field.isPresentInGroup,
+        );
+        expect(toggles).toHaveLength(groupApplicableFields.length + 1);
       });
 
-      it('shows tooltip when dropdown is closed', () => {
-        expect(wrapper.vm.tooltipText).toBe('Display options');
+      it('toggles metadata field visibility and updates cache', async () => {
+        const dropdownItems = findDropdownItems();
+        const firstMetadataItem = dropdownItems.at(0);
+
+        firstMetadataItem.vm.$emit('action');
+        await waitForPromises();
+
+        expect(namespacePreferencesHandler).toHaveBeenCalledWith({
+          namespace: 'gitlab-org/gitlab',
+          displaySettings: {
+            hiddenMetadataKeys: ['assignee'],
+          },
+        });
+
+        const updatedCacheData = mockApolloProvider.clients.defaultClient.cache.readQuery({
+          query: getUserWorkItemsDisplaySettingsPreferences,
+          variables: { namespace: 'gitlab-org/gitlab' },
+        });
+
+        expect(updatedCacheData.currentUser.workItemPreferences.displaySettings).toEqual({
+          hiddenMetadataKeys: ['assignee'],
+        });
       });
 
-      it('hides tooltip when dropdown is open', async () => {
-        findDropdown().vm.$emit('shown');
-        await nextTick();
-        expect(wrapper.vm.tooltipText).toBe('');
+      it('handles namespace preference errors gracefully', async () => {
+        const error = new Error('Network error');
+        const errorHandler = jest.fn().mockRejectedValue(error);
+
+        createComponent({ namespaceHandler: errorHandler });
+
+        const dropdownItems = findDropdownItems();
+        const firstMetadataItem = dropdownItems.at(0);
+
+        firstMetadataItem.vm.$emit('action');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          message: 'Something went wrong while saving the preference.',
+          captureError: true,
+          error,
+        });
+      });
+
+      it('renders only group-applicable metadata fields in group context', () => {
+        createComponent({ provide: { isGroup: true } });
+
+        const expectedGroupFields = WORK_ITEM_LIST_PREFERENCES_METADATA_FIELDS.filter(
+          (field) => field.isPresentInGroup,
+        );
+
+        const allToggles = findToggles();
+        const metadataToggles = allToggles;
+
+        expect(metadataToggles).toHaveLength(expectedGroupFields.length + 1);
       });
     });
   });

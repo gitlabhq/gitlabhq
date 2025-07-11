@@ -110,8 +110,60 @@ To remove an allowed cluster agent from a group:
 
 GitLab updates the status of the selected agent to **Blocked**, and removes the agent from the **Allowed agents** tab.
 
-Removing an allowed cluster agent from a group does not immediately stop running workspaces using this agent.
-Running workspaces stop when they are automatically terminated or manually stopped.
+{{< alert type="note" >}}
+
+Removing an allowed cluster agent from a group does not immediately stop running workspaces using
+the agent. Running workspaces stop when they are automatically terminated or manually stopped.
+
+{{< /alert >}}
+
+## Allow a cluster agent for workspaces on the instance
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548951) in GitLab 18.2.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure).
+- You must have agents with [remote development enabled](settings.md#enabled).
+- You must have administrator access to the instance.
+
+To allow a cluster agent for workspaces on the instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Available agents for workspaces**.
+1. From the list of agents with workspaces enabled, find the agent you want to allow, and select the
+   availability toggle.
+
+## Remove an allowed cluster agent for workspaces on the instance
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/548951) in GitLab 18.2.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To remove an allowed cluster agent from the instance:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Available agents for workspaces**.
+1. From the list of allowed agents, find the agent you want to remove, and clear the availability toggle.
+
+{{< alert type="note" >}}
+
+Removing an allowed cluster agent from an instance does not immediately stop running workspaces using
+the agent. Running workspaces stop when they are automatically terminated or manually stopped.
+
+{{< /alert >}}
 
 ## Legacy agent authorization strategy
 

@@ -5,10 +5,14 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::FixNonExistingTimelogUsers, feature_category: :team_planning do
   let(:users_table) { table(:users) }
   let(:timelogs_table) { table(:timelogs) }
+  let(:organizations_table) { table(:organizations) }
+  let(:organization) { organizations_table.create!(name: 'organization', path: 'organization') }
 
-  let!(:ghost) { users_table.create!(user_type: 5, projects_limit: 0) }
-  let(:user) { users_table.create!(email: generate(:email), projects_limit: 0) }
-  let(:deleted_user) { users_table.create!(email: generate(:email), projects_limit: 0) }
+  let!(:ghost) { users_table.create!(user_type: 5, projects_limit: 0, organization_id: organization.id) }
+  let(:user) { users_table.create!(email: generate(:email), projects_limit: 0, organization_id: organization.id) }
+  let(:deleted_user) do
+    users_table.create!(email: generate(:email), projects_limit: 0, organization_id: organization.id)
+  end
 
   let!(:timelog_invalid) do
     timelogs_table.create!(user_id: deleted_user.id, time_spent: 5)

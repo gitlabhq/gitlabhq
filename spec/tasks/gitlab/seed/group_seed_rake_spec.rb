@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe 'gitlab:seed:group_seed rake task', :silence_stdout, feature_category: :groups_and_projects do
   let(:username) { 'group_seed' }
   let!(:organization) { create(:organization) }
-  let!(:user) { create(:user, username: username, organizations: [organization]) }
+  let!(:user) { create(:user, username: username, organization: organization, organizations: [organization]) }
   let(:task_params) { [2, username, organization.path] }
 
   before do

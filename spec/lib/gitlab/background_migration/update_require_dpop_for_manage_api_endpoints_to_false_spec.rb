@@ -9,8 +9,13 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateRequireDpopForManageApiEndpoin
   let!(:namespace_settings_table) { table(:namespace_settings) }
 
   let!(:organization) { organizations_table.create!(name: 'org1', path: 'org1') }
-  let!(:dpop_user1) { users_table.create!(email: 'john_doe@gitlab.com', projects_limit: 1) }
-  let!(:dpop_user2) { users_table.create!(email: 'wally_west@amazon.ca', projects_limit: 1) }
+  let!(:dpop_user1) do
+    users_table.create!(email: 'john_doe@gitlab.com', projects_limit: 1, organization_id: organization.id)
+  end
+
+  let!(:dpop_user2) do
+    users_table.create!(email: 'wally_west@amazon.ca', projects_limit: 1, organization_id: organization.id)
+  end
 
   let!(:dpop_user1_namespace) do
     namespaces_table.create!(name: 'JD', path: 'JD', organization_id: organization.id, owner_id: dpop_user1.id)

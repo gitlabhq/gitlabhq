@@ -1,17 +1,15 @@
 import jsYaml from 'js-yaml';
 import { glql } from '@gitlab/query-language-rust';
+import { DEFAULT_DISPLAY_FIELDS, DEFAULT_DISPLAY_TYPE, REQUIRED_QUERY_FIELDS } from '../constants';
 import { extractGroupOrProject } from '../utils/common';
 import { glqlFeatureFlags } from '../utils/feature_flags';
-
-const DEFAULT_DISPLAY_FIELDS = 'title';
-const REQUIRED_QUERY_FIELDS = 'id, iid, title, webUrl, reference, state';
 
 const isValidYAML = (text) => typeof jsYaml.safeLoad(text) === 'object';
 
 export const parseYAMLConfig = (frontmatter) => {
   const config = jsYaml.safeLoad(frontmatter) || {};
 
-  config.display = config.display || 'list';
+  config.display = config.display || DEFAULT_DISPLAY_TYPE;
   config.fields = config.fields || DEFAULT_DISPLAY_FIELDS;
 
   return config;
@@ -37,20 +35,22 @@ export const parseQuery = async (query, config) => {
 
   if (!success) throw new Error(output);
 
-  return { query: output, variables };
+  return { query: output, variables, config };
 };
 
-export const parse = async (glqlQuery) => {
-  let { frontmatter: config, query } = parseQueryTextWithFrontmatter(glqlQuery);
-  if (!config && isValidYAML(glqlQuery)) {
+export const parseYAML = (yaml) => {
+  let { frontmatter: config, query } = parseQueryTextWithFrontmatter(yaml);
+  if (!config && isValidYAML(yaml)) {
     // if frontmatter isn't present, query is a part of the config
-    ({ query, ...config } = parseYAMLConfig(glqlQuery));
+    ({ query, ...config } = parseYAMLConfig(yaml));
   } else {
     config = parseYAMLConfig(config);
   }
 
-  const limit = parseInt(config.limit, 10) || undefined;
-  const parsed = await parseQuery(query, { ...config, limit });
+  return { query, config };
+};
 
-  return { query: parsed.query, variables: parsed.variables, config };
+export const parse = (yaml) => {
+  const { query, config } = parseYAML(yaml);
+  return parseQuery(query, config);
 };

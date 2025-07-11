@@ -294,6 +294,8 @@ RSpec.describe "User creates issue", :js, feature_category: :team_planning do
     it_behaves_like 'rich text editor - links'
     it_behaves_like 'rich text editor - media'
     it_behaves_like 'rich text editor - selection'
+
+    it_behaves_like 'embedded views (GLQL)'
   end
 
   context "when signed in as user with special characters in their name" do

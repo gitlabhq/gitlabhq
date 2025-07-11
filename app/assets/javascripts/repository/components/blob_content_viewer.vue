@@ -99,7 +99,7 @@ export default {
         if (this.isTooLarge) {
           this.trackEvent(EVENT_FILE_SIZE_LIMIT_EXCEEDED, {
             label: this.blobInfo.language,
-            property: this.blobInfo.size,
+            property: String(this.blobInfo.size),
           });
         }
 

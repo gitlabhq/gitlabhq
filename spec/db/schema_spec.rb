@@ -214,7 +214,7 @@ RSpec.describe 'Database schema',
       vulnerability_archive_export_uploads: %w[model_id],
       vulnerability_remediation_uploads: %w[model_id],
       user_agent_details: %w[subject_id],
-      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id],
+      users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id accepted_term_id organization_id],
       user_preferences: %w[dark_color_scheme_id],
       users_star_projects: %w[user_id],
       vulnerability_finding_links: %w[project_id],
@@ -283,7 +283,7 @@ RSpec.describe 'Database schema',
       project_type_ci_runners: 18,
       projects: 55,
       sbom_occurrences: 25,
-      users: 33, # To decrement back to 32 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
+      users: 34, # Decrement by 1 after the removal of a temporary index https://gitlab.com/gitlab-org/gitlab/-/merge_requests/184848
       vulnerability_reads: 23
     }.with_indifferent_access.freeze
   end

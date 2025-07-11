@@ -740,6 +740,9 @@ describeSkipVue3(skipReason, () => {
                   userPreferences: {
                     workItemsDisplaySettings: { shouldOpenItemsInSidePanel },
                   },
+                  workItemPreferences: {
+                    displaySettings: { hiddenMetadataKeys: [] },
+                  },
                 },
               },
             });
@@ -761,16 +764,84 @@ describeSkipVue3(skipReason, () => {
             expect(findDrawer().exists()).toBe(drawerExists);
           },
         );
-
         describe('display settings', () => {
-          describe('workItemDrawerEnabled with display settings', () => {
-            it('returns false when shouldOpenItemsInSidePanel is false', async () => {
+          it('passes hiddenMetadataKeys to IssuableList', async () => {
+            const mockHandler = jest.fn().mockResolvedValue({
+              data: {
+                currentUser: {
+                  id: 'gid://gitlab/User/1',
+                  userPreferences: {
+                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+                  },
+                  workItemPreferences: {
+                    displaySettings: { hiddenMetadataKeys: ['labels', 'milestone'] },
+                  },
+                },
+              },
+            });
+
+            mountComponent({ mockPreferencesHandler: mockHandler });
+            await waitForPromises();
+
+            expect(findIssuableList().props('hiddenMetadataKeys')).toEqual(['labels', 'milestone']);
+          });
+
+          it('passes hiddenMetadataKeys to IssueCardTimeInfo', async () => {
+            const mockHandler = jest.fn().mockResolvedValue({
+              data: {
+                currentUser: {
+                  id: 'gid://gitlab/User/1',
+                  userPreferences: {
+                    workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+                  },
+                  workItemPreferences: {
+                    displaySettings: { hiddenMetadataKeys: ['dates', 'milestone'] },
+                  },
+                },
+              },
+            });
+
+            mountComponent({ mockPreferencesHandler: mockHandler });
+            await waitForPromises();
+
+            expect(findIssueCardTimeInfo().props('hiddenMetadataKeys')).toEqual([
+              'dates',
+              'milestone',
+            ]);
+          });
+
+          describe('workItemDrawerEnabled', () => {
+            it('does not render drawer when shouldOpenItemsInSidePanel is false', async () => {
               const mockHandler = jest.fn().mockResolvedValue({
                 data: {
                   currentUser: {
                     id: 'gid://gitlab/User/1',
                     userPreferences: {
                       workItemsDisplaySettings: { shouldOpenItemsInSidePanel: false },
+                    },
+                    workItemPreferences: {
+                      displaySettings: { hiddenMetadataKeys: [] },
+                    },
+                  },
+                },
+              });
+
+              mountComponent({ mockPreferencesHandler: mockHandler });
+              await waitForPromises();
+
+              expect(findDrawer().exists()).toBe(false);
+            });
+
+            it('renders drawer when shouldOpenItemsInSidePanel is true and feature is enabled', async () => {
+              const mockHandler = jest.fn().mockResolvedValue({
+                data: {
+                  currentUser: {
+                    id: 'gid://gitlab/User/1',
+                    userPreferences: {
+                      workItemsDisplaySettings: { shouldOpenItemsInSidePanel: true },
+                    },
+                    workItemPreferences: {
+                      displaySettings: { hiddenMetadataKeys: [] },
                     },
                   },
                 },
@@ -779,15 +850,16 @@ describeSkipVue3(skipReason, () => {
               mountComponent({
                 mockPreferencesHandler: mockHandler,
                 provide: {
-                  glFeatures: { workItemViewForIssues: true },
-                  isSignedIn: true,
+                  glFeatures: {
+                    workItemViewForIssues: false,
+                    epicsListDrawer: false,
+                    issuesListDrawer: true,
+                  },
                 },
               });
-
               await waitForPromises();
-              await nextTick();
 
-              expect(findIssuableList().props('preventRedirect')).toBe(false);
+              expect(findDrawer().exists()).toBe(true);
             });
           });
         });

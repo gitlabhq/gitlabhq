@@ -6,7 +6,7 @@ RSpec.describe Gitlab::BackgroundMigration::RemoveInvalidOrganizationUsers, feat
   let(:organization_users) { table(:organization_users) }
 
   let!(:organization) { table(:organizations).create!(name: 'MyOrg', path: 'my-org') }
-  let!(:user) { table(:users).create!(projects_limit: 10) }
+  let!(:user) { table(:users).create!(projects_limit: 10, organization_id: organization.id) }
   let!(:valid) { organization_users.create!(user_id: user.id, organization_id: organization.id) }
   let!(:invalid_user) { organization_users.create!(user_id: non_existing_record_id, organization_id: organization.id) }
   let!(:invalid_organization) { organization_users.create!(user_id: user.id, organization_id: non_existing_record_id) }

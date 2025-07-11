@@ -43,8 +43,10 @@ Formerly known as GitLab Duo Workflow, the software development flow:
 
 Before you can use the software development flow in Visual Studio Code (VS Code), you must:
 
-- [Install VS Code](https://code.visualstudio.com/download).
-- [Set up the GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). Minimum version 5.16.0.
+### Step 1: Configure your GitLab environment
+
+#### For GitLab.com
+
 - Have an account on GitLab.com.
 - Have a project that meets the following requirements:
   - The project is on GitLab.com.
@@ -52,6 +54,17 @@ Before you can use the software development flow in Visual Studio Code (VS Code)
   - The project belongs to a [group namespace](../namespace/_index.md) with an Ultimate subscription.
   - [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features).
   - [GitLab Duo must be turned on](../gitlab_duo/turn_on_off.md).
+
+#### For GitLab Self-Managed
+
+- Follow [the documentation](../gitlab_duo/setup.md) to configure GitLab Duo on a GitLab Self-Managed instance.
+- [GitLab Duo must be enabled](../gitlab_duo/turn_on_off.md#turn-gitlab-duo-core-on-or-off).
+- [Beta and experimental features must be turned on](../gitlab_duo/turn_on_off.md#on-gitlab-self-managed).
+
+### Step 2: Set up your local development environment
+
+- [Install VS Code](https://code.visualstudio.com/download).
+- [Set up the GitLab Workflow extension for VS Code](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#setup). Minimum version 5.16.0.
 - [Successfully connect to your repository](#connect-to-your-repository).
 - [Ensure an HTTP/2 connection to the backend service is possible](troubleshooting.md#network-issues).
 

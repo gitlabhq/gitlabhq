@@ -5,8 +5,12 @@ require 'spec_helper'
 RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetailOnboardingUrl, feature_category: :onboarding do
   let(:users) { table(:users) }
   let(:user_details) { table(:user_details) }
+  let(:organizations) { table(:organizations) }
 
-  let(:first_user) { users.create!(projects_limit: 0, email: 'user1@example.com', role: 0) }
+  let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
+  let(:first_user) do
+    users.create!(projects_limit: 0, email: 'user1@example.com', role: 0, organization_id: organization.id)
+  end
 
   let!(:user_detail) do
     user_details.create!(
@@ -16,7 +20,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetailOnboardingUrl, fea
     )
   end
 
-  let(:last_user) { users.create!(projects_limit: 0, email: 'user3@example.com') }
+  let(:last_user) { users.create!(projects_limit: 0, email: 'user3@example.com', organization_id: organization.id) }
   let!(:user_details_unchanged) do
     user_details.create!(
       user_id: last_user.id,
@@ -51,7 +55,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetailOnboardingUrl, fea
     end
 
     it 'does not update records with different step_url values' do
-      different_user = users.create!(projects_limit: 0, email: 'user4@example.com')
+      different_user = users.create!(projects_limit: 0, email: 'user4@example.com', organization_id: organization.id)
       different_detail = user_details.create!(
         user_id: different_user.id,
         onboarding_status: { role: 0, step_url: '/some/other/path' }

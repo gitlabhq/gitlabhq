@@ -132,7 +132,8 @@ class GroupSeeder
       name: FFaker::Name.name,
       email: FFaker::Internet.unique.email,
       confirmed_at: DateTime.now,
-      password: Devise.friendly_token
+      password: Devise.friendly_token,
+      organization: @organization
     ) do |user|
       user.assign_personal_namespace(@organization)
     end

@@ -130,7 +130,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPlaceholderUsersDetailsFromS
       name: "test",
       username: "test",
       state: "active",
-      projects_limit: 10
+      projects_limit: 10,
+      organization_id: organization.id
     }.merge(overrides)
 
     users_table.create!(attrs)

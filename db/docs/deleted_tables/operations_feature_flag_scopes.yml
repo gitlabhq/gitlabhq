@@ -11,3 +11,5 @@ exempt_from_sharding: true
 notes: Exempted because because this table has no data and is marked to be dropped.
 table_size: small
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/553466
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/197233
+removed_in_milestone: '18.2'

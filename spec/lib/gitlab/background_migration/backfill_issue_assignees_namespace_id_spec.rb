@@ -6,7 +6,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillIssueAssigneesNamespaceId, f
   let(:connection) { ApplicationRecord.connection }
   let(:organization) { organizations.create!(name: 'organization', path: 'organization') }
   let(:user_1) do
-    users.create!(user_type: 0, username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 10)
+    users.create!(user_type: 0, username: 'john_doe', email: 'johndoe@gitlab.com', projects_limit: 10,
+      organization_id: organization.id)
   end
 
   let(:start_cursor) { [0, 0] }

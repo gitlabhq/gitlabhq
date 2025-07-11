@@ -88,7 +88,7 @@ export-predictive-test-metrics:
     - apt update && apt install -y curl
     - source ./scripts/utils.sh
     - source ./scripts/rspec_helpers.sh
-    - retrieve_failed_tests "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}" "oneline" "latest" "single_output"
+    - retrieve_failed_tests "${GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR}" "oneline" "latest"
     - |
       mkdir -p "$GLCI_CRYSTALBALL_MAPPING_DIR/described_class"
       retrieve_tests_mapping "$RSPEC_PACKED_TESTS_MAPPING_PATH" "$GLCI_CRYSTALBALL_MAPPING_DIR/described_class/mapping.json"

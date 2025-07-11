@@ -90,19 +90,20 @@ RSpec.describe WorkItems::UserPreference, type: :model, feature_category: :team_
         it 'is valid with valid metadata keys in hiddenMetadataKeys' do
           valid_display_settings = {
             'hiddenMetadataKeys' => %w[assignee blocked blocking dates health labels milestone popularity weight
-              comments iteration]
+              comments iteration status]
           }
           preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)
 
           expect(preferences).to be_valid
           expect(preferences.display_settings['hiddenMetadataKeys']).to contain_exactly('assignee', 'blocked',
-            'blocking', 'dates', 'health', 'labels', 'milestone', 'popularity', 'weight', 'comments', 'iteration')
+            'blocking', 'dates', 'health', 'labels', 'milestone', 'popularity', 'weight', 'comments', 'iteration',
+            'status')
         end
 
         it 'is valid with all available metadata keys' do
           all_metadata_keys = %w[
             assignee blocked blocking dates health
-            labels milestone popularity weight comments iteration
+            labels milestone popularity weight comments iteration status
           ]
           valid_display_settings = { 'hiddenMetadataKeys' => all_metadata_keys }
           preferences = described_class.new(namespace: namespace, display_settings: valid_display_settings)

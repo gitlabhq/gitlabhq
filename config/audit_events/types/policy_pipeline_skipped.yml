@@ -1,0 +1,10 @@
+---
+name: policy_pipeline_skipped
+description: A security policy pipeline is skipped
+introduced_by_issue: https://gitlab.com/gitlab-org/gitlab/-/issues/539232
+introduced_by_mr: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/195325
+feature_category: security_policy_management
+milestone: '18.2'
+saved_to_database: false
+streamed: true
+scope: [Project]

@@ -44,33 +44,7 @@ module WorkItems
     private
 
     def scoped_work_items
-      ids = WorkItem.id_in(@work_item_ids)
-      cte = Gitlab::SQL::CTE.new(:work_item_ids_cte, ids)
-      work_item_scope = WorkItem.all
-      cte
-        .apply_to(work_item_scope)
-        .in_namespaces_with_cte(namespaces)
-        .includes(:work_item_type) # rubocop:disable CodeReuse/ActiveRecord -- Implementation would be identical in model
-    end
-
-    def namespaces
-      relations = [group_namespaces, project_namespaces].compact
-
-      Namespace.from_union(relations, remove_duplicates: false)
-    end
-
-    def group_namespaces
-      return unless @parent.is_a?(Group)
-
-      @parent.self_and_descendants.select(:id)
-    end
-
-    def project_namespaces
-      if @parent.is_a?(Project)
-        Project.id_in(@parent)
-      else
-        Project.in_namespace(@parent.self_and_descendant_ids)
-      end.select('projects.project_namespace_id as id')
+      WorkItem.find_on_namespaces(ids: @work_item_ids, resource_parent: @parent)
     end
 
     def all_widget_keys

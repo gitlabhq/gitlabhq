@@ -81,7 +81,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
       user_permission_export_upload_1 = create_user_permission_export_upload
       user_permission_export_upload_upload_to_be_synced = create_user_permission_export_upload_upload(
         model: user_permission_export_upload_1)
-      user_1 = create_user
+      user_1 = create_user(organization_id: create_organization.id)
       user_upload_to_be_synced = create_user_upload(model: user_1)
       vulnerability_export_1 = create_vulnerability_export
       vulnerability_export_upload_to_be_synced = create_vulnerability_export_upload(model: vulnerability_export_1)
@@ -163,7 +163,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
       user_permission_export_upload_2 = create_user_permission_export_upload
       user_permission_export_upload_upload_synced = create_user_permission_export_upload_upload(
         model: user_permission_export_upload_2)
-      user_2 = create_user
+      user_2 = create_user(organization_id: create_organization.id)
       user_upload_synced = create_user_upload(model: user_2)
       vulnerability_export_2 = create_vulnerability_export
       vulnerability_export_upload_synced = create_vulnerability_export_upload(model: vulnerability_export_2)
@@ -447,8 +447,9 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
     )
   end
 
-  def create_user
-    users.create!(username: SecureRandom.base64, email: "#{SecureRandom.base64}@gitlab.com", projects_limit: 1)
+  def create_user(organization_id:)
+    users.create!(username: SecureRandom.base64, email: "#{SecureRandom.base64}@gitlab.com", projects_limit: 1,
+      organization_id: organization_id)
   end
 
   def create_upload(model_type, model, delete_model: false)
@@ -574,7 +575,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_snippet
     organization = create_organization
-    user = create_user
+    user = create_user(organization_id: organization.id)
     snippets.create!(organization_id: organization.id, author_id: user.id)
   end
 
@@ -584,7 +585,8 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   end
 
   def create_user_permission_export_upload
-    user = create_user
+    organization = create_organization
+    user = create_user(organization_id: organization.id)
     user_permission_export_uploads.create!(user_id: user.id)
   end
 
@@ -594,13 +596,16 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
   end
 
   def create_user_upload(model: nil, delete_model: false)
-    model ||= create_user
+    model ||= begin
+      organization = create_organization
+      create_user(organization_id: organization.id)
+    end
     create_upload('User', model, delete_model: delete_model)
   end
 
   def create_vulnerability_export
     organization = create_organization
-    user = create_user
+    user = create_user(organization_id: organization.id)
     vulnerability_exports.create!(organization_id: organization.id, author_id: user.id, status: 'open')
   end
 
@@ -633,7 +638,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionedUploads, :aggrega
 
   def create_vulnerability_archive_export
     project = create_project
-    user = create_user
+    user = create_user(organization_id: project.organization_id)
     vulnerability_archive_exports.create!(project_id: project.id, author_id: user.id,
       date_range: Time.current.yesterday..Time.current)
   end

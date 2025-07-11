@@ -37278,6 +37278,9 @@ msgstr ""
 msgid "List your Gitea repositories"
 msgstr ""
 
+msgid "Load %{count} more"
+msgstr ""
+
 msgid "Load GLQL view"
 msgstr ""
 
@@ -37288,6 +37291,9 @@ msgid "Load more users"
 msgstr ""
 
 msgid "Loading"
+msgstr ""
+
+msgid "Loading %{count} more..."
 msgstr ""
 
 msgid "Loading %{name}"
@@ -41562,6 +41568,9 @@ msgid "No more than %{max_work_items} work items can be loaded at the same time"
 msgstr ""
 
 msgid "No more than %{max_work_items} work items can be modified at the same time."
+msgstr ""
+
+msgid "No more than %{max_work_items} work items can be moved at the same time"
 msgstr ""
 
 msgid "No more than %{max_work_items} work items can be updated at the same time"
@@ -66225,6 +66234,9 @@ msgstr ""
 msgid "Unable to load the merge request widget. Try reloading the page."
 msgstr ""
 
+msgid "Unable to load the next page."
+msgstr ""
+
 msgid "Unable to load user list. Reload the page and try again."
 msgstr ""
 
@@ -70627,10 +70639,19 @@ msgstr ""
 msgid "WorkItems|Ancestors not available"
 msgstr ""
 
+msgid "WorkItems|Blocked/Blocking"
+msgstr ""
+
 msgid "WorkItems|Display options"
 msgstr ""
 
+msgid "WorkItems|Fields"
+msgstr ""
+
 msgid "WorkItems|Open items in side panel"
+msgstr ""
+
+msgid "WorkItems|Options applied to all views"
 msgstr ""
 
 msgid "WorkItems|Your preferences"
