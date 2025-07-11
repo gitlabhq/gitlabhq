@@ -1104,7 +1104,7 @@ class Group < Namespace
   end
 
   def work_item_status_feature_available?
-    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :wip) &&
+    feature_flag_enabled_for_self_or_ancestor?(:work_item_status_feature_flag, type: :beta) &&
       licensed_feature_available?(:work_item_status)
   end
 

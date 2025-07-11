@@ -5109,6 +5109,23 @@ CREATE TABLE p_ci_finished_pipeline_ch_sync_events (
 )
 PARTITION BY LIST (partition);
 
+CREATE TABLE p_duo_workflows_checkpoints (
+    id bigint NOT NULL,
+    workflow_id bigint NOT NULL,
+    project_id bigint,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    namespace_id bigint,
+    thread_ts text NOT NULL,
+    parent_ts text,
+    checkpoint jsonb NOT NULL,
+    metadata jsonb NOT NULL,
+    CONSTRAINT check_70d1d05b50 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
+    CONSTRAINT check_b55c120f3f CHECK ((char_length(thread_ts) <= 255)),
+    CONSTRAINT check_e63817afa6 CHECK ((char_length(parent_ts) <= 255))
+)
+PARTITION BY RANGE (created_at);
+
 CREATE TABLE p_knowledge_graph_enabled_namespaces (
     id bigint NOT NULL,
     namespace_id bigint NOT NULL,
@@ -19345,23 +19362,6 @@ CREATE SEQUENCE p_ci_workloads_id_seq
 
 ALTER SEQUENCE p_ci_workloads_id_seq OWNED BY p_ci_workloads.id;
 
-CREATE TABLE p_duo_workflows_checkpoints (
-    id bigint NOT NULL,
-    workflow_id bigint NOT NULL,
-    project_id bigint,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    namespace_id bigint,
-    thread_ts text NOT NULL,
-    parent_ts text,
-    checkpoint jsonb NOT NULL,
-    metadata jsonb NOT NULL,
-    CONSTRAINT check_70d1d05b50 CHECK ((num_nonnulls(namespace_id, project_id) = 1)),
-    CONSTRAINT check_b55c120f3f CHECK ((char_length(thread_ts) <= 255)),
-    CONSTRAINT check_e63817afa6 CHECK ((char_length(parent_ts) <= 255))
-)
-PARTITION BY RANGE (created_at);
-
 CREATE SEQUENCE p_duo_workflows_checkpoints_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -25020,8 +25020,8 @@ CREATE TABLE user_preferences (
     extensions_marketplace_opt_in_url text,
     dark_color_scheme_id smallint,
     work_items_display_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
-    markdown_maintain_indentation boolean DEFAULT false NOT NULL,
     default_duo_add_on_assignment_id bigint,
+    markdown_maintain_indentation boolean DEFAULT false NOT NULL,
     CONSTRAINT check_1d670edc68 CHECK ((time_display_relative IS NOT NULL)),
     CONSTRAINT check_89bf269f41 CHECK ((char_length(diffs_deletion_color) <= 7)),
     CONSTRAINT check_9b50d9f942 CHECK ((char_length(extensions_marketplace_opt_in_url) <= 512)),

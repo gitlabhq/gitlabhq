@@ -3449,7 +3449,7 @@ class Project < ApplicationRecord
   end
 
   def work_item_status_feature_available?
-    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag, type: :wip)) &&
+    (group&.work_item_status_feature_available? || Feature.enabled?(:work_item_status_feature_flag)) &&
       licensed_feature_available?(:work_item_status)
   end
 
