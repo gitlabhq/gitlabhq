@@ -219,6 +219,7 @@ the following sections and tables provide an alternative.
 | `fallback_behavior` | `object`           | false    |                 | Settings that affect invalid or unenforceable rules.     |
 | `policy_scope`      | `object` of [`policy_scope`](_index.md#scope) | false |  | Defines the scope of the policy based on the projects, groups, or compliance framework labels you specify. |
 | `policy_tuning`     | `object`           | false    |                 | (Experimental) Settings that affect policy comparison logic.     |
+| `bypass_settings`   | `object`           | false    |                 | Settings that affect when certain branches, tokens, or accounts can bypass a policy .     |
 
 ## `scan_finding` rule type
 
@@ -555,6 +556,57 @@ To recreate a pipeline execution policy:
 To customize policy enforcement, you can define a policy's scope to either include or exclude
 specified projects, groups, or compliance framework labels. For more details, see
 [Scope](_index.md#scope).
+
+## `bypass_settings`
+
+The `bypass_settings` field allows you to specify exceptions to the policy for certain branches, access tokens, or service accounts. When a bypass condition is met, the policy is not enforced for the matching merge request or branch.
+
+| Field             | Type    | Required | Description                                                                     |
+|-------------------|---------|----------|---------------------------------------------------------------------------------|
+| `branches`        | array   | false    | List of source and target branches (by name or pattern) that bypass the policy. |
+| `access_tokens`   | array   | false    | List of access token IDs that bypass the policy.                                |
+| `service_accounts`| array   | false    | List of service account IDs that bypass the policy.                             |
+
+### Source branch exceptions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18113) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_branch_exceptions`. Disabled by default
+
+{{< /history >}}
+
+With branch-based exceptions, you can configure merge request approval policies to automatically waive approval requirements for specific source and target branch combinations. This enables you to preserve security governance and maintain strict approval rules for certain types of merges, such as feature-to-main, while allowing more flexibility for others, such as release-to-main.
+
+| Field   | Type   | Required | Possible values | Description |
+|---------|--------|----------|-----------------|-------------|
+| `source`| object | false    | `name` (string) or `pattern` (string) | Source branch exception. Specify either an exact name or a pattern.         |
+| `target`| object | false    | `name` (string) or `pattern` (string) | Target branch exception. Specify either an exact name or a pattern.         |
+
+### Access token and service account exceptions
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18112) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `security_policies_bypass_options_tokens_accounts`. Disabled by default
+
+{{< /history >}}
+
+With access token and service account exceptions, you can designate specific service accounts and access tokens that can bypass merge request approval policies when necessary. This approach enables automations that you trust to operate without manual approval while maintaining restrictions for human users. For example, trusted automations might include CI/CD pipelines, repository mirroring, and automated updates. Bypass events are fully audited to allow you to support your compliance and emergency access needs.
+
+| Field | Type    | Required | Description                                    |
+|-------|---------|----------|------------------------------------------------|
+| `id`  | integer | true     | The ID of the access token or service account. |
+
+#### Example YAML
+
+```yaml
+bypass_settings:
+  access_tokens:
+    - id: 123
+    - id: 456
+  service_accounts:
+    - id: 789
+    - id: 1011
+```
 
 ## Example `policy.yml` in a security policy project
 
