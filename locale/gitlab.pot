@@ -69465,6 +69465,9 @@ msgstr ""
 msgid "Vulnerability|Enter the associated CVE or CWE entries for this vulnerability."
 msgstr ""
 
+msgid "Vulnerability|Error fetching dependency paths. Please try again."
+msgstr ""
+
 msgid "Vulnerability|Evidence"
 msgstr ""
 
