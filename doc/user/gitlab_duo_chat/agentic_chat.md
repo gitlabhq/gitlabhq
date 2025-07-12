@@ -17,10 +17,11 @@ title: GitLab Duo Agentic Chat
 
 {{< history >}}
 
-- GitLab Duo Agentic Chat on VS Code [introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1 as an [experiment](../../policy/development_stages_support.md) with a [flag](../../administration/feature_flags/_index.md) named `duo_agentic_chat`. Disabled by default.
-- GitLab Duo Agentic Chat on VS Code [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688) in GitLab 18.2.
-- GitLab Duo Agentic Chat in the GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
+- VS Code [introduced on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/work_items/540917) in GitLab 18.1 as an [experiment](../../policy/development_stages_support.md) with a [flag](../../administration/feature_flags/_index.md) named `duo_agentic_chat`. Disabled by default.
+- VS Code [enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/196688) in GitLab 18.2.
+- GitLab UI [introduced on GitLab.com and GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/546140) in GitLab 18.2 [with flags](../../administration/feature_flags/_index.md) named `duo_workflow_workhorse` and `duo_workflow_web_chat_mutation_tools`. Both flags are enabled by default.
 - Feature flag `duo_agentic_chat` enabled by default in GitLab 18.2.
+- JetBrains IDEs [introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/1077) in GitLab 18.2.
 
 {{< /history >}}
 
@@ -92,6 +93,27 @@ To use Agentic Chat:
    **Enable GitLab Duo Agentic Chat** checkbox.
 1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
 1. Select **Refresh page** if prompted.
+1. In the message box, enter your question and press **Enter** or select **Send**.
+<!-- markdownlint-enable MD044 -->
+Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.
+
+### Use Agentic Chat in JetBrains IDEs
+
+Prerequisites:
+
+- You have [installed and configured the GitLab plugin for JetBrains](../../editor_extensions/jetbrains_ide/setup.md) version 3.11.1 or later.
+
+To use Agentic Chat in a project, it must be:
+
+- Hosted on a GitLab instance.
+- Part of a group that meets the prerequisites.
+
+To use Agentic Chat:
+<!-- markdownlint-disable MD044 -->
+1. In your JetBrains IDE, go to **Settings > Tools > GitLab Duo**.
+1. Under **Features**, select the **Enable GitLab Duo Agentic Chat** checkbox.
+1. Restart your IDE if prompted.
+1. On the left sidebar, select **GitLab Duo Agentic Chat** ({{< icon name="duo-agentic-chat" >}}).
 1. In the message box, enter your question and press **Enter** or select **Send**.
 <!-- markdownlint-enable MD044 -->
 Conversations in Agentic Chat do not expire and are stored permanently. You cannot delete these conversations.

@@ -20,14 +20,12 @@ title: GitLab Duo Agent Platform
 
 {{< /history >}}
 
-With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, helping you create code,
-research results, and perform tasks simultaneously.
+With the GitLab Duo Agent Platform, multiple AI agents can work in parallel, helping you create code, research results, and perform tasks simultaneously.
 The agents have full context across your entire software development lifecycle.
 
-For more details, [view this blog post](https://about.gitlab.com/blog/gitlab-duo-agent-platform-what-is-next-for-intelligent-devsecops/).
+For more details, view this blog post about [what's next for intelligent DevSecOps](https://about.gitlab.com/blog/gitlab-duo-agent-platform-what-is-next-for-intelligent-devsecops/).
 
-Currently the Agent Platform is available in the VS Code IDE only,
-but other improvements are planned.
+The Agent Platform is available only in the VS Code IDE and the JetBrains IDEs.
 
 In the meantime, choose which agent works best for the job you want to accomplish:
 
