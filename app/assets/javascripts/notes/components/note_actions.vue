@@ -173,9 +173,7 @@ export default {
       return this.assignees && this.assignees.some(({ id }) => id === this.author.id);
     },
     displayAssignUserText() {
-      return this.isUserAssigned
-        ? __('Unassign from commenting user')
-        : __('Assign to commenting user');
+      return this.isUserAssigned ? __('Unassign comment author') : __('Assign to comment author');
     },
     targetType() {
       return this.getNoteableData.targetType;

@@ -394,6 +394,44 @@ the epic's [confidentiality status](#make-an-epic-confidential):
 - Confidential epic (regardless of group visibility): You must have at least the Planner
   role for the group.
 
+### Configure epic display preferences
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393559) in GitLab 18.2.
+
+{{< /history >}}
+
+You can customize how epics are displayed in the epic list by showing or hiding specific metadata
+fields and configuring view preferences.
+
+GitLab saves your display preferences at different levels:
+
+- **Fields**: Saved per namespace. You can have different field visibility settings for different
+  groups and projects based on your workflow needs. For example, you can show assignee and labels
+  in one group, but hide them in another group.
+- **Your preferences**: Saved globally across all projects and groups. This ensures consistent
+  behavior for how you prefer to view work items.
+
+To configure epic display preferences:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Plan** > **Epics**.
+1. In the top right corner, select **Display options** ({{< icon name="preferences" >}}).
+1. Under **Fields**, turn on or turn off the metadata you want to display:
+   - **Assignee**: Who the epic is assigned to.
+   - **Labels**: Epic labels.
+   - **Milestone**: Milestone information.
+   - **Dates**: Due dates and date ranges.
+   - **Health**: Health status indicators.
+   - **Blocked/Blocking**: Blocking relationship indicators.
+   - **Comments**: Comment counts.
+   - **Popularity**: Popularity metrics.
+1. Under **Your preferences**, turn on or turn off **Open items in side panel** to choose how
+   epics open when you select them:
+   - On (default): Epics open in a drawer on the right side of the screen.
+   - Off: Epics open in a full page view.
+
 ### Open epics in a drawer
 
 {{< history >}}

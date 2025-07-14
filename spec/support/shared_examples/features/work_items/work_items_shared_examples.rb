@@ -70,7 +70,7 @@ RSpec.shared_examples 'work items comments' do |type|
         click_button _('More actions')
 
         expect(page).to have_button _('Copy link')
-        expect(page).to have_button _('Assign to commenting user')
+        expect(page).to have_button _('Assign to comment author')
         expect(page).to have_button _('Delete comment')
         expect(page).to have_button _('Edit comment')
       end
@@ -389,7 +389,7 @@ RSpec.shared_examples 'authored work item guest user permissions' do
       click_button _('More actions'), match: :first
 
       expect(page).to have_button _('Copy link')
-      expect(page).not_to have_button _('Assign to commenting user')
+      expect(page).not_to have_button _('Assign to comment author')
     end
   end
 end
@@ -418,7 +418,7 @@ RSpec.shared_examples 'non-authored work item guest user permissions' do
       click_button _('More actions'), match: :first
 
       expect(page).to have_button _('Copy link')
-      expect(page).not_to have_button _('Assign to commenting user')
+      expect(page).not_to have_button _('Assign to comment author')
     end
   end
 end

@@ -2397,6 +2397,9 @@ msgstr ""
 msgid "AICatalog|Briefly describe what this agent is designed to do and its key capabilities."
 msgstr ""
 
+msgid "AICatalog|Build AI workflows and agents to automate repetitive tasks and processes."
+msgstr ""
+
 msgid "AICatalog|Choose a memorable name for your AI agent."
 msgstr ""
 
@@ -2419,6 +2422,9 @@ msgid "AICatalog|Edit agent"
 msgstr ""
 
 msgid "AICatalog|Failed to run agent."
+msgstr ""
+
+msgid "AICatalog|Get started with the AI Catalog"
 msgstr ""
 
 msgid "AICatalog|Input cannot exceed %{value} characters. Please shorten your input."
@@ -8973,7 +8979,7 @@ msgstr ""
 msgid "Assign some issues to this milestone."
 msgstr ""
 
-msgid "Assign to commenting user"
+msgid "Assign to comment author"
 msgstr ""
 
 msgid "Assign to me"
@@ -66375,7 +66381,7 @@ msgstr ""
 msgid "Unassign all"
 msgstr ""
 
-msgid "Unassign from commenting user"
+msgid "Unassign comment author"
 msgstr ""
 
 msgid "Unassigned"

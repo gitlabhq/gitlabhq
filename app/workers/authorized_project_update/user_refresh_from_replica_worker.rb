@@ -7,6 +7,7 @@ module AuthorizedProjectUpdate
     sidekiq_options retry: 3
     feature_category :permissions
     urgency :low
+    worker_resource_boundary :cpu
     data_consistency :delayed
     queue_namespace :authorized_project_update
 

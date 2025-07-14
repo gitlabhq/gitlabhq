@@ -1427,7 +1427,7 @@ in `/var/log/gitlab/gitlab-kas/current`.
 
 For Linux package installations, Praefect logs are in `/var/log/gitlab/praefect/`.
 
-GitLab also tracks [Prometheus metrics for Praefect](../gitaly/monitoring.md#monitor-gitaly-cluster).
+GitLab also tracks [Prometheus metrics for Gitaly Cluster (Praefect)](../gitaly/praefect/monitoring.md).
 
 ## Backup log
 

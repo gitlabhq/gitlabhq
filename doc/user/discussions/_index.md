@@ -282,8 +282,7 @@ To compare the changes, select **Compare with previous version**.
 You can assign an issue to a user who made a comment.
 
 1. In the comment, select the **More Actions** ({{< icon name="ellipsis_v" >}}) menu.
-1. Select **Assign to commenting user**:
-   ![Assign to commenting user](img/quickly_assign_commenter_v16_6.png)
+1. Select **Assign to comment author**:
 1. To unassign the commenter, select the button again.
 
 ## Create a thread by replying to a standard comment

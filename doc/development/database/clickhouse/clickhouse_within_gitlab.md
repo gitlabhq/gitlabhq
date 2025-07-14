@@ -115,6 +115,22 @@ class CreateIssues < ClickHouse::Migration
 end
 ```
 
+## Post deployment migrations
+
+To generate a ClickHouse database post deployment migration execute:
+
+``` shell
+bundle exec rails generate gitlab:click_house:post_deployment_migration MIGRATION_CLASS_NAME
+```
+
+These migrations will run by default together with regular migrations, but they can be skipped,
+for example, before deploying to production using `SKIP_POST_DEPLOYMENT_MIGRATIONS` environment variable, for example:
+
+``` shell
+export SKIP_POST_DEPLOYMENT_MIGRATIONS=true
+bundle exec rake gitlab:clickhouse:migrate
+```
+
 ## Writing database queries
 
 For the ClickHouse database we don't use ORM (Object Relational Mapping). The main reason is that the GitLab application has many customizations for the `ActiveRecord` PostgresSQL adapter and the application generally assumes that all databases are using `PostgreSQL`. Since ClickHouse-related features are still in a very early stage of development, we decided to implement a simple HTTP client to avoid hard to discover bugs and long debugging time when dealing with multiple `ActiveRecord` adapters.

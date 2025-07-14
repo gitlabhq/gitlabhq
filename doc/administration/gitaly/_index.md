@@ -23,19 +23,12 @@ storage and retrieval. Gitaly can be:
 - Separated onto its own instance and configured in a full cluster configuration,
   depending on scaling and availability requirements.
 
-Gitaly implements a client-server architecture:
-
-- A Gitaly server is any node that runs Gitaly itself.
-- A Gitaly client is any node that runs a process that makes requests of the Gitaly server. Gitaly clients are also known as _Gitaly consumers_ and include:
-  - [GitLab Rails application](https://gitlab.com/gitlab-org/gitlab)
-  - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell)
-  - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)
-  - [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
-  - [GitLab Zoekt Indexer](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer)
-  - [GitLab Agent for Kubernetes (KAS)](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
+{{< alert type="note" >}}
 
 Gitaly manages only Git repository access for GitLab. Other types of GitLab data aren't accessed
 using Gitaly.
+
+{{< /alert >}}
 
 GitLab accesses [repositories](../../user/project/repository/_index.md) through the configured
 [repository storages](../repository_storage_paths.md). Each new repository is stored on one of the
@@ -49,6 +42,17 @@ repository storage is either:
   repository can be stored on multiple Gitaly nodes for fault tolerance. In a Gitaly Cluster:
   - Read requests are distributed between multiple Gitaly nodes, which can improve performance.
   - Write requests are broadcast to repository replicas.
+
+The following shows GitLab set up to use direct access to Gitaly:
+
+![GitLab application interacting with Gitaly storage shards](img/shard_example_v13_3.png)
+
+In this example:
+
+- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`, or
+  `storage-3`.
+- Each storage is serviced by a Gitaly node.
+- The three Gitaly nodes store data on their file systems.
 
 ## Disk requirements
 
@@ -96,39 +100,19 @@ configure IOPS correctly.
 For repository data, only local storage is supported for Gitaly and Gitaly Cluster for performance and consistency reasons.
 Alternatives such as [NFS](../nfs.md) or [cloud-based file systems](../nfs.md#avoid-using-cloud-based-file-systems) are not supported.
 
-## Directly accessing repositories
+## Gitaly architecture
 
-GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client or any other tool,
-because Gitaly is being continuously improved and changed. These improvements may invalidate
-your assumptions, resulting in performance degradation, instability, and even data loss. For example:
+Gitaly implements a client-server architecture:
 
-- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
-  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
-  interface.
-- [Gitaly Cluster](praefect/_index.md) has optimizations, such as fault tolerance and
-  [distributed reads](praefect/_index.md#distributed-reads), that depend on the gRPC interface and database
-  to determine repository state.
-
-{{< alert type="warning" >}}
-
-Accessing Git repositories directly is done at your own risk and is not supported.
-
-{{< /alert >}}
-
-## Gitaly
-
-The following shows GitLab set up to use direct access to Gitaly:
-
-![GitLab application interacting with Gitaly storage shards](img/shard_example_v13_3.png)
-
-In this example:
-
-- Each repository is stored on one of three Gitaly storages: `storage-1`, `storage-2`, or
-  `storage-3`.
-- Each storage is serviced by a Gitaly node.
-- The three Gitaly nodes store data on their file systems.
-
-### Gitaly architecture
+- A Gitaly server is any node that runs Gitaly itself.
+- A Gitaly client is any node that runs a process that makes requests of the Gitaly server. Gitaly clients are also
+  known as Gitaly consumers and include:
+  - [GitLab Rails application](https://gitlab.com/gitlab-org/gitlab)
+  - [GitLab Shell](https://gitlab.com/gitlab-org/gitlab-shell)
+  - [GitLab Workhorse](https://gitlab.com/gitlab-org/gitlab-workhorse)
+  - [GitLab Elasticsearch Indexer](https://gitlab.com/gitlab-org/gitlab-elasticsearch-indexer)
+  - [GitLab Zoekt Indexer](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer)
+  - [GitLab Agent for Kubernetes (KAS)](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent)
 
 The following illustrates the Gitaly client-server architecture:
 
@@ -162,7 +146,7 @@ flowchart LR
   GitalyServer -- TCP --> ObjectStorage
 ```
 
-### Configure Gitaly
+## Configuring Gitaly
 
 Gitaly comes pre-configured with a Linux package installation, which is a configuration
 [suitable for up to 20 RPS / 1,000 users](../reference_architectures/1k_users.md). For:
@@ -173,7 +157,7 @@ Gitaly comes pre-configured with a Linux package installation, which is a config
 GitLab installations for more than 2000 active users performing daily Git write operation may be
 best suited by using Gitaly Cluster.
 
-### Gitaly CLI
+## Gitaly CLI
 
 {{< history >}}
 
@@ -191,12 +175,31 @@ the Gitaly CLI is used to:
 
 For more information on the other subcommands, run `sudo -u git -- /opt/gitlab/embedded/bin/gitaly --help`.
 
-### Backing up repositories
+## Backing up repositories
 
 When backing up or syncing repositories using tools other than GitLab, you must [prevent writes](../backup_restore/backup_gitlab.md#prevent-writes-and-copy-the-git-repository-data)
 while copying repository data.
 
-### Bundle URIs
+## Bundle URIs
 
 You can use Git [bundle URIs](https://git-scm.com/docs/bundle-uri) with Gitaly.
 For more information, see the [Bundle URIs documentation](bundle_uris.md).
+
+## Directly accessing repositories
+
+GitLab doesn't advise directly accessing Gitaly repositories stored on disk with a Git client or any other tool,
+because Gitaly is being continuously improved and changed. These improvements may invalidate
+your assumptions, resulting in performance degradation, instability, and even data loss. For example:
+
+- Gitaly has optimizations such as the [`info/refs` advertisement cache](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/design_diskcache.md),
+  that rely on Gitaly controlling and monitoring access to repositories by using the official gRPC
+  interface.
+- [Gitaly Cluster](praefect/_index.md) has optimizations, such as fault tolerance and
+  [distributed reads](praefect/_index.md#distributed-reads), that depend on the gRPC interface and database
+  to determine repository state.
+
+{{< alert type="warning" >}}
+
+Accessing Git repositories directly is done at your own risk and is not supported.
+
+{{< /alert >}}

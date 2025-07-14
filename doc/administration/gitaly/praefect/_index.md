@@ -322,7 +322,7 @@ The primary node is chosen to serve the request if:
 If you have a large, heavily modified repository (like a multi-gigabyte monorepo), the primary node can service most or all requests if changes come in faster than Praefect
 can replicate to the secondaries. When this occurs, CI/CD jobs and other repository traffic are bottlenecked by the capacity of the primary node.
 
-You can [monitor distribution of reads](../monitoring.md#monitor-gitaly-cluster) using Prometheus.
+You can [monitor distribution of reads](monitoring.md) by using Prometheus.
 
 ### Strong consistency
 
@@ -336,8 +336,8 @@ Strong consistency is the primary replication method. A subset of operations sti
 If strong consistency is unavailable, Gitaly Cluster guarantees eventual consistency. In this case. Gitaly Cluster
 replicates all writes to secondary Gitaly nodes after the write to the primary Gitaly node has occurred.
 
-For more information on monitoring strong consistency, see the Gitaly Cluster
-[Prometheus metrics documentation](../monitoring.md#monitor-gitaly-cluster).
+For more information on monitoring strong consistency, see
+[Monitoring Gitaly Cluster (Praefect)](monitoring.md).
 
 ### Replication factor
 
