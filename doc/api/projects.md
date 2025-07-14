@@ -254,7 +254,8 @@ Example response:
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members",
     "cluster_agents": "http://example.com/api/v4/projects/1/cluster_agents"
-  }
+  },
+  "spp_repository_pipeline_access": false // Only visible if the security_orchestration_policies feature is available
 }
 ```
 
@@ -1754,6 +1755,7 @@ Supported general project attributes:
 | `show_default_award_emojis`                        | boolean           | No       | Show default emoji reactions. |
 | `snippets_enabled`                                 | boolean           | No       | _(Deprecated)_ Enable snippets for this project. Use `snippets_access_level` instead. |
 | `issue_branch_template`                            | string            | No       | Template used to suggest names for [branches created from issues](../user/project/merge_requests/creating_merge_requests.md#from-an-issue). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/21243) in GitLab 15.6.)_ |
+| `spp_repository_pipeline_access`                   | boolean           | No       | Allow users and tokens read-only access to fetch security policy configurations from this project. Required for enforcing security policies in projects that use this project as their security policy source. Ultimate only. |
 | `squash_commit_template`                           | string            | No       | [Template](../user/project/merge_requests/commit_templates.md) used to create squash commit message in merge requests. |
 | `squash_option`                                    | string            | No       | One of `never`, `always`, `default_on`, or `default_off`. |
 | `suggestion_commit_message`                        | string            | No       | The commit message used to apply merge request suggestions. |

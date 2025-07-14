@@ -27,7 +27,6 @@ Performance/MethodObjectAsBlock:
     - 'lib/gitlab/import_export/config.rb'
     - 'lib/gitlab/import_export/fast_hash_serializer.rb'
     - 'lib/gitlab/import_export/group/tree_restorer.rb'
-    - 'lib/gitlab/middleware/basic_health_check.rb'
     - 'lib/gitlab/search_context.rb'
     - 'lib/gitlab/sidekiq_queue.rb'
     - 'lib/gitlab/uploads/migration_helper.rb'

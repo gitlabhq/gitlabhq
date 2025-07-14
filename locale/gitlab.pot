@@ -24769,9 +24769,6 @@ msgstr ""
 msgid "Enable instance runners for this group"
 msgstr ""
 
-msgid "Enable instance runners for this project"
-msgstr ""
-
 msgid "Enable integration"
 msgstr ""
 
@@ -53468,6 +53465,15 @@ msgstr ""
 msgid "Runners|Instance runners are disabled."
 msgstr ""
 
+msgid "Runners|Instance runners are turned off"
+msgstr ""
+
+msgid "Runners|Instance runners are turned off for this project. Turn them on to use them."
+msgstr ""
+
+msgid "Runners|Instance runners are turned off in the group settings."
+msgstr ""
+
 msgid "Runners|Instance runners will be disabled for all projects and subgroups in this group."
 msgstr ""
 
@@ -53570,7 +53576,7 @@ msgstr ""
 msgid "Runners|No group runners found"
 msgstr ""
 
-msgid "Runners|No instance runners found."
+msgid "Runners|No instance runners found"
 msgstr ""
 
 msgid "Runners|No jobs have been run by group runners assigned to this group in the past 3 hours."
@@ -54028,6 +54034,9 @@ msgstr[1] ""
 msgid "Runners|This group currently has no stale runners."
 msgstr ""
 
+msgid "Runners|This instance does not have any instance runners yet."
+msgstr ""
+
 msgid "Runners|This may not be needed if you manage your runner as a %{linkStart}system or user service%{linkEnd}."
 msgstr ""
 
@@ -54080,6 +54089,9 @@ msgid "Runners|Top projects consuming runners"
 msgstr ""
 
 msgid "Runners|Turn on group runners for this project"
+msgstr ""
+
+msgid "Runners|Turn on instance runners for this project"
 msgstr ""
 
 msgid "Runners|UTC Time"

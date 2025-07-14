@@ -2044,7 +2044,6 @@ Style/InlineDisableAnnotation:
     - 'qa/spec/page/base_spec.rb'
     - 'qa/spec/resource/project_web_hook_spec.rb'
     - 'qa/spec/scenario/template_spec.rb'
-    - 'qa/spec/support/formatters/allure_metadata_formatter_spec.rb'
     - 'rubocop/migration_helpers.rb'
     - 'rubocop/rubocop.rb'
     - 'scripts/api/get_job_id.rb'

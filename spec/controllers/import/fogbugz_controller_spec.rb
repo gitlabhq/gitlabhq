@@ -48,7 +48,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
 
     context 'when client raises authentication exception' do
       before do
-        allow(::Gitlab::FogbugzImport::Client).to receive(:new).and_raise(::Fogbugz::AuthenticationException)
+        allow(::Gitlab::FogbugzImport::Client).to receive(:new).and_raise(Gitlab::FogbugzImport::Interface::AuthenticationError)
       end
 
       it 'redirects to new page form' do

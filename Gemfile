@@ -344,9 +344,6 @@ gem 'atlassian-jwt', '~> 0.2.1', feature_category: :integrations
 # Slack integration
 gem 'slack-messenger', '~> 2.3.5', feature_category: :integrations
 
-# FogBugz integration
-gem 'ruby-fogbugz', '~> 0.3.0', feature_category: :importers
-
 # Kubernetes integration
 gem 'kubeclient', '~> 4.11.0', feature_category: :shared
 

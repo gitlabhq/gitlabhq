@@ -39,7 +39,6 @@ RSpec/NoExpectationExample:
     - 'ee/spec/workers/compliance_management/standards/gitlab/prevent_approval_by_committer_group_worker_spec.rb'
     - 'ee/spec/workers/compliance_management/standards/soc2/at_least_one_non_author_approval_group_worker_spec.rb'
     - 'ee/spec/workers/compliance_management/standards/soc2/at_least_one_non_author_approval_worker_spec.rb'
-    - 'ee/spec/workers/security/process_scan_result_policy_worker_spec.rb'
     - 'qa/qa/specs/features/api/3_create/repository/push_postreceive_idempotent_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/repository/license_detection_spec.rb'
     - 'qa/qa/specs/features/browser_ui/3_create/snippet/add_comment_to_snippet_spec.rb'

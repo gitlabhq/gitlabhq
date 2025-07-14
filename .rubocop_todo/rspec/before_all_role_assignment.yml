@@ -129,7 +129,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/features/projects/user_interacts_with_unlimited_members_during_trial_alert_spec.rb'
     - 'ee/spec/features/projects/wiki/user_views_wiki_empty_spec.rb'
     - 'ee/spec/features/projects_spec.rb'
-    - 'ee/spec/features/search/user_searches_for_epics_spec.rb'
     - 'ee/spec/features/subscriptions/expiring_subscription_message_spec.rb'
     - 'ee/spec/finders/approval_rules/group_finder_spec.rb'
     - 'ee/spec/finders/concerns/epics/with_access_check_spec.rb'

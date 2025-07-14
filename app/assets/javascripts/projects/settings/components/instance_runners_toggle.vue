@@ -65,6 +65,7 @@ export default {
         .then(() => {
           this.isLoading = false;
           this.isEnabledValue = !this.isEnabledValue;
+          this.$emit('change', this.isEnabledValue);
         })
         .catch((error) => {
           this.isLoading = false;
@@ -109,7 +110,7 @@ export default {
     >
       <template #label>
         <span class="gl-text-sm gl-font-normal gl-text-subtle">{{
-          __('Enable instance runners for this project')
+          s__('Runners|Turn on instance runners for this project')
         }}</span>
       </template>
       <template v-if="isDisabledAndUnoverridable" #help>

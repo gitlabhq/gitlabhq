@@ -262,7 +262,6 @@ RSpec/VerifiedDoubles:
     - 'spec/helpers/sorting_helper_spec.rb'
     - 'spec/helpers/submodule_helper_spec.rb'
     - 'spec/helpers/version_check_helper_spec.rb'
-    - 'spec/initializers/doorkeeper_spec.rb'
     - 'spec/initializers/global_id_spec.rb'
     - 'spec/lib/api/base_spec.rb'
     - 'spec/lib/api/entities/ci/job_request/image_spec.rb'

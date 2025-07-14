@@ -2526,7 +2526,6 @@ Layout/LineLength:
     - 'spec/features/issues/service_desk_spec.rb'
     - 'spec/features/issues/user_creates_branch_and_merge_request_spec.rb'
     - 'spec/features/issues/user_edits_issue_spec.rb'
-    - 'spec/features/issues/user_interacts_with_awards_spec.rb'
     - 'spec/features/issues/user_views_issue_spec.rb'
     - 'spec/features/issues/viewing_issues_with_external_authorization_enabled_spec.rb'
     - 'spec/features/markdown/copy_as_gfm_spec.rb'

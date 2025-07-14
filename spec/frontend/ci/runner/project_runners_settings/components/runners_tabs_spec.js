@@ -3,12 +3,15 @@ import { shallowMount } from '@vue/test-utils';
 import { GlTabs } from '@gitlab/ui';
 import { INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE } from '~/ci/runner/constants';
 
+import InstanceRunnersToggle from '~/projects/settings/components/instance_runners_toggle.vue';
+
 import RunnersTab from '~/ci/runner/project_runners_settings/components/runners_tab.vue';
 import RunnersTabs from '~/ci/runner/project_runners_settings/components/runners_tabs.vue';
 import RunnerToggleAssignButton from '~/ci/runner/project_runners_settings/components/runner_toggle_assign_button.vue';
 
 import GroupRunnersToggle from '~/ci/runner/project_runners_settings/components/group_runners_toggle.vue';
 import GroupRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/group_runners_tab_empty_state.vue';
+import InstanceRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/instance_runners_tab_empty_state.vue';
 import ProjectRunnersTabEmptyState from '~/ci/runner/project_runners_settings/components/project_runners_tab_empty_state.vue';
 
 import { projectRunnersData } from 'jest/ci/runner/mock_data';
@@ -26,6 +29,11 @@ describe('RunnersTabs', () => {
     wrapper = shallowMount(RunnersTabs, {
       propsData: {
         projectFullPath: 'group/project',
+        instanceRunnersEnabled: true,
+        instanceRunnersDisabledAndUnoverridable: false,
+        instanceRunnersUpdatePath: 'group/project/-/runners/toggle_shared_runners',
+        groupName: 'My group',
+        instanceRunnersGroupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
         ...props,
       },
       stubs: {
@@ -167,7 +175,28 @@ describe('RunnersTabs', () => {
         runnerType: INSTANCE_TYPE,
         projectFullPath: 'group/project',
       });
-      expect(findRunnerTabAt(2).text()).toBe('No instance runners found.');
+      expect(findRunnerTabAt(2).findComponent(InstanceRunnersTabEmptyState).exists()).toBe(true);
+    });
+
+    it('shows instance runners toggle', () => {
+      expect(findRunnerTabAt(2).findComponent(InstanceRunnersToggle).props()).toEqual({
+        groupName: 'My group',
+        groupSettingsPath: 'group/project/-/settings/ci_cd#runners-settings',
+        isDisabledAndUnoverridable: false,
+        isEnabled: true,
+        updatePath: 'group/project/-/runners/toggle_shared_runners',
+      });
+    });
+
+    it('updates list and empty state on toggle', async () => {
+      findRunnerTabAt(2).findComponent(InstanceRunnersToggle).vm.$emit('change', false);
+      await nextTick();
+
+      expect(mockRefresh).toHaveBeenCalledTimes(1);
+      expect(mockRefresh).toHaveBeenCalledWith('Instance');
+      expect(findRunnerTabAt(2).findComponent(InstanceRunnersToggle).props('isEnabled')).toEqual(
+        false,
+      );
     });
 
     it('emits an error event', () => {

@@ -1238,7 +1238,6 @@ RSpec/ContextWording:
     - 'spec/graphql/resolvers/users/group_count_resolver_spec.rb'
     - 'spec/graphql/resolvers/users/participants_resolver_spec.rb'
     - 'spec/graphql/subscriptions/issuable_updated_spec.rb'
-    - 'spec/graphql/types/alert_management/prometheus_integration_type_spec.rb'
     - 'spec/graphql/types/base_field_spec.rb'
     - 'spec/graphql/types/global_id_type_spec.rb'
     - 'spec/graphql/types/issue_type_spec.rb'

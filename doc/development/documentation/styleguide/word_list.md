@@ -1044,7 +1044,7 @@ However, you can make an exception when you are writing a task and you want to r
 of the fields at once. For example:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > CI/CD**.
+1. Select **Settings** > **CI/CD**.
 1. Expand **General pipelines**.
 1. Complete the fields.
 
@@ -1860,7 +1860,7 @@ For more information, see the
 
 When documenting high-level UI elements, use **on** as a preposition. For example:
 
-- On the left sidebar, select **Settings > CI/CD**.
+- On the left sidebar, select **Settings** > **CI/CD**.
 - On the **Grant permission** dialog, select **Group**.
 
 Do not use **from** or **in**. For more information, see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-z-word-list-term-collections/f/from-vs-on).

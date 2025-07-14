@@ -1,3 +1,4 @@
+import { GlAnimatedChevronRightDownIcon } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import { createTestingPinia } from '@pinia/testing';
 import { PiniaVuePlugin } from 'pinia';
@@ -63,6 +64,10 @@ describe('DiffFileHeader component', () => {
   const findReplacedFileButton = () => wrapper.findComponent({ ref: 'replacedFileButton' });
   const findViewFileButton = () => wrapper.findComponent({ ref: 'viewButton' });
   const findCollapseButton = () => wrapper.findComponent({ ref: 'collapseButton' });
+  // In Vue3 this is kebabbed, in Vue2 it is not
+  const findCollapseIconIsOn = () =>
+    wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('is-on') ||
+    wrapper.findComponent(GlAnimatedChevronRightDownIcon).attributes('ison');
   const findEditButton = () => wrapper.findComponent({ ref: 'editButton' });
   const findReviewFileCheckbox = () => wrapper.find("[data-testid='fileReviewCheckbox']");
 
@@ -94,13 +99,16 @@ describe('DiffFileHeader component', () => {
     expect(findCollapseButton().exists()).toBe(collapsible);
   });
 
-  it.each`
-    expanded | icon
-    ${true}  | ${'chevron-down'}
-    ${false} | ${'chevron-right'}
-  `('collapse icon is $icon if expanded is $expanded', ({ icon, expanded }) => {
-    createComponent({ props: { expanded, collapsible: true } });
-    expect(findCollapseButton().props('icon')).toBe(icon);
+  it('GlAnimatedChevronRightDownIcon isOn prop is true if expanded', () => {
+    createComponent({ props: { expanded: true, collapsible: true } });
+
+    expect(findCollapseIconIsOn()).toBe('true');
+  });
+
+  it('GlAnimatedChevronRightDownIcon isOn prop is false if collapsed', () => {
+    createComponent({ props: { expanded: false, collapsible: true } });
+
+    expect(findCollapseIconIsOn()).toBeUndefined();
   });
 
   it('when header is clicked emits toggleFile', async () => {

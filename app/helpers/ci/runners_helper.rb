@@ -130,7 +130,7 @@ module Ci
       can_create_runner_for_group =
         can?(current_user, :create_runner, project.group) || can?(current_user, :register_group_runners, project.group)
 
-      {
+      data = {
         can_create_runner: can?(current_user, :create_runner, project).to_s,
         allow_registration_token: project.namespace.allow_runner_registration_token?.to_s,
         registration_token: can?(current_user, :read_runners_registration_token, project) ? project.runners_token : nil,
@@ -139,8 +139,24 @@ module Ci
 
         # group runners tab
         can_create_runner_for_group: can_create_runner_for_group.to_s,
-        group_runners_path: project&.group ? group_runners_path(project.group) : nil
+        group_runners_path: project&.group ? group_runners_path(project.group) : nil,
+
+        # instance runners tab
+        instance_runners_enabled: project.shared_runners_enabled?.to_s,
+        instance_runners_disabled_and_unoverridable: (project.group&.shared_runners_setting == Namespace::SR_DISABLED_AND_UNOVERRIDABLE).to_s,
+        instance_runners_update_path: toggle_shared_runners_project_runners_path(project),
+        instance_runners_group_settings_path: nil,
+        group_name: nil
       }
+
+      if project.group && can?(current_user, :admin_group, project.group)
+        data.merge!({
+          instance_runners_group_settings_path: group_settings_ci_cd_path(project.group, anchor: 'runners-settings'),
+          group_name: project.group.name
+        })
+      end
+
+      data
     end
 
     def toggle_shared_runners_settings_data(project)

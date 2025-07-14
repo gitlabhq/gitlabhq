@@ -7,9 +7,9 @@ module Gitlab
 
       def initialize(options = {})
         if options[:uri] && options[:token]
-          @api = ::Fogbugz::Interface.new(options)
+          @api = Interface.new(options)
         elsif options[:uri] && options[:email] && options[:password]
-          @api = ::Fogbugz::Interface.new(options)
+          @api = Interface.new(options)
           @api.authenticate
           @api
         end

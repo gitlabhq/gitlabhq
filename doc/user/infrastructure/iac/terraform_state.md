@@ -192,7 +192,7 @@ the old state is, you can tell it about the new location:
 ```shell
 TF_ADDRESS="https://gitlab.com/api/v4/projects/${PROJECT_ID}/terraform/state/new-state-name"
 
-terraform init \
+tofu init \
   -migrate-state \
   -backend-config=address=${TF_ADDRESS} \
   -backend-config=lock_address=${TF_ADDRESS}/lock \

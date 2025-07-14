@@ -155,15 +155,6 @@ GitLab Pages for Dedicated:
 - Only works in the primary site if [Geo](../../administration/geo/_index.md) is enabled.
 - Is not included as part of instance migrations to GitLab Dedicated.
 
-The following GitLab Pages features are not available for GitLab Dedicated:
-
-- Custom domains
-- PrivateLink access
-- Namespaces in URL path
-- Let's Encrypt integration
-- Reduced authentication scope
-- Running Pages behind a proxy
-
 #### Hosted runners
 
 [Hosted runners for GitLab Dedicated](../../administration/dedicated/hosted_runners.md) allow you to scale CI/CD workloads with no maintenance overhead.
@@ -207,33 +198,60 @@ Limitations:
 
 This section lists the features that are not available for GitLab Dedicated.
 
-### Application features
+### Authentication and security
 
-The following GitLab application features are not available:
+| Feature                                       | Description                                                           | Impact                                                       |
+| --------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ |
+| LDAP authentication                           | Authentication using corporate LDAP/Active Directory credentials.     | Must use GitLab-specific passwords or access tokens instead. |
+| Smart card authentication                     | Authentication using smart cards for enhanced security.               | Cannot use existing smart card infrastructure.               |
+| Kerberos authentication                       | Single sign-on authentication using Kerberos protocol.                | Must authenticate separately to GitLab.                      |
+| Multiple login providers                      | Configuration of multiple OAuth/SAML providers (Google, GitHub).      | Limited to a single identity provider.                       |
+| FortiAuthenticator/FortiToken 2FA             | Two-factor authentication using Fortinet security solutions.          | Cannot integrate existing Fortinet 2FA infrastructure.       |
+| Git clone using HTTPS with username/password  | Git operations using username and password authentication over HTTPS. | Must use access tokens for Git operations.                   |
+| [Sigstore](../../ci/yaml/signing_examples.md) | Keyless signing and verification for software supply chain security.  | Must use traditional code signing methods.                   |
 
-- LDAP (Git clone with username / password), smart card, or Kerberos authentication
-- Multiple login providers
-- FortiAuthenticator or FortiToken 2FA
-- Reply by email
-- Service Desk
-- Some GitLab Duo AI capabilities
-  - View the [list of supported AI features](../../user/ai_features.md)
-  - For more information, see [supporting AI Features on GitLab Dedicated](https://about.gitlab.com/direction/gitlab_dedicated/#supporting-ai-features-on-gitlab-dedicated)
-- Features other than [available features](#available-features) that must be configured outside of the GitLab user interface
-- Any functionality or feature behind a feature flag that is turned `off` by default
-- [Sigstore for keyless signing and verification](../../ci/yaml/signing_examples.md)
-- OAuth providers outside of standard SAML
+### Communication and collaboration
 
-The following features are not supported:
+| Feature        | Description                                                         | Impact                                                     |
+| -------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Reply by email | Respond to GitLab notifications and discussions through email.      | Must use GitLab web interface to respond.                  |
+| Service Desk   | Ticketing system for external users to create issues through email. | External users must have GitLab accounts to create issues. |
 
-- [Mattermost](../../integration/mattermost/_index.md)
-- [Server-side Git hooks](../../administration/server_hooks.md)
+### Development and AI features
 
-{{< alert type="note" >}}
+| Feature                                | Description                                                                          | Impact                                       |
+| -------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------- |
+| Some GitLab Duo AI capabilities        | AI-powered features for code suggestions, vulnerability detection, and productivity. | Limited AI assistance for development tasks. |
+| Features behind disabled feature flags | Experimental or unreleased features disabled by default.                             | Cannot access features in development.       |
 
-Access to the underlying infrastructure is only available to GitLab team members. Due to the server-side configuration, there is a security concern with running arbitrary code on services, and the possible impact on the service SLA. As an alternative, use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md) instead.
+For more information about AI features, see [GitLab Duo](../../user/gitlab_duo/_index.md).
 
-{{< /alert >}}
+#### Feature flags
+
+GitLab uses [feature flags](../../administration/feature_flags/_index.md) to support the
+development and rollout of new or experimental features. In GitLab Dedicated:
+
+- Features behind feature flags that are enabled by default are available.
+- Features behind feature flags that are disabled by default are not available and
+  cannot be enabled by administrators.
+
+Features behind flags that are disabled by default are not ready for production use and
+therefore unsafe for GitLab Dedicated.
+
+When a feature becomes generally available and the flag is enabled or removed, the feature
+becomes available in GitLab Dedicated in the same GitLab version. GitLab Dedicated follows
+its own [release schedule](maintenance.md) for version deployments.
+
+### GitLab Pages
+
+| Feature                      | Description                                                     | Impact                                                                 |
+| ---------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| Custom domains               | Host GitLab Pages sites on custom domain names.                 | Pages sites accessible only using `tenant_name.gitlab-dedicated.site`. |
+| PrivateLink access           | Private network access to GitLab Pages through AWS PrivateLink. | Pages sites must be accessed over public internet.                     |
+| Namespaces in URL path       | Organize Pages sites with namespace-based URL structure.        | Limited URL organization options.                                      |
+| Let's Encrypt integration    | Automatic SSL certificate provisioning for Pages sites.         | Must manage SSL certificates manually.                                 |
+| Reduced authentication scope | Fine-grained access controls for Pages sites.                   | Less flexible authentication options.                                  |
+| Running Pages behind a proxy | Deploy Pages sites behind reverse proxy configurations.         | Limited deployment architecture options.                               |
 
 ### Operational features
 
@@ -245,19 +263,23 @@ The following operational features are not available:
 - Support for deploying to non-AWS cloud providers, such as GCP or Azure
 - Observability dashboard in Switchboard
 
-### Feature flags
+### Features that require server access
 
-GitLab uses [feature flags](../../administration/feature_flags/_index.md) to support the development and rollout of new or experimental features.
-In GitLab Dedicated:
+The following features require direct server access and cannot be configured:
 
-- Features behind feature flags that are **enabled by default** are available.
-- Features behind feature flags that are **disabled by default** are not available and cannot be enabled by administrators.
+| Feature                                                       | Description                                                        | Impact                                                                                                                    |
+| ------------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| [Mattermost](../../integration/mattermost/_index.md)          | Integrated team chat and collaboration platform.                   | Use external chat solutions.                                                                                              |
+| [Server-side Git hooks](../../administration/server_hooks.md) | Custom scripts that run on Git events (pre-receive, post-receive). | Use [push rules](../../user/project/repository/push_rules.md) or [webhooks](../../user/project/integrations/webhooks.md). |
 
-Features behind flags that are disabled by default are not ready for production use and therefore unsafe for GitLab Dedicated.
+{{< alert type="note" >}}
 
-When a feature becomes generally available and the flag is enabled or removed, the feature becomes available in
-GitLab Dedicated in the same GitLab version. GitLab Dedicated follows its own
-[release schedule](maintenance.md) for version deployments.
+Access to the underlying infrastructure is only available to GitLab team members.
+Due to the server-side configuration, there is a security concern with running arbitrary code on services,
+and the possible impact on the service SLA. As an alternative, use [push rules](../../user/project/repository/push_rules.md)
+or [webhooks](../../user/project/integrations/webhooks.md) instead.
+
+{{< /alert >}}
 
 ## Service level availability
 
@@ -265,11 +287,11 @@ GitLab Dedicated maintains a monthly service level objective of 99.5% availabili
 
 Service level availability measures the percentage of time that GitLab Dedicated is available for use during a calendar month. GitLab calculates availability based on the following core services:
 
-| Service area | Included features |
-|--|--|
-| Web interface | GitLab issues, merge requests, CI job logs, GitLab API, Git operations over HTTPS |
-| Container Registry | Registry HTTPS requests |
-| Git operations | Git push, pull, and clone operations over SSH |
+| Service area       | Included features                                                                 |
+| ------------------ | --------------------------------------------------------------------------------- |
+| Web interface      | GitLab issues, merge requests, CI job logs, GitLab API, Git operations over HTTPS |
+| Container Registry | Registry HTTPS requests                                                           |
+| Git operations     | Git push, pull, and clone operations over SSH                                     |
 
 ### Service level exclusions
 
@@ -279,8 +301,7 @@ The following are not included in service level availability calculations:
 - Issues with customer or cloud provider infrastructure outside of GitLab control
 - Scheduled maintenance windows
 - Emergency maintenance for critical security or data issues
-- Service disruptions caused by natural disasters, widespread internet outages,
-  datacenter failures, or other events outside of GitLab control.
+- Service disruptions caused by natural disasters, widespread internet outages, datacenter failures, or other events outside of GitLab control.
 
 ## Migrate to GitLab Dedicated
 

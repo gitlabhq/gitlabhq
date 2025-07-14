@@ -31,7 +31,6 @@ RSpec/AvoidConditionalStatements:
     - 'spec/features/issues/labels_hierarchy_spec.rb'
     - 'spec/features/issues/list/user_bulk_edits_issues_labels_spec.rb'
     - 'spec/features/issues/user_creates_branch_and_merge_request_spec.rb'
-    - 'spec/features/issues/user_interacts_with_awards_spec.rb'
     - 'spec/features/markdown/keyboard_shortcuts_spec.rb'
     - 'spec/features/merge_request/batch_comments_spec.rb'
     - 'spec/features/merge_request/user_posts_diff_notes_spec.rb'

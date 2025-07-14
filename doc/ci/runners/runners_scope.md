@@ -162,7 +162,7 @@ To enable instance runners for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn on the **Enable instance runners for this project** toggle.
+1. Enable the **Turn on instance runners for this project** toggle.
 
 ### Enable instance runners for a group
 
@@ -171,7 +171,7 @@ To enable instance runners for a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. Turn on the **Enable instance runners for this group** toggle.
+1. Enable the **Turn on instance runners for this group** toggle.
 
 ### Disable instance runners for a project
 
@@ -184,7 +184,7 @@ To disable instance runners for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. In the **Instance runners** area, turn off the **Enable instance runners for this project** toggle.
+1. In the **Instance runners** area, enable the **Turn runners for this project** toggle.
 
 Instance runners are automatically disabled for a project:
 

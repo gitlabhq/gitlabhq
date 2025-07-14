@@ -118,6 +118,7 @@ describe('InstanceRunnersToggle', () => {
         expect(mockAxios.history.post).toHaveLength(1);
         expect(findErrorAlert().exists()).toBe(false);
         expect(getToggleValue()).toBe(true);
+        expect(wrapper.emitted('change')).toEqual([[true]]);
       });
     });
 
@@ -131,13 +132,14 @@ describe('InstanceRunnersToggle', () => {
       });
 
       it('can disable toggle', async () => {
-        findInstanceRunnersToggle().vm.$emit('change', true);
+        findInstanceRunnersToggle().vm.$emit('change', false);
         await waitForPromises();
 
         expect(mockAxios.history.post[0].data).toEqual(undefined);
         expect(mockAxios.history.post).toHaveLength(1);
         expect(findErrorAlert().exists()).toBe(false);
         expect(getToggleValue()).toBe(false);
+        expect(wrapper.emitted('change')).toEqual([[false]]);
       });
     });
 

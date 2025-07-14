@@ -78,8 +78,13 @@ export default {
   <gl-toggle
     label-position="left"
     :is-loading="isLoading"
-    :label="s__('Runners|Turn on group runners for this project')"
     :value="groupRunnersEnabled"
     @change="toggleGroupRunners"
-  />
+  >
+    <template #label>
+      <span class="gl-text-sm gl-font-normal gl-text-subtle">{{
+        s__('Runners|Turn on group runners for this project')
+      }}</span>
+    </template>
+  </gl-toggle>
 </template>

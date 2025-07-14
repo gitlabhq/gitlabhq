@@ -9,7 +9,6 @@ Rails/FindEach:
     - 'lib/gitlab/internal_events/event_definitions.rb'
     - 'qa/qa/ee/page/group/settings/general.rb'
     - 'spec/features/admin/admin_labels_spec.rb'
-    - 'spec/features/issues/user_interacts_with_awards_spec.rb'
     - 'spec/features/merge_request/user_creates_image_diff_notes_spec.rb'
     - 'spec/features/merge_request/user_resolves_diff_notes_and_discussions_resolve_spec.rb'
     - 'spec/features/projects/show/user_sees_git_instructions_spec.rb'

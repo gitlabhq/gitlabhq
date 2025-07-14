@@ -252,7 +252,6 @@ RSpec/ReceiveMessages:
     - 'spec/initializers/100_patch_omniauth_saml_spec.rb'
     - 'spec/initializers/8_devise_spec.rb'
     - 'spec/initializers/carrierwave_s3_encryption_headers_patch_spec.rb'
-    - 'spec/initializers/doorkeeper_spec.rb'
     - 'spec/keeps/delete_old_feature_flags_spec.rb'
     - 'spec/lib/api/helpers/packages_helpers_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'

@@ -83,7 +83,6 @@ Layout/LineContinuationSpacing:
     - 'lib/gitlab/database/partitioning_migration_helpers/foreign_key_helpers.rb'
     - 'lib/gitlab/database/shared_model.rb'
     - 'lib/gitlab/i18n/po_linter.rb'
-    - 'qa/qa/tools/test_resources_handler.rb'
     - 'rubocop/cop/graphql/authorize_types.rb'
     - 'rubocop/cop/graphql/descriptions.rb'
     - 'rubocop/cop/graphql/graphql_name_position.rb'

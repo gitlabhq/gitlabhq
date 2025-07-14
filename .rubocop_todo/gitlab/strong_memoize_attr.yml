@@ -55,7 +55,6 @@ Gitlab/StrongMemoizeAttr:
     - 'app/models/ci/bridge.rb'
     - 'app/models/ci/build.rb'
     - 'app/models/ci/build_dependencies.rb'
-    - 'app/models/ci/build_metadata.rb'
     - 'app/models/ci/commit_with_pipeline.rb'
     - 'app/models/ci/group.rb'
     - 'app/models/ci/job_artifact.rb'

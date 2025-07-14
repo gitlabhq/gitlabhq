@@ -36,6 +36,28 @@ export default {
       type: String,
       required: true,
     },
+    instanceRunnersEnabled: {
+      type: Boolean,
+      required: true,
+    },
+    instanceRunnersDisabledAndUnoverridable: {
+      type: Boolean,
+      required: true,
+    },
+    instanceRunnersUpdatePath: {
+      type: String,
+      required: true,
+    },
+    instanceRunnersGroupSettingsPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    groupName: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -77,7 +99,15 @@ export default {
           :registration-token="registrationToken"
         />
       </template>
-      <runners-tabs :project-full-path="projectFullPath" @error="onError" />
+      <runners-tabs
+        :project-full-path="projectFullPath"
+        :instance-runners-enabled="instanceRunnersEnabled"
+        :instance-runners-disabled-and-unoverridable="instanceRunnersDisabledAndUnoverridable"
+        :instance-runners-update-path="instanceRunnersUpdatePath"
+        :instance-runners-group-settings-path="instanceRunnersGroupSettingsPath"
+        :group-name="groupName"
+        @error="onError"
+      />
     </crud-component>
   </div>
 </template>
