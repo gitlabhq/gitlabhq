@@ -198,71 +198,9 @@ http://[your-instance-ip]:8080
 
 ## Connect GitLab to GitLab Observability
 
-### Configure GitLab
+### Configure GitLab and Enable the feature flag
 
-Add the GitLab O11y URL as an environment variable to your GitLab instance:
-
-{{< tabs >}}
-
-{{< tab title="Linux package (Omnibus)" >}}
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['env'] = {
-     'O11Y_URL' => 'http://[your-o11y-instance-ip]:8080'
-   }
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-{{< /tab >}}
-
-{{< tab title="Docker" >}}
-
-```shell
-docker run --detach \
-  --hostname gitlab.example.com \
-  --publish 443:443 --publish 80:80 --publish 22:22 \
-  --name gitlab \
-  --restart always \
-  gitlab/gitlab-ce:latest
-```
-
-The `O11Y_URL` environment variable must be configured in the GitLab configuration file:
-
-1. Access the container:
-
-   ```shell
-   docker exec -it gitlab /bin/bash
-   ```
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['env'] = {
-     'O11Y_URL' => 'http://[your-o11y-instance-ip]:8080'
-   }
-   ```
-
-1. Reconfigure GitLab:
-
-   ```shell
-   gitlab-ctl reconfigure
-   gitlab-ctl restart
-   ```
-
-{{< /tab >}}
-
-{{< /tabs >}}
-
-### Enable the feature flag
-
-The Observability feature is behind a feature flag. To enable it:
+Configure the GitLab O11y URL for your group and enable the feature flag using the Rails console:
 
 1. Access the Rails console:
 
@@ -286,18 +224,31 @@ The Observability feature is behind a feature flag. To enable it:
 
    {{< /tabs >}}
 
-1. Enable the feature flag for your group:
+1. Configure the observability settings for your group and enable the feature flag:
 
    ```ruby
-   Feature.enable(:observability_sass_features, Group.find_by_path('your-group-name'))
+   group = Group.find_by_path('your-group-name')
+
+   Observability::GroupO11ySetting.create!(
+     group_id: group.id,
+     o11y_service_url: 'your-o11y-instance-url',
+     o11y_service_user_email: 'your-email@example.com',
+     o11y_service_password: 'your-secure-password',
+     o11y_service_post_message_encryption_key: 'your-super-secret-encryption-key-here-32-chars-minimum'
+   )
+
+   Feature.enable(:observability_sass_features, group)
+
+   Feature.enabled?(:observability_sass_features, group)
    ```
 
-1. Verify that the feature flag is enabled:
+   Replace:
+   - `your-group-name` with your actual group path
+   - `your-o11y-instance-url` with your GitLab O11y instance URL (for example: `http://192.168.1.100:8080`)
+   - Email and password with your preferred credentials
+   - Encryption key with a secure 32+ character string
 
-   ```ruby
-   Feature.enabled?(:observability_sass_features, Group.find_by_path('your-group-name'))
-   # Should return true
-   ```
+   The last command should return `true` to confirm the feature is enabled.
 
 ## Use Observability with GitLab
 
@@ -425,7 +376,8 @@ docker logs [container_name]
 1. Check that the O11Y_URL environment variable is set:
 
    ```ruby
-   ENV['O11Y_URL']
+   group = Group.find_by_path('your-group-name')
+   group.observability_group_o11y_setting&.o11y_service_url
    ```
 
 1. Ensure the routes are properly registered:

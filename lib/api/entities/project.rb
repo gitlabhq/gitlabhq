@@ -47,7 +47,6 @@ module API
       expose :packages_enabled, documentation: { type: 'boolean' }
       expose :empty_repo?, as: :empty_repo, documentation: { type: 'boolean' }
       expose :archived?, as: :archived, documentation: { type: 'boolean' }
-      expose :visibility, documentation: { type: 'string', example: 'public' }
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions, documentation: { type: 'boolean' }
       expose :container_expiration_policy,

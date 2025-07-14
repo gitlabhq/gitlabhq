@@ -571,14 +571,17 @@ export default {
       >
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="!gl-mr-0">
-          <gl-badge
+          <button
             v-if="!isOpen"
             v-gl-tooltip.top
-            :variant="statusBadgeVariant"
             :title="statusTooltip"
+            :aria-label="statusTooltip"
+            class="!gl-cursor-default gl-rounded-pill gl-border-none gl-bg-transparent gl-p-0"
           >
-            <slot name="status"></slot>
-          </gl-badge>
+            <gl-badge :variant="statusBadgeVariant">
+              <slot name="status"></slot>
+            </gl-badge>
+          </button>
           <slot v-else name="status"></slot>
         </li>
         <slot name="pipeline-status"></slot>

@@ -49,12 +49,21 @@ type countingReadCloser struct {
 }
 
 func (crc *countingReadCloser) Read(p []byte) (n int, err error) {
-	n, err = crc.reader.Read(p)
-	newCount := atomic.AddInt64(&crc.count, int64(n))
-
-	if crc.mode == ModeEnforced && newCount > crc.limit {
-		return n, &RequestBodyTooLargeError{Limit: crc.limit, Read: newCount}
+	// Validate the next read to avoid EOF errors
+	if crc.mode == ModeEnforced {
+		currentCount := atomic.LoadInt64(&crc.count)
+		remaining := crc.limit - currentCount
+		if remaining <= 0 {
+			return 0, &RequestBodyTooLargeError{Limit: crc.limit, Read: currentCount}
+		}
+		// Only read up to the remaining limit
+		if int64(len(p)) > remaining {
+			p = p[:remaining]
+		}
 	}
+
+	n, err = crc.reader.Read(p)
+	atomic.AddInt64(&crc.count, int64(n))
 
 	return n, err
 }

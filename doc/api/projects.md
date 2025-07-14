@@ -421,7 +421,7 @@ When `simple=true` or the user is unauthenticated this returns something like:
 Example request:
 
 ```shell
-curl --request GET "https://gitlab.example.com/api/v4/projects"
+curl --request GET "https://gitlab.example.com/api/v4/projects?simple=true"
 ```
 
 Example response:
@@ -451,6 +451,7 @@ Example response:
     "avatar_url": "https://gitlab.example.com/uploads/project/avatar/4/uploads/avatar.png",
     "star_count": 0,
     "last_activity_at": "2013-09-30T13:46:02Z",
+    "visibility": "public",
     "namespace": {
       "id": 2,
       "name": "Diaspora",

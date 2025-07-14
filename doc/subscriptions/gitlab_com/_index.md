@@ -31,13 +31,6 @@ The subscription determines which features are available for your private projec
 Qualifying open source projects also get 50,000 compute minutes and free access to the **Ultimate** tier
 through the [GitLab for Open Source program](https://about.gitlab.com/solutions/open-source/).
 
-## Add or change subscription contacts
-
-Contacts can renew a subscription, cancel a subscription, or transfer the subscription to a different namespace.
-
-You can [change profile owner information](../customers_portal.md#change-profile-owner-information)
-and [add another billing account manager](../customers_portal.md#add-a-billing-account-manager).
-
 ## How seat usage is determined
 
 A GitLab.com subscription uses a concurrent (_seat_) model.

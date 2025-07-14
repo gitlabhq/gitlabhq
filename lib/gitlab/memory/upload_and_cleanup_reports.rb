@@ -9,8 +9,8 @@ module Gitlab
         uploader:,
         reports_path:,
         logger:,
-        sleep_time_seconds: ENV['GITLAB_DIAGNOSTIC_REPORTS_UPLOADER_SLEEP_S']&.to_i || DEFAULT_SLEEP_TIME_SECONDS)
-
+        sleep_time_seconds: ENV['GITLAB_DIAGNOSTIC_REPORTS_UPLOADER_SLEEP_S']&.to_i || DEFAULT_SLEEP_TIME_SECONDS
+      )
         @uploader = uploader
         @reports_path = reports_path
         @sleep_time_seconds = sleep_time_seconds

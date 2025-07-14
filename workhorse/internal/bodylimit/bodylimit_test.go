@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -59,7 +60,16 @@ func TestCountingReadCloser(t *testing.T) {
 			name:          "exceeds limit in enforced mode",
 			data:          "hello world this is too long",
 			readSizes:     []int{28},
-			expectedCount: 28,
+			expectedCount: 10,
+			mode:          ModeEnforced,
+			limit:         10,
+			expectError:   false,
+		},
+		{
+			name:          "multiple reads, exceeds limit in enforced mode",
+			data:          "hello world this is too long",
+			readSizes:     []int{15, 15},
+			expectedCount: 10,
 			mode:          ModeEnforced,
 			limit:         10,
 			expectError:   true,
@@ -518,6 +528,74 @@ func TestIntegration(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestStressLimitEnforcement(t *testing.T) {
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := io.ReadAll(r.Body)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Write([]byte("success"))
+	})
+
+	server := httptest.NewServer(handler)
+	defer server.Close()
+
+	transport := &contextSettingTransport{
+		next:      http.DefaultTransport,
+		bodyLimit: 100,
+		mode:      ModeEnforced,
+	}
+
+	// Run many concurrent requests
+	type testResult struct {
+		id         int
+		statusCode int
+		err        error
+	}
+
+	const numRequests = 100
+	results := make(chan testResult, numRequests)
+	var wg sync.WaitGroup
+
+	for i := 0; i < numRequests; i++ {
+		wg.Add(1)
+		go func(id int) {
+			defer wg.Done()
+
+			client := &http.Client{Transport: transport}
+			largeData := strings.Repeat("a", 150) // Exceed limit
+
+			resp, err := client.Post(server.URL, "text/plain", strings.NewReader(largeData))
+			if err != nil {
+				results <- testResult{id: id, err: err}
+				return
+			}
+			defer closeResponseBody(resp)
+
+			results <- testResult{id: id, statusCode: resp.StatusCode}
+		}(i)
+	}
+
+	wg.Wait()
+	close(results)
+
+	// Count results
+	statusCounts := make(map[int]int)
+
+	for result := range results {
+		if result.err != nil {
+			t.Errorf("id %d: unexpected error: %v", result.id, result.err)
+		}
+
+		statusCounts[result.statusCode]++
+	}
+
+	// ALL requests should return 413 (no 200 responses)
+	require.Equal(t, numRequests, statusCounts[413], "Expected %d requests with 413 status, got %d. Status counts: %v", numRequests, statusCounts[413], statusCounts)
+	require.Equal(t, 0, statusCounts[200], "Expected 0 requests with 200 status, got %d. Status counts: %v", statusCounts[200], statusCounts)
 }
 
 // contextSettingTransport wraps the request body roundtripper and sets context

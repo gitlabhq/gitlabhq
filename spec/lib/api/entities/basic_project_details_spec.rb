@@ -89,4 +89,37 @@ RSpec.describe API::Entities::BasicProjectDetails, feature_category: :api do
       end
     end
   end
+
+  describe '#visibility' do
+    let_it_be(:public_project) { create(:project, :public) }
+    let_it_be(:private_project) { create(:project, :private) }
+    let_it_be(:internal_project) { create(:project, :internal) }
+
+    context 'with public project' do
+      let(:project) { public_project }
+      let(:current_user) { nil }
+
+      it 'exposes visibility as public' do
+        expect(output).to include visibility: 'public'
+      end
+    end
+
+    context 'with private project' do
+      let(:project) { private_project }
+      let(:current_user) { project.first_owner }
+
+      it 'exposes visibility as private' do
+        expect(output).to include visibility: 'private'
+      end
+    end
+
+    context 'with internal project' do
+      let(:project) { internal_project }
+      let(:current_user) { project.first_owner }
+
+      it 'exposes visibility as internal' do
+        expect(output).to include visibility: 'internal'
+      end
+    end
+  end
 end

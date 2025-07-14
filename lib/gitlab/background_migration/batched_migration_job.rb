@@ -80,7 +80,6 @@ module Gitlab
         batch_table:, batch_column:, sub_batch_size:, pause_ms:, connection:, job_arguments: [],
         start_id: nil, end_id: nil, start_cursor: nil, end_cursor: nil, sub_batch_exception: nil
       )
-
         @start_id = start_id
         @end_id = end_id
         @start_cursor = start_cursor

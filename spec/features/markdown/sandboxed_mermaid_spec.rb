@@ -75,7 +75,7 @@ RSpec.describe 'Sandboxed Mermaid rendering', :js, feature_category: :markdown d
       project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
     end
 
-    it 'includes mermaid frame correctly' do
+    it 'includes mermaid frame correctly', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/554077' do
       visit(project_path(project))
 
       wait_for_all_requests

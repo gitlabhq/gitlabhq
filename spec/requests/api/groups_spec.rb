@@ -1595,7 +1595,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response.length).to eq(3)
         project_names = json_response.map { |proj| proj['name'] }
         expect(project_names).to match_array([project1.name, project3.name, archived_project.name])
-        expect(json_response.first['visibility']).not_to be_present
       end
 
       it "filters the groups projects", :aggregate_failures do
@@ -1823,7 +1822,6 @@ RSpec.describe API::Groups, :with_current_organization, feature_category: :group
         expect(json_response.length).to eq(2)
         project_ids = json_response.map { |project| project['id'] }
         expect(project_ids).to match_array([project2.id, project4.id])
-        expect(json_response.first['visibility']).not_to be_present
       end
 
       it 'filters the shared projects in the group based on visibility', :aggregate_failures do

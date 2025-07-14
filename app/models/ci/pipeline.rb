@@ -155,8 +155,6 @@ module Ci
     has_one :source_job, through: :source_pipeline, source: :source_job
     has_one :source_bridge, through: :source_pipeline, source: :source_bridge
 
-    has_one :pipeline_config, class_name: 'Ci::PipelineConfig', inverse_of: :pipeline
-
     has_one :pipeline_metadata, class_name: 'Ci::PipelineMetadata', inverse_of: :pipeline
 
     has_many :daily_build_group_report_results, class_name: 'Ci::DailyBuildGroupReportResult',

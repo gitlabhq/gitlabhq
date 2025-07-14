@@ -5790,7 +5790,6 @@
 - './spec/models/ci/pending_build_spec.rb'
 - './spec/models/ci/persistent_ref_spec.rb'
 - './spec/models/ci/pipeline_artifact_spec.rb'
-- './spec/models/ci/pipeline_config_spec.rb'
 - './spec/models/ci/pipeline_message_spec.rb'
 - './spec/models/ci/pipeline_schedule_spec.rb'
 - './spec/models/ci/pipeline_schedule_variable_spec.rb'

@@ -15,8 +15,8 @@ module Gitlab
 
           def initialize(
             migration_context:, table_name:, parent_table_name:, partitioning_column:,
-            zero_partition_value:)
-
+            zero_partition_value:
+          )
             @migration_context = migration_context
             @connection = migration_context.connection
             @table_name = table_name

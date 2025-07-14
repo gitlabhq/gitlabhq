@@ -580,9 +580,10 @@ describe('IssuableItem', () => {
         });
         const statusEl = findStatusEl();
         const statusBadge = statusEl.findComponent(GlBadge);
+        const statusBadgeWrapper = statusEl.find('button');
 
         expect(statusBadge.exists()).toBe(true);
-        expect(statusBadge.attributes('title')).toBe('January 1, 2000 at 12:00:00 AM GMT');
+        expect(statusBadgeWrapper.attributes('title')).toBe('January 1, 2000 at 12:00:00 AM GMT');
       });
 
       it('does not render a tooltip if the issuable doesn\t have a mergedAt value', () => {
@@ -599,9 +600,10 @@ describe('IssuableItem', () => {
         });
         const statusEl = findStatusEl();
         const statusBadge = statusEl.findComponent(GlBadge);
+        const statusBadgeWrapper = statusEl.find('button');
 
         expect(statusBadge.exists()).toBe(true);
-        expect(statusBadge.attributes('title')).toBe('');
+        expect(statusBadgeWrapper.attributes('title')).toBe('');
       });
 
       it('renders issuable status without badge if open', () => {

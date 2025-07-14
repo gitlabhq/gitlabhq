@@ -51,8 +51,8 @@ module API
         subject: user_project,
         has_length: true,
         maximum_size: MAX_PACKAGE_FILE_SIZE,
-        use_final_store_path: false)
-
+        use_final_store_path: false
+      )
         authorize_upload!(subject)
 
         status 200

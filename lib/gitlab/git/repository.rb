@@ -1019,8 +1019,8 @@ module Gitlab
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
         start_branch_name: nil, start_sha: nil, start_repository: nil,
-        force: false, sign: true, target_sha: nil)
-
+        force: false, sign: true, target_sha: nil
+      )
         wrapped_gitaly_errors do
           gitaly_operation_client.user_commit_files(user, branch_name,
             message, actions, author_email, author_name, start_branch_name,

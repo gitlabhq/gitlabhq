@@ -32,8 +32,8 @@ module Gitlab
         fallback_diff_refs: nil,
         stats: nil,
         unique_identifier: nil,
-        max_blob_size: nil)
-
+        max_blob_size: nil
+      )
         @diff = diff
         @stats = stats
         @repository = repository

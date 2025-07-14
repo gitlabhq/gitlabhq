@@ -26,7 +26,6 @@ Gitlab::Database::Partitioning.register_models(
     Ci::JobArtifact,
     Ci::JobArtifactReport,
     Ci::Pipeline,
-    Ci::PipelineConfig,
     Ci::PipelineVariable,
     Ci::RunnerManagerBuild,
     Ci::Stage,
