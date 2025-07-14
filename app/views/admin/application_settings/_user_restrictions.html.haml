@@ -8,4 +8,5 @@
   = form.gitlab_ui_checkbox_component :can_create_group, _("Allow new users to create top-level groups")
   = render_if_exists 'admin/application_settings/private_profile_restrictions', form: form
   = render_if_exists 'admin/application_settings/allow_account_deletion', form: form
+  = form.gitlab_ui_checkbox_component :delay_user_account_self_deletion, _("User account deletion will be delayed for 7 days")
   = form.gitlab_ui_checkbox_component :allow_project_creation_for_guest_and_below, _("Allow users with up to Guest role to create groups and personal projects")

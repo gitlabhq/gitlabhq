@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { BV_SHOW_MODAL } from '~/lib/utils/constants';
 import Translate from '~/vue_shared/translate';
+import { parseBoolean } from '~/lib/utils/common_utils';
 import DeleteAccountModal from './components/delete_account_modal.vue';
 import UpdateUsername from './components/update_username.vue';
 
@@ -23,8 +24,10 @@ export default () => {
 
   const deleteAccountButton = document.getElementById('delete-account-button');
   const deleteAccountModalEl = document.getElementById('delete-account-modal');
-  // eslint-disable-next-line no-new
-  new Vue({
+  const { actionUrl, confirmWithPassword, username, delayUserAccountSelfDeletion } =
+    deleteAccountModalEl.dataset;
+
+  return new Vue({
     el: deleteAccountModalEl,
     components: {
       DeleteAccountModal,
@@ -38,9 +41,10 @@ export default () => {
     render(createElement) {
       return createElement('delete-account-modal', {
         props: {
-          actionUrl: deleteAccountModalEl.dataset.actionUrl,
-          confirmWithPassword: Boolean(deleteAccountModalEl.dataset.confirmWithPassword),
-          username: deleteAccountModalEl.dataset.username,
+          actionUrl,
+          confirmWithPassword: parseBoolean(confirmWithPassword),
+          username,
+          delayUserAccountSelfDeletion: parseBoolean(delayUserAccountSelfDeletion),
         },
       });
     },

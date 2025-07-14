@@ -634,7 +634,8 @@ module ApplicationSettingsHelper
       :reindexing_minimum_index_size,
       :reindexing_minimum_relative_bloat_size,
       :anonymous_searches_allowed,
-      :git_push_pipeline_limit
+      :git_push_pipeline_limit,
+      :delay_user_account_self_deletion
     ].tap do |settings|
       unless Gitlab.com?
         settings << :resource_usage_limits

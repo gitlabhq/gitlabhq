@@ -33,7 +33,10 @@ Deleting a user deletes all projects in that user namespace.
 
 {{< alert type="flag" >}}
 
-On GitLab Self-Managed, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags/_index.md) named `delay_delete_own_user`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
+- On GitLab.com, this feature is available.
+- On GitLab Dedicated, this feature is not available.
+- On GitLab Self-Managed, the availability of this feature is controlled by the `delay_user_account_self_deletion` application setting and is disabled by default. Use the [Application settings API](../../../api/settings.md) to enable the
+`delay_user_account_self_deletion` setting for the instance.
 
 {{< /alert >}}
 

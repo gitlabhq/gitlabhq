@@ -1,135 +1,103 @@
-import { mount } from '@vue/test-utils';
-import { merge } from 'lodash';
-import { nextTick } from 'vue';
-
-import { TEST_HOST } from 'helpers/test_constants';
-import deleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
-
-const GlModalStub = {
-  name: 'gl-modal-stub',
-  template: `
-    <div>
-      <slot></slot>
-    </div>
-  `,
-};
+import { GlModal, GlSprintf } from '@gitlab/ui';
+import DeleteAccountModal from '~/profile/account/components/delete_account_modal.vue';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 
 describe('DeleteAccountModal component', () => {
-  const actionUrl = `${TEST_HOST}/delete/user`;
-  const username = 'hasnoname';
   let wrapper;
-  let vm;
 
-  const createWrapper = (options = {}) => {
-    wrapper = mount(
-      deleteAccountModal,
-      merge(
-        {},
-        {
-          propsData: {
-            actionUrl,
-            username,
-          },
-          stubs: {
-            GlModal: GlModalStub,
-          },
-        },
-        options,
-      ),
-    );
-    vm = wrapper.vm;
+  const createWrapper = ({
+    confirmWithPassword = true,
+    delayUserAccountSelfDeletion = false,
+  } = {}) => {
+    wrapper = shallowMountExtended(DeleteAccountModal, {
+      propsData: {
+        actionUrl: 'http://delete/user',
+        username: 'hasnoname',
+        confirmWithPassword,
+        delayUserAccountSelfDeletion,
+      },
+      stubs: { GlSprintf },
+    });
   };
 
-  const findElements = () => {
-    const confirmation = vm.confirmWithPassword ? 'password' : 'username';
-    return {
-      form: vm.$refs.form,
-      input: vm.$el.querySelector(`[name="${confirmation}"]`),
-    };
-  };
-  const findModal = () => wrapper.findComponent(GlModalStub);
+  const findModal = () => wrapper.findComponent(GlModal);
+  const findForm = () => wrapper.find('form');
+  const findPasswordInput = () => wrapper.findByTestId('password-confirmation-field');
+  const findUsernameInput = () => wrapper.findByTestId('username-confirmation-field');
 
-  describe('with password confirmation', () => {
-    beforeEach(async () => {
-      createWrapper({
-        propsData: {
-          confirmWithPassword: true,
-        },
+  it.each`
+    delayUserAccountSelfDeletion | expectedMessage
+    ${false}                     | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, it cannot be undone or recovered.'}
+    ${true}                      | ${'You are about to permanently delete your account, and all of the issues, merge requests, and groups linked to your account. Once you confirm Delete account, it cannot be undone or recovered. You might have to wait seven days before creating a new account with the same username or email.'}
+  `(
+    'shows delete message in modal body when delayUserAccountSelfDeletion is $delayUserAccountSelfDeletion',
+    ({ delayUserAccountSelfDeletion, expectedMessage }) => {
+      createWrapper({ delayUserAccountSelfDeletion });
+
+      expect(findModal().find('p').text()).toBe(expectedMessage);
+    },
+  );
+
+  describe.each`
+    type          | confirmWithPassword | findExpectedField    | findOtherField       | invalidFieldValue  | validFieldValue
+    ${'password'} | ${true}             | ${findPasswordInput} | ${findUsernameInput} | ${''}              | ${'anything'}
+    ${'username'} | ${false}            | ${findUsernameInput} | ${findPasswordInput} | ${'this is wrong'} | ${'hasnoname'}
+  `(
+    'with $type confirmation',
+    ({
+      type,
+      confirmWithPassword,
+      findExpectedField,
+      findOtherField,
+      invalidFieldValue,
+      validFieldValue,
+    }) => {
+      let submitSpy;
+
+      beforeEach(() => {
+        createWrapper({ confirmWithPassword });
+        submitSpy = jest.spyOn(findForm().element, 'submit');
       });
 
-      vm.isOpen = true;
-
-      await nextTick();
-    });
-
-    it('does not accept empty password', async () => {
-      const { form, input } = findElements();
-      jest.spyOn(form, 'submit').mockImplementation(() => {});
-      input.value = '';
-      input.dispatchEvent(new Event('input'));
-
-      await nextTick();
-      expect(vm.enteredPassword).toBe(input.value);
-      expect(findModal().attributes('ok-disabled')).toBe('true');
-      findModal().vm.$emit('primary');
-
-      expect(form.submit).not.toHaveBeenCalled();
-    });
-
-    it('submits form with password', async () => {
-      const { form, input } = findElements();
-      jest.spyOn(form, 'submit').mockImplementation(() => {});
-      input.value = 'anything';
-      input.dispatchEvent(new Event('input'));
-
-      await nextTick();
-      expect(vm.enteredPassword).toBe(input.value);
-      expect(findModal().attributes('ok-disabled')).toBeUndefined();
-      findModal().vm.$emit('primary');
-
-      expect(form.submit).toHaveBeenCalled();
-    });
-  });
-
-  describe('with username confirmation', () => {
-    beforeEach(async () => {
-      createWrapper({
-        propsData: {
-          confirmWithPassword: false,
-        },
+      it('shows expected input field', () => {
+        expect(findExpectedField().exists()).toBe(true);
       });
 
-      vm.isOpen = true;
+      it('does not show other input field', () => {
+        expect(findOtherField().exists()).toBe(false);
+      });
 
-      await nextTick();
-    });
+      it('shows confirmation message in form', () => {
+        expect(findForm().find('p').text()).toBe(`Type your ${type} to confirm:`);
+      });
 
-    it('does not accept wrong username', async () => {
-      const { form, input } = findElements();
-      jest.spyOn(form, 'submit').mockImplementation(() => {});
-      input.value = 'this is wrong';
-      input.dispatchEvent(new Event('input'));
+      describe('when the field has an invalid value', () => {
+        beforeEach(() => findExpectedField().setValue(invalidFieldValue));
 
-      await nextTick();
-      expect(vm.enteredUsername).toBe(input.value);
-      expect(findModal().attributes('ok-disabled')).toBe('true');
-      findModal().vm.$emit('primary');
+        it('disables submit button', () => {
+          expect(findModal().props('actionPrimary').attributes.disabled).toBe(true);
+        });
 
-      expect(form.submit).not.toHaveBeenCalled();
-    });
+        it('does not submit form when delete button is clicked', () => {
+          findModal().vm.$emit('primary');
 
-    it('submits form with correct username', async () => {
-      const { form, input } = findElements();
-      jest.spyOn(form, 'submit').mockImplementation(() => {});
-      input.value = username;
-      input.dispatchEvent(new Event('input'));
+          expect(submitSpy).not.toHaveBeenCalled();
+        });
+      });
 
-      await nextTick();
-      expect(vm.enteredUsername).toBe(input.value);
-      expect(findModal().attributes('ok-disabled')).toBeUndefined();
-      findModal().vm.$emit('primary');
+      describe('when the field has a valid value', () => {
+        beforeEach(() => findExpectedField().setValue(validFieldValue));
 
-      expect(form.submit).toHaveBeenCalled();
-    });
-  });
+        it('enables submit button', () => {
+          expect(findModal().props('actionPrimary').attributes.disabled).toBe(false);
+        });
+
+        it('submits form when delete button is clicked', () => {
+          findModal().vm.$emit('primary');
+
+          expect(submitSpy).toHaveBeenCalledTimes(1);
+        });
+      });
+    },
+  );
 });

@@ -34,6 +34,7 @@ RSpec.describe DeleteUserWorker, feature_category: :user_management do
     subject(:perform) { described_class.new.perform(current_user.id, user.id) }
 
     before do
+      stub_application_setting(delay_user_account_self_deletion: true)
       # user is blocked as part of User#delete_async
       user.block
       # custom attribute is created as part of User#delete_async
@@ -52,9 +53,9 @@ RSpec.describe DeleteUserWorker, feature_category: :user_management do
 
     it_behaves_like 'proceeds with deletion'
 
-    context 'when delay_delete_own_user feature flag is disabled' do
+    context 'when delay_user_account_self_deletion application setting is disabled' do
       before do
-        stub_feature_flags(delay_delete_own_user: false)
+        stub_application_setting(delay_user_account_self_deletion: false)
       end
 
       it_behaves_like 'proceeds with deletion'
@@ -99,6 +100,7 @@ RSpec.describe DeleteUserWorker, feature_category: :user_management do
       before do
         user.activate
         user.ban
+        stub_application_setting(delay_user_account_self_deletion: true)
       end
 
       it_behaves_like 'does nothing'
@@ -109,6 +111,7 @@ RSpec.describe DeleteUserWorker, feature_category: :user_management do
     context 'when user is not blocked (e.g. result of user reinstatement request)' do
       before do
         user.activate
+        stub_application_setting(delay_user_account_self_deletion: true)
       end
 
       it_behaves_like 'does nothing'

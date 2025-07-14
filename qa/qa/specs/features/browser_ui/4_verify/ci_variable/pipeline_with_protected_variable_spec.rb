@@ -73,7 +73,18 @@ module QA
 
       def create_protected_branch(branch_name:)
         # Using default setups, which allows access for developer and maintainer
-        create(:protected_branch, branch_name: branch_name, project: project)
+        protected_branch = create(:protected_branch, branch_name: branch_name, project: project)
+
+        # Wait for the protected branch to be fully effective
+        Support::Retrier.retry_until(
+          max_duration: 60,
+          sleep_interval: 2,
+          message: "Waiting for protected branch #{branch_name} to be effective"
+        ) do
+          project.protected_branches.find { |pb| pb[:name] == branch_name }.present?
+        end
+
+        protected_branch
       end
 
       def user_commit_to_protected_branch(api_client, branch:)

@@ -1343,7 +1343,7 @@ class User < ApplicationRecord
     end
 
     if email_taken &&
-        ::Feature.enabled?(:delay_delete_own_user) &&
+        ::Gitlab::CurrentSettings.delay_user_account_self_deletion &&
         User.find_by_any_email(email)&.deleted_own_account?
 
       help_page_url = Rails.application.routes.url_helpers.help_page_url(
@@ -2751,7 +2751,7 @@ class User < ApplicationRecord
     is_deleting_own_record = deleted_by.id == id
 
     is_deleting_own_record &&
-      ::Feature.enabled?(:delay_delete_own_user) &&
+      ::Gitlab::CurrentSettings.delay_user_account_self_deletion &&
       has_possible_spam_contributions?
   end
 

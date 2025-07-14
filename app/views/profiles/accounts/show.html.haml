@@ -93,9 +93,7 @@
         = render Pajamas::ButtonComponent.new(variant: :danger, button_options: { id: 'delete-account-button', disabled: true, data: { testid: 'delete-account-button' }}) do
           = s_('Profiles|Delete account')
 
-        #delete-account-modal{ data: { action_url: user_registration_path,
-          confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
-          username: current_user.username } }
+        #delete-account-modal{ data: delete_account_modal_data }
       - else
         - if !current_user.can_be_removed?
           - if Feature.enabled?(:ui_for_organizations, current_user) && current_user.solo_owned_organizations.present?

@@ -67435,6 +67435,9 @@ msgstr ""
 msgid "User Settings"
 msgstr ""
 
+msgid "User account deletion will be delayed for 7 days"
+msgstr ""
+
 msgid "User and IP rate limits"
 msgstr ""
 

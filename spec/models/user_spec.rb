@@ -7063,6 +7063,11 @@ RSpec.describe User, feature_category: :user_profile do
   describe '#delete_async' do
     let(:user) { create(:user, note: "existing note") }
     let(:deleted_by) { create(:user) }
+    let(:delay_user_account_self_deletion_enabled) { true }
+
+    before do
+      stub_application_setting(delay_user_account_self_deletion: delay_user_account_self_deletion_enabled)
+    end
 
     shared_examples 'schedules user for deletion without delay' do
       it 'schedules user for deletion without delay' do
@@ -7264,10 +7269,8 @@ RSpec.describe User, feature_category: :user_profile do
         end
       end
 
-      context 'when delay_delete_own_user feature flag is disabled' do
-        before do
-          stub_feature_flags(delay_delete_own_user: false)
-        end
+      context 'when delay_user_account_self_deletion application setting is disabled' do
+        let(:delay_user_account_self_deletion_enabled) { false }
 
         it_behaves_like 'schedules user for deletion without delay'
 
@@ -9282,18 +9285,19 @@ RSpec.describe User, feature_category: :user_profile do
     end
 
     context 'when existing account is pending deletion' do
+      let(:delay_user_account_self_deletion_enabled) { true }
+
       before do
         UserCustomAttribute.set_deleted_own_account_at(existing_user)
+        stub_application_setting(delay_user_account_self_deletion: delay_user_account_self_deletion_enabled)
       end
 
       it 'adds expected error messages' do
         expect(new_user.errors.full_messages).to include('Email has already been taken', 'Email is linked to an account pending deletion.')
       end
 
-      context 'when delay_delete_own_user feature flag is disabled' do
-        before do
-          stub_feature_flags(delay_delete_own_user: false)
-        end
+      context 'when delay_user_account_self_deletion application setting is disabled' do
+        let(:delay_user_account_self_deletion_enabled) { false }
 
         it_behaves_like 'it does not add account pending deletion error message'
       end

@@ -876,7 +876,8 @@ class ApplicationSetting < ApplicationRecord
 
   jsonb_accessor :anti_abuse_settings,
     enforce_email_subaddress_restrictions: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }],
-    require_email_verification_on_account_locked: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
+    require_email_verification_on_account_locked: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }],
+    delay_user_account_self_deletion: [::Gitlab::Database::Type::JsonbBoolean.new, { default: false }]
 
   validates :anti_abuse_settings, json_schema: { filename: "anti_abuse_settings", detail_errors: true }
 

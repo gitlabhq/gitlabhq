@@ -92,6 +92,15 @@ module ProfilesHelper
       **user_status_properties(user)
     }
   end
+
+  def delete_account_modal_data
+    {
+      action_url: user_registration_path,
+      confirm_with_password: current_user.confirm_deletion_with_password?.to_s,
+      username: current_user.username,
+      delay_user_account_self_deletion: Gitlab::CurrentSettings.delay_user_account_self_deletion.to_s
+    }
+  end
 end
 
 ProfilesHelper.prepend_mod

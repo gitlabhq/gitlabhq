@@ -179,6 +179,24 @@ RSpec.describe ProfilesHelper, feature_category: :user_profile do
     end
   end
 
+  describe '#delete_account_modal_data' do
+    it 'returns the correct data hash for the delete account modal' do
+      user = build_stubbed(:user, username: 'johndoe')
+      allow(user).to receive(:confirm_deletion_with_password?).and_return(true)
+      allow(helper).to receive_messages(current_user: user, user_registration_path: '/users')
+      allow(Gitlab::CurrentSettings).to receive(:delay_user_account_self_deletion).and_return(true)
+
+      result = helper.delete_account_modal_data
+
+      expect(result).to eq(
+        action_url: '/users',
+        confirm_with_password: 'true',
+        username: 'johndoe',
+        delay_user_account_self_deletion: 'true'
+      )
+    end
+  end
+
   def stub_auth0_omniauth_provider
     provider = OpenStruct.new(
       'name' => example_omniauth_provider,
