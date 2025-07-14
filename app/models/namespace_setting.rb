@@ -52,7 +52,9 @@ class NamespaceSetting < ApplicationRecord
   validates :enabled_git_access_protocol, inclusion: { in: enabled_git_access_protocols.keys }
   validates :default_branch_protection_defaults, json_schema: { filename: 'default_branch_protection_defaults' }
   validates :default_branch_protection_defaults, bytesize: { maximum: -> { DEFAULT_BRANCH_PROTECTIONS_DEFAULT_MAX_SIZE } }
-
+  validate :validate_enterprise_bypass_expires_at, if: ->(record) {
+    record.allow_enterprise_bypass_placeholder_confirmation? && (record.new_record? || record.will_save_change_to_enterprise_bypass_expires_at?)
+  }
   sanitizes! :default_branch_name
 
   before_validation :set_pipeline_variables_default_role, on: :create
@@ -150,7 +152,27 @@ class NamespaceSetting < ApplicationRecord
     super
   end
 
+  def enterprise_placeholder_bypass_enabled?
+    allow_enterprise_bypass_placeholder_confirmation? && enterprise_bypass_expires_at.present? && enterprise_bypass_expires_at.future?
+  end
+
   private
+
+  def validate_enterprise_bypass_expires_at
+    if enterprise_bypass_expires_at.blank?
+      errors.add(:enterprise_bypass_expires_at, 'An expiry date is required when bypass is enabled.')
+      return
+    end
+
+    min_date = Date.current.tomorrow.beginning_of_day
+    max_date = Date.current.advance(years: 1, days: -1).end_of_day
+
+    if enterprise_bypass_expires_at < min_date
+      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be a future date.')
+    elsif enterprise_bypass_expires_at > max_date
+      errors.add(:enterprise_bypass_expires_at, 'The expiry date must be within one year from today.')
+    end
+  end
 
   def set_pipeline_variables_default_role
     return if Gitlab::CurrentSettings.pipeline_variables_default_allowed

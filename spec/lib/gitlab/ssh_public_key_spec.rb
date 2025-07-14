@@ -434,6 +434,81 @@ RSpec.describe Gitlab::SSHPublicKey, :lib, feature_category: :system_access, fip
     end
   end
 
+  describe '#weak_key_warning' do
+    subject(:warning) { public_key.weak_key_warning }
+
+    context 'when key is invalid' do
+      let(:key) { 'this is not a valid key' }
+
+      it 'has no weak key warnings' do
+        expect(public_key.valid?).to be_falsey
+        expect(warning).to be_nil
+      end
+    end
+
+    context 'with DSA keys regardless of size' do
+      where :factory do
+        [:dsa_key_1024, :dsa_key_2048]
+      end
+
+      with_them do
+        let(:key) { build(factory).key }
+
+        it 'includes a warning about DSA being deprecated' do
+          expect(warning.code).to eq(:dsa_deprecated)
+          expect(warning.message).to eq(_('DSA keys are considered deprecated.'))
+        end
+      end
+    end
+
+    context 'with RSA keys' do
+      context 'with a small key length of less than 2048 bits' do
+        let(:key) { build(:rsa_key_1024).key }
+
+        it 'returns a small key warning' do
+          expect(warning.code).to eq(:small_key)
+          expect(warning.message).to eq(_('Key length should be at least 2048 bits.'))
+        end
+      end
+
+      context 'with a key length of exactly 2048 bits' do
+        let(:key) { build(:rsa_key_2048).key }
+
+        it 'does not return a warning' do
+          expect(warning).to be_nil
+        end
+      end
+
+      context 'with a key length greater than 2048 bits' do
+        where :factory do
+          [:rsa_key_4096, :rsa_key_5120]
+        end
+
+        with_them do
+          let(:key) { build(factory).public_key }
+
+          it 'does not return a warning' do
+            expect(warning).to be_nil
+          end
+        end
+      end
+    end
+
+    context 'for other key algorithm types' do
+      where(:factory) do
+        [:ecdsa_key_256, :ed25519_key_256, :ecdsa_sk_key_256, :ed25519_sk_key_256]
+      end
+
+      with_them do
+        let(:key) { build(factory) }
+
+        it 'does not return a warning' do
+          expect(warning).to be_nil
+        end
+      end
+    end
+  end
+
   describe '#fingerprint' do
     subject { public_key.fingerprint }
 

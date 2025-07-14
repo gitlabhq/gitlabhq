@@ -18497,6 +18497,7 @@ CREATE TABLE namespace_settings (
     web_based_commit_signing_enabled boolean,
     lock_web_based_commit_signing_enabled boolean DEFAULT false NOT NULL,
     allow_enterprise_bypass_placeholder_confirmation boolean DEFAULT false NOT NULL,
+    enterprise_bypass_expires_at timestamp with time zone,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT check_namespace_settings_security_policies_is_hash CHECK ((jsonb_typeof(security_policies) = 'object'::text)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),

@@ -230,12 +230,6 @@ Audit event types belong to the following product categories.
 | [`container_repository_tags_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156066) | A project's container repository tag is deleted | {{< icon name="check-circle" >}} Yes | GitLab [17.2](https://gitlab.com/gitlab-org/gitlab/-/issues/362290) | Project |
 | [`project_feature_container_registry_access_level_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106919) | A project's container registry access level setting is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.7](https://gitlab.com/gitlab-org/gitlab/-/issues/369303) | Project |
 
-### Continuous-integration
-
-| Type name | Event triggered when | Saved to database | Introduced in | Scope |
-|:----------|:---------------------|:------------------|:--------------|:------|
-| [`multi_project_downstream_pipeline_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168626) | Multi project downstream pipeline is created | {{< icon name="dotted-circle" >}} No | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
-
 ### Continuous delivery
 
 | Type name | Event triggered when | Saved to database | Introduced in | Scope |
@@ -269,6 +263,7 @@ Audit event types belong to the following product categories.
 | [`ci_variable_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | A CI/CD variable is deleted for a project | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`ci_variable_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91983) | A CI/CD variable is updated for a project | {{< icon name="check-circle" >}} Yes | GitLab [15.2](https://gitlab.com/gitlab-org/gitlab/-/issues/363090) | Project |
 | [`destroy_pipeline`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135255) | A pipeline is deleted | {{< icon name="check-circle" >}} Yes | GitLab [16.6](https://gitlab.com/gitlab-org/gitlab/-/issues/339041) | Project |
+| [`multi_project_downstream_pipeline_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/168626) | Multi project downstream pipeline is created | {{< icon name="dotted-circle" >}} No | GitLab [17.6](https://gitlab.com/gitlab-org/gitlab/-/issues/481325) | Project |
 | [`project_cicd_merge_pipelines_enabled_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107428) | The CI/CD merge pipelines setting for a project is updated | {{< icon name="check-circle" >}} Yes | GitLab [15.8](https://gitlab.com/gitlab-org/gitlab/-/issues/369317) | Project |
 
 ### Delivery

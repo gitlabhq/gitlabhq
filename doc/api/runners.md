@@ -261,7 +261,7 @@ To view more than the first 20 runners, use [pagination](rest/_index.md#paginati
 
 Get details of a runner.
 
-Instance runner details through this endpoint are available to all authenticated users.
+Instance runner details are available to all authenticated users through this endpoint.
 
 Prerequisites:
 
@@ -641,7 +641,7 @@ List all runners available in the project, including from ancestor groups and [a
 
 Prerequisites:
 
-- You must be an administrator of the GitLab instance or have at least the Maintainer role for the target project.
+- You must be an administrator of the GitLab instance or have at least the Maintainer or Auditor role for the target project.
 
 ```plaintext
 GET /projects/:id/runners
@@ -733,7 +733,7 @@ Prerequisites:
 
 - User access: You must have one of the following:
 
-  - At least the Maintainer role in a project assigned to the runner.
+  - At least the Maintainer role for the project that owns the runner and the target project.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 ```plaintext
@@ -785,9 +785,10 @@ Use the call to [delete a runner](#delete-a-runner) instead.
 
 Prerequisites:
 
+- You must not lock the runner, unless you are an administrator.
 - User access: You must have one of the following:
 
-  - At least the Maintainer role in a project assigned to the runner.
+  - At least the Maintainer role in the project you want to unassign.
   - A custom role with the `admin_runners` permission in the relevant group or project.
 
 - An access token with the `manage_runner` scope and the appropriate role.
@@ -814,7 +815,7 @@ Prerequisites:
 - User access: You must have one of the following:
 
   - Administrator access to the GitLab instance.
-  - Owner role in the group.
+  - Owner or Auditor role in the group.
   - A custom role with the `admin_runners` permission in the group.
 
 - An access token with the `manage_runner` scope and the appropriate role.

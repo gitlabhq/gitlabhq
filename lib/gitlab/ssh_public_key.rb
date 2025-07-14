@@ -5,6 +5,7 @@ module Gitlab
     include Gitlab::Utils::StrongMemoize
 
     Technology = Struct.new(:name, :key_class, :supported_sizes, :supported_algorithms)
+    WeakKeyWarning = Struct.new(:code, :message)
 
     # See https://man.openbsd.org/sshd#AUTHORIZED_KEYS_FILE_FORMAT for the list of
     # supported algorithms.
@@ -121,6 +122,16 @@ module Gitlab
       return false unless valid?
 
       banned_ssh_keys.fetch(type.to_s, []).include?(fingerprint_sha256)
+    end
+
+    def weak_key_warning
+      return unless valid?
+
+      if type == :dsa
+        WeakKeyWarning.new(:dsa_deprecated, _('DSA keys are considered deprecated.'))
+      elsif type == :rsa && bits < 2048
+        WeakKeyWarning.new(:small_key, _('Key length should be at least 2048 bits.'))
+      end
     end
 
     private

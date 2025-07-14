@@ -30,9 +30,10 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
       .to be_empty
   end
 
-  where(:work_item_types, :widgets) do
+  where(:union, :work_item_types, :widgets) do
     [
       [
+        false,
         lazy { [epic_type] },
         %w[
           ASSIGNEES
@@ -51,6 +52,7 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
         ]
       ],
       [
+        false,
         lazy { [issue_type] },
         %w[
           ASSIGNEES
@@ -75,6 +77,7 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
         ]
       ],
       [
+        false,
         lazy { [task_type] },
         %w[
           ASSIGNEES
@@ -96,6 +99,64 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
         ]
       ],
       [
+        false,
+        lazy { [epic_type, issue_type] },
+        %w[
+          ASSIGNEES
+          AWARD_EMOJI
+          CURRENT_USER_TODOS
+          DESCRIPTION
+          HIERARCHY
+          LABELS
+          LINKED_ITEMS
+          MILESTONE
+          NOTES
+          NOTIFICATIONS
+          PARTICIPANTS
+          START_AND_DUE_DATE
+          TIME_TRACKING
+        ]
+      ],
+      [
+        false,
+        lazy { [epic_type, issue_type, task_type] },
+        %w[
+          ASSIGNEES
+          AWARD_EMOJI
+          CURRENT_USER_TODOS
+          DESCRIPTION
+          HIERARCHY
+          LABELS
+          LINKED_ITEMS
+          MILESTONE
+          NOTES
+          NOTIFICATIONS
+          PARTICIPANTS
+          START_AND_DUE_DATE
+          TIME_TRACKING
+        ]
+      ],
+      [
+        true,
+        lazy { [epic_type] },
+        %w[
+          ASSIGNEES
+          AWARD_EMOJI
+          CURRENT_USER_TODOS
+          DESCRIPTION
+          HIERARCHY
+          LABELS
+          LINKED_ITEMS
+          MILESTONE
+          NOTES
+          NOTIFICATIONS
+          PARTICIPANTS
+          START_AND_DUE_DATE
+          TIME_TRACKING
+        ]
+      ],
+      [
+        true,
         lazy { [epic_type, issue_type] },
         %w[
           ASSIGNEES
@@ -120,6 +181,7 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
         ]
       ],
       [
+        true,
         lazy { [epic_type, issue_type, task_type] },
         %w[
           ASSIGNEES
@@ -148,7 +210,9 @@ RSpec.describe Resolvers::WorkItems::WidgetsResolver, feature_category: :team_pl
 
   with_them do
     it "list unique widgets for the given work items" do
-      expect(resolve_items(ids: work_item_types.map(&:to_gid))).to match_array(widgets)
+      expect(
+        resolve_items(ids: work_item_types.map(&:to_gid), union: union)
+      ).to match_array(widgets)
     end
   end
 end

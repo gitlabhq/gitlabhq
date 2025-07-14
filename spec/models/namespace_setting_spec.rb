@@ -204,6 +204,77 @@ RSpec.describe NamespaceSetting, feature_category: :groups_and_projects, type: :
         it { is_expected.to allow_value({ name: value }).for(:default_branch_protection_defaults) }
       end
     end
+
+    context 'when enterprise bypass confirmation is allowed' do
+      subject do
+        build(:namespace_settings, allow_enterprise_bypass_placeholder_confirmation: true)
+      end
+
+      let(:valid_times) { [1.day.from_now + 1.second, 30.days.from_now, 1.year.from_now - 1.day] }
+      let(:invalid_times) { [nil, 1.minute.ago, Time.current, 1.hour.from_now, 1.year.from_now] }
+
+      it 'does not allow invalid expiration times' do
+        invalid_times.each do |time|
+          expect(subject).not_to allow_value(time).for(:enterprise_bypass_expires_at)
+        end
+      end
+
+      it 'allows valid expiration times' do
+        valid_times.each do |time|
+          expect(subject).to allow_value(time).for(:enterprise_bypass_expires_at)
+        end
+      end
+    end
+
+    context 'when allow_enterprise_bypass_placeholder_confirmation is false' do
+      subject do
+        build(:namespace_settings, allow_enterprise_bypass_placeholder_confirmation: false)
+      end
+
+      it { expect(subject).to allow_value(nil).for(:enterprise_bypass_expires_at) }
+      it { expect(subject).to allow_value('').for(:enterprise_bypass_expires_at) }
+      it { expect(subject).to allow_value(1.day.ago).for(:enterprise_bypass_expires_at) }
+      it { expect(subject).to allow_value(Time.current).for(:enterprise_bypass_expires_at) }
+    end
+  end
+
+  describe '#enterprise_placeholder_bypass_enabled?' do
+    subject { namespace_settings.enterprise_placeholder_bypass_enabled? }
+
+    before do
+      namespace_settings.assign_attributes(
+        allow_enterprise_bypass_placeholder_confirmation: enterprise_bypass_placeholder_confirmation,
+        enterprise_bypass_expires_at: expire_at_value
+      )
+    end
+
+    let(:enterprise_bypass_placeholder_confirmation) { true }
+    let(:expire_at_value) { nil }
+
+    context 'when bypass is enabled with future expiry' do
+      let(:expire_at_value) { 30.days.from_now }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when bypass is enabled but expired' do
+      let(:expire_at_value) { 1.day.ago }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when bypass is disabled' do
+      let(:enterprise_bypass_placeholder_confirmation) { false }
+      let(:expire_at_value) { 30.days.from_now }
+
+      it { is_expected.to be false }
+    end
+
+    context 'when bypass is enabled without expiry date' do
+      let(:expire_at_value) { nil }
+
+      it { is_expected.to be false }
+    end
   end
 
   describe '#prevent_sharing_groups_outside_hierarchy' do

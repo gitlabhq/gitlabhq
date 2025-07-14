@@ -84,6 +84,17 @@ FactoryBot.define do
       factory :another_deploy_key, class: 'DeployKey'
     end
 
+    factory :rsa_key_1024 do
+      key do
+        <<~KEY.delete("\n")
+          ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDAPd3PCZexjKqeQVjhwPsnZ1tD23BP1
+          53gg0VE9iM/V3KsuRze3HZkMGZLiKPVRJis9W31TPXor+aZfHn+OrbfW3h/W0XSopPxPs
+          guAcnHMA8LSMFxkXSJk9Is9NBPN4etV6oSMEUcHc2P3UKWXs575OJ/MToF/N9nICT35y0
+          NXw== dummy@gitlab.com
+        KEY
+      end
+    end
+
     factory :rsa_key_2048 do
       key do
         <<~KEY.delete("\n")
@@ -169,6 +180,22 @@ FactoryBot.define do
           il9U7+KOzaWo9mp3bmhvZWGDwzTXEZhUJYMRby7o6UxSHlA6fKE63JSDD2yhXk4CjsQRN
           C7Ph9cYSB+Wa3i9Am4rRlJgrF79okmEOMpj1idliHkpIsy/k2CN9Lf2EIHOD4NMuLrSUH
           4qJsPUq19ZbGIMdImD3vMS5b dummy@gitlab.com
+        KEY
+      end
+    end
+
+    factory :dsa_key_1024 do
+      key do
+        <<~KEY.delete("\n")
+          ssh-dss AAAAB3NzaC1kc3MAAACBAJX6HURfY3e8+ogBskskvAVHohfMG+vjNX1W+Zr2W
+          g0gPXmJv6tLy5J81AvTbjypxtPyuLSqdTOgIqFDVgU9+EE9OMTsx2leggPMjfbTSEIK5s
+          BjpqiQWLWWL7m73wo5He8uviMGJB7CHyhqHaVwutmU255rh8mC+W9Aa7ZQqgQDAAAAFQD
+          IFohzNQANsmFSx7sP/UeVfPihDwAAAIEAkuqRvlCLLHAJbb3logBdRS9xF7vkG7yRnIEw
+          lchwDqvUVJ411cJlFVz+9QBdZA4pcKS0L/2nCdZb/Ob0feNkG3cFBH6qqXy5GWZeWnEHL
+          GwLvZF5CjqOmwQhp8RUyKNt3yccPyZIcIzvRGxPrP5utGr+hKZ47NGp78yQ4jxvkuUAAA
+          CATX5Fl5UsVf8ii74qBjuik18YZFoxlBeIDowU++ArvoGkNKCnRYAGs50aDYQlB+fFpEz
+          UBELm0xpIHOwOyhzZ37fVLfLvKijOm6u5mfFZX1URUBmZeELBAFgNp2YiBvWbQwR/jtIp
+          zhZs5/p4o1mdfgGxBoM0KU5DHDnI5KrKJqo= dummy@gitlab.com
         KEY
       end
     end

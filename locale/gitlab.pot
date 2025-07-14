@@ -20241,6 +20241,9 @@ msgstr ""
 msgid "DPoP preference updated."
 msgstr ""
 
+msgid "DSA keys are considered deprecated."
+msgstr ""
+
 msgid "DSN"
 msgstr ""
 
@@ -36020,6 +36023,9 @@ msgid "Key details"
 msgstr ""
 
 msgid "Key features"
+msgstr ""
+
+msgid "Key length should be at least 2048 bits."
 msgstr ""
 
 msgid "Key:"
@@ -56202,6 +56208,9 @@ msgstr ""
 msgid "SecurityLabels|Name is required"
 msgstr ""
 
+msgid "SecurityLabels|Save changes"
+msgstr ""
+
 msgid "SecurityLabels|Security labels"
 msgstr ""
 
@@ -67382,6 +67391,9 @@ msgstr ""
 msgid "Used"
 msgstr ""
 
+msgid "Used by"
+msgstr ""
+
 msgid "Used by %d package"
 msgid_plural "Used by %d packages"
 msgstr[0] ""
@@ -69193,6 +69205,9 @@ msgid "VulnerabilityExport|Tool"
 msgstr ""
 
 msgid "VulnerabilityExport|Vulnerability"
+msgstr ""
+
+msgid "VulnerabilityExport|Vulnerability ID"
 msgstr ""
 
 msgid "VulnerabilityManagement|%{statusStart}Confirmed%{statusEnd} · %{timeago} by %{user}"

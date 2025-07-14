@@ -7,11 +7,20 @@ module Resolvers
 
       MAX_TYPES = 100
 
-      argument :ids, [::Types::GlobalIDType[::WorkItems::Type]],
+      argument :ids,
+        [::Types::GlobalIDType[::WorkItems::Type]],
         required: true,
         description: <<~DESC.squish
           Global ID array of work items types to fetch available widgets for.
           A max of #{MAX_TYPES} IDs can be provided at a time.
+        DESC
+
+      argument :union,
+        ::GraphQL::Types::Boolean,
+        default_value: false,
+        description: <<~DESC.squish
+          When true, returns the union of widgets across all work item types.
+          When false, returns only widgets common to all work item types.
         DESC
 
       def ready?(**args)
@@ -26,14 +35,19 @@ module Resolvers
         super
       end
 
-      def resolve(ids:)
-        ::WorkItems::Type
+      def resolve(ids:, union: false)
+        all_widgets = ::WorkItems::Type
           .id_in(ids.map(&:model_id))
           .with_widget_definition_preload
-          .reduce(Set.new) do |result, type|
-            types = type.widgets(resource_parent).map { |widget| widget.widget_type.upcase }
-            result.union(types)
-          end
+          .map { |type| type.widgets(resource_parent).map { |widget| widget.widget_type.upcase } }
+
+        return [] if all_widgets.blank?
+
+        if union
+          all_widgets.reduce(:|)
+        else
+          all_widgets.reduce(:&)
+        end
       end
 
       private

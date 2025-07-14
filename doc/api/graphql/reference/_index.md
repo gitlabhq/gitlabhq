@@ -30846,6 +30846,7 @@ Returns [`[String!]`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="groupworkitemswidgetsids"></a>`ids` | [`[WorkItemsTypeID!]!`](#workitemstypeid) | Global ID array of work items types to fetch available widgets for. A max of 100 IDs can be provided at a time. |
+| <a id="groupworkitemswidgetsunion"></a>`union` | [`Boolean!`](#boolean) | When true, returns the union of widgets across all work item types. When false, returns only widgets common to all work item types. |
 
 ##### `Group.workspacesClusterAgents`
 
@@ -35163,6 +35164,7 @@ Returns [`[String!]`](#string).
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="namespaceworkitemswidgetsids"></a>`ids` | [`[WorkItemsTypeID!]!`](#workitemstypeid) | Global ID array of work items types to fetch available widgets for. A max of 100 IDs can be provided at a time. |
+| <a id="namespaceworkitemswidgetsunion"></a>`union` | [`Boolean!`](#boolean) | When true, returns the union of widgets across all work item types. When false, returns only widgets common to all work item types. |
 
 ##### `Namespace.workspacesClusterAgents`
 
@@ -36537,6 +36539,7 @@ Represents vulnerability finding of a security report on the pipeline.
 | <a id="pipelinesecurityreportfindingdismissedby"></a>`dismissedBy` | [`UserCore`](#usercore) | User who dismissed the security report finding. |
 | <a id="pipelinesecurityreportfindingevidence"></a>`evidence` | [`VulnerabilityEvidence`](#vulnerabilityevidence) | Evidence for the vulnerability. |
 | <a id="pipelinesecurityreportfindingfalsepositive"></a>`falsePositive` | [`Boolean`](#boolean) | Indicates whether the vulnerability is a false positive. |
+| <a id="pipelinesecurityreportfindingfindingtokenstatus"></a>`findingTokenStatus` | [`VulnerabilityFindingTokenStatus`](#vulnerabilityfindingtokenstatus) | Status of the secret token associated with this vulnerability. |
 | <a id="pipelinesecurityreportfindingidentifiers"></a>`identifiers` | [`[VulnerabilityIdentifier!]!`](#vulnerabilityidentifier) | Identifiers of the vulnerability finding. |
 | <a id="pipelinesecurityreportfindingissuelinks"></a>`issueLinks` | [`VulnerabilityIssueLinkConnection`](#vulnerabilityissuelinkconnection) | List of issue links related to the vulnerability. (see [Connections](#connections)) |
 | <a id="pipelinesecurityreportfindinglinks"></a>`links` | [`[VulnerabilityLink!]`](#vulnerabilitylink) | List of links associated with the vulnerability. |
