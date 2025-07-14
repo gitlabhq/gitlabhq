@@ -7,4 +7,4 @@ rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/551832
 milestone: '18.2'
 group: group::optimize
 type: beta
-default_enabled: false
+default_enabled: true

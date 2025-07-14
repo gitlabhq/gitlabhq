@@ -1,8 +1,0 @@
----
-Database/PreventWildcardInjection:
-  Details: grace period
-  Exclude:
-    - 'ee/app/models/ee/note.rb'
-    - 'ee/app/models/geo_node.rb'
-    - 'ee/app/models/vulnerabilities/read.rb'
-    - 'lib/gitlab/seeder.rb'
