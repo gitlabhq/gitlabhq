@@ -51,13 +51,13 @@ resource :profile, only: [] do
       end
     end
 
-    resources :chat_names, only: [:index, :new, :create, :destroy] do
-      collection do
-        delete :deny
-      end
-    end
-
     resource :avatar, only: [:destroy]
+
+    get 'chat_names', to: redirect('-/user_settings/integration_accounts')
+
+    get 'chat_names/new', to: redirect { |_params, request|
+      "-/user_settings/integration_accounts/new?#{request.query_string}"
+    }
 
     resource :two_factor_auth, only: [:show, :create, :destroy] do
       member do

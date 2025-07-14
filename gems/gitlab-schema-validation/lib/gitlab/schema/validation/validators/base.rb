@@ -23,7 +23,8 @@ module Gitlab
               DifferentDefinitionTables,
               DifferentDefinitionIndexes,
               DifferentDefinitionTriggers,
-              DifferentDefinitionForeignKeys
+              DifferentDefinitionForeignKeys,
+              DifferentSequenceOwners
             ]
           end
 

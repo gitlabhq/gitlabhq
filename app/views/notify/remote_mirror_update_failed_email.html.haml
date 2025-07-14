@@ -4,7 +4,7 @@
       %tbody
         %tr
           %td{ style: "vertical-align:middle;color:#ffffff;text-align:center;padding-right:5px;line-height:1;" }
-            %img{ alt: "✖", height: "13", src: image_url('mailers/ci_pipeline_notif_v1/icon-x-red-inverted.gif'), style: "display:block;", width: "13" }/
+            %img{ alt: "✖", height: "16", src: image_url('mailers/ci_pipeline_notif_v2/x.png'), style: "display:block;", width: "16" }/
           %td{ style: "vertical-align:middle;color:#ffffff;text-align:center;" }
             = s_('Notify|A remote mirror update has failed.')
 %tr.spacer{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
@@ -13,9 +13,9 @@
 %tr.section{ style: "font-family: 'Helvetica Neue',Helvetica,Arial,sans-serif;" }
   %td{ style: "padding:0 15px;border:1px solid #ededed;border-radius:3px;overflow:hidden;" }
     %table.table-info{ border: "0", cellpadding: "0", cellspacing: "0", style: "width:100%;" }
-      %tbody{ style: "font-size:15px;line-height:1.4;color:#8c8c8c;" }
+      %tbody{ style: "font-size:15px;line-height:1.4;color:#737278;" }
         %tr
-          %td{ style: "font-weight:300;padding:14px 0;margin:0;" }
+          %td{ style: "font-weight:400;padding:14px 0;margin:0;" }
             = _('Source project')
           %td{ style: "font-weight:500;padding:14px 0;margin:0;color:#333333;width:75%;padding-left:5px;" }
             - namespace_url = @project.group ? group_url(@project.group) : user_url(@project.namespace.owner)
@@ -25,12 +25,12 @@
             %a.muted{ href: project_url(@project), style: "color:#333333;text-decoration:none;" }
               = @project.name
         %tr
-          %td{ style: "font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;" }
+          %td{ style: "font-weight:400;padding:14px 0;margin:0;border-top:1px solid #ededed;" }
             = s_('Notify|Remote mirror')
           %td{ style: "font-weight:500;padding:14px 0;margin:0;color:#333333;width:75%;padding-left:5px;border-top:1px solid #ededed;" }
             = @remote_mirror.safe_url
         %tr
-          - update_at_start = '<td style="font-weight:300;padding:14px 0;margin:0;border-top:1px solid #ededed;">'.html_safe
+          - update_at_start = '<td style="font-weight:400;padding:14px 0;margin:0;border-top:1px solid #ededed;">'.html_safe
           - update_at_mid = '</td><td style="font-weight:500;padding:14px 0;margin:0;color:#333333;width:75%;padding-left:5px;border-top:1px solid #ededed;">'.html_safe
           - update_at_end = '</td>'.html_safe
           = html_escape(s_('Notify|%{update_at_start} Last update at %{update_at_mid} %{last_update_at} %{update_at_end}')) % {update_at_start: update_at_start, update_at_mid: update_at_mid, last_update_at: @remote_mirror.last_update_at, update_at_end: update_at_end}

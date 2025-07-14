@@ -15,6 +15,8 @@ require_relative 'validation/fixers/missing_index'
 require_relative 'validation/validators/different_definition_indexes'
 require_relative 'validation/validators/extra_indexes'
 require_relative 'validation/validators/missing_indexes'
+
+require_relative 'validation/validators/different_sequence_owners'
 require_relative 'validation/validators/missing_sequences'
 
 require_relative 'validation/validators/extra_table_columns'

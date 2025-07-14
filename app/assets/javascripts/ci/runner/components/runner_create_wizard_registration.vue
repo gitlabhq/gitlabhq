@@ -3,29 +3,43 @@ import {
   GlFormGroup,
   GlFormInputGroup,
   GlButton,
+  GlBadge,
   GlSprintf,
   GlAlert,
+  GlLink,
+  GlIcon,
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import MultiStepFormTemplate from '~/vue_shared/components/multi_step_form_template.vue';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_CI_RUNNER } from '~/graphql_shared/constants';
 import runnerForRegistrationQuery from '../graphql/register/runner_for_registration.query.graphql';
-import { I18N_FETCH_ERROR } from '../constants';
+import { DOCKER_HELP_URL, KUBERNETES_HELP_URL, I18N_FETCH_ERROR } from '../constants';
 import { captureException } from '../sentry_utils';
+import OperatingSystemInstruction from './registration/wizard_operating_system_instruction.vue';
+import GoogleCloudRegistrationInstructions from './registration/google_cloud_registration_instructions.vue';
+import GkeRegistrationInstructions from './registration/gke_registration_instructions.vue';
 
 export default {
   components: {
     GlFormGroup,
     GlFormInputGroup,
     GlButton,
+    GlBadge,
     GlSprintf,
     GlAlert,
+    GlLink,
+    GlIcon,
     GlLoadingIcon,
     MultiStepFormTemplate,
     ClipboardButton,
+    CrudComponent,
+    OperatingSystemInstruction,
+    GoogleCloudRegistrationInstructions,
+    GkeRegistrationInstructions,
   },
   props: {
     currentStep: {
@@ -81,6 +95,8 @@ export default {
       return this.$apollo.queries.runner.loading;
     },
   },
+  DOCKER_HELP_URL,
+  KUBERNETES_HELP_URL,
 };
 </script>
 <template>
@@ -158,7 +174,96 @@ export default {
           </gl-sprintf>
         </gl-alert>
 
-        <!-- instructions will be added in https://gitlab.com/gitlab-org/gitlab/-/issues/396544 -->
+        <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
+        <!-- Operating systems -->
+        <operating-system-instruction
+          platform="linux"
+          :token="token"
+          title="Linux"
+          class="gl-rounded-b-none"
+        />
+
+        <operating-system-instruction
+          platform="osx"
+          :token="token"
+          title="macOS"
+          class="!gl-mt-0 gl-rounded-none gl-border-t-0"
+        />
+
+        <operating-system-instruction
+          platform="windows"
+          :token="token"
+          title="Windows"
+          class="!gl-mt-0 gl-rounded-none gl-border-t-0"
+        />
+
+        <!-- Clouds -->
+        <crud-component
+          is-collapsible
+          :collapsed="true"
+          :is-empty="false"
+          class="!gl-mt-0 gl-rounded-none gl-border-t-0"
+        >
+          <template #title>
+            Google Cloud
+            <gl-badge variant="neutral">{{ s__('Runners|Cloud') }}</gl-badge>
+          </template>
+          <google-cloud-registration-instructions :is-widget="true" />
+        </crud-component>
+
+        <crud-component
+          is-collapsible
+          :collapsed="true"
+          :is-empty="false"
+          class="!gl-mt-0 gl-rounded-none gl-border-t-0"
+        >
+          <template #title>
+            GKE
+            <gl-badge variant="neutral">{{ s__('Runners|Cloud') }}</gl-badge>
+          </template>
+          <gke-registration-instructions :is-widget="true" />
+        </crud-component>
+
+        <!-- Containers -->
+        <crud-component
+          is-collapsible
+          :collapsed="true"
+          :is-empty="false"
+          class="!gl-mt-0 gl-rounded-none gl-border-t-0"
+        >
+          <template #title>
+            Docker
+            <gl-badge variant="neutral">{{ s__('Runners|Container') }}</gl-badge>
+          </template>
+          <gl-sprintf :message="s__('Runners|View instructions in %{helpLink}.')">
+            <template #helpLink>
+              <gl-link :href="$options.DOCKER_HELP_URL" target="_blank">
+                {{ s__('Runners|documentation') }}
+                <gl-icon name="external-link" />
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </crud-component>
+
+        <crud-component
+          is-collapsible
+          :collapsed="true"
+          :is-empty="false"
+          class="!gl-mt-0 gl-rounded-t-none gl-border-t-0"
+        >
+          <template #title>
+            Kubernetes
+            <gl-badge variant="neutral">{{ s__('Runners|Container') }}</gl-badge>
+          </template>
+          <gl-sprintf :message="s__('Runners|View instructions in %{helpLink}.')">
+            <template #helpLink>
+              <gl-link :href="$options.KUBERNETES_HELP_URL" target="_blank">
+                {{ s__('Runners|documentation') }}
+                <gl-icon name="external-link" />
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </crud-component>
       </template>
     </template>
     <template v-if="!loading" #next>

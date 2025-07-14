@@ -28,7 +28,8 @@ RSpec.describe Gitlab::Schema::Validation::Validators::Base, feature_category: :
           Gitlab::Schema::Validation::Validators::DifferentDefinitionTables,
           Gitlab::Schema::Validation::Validators::DifferentDefinitionIndexes,
           Gitlab::Schema::Validation::Validators::DifferentDefinitionTriggers,
-          Gitlab::Schema::Validation::Validators::DifferentDefinitionForeignKeys
+          Gitlab::Schema::Validation::Validators::DifferentDefinitionForeignKeys,
+          Gitlab::Schema::Validation::Validators::DifferentSequenceOwners
         ])
       end
     end

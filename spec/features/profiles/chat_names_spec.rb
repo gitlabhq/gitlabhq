@@ -62,7 +62,7 @@ RSpec.describe 'Profile > Chat', feature_category: :integrations do
       end
 
       it 'goes to list of chat names and see chat account' do
-        expect(page).to have_current_path(profile_chat_names_path, ignore_query: true)
+        expect(page).to have_current_path(user_settings_integration_accounts_path, ignore_query: true)
         expect(page).to have_content('my_chat_team')
         expect(page).to have_content('my_chat_user')
       end
@@ -80,7 +80,7 @@ RSpec.describe 'Profile > Chat', feature_category: :integrations do
       end
 
       it 'goes to list of chat names and do not see chat account' do
-        expect(page).to have_current_path(profile_chat_names_path, ignore_query: true)
+        expect(page).to have_current_path(user_settings_integration_accounts_path, ignore_query: true)
         expect(page).not_to have_content('my_chat_team')
         expect(page).not_to have_content('my_chat_user')
       end
@@ -97,7 +97,7 @@ RSpec.describe 'Profile > Chat', feature_category: :integrations do
     let_it_be(:chat_name) { create(:chat_name, user: user) }
 
     before do
-      visit profile_chat_names_path
+      visit user_settings_integration_accounts_path
     end
 
     it 'sees chat user' do
@@ -108,7 +108,7 @@ RSpec.describe 'Profile > Chat', feature_category: :integrations do
     it 'removes chat account' do
       click_link 'Remove'
 
-      expect(page).to have_content("You don't have any active chat names.")
+      expect(page).to have_content("You do not have any connected integration accounts.")
     end
   end
 end

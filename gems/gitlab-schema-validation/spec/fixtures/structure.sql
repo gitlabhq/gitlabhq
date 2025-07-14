@@ -1,6 +1,10 @@
 CREATE SEQUENCE missing_sequence;
 CREATE SEQUENCE shared_audit_event_id_seq;
 CREATE SEQUENCE abuse_events_id_seq;
+CREATE SEQUENCE zoekt_repositories_id_seq;
+
+ALTER SEQUENCE abuse_events_id_seq OWNED by abuse_events.id;
+ALTER SEQUENCE zoekt_repositories_id_seq OWNED by zoekt_repositories.id;
 
 CREATE INDEX missing_index ON events USING btree (created_at, author_id);
 

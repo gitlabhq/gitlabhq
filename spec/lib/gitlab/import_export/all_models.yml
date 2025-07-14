@@ -929,6 +929,7 @@ project:
 - approval_policies
 - project_requirement_compliance_statuses
 - analyzer_statuses
+- configured_ai_catalog_items
 award_emoji:
 - awardable
 - user

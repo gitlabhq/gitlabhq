@@ -60,7 +60,6 @@ InternalAffairs/NodeMatcherDirective:
     - 'rubocop/cop/scalability/cron_worker_context.rb'
     - 'rubocop/cop/scalability/file_uploads.rb'
     - 'rubocop/cop/scalability/idempotent_worker.rb'
-    - 'rubocop/cop/search/avoid_checking_finished_on_deprecated_migrations.rb'
     - 'rubocop/cop/sidekiq_api_usage.rb'
     - 'rubocop/cop/sidekiq_load_balancing/worker_data_consistency.rb'
     - 'rubocop/cop/sidekiq_options_queue.rb'

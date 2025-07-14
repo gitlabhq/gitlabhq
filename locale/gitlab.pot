@@ -3548,9 +3548,6 @@ msgstr ""
 msgid "Active Sessions"
 msgstr ""
 
-msgid "Active chat names"
-msgstr ""
-
 msgid "Active group access tokens"
 msgstr ""
 
@@ -12728,9 +12725,6 @@ msgstr ""
 msgid "Characters over limit"
 msgstr ""
 
-msgid "Chat"
-msgstr ""
-
 msgid "ChatMessage|%{project_link}: Pipeline %{pipeline_link} of %{ref_type} %{ref_link} by %{user_combined_name} %{humanized_status} in %{duration}"
 msgstr ""
 
@@ -18799,9 +18793,6 @@ msgstr ""
 msgid "Could not apply iteration command. There are multiple cadences but no cadence is specified."
 msgstr ""
 
-msgid "Could not authorize chat nickname. Try again!"
-msgstr ""
-
 msgid "Could not be moved. Select another project or try again."
 msgstr ""
 
@@ -18826,7 +18817,7 @@ msgstr ""
 msgid "Could not create wiki template"
 msgstr ""
 
-msgid "Could not delete chat nickname %{chat_name}."
+msgid "Could not delete account nickname %{chat_name}."
 msgstr ""
 
 msgid "Could not delete the label %{labelName}. Please try again."
@@ -21591,7 +21582,7 @@ msgstr ""
 msgid "Deleted"
 msgstr ""
 
-msgid "Deleted chat nickname: %{chat_name}!"
+msgid "Deleted account nickname: %{chat_name}!"
 msgstr ""
 
 msgid "Deleted commits:"
@@ -21633,7 +21624,7 @@ msgstr ""
 msgid "DeletionSettings|Period that deleted groups and projects will remain restorable for."
 msgstr ""
 
-msgid "Denied authorization of chat nickname %{user_name}."
+msgid "Denied authorization of account nickname %{user_name}."
 msgstr ""
 
 msgid "Deny"
@@ -30389,6 +30380,9 @@ msgstr ""
 msgid "Group Git LFS status:"
 msgstr ""
 
+msgid "Group Name"
+msgstr ""
+
 msgid "Group Owner must have signed in with SAML before enabling Group Managed Accounts"
 msgstr ""
 
@@ -30486,9 +30480,6 @@ msgid "Group membership expiration date removed"
 msgstr ""
 
 msgid "Group milestone"
-msgstr ""
-
-msgid "Group name"
 msgstr ""
 
 msgid "Group name (your organization)"
@@ -33671,6 +33662,9 @@ msgstr ""
 msgid "Integrations|Confirm %{type} exclusion removal"
 msgstr ""
 
+msgid "Integrations|Connected integration accounts"
+msgstr ""
+
 msgid "Integrations|Connection details"
 msgstr ""
 
@@ -33678,6 +33672,9 @@ msgid "Integrations|Connection failed. Check your integration settings."
 msgstr ""
 
 msgid "Integrations|Connection successful."
+msgstr ""
+
+msgid "Integrations|Could not authorize integration account nickname. Try again!"
 msgstr ""
 
 msgid "Integrations|Create new issue in Jira"
@@ -33758,6 +33755,9 @@ msgstr ""
 msgid "Integrations|Instance-level integration management"
 msgstr ""
 
+msgid "Integrations|Integration accounts"
+msgstr ""
+
 msgid "Integrations|Integration cannot be reset."
 msgstr ""
 
@@ -33768,6 +33768,9 @@ msgid "Integrations|Issues created in Jira are shown here once you have created 
 msgstr ""
 
 msgid "Integrations|Keep your PHP dependencies updated on Packagist."
+msgstr ""
+
+msgid "Integrations|Manage your integration accounts in GitLab. Use these connected integrations to perform actions in GitLab."
 msgstr ""
 
 msgid "Integrations|Mattermost slash commands"
@@ -33864,6 +33867,9 @@ msgid "Integrations|You can close this window."
 msgstr ""
 
 msgid "Integrations|You can use this alias in your Slack commands"
+msgstr ""
+
+msgid "Integrations|You do not have any connected integration accounts."
 msgstr ""
 
 msgid "Integrations|You haven't activated any integrations yet."
@@ -48460,6 +48466,9 @@ msgstr ""
 msgid "Project ID"
 msgstr ""
 
+msgid "Project Name"
+msgstr ""
+
 msgid "Project Security Status"
 msgstr ""
 
@@ -53232,6 +53241,9 @@ msgstr ""
 msgid "Runners|Configuration"
 msgstr ""
 
+msgid "Runners|Container"
+msgstr ""
+
 msgid "Runners|Containers"
 msgstr ""
 
@@ -53646,6 +53658,9 @@ msgid "Runners|Online"
 msgstr ""
 
 msgid "Runners|Only administrators can view this."
+msgstr ""
+
+msgid "Runners|Operating System"
 msgstr ""
 
 msgid "Runners|Operating systems"
@@ -54151,6 +54166,9 @@ msgstr ""
 msgid "Runners|View installation instructions"
 msgstr ""
 
+msgid "Runners|View instructions in %{helpLink}."
+msgstr ""
+
 msgid "Runners|View metrics"
 msgstr ""
 
@@ -54200,6 +54218,9 @@ msgid "Runners|Zone is required."
 msgstr ""
 
 msgid "Runners|Zone must have the right format."
+msgstr ""
+
+msgid "Runners|documentation"
 msgstr ""
 
 msgid "Runner|1 day selected"
@@ -72605,9 +72626,6 @@ msgid "You do not have permissions to run the import."
 msgstr ""
 
 msgid "You don't have any WebAuthn devices registered yet."
-msgstr ""
-
-msgid "You don't have any active chat names."
 msgstr ""
 
 msgid "You don't have any applications."

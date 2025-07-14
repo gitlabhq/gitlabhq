@@ -13,7 +13,7 @@ module ChatNames
 
       token = request_token
 
-      new_profile_chat_name_url(token: token) if token
+      new_user_settings_integration_account_url(token: token) if token
     end
 
     private

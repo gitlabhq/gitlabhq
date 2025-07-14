@@ -10,4 +10,4 @@
       = _('Never')
 
   %td
-    = link_button_to _('Remove'), profile_chat_name_path(chat_name), method: :delete, class: 'gl-float-right', aria: { label: _('Remove') }, data: { confirm: _('Are you sure you want to remove this nickname?'), confirm_btn_variant: 'danger' }, variant: :danger
+    = link_button_to _('Remove'), user_settings_integration_account_path(chat_name), method: :delete, class: 'gl-float-right', aria: { label: _('Remove') }, data: { confirm: _('Are you sure you want to remove this nickname?'), confirm_btn_variant: 'danger' }, variant: :danger

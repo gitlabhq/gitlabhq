@@ -32,7 +32,6 @@ InternalAffairs/ExampleHeredocDelimiter:
     - 'spec/rubocop/cop/scalability/cron_worker_context_spec.rb'
     - 'spec/rubocop/cop/scalability/file_uploads_spec.rb'
     - 'spec/rubocop/cop/scalability/idempotent_worker_spec.rb'
-    - 'spec/rubocop/cop/search/avoid_checking_finished_on_deprecated_migrations_spec.rb'
     - 'spec/rubocop/cop/search/namespaced_class_spec.rb'
     - 'spec/rubocop/cop/sidekiq_api_usage_spec.rb'
     - 'spec/rubocop/cop/sidekiq_load_balancing/worker_data_consistency_spec.rb'

@@ -19,7 +19,7 @@ You can assign a topic to several projects.
 
 For example, you can create and assign the topics `python` and `hackathon` to all projects that use Python and are intended for Hackathon contributions.
 
-Topics assigned to a project are displayed in the **Project overview** and [**Projects**](working_with_projects.md#view-all-projects-for-the-instance) lists, below the project information description.
+Topics assigned to a project are displayed in the **Project overview** and [**Projects**](working_with_projects.md#view-projects) lists, below the project information description.
 
 {{< alert type="note" >}}
 

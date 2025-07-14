@@ -332,4 +332,20 @@ describe('GkeRegistrationInstructions', () => {
       });
     });
   });
+
+  describe('when isWidget is true', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { isWidget: true },
+      });
+    });
+
+    it('does not display h2 headings', () => {
+      expect(wrapper.find('h2').exists()).toBe(false);
+    });
+
+    it('does not display token message', () => {
+      expect(findTokenMessage().exists()).toBe(false);
+    });
+  });
 });

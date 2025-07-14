@@ -48,6 +48,7 @@ describe('GoogleCloudRegistrationInstructions', () => {
   const findZoneLink = () => wrapper.findByTestId('zone-link');
   const findMachineTypeLink = () => wrapper.findByTestId('machine-types-link');
   const findToken = () => wrapper.findByTestId('runner-token');
+  const findTokenMessage = () => wrapper.findByTestId('runner-token-message');
   const findClipboardButton = () => wrapper.findComponent(ClipboardButton);
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findInstructionsButton = () => wrapper.findByTestId('show-instructions-button');
@@ -325,6 +326,22 @@ describe('GoogleCloudRegistrationInstructions', () => {
 
         expectValidation(findMachineTypeInput(), { ariaInvalid, feedback });
       });
+    });
+  });
+
+  describe('when isWidget is true', () => {
+    beforeEach(() => {
+      createComponent({
+        props: { isWidget: true },
+      });
+    });
+
+    it('does not display h2 headings', () => {
+      expect(wrapper.find('h2').exists()).toBe(false);
+    });
+
+    it('does not display token message', () => {
+      expect(findTokenMessage().exists()).toBe(false);
     });
   });
 });

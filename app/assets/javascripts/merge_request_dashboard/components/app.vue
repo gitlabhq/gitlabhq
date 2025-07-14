@@ -259,6 +259,7 @@ export default {
       <template #tabs-end>
         <li role="presentation" class="nav-item">
           <gl-link
+            role="tab"
             :href="mergeRequestsSearchDashboardPath"
             class="nav-link gl-tab-nav-item !gl-no-underline"
           >

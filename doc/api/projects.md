@@ -952,7 +952,7 @@ Example response:
 
 ### List projects a user has contributed to
 
-Returns a list of visible projects a given user has contributed to within the past year. For more information about what counts as a contribution, see [view projects you have contributed to](../user/project/working_with_projects.md#view-projects-you-have-contributed-to).
+Returns a list of visible projects a given user has contributed to within the past year. For more information about what counts as a contribution, [view projects you have contributed to](../user/project/working_with_projects.md#view-projects-you-work-with).
 
 ```plaintext
 GET /users/:user_id/contributed_projects

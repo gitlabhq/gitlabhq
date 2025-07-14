@@ -581,24 +581,22 @@ export default {
       <template v-else>{{ tab.text }}</template>
     </gl-tab>
 
-    <template #tabs-end>
-      <li class="gl-w-full">
-        <filtered-search-and-sort
-          class="gl-border-b-0"
-          :filtered-search-namespace="filteredSearchNamespace"
-          :filtered-search-tokens="filteredSearchTokens"
-          :filtered-search-term-key="filteredSearchTermKey"
-          :filtered-search-recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
-          :filtered-search-query="$route.query"
-          :search-input-placeholder="filteredSearchInputPlaceholder"
-          :is-ascending="isAscending"
-          :sort-options="sortOptions"
-          :active-sort-option="activeSortOption"
-          @filter="onFilter"
-          @sort-direction-change="onSortDirectionChange"
-          @sort-by-change="onSortByChange"
-        />
-      </li>
+    <template #toolbar-end>
+      <filtered-search-and-sort
+        class="gl-w-full gl-border-b-0"
+        :filtered-search-namespace="filteredSearchNamespace"
+        :filtered-search-tokens="filteredSearchTokens"
+        :filtered-search-term-key="filteredSearchTermKey"
+        :filtered-search-recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
+        :filtered-search-query="$route.query"
+        :search-input-placeholder="filteredSearchInputPlaceholder"
+        :is-ascending="isAscending"
+        :sort-options="sortOptions"
+        :active-sort-option="activeSortOption"
+        @filter="onFilter"
+        @sort-direction-change="onSortDirectionChange"
+        @sort-by-change="onSortByChange"
+      />
     </template>
   </gl-tabs>
 </template>

@@ -735,6 +735,7 @@ module Types
     field :languages, [Types::Projects::RepositoryLanguageType],
       null: true,
       description: "Programming languages used in the project.",
+      scopes: [:api, :read_api, :ai_workflows],
       calls_gitaly: true
 
     field :runners, Types::Ci::RunnerType.connection_type,

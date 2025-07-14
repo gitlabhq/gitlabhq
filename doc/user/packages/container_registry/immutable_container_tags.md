@@ -57,19 +57,33 @@ The diagram below shows how protection rules are evaluated in the context of an 
 %%{init: { "fontFamily": "GitLab Sans" }}%%
 graph TD
     accTitle: Evaluation of protected and immutable tag rules
-    accDescr: An illustration of the evaluation process for protected and immutable tag rules during an image push.
-    A[User attempts to push a tag] --> B{Does the user have the required role for push?}
+    accDescr: Flow chart showing the evaluation process for protected and immutable tag rules during an image push.
+    A[User attempts to push a tag] --> B{Protected tag check:<br/>Does user have required role<br/>to push this tag pattern?}
     B -- Yes --> C{Does the tag already exist?}
-    B -- No --> D[Push denied: Insufficient permissions]
-    C -- Yes --> E{Is the tag marked as immutable?}
+    B -- No --> D[Push denied:<br/>Protected tag - insufficient permissions]
+    C -- Yes --> E{Immutable tag check:<br/>Does tag match an<br/>immutable rule pattern?}
     C -- No --> F[Tag is created successfully]
-    E -- Yes --> G[Push denied: Tag is immutable]
+    E -- Yes --> G[Push denied:<br/>Tag is immutable]
     E -- No --> H[Tag is overwritten successfully]
 ```
 
+### Example scenarios
+
+For a project with these rules:
+
+- Protected tag rule: Pattern `v.*` requires at least the Maintainer role.
+- Immutable tag rule: Pattern `v\d+\.\d+\.\d+` protects semantic version tags.
+
+| User role | Action | Protected tag check | Immutable tag check | Result |
+|-----------|--------|-------------------|-------------------|---------|
+| Developer | Push new tag `v1.0.0` | Denied | Not evaluated | Push denied. User lacks required role. |
+| Maintainer | Push new tag `v1.0.0` | Allowed | Not evaluated | Tag created. |
+| Maintainer | Overwrite existing tag `v1.0.0` | Allowed | Denied | Push denied. Tag is immutable. |
+| Maintainer | Push new tag `v-beta` | Allowed | Not evaluated | Tag created. |
+
 ## Prerequisites
 
-To use protected container tags, make sure the container registry is available:
+To use immutable container tags, make sure the container registry is available:
 
 - In GitLab.com, the container registry is enabled by default.
 - In GitLab Self-Managed, [enable the metadata database](../../../administration/packages/container_registry_metadata_database.md).

@@ -18,7 +18,7 @@ like joining projects, commenting on issues, pushing changes to MRs, or closing 
 For information about activity retention limits, see:
 
 - [User activity time period limit](../user/profile/contributions_calendar.md#event-time-period-limit)
-- [Project activity time period limit](../user/project/working_with_projects.md#event-time-period-limit)
+- [Project activity time period limit](../user/project/working_with_projects.md#view-project-activity)
 
 ## List all events
 

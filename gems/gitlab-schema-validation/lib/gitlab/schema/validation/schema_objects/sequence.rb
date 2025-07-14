@@ -26,7 +26,9 @@ module Gitlab
           end
 
           def statement
-            "CREATE SEQUENCE #{name}"
+            statements = "CREATE SEQUENCE #{name};"
+            statements += "\nALTER SEQUENCE #{name} OWNED BY #{owner}" if owner
+            statements
           end
 
           private

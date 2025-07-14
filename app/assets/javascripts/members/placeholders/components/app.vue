@@ -411,7 +411,7 @@ export default {
         />
       </gl-tab>
 
-      <template #tabs-end>
+      <template #toolbar-end>
         <div class="gl-ml-auto gl-flex gl-gap-2">
           <gl-button
             v-gl-modal="$options.uploadCsvModalId"

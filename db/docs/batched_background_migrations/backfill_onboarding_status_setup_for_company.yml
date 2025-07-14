@@ -1,8 +1,9 @@
 ---
 migration_job_name: BackfillOnboardingStatusSetupForCompany
-description: Moves data from user_preferences.setup_for_company  to the new setup_for_company field in user_details.onboarding_status
+description: Moves data from user_preferences.setup_for_company  to the new setup_for_company
+  field in user_details.onboarding_status
 feature_category: onboarding
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/180602
 milestone: '17.10'
 queued_migration_version: 20250228155146
-finalized_by: # version of the migration that finalized this BBM
+finalized_by: '20250713232042'

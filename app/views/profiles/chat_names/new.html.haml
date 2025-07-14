@@ -18,11 +18,11 @@
           = s_("SlackIntegration|You don't have to reauthorize this application if the permission scope changes in future releases.")
       - c.with_footer do
         .gl-flex
-          = form_tag profile_chat_names_path, method: :post do
+          = form_tag user_settings_integration_accounts_path, method: :post do
             = hidden_field_tag :token, @chat_name_token.token
             = render Pajamas::ButtonComponent.new(type: :submit, variant: :danger, button_options: { data: { testid: 'authorize-button' } }) do
               = _('Authorize')
-          = form_tag deny_profile_chat_names_path, method: :delete do
+          = form_tag deny_user_settings_integration_accounts_path, method: :delete do
             = hidden_field_tag :token, @chat_name_token.token
             = render Pajamas::ButtonComponent.new(type: :submit, button_options: { class: 'gl-ml-3' }) do
               = _('Deny')

@@ -8295,6 +8295,7 @@ CREATE TABLE ai_catalog_items (
     description text NOT NULL,
     name text NOT NULL,
     public boolean DEFAULT false NOT NULL,
+    deleted_at timestamp with time zone,
     CONSTRAINT check_7e02a4805b CHECK ((char_length(description) <= 1024)),
     CONSTRAINT check_edddd6e1fe CHECK ((char_length(name) <= 255))
 );
@@ -17504,7 +17505,8 @@ CREATE TABLE merge_request_diff_commits (
     trailers jsonb DEFAULT '{}'::jsonb,
     commit_author_id bigint,
     committer_id bigint,
-    merge_request_commits_metadata_id bigint
+    merge_request_commits_metadata_id bigint,
+    project_id bigint
 );
 
 CREATE TABLE merge_request_diff_details (
@@ -34536,6 +34538,8 @@ CREATE INDEX index_ai_catalog_items_on_organization_id ON ai_catalog_items USING
 CREATE INDEX index_ai_catalog_items_on_project_id ON ai_catalog_items USING btree (project_id);
 
 CREATE INDEX index_ai_catalog_items_on_public ON ai_catalog_items USING btree (public);
+
+CREATE INDEX index_ai_catalog_items_where_deleted_at_is_null ON ai_catalog_items USING btree (deleted_at) WHERE (deleted_at IS NULL);
 
 CREATE INDEX index_ai_code_suggestion_events_on_organization_id ON ONLY ai_code_suggestion_events USING btree (organization_id);
 

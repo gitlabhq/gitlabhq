@@ -96,5 +96,5 @@ You can view the compute usage for your personal namespace:
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
 
-The projects list shows [personal projects](../../user/project/working_with_projects.md#view-personal-projects)
+The projects list shows [personal projects](../../user/project/working_with_projects.md)
 with compute usage or instance runners usage in the current month only.

@@ -68,7 +68,7 @@ In GitLab 17.5 and later, you can also use `https://gitlab.example.com/-/p/<id>`
 
 ## Find the Project ID
 
-You might also need the project ID if you want to interact with the project using the [GitLab API](../../api/_index.md).
+You might need the project ID if you want to interact with the project using the [GitLab API](../../api/_index.md).
 
 To find the project ID:
 
@@ -76,101 +76,171 @@ To find the project ID:
 1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
 1. Select **Copy project ID**.
 
-## View all projects for the instance
+## View projects
 
-To view all projects for the GitLab instance:
+Use the **Projects** list to view:
+
+- All the projects on an instance
+- The projects you work with or own
+- Inactive projects, including archived projects and projects pending deletion
+
+### View all projects on an instance
+
+To view the projects on your GitLab instance:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **Explore**.
-
-On the left sidebar, **Projects** is selected.
-A list of all projects for the instance is displayed.
+1. Optional. Select a tab to filter which projects are displayed.
 
 If you are not authenticated, the list shows public projects only.
 
-## View projects you have contributed to
+### View projects you work with
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13066) in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from **Yours** to **Member** in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
 
 {{< /history >}}
 
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag. For more information, see the history.
-
-{{< /alert >}}
-
-The **Contributed** tab displays projects where you have:
-
-- Created issues, merge requests, or epics
-- Commented on issues, merge requests, or epics
-- Closed issues, merge requests, or epics
-- Pushed commits
-- Approved merge requests
-- Merged merge requests
-
-To view projects you have contributed to:
+To view the projects you have interacted with:
 
 1. On the left sidebar, select **Search or go to**.
 1. Select **View all my projects**.
-1. Select the **Contributed** tab.
+1. Optional. Select a tab to filter which projects are displayed:
+   - **Contributed**: Projects where you have:
+     - Created issues, merge requests, or epics
+     - Commented on issues, merge requests, or epics
+     - Closed issues, merge requests, or epics
+     - Pushed commits
+     - Approved merge requests
+     - Merged merge requests
+   - **Starred**: Projects you have [starred](#star-a-project)
+   - **Personal**: Projects created under your personal namespace
+   - **Member**: Projects you are a member of
+   - **Inactive**: Archived projects and projects pending deletion
 
-## View projects you are a member of
+You can also view your starred and personal projects from your personal profile:
+
+1. On the left sidebar, select your avatar and then your username.
+1. On the left sidebar, select **Starred projects** or **Personal projects**.
+
+### View inactive projects
 
 {{< history >}}
 
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Yours" to "Member" in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
+- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
 - [Changed tab label generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
 
 {{< /history >}}
 
-To view projects you are a member of:
+A project is inactive when:
+
+- It is pending deletion.
+- It has been archived.
+
+To view all inactive projects:
+
+1. Select either:
+   - **View all my projects**, to filter your projects.
+   - **Explore**, to filter all projects you can access.
+1. Select the **Inactive** tab.
+
+Each project in the list shows:
+
+- A badge indicating that the project is archived or marked for deletion.
+  If the project is marked for deletion, the list also shows:
+  - The time the project was marked for deletion.
+  - The time the project is scheduled for final deletion.
+  - A **Restore** action to stop the project being eventually deleted.
+
+### View only projects you own
+
+To view only the projects you are the owner of:
 
 1. On the left sidebar, select **Search or go to**.
-1. Select **View all my projects**.
-1. Select the **Yours** tab.
+1. Select either:
+   - **View all your projects**, to filter your projects.
+   - **Explore**, to filter all projects you can access.
+1. Above the list of projects, select **Search or filter results**.
+1. From the **Role** dropdown list, select **Owner**.
 
-{{< alert type="note" >}}
+## View project activity
 
-This tab appears as **Member** when the `your_work_projects_vue` feature flag is enabled.
+To view the activity of a project:
 
-{{< /alert >}}
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Manage > Activity**.
+1. Optional. To filter activity by contribution type, select a tab:
 
-## View personal projects
+   - **All**: All contributions by project members.
+   - **Push events**: Push events in the project.
+   - **Merge events**: Accepted merge requests in the project.
+   - **Issue events**: Issues opened and closed in the project.
+   - **Comments**: Comments posted by project members.
+   - **Designs**: Designs added, updated, and removed in the project.
+   - **Team**: Members who joined and left the project.
 
-Personal projects are projects created under your personal namespace.
+GitLab removes project activity events older than three years from the events table for performance reasons.
 
-For example, if you create an account with the username `alex`, and create a project
-called `my-project` under your username, the project is created at `https://gitlab.example.com/alex/my-project`.
+## Filter projects by language
 
-To view your personal projects:
+{{< history >}}
+
+- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `project_language_search`. Enabled by default.
+- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110956) in GitLab 15.9. Feature flag `project_language_search` removed.
+
+{{< /history >}}
+
+You can filter projects by the programming language they use. To do this:
 
 1. On the left sidebar, select **Search or go to**.
-1. Select **View all my projects**.
-1. Select the **Personal** tab.
+1. Select either:
+   - **View all your projects**, to filter your projects.
+   - **Explore**, to filter all projects you can access.
+1. Above the list of projects, select **Search or filter results**.
+1. From the **Language** dropdown list, select the language you want to filter projects by.
 
-Or
+A list of projects that use the selected language is displayed.
 
-1. On the left sidebar, select your avatar and then your username.
-1. On the left sidebar, select **Personal projects**.
+## Star a project
 
-## View starred projects
+You can star projects you use frequently to make them easier to find.
 
-To view projects you have [starred](#star-a-project):
+To star a project:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **View all my projects**.
-1. Select the **Starred** tab.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. In the upper-right corner of the page, select **Star**.
 
-Or
+## Leave a project
 
-1. On the left sidebar, select your avatar and then your username.
-1. On the left sidebar, select **Starred projects**.
+{{< history >}}
 
-## Edit project name and description
+- The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
+
+{{< /history >}}
+
+When you leave a project:
+
+- You are no longer a project member and cannot contribute.
+- All the issues and merge requests that were assigned
+  to you are unassigned.
+
+Prerequisites:
+
+- You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/_index.md).
+- You must be a [direct member](members/_index.md#membership-types) of the project.
+
+To leave a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
+1. Select **Leave project**, then **Leave project** again.
+
+## Edit a project
 
 Use the project general settings to edit your project details.
 
@@ -185,16 +255,40 @@ Prerequisites:
 Components published in the CI/CD catalog require a project description.
 1. Select **Save changes**.
 
-## Add a project avatar
+### Rename a repository
+
+A project's repository name defines its URL.
+
+Prerequisites:
+
+- You must be an administrator or have the Maintainer or Owner role for the project.
+
+{{< alert type="note" >}}
+
+When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
+For more information on redirect duration and its side-effects, see
+[redirects when renaming repositories](repository/_index.md#repository-path-changes).
+
+{{< /alert >}}
+
+To rename a repository:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Change path** text box, edit the path.
+1. Select **Change path**.
+
+### Add a project avatar
 
 Add a project avatar to help visually identify your project. If you do not add an avatar, GitLab displays the first letter of your project name as the default project avatar.
 
 To add a project avatar, use one of the following methods:
 
-- [Add a logo](#add-a-logo-to-your-repository) to your repository.
-- [Upload an avatar](#upload-an-avatar-in-project-settings) in your project settings.
+- Add a logo to your repository.
+- Upload an avatar in your project settings.
 
-### Add a logo to your repository
+#### Add a logo to your repository
 
 If you haven't uploaded an avatar to your project settings, GitLab looks for a file named `logo` in your repository to use as the default project avatar.
 
@@ -209,7 +303,7 @@ To add a logo file to use as your project avatar:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. In the root of your project repository, upload the logo file.
 
-### Upload an avatar in project settings
+#### Upload an avatar in project settings
 
 Prerequisites:
 
@@ -231,14 +325,138 @@ To upload an avatar in your project settings:
 1. Select your avatar file.
 1. Select **Save changes**.
 
-## Star a project
+## Delete a project
 
-You can star projects you use frequently to make them easier to find.
+{{< history >}}
 
-To star a project:
+- Default behavior [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) to delayed project deletion for Premium and Ultimate tiers on [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in 16.0.
+- Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
+- Default behavior changed to delayed project deletion for [GitLab Free](https://gitlab.com/groups/gitlab-org/-/epics/17208) and [personal projects](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in 18.0.
+- Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+
+{{< /history >}}
+
+You can schedule a project for deletion.
+By default, when you delete a project for the first time, it enters a pending deletion state.
+Delete a project again to remove it immediately.
+
+On GitLab.com, after a project is deleted, its data is retained for 30 days.
+
+Prerequisites:
+
+- You must have the Owner role for a project.
+- Owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
+
+To delete a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. In the upper-right corner of the page, select **Star**.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Delete project** section, select **Delete project**.
+1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
+1. Optional. To delete the project immediately, repeat these steps.
+
+You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
+
+If the user who scheduled the project deletion loses access to the project before the deletion occurs
+(for example, by leaving the project, having their role downgraded, or being banned from the project),
+the deletion job restores the project. However, if the user regains access before the deletion job runs,
+the job removes the project permanently.
+
+### Restore a project
+
+{{< history >}}
+
+- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
+- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
+
+{{< /history >}}
+
+Prerequisites:
+
+- You must have the Owner role for the project.
+
+To restore a project pending deletion:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Restore project** section, select **Restore project**.
+
+## Archive a project
+
+{{< history >}}
+
+- Pages removal [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343109) in GitLab 17.5.
+
+{{< /history >}}
+
+{{< alert type="note" >}}
+
+When a project is archived, its fork relationship is removed and any open merge requests from forks
+targeting this project are automatically closed.
+
+{{< /alert >}}
+
+When you archive a project, some features become read-only.
+These features are still accessible, but not writable.
+
+- Repository
+- Packages
+- Issues
+- Merge requests
+- Feature flags
+- Pull mirroring
+- All other project features
+
+Active pipeline schedules of archived projects don't become read-only.
+
+If the project has deployed Pages, they are removed along with any custom domains,
+and the Pages link is no longer accessible.
+
+Archived projects are:
+
+- Labeled with an `archived` badge on the project page.
+- Listed in the **Inactive** tab on the group page, **Your work** page, and **Explore** page.
+- Read-only.
+
+Prerequisites:
+
+- [Deactivate](../../ci/pipelines/schedules.md#edit-a-pipeline-schedule) or delete any active pipeline schedules for the project.
+<!-- LP: Remove this prerequisite after the issue is resolved (when a project is archived, active pipeline schedules continue to run). -->
+
+To archive a project:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Advanced**.
+1. In the **Archive project** section, select **Archive project**.
+1. To confirm, select **OK**.
+
+### Unarchive a project
+
+When you unarchive a project, the read-only restriction is removed,
+and the project becomes available in project lists.
+
+Prerequisites:
+
+- You must be an administrator or have the Owner role for the project.
+
+1. Find the archived project.
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **View all my projects**.
+   1. Select **Explore projects**.
+   1. In the **Sort projects** dropdown list, select **Show archived projects**.
+   1. In the **Filter by name** field, enter the project name.
+   1. Select the project link.
+1. On the left sidebar, select **Settings > General**.
+1. Under **Advanced**, select **Expand**.
+1. In the **Unarchive project** section, select **Unarchive project**.
+1. To confirm, select **OK**.
+
+The deployed Pages are not restored and you must rerun the pipeline.
+
+When a project is unarchived, its pull mirroring process will automatically resume.
 
 ## Transfer a project
 
@@ -324,280 +542,6 @@ When you transfer a project from a namespace licensed for GitLab.com Premium or 
 - [Project access tokens](settings/project_access_tokens.md) are revoked.
 - [Pipeline subscriptions](../../ci/pipelines/_index.md#trigger-a-pipeline-when-an-upstream-project-is-rebuilt-deprecated)
   and [test cases](../../ci/test_cases/_index.md) are deleted.
-
-## Delete a project
-
-{{< history >}}
-
-- Default behavior [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) to delayed project deletion for Premium and Ultimate tiers on [GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in 16.0.
-- Option to delete projects immediately as a group setting removed [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
-- Default behavior changed to delayed project deletion for [GitLab Free](https://gitlab.com/groups/gitlab-org/-/epics/17208) and [personal projects](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in 18.0.
-- Option to delete projects immediately [moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-
-{{< /history >}}
-
-You can schedule a project for deletion.
-By default, when you delete a project for the first time, it enters a pending deletion state.
-Delete a project again to remove it immediately.
-
-On GitLab.com, after a project is deleted, its data is retained for seven days.
-
-Prerequisites:
-
-- You must have the Owner role for a project.
-- Owners must be [allowed to delete projects](../../administration/settings/visibility_and_access_controls.md#restrict-project-deletion-to-administrators).
-
-To delete a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Delete project** section, select **Delete project**.
-1. On the confirmation dialog, enter the project name and select **Yes, delete project**.
-1. Optional. To delete the project immediately, repeat these steps.
-
-You can also [delete projects using the Rails console](troubleshooting.md#delete-a-project-using-console).
-
-If the user who scheduled the project deletion loses access to the project before the deletion occurs
-(for example, by leaving the project, having their role downgraded, or being banned from the project),
-the deletion job restores the project. However, if the user regains access before the deletion job runs,
-the job removes the project permanently.
-
-### View projects pending deletion
-
-{{< history >}}
-
-- [Changed](https://gitlab.com/groups/gitlab-org/-/epics/13066) tab label from "Pending deletion" to "Inactive" in GitLab 17.9 [with a flag](../../administration/feature_flags/_index.md) named `your_work_projects_vue`. Disabled by default.
-- [Changed tab label generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/465889) in GitLab 17.10. Feature flag `your_work_projects_vue` removed.
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
-
-{{< /history >}}
-
-To view a list of all projects that are pending deletion:
-
-1. On the left sidebar, select **Search or go to**.
-1. Select **View all my projects**.
-1. Select the **Inactive** tab.
-
-Each project in the list shows:
-
-- A badge indicating that the project has been marked for deletion.
-- The time the project was marked for deletion.
-- The time the project is scheduled for final deletion.
-- A **Restore** action to stop the project being eventually deleted.
-
-### Restore a project
-
-{{< history >}}
-
-- [Moved](https://gitlab.com/groups/gitlab-org/-/epics/17208) from GitLab Premium to GitLab Free in 18.0.
-- [Enabled for projects in personal namespaces](https://gitlab.com/gitlab-org/gitlab/-/issues/536244) in GitLab 18.0.
-
-{{< /history >}}
-
-Prerequisites:
-
-- You must have the Owner role for the project.
-
-To restore a project pending deletion:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Restore project** section, select **Restore project**.
-
-## Archive a project
-
-{{< history >}}
-
-- Pages removal [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/343109) in GitLab 17.5.
-
-{{< /history >}}
-
-{{< alert type="note" >}}
-
-When a project is archived, its fork relationship is removed and any open merge requests from forks
-targeting this project are automatically closed.
-
-{{< /alert >}}
-
-When you archive a project, some features become read-only.
-These features are still accessible, but not writable.
-
-- Repository
-- Packages
-- Issues
-- Merge requests
-- Feature flags
-- Pull mirroring
-- All other project features
-
-Active pipeline schedules of archived projects don't become read-only.
-
-If the project has deployed Pages, they are removed along with any custom domains,
-and the Pages link is no longer accessible.
-
-Archived projects are:
-
-- Labeled with an `archived` badge on the project page.
-- Listed in the **Inactive** tab on the group page, **Your work** page, and **Explore** page.
-- Read-only.
-
-Prerequisites:
-
-- [Deactivate](../../ci/pipelines/schedules.md#edit-a-pipeline-schedule) or delete any active pipeline schedules for the project.
-<!-- LP: Remove this prerequisite after the issue is resolved (when a project is archived, active pipeline schedules continue to run). -->
-
-To archive a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Archive project** section, select **Archive project**.
-1. To confirm, select **OK**.
-
-## Unarchive a project
-
-When you unarchive a project, the read-only restriction is removed,
-and the project becomes available in project lists.
-
-Prerequisites:
-
-- You must be an administrator or have the Owner role for the project.
-
-1. Find the archived project.
-   1. On the left sidebar, select **Search or go to**.
-   1. Select **View all my projects**.
-   1. Select **Explore projects**.
-   1. In the **Sort projects** dropdown list, select **Show archived projects**.
-   1. In the **Filter by name** field, enter the project name.
-   1. Select the project link.
-1. On the left sidebar, select **Settings > General**.
-1. Under **Advanced**, select **Expand**.
-1. In the **Unarchive project** section, select **Unarchive project**.
-1. To confirm, select **OK**.
-
-The deployed Pages are not restored and you must rerun the pipeline.
-
-When a project is unarchived, its pull mirroring process will automatically resume.
-
-## View project activity
-
-To view the activity of a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Manage > Activity**.
-1. Optional. To filter activity by contribution type, select a tab:
-
-   - **All**: All contributions by project members.
-   - **Push events**: Push events in the project.
-   - **Merge events**: Accepted merge requests in the project.
-   - **Issue events**: Issues opened and closed in the project.
-   - **Comments**: Comments posted by project members.
-   - **Designs**: Designs added, updated, and removed in the project.
-   - **Team**: Members who joined and left the project.
-
-### Event time period limit
-
-GitLab removes project activity events older than 3 years from the events table for performance reasons.
-
-## Search in projects
-
-To search through your projects, on the left sidebar, select **Search or go to**.
-GitLab filters as you type.
-
-You can also look for the projects you [starred](#star-a-project) (**Starred projects**).
-
-You can **Explore** all public and internal projects available in GitLab.com, from which you can filter by visibility,
-through **Trending**, best rated with **Most stars**, or **All** of them.
-
-You can sort projects by:
-
-- Name
-- Created date
-- Updated date
-- Stars
-
-### Filter projects by language
-
-{{< history >}}
-
-- [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385465) in GitLab 15.9 [with a flag](../../administration/feature_flags/_index.md) named `project_language_search`. Enabled by default.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/110956) in GitLab 15.9. Feature flag `project_language_search` removed.
-
-{{< /history >}}
-
-You can filter projects by the programming language they use. To do this:
-
-1. On the left sidebar, select **Search or go to**.
-1. Select either:
-   - **View all your projects**, to filter your projects.
-   - **Explore**, to filter all projects you can access.
-1. Above the list of projects, select **Search or filter results**.
-1. From the **Language** dropdown list, select the language you want to filter projects by.
-
-A list of projects that use the selected language is displayed.
-
-### View only projects you own
-
-To view only the projects you are the owner of:
-
-1. On the left sidebar, select **Search or go to**.
-1. Select either:
-   - **View all your projects**, to filter your projects.
-   - **Explore**, to filter all projects you can access.
-1. Above the list of projects, select **Search or filter results**.
-1. From the **Role** dropdown list, select **Owner**.
-
-## Rename a repository
-
-A project's repository name defines its URL.
-
-Prerequisites:
-
-- You must be an administrator or have the Maintainer or Owner role for the project.
-
-{{< alert type="note" >}}
-
-When you change the repository path, users may experience issues if they push to, or pull from, the old URL.
-For more information on redirect duration and its side-effects, see
-[redirects when renaming repositories](repository/_index.md#repository-path-changes).
-
-{{< /alert >}}
-
-To rename a repository:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > General**.
-1. Expand **Advanced**.
-1. In the **Change path** text box, edit the path.
-1. Select **Change path**.
-
-## Leave a project
-
-{{< history >}}
-
-- The button to leave a project [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/431539) to the Actions menu in GitLab 16.7.
-
-{{< /history >}}
-
-When you leave a project:
-
-- You are no longer a project member and cannot contribute.
-- All the issues and merge requests that were assigned
-  to you are unassigned.
-
-Prerequisites:
-
-- You can leave a project this way only when a project is part of a group under a [group namespace](../namespace/_index.md).
-- You must be a [direct member](members/_index.md#membership-types) of the project.
-
-To leave a project:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. On the project overview page, in the upper-right corner, select **Actions** ({{< icon name="ellipsis_v" >}}).
-1. Select **Leave project**, then **Leave project** again.
 
 ## Add a compliance framework to a project
 

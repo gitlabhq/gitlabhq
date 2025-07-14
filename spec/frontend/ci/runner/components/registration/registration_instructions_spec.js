@@ -82,6 +82,7 @@ describe('RegistrationInstructions', () => {
       propsData: {
         runnerId: mockRunnerId,
         platform: DEFAULT_PLATFORM,
+        isWidget: false,
         ...props,
       },
       stubs: {
@@ -360,6 +361,7 @@ describe('RegistrationInstructions', () => {
         token: mockAuthenticationToken,
         groupPath: 'mock/group/path',
         projectPath: null,
+        isWidget: false,
       });
     });
 
@@ -377,6 +379,7 @@ describe('RegistrationInstructions', () => {
         token: mockAuthenticationToken,
         projectPath: 'mock/project/path',
         groupPath: null,
+        isWidget: false,
       });
     });
 
@@ -412,6 +415,7 @@ describe('RegistrationInstructions', () => {
         token: mockAuthenticationToken,
         groupPath: 'mock/group/path',
         projectPath: null,
+        isWidget: false,
       });
     });
 
@@ -429,6 +433,7 @@ describe('RegistrationInstructions', () => {
         token: mockAuthenticationToken,
         projectPath: 'mock/project/path',
         groupPath: null,
+        isWidget: false,
       });
     });
 

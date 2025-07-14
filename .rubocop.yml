@@ -1279,12 +1279,9 @@ RSpec/FactoryBot/LocalStaticAssignment:
 Rails/TransactionExitStatement:
   Enabled: true
 
-Search/AvoidCheckingFinishedOnDeprecatedMigrations:
+Search/AvoidCheckingFinishedOnInvalidMigrations:
   Include:
-    - 'ee/app/models/**/*.rb'
-    - 'ee/lib/elastic/**/*.rb'
-    - 'ee/lib/gitlab/elastic/**/*.rb'
-    - 'ee/spec/support/helpers/elasticsearch_helpers.rb'
+    - 'ee/**/*.rb'
 
 # See https://gitlab.com/gitlab-org/gitlab/-/issues/407233
 Cop/ExperimentsTestCoverage:
