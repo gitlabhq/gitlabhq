@@ -59,7 +59,7 @@ To move databases from one instance to another:
    /opt/gitlab/embedded/bin/psql -h $DST_PGHOST -U $DST_PGUSER -f gitlabhq_production.sql postgres
    ```
 
-1. Optional. If you migrate from a database that doesn't use PgBouncer to a database that does, you must manually add a [`pg_shadow_lookup` function](../gitaly/praefect/_index.md#manual-database-setup) to the application database (usually `gitlabhq_production`).
+1. Optional. If you migrate from a database that doesn't use PgBouncer to a database that does, you must manually add a [`pg_shadow_lookup` function](../gitaly/praefect/configure.md#manual-database-setup) to the application database (usually `gitlabhq_production`).
 1. Configure the GitLab application servers with the appropriate connection details
    for your destination PostgreSQL instance in your `/etc/gitlab/gitlab.rb` file:
 

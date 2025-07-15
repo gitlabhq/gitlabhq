@@ -225,7 +225,7 @@ for offline environments.
 
 ### Configure NTP
 
-Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect/_index.md#customize-time-server-setting) on the Gitaly
+Gitaly Cluster assumes `pool.ntp.org` is accessible. If `pool.ntp.org` is not accessible, [customize the time server setting](../../administration/gitaly/praefect/configure.md#customize-time-server-setting) on the Gitaly
 and Praefect servers so they can use an accessible NTP server.
 
 On offline instances, the [GitLab Geo check Rake task](../../administration/geo/replication/troubleshooting/common.md#can-geo-detect-the-current-site-correctly)

@@ -272,6 +272,6 @@ RSpec.shared_examples 'a model including Escalatable' do
   private
 
   def factory_from_class(klass)
-    klass.name.underscore.tr('/', '_')
+    ::Gitlab::Utils::ClassNameConverter.new(klass).string_representation
   end
 end

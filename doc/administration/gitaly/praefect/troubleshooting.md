@@ -108,7 +108,7 @@ Some common reasons for the Praefect database to experience elevated CPU usage i
 
 - Prometheus metrics scrapes [running an expensive query](https://gitlab.com/gitlab-org/gitaly/-/issues/3796). Set
   `praefect['configuration'][:prometheus_exclude_database_from_default_metrics] = true` in `gitlab.rb`.
-- [Read distribution caching](_index.md#reads-distribution-caching) is disabled, increasing the number of queries made to the
+- [Read distribution caching](configure.md#reads-distribution-caching) is disabled, increasing the number of queries made to the
   database when user traffic is high. Ensure read distribution caching is enabled.
 
 ## Determine primary Gitaly node
@@ -202,7 +202,7 @@ For each replica, the following metadata is available:
 | `Generation`     | Latest confirmed generation of the replica. It indicates:<br><br>- The replica is fully up to date if the generation matches the repository's generation.<br>- The replica is outdated if the replica's generation is less than the repository's generation.<br>- `replica not yet created` if the replica does not yet exist at all on the storage.                                                                                                          |
 | `Healthy`        | Indicates whether the Gitaly node that is hosting this replica is considered healthy by the consensus of Praefect nodes.                                                                                                                                                                                                                                                                                                                               |
 | `Valid Primary`  | Indicates whether the replica is fit to serve as the primary node. If the repository's primary is not a valid primary, a failover occurs on the next write to the repository if there is another replica that is a valid primary. A replica is a valid primary if:<br><br>- It is stored on a healthy Gitaly node.<br>- It is fully up to date.<br>- It is not targeted by a pending deletion job from decreasing replication factor.<br>- It is assigned. |
-| `Verified At` | Indicates last successful verification of the replica by the [verification worker](_index.md#repository-verification). If the replica has not yet been verified, `unverified` is displayed in place of the last successful verification time. Introduced in GitLab 15.0. |
+| `Verified At` | Indicates last successful verification of the replica by the [verification worker](configure.md#repository-verification). If the replica has not yet been verified, `unverified` is displayed in place of the last successful verification time. Introduced in GitLab 15.0. |
 
 ### Command fails with 'repository not found'
 
@@ -261,8 +261,8 @@ praefect sql-migrate: OK (applied 21 migrations)
 ## Requests fail with 'repository scoped: invalid Repository' errors
 
 This indicates that the virtual storage name used in the
-[Praefect configuration](_index.md#praefect) does not match the storage name used in
-[`gitaly['configuration'][:storage][<index>][:name]` setting](_index.md#gitaly) for GitLab.
+[Praefect configuration](configure.md#praefect) does not match the storage name used in
+[`gitaly['configuration'][:storage][<index>][:name]` setting](configure.md#gitaly) for GitLab.
 
 Resolve this by matching the virtual storage names used in Praefect and GitLab configuration.
 

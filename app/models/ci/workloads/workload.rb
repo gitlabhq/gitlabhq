@@ -14,6 +14,10 @@ module Ci
 
       validates :project, presence: true
       validates :pipeline, presence: true
+
+      def logs_url
+        Gitlab::Routing.url_helpers.project_pipeline_url(project, pipeline)
+      end
     end
   end
 end

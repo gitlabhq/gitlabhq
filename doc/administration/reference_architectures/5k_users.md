@@ -1245,7 +1245,7 @@ the details of each Gitaly node that makes up the cluster. Each storage is also 
 and this name is used in several areas of the configuration. In this guide, the name of the storage is
 `default`. Also, this guide is geared towards new installs, if upgrading an existing environment
 to use Gitaly Cluster, you might have to use a different name.
-Refer to the [Praefect documentation](../gitaly/praefect/_index.md#praefect) for more information.
+Refer to the [Praefect documentation](../gitaly/praefect/configure.md#praefect) for more information.
 
 The following IPs are used as an example:
 

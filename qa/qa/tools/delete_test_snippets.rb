@@ -6,15 +6,15 @@
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN and GITLAB_ADDRESS
 #   - GITLAB_QA_ACCESS_TOKEN should have API access and belong to the user whose snippets will be deleted
 
-# Optional environment variables: DELETE_BEFORE (default: 1 day ago)
-#   - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 1 day ago
+# Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#   - Set DELETE_BEFORE to only delete snippets that were created before a given date, otherwise defaults to 2 hours ago
 
 # Run `rake delete_test_snippets`
 
 module QA
   module Tools
     class DeleteTestSnippets < DeleteResourceBase
-      # @example delete snippets older than 1 day for the user associated with the given access token
+      # @example delete snippets older than 2 hours for the user associated with the given access token
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> bundle exec rake delete_test_snippets
       #

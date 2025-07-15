@@ -4,15 +4,16 @@
 #   - If `dry_run` is true the script will list groups to be deleted, but it won't delete them
 
 # Required environment variables: GITLAB_QA_ACCESS_TOKEN, GITLAB_ADDRESS
-# Optional environment variables: DELETE_BEFORE
-#   - Set DELETE_BEFORE to delete only groups that were created before the given date (default: 1 day ago)
+# Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#   - Set DELETE_BEFORE to delete only groups that were created before the given date (default: 2 hours ago)
 
 # Run `rake delete_user_groups`
 
 module QA
   module Tools
     class DeleteUserGroups < DeleteResourceBase
-      EXCLUDE_GROUPS = %w[gitlab-e2e-sandbox-group-1
+      EXCLUDE_GROUPS = %w[gitlab-e2e-sandbox-group-0
+        gitlab-e2e-sandbox-group-1
         gitlab-e2e-sandbox-group-2
         gitlab-e2e-sandbox-group-3
         gitlab-e2e-sandbox-group-4
@@ -30,7 +31,7 @@ module QA
         qa-perf-testing
         remote-development].freeze
 
-      # @example - delete user groups older than 1 day
+      # @example - delete user groups older than 2 hours
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   bundle exec rake delete_user_groups

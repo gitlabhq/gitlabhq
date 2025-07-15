@@ -184,7 +184,7 @@ To disable instance runners for a project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
 1. Expand **Runners**.
-1. In the **Instance runners** area, enable the **Turn runners for this project** toggle.
+1. In the **Instance runners** area, turn off the **Turn on runners for this project** toggle.
 
 Instance runners are automatically disabled for a project:
 

@@ -272,6 +272,7 @@ the user's SCIM identity is reactivated and their GitLab instance access is rest
 {{< history >}}
 
 - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/15990) in GitLab 18.0 [with a flag](../../administration/feature_flags/_index.md) named `self_managed_scim_group_sync`. Disabled by default.
+- [Enabled on GitLab Self-Managed](https://gitlab.com/gitlab-org/gitlab/-/issues/553662) by default in GitLab 18.2.
 
 {{< /history >}}
 

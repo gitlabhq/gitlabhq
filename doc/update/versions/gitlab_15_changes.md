@@ -205,7 +205,7 @@ if you can't upgrade to 15.11.12 and later.
     [issue 393216](https://gitlab.com/gitlab-org/gitlab/-/issues/393216).
   - The second [bug fix](https://gitlab.com/gitlab-org/gitlab/-/issues/394760) ensures it is possible to upgrade directly from 15.4.x.
 - As part of the [CI Partitioning effort](../../architecture/blueprints/ci_data_decay/pipeline_partitioning.md), a [new Foreign Key](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107547) was added to `ci_builds_needs`. On GitLab instances with large CI tables, adding this constraint can take longer than usual.
-- Praefect's metadata verifier [invalid metadata deletion behavior](../../administration/gitaly/praefect/_index.md#enable-deletions) is now enabled by default.
+- Praefect's metadata verifier [invalid metadata deletion behavior](../../administration/gitaly/praefect/configure.md#enable-deletions) is now enabled by default.
 
   The metadata verifier processes replica records in the Praefect database and verifies the replicas actually exist on the Gitaly nodes. If the replica doesn't exist, its
   metadata record is deleted. This enables Praefect to fix situations where a replica has a metadata record indicating it's fine but, in reality, it doesn't exist on disk.
@@ -216,7 +216,7 @@ if you can't upgrade to 15.11.12 and later.
   unavailable repositories in the metrics and `praefect dataloss` sub-command because of the replica records being removed. If you encounter such repositories, remove
   the repository using `praefect remove-repository` to remove the repository's remaining records.
 
-  You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../../administration/gitaly/praefect/_index.md#repository-verification).
+  You can find repositories with invalid metadata records prior in GitLab 15.0 and later by searching for the log records outputted by the verifier. [Read more about repository verification, and to see an example log entry](../../administration/gitaly/praefect/configure.md#repository-verification).
 - Praefect configuration changes significantly for Linux package instances in GitLab 16.0. You can begin migrating to the new structure in GitLab 15.9 while backwards compatibility is
   maintained in the lead up to GitLab 16.0. [Read more about this change](gitlab_16_changes.md#praefect-configuration-structure-change).
 
@@ -741,7 +741,7 @@ potentially cause downtime.
 - GitLab 15.4.0 includes a [batched background migration](../background_migrations.md#batched-background-migrations) to [remove incorrect values from `expire_at` in `ci_job_artifacts` table](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/89318).
   This migration might take hours or days to complete on larger GitLab instances.
 - By default, Gitaly and Praefect nodes use the time server at `pool.ntp.org`. If your instance can not connect to `pool.ntp.org`,
-  [configure the `NTP_HOST` variable](../../administration/gitaly/praefect/_index.md#customize-time-server-setting) otherwise, there can be `ntp: read udp ... i/o timeout` errors
+  [configure the `NTP_HOST` variable](../../administration/gitaly/praefect/configure.md#customize-time-server-setting) otherwise, there can be `ntp: read udp ... i/o timeout` errors
   in the logs and the output of `gitlab-rake gitlab:gitaly:check`. However, if the Gitaly hosts' times are in sync, these errors can be ignored.
 - GitLab 15.4.0 introduced a default [Sidekiq routing rule](../../administration/sidekiq/processing_specific_job_classes.md#routing-rules) that routes all jobs to the `default` queue. For instances using [queue selectors](https://archives.docs.gitlab.com/17.0/ee/administration/sidekiq/processing_specific_job_classes.html#queue-selectors-deprecated), this causes [performance problems](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/1991) as some Sidekiq processes will be idle.
   - The default routing rule has been reverted in 15.4.5, so upgrading to that version or later will return to the previous behavior.

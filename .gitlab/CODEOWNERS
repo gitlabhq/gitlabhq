@@ -130,6 +130,8 @@ config/bounded_contexts.yml @fabiopitino @grzesiek @stanhu @cwoolley-gitlab @tku
 /.gitlab/ci/reports.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-com/gl-security/appsec
 /.gitlab/ci/review-apps/qa.gitlab-ci.yml @gl-dx/pipeline-maintainers @gl-dx/maintainers
 /.gitlab/ci/test-on-gdk/ @gl-dx/pipeline-maintainers @gl-dx/maintainers
+/.gitlab/ci/release-environments.gitlab-ci.yml @gl-dx/pipeline-maintainers @gitlab-org/delivery
+/.gitlab/ci/release-environments/ @gl-dx/pipeline-maintainers @gitlab-org/delivery
 /gems/gem.gitlab-ci.yml
 
 [Tooling] @gl-dx/tooling-maintainers

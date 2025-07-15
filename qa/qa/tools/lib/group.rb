@@ -5,9 +5,7 @@ module QA
     module Lib
       module Group
         include Support::API
-        def fetch_group_id(api_client, name = ENV['TOP_LEVEL_GROUP_NAME'])
-          group_name = name || "gitlab-e2e-sandbox-group-#{Time.now.wday + 1}"
-
+        def fetch_group_id(api_client, group_name)
           logger.info("Fetching group #{group_name}...")
 
           group_search_response = get Runtime::API::Request.new(api_client, "/groups/#{group_name}").url

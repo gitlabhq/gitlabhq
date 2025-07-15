@@ -412,6 +412,25 @@ RSpec.describe 'project routing', feature_category: :groups_and_projects do
 
     it 'to #show' do
       expect(get('/gitlab/gitlabhq/-/commits/master.atom')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master.atom')
+      expect(get('/gitlab/gitlabhq/-/commits/master')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master')
+      expect(get('/gitlab/gitlabhq/-/commits/master?format=json')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master', format: 'json')
+
+      # complex branch name without encoding (incorrect format)
+      expect(get('/gitlab/gitlabhq/-/commits/feature/name')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/name')
+      expect(get('/gitlab/gitlabhq/-/commits/feature/name?format=json')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/name', format: 'json')
+
+      # complex branch name with encoding
+      expect(get('/gitlab/gitlabhq/-/commits/feature%2Fname')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/name')
+      expect(get('/gitlab/gitlabhq/-/commits/feature%2Fname?format=json')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/name', format: 'json')
+
+      # collision with signatures route
+      expect(get('/gitlab/gitlabhq/-/commits/feature/signatures')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/signatures')
+      expect(get('/gitlab/gitlabhq/-/commits/feature/signatures?format=json&offset=40')).to route_to('projects/commits#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/signatures', format: 'json', offset: '40')
+    end
+
+    it 'to #signatures' do
+      expect(get('/gitlab/gitlabhq/-/commits/feature/signatures?format=json')).to route_to('projects/commits#signatures', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature', format: 'json')
+      expect(get('/gitlab/gitlabhq/-/commits/feature%2Fsignatures/signatures?format=json')).to route_to('projects/commits#signatures', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'feature/signatures', format: 'json')
     end
 
     it_behaves_like 'redirecting a legacy path', "/gitlab/gitlabhq/commits/master", "/gitlab/gitlabhq/-/commits/master"

@@ -741,7 +741,7 @@ RSpec.shared_examples 'a deployable job' do
   end
 
   def factory_type
-    described_class.name.underscore.tr('/', '_')
+    ::Gitlab::Utils::ClassNameConverter.new(described_class).string_representation
   end
 end
 # rubocop:enable Layout/LineLength

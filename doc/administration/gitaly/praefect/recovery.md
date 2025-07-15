@@ -16,8 +16,8 @@ You can add and replace Gitaly nodes on a Gitaly Cluster.
 
 To add a new Gitaly node:
 
-1. Install the new Gitaly node by following the [documentation](_index.md#gitaly).
-1. Add the new node to your [Praefect configuration](_index.md#praefect) under `praefect['virtual_storages']`.
+1. Install the new Gitaly node by following the [documentation](configure.md#gitaly).
+1. Add the new node to your [Praefect configuration](configure.md#praefect) under `praefect['virtual_storages']`.
 1. Reconfigure and restart Praefect by running following commands:
 
    ```shell
@@ -30,8 +30,8 @@ The replication behavior depends on your replication factor setting.
 #### Custom replication factor
 
 If a custom replication factor is set, Praefect doesn't automatically replicate existing repositories to the new Gitaly node. You must set the
-[replication factor](_index.md#configure-replication-factor) for each repository using the `set-replication-factor` Praefect command. New repositories are replicated based on
-the [replication factor](_index.md#configure-replication-factor).
+[replication factor](configure.md#configure-replication-factor) for each repository using the `set-replication-factor` Praefect command. New repositories are replicated based on
+the [replication factor](configure.md#configure-replication-factor).
 
 #### Default replication factor
 
@@ -46,17 +46,17 @@ You can replace an existing Gitaly node with a new node with either the same nam
 
 #### With a node with the same name
 
-To use the same name for the replacement node, use [repository verifier](_index.md#enable-deletions) to scan the storage and remove dangling metadata records.
-[Manually prioritize verification](_index.md#prioritize-verification-manually) of the replaced storage to speed up the process.
+To use the same name for the replacement node, use [repository verifier](configure.md#enable-deletions) to scan the storage and remove dangling metadata records.
+[Manually prioritize verification](configure.md#prioritize-verification-manually) of the replaced storage to speed up the process.
 
 #### With a node with a different name
 
-The steps use a different name for the replacement node for a Gitaly Cluster depend on if a [replication factor](_index.md#configure-replication-factor)
+The steps use a different name for the replacement node for a Gitaly Cluster depend on if a [replication factor](configure.md#configure-replication-factor)
 is set.
 
 ##### Replication factor set
 
-If a custom replication factor is set, use [`praefect set-replication-factor`](_index.md#configure-replication-factor) to set the replication factor per repository again to get
+If a custom replication factor is set, use [`praefect set-replication-factor`](configure.md#configure-replication-factor) to set the replication factor per repository again to get
 new storage assigned.
 
 For example, if two nodes in the virtual storage have a replication factor of 2 and a new node (`gitaly-3`) is added, you should increase the replication
@@ -70,12 +70,12 @@ current assignments: gitaly-1, gitaly-2, gitaly-3
 
 This ensures that the repository is replicated to the new node and the `repository_assignments` table gets updated with the name of new Gitaly node.
 
-If the [default replication factor](_index.md#configure-replication-factor) is set, new nodes are not automatically included in replication.
+If the [default replication factor](configure.md#configure-replication-factor) is set, new nodes are not automatically included in replication.
 You must follow the steps described previously.
 
 After you [verify](#check-for-data-loss) that repository is successfully replicated to the new node:
 
-1. Remove the `gitaly-1` node from the [Praefect configuration](_index.md#praefect) under `praefect['virtual_storages']`.
+1. Remove the `gitaly-1` node from the [Praefect configuration](configure.md#praefect) under `praefect['virtual_storages']`.
 1. Reconfigure and restart Praefect:
 
    ```shell
@@ -475,7 +475,7 @@ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefec
 
 - `-replica-path` is the relative path on physical storage. Can start with [`@cluster` or match `relative_path`](../../repository_storage_paths.md#gitaly-cluster-storage).
 - `-authoritative-storage` is the storage we want Praefect to treat as the primary. Required if
-  [per-repository replication](_index.md#configure-replication-factor) is set as the replication strategy.
+  [per-repository replication](configure.md#configure-replication-factor) is set as the replication strategy.
 - `-replicate-immediately` causes the command to replicate the repository to its secondaries immediately.
   Otherwise, replication jobs are scheduled for execution in the database and are picked up by a Praefect background process.
 

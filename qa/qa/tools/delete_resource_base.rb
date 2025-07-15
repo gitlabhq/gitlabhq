@@ -12,7 +12,8 @@ module QA
 
       ITEMS_PER_PAGE = '100'
       PAGE_CUTOFF = '10'
-      SANDBOX_GROUPS = %w[gitlab-e2e-sandbox-group-1
+      SANDBOX_GROUPS = %w[gitlab-e2e-sandbox-group-0
+        gitlab-e2e-sandbox-group-1
         gitlab-e2e-sandbox-group-2
         gitlab-e2e-sandbox-group-3
         gitlab-e2e-sandbox-group-4
@@ -27,7 +28,7 @@ module QA
 
         @api_client = Runtime::API::Client.new(ENV['GITLAB_ADDRESS'],
           personal_access_token: ENV['GITLAB_QA_ACCESS_TOKEN'])
-        @delete_before = Date.parse(ENV['DELETE_BEFORE'] || (Date.today - 1).to_s)
+        @delete_before = Time.parse(ENV['DELETE_BEFORE'] || (Time.now - (2 * 3600)).to_s).utc.iso8601(3)
         @dry_run = dry_run
         @permanently_delete = !!(ENV['PERMANENTLY_DELETE'].to_s =~ /true|1|y/i)
         @type = nil
@@ -164,7 +165,7 @@ module QA
           ).url
 
           if response.code == HTTP_STATUS_OK
-            resources.concat(parse_body(response).select { |r| Date.parse(r[:created_at]) < @delete_before })
+            resources.concat(parse_body(response).select { |r| Time.parse(r[:created_at]) < @delete_before })
           else
             logger.error("Request for #{@type} returned (#{response.code}): `#{response}` ")
             exit 1 if fatal_response?(response.code)

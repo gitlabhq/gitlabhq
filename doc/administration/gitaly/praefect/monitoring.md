@@ -43,7 +43,7 @@ To monitor [strong consistency](_index.md#strong-consistency), you can use the f
 - `gitaly_hook_transaction_voting_delay_seconds`, the client-side delay introduced by waiting for
   the transaction to be committed.
 
-To monitor [repository verification](_index.md#repository-verification), use the following Prometheus metrics:
+To monitor [repository verification](configure.md#repository-verification), use the following Prometheus metrics:
 
 - `gitaly_praefect_verification_jobs_dequeued_total`, the number of verification jobs picked up by the
   worker.

@@ -86,7 +86,12 @@ scope format: false do
     get '/blame/*id', to: 'blame#show', as: :blame
 
     get '/commits', to: 'commits#commits_root', as: :commits_root
-    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
+    # this route conflicts with branch names that end with /signatures
+    # to avoid this issue we ensure that #signatures only responds to json requests
+    # and also is not a commit pagination request, based on the 'offset' param presence
+    get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures, constraints: ->(request) do
+      request.format == :json && !request.params[:offset]
+    end
     get '/commits/*id', to: 'commits#show', as: :commits
 
     post '/create_dir/*id', to: 'tree#create_dir', as: :create_dir

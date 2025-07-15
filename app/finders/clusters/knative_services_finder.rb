@@ -80,7 +80,7 @@ module Clusters
     end
 
     def model_name
-      self.class.name.underscore.tr('/', '_')
+      ::Gitlab::Utils::ClassNameConverter.new(self.class).string_representation
     end
 
     private

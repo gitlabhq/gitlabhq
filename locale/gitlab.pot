@@ -56277,6 +56277,9 @@ msgstr ""
 msgid "SecurityLabels|Security labels"
 msgstr ""
 
+msgid "SecurityLabels|Security labels help classify and organize your projects. Labels are managed at the group level. You can add or remove labels to this project as needed."
+msgstr ""
+
 msgid "SecurityLabels|Selection type"
 msgstr ""
 

@@ -95,8 +95,8 @@ enhancement. They are responsible for:
   [assigned to the DevOps stage group](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments)
   that is delivering the new feature or feature enhancements.
 
-The first merge request where a feature can be tested should include the
-documentation, even if the feature is behind a feature flag.
+When possible, the merge request with the code should include the
+documentation.
 For more information, see the [guidelines](feature_flags.md).
 
 The author of this MR, either a frontend or backend developer, should write the documentation.

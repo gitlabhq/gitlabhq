@@ -8,8 +8,8 @@
 #     OR
 #   - USER_ID to the id of the user whose projects are to be deleted.
 
-# Optional environment variables: DELETE_BEFORE
-#   - Set DELETE_BEFORE to delete only projects that were created before the given date (default: 1 day ago)
+# Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#   - Set DELETE_BEFORE to delete only projects that were created before the given date (default: 2 hours ago)
 
 # Run `rake delete_user_projects`
 
@@ -26,7 +26,7 @@ module QA
         gitlab-qa-user5
         gitlab-qa-user6].freeze
 
-      # @example - delete the given users projects older than 3 days
+      # @example - delete the given users projects older than 2 hours
       #   GITLAB_ADDRESS=<address> \
       #   GITLAB_QA_ACCESS_TOKEN=<token> \
       #   USER_ID=<id> bundle exec rake delete_user_projects

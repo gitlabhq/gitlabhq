@@ -7,8 +7,8 @@
 # Required environment variables: GITLAB_QA_ADMIN_ACCESS_TOKEN, GITLAB_QA_ACCESS_TOKEN, and GITLAB_ADDRESS
 #   - GITLAB_QA_ADMIN_ACCESS_TOKEN must have admin API access
 
-# Optional environment variables: DELETE_BEFORE (default: 1 day ago)
-#   - Set DELETE_BEFORE to only delete users that were created before a given date, otherwise defaults to 1 day ago
+# Optional environment variables: DELETE_BEFORE - YYYY-MM-DD, YYYY-MM-DD HH:MM:SS, or YYYY-MM-DDT00:00:00Z
+#   - Set DELETE_BEFORE to only delete users that were created before a given date, otherwise defaults to 2 hours ago
 
 # Run `rake delete_test_users`
 

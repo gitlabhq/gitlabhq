@@ -222,7 +222,6 @@ export default {
     'app/assets/javascripts/wikis/wiki_notes/components/placeholder_note.vue',
     'app/assets/javascripts/wikis/wiki_notes/components/wiki_discussion.vue',
     'app/assets/javascripts/wikis/wiki_notes/components/wiki_notes_app.vue',
-    'ee/app/assets/javascripts/admin/subscriptions/show/components/subscription_breakdown.vue',
     'ee/app/assets/javascripts/ai/components/duo_chat_feedback_modal.vue',
     'ee/app/assets/javascripts/ai/components/user_feedback.vue',
     'ee/app/assets/javascripts/analytics/analytics_dashboards/components/visualizations/dora_chart.vue',

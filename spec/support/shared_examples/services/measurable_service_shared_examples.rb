@@ -27,6 +27,6 @@ RSpec.shared_examples 'measurable service' do
   end
 
   def described_class_name
-    described_class.name.underscore.tr('/', '_')
+    ::Gitlab::Utils::ClassNameConverter.new(described_class).string_representation
   end
 end
