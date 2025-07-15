@@ -299,13 +299,13 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           ##### `DeprecatedTest.fooWithArgs`
 
-          A description.
-
           {{< details >}}
           **Deprecated** in GitLab 1.10.
           Do not use.
           Use: [`X.y`](#xy).
           {{< /details >}}
+
+          A description.
 
           Returns [`String!`](#string).
 
@@ -336,13 +336,13 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         <<~DOC
           ### `Query.bar`
 
-          A bar.
-
           {{< details >}}
           **Deprecated** in GitLab 10.11.
           This was renamed.
           Use: [`Query.foo`](#queryfoo).
           {{< /details >}}
+
+          A bar.
 
           Returns [`Int`](#int).
         DOC
@@ -425,12 +425,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
 
           ##### `AlphaTest.fooWithArgs`
 
-          A description.
-
           {{< details >}}
           **Introduced** in GitLab 1.10.
           **Status**: Experiment.
           {{< /details >}}
+
+          A description.
 
           Returns [`String!`](#string).
 
@@ -461,12 +461,12 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         <<~DOC
           ### `Query.bar`
 
-          A bar.
-
           {{< details >}}
           **Introduced** in GitLab 10.11.
           **Status**: Experiment.
           {{< /details >}}
+
+          A bar.
 
           Returns [`Int`](#int).
         DOC

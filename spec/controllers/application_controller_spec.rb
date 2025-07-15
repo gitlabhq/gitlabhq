@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe ApplicationController, feature_category: :shared do
+RSpec.describe ApplicationController, :with_current_organization, feature_category: :shared do
   include TermsHelper
 
   let(:user) { create(:user) }
@@ -68,10 +68,11 @@ RSpec.describe ApplicationController, feature_category: :shared do
       def index; end
     end
 
-    it 'sets current organization' do
+    it 'sets current organization and session' do
       get :index, format: :json
 
       expect(Current.organization).to eq(current_organization)
+      expect(session[Gitlab::Current::Organization::SESSION_KEY]).to eq(current_organization.id)
     end
 
     context 'when multiple calls in one example are done' do

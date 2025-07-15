@@ -3,15 +3,18 @@
 module Gitlab
   module Current
     class Organization
-      attr_reader :params, :user
+      attr_reader :params, :user, :session
 
-      def initialize(params: {}, user: nil)
+      SESSION_KEY = :organization_id
+
+      def initialize(params: {}, session: nil, user: nil)
         @params = params
         @user = user
+        @session = session
       end
 
       def organization
-        from_params || from_user || fallback_organization
+        from_params || from_session || from_user || fallback_organization
       end
 
       private
@@ -24,6 +27,12 @@ module Gitlab
         return unless user
 
         ::Organizations::Organization.with_user(user).first
+      end
+
+      def from_session
+        return unless session.respond_to?(:[]) && session[SESSION_KEY]
+
+        ::Organizations::Organization.find_by_id(session[SESSION_KEY])
       end
 
       def from_group_params

@@ -81,7 +81,7 @@ The table below provides an overview of all available query fields and their spe
 | [State](#state)                         | `state`                                      | `=`                       | Issues, epics, merge requests |
 | [Status](#status)                       | `status`                                     | `=`                       | Issues |
 | [Target branch](#target-branch)         | `targetBranch`                               | `=`, `in`, `!=`           | Merge requests |
-| [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, merge requests |
+| [Type](#type)                           | `type`                                       | `=`, `in`                 | Issues, epics, merge requests |
 | [Updated at](#updated-at)               | `updated`, `updatedAt`                       | `=`, `>`, `<`, `>=`, `<=` | Issues, epics, merge requests |
 | [Weight](#weight)                       | `weight`                                     | `=`, `!=`                 | Issues        |
 
@@ -171,7 +171,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge request by their author.
+**Description**: Query issues, epics, or merge requests by their author.
 
 **Allowed value types**:
 
@@ -235,7 +235,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by the date when they were closed.
+**Description**: Query issues by the date when they were closed.
 
 **Allowed value types**:
 
@@ -276,7 +276,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues by their visibility to project members.
+**Description**: Query issues or epics by their visibility to project members.
 
 **Allowed value types**:
 
@@ -310,7 +310,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by the date when they were created.
+**Description**: Query issues, epics, or merge requests by the date when they were created.
 
 **Allowed value types**:
 
@@ -514,7 +514,7 @@ The table below provides an overview of all available query fields and their spe
 
 ### Group
 
-**Description**: Query issues or merge requests within all projects in a given group.
+**Description**: Query issues, epics, or merge requests within all projects in a given group.
 
 **Allowed value types**: `String`
 
@@ -580,7 +580,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by their IDs.
+**Description**: Query issues, epics, or merge requests by their IDs.
 
 **Allowed value types**:
 
@@ -616,7 +616,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query within the entire hierarchy of a group.
+**Description**: Query issues, epics, or merge requests within the entire hierarchy of a group.
 
 **Allowed value types**:
 
@@ -713,7 +713,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by their associated labels.
+**Description**: Query issues, epics, or merge requests by their associated labels.
 
 **Allowed value types**:
 
@@ -841,7 +841,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by their associated milestone.
+**Description**: Query issues, epics, or merge requests by their associated milestone.
 
 **Allowed value types**:
 
@@ -978,7 +978,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: The state of this issue or merge request.
+**Description**: Query issues, epics, or merge requests by state.
 
 **Allowed value types**:
 
@@ -1087,7 +1087,7 @@ The table below provides an overview of all available query fields and their spe
 
 {{< /history >}}
 
-**Description**: The type of object to query: one of the work item types or merge requests.
+**Description**: The type of object to query: issues, epics, or merge requests.
 
 **Allowed value types**:
 
@@ -1141,10 +1141,11 @@ The table below provides an overview of all available query fields and their spe
 
 - Alias `updatedAt` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/merge_requests/137) in GitLab 18.0.
 - Operators `>=` and `<=` [introduced](https://gitlab.com/gitlab-org/gitlab-query-language/glql-rust/-/work_items/58) in GitLab 18.0.
+- Support for querying epics by last updated [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/192680) in GitLab 18.1.
 
 {{< /history >}}
 
-**Description**: Query issues or merge requests by when they were last updated.
+**Description**: Query issues, epics, or merge requests by when they were last updated.
 
 **Allowed value types**:
 

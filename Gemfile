@@ -187,7 +187,7 @@ gem 'hashie', '~> 5.0.0', feature_category: :shared
 gem 'kaminari', '~> 1.2.2', feature_category: :shared
 
 # HAML
-gem 'hamlit', '~> 2.15.0', feature_category: :shared
+gem 'hamlit', '~> 3.0.0', feature_category: :shared
 
 # Files attachments
 gem 'carrierwave', '~> 1.3', feature_category: :shared

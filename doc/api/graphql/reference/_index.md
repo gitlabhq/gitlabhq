@@ -44,12 +44,12 @@ The `Query` type contains the API's top-level entry points for all executable qu
 
 ### `Query.abuseReport`
 
-Find an abuse report.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Find an abuse report.
 
 Returns [`AbuseReport`](#abusereport).
 
@@ -61,12 +61,12 @@ Returns [`AbuseReport`](#abusereport).
 
 ### `Query.abuseReportLabels`
 
-Abuse report labels.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Abuse report labels.
 
 Returns [`AbuseReportLabelConnection`](#abusereportlabelconnection).
 
@@ -94,12 +94,12 @@ Returns [`[AddOnPurchase!]`](#addonpurchase).
 
 ### `Query.adminMemberRole`
 
-Finds a single admin custom role for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single admin custom role for the instance. Available only for GitLab Self-Managed.
 
 Returns [`AdminMemberRole`](#adminmemberrole).
 
@@ -114,12 +114,12 @@ Returns [`AdminMemberRole`](#adminmemberrole).
 
 ### `Query.adminMemberRolePermissions`
 
-List of all admin customizable permissions.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+List of all admin customizable permissions.
 
 Returns [`CustomizableAdminPermissionConnection`](#customizableadminpermissionconnection).
 
@@ -129,12 +129,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.adminMemberRoles`
 
-Admin custom roles available for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Admin custom roles available for the instance. Available only for GitLab Self-Managed.
 
 Returns [`AdminMemberRoleConnection`](#adminmemberroleconnection).
 
@@ -153,12 +153,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiCatalogItem`
 
-Find an AI Catalog item.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Find an AI Catalog item.
 
 Returns [`AiCatalogItem`](#aicatalogitem).
 
@@ -170,12 +170,12 @@ Returns [`AiCatalogItem`](#aicatalogitem).
 
 ### `Query.aiCatalogItems`
 
-List of AI Catalog items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List of AI Catalog items.
 
 Returns [`AiCatalogItemConnection!`](#aicatalogitemconnection).
 
@@ -206,12 +206,12 @@ Returns [`ContextPreset`](#contextpreset).
 
 ### `Query.aiConversationThreads`
 
-List conversation threads of AI features.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+List conversation threads of AI features.
 
 Returns [`AiConversationsThreadConnection!`](#aiconversationsthreadconnection).
 
@@ -228,12 +228,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiFeatureSettings`
 
-List of configurable AI features.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+List of configurable AI features.
 
 Returns [`AiFeatureSettingConnection`](#aifeaturesettingconnection).
 
@@ -249,12 +249,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiMessages`
 
-Find GitLab Duo Chat messages.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Find GitLab Duo Chat messages.
 
 Returns [`AiMessageConnection!`](#aimessageconnection).
 
@@ -274,12 +274,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiModelSelectionNamespaceSettings`
 
-List of configurable AI features for namespace Model Selection.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+List of configurable AI features for namespace Model Selection.
 
 Returns [`AiModelSelectionNamespaceFeatureSettingConnection`](#aimodelselectionnamespacefeaturesettingconnection).
 
@@ -295,12 +295,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.aiSelfHostedModels`
 
-Returns the self-hosted model if an ID is provided, otherwise returns all models.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Returns the self-hosted model if an ID is provided, otherwise returns all models.
 
 Returns [`AiSelfHostedModelConnection`](#aiselfhostedmodelconnection).
 
@@ -348,12 +348,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.auditEventsInstanceStreamingDestinations`
 
-Instance-level external audit event streaming destinations.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Instance-level external audit event streaming destinations.
 
 Returns [`InstanceAuditEventStreamingDestinationConnection`](#instanceauditeventstreamingdestinationconnection).
 
@@ -363,12 +363,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.blobSearch`
 
-Find code visible to the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Find code visible to the current user.
 
 Returns [`BlobSearch`](#blobsearch).
 
@@ -408,12 +408,12 @@ Returns [`CiApplicationSettings`](#ciapplicationsettings).
 
 ### `Query.ciCatalogResource`
 
-A single CI/CD Catalog resource visible to an authorized user.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+A single CI/CD Catalog resource visible to an authorized user.
 
 Returns [`CiCatalogResource`](#cicatalogresource).
 
@@ -426,12 +426,12 @@ Returns [`CiCatalogResource`](#cicatalogresource).
 
 ### `Query.ciCatalogResources`
 
-All CI/CD Catalog resources under a common namespace, visible to an authorized user.
-
 {{< details >}}
 **Introduced** in GitLab 15.11.
 **Status**: Experiment.
 {{< /details >}}
+
+All CI/CD Catalog resources under a common namespace, visible to an authorized user.
 
 Returns [`CiCatalogResourceConnection`](#cicatalogresourceconnection).
 
@@ -451,13 +451,13 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.ciConfig`
 
-Linted and processed contents of a CI config.
-Should not be requested more than once per request.
-
 {{< details >}}
 **Deprecated** in GitLab 18.1.
 Use CiLint mutation: <https://docs.gitlab.com/api/graphql/reference/#mutationcilint>.
 {{< /details >}}
+
+Linted and processed contents of a CI config.
+Should not be requested more than once per request.
 
 Returns [`CiConfig`](#ciconfig).
 
@@ -527,12 +527,12 @@ Returns [`CiStage`](#cistage).
 
 ### `Query.ciQueueingHistory`
 
-Time taken for CI jobs to be picked up by runner by percentile. Enable the ClickHouse database backend to use this query.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Time taken for CI jobs to be picked up by runner by percentile. Enable the ClickHouse database backend to use this query.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
@@ -562,12 +562,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.cloudConnectorStatus`
 
-Run a series of status checks for Cloud Connector features.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Run a series of status checks for Cloud Connector features.
 
 Returns [`CloudConnectorStatus`](#cloudconnectorstatus).
 
@@ -579,12 +579,12 @@ Returns [`ComplianceRequirementControl`](#compliancerequirementcontrol).
 
 ### `Query.configuredAiCatalogItems`
 
-AI Catalog items configured for use.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+AI Catalog items configured for use.
 
 Returns [`AiCatalogItemConsumerConnection!`](#aicatalogitemconsumerconnection).
 
@@ -624,12 +624,12 @@ Returns [`CurrentUser`](#currentuser).
 
 ### `Query.customField`
 
-Find a custom field by its ID.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a custom field by its ID.
 
 Returns [`CustomField`](#customfield).
 
@@ -675,23 +675,23 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.duoSettings`
 
-Get GitLab Duo settings.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
 
+Get GitLab Duo settings.
+
 Returns [`DuoSettings`](#duosettings).
 
 ### `Query.duoWorkflowEvents`
-
-List the events for a Duo Workflow.
 
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List the events for a Duo Workflow.
 
 Returns [`DuoWorkflowEventConnection!`](#duoworkfloweventconnection).
 
@@ -707,12 +707,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.duoWorkflowWorkflows`
 
-List the workflows owned by the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List the workflows owned by the current user.
 
 Returns [`DuoWorkflowConnection!`](#duoworkflowconnection).
 
@@ -755,12 +755,12 @@ Returns [`EpicList`](#epiclist).
 
 ### `Query.featureFlagEnabled`
 
-Check if a feature flag is enabled.
-
 {{< details >}}
 **Deprecated** in GitLab 17.4.
 Replaced with metadata.featureFlags.
 {{< /details >}}
+
+Check if a feature flag is enabled.
 
 Returns [`Boolean!`](#boolean).
 
@@ -802,12 +802,12 @@ Returns [`Boolean`](#boolean).
 
 ### `Query.googleCloudArtifactRegistryRepositoryArtifact`
 
-Details about an artifact in the Google Artifact Registry.
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Details about an artifact in the Google Artifact Registry.
 
 Returns [`GoogleCloudArtifactRegistryArtifactDetails`](#googlecloudartifactregistryartifactdetails).
 
@@ -916,12 +916,12 @@ Returns [`Issue`](#issue).
 
 ### `Query.issues`
 
-Find issues visible to the current user. At least one filter must be provided.
-
 {{< details >}}
 **Introduced** in GitLab 15.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Find issues visible to the current user. At least one filter must be provided.
 
 Returns [`IssueConnection`](#issueconnection).
 
@@ -1010,12 +1010,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.ldapAdminRoleLinks`
 
-LDAP admin links. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.11.
 **Status**: Experiment.
 {{< /details >}}
+
+LDAP admin links. Available only for GitLab Self-Managed.
 
 Returns [`LdapAdminRoleLinkConnection`](#ldapadminrolelinkconnection).
 
@@ -1035,12 +1035,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.memberRole`
 
-Finds a single custom role for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single custom role for the instance. Available only for GitLab Self-Managed.
 
 Returns [`MemberRole`](#memberrole).
 
@@ -1055,12 +1055,12 @@ Returns [`MemberRole`](#memberrole).
 
 ### `Query.memberRolePermissions`
 
-List of all standard customizable permissions.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+List of all standard customizable permissions.
 
 Returns [`CustomizableStandardPermissionConnection`](#customizablestandardpermissionconnection).
 
@@ -1070,12 +1070,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.memberRoles`
 
-Custom roles available for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom roles available for the instance. Available only for GitLab Self-Managed.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
@@ -1136,12 +1136,12 @@ Returns [`MlExperiment`](#mlexperiment).
 
 ### `Query.mlModel`
 
-Find machine learning models.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Find machine learning models.
 
 Returns [`MlModel`](#mlmodel).
 
@@ -1165,12 +1165,12 @@ Returns [`Namespace`](#namespace).
 
 ### `Query.note`
 
-Find a note.
-
 {{< details >}}
 **Introduced** in GitLab 15.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a note.
 
 Returns [`Note`](#note).
 
@@ -1182,12 +1182,12 @@ Returns [`Note`](#note).
 
 ### `Query.organization`
 
-Find an organization.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Find an organization.
 
 Returns [`Organization`](#organization).
 
@@ -1199,12 +1199,12 @@ Returns [`Organization`](#organization).
 
 ### `Query.organizations`
 
-List organizations.
-
 {{< details >}}
 **Introduced** in GitLab 16.8.
 **Status**: Experiment.
 {{< /details >}}
+
+List organizations.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -1250,12 +1250,12 @@ Returns [`ProjectComplianceViolation`](#projectcomplianceviolation).
 
 ### `Query.projectSecret`
 
-View a specific project secret.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+View a specific project secret.
 
 Returns [`ProjectSecret`](#projectsecret).
 
@@ -1268,12 +1268,12 @@ Returns [`ProjectSecret`](#projectsecret).
 
 ### `Query.projectSecrets`
 
-List project secrets.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+List project secrets.
 
 Returns [`ProjectSecretConnection`](#projectsecretconnection).
 
@@ -1289,12 +1289,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.projectSecretsManager`
 
-Find a project secrets manager.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a project secrets manager.
 
 Returns [`ProjectSecretsManager`](#projectsecretsmanager).
 
@@ -1361,12 +1361,12 @@ Returns [`CiRunner`](#cirunner).
 
 ### `Query.runnerPlatforms`
 
-Supported runner platforms.
-
 {{< details >}}
 **Deprecated** in GitLab 15.9.
 No longer used, use gitlab-runner documentation to learn about supported platforms.
 {{< /details >}}
+
+Supported runner platforms.
 
 Returns [`RunnerPlatformConnection`](#runnerplatformconnection).
 
@@ -1376,12 +1376,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.runnerSetup`
 
-Runner setup instructions.
-
 {{< details >}}
 **Deprecated** in GitLab 15.9.
 No longer used, use gitlab-runner documentation to learn about runner registration commands.
 {{< /details >}}
+
+Runner setup instructions.
 
 Returns [`RunnerSetup`](#runnersetup).
 
@@ -1455,12 +1455,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.secretPermissions`
 
-List secret permissions.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+List secret permissions.
 
 Returns [`SecretPermissionConnection`](#secretpermissionconnection).
 
@@ -1476,12 +1476,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.selfManagedAddOnEligibleUsers`
 
-Users within the self-managed instance who are eligible for add-ons.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Users within the self-managed instance who are eligible for add-ons.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
@@ -1532,12 +1532,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.standardRole`
 
-Finds a single default role for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single default role for the instance. Available only for GitLab Self-Managed.
 
 Returns [`StandardRole`](#standardrole).
 
@@ -1549,12 +1549,12 @@ Returns [`StandardRole`](#standardrole).
 
 ### `Query.standardRoles`
 
-Default roles available for the instance. Available only for GitLab Self-Managed.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Default roles available for the instance. Available only for GitLab Self-Managed.
 
 Returns [`StandardRoleConnection`](#standardroleconnection).
 
@@ -1580,12 +1580,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ### `Query.syntheticNote`
 
-Find a synthetic note.
-
 {{< details >}}
 **Introduced** in GitLab 15.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a synthetic note.
 
 Returns [`Note`](#note).
 
@@ -1768,12 +1768,12 @@ Returns [`Vulnerability`](#vulnerability).
 
 ### `Query.wikiPage`
 
-Find a wiki page.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a wiki page.
 
 Returns [`WikiPage`](#wikipage).
 
@@ -1787,12 +1787,12 @@ Returns [`WikiPage`](#wikipage).
 
 ### `Query.workItem`
 
-Find a work item.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item.
 
 Returns [`WorkItem`](#workitem).
 
@@ -1804,12 +1804,12 @@ Returns [`WorkItem`](#workitem).
 
 ### `Query.workItemDescriptionTemplateContent`
 
-Find a work item description template.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item description template.
 
 Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
 
@@ -1821,12 +1821,12 @@ Returns [`WorkItemDescriptionTemplate`](#workitemdescriptiontemplate).
 
 ### `Query.workItemsByReference`
 
-Find work items by their reference.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Find work items by their reference.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -2364,12 +2364,12 @@ Input type: `AiDuoWorkflowCreateInput`
 
 ### `Mutation.aiFeatureSettingUpdate`
 
-Updates or creates settings for AI features.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates or creates settings for AI features.
 
 Input type: `AiFeatureSettingUpdateInput`
 
@@ -2392,12 +2392,12 @@ Input type: `AiFeatureSettingUpdateInput`
 
 ### `Mutation.aiModelSelectionNamespaceUpdate`
 
-Updates or creates settings for AI features for a namespace.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates or creates settings for AI features for a namespace.
 
 Input type: `AiModelSelectionNamespaceUpdateInput`
 
@@ -2420,12 +2420,12 @@ Input type: `AiModelSelectionNamespaceUpdateInput`
 
 ### `Mutation.aiSelfHostedModelConnectionCheck`
 
-Checks if the AI Gateway can establish a connection with the given model configuration.
-
 {{< details >}}
 **Introduced** in GitLab 17.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Checks if the AI Gateway can establish a connection with the given model configuration.
 
 Input type: `AiSelfHostedModelConnectionCheckInput`
 
@@ -2478,12 +2478,12 @@ Input type: `AiSelfHostedModelCreateInput`
 
 ### `Mutation.aiSelfHostedModelDelete`
 
-Deletes a self-hosted model.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a self-hosted model.
 
 Input type: `AiSelfHostedModelDeleteInput`
 
@@ -2503,12 +2503,12 @@ Input type: `AiSelfHostedModelDeleteInput`
 
 ### `Mutation.aiSelfHostedModelUpdate`
 
-Updates a self-hosted model.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a self-hosted model.
 
 Input type: `AiSelfHostedModelUpdateInput`
 
@@ -3474,12 +3474,12 @@ Input type: `BranchRuleDeleteInput`
 
 ### `Mutation.branchRuleExternalStatusCheckCreate`
 
-Create a new external status check from a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Create a new external status check from a branch rule.
 
 Input type: `BranchRuleExternalStatusCheckCreateInput`
 
@@ -3502,12 +3502,12 @@ Input type: `BranchRuleExternalStatusCheckCreateInput`
 
 ### `Mutation.branchRuleExternalStatusCheckDestroy`
 
-Destroy an external status check from a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Destroy an external status check from a branch rule.
 
 Input type: `BranchRuleExternalStatusCheckDestroyInput`
 
@@ -3528,12 +3528,12 @@ Input type: `BranchRuleExternalStatusCheckDestroyInput`
 
 ### `Mutation.branchRuleExternalStatusCheckUpdate`
 
-Update an external status check from a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Update an external status check from a branch rule.
 
 Input type: `BranchRuleExternalStatusCheckUpdateInput`
 
@@ -3557,12 +3557,12 @@ Input type: `BranchRuleExternalStatusCheckUpdateInput`
 
 ### `Mutation.branchRuleSquashOptionDelete`
 
-Delete a squash option for a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Delete a squash option for a branch rule.
 
 Input type: `BranchRuleSquashOptionDeleteInput`
 
@@ -3582,12 +3582,12 @@ Input type: `BranchRuleSquashOptionDeleteInput`
 
 ### `Mutation.branchRuleSquashOptionUpdate`
 
-Update a squash option for a branch rule.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Update a squash option for a branch rule.
 
 Input type: `BranchRuleSquashOptionUpdateInput`
 
@@ -4449,12 +4449,12 @@ Input type: `CreateContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.createContainerProtectionTagRule`
 
-Creates a protection rule to control which user roles can modify container image tags matching a specified pattern.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a protection rule to control which user roles can modify container image tags matching a specified pattern.
 
 Input type: `createContainerProtectionTagRuleInput`
 
@@ -5371,12 +5371,12 @@ Input type: `DeleteContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.deleteContainerProtectionTagRule`
 
-Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
 Input type: `DeleteContainerProtectionTagRuleInput`
 
@@ -5466,12 +5466,12 @@ Input type: `DeletePackagesProtectionRuleInput`
 
 ### `Mutation.deletePagesDeployment`
 
-Deletes a Pages deployment.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a Pages deployment.
 
 Input type: `DeletePagesDeploymentInput`
 
@@ -5914,12 +5914,12 @@ Input type: `DiscussionToggleResolveInput`
 
 ### `Mutation.duoSettingsUpdate`
 
-Updates GitLab Duo settings.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates GitLab Duo settings.
 
 Input type: `DuoSettingsUpdateInput`
 
@@ -6217,12 +6217,12 @@ Input type: `EpicBoardListCreateInput`
 
 ### `Mutation.epicBoardListDestroy`
 
-Destroys an epic board list.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by WorkItem type.
 {{< /details >}}
+
+Destroys an epic board list.
 
 Input type: `EpicBoardListDestroyInput`
 
@@ -6501,12 +6501,12 @@ Input type: `ExternalAuditEventDestinationUpdateInput`
 
 ### `Mutation.geoRegistriesBulkUpdate`
 
-Mutates multiple Geo registries for a given registry class.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Mutates multiple Geo registries for a given registry class.
 
 Input type: `GeoRegistriesBulkUpdateInput`
 
@@ -6531,12 +6531,12 @@ Input type: `GeoRegistriesBulkUpdateInput`
 
 ### `Mutation.geoRegistriesUpdate`
 
-Mutates a Geo registry.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Mutates a Geo registry.
 
 Input type: `GeoRegistriesUpdateInput`
 
@@ -8008,12 +8008,12 @@ Input type: `LabelCreateInput`
 
 ### `Mutation.ldapAdminRoleLinkCreate`
 
-Creates an instance-level custom admin role LDAP link.
-
 {{< details >}}
 **Introduced** in GitLab 17.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates an instance-level custom admin role LDAP link.
 
 Input type: `LdapAdminRoleLinkCreateInput`
 
@@ -8037,12 +8037,12 @@ Input type: `LdapAdminRoleLinkCreateInput`
 
 ### `Mutation.ldapAdminRoleLinkDestroy`
 
-Destroys an instance-level custom admin role LDAP link.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Destroys an instance-level custom admin role LDAP link.
 
 Input type: `LdapAdminRoleLinkDestroyInput`
 
@@ -9899,12 +9899,12 @@ Input type: `ProjectSecurityExclusionUpdateInput`
 
 ### `Mutation.projectSetComplianceFramework`
 
-Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
-
 {{< details >}}
 **Deprecated** in GitLab 17.11.
 Use mutation ProjectUpdateComplianceFrameworks instead of this.
 {{< /details >}}
+
+Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
 
 Input type: `ProjectSetComplianceFrameworkInput`
 
@@ -9926,12 +9926,12 @@ Input type: `ProjectSetComplianceFrameworkInput`
 
 ### `Mutation.projectSetContinuousVulnerabilityScanning`
 
-Enable/disable Continuous Vulnerability Scanning for the given project.
-
 {{< details >}}
 **Deprecated** in GitLab 17.3.
 CVS has been enabled permanently. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11474) for more information.
 {{< /details >}}
+
+Enable/disable Continuous Vulnerability Scanning for the given project.
 
 Input type: `ProjectSetContinuousVulnerabilityScanningInput`
 
@@ -10476,12 +10476,12 @@ Input type: `RepositionImageDiffNoteInput`
 
 ### `Mutation.restorePagesDeployment`
 
-Restores a Pages deployment that has been scheduled for deletion.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Restores a Pages deployment that has been scheduled for deletion.
 
 Input type: `RestorePagesDeploymentInput`
 
@@ -10502,12 +10502,12 @@ Input type: `RestorePagesDeploymentInput`
 
 ### `Mutation.resyncSecurityPolicies`
 
-Triggers a resynchronization of security policies linked to the given project or group (`full_path`).
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Triggers a resynchronization of security policies linked to the given project or group (`full_path`).
 
 Input type: `ResyncSecurityPoliciesInput`
 
@@ -11068,12 +11068,12 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectCreateAsync`
 
-Creates and assigns a security policy project for the given project or group (`full_path`) async.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates and assigns a security policy project for the given project or group (`full_path`) async.
 
 Input type: `SecurityPolicyProjectCreateAsyncInput`
 
@@ -11785,12 +11785,12 @@ Input type: `TodosMarkAllDoneInput`
 
 ### `Mutation.updateAbuseReportNote`
 
-Updates an abuse report Note.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates an abuse report Note.
 
 Input type: `UpdateAbuseReportNoteInput`
 
@@ -12032,12 +12032,12 @@ Input type: `UpdateContainerProtectionRepositoryRuleInput`
 
 ### `Mutation.updateContainerProtectionTagRule`
 
-Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a protection rule that controls which user roles can modify container image tags matching a specified pattern.
 
 Input type: `UpdateContainerProtectionTagRuleInput`
 
@@ -12712,12 +12712,12 @@ Input type: `UserSetNamespaceCommitEmailInput`
 
 ### `Mutation.valueStreamCreate`
 
-Creates a value stream.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a value stream.
 
 Input type: `ValueStreamCreateInput`
 
@@ -12741,12 +12741,12 @@ Input type: `ValueStreamCreateInput`
 
 ### `Mutation.valueStreamDestroy`
 
-Destroy a value stream.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Destroy a value stream.
 
 Input type: `ValueStreamDestroyInput`
 
@@ -12767,12 +12767,12 @@ Input type: `ValueStreamDestroyInput`
 
 ### `Mutation.valueStreamUpdate`
 
-Updates a value stream.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a value stream.
 
 Input type: `ValueStreamUpdateInput`
 
@@ -13126,12 +13126,12 @@ Input type: `WikiPageSubscribeInput`
 
 ### `Mutation.workItemAddClosingMergeRequest`
 
-Adds a closing merge request to a work item.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Adds a closing merge request to a work item.
 
 Input type: `WorkItemAddClosingMergeRequestInput`
 
@@ -13155,12 +13155,12 @@ Input type: `WorkItemAddClosingMergeRequestInput`
 
 ### `Mutation.workItemAddLinkedItems`
 
-Add linked items to the work item.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Add linked items to the work item.
 
 Input type: `WorkItemAddLinkedItemsInput`
 
@@ -13184,12 +13184,12 @@ Input type: `WorkItemAddLinkedItemsInput`
 
 ### `Mutation.workItemBulkMove`
 
-Allows move several work items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Allows move several work items.
 
 Input type: `WorkItemBulkMoveInput`
 
@@ -13212,12 +13212,12 @@ Input type: `WorkItemBulkMoveInput`
 
 ### `Mutation.workItemBulkUpdate`
 
-Allows updating several properties for a set of work items.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Allows updating several properties for a set of work items.
 
 Input type: `WorkItemBulkUpdateInput`
 
@@ -13249,12 +13249,12 @@ Input type: `WorkItemBulkUpdateInput`
 
 ### `Mutation.workItemConvert`
 
-Converts the work item to a new type.
-
 {{< details >}}
 **Introduced** in GitLab 15.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Converts the work item to a new type.
 
 Input type: `WorkItemConvertInput`
 
@@ -13276,12 +13276,12 @@ Input type: `WorkItemConvertInput`
 
 ### `Mutation.workItemCreate`
 
-Creates a work item.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a work item.
 
 Input type: `WorkItemCreateInput`
 
@@ -13324,12 +13324,12 @@ Input type: `WorkItemCreateInput`
 
 ### `Mutation.workItemCreateFromTask`
 
-Creates a work item from a task in another work item's description.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Creates a work item from a task in another work item's description.
 
 Input type: `WorkItemCreateFromTaskInput`
 
@@ -13352,12 +13352,12 @@ Input type: `WorkItemCreateFromTaskInput`
 
 ### `Mutation.workItemDelete`
 
-Deletes a work item.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Deletes a work item.
 
 Input type: `WorkItemDeleteInput`
 
@@ -13439,12 +13439,12 @@ Input type: `WorkItemExportInput`
 
 ### `Mutation.workItemHierarchyAddChildrenItems`
 
-Adds children to a given work item's hierarchy by Global ID.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Adds children to a given work item's hierarchy by Global ID.
 
 Input type: `WorkItemHierarchyAddChildrenItemsInput`
 
@@ -13466,12 +13466,12 @@ Input type: `WorkItemHierarchyAddChildrenItemsInput`
 
 ### `Mutation.workItemRemoveLinkedItems`
 
-Remove items linked to the work item.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Remove items linked to the work item.
 
 Input type: `WorkItemRemoveLinkedItemsInput`
 
@@ -13519,12 +13519,12 @@ Input type: `WorkItemSubscribeInput`
 
 ### `Mutation.workItemUpdate`
 
-Updates a work item by Global ID.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Updates a work item by Global ID.
 
 Input type: `WorkItemUpdateInput`
 
@@ -13568,12 +13568,12 @@ Input type: `WorkItemUpdateInput`
 
 ### `Mutation.workItemUserPreferenceUpdate`
 
-Create or Update user preferences for a work item type and namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Create or Update user preferences for a work item type and namespace.
 
 Input type: `WorkItemUserPreferenceUpdateInput`
 
@@ -13682,12 +13682,12 @@ Input type: `WorkItemsCsvImportInput`
 
 ### `Mutation.workItemsHierarchyReorder`
 
-Reorder a work item in the hierarchy tree.
-
 {{< details >}}
 **Introduced** in GitLab 17.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Reorder a work item in the hierarchy tree.
 
 Input type: `workItemsHierarchyReorderInput`
 
@@ -21470,12 +21470,12 @@ Activity streams associated with a user.
 
 ##### `ActivityStream.followedUsersActivity`
 
-Activity from users followed by the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Activity from users followed by the current user.
 
 Returns [`EventConnection`](#eventconnection).
 
@@ -21558,12 +21558,12 @@ A user with add-on data.
 
 ##### `AddOnUser.addOnAssignments`
 
-Add-on purchase assignments for the user.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Add-on purchase assignments for the user.
 
 Returns [`UserAddOnAssignmentConnection`](#useraddonassignmentconnection).
 
@@ -21732,12 +21732,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `AddOnUser.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -21906,12 +21906,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `AddOnUser.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -22969,12 +22969,12 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 
 ##### `AutocompletedUser.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -23143,12 +23143,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `AutocompletedUser.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -24296,12 +24296,12 @@ Represents an allowlist entry for the CI_JOB_TOKEN.
 
 ##### `CiJobTrace.htmlSummary`
 
-HTML summary that contains the tail lines of the trace. Returns at most 16KB of raw bytes from the trace. The returned string might start with an unexpected invalid UTF-8 code point due to truncation.
-
 {{< details >}}
 **Introduced** in GitLab 15.11.
 **Status**: Experiment.
 {{< /details >}}
+
+HTML summary that contains the tail lines of the trace. Returns at most 16KB of raw bytes from the trace. The returned string might start with an unexpected invalid UTF-8 code point due to truncation.
 
 Returns [`String!`](#string).
 
@@ -25748,12 +25748,12 @@ Represents a vulnerability. The connection type is countable.
 
 ##### `CountableVulnerability.dependencies`
 
-Dependencies for the vulnerability.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Dependencies for the vulnerability.
 
 Returns [`DependencyConnection!`](#dependencyconnection).
 
@@ -25959,12 +25959,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.assigneeOrReviewerMergeRequests`
 
-Merge requests the current user is an assignee or a reviewer of.Ignored if `merge_request_dashboard` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Merge requests the current user is an assignee or a reviewer of.Ignored if `merge_request_dashboard` feature flag is disabled.
 
 Returns [`MergeRequestConnection`](#mergerequestconnection).
 
@@ -26116,12 +26116,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -26290,12 +26290,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -26311,12 +26311,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `CurrentUser.workItemPreferences`
 
-User preferences for the given work item type and namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+User preferences for the given work item type and namespace.
 
 Returns [`WorkItemTypesUserPreference`](#workitemtypesuserpreference).
 
@@ -26329,12 +26329,12 @@ Returns [`WorkItemTypesUserPreference`](#workitemtypesuserpreference).
 
 ##### `CurrentUser.workItems`
 
-Find work items visible to the current user.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find work items visible to the current user.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -26791,13 +26791,13 @@ A software dependency used by a project.
 
 ##### `Dependency.dependencyPaths`
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -26833,13 +26833,13 @@ A software dependency aggregation used by a group.
 
 ##### `DependencyAggregation.dependencyPaths`
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -28261,12 +28261,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `EpicIssue.linkedWorkItems`
 
-Work items linked to the issue.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items linked to the issue.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
@@ -28589,12 +28589,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `GeoNode.dependencyProxyBlobRegistries`
 
-Find Dependency Proxy Blob registries on this Geo node.
-
 {{< details >}}
 **Introduced** in GitLab 15.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Find Dependency Proxy Blob registries on this Geo node.
 
 Returns [`DependencyProxyBlobRegistryConnection`](#dependencyproxyblobregistryconnection).
 
@@ -28634,12 +28634,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `GeoNode.designManagementRepositoryRegistries`
 
-Find Design Management Repository registries on this Geo node.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Find Design Management Repository registries on this Geo node.
 
 Returns [`DesignManagementRepositoryRegistryConnection`](#designmanagementrepositoryregistryconnection).
 
@@ -29153,12 +29153,12 @@ GPG signature for a signed commit.
 
 ##### `Group.achievements`
 
-Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
 
 Returns [`AchievementConnection`](#achievementconnection).
 
@@ -29174,12 +29174,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.addOnEligibleUsers`
 
-Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
@@ -29199,12 +29199,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.aiMetrics`
 
-AI-related metrics.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related metrics.
 
 Returns [`AiMetrics`](#aimetrics).
 
@@ -29217,12 +29217,12 @@ Returns [`AiMetrics`](#aimetrics).
 
 ##### `Group.aiUserMetrics`
 
-AI-related user metrics.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related user metrics.
 
 Returns [`AiUserMetricsConnection`](#aiusermetricsconnection).
 
@@ -29308,12 +29308,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.ciQueueingHistory`
 
-Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group. Enable the ClickHouse database backend to use this query.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Time taken for CI jobs to be picked up by this group's runners by percentile. Available to users with Maintainer role for the group. Enable the ClickHouse database backend to use this query.
 
 Returns [`QueueingDelayHistory`](#queueingdelayhistory).
 
@@ -29396,12 +29396,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.componentVersions`
 
-Find software dependency versions by component name.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependency versions by component name.
 
 Returns [`ComponentVersionConnection!`](#componentversionconnection).
 
@@ -29417,12 +29417,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.components`
 
-Find software dependencies by name.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependencies by name.
 
 Returns [`[Component!]`](#component).
 
@@ -29516,12 +29516,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.customField`
 
-A custom field configured for the group.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+A custom field configured for the group.
 
 Returns [`CustomField`](#customfield).
 
@@ -29533,12 +29533,12 @@ Returns [`CustomField`](#customfield).
 
 ##### `Group.customFields`
 
-Custom fields configured for the group.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom fields configured for the group.
 
 Returns [`CustomFieldConnection`](#customfieldconnection).
 
@@ -29625,12 +29625,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.dependencyAggregations`
 
-Software dependencies used by projects under this group.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Software dependencies used by projects under this group.
 
 Returns [`DependencyAggregationConnection`](#dependencyaggregationconnection).
 
@@ -29707,12 +29707,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.epic`
 
-Find a single epic.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
+
+Find a single epic.
 
 Returns [`Epic`](#epic).
 
@@ -29747,12 +29747,12 @@ Returns [`Epic`](#epic).
 
 ##### `Group.epicBoard`
 
-Find a single epic board.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by WorkItem type.
 {{< /details >}}
+
+Find a single epic board.
 
 Returns [`EpicBoard`](#epicboard).
 
@@ -29764,12 +29764,12 @@ Returns [`EpicBoard`](#epicboard).
 
 ##### `Group.epics`
 
-Find epics.
-
 {{< details >}}
 **Deprecated** in GitLab 17.5.
 Replaced by `WorkItem` type. For more information, see [migration guide](https://docs.gitlab.com/api/graphql/epic_work_items_api_migration_guide/).
 {{< /details >}}
+
+Find epics.
 
 Returns [`EpicConnection`](#epicconnection).
 
@@ -29844,12 +29844,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.importSourceUsers`
 
-Import source users of the namespace. This field can only be resolved for one namespace in any single request.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Import source users of the namespace. This field can only be resolved for one namespace in any single request.
 
 Returns [`ImportSourceUserConnection`](#importsourceuserconnection).
 
@@ -30007,12 +30007,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.memberRoles`
 
-Custom roles available for the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom roles available for the group.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
@@ -30249,12 +30249,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.projectComplianceRequirementsStatus`
 
-Compliance statuses for the projects in a group and its subgroups.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Compliance statuses for the projects in a group and its subgroups.
 
 Returns [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection).
 
@@ -30333,12 +30333,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.remoteDevelopmentClusterAgents`
 
-Cluster agents in the namespace with remote development capabilities.
-
 {{< details >}}
 **Deprecated** in GitLab 17.8.
 Use `workspacesClusterAgents`.
 {{< /details >}}
+
+Cluster agents in the namespace with remote development capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -30354,12 +30354,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
 
 Returns [`CiRunnerCloudProvisioning`](#cirunnercloudprovisioning).
 
@@ -30446,12 +30446,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.scanResultPolicies`
 
-Scan Result Policies of the project.
-
 {{< details >}}
 **Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 {{< /details >}}
+
+Scan Result Policies of the project.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -30468,12 +30468,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.securityMetrics`
 
-Security metrics.This feature is currently under development and not yet available for general use.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Security metrics.This feature is currently under development and not yet available for general use.
 
 Returns [`SecurityMetrics`](#securitymetrics).
 
@@ -30487,12 +30487,12 @@ Returns [`SecurityMetrics`](#securitymetrics).
 
 ##### `Group.securityPolicies`
 
-List of security policies configured for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+List of security policies configured for the namespace.
 
 Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
 
@@ -30527,12 +30527,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.standardRole`
 
-Finds a single default role for the group. Available only for SaaS.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds a single default role for the group. Available only for SaaS.
 
 Returns [`StandardRole`](#standardrole).
 
@@ -30544,12 +30544,12 @@ Returns [`StandardRole`](#standardrole).
 
 ##### `Group.standardRoles`
 
-Default roles available for the group. Available only for SaaS.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Default roles available for the group. Available only for SaaS.
 
 Returns [`StandardRoleConnection`](#standardroleconnection).
 
@@ -30588,12 +30588,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.valueStreamDashboardUsageOverview`
 
-Aggregated usage counts within the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Aggregated usage counts within the group.
 
 Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
 
@@ -30699,12 +30699,12 @@ Returns [`[String!]`](#string).
 
 ##### `Group.vulnerabilityManagementPolicies`
 
-Vulnerability Management Policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability Management Policies of the project.
 
 Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
 
@@ -30751,12 +30751,12 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 ##### `Group.workItem`
 
-Find a work item by IID directly associated with the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item by IID directly associated with the group.
 
 Returns [`WorkItem`](#workitem).
 
@@ -30768,12 +30768,12 @@ Returns [`WorkItem`](#workitem).
 
 ##### `Group.workItemDescriptionTemplates`
 
-Work item description templates available to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Work item description templates available to the namespace.
 
 Returns [`WorkItemDescriptionTemplateConnection`](#workitemdescriptiontemplateconnection).
 
@@ -30790,12 +30790,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.workItemStateCounts`
 
-Counts of work items by state for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Counts of work items by state for the namespace.
 
 Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 
@@ -30867,12 +30867,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.workItems`
 
-Work items that belong to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items that belong to the namespace.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -30932,12 +30932,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Group.workItemsWidgets`
 
-List of available widgets for the given work items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List of available widgets for the given work items.
 
 Returns [`[String!]`](#string).
 
@@ -30950,12 +30950,12 @@ Returns [`[String!]`](#string).
 
 ##### `Group.workspacesClusterAgents`
 
-Cluster agents in the namespace with workspaces capabilities.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Cluster agents in the namespace with workspaces capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -31884,12 +31884,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Issue.linkedWorkItems`
 
-Work items linked to the issue.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items linked to the issue.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
@@ -32601,12 +32601,12 @@ Returns [`[DiffStats!]`](#diffstats).
 
 ##### `MergeRequest.findingReportsComparer`
 
-Vulnerability finding reports comparison reported on the merge request.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability finding reports comparison reported on the merge request.
 
 Returns [`FindingReportsComparer`](#findingreportscomparer).
 
@@ -32888,12 +32888,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAssignee.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -33062,12 +33062,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAssignee.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -33309,12 +33309,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAuthor.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -33483,12 +33483,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestAuthor.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -33781,12 +33781,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestParticipant.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -33955,12 +33955,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestParticipant.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -34221,12 +34221,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestReviewer.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -34395,12 +34395,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `MergeRequestReviewer.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -34448,12 +34448,12 @@ Represents a set of cars/merge_requests queued for merging.
 
 ##### `MergeTrain.cars`
 
-Cars queued in the train.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Cars queued in the train.
 
 Returns [`MergeTrainCarConnection!`](#mergetraincarconnection).
 
@@ -34504,12 +34504,12 @@ MergeTrainCar represents an attempt to merge a merge requestusing merge trains.
 
 ##### `Metadata.featureFlags`
 
-Feature flags for the GitLab instance.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Feature flags for the GitLab instance.
 
 Returns [`[GitlabInstanceFeatureFlag!]!`](#gitlabinstancefeatureflag).
 
@@ -34808,12 +34808,12 @@ Product analytics events for a specific month and year.
 
 ##### `Namespace.achievements`
 
-Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the namespace. Returns `null` if the `achievements` feature flag is disabled.
 
 Returns [`AchievementConnection`](#achievementconnection).
 
@@ -34829,12 +34829,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.addOnEligibleUsers`
 
-Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Users in the namespace hierarchy that add ons are applicable for. This only applies to root namespaces.
 
 Returns [`AddOnUserConnection`](#addonuserconnection).
 
@@ -34890,12 +34890,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.customFields`
 
-Custom fields configured for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom fields configured for the namespace.
 
 Returns [`CustomFieldConnection`](#customfieldconnection).
 
@@ -34914,12 +34914,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.importSourceUsers`
 
-Import source users of the namespace. This field can only be resolved for one namespace in any single request.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Import source users of the namespace. This field can only be resolved for one namespace in any single request.
 
 Returns [`ImportSourceUserConnection`](#importsourceuserconnection).
 
@@ -35019,12 +35019,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.remoteDevelopmentClusterAgents`
 
-Cluster agents in the namespace with remote development capabilities.
-
 {{< details >}}
 **Deprecated** in GitLab 17.8.
 Use `workspacesClusterAgents`.
 {{< /details >}}
+
+Cluster agents in the namespace with remote development capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -35058,12 +35058,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.scanResultPolicies`
 
-Scan Result Policies of the project.
-
 {{< details >}}
 **Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 {{< /details >}}
+
+Scan Result Policies of the project.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -35080,12 +35080,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.securityPolicies`
 
-List of security policies configured for the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+List of security policies configured for the namespace.
 
 Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
 
@@ -35103,12 +35103,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.vulnerabilityManagementPolicies`
 
-Vulnerability Management Policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability Management Policies of the project.
 
 Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
 
@@ -35125,12 +35125,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItem`
 
-Find a work item by IID directly associated with the namespace (project or group).
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a work item by IID directly associated with the namespace (project or group).
 
 Returns [`WorkItem`](#workitem).
 
@@ -35142,12 +35142,12 @@ Returns [`WorkItem`](#workitem).
 
 ##### `Namespace.workItemDescriptionTemplates`
 
-Work item description templates available to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Work item description templates available to the namespace.
 
 Returns [`WorkItemDescriptionTemplateConnection`](#workitemdescriptiontemplateconnection).
 
@@ -35164,12 +35164,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItemTypes`
 
-Work item types available to the namespace.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Work item types available to the namespace.
 
 Returns [`WorkItemTypeConnection`](#workitemtypeconnection).
 
@@ -35185,12 +35185,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItems`
 
-Work items that belong to the namespace (project or group). Returns `null` for user namespaces.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items that belong to the namespace (project or group). Returns `null` for user namespaces.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -35250,12 +35250,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Namespace.workItemsWidgets`
 
-List of available widgets for the given work items.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+List of available widgets for the given work items.
 
 Returns [`[String!]`](#string).
 
@@ -35268,12 +35268,12 @@ Returns [`[String!]`](#string).
 
 ##### `Namespace.workspacesClusterAgents`
 
-Cluster agents in the namespace with workspaces capabilities.
-
 {{< details >}}
 **Introduced** in GitLab 17.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Cluster agents in the namespace with workspaces capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -35580,12 +35580,12 @@ Active period time range for on-call rotation.
 
 ##### `Organization.groups`
 
-Groups within this organization that the user has access to.
-
 {{< details >}}
 **Introduced** in GitLab 16.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Groups within this organization that the user has access to.
 
 Returns [`GroupConnection!`](#groupconnection).
 
@@ -35609,12 +35609,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Organization.projects`
 
-Projects within this organization that the user has access to.
-
 {{< details >}}
 **Introduced** in GitLab 16.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Projects within this organization that the user has access to.
 
 Returns [`ProjectConnection!`](#projectconnection).
 
@@ -35651,12 +35651,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Organization.workspacesClusterAgents`
 
-Cluster agents in the organization with workspaces capabilities.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Cluster agents in the organization with workspaces capabilities.
 
 Returns [`ClusterAgentConnection`](#clusteragentconnection).
 
@@ -36376,12 +36376,12 @@ Returns [`TestSuite`](#testsuite).
 
 ##### `PipelineAnalytics.timeSeries`
 
-Pipeline analytics shown over time based on the specified filter. Data is aggregated in UTC, with adaptive resolution: hourly for 7-day windows or less, daily for longer periods.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Pipeline analytics shown over time based on the specified filter. Data is aggregated in UTC, with adaptive resolution: hourly for 7-day windows or less, daily for longer periods.
 
 Returns [`[PipelineAnalyticsPeriod!]`](#pipelineanalyticsperiod).
 
@@ -36404,12 +36404,12 @@ Returns [`[PipelineAnalyticsPeriod!]`](#pipelineanalyticsperiod).
 
 ##### `PipelineAnalyticsPeriod.count`
 
-Pipeline count, optionally filtered by status.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Pipeline count, optionally filtered by status.
 
 Returns [`BigInt`](#bigint).
 
@@ -37034,12 +37034,12 @@ Project-level settings for product analytics provider.
 
 ##### `Project.aiAgent`
 
-Find a specific AI Agent.
-
 {{< details >}}
 **Introduced** in GitLab 16.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find a specific AI Agent.
 
 Returns [`AiAgent`](#aiagent).
 
@@ -37051,12 +37051,12 @@ Returns [`AiAgent`](#aiagent).
 
 ##### `Project.aiMetrics`
 
-AI-related metrics.
-
 {{< details >}}
 **Introduced** in GitLab 16.11.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related metrics.
 
 Returns [`AiMetrics`](#aimetrics).
 
@@ -37069,12 +37069,12 @@ Returns [`AiMetrics`](#aimetrics).
 
 ##### `Project.aiUserMetrics`
 
-AI-related user metrics.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+AI-related user metrics.
 
 Returns [`AiUserMetricsConnection`](#aiusermetricsconnection).
 
@@ -37159,12 +37159,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.alertManagementIntegrations`
 
-Integrations which can receive alerts for the project.
-
 {{< details >}}
 **Deprecated** in GitLab 18.2.
 Use `alertManagementHttpIntegrations`.
 {{< /details >}}
+
+Integrations which can receive alerts for the project.
 
 Returns [`AlertManagementIntegrationConnection`](#alertmanagementintegrationconnection).
 
@@ -37281,12 +37281,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.ciConfigVariables`
 
-CI/CD config variable.
-
 {{< details >}}
 **Introduced** in GitLab 15.3.
 **Status**: Experiment.
 {{< /details >}}
+
+CI/CD config variable.
 
 Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
@@ -37298,12 +37298,12 @@ Returns [`[CiConfigVariable!]`](#ciconfigvariable).
 
 ##### `Project.ciPipelineCreationInputs`
 
-Inputs to create a pipeline.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Inputs to create a pipeline.
 
 Returns [`[CiInputsSpec!]`](#ciinputsspec).
 
@@ -37315,12 +37315,12 @@ Returns [`[CiInputsSpec!]`](#ciinputsspec).
 
 ##### `Project.ciPipelineCreationRequest`
 
-Get information about an asynchronous pipeline creation request.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Get information about an asynchronous pipeline creation request.
 
 Returns [`CiPipelineCreationRequest`](#cipipelinecreationrequest).
 
@@ -37395,12 +37395,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.commitReferences`
 
-Get tag names containing a given commit.
-
 {{< details >}}
 **Introduced** in GitLab 16.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Get tag names containing a given commit.
 
 Returns [`CommitReferences`](#commitreferences).
 
@@ -37412,12 +37412,12 @@ Returns [`CommitReferences`](#commitreferences).
 
 ##### `Project.complianceControlStatus`
 
-Compliance control statuses for a project.
-
 {{< details >}}
 **Introduced** in GitLab 17.11.
 **Status**: Experiment.
 {{< /details >}}
+
+Compliance control statuses for a project.
 
 Returns [`ProjectComplianceControlStatusTypeConnection`](#projectcompliancecontrolstatustypeconnection).
 
@@ -37449,12 +37449,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.complianceRequirementStatuses`
 
-Compliance requirement statuses for a project.
-
 {{< details >}}
 **Introduced** in GitLab 18.0.
 **Status**: Experiment.
 {{< /details >}}
+
+Compliance requirement statuses for a project.
 
 Returns [`ProjectComplianceRequirementStatusConnection`](#projectcompliancerequirementstatusconnection).
 
@@ -37487,12 +37487,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.componentVersions`
 
-Find software dependency versions by component name.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependency versions by component name.
 
 Returns [`ComponentVersionConnection!`](#componentversionconnection).
 
@@ -37508,12 +37508,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.components`
 
-Find software dependencies by name.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Find software dependencies by name.
 
 Returns [`[Component!]`](#component).
 
@@ -37542,12 +37542,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.customizableDashboardVisualizations`
 
-Visualizations of the project or associated configuration project.
-
 {{< details >}}
 **Introduced** in GitLab 16.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Visualizations of the project or associated configuration project.
 
 Returns [`CustomizableDashboardVisualizationConnection`](#customizabledashboardvisualizationconnection).
 
@@ -37563,12 +37563,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.customizableDashboards`
 
-Customizable dashboards for the project.
-
 {{< details >}}
 **Introduced** in GitLab 15.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Customizable dashboards for the project.
 
 Returns [`CustomizableDashboardConnection`](#customizabledashboardconnection).
 
@@ -37678,13 +37678,13 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.dependencyPaths`
 
-Ancestor dependency paths for a dependency used by the project. \
-          Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 17.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency used by the project. \
+          Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -37745,12 +37745,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.forkDetails`
 
-Details of the fork project compared to its upstream project.
-
 {{< details >}}
 **Introduced** in GitLab 15.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Details of the fork project compared to its upstream project.
 
 Returns [`ForkDetails`](#forkdetails).
 
@@ -38162,12 +38162,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.memberRoles`
 
-Member roles available for the group.
-
 {{< details >}}
 **Introduced** in GitLab 16.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Member roles available for the group.
 
 Returns [`MemberRoleConnection`](#memberroleconnection).
 
@@ -38270,12 +38270,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.mergeTrains`
 
-Merge trains available to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Merge trains available to the project.
 
 Returns [`MergeTrainConnection`](#mergetrainconnection).
 
@@ -38333,12 +38333,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.mlModels`
 
-Finds machine learning models.
-
 {{< details >}}
 **Introduced** in GitLab 16.8.
 **Status**: Experiment.
 {{< /details >}}
+
+Finds machine learning models.
 
 Returns [`MlModelConnection`](#mlmodelconnection).
 
@@ -38375,12 +38375,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.observabilityLogsLinks`
 
-Logs attached to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Logs attached to the project.
 
 Returns [`ObservabilityLogConnection`](#observabilitylogconnection).
 
@@ -38400,12 +38400,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.observabilityMetricsLinks`
 
-Metrics attached to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Metrics attached to the project.
 
 Returns [`ObservabilityMetricConnection`](#observabilitymetricconnection).
 
@@ -38422,12 +38422,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.observabilityTracesLinks`
 
-Traces attached to the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Traces attached to the project.
 
 Returns [`ObservabilityTraceConnection`](#observabilitytraceconnection).
 
@@ -38600,12 +38600,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.productAnalyticsEventsStored`
 
-Count of all events used, broken down by month.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Count of all events used, broken down by month.
 
 Returns [`[MonthlyUsage!]`](#monthlyusage).
 
@@ -38708,12 +38708,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.runnerCloudProvisioning`
 
-Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
-
 {{< details >}}
 **Introduced** in GitLab 16.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Information used for provisioning the runner on a cloud provider. Returns `null` if the GitLab instance is not a SaaS instance.
 
 Returns [`CiRunnerCloudProvisioning`](#cirunnercloudprovisioning).
 
@@ -38783,12 +38783,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.scanResultPolicies`
 
-Scan Result Policies of the project.
-
 {{< details >}}
 **Deprecated** in GitLab 16.9.
 Use `approvalPolicies`.
 {{< /details >}}
+
+Scan Result Policies of the project.
 
 Returns [`ScanResultPolicyConnection`](#scanresultpolicyconnection).
 
@@ -38805,12 +38805,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.securityExclusion`
 
-A single security exclusion of a project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+A single security exclusion of a project.
 
 Returns [`ProjectSecurityExclusion`](#projectsecurityexclusion).
 
@@ -38825,12 +38825,12 @@ Returns [`ProjectSecurityExclusion`](#projectsecurityexclusion).
 
 ##### `Project.securityExclusions`
 
-Security exclusions of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Security exclusions of the project.
 
 Returns [`ProjectSecurityExclusionConnection`](#projectsecurityexclusionconnection).
 
@@ -38848,12 +38848,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.securityPolicies`
 
-All security policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 18.1.
 **Status**: Experiment.
 {{< /details >}}
+
+All security policies of the project.
 
 Returns [`SecurityPolicyTypeConnection`](#securitypolicytypeconnection).
 
@@ -38943,12 +38943,12 @@ Returns [`SentryDetailedError`](#sentrydetailederror).
 
 ##### `Project.services`
 
-Project services.
-
 {{< details >}}
 **Deprecated** in GitLab 15.9.
 A `Project.integrations` field is proposed instead in [issue 389904](https://gitlab.com/gitlab-org/gitlab/-/issues/389904).
 {{< /details >}}
+
+Project services.
 
 Returns [`ServiceConnection`](#serviceconnection).
 
@@ -39017,12 +39017,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.valueStreamDashboardUsageOverview`
 
-Aggregated usage counts within the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Aggregated usage counts within the project.
 
 Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
 
@@ -39051,12 +39051,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.visibleForks`
 
-Visible forks of the project.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Visible forks of the project.
 
 Returns [`ProjectConnection`](#projectconnection).
 
@@ -39136,12 +39136,12 @@ Returns [`[String!]`](#string).
 
 ##### `Project.vulnerabilityManagementPolicies`
 
-Vulnerability Management Policies of the project.
-
 {{< details >}}
 **Introduced** in GitLab 17.5.
 **Status**: Experiment.
 {{< /details >}}
+
+Vulnerability Management Policies of the project.
 
 Returns [`VulnerabilityManagementPolicyConnection`](#vulnerabilitymanagementpolicyconnection).
 
@@ -39188,12 +39188,12 @@ Returns [`VulnerabilitySeveritiesCount`](#vulnerabilityseveritiescount).
 
 ##### `Project.workItemStateCounts`
 
-Counts of work items by state for the project.
-
 {{< details >}}
 **Introduced** in GitLab 16.7.
 **Status**: Experiment.
 {{< /details >}}
+
+Counts of work items by state for the project.
 
 Returns [`WorkItemStateCountsType`](#workitemstatecountstype).
 
@@ -39261,12 +39261,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `Project.workItems`
 
-Work items of the project.
-
 {{< details >}}
 **Introduced** in GitLab 15.1.
 **Status**: Experiment.
 {{< /details >}}
+
+Work items of the project.
 
 Returns [`WorkItemConnection`](#workitemconnection).
 
@@ -40359,12 +40359,12 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 
 ##### `RepositoryBlob.blame`
 
-Blob blame.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Blob blame.
 
 Returns [`Blame`](#blame).
 
@@ -42143,12 +42143,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `UserCore.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -42317,12 +42317,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ##### `UserCore.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
@@ -42633,12 +42633,12 @@ Returns [`ValueStreamStageMetrics!`](#valuestreamstagemetrics).
 
 ##### `ValueStreamStageMetrics.items`
 
-Items in the stage.
-
 {{< details >}}
 **Introduced** in GitLab 17.4.
 **Status**: Experiment.
 {{< /details >}}
+
+Items in the stage.
 
 Returns [`ValueStreamStageItemsConnection`](#valuestreamstageitemsconnection).
 
@@ -42754,12 +42754,12 @@ Represents a vulnerability.
 
 ##### `Vulnerability.dependencies`
 
-Dependencies for the vulnerability.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Dependencies for the vulnerability.
 
 Returns [`DependencyConnection!`](#dependencyconnection).
 
@@ -43956,12 +43956,12 @@ Represents a custom fields widget.
 
 ##### `WorkItemWidgetCustomFields.customFieldValues`
 
-Custom field values associated to the work item.
-
 {{< details >}}
 **Introduced** in GitLab 17.9.
 **Status**: Experiment.
 {{< /details >}}
+
+Custom field values associated to the work item.
 
 Returns [`[WorkItemCustomFieldValue!]`](#workitemcustomfieldvalue).
 
@@ -44226,12 +44226,12 @@ Represents the linked items widget.
 
 ##### `WorkItemWidgetLinkedItems.linkedItems`
 
-Linked items for the work item.
-
 {{< details >}}
 **Introduced** in GitLab 16.3.
 **Status**: Experiment.
 {{< /details >}}
+
+Linked items for the work item.
 
 Returns [`LinkedWorkItemTypeConnection`](#linkedworkitemtypeconnection).
 
@@ -50578,13 +50578,13 @@ Implementations:
 
 ###### `DependencyInterface.dependencyPaths`
 
-Ancestor dependency paths for a dependency. \
-      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
-
 {{< details >}}
 **Introduced** in GitLab 18.2.
 **Status**: Experiment.
 {{< /details >}}
+
+Ancestor dependency paths for a dependency. \
+      Returns `null` if `dependency_graph_graphql` feature flag is disabled.
 
 Returns [`DependencyPathPage`](#dependencypathpage).
 
@@ -51357,12 +51357,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ###### `User.organizations`
 
-Organizations where the user has access.
-
 {{< details >}}
 **Introduced** in GitLab 16.6.
 **Status**: Experiment.
 {{< /details >}}
+
+Organizations where the user has access.
 
 Returns [`OrganizationConnection`](#organizationconnection).
 
@@ -51531,12 +51531,12 @@ four standard [pagination arguments](#pagination-arguments):
 
 ###### `User.userAchievements`
 
-Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
-
 {{< details >}}
 **Introduced** in GitLab 15.10.
 **Status**: Experiment.
 {{< /details >}}
+
+Achievements for the user. Only returns for namespaces where the `achievements` feature flag is enabled.
 
 Returns [`UserAchievementConnection`](#userachievementconnection).
 
