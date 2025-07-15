@@ -4,7 +4,7 @@ require 'rubocop_spec_helper'
 require 'rspec-parameterized'
 require_relative '../../../../rubocop/cop/rspec/before_all_role_assignment'
 
-RSpec.describe Rubocop::Cop::RSpec::BeforeAllRoleAssignment, :rubocop_rspec, feature_category: :tooling do
+RSpec.describe RuboCop::Cop::RSpec::BeforeAllRoleAssignment, :rubocop_rspec, feature_category: :tooling do
   context 'with `let`' do
     context 'and `before_all`' do
       it 'does not register an offense' do

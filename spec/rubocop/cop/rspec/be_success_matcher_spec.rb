@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/be_success_matcher'
 
-RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher do
+RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher, feature_category: :shared do
   let(:source_file) { 'spec/foo_spec.rb' }
 
   shared_examples 'cop' do |good:, bad:|
@@ -11,7 +11,7 @@ RSpec.describe RuboCop::Cop::RSpec::BeSuccessMatcher do
       it 'registers an offense and corrects', :aggregate_failures do
         expect_offense(<<~CODE, node: bad)
           %{node}
-          ^{node} Do not use deprecated `success?` method, use `successful?` instead.
+          ^{node} Do not use `be_success` (wraps deprecated `success?`); use `be_successful` instead.
         CODE
 
         expect_correction(<<~CODE)

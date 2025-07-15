@@ -20316,7 +20316,13 @@ msgstr ""
 msgid "DastProfiles|A selector describing the element clicked on to submit the login form for a single-page login form, or the password form for a multi-page login form."
 msgstr ""
 
+msgid "DastProfiles|A selector describing the element that is clicked on to submit the OTP form when it is separate from the username."
+msgstr ""
+
 msgid "DastProfiles|A selector describing the element that is clicked on to submit the username form of a multi-page login process."
+msgstr ""
+
+msgid "DastProfiles|A selector describing the element used to enter the one-time password on the login form."
 msgstr ""
 
 msgid "DastProfiles|A selector describing the element used to enter the password on the login form."
@@ -20640,6 +20646,15 @@ msgstr ""
 msgid "DastProfiles|Number of workers that passive scan in parallel. Defaults to the number of available CPUs."
 msgstr ""
 
+msgid "DastProfiles|OTP field"
+msgstr ""
+
+msgid "DastProfiles|OTP secret key"
+msgstr ""
+
+msgid "DastProfiles|OTP submit field"
+msgstr ""
+
 msgid "DastProfiles|PKCS12 certificate"
 msgstr ""
 
@@ -20830,6 +20845,9 @@ msgid "DastProfiles|Target paths file"
 msgstr ""
 
 msgid "DastProfiles|Target timeout"
+msgstr ""
+
+msgid "DastProfiles|The Base32 encoded secret key to use when generating a one-time password to authenticate to the website."
 msgstr ""
 
 msgid "DastProfiles|The PKCS12 certificate used for sites that require Mutual TLS. Must be encoded as base64 text."

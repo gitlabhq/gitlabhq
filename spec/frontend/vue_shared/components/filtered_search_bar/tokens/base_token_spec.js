@@ -367,6 +367,19 @@ describe('BaseToken', () => {
           }
         });
       });
+
+      describe('when searching for a value', () => {
+        beforeEach(() => {
+          wrapper = createComponent({
+            props: { defaultSuggestions: OPTIONS_NONE_ANY },
+          });
+          findGlFilteredSearchToken().vm.$emit('input', { data: 'foo' });
+        });
+
+        it('does not render default suggestions', () => {
+          expect(wrapper.findComponent(GlFilteredSearchSuggestion).exists()).toBe(false);
+        });
+      });
     });
 
     describe('with no suggestions', () => {

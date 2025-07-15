@@ -98,6 +98,7 @@ To run a DAST authenticated scan:
 - You have the username and password of the user you would like to authenticate as during the scan.
 - You have checked the [known issues](#known-issues) to ensure DAST can authenticate to your application.
 - You have satisfied the prerequisites if you're using [form authentication](#form-authentication).
+- You have satisfied the additional prerequisites if your form authentication flow includes a [time-based one-time password](#totp-authentication).
 - You have thought about how you can [verify](#verifying-authentication-is-successful) whether or not authentication was successful.
 
 #### Form authentication
@@ -105,6 +106,22 @@ To run a DAST authenticated scan:
 - You know the URL of the login form of your application. Alternatively, you know how to go to the login form from the authentication URL (see [clicking to go to the login form](#clicking-to-go-to-the-login-form)).
 - You know the [selectors](#finding-an-elements-selector) of the username and password HTML fields that DAST uses to input the respective values.
 - You know the element's [selector](#finding-an-elements-selector) that submits the login form when selected.
+
+#### TOTP authentication
+
+{{< history >}}
+
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13633) in scanner version 6.9.
+
+{{< /history >}}
+
+- You have the secret key for the test user's TOTP enrollment, encoded in Base32.
+- You have confirmed that the auth provider supports the following TOTP configuration (same as Google Authenticator):
+  - HMAC algorithm: SHA-1
+  - Time step: 30 seconds
+  - Token length: 6
+- You know the [selectors](#finding-an-elements-selector) of the TOTP field that DAST uses to input the generated TOTP token.
+- You know the element's [selector](#finding-an-elements-selector) that submits the TOTP token, if it is submitted separately from the password.
 
 ### Available CI/CD variables
 
@@ -207,6 +224,37 @@ dast:
 ```
 
 Do **not** define `DAST_AUTH_USERNAME` and `DAST_AUTH_PASSWORD` in the YAML job definition file as this could present a security risk. Instead, create them as masked CI/CD variables using the GitLab UI.
+See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
+
+### Configuration for Time-Based One-Time Password (TOTP)
+
+Configuration for TOTP requires these CI/CD variables to be defined for the DAST job:
+
+- `DAST_AUTH_OTP_FIELD`
+- `DAST_AUTH_OTP_KEY`
+
+If the TOTP token is submitted in its own form after the password has been submitted, you must also define this variable:
+
+- `DAST_AUTH_OTP_SUBMIT_FIELD`
+
+The `_FIELD` selector variables can be defined in the job definition YAML, for example:
+
+```yaml
+include:
+  - template: DAST.gitlab-ci.yml
+
+dast:
+  variables:
+    DAST_TARGET_URL: "https://example.com"
+    DAST_AUTH_URL: "https://example.com/login"
+    DAST_AUTH_USERNAME_FIELD: "css:[name=username]"
+    DAST_AUTH_PASSWORD_FIELD: "css:[name=password]"
+    DAST_AUTH_SUBMIT_FIELD: "css:button[type=submit]"
+    DAST_AUTH_OTP_FIELD: "name:otp"
+    DAST_AUTH_OTP_SUBMIT_FIELD: "css:input[type=submit]"
+```
+
+Do **not** define `DAST_AUTH_OTP_KEY` in the YAML job definition file as this could present a security risk. Instead, create it as a masked CI/CD variable using the GitLab UI.
 See [Custom CI/CD variables](../../../../../ci/variables/_index.md#for-a-project) for more information.
 
 ### Configuration for Single Sign-On (SSO)
@@ -560,10 +608,12 @@ dast:
 
 ## Known issues
 
-- DAST cannot bypass a CAPTCHA if the authentication flow includes one. Turn these off in the testing environment for the application being scanned.
-- DAST cannot handle multi-factor authentication like one-time passwords (OTP) by using SMS, biometrics, or authenticator apps. Turn these off in the testing environment for the application being scanned.
+- DAST cannot bypass a CAPTCHA if the authentication flow includes one.
+  Turn these off for the configured user in the testing environment for the application being scanned.
+- DAST cannot authenticate with one-time passwords (OTP) using SMS or biometrics.
+  Turn these off for the configured user in the testing environment for the application being scanned; or change the type of MFA for the user to TOTP.
 - DAST cannot authenticate to applications that do not set an [authentication token](#authentication-tokens) during login.
-- DAST cannot authenticate to applications that require more than two inputs to be filled out. Two inputs must be supplied, username and password.
+- DAST cannot authenticate to applications that require more text inputs than username, password, and optional TOTP.
 
 ## Troubleshooting
 

@@ -6,19 +6,22 @@ require 'rubocop/cop/rspec/mixin/top_level_group'
 module RuboCop
   module Cop
     module RSpec
-      # Cop that detects duplicate EE spec files
+      # Detects duplicate EE spec files
       #
       # There should not be files in both ee/spec/*/ee/my_spec.rb and ee/spec/*/my_spec.rb
       #
-      #  # bad
-      #  ee/spec/controllers/my_spec.rb      # describe MyClass
-      #  ee/spec/controllers/ee/my_spec.rb   # describe MyClass
+      # @example
+      #   # bad
+      #   ee/spec/controllers/my_spec.rb      # describe MyClass
+      #   ee/spec/controllers/ee/my_spec.rb   # describe MyClass
       #
-      #  # good, spec for EE extension code
-      #  ee/spec/controllers/ee/my_spec.rb   # describe MyClass
+      #   # good
+      #   # spec for EE extension code
+      #   ee/spec/controllers/ee/my_spec.rb   # describe MyClass
       #
-      #  # good, spec for EE only code
-      #  ee/spec/controllers/my_spec.rb      # describe MyClass
+      #   # good
+      #   # spec for EE only code
+      #   ee/spec/controllers/my_spec.rb      # describe MyClass
       #
       class DuplicateSpecLocation < RuboCop::Cop::RSpec::Base
         include RuboCop::Cop::RSpec::TopLevelGroup

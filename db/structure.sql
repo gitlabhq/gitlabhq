@@ -8272,7 +8272,7 @@ CREATE TABLE ai_catalog_item_versions (
     ai_catalog_item_id bigint NOT NULL,
     schema_version smallint NOT NULL,
     version text NOT NULL,
-    definition jsonb NOT NULL,
+    definition jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_8cabb46fa3 CHECK ((char_length(version) <= 50))
 );
 

@@ -5,7 +5,7 @@ require 'rubocop-rspec'
 module RuboCop
   module Cop
     module RSpec
-      # This cop checks for ENV assignment in specs
+      # Checks for ENV assignment in specs
       #
       # @example
       #

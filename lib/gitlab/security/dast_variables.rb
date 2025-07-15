@@ -117,6 +117,37 @@ module Gitlab
                   "[Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/502476) in GitLab 17.6."
               )
             },
+            DAST_AUTH_OTP_FIELD: {
+              additional: true,
+              auth: true,
+              type: "selector",
+              example: "name:otp",
+              name: s_("DastProfiles|OTP field"),
+              description: s_(
+                "DastProfiles|A selector describing the element used to enter the one-time password on the login form."
+              )
+            },
+            DAST_AUTH_OTP_KEY: {
+              additional: false,
+              auth: true,
+              type: "String",
+              example: "I5UXITDBMIQEIQKTKQFA====",
+              name: s_("DastProfiles|OTP secret key"),
+              description: s_(
+                "DastProfiles|The Base32 encoded secret key to use when generating a one-time password to " \
+                  "authenticate to the website.")
+            },
+            DAST_AUTH_OTP_SUBMIT_FIELD: {
+              additional: true,
+              auth: true,
+              type: "selector",
+              example: "css:input[type=submit]",
+              name: s_("DastProfiles|OTP submit field"),
+              description: s_(
+                "DastProfiles|A selector describing the element that is clicked on to submit the OTP form " \
+                  "when it is separate from the username."
+              )
+            },
             DAST_AUTH_PASSWORD: {
               additional: false,
               auth: true,

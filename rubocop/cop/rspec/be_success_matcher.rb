@@ -5,7 +5,7 @@ require 'rubocop-rspec'
 module RuboCop
   module Cop
     module RSpec
-      # This cop checks for `be_success` usage in controller specs
+      # Checks for `be_success` usage in controller specs
       #
       # @example
       #
@@ -26,7 +26,7 @@ module RuboCop
       class BeSuccessMatcher < RuboCop::Cop::Base
         extend RuboCop::Cop::AutoCorrector
 
-        MESSAGE = 'Do not use deprecated `success?` method, use `successful?` instead.'
+        MESSAGE = 'Do not use `be_success` (wraps deprecated `success?`); use `be_successful` instead.'
 
         def_node_search :expect_to_be_success?, <<~PATTERN
           (send (send nil? :expect (send nil? ...)) {:to :not_to :to_not} (send nil? :be_success))

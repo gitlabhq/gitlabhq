@@ -572,7 +572,7 @@ The `bypass_settings` field allows you to specify exceptions to the policy for c
 
 {{< history >}}
 
-- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18113) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_branch_exceptions`. Disabled by default
+- [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/18113) in GitLab 18.2 [with a flag](../../../administration/feature_flags/_index.md) named `approval_policy_branch_exceptions`. Enabled by default
 
 {{< /history >}}
 

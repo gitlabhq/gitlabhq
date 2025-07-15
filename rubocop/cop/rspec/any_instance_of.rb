@@ -5,8 +5,12 @@ require 'rubocop-rspec'
 module RuboCop
   module Cop
     module RSpec
-      # This cop checks for `allow_any_instance_of` or `expect_any_instance_of`
+      # Checks for `allow_any_instance_of` or `expect_any_instance_of`
       # usage in specs.
+      #
+      # `allow_any_instance_of` and `expect_any_instance_of` are deprecated in
+      # favor of `allow_next_instance_of` and `expect_next_instance_of`,
+      # which are more explicit and easier to understand.
       #
       # @example
       #

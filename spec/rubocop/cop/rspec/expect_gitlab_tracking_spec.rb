@@ -3,7 +3,7 @@
 require 'rubocop_spec_helper'
 require_relative '../../../../rubocop/cop/rspec/expect_gitlab_tracking'
 
-RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking do
+RSpec.describe RuboCop::Cop::RSpec::ExpectGitlabTracking, feature_category: :shared do
   let(:source_file) { 'spec/foo_spec.rb' }
 
   good_samples = [

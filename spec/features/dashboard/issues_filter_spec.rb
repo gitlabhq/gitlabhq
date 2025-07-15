@@ -97,7 +97,7 @@ RSpec.describe 'Dashboard Issues filtering', :js, feature_category: :team_planni
       send_keys 'bu'
 
       expect_suggestion('bug')
-      expect_suggestion_count(3) # Expect None, Any, and bug
+      expect_suggestion_count(1) # Expect bug
     end
   end
 
