@@ -16,3 +16,6 @@
     #js-home-panel{ data: home_panel_data_attributes }
 
   = render_if_exists "projects/home_mirror"
+
+= content_for :page_level_alert do
+  = render_if_exists 'shared/targeted_message_banner', group: @project.root_ancestor

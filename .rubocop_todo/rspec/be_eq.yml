@@ -1125,7 +1125,6 @@ RSpec/BeEq:
     - 'spec/models/work_items/widgets/hierarchy_spec.rb'
     - 'spec/models/work_items/widgets/notifications_spec.rb'
     - 'spec/presenters/blob_presenter_spec.rb'
-    - 'spec/presenters/blobs/unfold_presenter_spec.rb'
     - 'spec/presenters/commit_presenter_spec.rb'
     - 'spec/presenters/group_member_presenter_spec.rb'
     - 'spec/presenters/import/pending_reassignment_alert_presenter_spec.rb'

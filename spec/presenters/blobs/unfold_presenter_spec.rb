@@ -16,11 +16,11 @@ RSpec.describe Blobs::UnfoldPresenter do
       let(:params) { {} }
 
       it 'sets default attributes' do
-        expect(result.full?).to eq(false)
+        expect(result.full?).to be(false)
         expect(result.since).to eq(1)
         expect(result.to).to eq(1)
-        expect(result.bottom).to eq(false)
-        expect(result.unfold).to eq(true)
+        expect(result.bottom).to be(false)
+        expect(result.unfold).to be(true)
         expect(result.offset).to eq(0)
         expect(result.indent).to eq(0)
       end
@@ -30,11 +30,11 @@ RSpec.describe Blobs::UnfoldPresenter do
       let(:params) { { full: false, since: 2, to: 3, bottom: false, offset: 1, indent: 1 } }
 
       it 'sets attributes' do
-        expect(result.full?).to eq(false)
+        expect(result.full?).to be(false)
         expect(result.since).to eq(2)
         expect(result.to).to eq(3)
-        expect(result.bottom).to eq(false)
-        expect(result.unfold).to eq(true)
+        expect(result.bottom).to be(false)
+        expect(result.unfold).to be(true)
         expect(result.offset).to eq(1)
         expect(result.indent).to eq(1)
       end
@@ -44,11 +44,11 @@ RSpec.describe Blobs::UnfoldPresenter do
       let(:params) { { full: true, since: 2, to: 3, bottom: false, offset: 1, indent: 1 } }
 
       it 'sets other attributes' do
-        expect(result.full?).to eq(true)
+        expect(result.full?).to be(true)
         expect(result.since).to eq(1)
         expect(result.to).to eq(blob.lines.size)
-        expect(result.bottom).to eq(false)
-        expect(result.unfold).to eq(false)
+        expect(result.bottom).to be(false)
+        expect(result.unfold).to be(false)
         expect(result.offset).to eq(0)
         expect(result.indent).to eq(0)
       end
@@ -58,11 +58,11 @@ RSpec.describe Blobs::UnfoldPresenter do
       let(:params) { { full: false, since: 2, to: -1, bottom: true, offset: 1, indent: 1 } }
 
       it 'sets other attributes' do
-        expect(result.full?).to eq(false)
+        expect(result.full?).to be(false)
         expect(result.since).to eq(2)
         expect(result.to).to eq(blob.lines.size)
-        expect(result.bottom).to eq(false)
-        expect(result.unfold).to eq(false)
+        expect(result.bottom).to be(false)
+        expect(result.unfold).to be(false)
         expect(result.offset).to eq(0)
         expect(result.indent).to eq(0)
       end

@@ -1,7 +1,7 @@
 - if domain_presenter.enabled?
   - if domain_presenter.auto_ssl_enabled
     - if domain_presenter.show_auto_ssl_failed_warning?
-      .form-group.border-section.js-shown-if-auto-ssl{ class: ("!gl-hidden" unless auto_ssl_available_and_enabled) }
+      .form-group.gl-py-6.gl-m-0.gl-border-t.js-shown-if-auto-ssl{ class: ("!gl-hidden" unless auto_ssl_available_and_enabled) }
         .row
           .col-12
             = render Pajamas::AlertComponent.new(dismissible: false, variant: :warning) do |c|
@@ -10,14 +10,14 @@
               - c.with_actions do
                 = link_button_to s_('GitLabPagesDomains|Retry'), retry_auto_ssl_project_pages_domain_path(@project, domain_presenter), method: :post, size: :small
     - elsif !domain_presenter.certificate_gitlab_provided?
-      .form-group.border-section.js-shown-if-auto-ssl{ class: ("!gl-hidden" unless auto_ssl_available_and_enabled) }
+      .form-group.gl-py-6.gl-m-0.gl-border-t.js-shown-if-auto-ssl{ class: ("!gl-hidden" unless auto_ssl_available_and_enabled) }
         .row
           .col-12
             = render Pajamas::AlertComponent.new(dismissible: false, show_icon: false) do |c|
               - c.with_body do
                 = _("GitLab is obtaining a Let's Encrypt SSL certificate for this domain. This process can take some time. Please try again later.")
 - else
-  .form-group.border-section.js-shown-if-auto-ssl{ class: ("!gl-hidden" unless auto_ssl_available_and_enabled) }
+  .form-group.gl-py-6.gl-m-0.gl-border-t.js-shown-if-auto-ssl{ class: ("!gl-hidden" unless auto_ssl_available_and_enabled) }
     .row
       .col-12
         = render Pajamas::AlertComponent.new(dismissible: false, variant: :warning, show_icon: false) do |c|

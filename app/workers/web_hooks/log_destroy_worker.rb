@@ -1,10 +1,14 @@
 # frozen_string_literal: true
 
 module WebHooks
+  # This worker was previously scheduled when a WebHook was destroyed, but the
+  # large number of writes caused excessive WAL pressure on the DB. This worker
+  # is no longer scheduled, and can be removed in a future release.
+  # Original issue: https://gitlab.com/gitlab-org/gitlab/-/issues/555121
+  # Worker removal issue: https://gitlab.com/gitlab-org/gitlab/-/issues/555405
+  # Guidelines: https://docs.gitlab.com/development/sidekiq/compatibility_across_updates/#removing-worker-classes
   class LogDestroyWorker
     include ApplicationWorker
-
-    DestroyError = Class.new(StandardError)
 
     data_consistency :always
     feature_category :webhooks
@@ -12,13 +16,6 @@ module WebHooks
 
     idempotent!
 
-    def perform(params = {})
-      hook_id = params['hook_id']
-      return unless hook_id
-
-      result = ::WebHooks::LogDestroyService.new(hook_id).execute
-
-      result.track_and_raise_exception(as: DestroyError, web_hook_id: hook_id)
-    end
+    def perform(_params = {}); end
   end
 end

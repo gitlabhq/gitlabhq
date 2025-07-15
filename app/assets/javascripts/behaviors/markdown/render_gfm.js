@@ -5,6 +5,7 @@ import renderMath from './render_math';
 import renderSandboxedMermaid from './render_sandboxed_mermaid';
 import { renderGlql } from './render_glql';
 import { renderJSONTable, renderJSONTableHTML } from './render_json_table';
+import { addAriaLabels } from './accessibility';
 
 function initPopovers(elements) {
   if (!elements.length) return;
@@ -31,6 +32,7 @@ export function renderGFM(element) {
     glqlEls,
     userEls,
     popoverEls,
+    taskListCheckboxEls,
   ] = [
     '.js-syntax-highlight',
     '.js-render-kroki[hidden]',
@@ -41,6 +43,7 @@ export function renderGFM(element) {
     '[data-canonical-lang="glql"]',
     '.gfm-project_member',
     '.gfm-issue, .gfm-work_item, .gfm-merge_request, .gfm-epic, .gfm-milestone',
+    '.task-list-item-checkbox',
   ].map((selector) => Array.from(element.querySelectorAll(selector)));
 
   syntaxHighlight(highlightEls);
@@ -51,6 +54,7 @@ export function renderGFM(element) {
   renderJSONTableHTML(tableHTMLEls);
   highlightCurrentUser(userEls);
   initPopovers(popoverEls);
+  addAriaLabels(taskListCheckboxEls);
 
   if (gon?.features?.glqlIntegration) renderGlql(glqlEls.map((e) => e.parentNode));
 }

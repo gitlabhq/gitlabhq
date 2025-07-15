@@ -1843,21 +1843,6 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     end
   end
 
-  describe ".clean_name" do
-    context "when the name complies with the group name regex" do
-      it "returns the name as is" do
-        valid_name = "Hello - World _ (Hi.)"
-        expect(described_class.clean_name(valid_name)).to eq(valid_name)
-      end
-    end
-
-    context "when the name does not comply with the group name regex" do
-      it "sanitizes the name by replacing all invalid char sequences with a space" do
-        expect(described_class.clean_name("Green'! Test~~~")).to eq("Green Test")
-      end
-    end
-  end
-
   describe ".username_reserved?" do
     subject(:username_reserved) { described_class.username_reserved?(username) }
 

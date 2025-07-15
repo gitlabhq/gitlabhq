@@ -11067,7 +11067,7 @@ Input type: `SecurityPolicyProjectCreateInput`
 
 ### `Mutation.securityPolicyProjectCreateAsync`
 
-**Status**: Experiment. Creates and assigns a security policy project for the given project or group (`full_path`) async.
+Creates and assigns a security policy project for the given project or group (`full_path`) async.
 
 {{< details >}}
 **Introduced** in GitLab 17.3.

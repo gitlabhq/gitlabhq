@@ -634,7 +634,6 @@ RSpec/ContextWording:
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/prune_event_log_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/preview_billable_user_change_service_spec.rb'
     - 'ee/spec/services/groups/destroy_service_spec.rb'
     - 'ee/spec/services/groups/update_service_spec.rb'

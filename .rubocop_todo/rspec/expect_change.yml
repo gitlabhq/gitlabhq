@@ -100,7 +100,6 @@ RSpec/ExpectChange:
     - 'ee/spec/services/geo/file_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/node_create_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/activate_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
     - 'ee/spec/services/group_saml/identity/destroy_service_spec.rb'
     - 'ee/spec/services/groups/update_repository_storage_service_spec.rb'
     - 'ee/spec/services/incident_management/escalation_policies/create_service_spec.rb'

@@ -386,7 +386,7 @@ export default {
         v-if="stateToRender === $options.stateMap.loading"
         :label="s__('Pipelines|Loading Pipelines')"
         size="lg"
-        class="prepend-top-20"
+        class="gl-mt-5"
       />
 
       <no-ci-empty-state

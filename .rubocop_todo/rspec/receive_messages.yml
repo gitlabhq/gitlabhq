@@ -135,7 +135,6 @@ RSpec/ReceiveMessages:
     - 'ee/spec/services/ee/work_items/related_work_item_links/create_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
     - 'ee/spec/services/incident_management/incidents/create_sla_service_spec.rb'
     - 'ee/spec/services/merge_requests/merge_service_spec.rb'
     - 'ee/spec/services/merge_requests/mergeability/check_jira_status_service_spec.rb'

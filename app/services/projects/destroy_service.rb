@@ -332,13 +332,6 @@ module Projects
       )
     end
 
-    # The project can have multiple webhooks with hundreds of thousands of web_hook_logs.
-    # By default, they are removed with "DELETE CASCADE" option defined via foreign_key.
-    # But such queries can exceed the statement_timeout limit and fail to delete the project.
-    # (see https://gitlab.com/gitlab-org/gitlab/-/issues/26259)
-    #
-    # To prevent that we use WebHooks::DestroyService. It deletes logs in batches and
-    # produces smaller and faster queries to the database.
     def destroy_web_hooks!
       project.hooks.find_each do |web_hook|
         result = ::WebHooks::DestroyService.new(current_user).execute(web_hook)

@@ -3345,6 +3345,5 @@ RSpec/NamedSubject:
     - 'spec/workers/users/create_statistics_worker_spec.rb'
     - 'spec/workers/users/migrate_records_to_ghost_user_in_batches_worker_spec.rb'
     - 'spec/workers/web_hook_worker_spec.rb'
-    - 'spec/workers/web_hooks/log_destroy_worker_spec.rb'
     - 'spec/workers/work_items/import_work_items_csv_worker_spec.rb'
     - 'spec/workers/x509_certificate_revoke_worker_spec.rb'

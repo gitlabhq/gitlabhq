@@ -1639,7 +1639,6 @@ Layout/LineLength:
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/gitlab_subscriptions/check_future_renewal_service_spec.rb'
-    - 'ee/spec/services/gitlab_subscriptions/create_service_spec.rb'
     - 'ee/spec/services/groups/transfer_service_spec.rb'
     - 'ee/spec/services/groups/update_repository_storage_service_spec.rb'
     - 'ee/spec/services/incident_management/escalation_policies/create_service_spec.rb'

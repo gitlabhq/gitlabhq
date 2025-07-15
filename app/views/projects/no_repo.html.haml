@@ -16,11 +16,11 @@
   = link_button_to project_repository_path(@project), method: :post, variant: :confirm do
     = _('Create empty repository')
 
-  %strong.gl-ml-3.gl-mr-3 or
+  %strong.gl-mx-3 or
 
   = link_button_to new_project_import_path(@project) do
     = _('Import repository')
 
 - if can? current_user, :remove_project, @project
-  .prepend-top-20
+  .gl-mt-5
     = link_button_to _('Delete project'), project_path(@project), data: { confirm: remove_project_message, confirm_btn_variant: 'danger' }, aria: { label: _('Delete project') }, method: :delete, class: 'gl-float-right', variant: :danger
