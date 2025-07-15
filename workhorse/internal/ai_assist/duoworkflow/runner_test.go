@@ -253,7 +253,7 @@ func TestRunner_handleWebSocketMessage(t *testing.T) {
 			name:           "send EOF error",
 			message:        []byte(`{"type": "test"}`),
 			sendError:      io.EOF,
-			expectedErrMsg: "handleWebSocketMessage: failed to write a gRPC message: EOF",
+			expectedErrMsg: "",
 		},
 		{
 			name:           "successful message handling",

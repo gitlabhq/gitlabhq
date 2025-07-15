@@ -8,13 +8,13 @@ module Tooling
     include Helpers::PredictiveTestsHelper
 
     def initialize(
-      changed_files_pathname,
+      changed_files,
       predictive_tests_pathname,
       mappings_file: nil,
       mappings_limit_percentage: nil
     )
       @predictive_tests_pathname = predictive_tests_pathname
-      @changed_files = read_array_from_file(changed_files_pathname)
+      @changed_files = changed_files
       @mappings_file = mappings_file
       @mappings_limit_percentage = mappings_limit_percentage
     end

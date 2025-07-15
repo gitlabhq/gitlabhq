@@ -9,10 +9,9 @@ module Tooling
     class PartialToViewsMappings
       include Helpers::PredictiveTestsHelper
 
-      def initialize(changed_files_pathname, views_with_partials_pathname, view_base_folder: 'app/views')
-        @views_with_partials_pathname = views_with_partials_pathname
-        @changed_files             = read_array_from_file(changed_files_pathname)
-        @view_base_folders         = folders_for_available_editions(view_base_folder)
+      def initialize(changed_files, view_base_folder: 'app/views')
+        @changed_files = changed_files
+        @view_base_folders = folders_for_available_editions(view_base_folder)
       end
 
       def execute
@@ -30,7 +29,7 @@ module Tooling
           end
         end
 
-        write_array_to_file(views_with_partials_pathname, views_including_modified_partials)
+        views_including_modified_partials
       end
 
       def filter_files

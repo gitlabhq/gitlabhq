@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative "test_selector"
+require_relative "changed_files"
+
 require_relative "../helpers/file_handler"
 require_relative "../events/track_pipeline_events"
 
@@ -21,10 +23,12 @@ module Tooling
       def initialize(
         rspec_all_failed_tests_file:,
         crystalball_mapping_dir:,
+        frontend_fixtures_mapping_file:,
         output_dir: nil
       )
         @rspec_all_failed_tests_file = rspec_all_failed_tests_file
         @crystalball_mapping_dir = crystalball_mapping_dir
+        @frontend_fixtures_mapping_file = frontend_fixtures_mapping_file
         @output_dir = output_dir
         @logger = Logger.new($stdout, progname: "predictive testing")
       end
@@ -45,7 +49,7 @@ module Tooling
 
       private
 
-      attr_reader :rspec_all_failed_tests_file, :crystalball_mapping_dir, :logger
+      attr_reader :rspec_all_failed_tests_file, :crystalball_mapping_dir, :frontend_fixtures_mapping_file, :logger
 
       # Project root folder
       #
@@ -73,11 +77,11 @@ module Tooling
         @tracker ||= Tooling::Events::TrackPipelineEvents.new(logger: logger)
       end
 
-      # MR changed files file path
+      # MR changed files
       #
       # @return [String]
-      def rspec_changed_files_path
-        @rspec_changed_files_path ||= File.join(output_path, "changed_files.txt")
+      def changed_files
+        @changed_files ||= ChangedFiles.fetch(frontend_fixtures_file: frontend_fixtures_mapping_file)
       end
 
       # Mapping file path for specific strategy
@@ -111,11 +115,9 @@ module Tooling
       # @return [void]
       def create_test_list!(strategy)
         Tooling::PredictiveTests::TestSelector.new(
-          rspec_changed_files_path: rspec_changed_files_path,
+          changed_files: changed_files,
           rspec_test_mapping_path: mapping_file_path(strategy),
           rspec_matching_test_files_path: matching_rspec_test_files_path(strategy),
-          rspec_views_including_partials_path: path_for_strategy(strategy, "views_including_partials.txt"),
-          frontend_fixtures_mapping_path: path_for_strategy(strategy, "frontend_fixtures_mapping.json"),
           rspec_matching_js_files_path: path_for_strategy(strategy, "js_matching_files.txt"),
           rspec_mappings_limit_percentage: nil # always return all tests in the mapping
         ).execute
@@ -128,7 +130,6 @@ module Tooling
       def generate_and_record_metrics(strategy)
         logger.info("Generating metrics for mapping strategy '#{strategy}' ...")
 
-        changed_files = read_array_from_file(rspec_changed_files_path)
         # based on the predictive test selection strategy
         predicted_test_files = read_array_from_file(matching_rspec_test_files_path(strategy))
         # actual failed tests from tier-3 run

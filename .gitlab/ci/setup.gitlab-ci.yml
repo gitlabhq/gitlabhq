@@ -161,10 +161,6 @@ detect-tests:
         filter_rspec_matched_foss_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_FOSS_PATH};
         filter_rspec_matched_ee_tests ${RSPEC_MATCHING_TEST_FILES_PATH} ${RSPEC_MATCHING_TESTS_EE_PATH};
 
-        echoinfo 'Changed files:'
-        echoinfo "$(tr ' ' '\n' < $RSPEC_CHANGED_FILES_PATH)"
-        echo ""
-
         echoinfo 'Related FOSS RSpec tests:'
         echoinfo "$(tr ' ' '\n' < $RSPEC_MATCHING_TESTS_FOSS_PATH)"
         echo ""
@@ -186,7 +182,6 @@ detect-tests:
       - ${RSPEC_MATCHING_TESTS_EE_PATH}
       - ${RSPEC_MATCHING_TESTS_FOSS_PATH}
       - ${RSPEC_MATCHING_TEST_FILES_PATH}
-      - ${RSPEC_VIEWS_INCLUDING_PARTIALS_PATH}
 
 detect-previous-failed-tests:
   extends:

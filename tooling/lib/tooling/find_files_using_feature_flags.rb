@@ -7,20 +7,15 @@ module Tooling
   class FindFilesUsingFeatureFlags
     include Helpers::PredictiveTestsHelper
 
-    def initialize(changed_files_pathname:, feature_flags_base_folder: 'config/feature_flags')
-      @changed_files_pathname     = changed_files_pathname
-      @changed_files              = read_array_from_file(changed_files_pathname)
+    def initialize(changed_files:, feature_flags_base_folder: 'config/feature_flags')
+      @changed_files              = changed_files
       @feature_flags_base_folders = folders_for_available_editions(feature_flags_base_folder)
     end
 
     def execute
       ff_union_regexp = Regexp.union(feature_flag_filenames)
 
-      files_using_modified_feature_flags = ruby_files.select do |ruby_file|
-        ruby_file if ff_union_regexp.match?(File.read(ruby_file))
-      end
-
-      write_array_to_file(changed_files_pathname, files_using_modified_feature_flags.uniq)
+      ruby_files.select { |ruby_file| ruby_file if ff_union_regexp.match?(File.read(ruby_file)) }.uniq
     end
 
     def filter_files
@@ -43,6 +38,6 @@ module Tooling
       Dir["**/*.rb"].reject { |pathname| pathname.start_with?('vendor') }
     end
 
-    attr_reader :changed_files, :changed_files_pathname, :feature_flags_base_folders
+    attr_reader :changed_files, :feature_flags_base_folders
   end
 end

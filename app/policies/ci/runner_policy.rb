@@ -5,7 +5,7 @@ module Ci
     with_options scope: :subject, score: 0
     condition(:locked, scope: :subject) { @subject.locked? }
 
-    with_options score: 20
+    with_score 20
     condition(:owned_runner) do
       @user.runner_available?(@subject)
     end
@@ -39,7 +39,7 @@ module Ci
       @user.authorized_projects(Gitlab::Access::MAINTAINER).with_shared_runners_enabled.exists?
     end
 
-    with_options score: 10
+    with_score 10
     condition(:any_associated_projects_in_group_runner_inheriting_group_runners) do
       # Check if any projects where user is a maintainer+ are inheriting group runners
       @subject.groups&.any? do |group|
@@ -50,16 +50,18 @@ module Ci
       end
     end
 
-    with_options score: 6
+    with_score 6
     condition(:maintainer_in_any_associated_projects) do
+      next true if maintainer_in_owner_scope?
+
       # Check if runner is associated to any projects where user is a maintainer+
       @subject.projects.visible_to_user_and_access_level(@user, Gitlab::Access::MAINTAINER).exists?
     end
 
-    with_options score: 6
-    condition(:maintainer_in_owner_project) do
-      # Check if user is a maintainer+ in the project owning the runner
-      @user.authorized_projects(Gitlab::Access::MAINTAINER).id_in(@subject.owner).exists?
+    with_score 5
+    condition(:maintainer_in_owner_scope) do
+      # Check if user is a maintainer+ in the scope owning the runner
+      can?(:maintainer_access, @subject.owner)
     end
 
     with_score 6
@@ -92,20 +94,20 @@ module Ci
       enable :read_runner
     end
 
-    rule { is_project_runner & maintainer_in_owner_project }.policy do
-      enable :update_runner
-    end
-
-    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
-      enable :read_runner
-    end
-
     rule { is_group_runner & maintainer_in_any_associated_groups }.policy do
       enable :read_runner
     end
 
     rule { is_group_runner & any_associated_projects_in_group_runner_inheriting_group_runners }.policy do
       enable :read_runner
+    end
+
+    rule { is_project_runner & maintainer_in_any_associated_projects }.policy do
+      enable :read_runner
+    end
+
+    rule { is_project_runner & maintainer_in_owner_scope }.policy do
+      enable :update_runner
     end
 
     rule { ~admin & belongs_to_multiple_projects }.prevent :delete_runner

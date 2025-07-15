@@ -16,9 +16,12 @@ module Tooling
       RAILS_PARTIAL_INVOCATION_REGEXP = %r{(?:render|render_if_exists)(?: |\()(?:partial: ?)?['"]([\w/-]+)['"]}
 
       def initialize(
-        changed_files_pathname, predictive_tests_pathname,
-        view_base_folder: 'app/views', js_base_folder: 'app/assets/javascripts')
-        @changed_files             = read_array_from_file(changed_files_pathname)
+        changed_files,
+        predictive_tests_pathname,
+        view_base_folder: 'app/views',
+        js_base_folder: 'app/assets/javascripts'
+      )
+        @changed_files             = changed_files
         @predictive_tests_pathname = predictive_tests_pathname
         @view_base_folders         = folders_for_available_editions(view_base_folder)
         @js_base_folders           = folders_for_available_editions(js_base_folder)

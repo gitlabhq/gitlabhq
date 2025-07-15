@@ -129,6 +129,13 @@ export default {
       return this.environmentScopeLabel || this.placeholderText;
     },
   },
+  watch: {
+    selectedEnvironmentScope: {
+      handler(scope) {
+        this.selectedEnvironment = scope;
+      },
+    },
+  },
   methods: {
     debouncedSearch: debounce(function debouncedSearch(searchTerm) {
       const newSearchTerm = searchTerm.trim();

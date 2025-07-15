@@ -9,9 +9,9 @@ module Tooling
     class ViewToSystemSpecsMappings
       include Helpers::PredictiveTestsHelper
 
-      def initialize(changed_files_pathname, predictive_tests_pathname, view_base_folder: 'app/views')
+      def initialize(changed_files, predictive_tests_pathname, view_base_folder: 'app/views')
+        @changed_files             = changed_files
         @predictive_tests_pathname = predictive_tests_pathname
-        @changed_files             = read_array_from_file(changed_files_pathname)
         @view_base_folders         = folders_for_available_editions(view_base_folder)
       end
 

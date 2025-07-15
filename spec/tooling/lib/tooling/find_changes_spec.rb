@@ -140,23 +140,42 @@ RSpec.describe Tooling::FindChanges, feature_category: :tooling do
       allow(instance).to receive(:gitlab).and_return(gitlab_client)
     end
 
-    context 'when there is no changed files file' do
-      let(:changed_files_pathname) { nil }
-
-      it 'raises an ArgumentError' do
-        expect { subject }.to raise_error(
-          ArgumentError, "A path to the changed files file must be given as :changed_files_pathname"
-        )
-      end
-    end
-
     context 'when fetching changes from API' do
       let(:from) { :api }
+      let(:mr_changes_array) { [] }
+
+      before do
+        # rubocop:disable RSpec/VerifiedDoubles -- The class from the GitLab gem isn't public, so we cannot use verified doubles for it.
+        allow(gitlab_client).to receive(:merge_request_changes)
+          .with('dummy-project', '1234')
+          .and_return(double(changes: mr_changes_array))
+        # rubocop:enable RSpec/VerifiedDoubles
+      end
 
       it 'calls GitLab API to retrieve the MR diff' do
         expect(gitlab_client).to receive_message_chain(:merge_request_changes, :changes).and_return([])
 
         subject
+      end
+
+      context 'when there is no changed files file' do
+        let(:changed_files_pathname) { nil }
+        let(:mr_changes_array) do
+          [
+            {
+              "new_path" => "scripts/test.js",
+              "old_path" => "scripts/test.js"
+            },
+            {
+              "new_path" => "doc/index.md",
+              "old_path" => "doc/index.md"
+            }
+          ]
+        end
+
+        it 'returns changed files array' do
+          expect(subject).to match_array(["scripts/test.js", "doc/index.md"])
+        end
       end
 
       context 'when used with file_filter' do

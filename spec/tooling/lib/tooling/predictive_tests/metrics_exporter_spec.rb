@@ -15,6 +15,7 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     described_class.new(
       rspec_all_failed_tests_file: failed_tests_file,
       crystalball_mapping_dir: input_dir,
+      frontend_fixtures_mapping_file: frontend_fixtures_file,
       output_dir: output_dir
     )
   end
@@ -33,8 +34,8 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
   let(:coverage_mapping_file) { File.join(input_dir, "coverage", "mapping.json") }
   let(:described_class_mapping_file) { File.join(input_dir, "described_class", "mapping.json") }
   let(:failed_tests_file) { File.join(input_dir, "failed_test.txt") }
+  let(:frontend_fixtures_file) { File.join(input_dir, "frontend_fixtures.json") }
   # output files created by TestSelector and used by MetricsExporter to create metrics output
-  let(:changed_files_file) { File.join(output_dir, "changed_files.txt") }
   let(:matching_tests_coverage_file) { File.join(output_dir, "coverage", "rspec_matching_test_files.txt") }
   let(:matching_tests_described_class_file) do
     File.join(output_dir, "described_class", "rspec_matching_test_files.txt")
@@ -48,9 +49,9 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     }
   end
 
+  let(:changed_files) { mappings.values.pluck(:model) }
   let(:matching_tests_described_class_content) { mappings.dig(:user, :spec) }
   let(:matching_tests_coverage_content) { mappings.values.pluck(:spec).join(" ") }
-  let(:changed_files_content) { mappings.values.pluck(:model).join("\n") }
   let(:failed_tests_content) { "#{mappings.dig(:user, :spec)}\n#{mappings.dig(:todo, :spec)}" }
 
   let(:described_class_mapping_content) do
@@ -99,13 +100,15 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
     end
 
     # create files used as input for exporting selected test metrics
-    File.write(changed_files_file, changed_files_content)
     File.write(failed_tests_file, failed_tests_content)
     File.write(matching_tests_described_class_file, matching_tests_described_class_content)
     File.write(matching_tests_coverage_file, matching_tests_coverage_content)
     File.write(coverage_mapping_file, coverage_mapping_content)
     File.write(described_class_mapping_file, described_class_mapping_content)
 
+    allow(Tooling::PredictiveTests::ChangedFiles).to receive(:fetch)
+      .with(frontend_fixtures_file: frontend_fixtures_file)
+      .and_return(changed_files)
     allow(Tooling::PredictiveTests::TestSelector).to receive(:new).and_return(test_selector)
     allow(Tooling::Events::TrackPipelineEvents).to receive(:new).and_return(event_tracker)
     allow(Logger).to receive(:new).with($stdout, progname: "predictive testing").and_return(logger)
@@ -116,20 +119,16 @@ RSpec.describe Tooling::PredictiveTests::MetricsExporter, feature_category: :too
       exporter.execute
 
       expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
-        rspec_changed_files_path: changed_files_file,
+        changed_files: changed_files,
         rspec_test_mapping_path: coverage_mapping_file,
         rspec_matching_test_files_path: matching_tests_coverage_file,
-        rspec_views_including_partials_path: File.join(output_dir, "coverage", "views_including_partials.txt"),
-        frontend_fixtures_mapping_path: File.join(output_dir, "coverage", "frontend_fixtures_mapping.json"),
         rspec_matching_js_files_path: File.join(output_dir, "coverage", "js_matching_files.txt"),
         rspec_mappings_limit_percentage: nil
       )
       expect(Tooling::PredictiveTests::TestSelector).to have_received(:new).with(
-        rspec_changed_files_path: changed_files_file,
+        changed_files: changed_files,
         rspec_test_mapping_path: described_class_mapping_file,
         rspec_matching_test_files_path: matching_tests_described_class_file,
-        rspec_views_including_partials_path: File.join(output_dir, "described_class", "views_including_partials.txt"),
-        frontend_fixtures_mapping_path: File.join(output_dir, "described_class", "frontend_fixtures_mapping.json"),
         rspec_matching_js_files_path: File.join(output_dir, "described_class", "js_matching_files.txt"),
         rspec_mappings_limit_percentage: nil
       )

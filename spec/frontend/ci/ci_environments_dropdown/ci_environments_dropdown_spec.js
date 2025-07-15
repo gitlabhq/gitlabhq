@@ -131,6 +131,18 @@ describe('Ci environments dropdown', () => {
     });
   });
 
+  describe('selectedEnvironment syncing with selectedEnvironmentScope', () => {
+    it('updates `selectedEnvironment` when `selectedEnvironmentScope` changes', async () => {
+      createComponent({
+        props: { selectedEnvironmentScope: 'review/*' },
+      });
+
+      await wrapper.setProps({ selectedEnvironmentScope: 'staging' });
+
+      expect(wrapper.vm.selectedEnvironment).toBe('staging');
+    });
+  });
+
   describe('when no environment is selected', () => {
     beforeEach(() => {
       createComponent({ props: { selectedEnvironmentScope: '' } });

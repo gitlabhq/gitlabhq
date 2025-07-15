@@ -88,8 +88,8 @@ func (r *runner) handleWebSocketMessage() error {
 
 	if err = r.wf.Send(response); err != nil {
 		if err == io.EOF {
-			// Recv() returns the actual error for client streams.
-			_, err = r.wf.Recv()
+			// ignore EOF to let Recv() fail and return a meaningful message
+			return nil
 		}
 
 		return fmt.Errorf("handleWebSocketMessage: failed to write a gRPC message: %v", err)

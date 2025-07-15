@@ -27913,6 +27913,9 @@ msgstr ""
 msgid "Generate API key at %{site}"
 msgstr ""
 
+msgid "Generate MR with Duo"
+msgstr ""
+
 msgid "Generate a default set of labels"
 msgstr ""
 
@@ -27920,6 +27923,9 @@ msgid "Generate commit message"
 msgstr ""
 
 msgid "Generate group access tokens scoped to this group for your applications that need access to the GitLab API."
+msgstr ""
+
+msgid "Generate merge request with Duo"
 msgstr ""
 
 msgid "Generate new export"
@@ -71258,6 +71264,9 @@ msgstr ""
 msgid "WorkItem|Light blue"
 msgstr ""
 
+msgid "WorkItem|Limited access"
+msgstr ""
+
 msgid "WorkItem|Link items together to show that they're related or that one is blocking others."
 msgstr ""
 
@@ -71400,6 +71409,9 @@ msgid "WorkItem|On track"
 msgstr ""
 
 msgid "WorkItem|One or more items cannot be shown. If you're using SAML authentication, this could mean your session has expired."
+msgstr ""
+
+msgid "WorkItem|Only %{namespaceType} members can add metadata."
 msgstr ""
 
 msgid "WorkItem|Only 10 items can be added at a time."

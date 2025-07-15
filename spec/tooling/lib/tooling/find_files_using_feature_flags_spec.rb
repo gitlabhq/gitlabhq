@@ -4,39 +4,21 @@ require 'tempfile'
 require_relative '../../../../tooling/lib/tooling/find_files_using_feature_flags'
 
 RSpec.describe Tooling::FindFilesUsingFeatureFlags, feature_category: :tooling do
-  attr_accessor :changed_files_file
-
-  let(:changed_files_pathname) { changed_files_file.path }
-  let(:instance)               { described_class.new(changed_files_pathname: changed_files_pathname) }
-  let(:changed_files_content)  { '' }
-
-  around do |example|
-    self.changed_files_file = Tempfile.new('changed_files_file')
-
-    # See https://ruby-doc.org/stdlib-1.9.3/libdoc/tempfile/rdoc/
-    #     Tempfile.html#class-Tempfile-label-Explicit+close
-    begin
-      example.run
-    ensure
-      changed_files_file.close
-      changed_files_file.unlink
-    end
-  end
+  let(:instance) { described_class.new(changed_files: changed_files) }
+  let(:changed_files) { [] }
 
   before do
     allow(File).to receive(:exist?).and_call_original
     allow(File).to receive(:read).and_call_original
-
-    File.write(changed_files_pathname, changed_files_content)
   end
 
   describe '#execute' do
     subject { instance.execute }
 
-    let(:valid_ff_pathname_1)     { 'config/feature_flags/development/my_feature_flag.yml' }
-    let(:valid_ff_pathname_2)     { 'config/feature_flags/development/my_other_feature_flag.yml' }
-    let(:changed_files_content) { "#{valid_ff_pathname_1} #{valid_ff_pathname_2}" }
-    let(:ruby_files)            { [] }
+    let(:valid_ff_pathname_1) { 'config/feature_flags/development/my_feature_flag.yml' }
+    let(:valid_ff_pathname_2) { 'config/feature_flags/development/my_other_feature_flag.yml' }
+    let(:changed_files) { [valid_ff_pathname_1, valid_ff_pathname_2] }
+    let(:ruby_files) { [] }
 
     before do
       allow(File).to receive(:exist?).with(valid_ff_pathname_1).and_return(true)
@@ -47,8 +29,8 @@ RSpec.describe Tooling::FindFilesUsingFeatureFlags, feature_category: :tooling d
     context 'when no ruby files are using the modified feature flag' do
       let(:ruby_files) { [] }
 
-      it 'does not add anything to the input file' do
-        expect { subject }.not_to change { File.read(changed_files_pathname) }
+      it 'return empty file list' do
+        expect(subject).to be_empty
       end
     end
 
@@ -65,9 +47,7 @@ RSpec.describe Tooling::FindFilesUsingFeatureFlags, feature_category: :tooling d
       end
 
       it 'add the matching ruby files to the input file' do
-        expect { subject }.to change { File.read(changed_files_pathname) }
-          .from(changed_files_content)
-          .to("#{changed_files_content} #{matching_ruby_file_1} #{matching_ruby_file_2}")
+        expect(subject).to match_array([matching_ruby_file_1, matching_ruby_file_2])
       end
     end
   end
@@ -75,7 +55,7 @@ RSpec.describe Tooling::FindFilesUsingFeatureFlags, feature_category: :tooling d
   describe '#filter_files' do
     subject { instance.filter_files }
 
-    let(:changed_files_content) { path_to_file }
+    let(:changed_files) { [path_to_file] }
 
     context 'when the file does not exist on disk' do
       let(:path_to_file) { "config/other_feature_flags_folder/feature.yml" }

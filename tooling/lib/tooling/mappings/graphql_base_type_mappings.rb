@@ -25,9 +25,9 @@ module Tooling
         'jh' => GRAPHQL_TYPES_FOLDERS_JH
       }.freeze
 
-      def initialize(changed_files_pathname, predictive_tests_pathname)
+      def initialize(changed_files, predictive_tests_pathname)
+        @changed_files             = changed_files
         @predictive_tests_pathname = predictive_tests_pathname
-        @changed_files             = read_array_from_file(changed_files_pathname)
       end
 
       def execute

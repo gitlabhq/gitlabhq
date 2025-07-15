@@ -238,7 +238,6 @@ export default {
     'ee/app/assets/javascripts/audit_events/components/stream/stream_delete_modal.vue',
     'ee/app/assets/javascripts/billings/components/zuora_simple.vue',
     'ee/app/assets/javascripts/billings/subscriptions/components/subscription_table.vue',
-    'ee/app/assets/javascripts/ci/job_details/components/job_log_top_bar.vue',
     'ee/app/assets/javascripts/ci/merge_trains/components/merge_trains_table.vue',
     'ee/app/assets/javascripts/ci/runner/components/shared_runner_limit_block.vue',
     'ee/app/assets/javascripts/ci/secrets/components/secret_details/secret_details.vue',

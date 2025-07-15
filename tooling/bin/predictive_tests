@@ -55,23 +55,27 @@ end
 
 if options[:select_tests]
   require_relative '../lib/tooling/predictive_tests/test_selector'
+  require_relative '../lib/tooling/predictive_tests/changed_files'
 
   validate_required_env_variables!(%w[
     RSPEC_MATCHING_TEST_FILES_PATH
-    RSPEC_VIEWS_INCLUDING_PARTIALS_PATH
     FRONTEND_FIXTURES_MAPPING_PATH
     RSPEC_MATCHING_JS_FILES_PATH
   ])
   test_mapping_file = (ENV['RSPEC_TESTS_MAPPING_PATH'] if ENV['RSPEC_TESTS_MAPPING_ENABLED'] == 'true')
+  changed_files = Tooling::PredictiveTests::ChangedFiles.fetch(
+    frontend_fixtures_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH']
+  )
 
   Tooling::PredictiveTests::TestSelector.new(
-    rspec_changed_files_path: ENV['RSPEC_CHANGED_FILES_PATH'],
+    changed_files: changed_files,
     rspec_matching_test_files_path: ENV['RSPEC_MATCHING_TEST_FILES_PATH'],
-    rspec_views_including_partials_path: ENV['RSPEC_VIEWS_INCLUDING_PARTIALS_PATH'],
-    frontend_fixtures_mapping_path: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
     rspec_matching_js_files_path: ENV['RSPEC_MATCHING_JS_FILES_PATH'],
     rspec_test_mapping_path: test_mapping_file
   ).execute
+
+  # File with a list of mr changes is also used by frontend related pipelines/jobs
+  File.write(ENV['RSPEC_CHANGED_FILES_PATH'], changed_files.join("\n"))
 elsif options[:export_metrics]
   require_relative '../lib/tooling/predictive_tests/metrics_exporter'
 
@@ -84,6 +88,7 @@ elsif options[:export_metrics]
   Tooling::PredictiveTests::MetricsExporter.new(
     rspec_all_failed_tests_file: ENV['GLCI_ALL_FAILED_RSPEC_TESTS_FILE'],
     crystalball_mapping_dir: ENV['GLCI_CRYSTALBALL_MAPPING_DIR'],
+    frontend_fixtures_mapping_file: ENV['FRONTEND_FIXTURES_MAPPING_PATH'],
     output_dir: ENV['GLCI_PREDICTIVE_TEST_METRICS_OUTPUT_DIR']
   ).execute
 end

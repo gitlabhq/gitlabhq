@@ -6,16 +6,15 @@ require_relative '../../../../../tooling/lib/tooling/mappings/view_to_js_mapping
 RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling do
   # We set temporary folders, and those readers give access to those folder paths
   attr_accessor :view_base_folder, :js_base_folder
-  attr_accessor :changed_files_file, :predictive_tests_file
+  attr_accessor :predictive_tests_file
 
-  let(:changed_files_pathname)    { changed_files_file.path }
+  let(:changed_files) { %w[changed_file1 changed_file2] }
   let(:predictive_tests_pathname) { predictive_tests_file.path }
-  let(:changed_files_content)     { "changed_file1 changed_file2" }
   let(:predictive_tests_content)  { "previously_matching_spec.rb" }
 
   let(:instance) do
     described_class.new(
-      changed_files_pathname,
+      changed_files,
       predictive_tests_pathname,
       view_base_folder: view_base_folder,
       js_base_folder: js_base_folder
@@ -23,7 +22,6 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
   end
 
   around do |example|
-    self.changed_files_file = Tempfile.new('changed_files_file')
     self.predictive_tests_file = Tempfile.new('matching_tests')
 
     Dir.mktmpdir do |tmp_js_base_folder|
@@ -36,9 +34,7 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
         begin
           example.run
         ensure
-          changed_files_file.close
           predictive_tests_file.close
-          changed_files_file.unlink
           predictive_tests_file.unlink
         end
       end
@@ -47,7 +43,6 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
 
   before do
     # We write into the temp files initially, to later check how the code modified those files
-    File.write(changed_files_pathname, changed_files_content)
     File.write(predictive_tests_pathname, predictive_tests_content)
   end
 
@@ -55,10 +50,6 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
     let(:changed_files) { %W[#{view_base_folder}/index.html] }
 
     subject { instance.execute }
-
-    before do
-      File.write(changed_files_pathname, changed_files.join(' '))
-    end
 
     context 'when no view files have been changed' do
       before do
@@ -180,7 +171,6 @@ RSpec.describe Tooling::Mappings::ViewToJsMappings, feature_category: :tooling d
     before do
       File.write("#{js_base_folder}/index.js", "index.js")
       File.write("#{view_base_folder}/index.html", "index.html")
-      File.write(changed_files_pathname, changed_files.join(' '))
     end
 
     context 'when no files were changed' do

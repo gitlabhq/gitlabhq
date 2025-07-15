@@ -115,7 +115,7 @@ Geo replicates corruption on the primary site to all secondary sites. To protect
 
 ### Active-active, high-availability configuration
 
-Geo is designed to be a active-passive, high-availability solution. It operates an eventually consistent synchronization model which means that secondary sites are not tightly synchronized with the primary site. Secondary sites follow the primary with a small delay, which can result in a small amount of data loss after a disaster. Failover to a secondary site in the event of a disaster requires human intervention. However, large parts of the process of promoting a secondary site to become a primary is automated by the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit), provided you deploy all your sites using GET.
+Geo is designed to be an active-passive, high-availability solution. It operates an eventually consistent synchronization model which means that secondary sites are not tightly synchronized with the primary site. Secondary sites follow the primary with a small delay, which can result in a small amount of data loss after a disaster. Failover to a secondary site in the event of a disaster requires human intervention. However, large parts of the process of promoting a secondary site to become a primary is automated by the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit), provided you deploy all your sites using GET.
 
 ## Gitaly Cluster
 

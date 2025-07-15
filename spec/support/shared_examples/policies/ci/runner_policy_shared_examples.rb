@@ -201,20 +201,16 @@ RSpec.shared_examples 'does not allow accessing runners/runner managers on any s
 end
 
 RSpec.shared_context 'with runner policy environment' do
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
-  let_it_be(:developer) { create(:user) }
-  let_it_be(:maintainer) { create(:user) }
-
-  let_it_be_with_reload(:group) do
-    create(:group, name: 'top-level', path: 'top-level',
-      guests: guest, reporters: reporter, developers: developer, maintainers: maintainer, owners: owner)
-  end
-
+  let_it_be_with_reload(:group) { create(:group, name: 'top-level', path: 'top-level', owners: owner) }
   let_it_be_with_reload(:subgroup) { create(:group, name: 'subgroup', path: 'subgroup', parent: group) }
   let_it_be_with_reload(:owner_project) { create(:project, group: subgroup) }
   let_it_be_with_reload(:other_project) { create(:project) }
   let_it_be_with_reload(:group_without_project) { create(:group, name: 'top-level2', path: 'top-level2') }
+
+  let_it_be(:guest) { create(:user, guest_of: group) }
+  let_it_be(:reporter) { create(:user, reporter_of: group) }
+  let_it_be(:developer) { create(:user, developer_of: group) }
+  let_it_be(:maintainer) { create(:user, maintainer_of: group) }
 
   let_it_be(:instance_runner) { create(:ci_runner, :instance, :with_runner_manager) }
   let_it_be(:group_runner) { create(:ci_runner, :group, :with_runner_manager, groups: [group]) }

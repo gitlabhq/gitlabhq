@@ -10,9 +10,12 @@ module Tooling
       include Helpers::PredictiveTestsHelper
 
       def initialize(
-        changed_files_pathname, predictive_tests_pathname,
-        js_base_folder: 'app/assets/javascripts', system_specs_base_folder: 'spec/features')
-        @changed_files             = read_array_from_file(changed_files_pathname)
+        changed_files,
+        predictive_tests_pathname,
+        js_base_folder: 'app/assets/javascripts',
+        system_specs_base_folder: 'spec/features'
+      )
+        @changed_files             = changed_files
         @predictive_tests_pathname = predictive_tests_pathname
         @js_base_folder            = js_base_folder
         @js_base_folders           = folders_for_available_editions(js_base_folder)

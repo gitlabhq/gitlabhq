@@ -15,7 +15,9 @@ class RunPipelineScheduleWorker
 
   def perform(schedule_id, user_id, options = {})
     schedule = Ci::PipelineSchedule.find_by_id(schedule_id)
+
     return unless schedule&.project
+    return if schedule.project.self_or_ancestors_archived?
 
     if Feature.enabled?(:notify_pipeline_schedule_owner_unavailable,
       schedule.project) && !schedule_owner_still_available?(schedule)

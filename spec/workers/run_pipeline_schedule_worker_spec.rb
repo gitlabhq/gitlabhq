@@ -9,7 +9,7 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
 
   describe '#perform' do
     let_it_be(:group) { create(:group) }
-    let_it_be(:project) { create(:project, :repository, namespace: group) }
+    let_it_be_with_refind(:project) { create(:project, :repository, namespace: group) }
     let_it_be(:user) { create(:user) }
     let_it_be(:pipeline_schedule) { create(:ci_pipeline_schedule, :nightly, project: project, owner: user) }
     let(:worker) { described_class.new }
@@ -36,6 +36,22 @@ RSpec.describe RunPipelineScheduleWorker, feature_category: :pipeline_compositio
     context 'when a schedule project is missing' do
       before do
         project.delete
+      end
+
+      it 'does not call the Service' do
+        expect(Ci::CreatePipelineService).not_to receive(:new)
+        expect(worker).not_to receive(:run_pipeline_schedule)
+
+        worker.perform(pipeline_schedule.id, user.id)
+      end
+    end
+
+    context 'when a schedule project is archived' do
+      around do |example|
+        project.update!(archived: true)
+        example.run
+      ensure
+        project.update!(archived: false)
       end
 
       it 'does not call the Service' do

@@ -384,6 +384,16 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       it 'only returns public issuables' do
         expect(described_class.without_hidden).not_to include(hidden_merge_request)
       end
+
+      context 'when optimize_merge_requests_banned_users_query is disabled' do
+        before do
+          stub_feature_flags(optimize_merge_requests_banned_users_query: false)
+        end
+
+        it 'only returns public issuables' do
+          expect(described_class.without_hidden).not_to include(hidden_merge_request)
+        end
+      end
     end
 
     describe '.merged_without_state_event_source' do

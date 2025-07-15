@@ -47,7 +47,39 @@ RSpec.describe Ci::PipelineSchedules::PlayService, feature_category: :continuous
         end
 
         it "returns a service response error" do
-          expect(execute_service).to be_error
+          response = execute_service
+
+          expect(response).to be_error
+          expect(response.http_status).to eq :bad_request
+          expect(response.message).to eq "Failed to schedule pipeline."
+        end
+
+        it 'does not run RunPipelineScheduleWorker' do
+          expect(RunPipelineScheduleWorker)
+            .not_to receive(:perform_async).with(schedule.id, schedule.owner.id)
+
+          execute_service
+        end
+      end
+
+      context 'when the project is archived' do
+        around do |example|
+          project.update!(archived: true)
+          example.run
+        ensure
+          project.update!(archived: false)
+        end
+
+        it 'does not raise an exception' do
+          expect { execute_service }.not_to raise_error
+        end
+
+        it "returns a service response error" do
+          response = execute_service
+
+          expect(response).to be_error
+          expect(response.http_status).to eq :bad_request
+          expect(response.message).to eq "Failed to schedule pipeline."
         end
 
         it 'does not run RunPipelineScheduleWorker' do

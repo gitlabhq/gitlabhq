@@ -342,11 +342,7 @@ module.exports = {
               presets: [
                 ['@babel/preset-env', { targets: { esmodules: true }, modules: 'commonjs' }],
               ],
-              plugins: [
-                '@babel/plugin-transform-optional-chaining',
-                '@babel/plugin-transform-logical-assignment-operators',
-                '@babel/plugin-transform-classes',
-              ],
+              plugins: ['@babel/plugin-transform-classes'],
               ...defaultJsOptions,
             },
           },
@@ -418,20 +414,14 @@ module.exports = {
         test: /swagger-ui-dist\/.*\.js?$/,
         include: /node_modules/,
         loader: 'babel-loader',
-        options: {
-          plugins: ['@babel/plugin-transform-logical-assignment-operators'],
-          ...defaultJsOptions,
-        },
+        options: defaultJsOptions,
       },
       {
         test: /@swagger-api\/apidom-.*\.[mc]?js$/,
         include: /node_modules/,
         loader: 'babel-loader',
         options: {
-          plugins: [
-            '@babel/plugin-transform-class-properties',
-            '@babel/plugin-transform-logical-assignment-operators',
-          ],
+          plugins: ['@babel/plugin-transform-class-properties'],
           ...defaultJsOptions,
         },
       },
@@ -450,10 +440,7 @@ module.exports = {
           },
           {
             loader: 'babel-loader',
-            options: {
-              plugins: ['@babel/plugin-transform-logical-assignment-operators'],
-              ...defaultJsOptions,
-            },
+            options: defaultJsOptions,
           },
         ],
       },

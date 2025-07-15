@@ -7443,6 +7443,9 @@ export const namespaceWorkItemTypesQueryResponse = {
     workspace: {
       id: 'gid://gitlab/Project/8',
       webUrl: 'web/url',
+      userPermissions: {
+        setNewWorkItemMetadata: true,
+      },
       workItemTypes: {
         nodes: [
           {
@@ -8550,6 +8553,9 @@ export const namespaceWorkItemTypesWithOKRsQueryResponse = {
     workspace: {
       id: 'gid://gitlab/Namespaces::ProjectNamespace/9',
       webUrl: 'http://localhost/group2/project-4',
+      userPermissions: {
+        setNewWorkItemMetadata: true,
+      },
       workItemTypes: {
         nodes: [
           {

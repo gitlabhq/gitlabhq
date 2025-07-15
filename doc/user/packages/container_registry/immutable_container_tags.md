@@ -9,25 +9,16 @@ title: Immutable container tags
 
 - Tier: Ultimate
 - Offering: GitLab.com, GitLab Self-Managed
-- Status: Experiment
+- Status: Beta
 
 {{< /details >}}
 
 {{< history >}}
 
 - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) as an [experiment](../../../policy/development_stages_support.md) in GitLab 18.1 [with a flag](../../../administration/feature_flags/_index.md) named `container_registry_immutable_tags`. Disabled by default.
-- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) in GitLab 18.2.
-- [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) in GitLab 18.2. Feature flag `container_registry_immutable_tags` removed.
+- [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/523276) in GitLab 18.2. Changed from experiment to beta. Feature flag `container_registry_immutable_tags` removed.
 
 {{< /history >}}
-
-{{< alert type="flag" >}}
-
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-{{< /alert >}}
 
 Use immutable tags to prevent container tags from being updated or deleted in your project.
 

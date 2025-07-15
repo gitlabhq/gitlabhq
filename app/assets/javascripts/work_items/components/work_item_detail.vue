@@ -8,6 +8,7 @@ import {
   GlIntersectionObserver,
 } from '@gitlab/ui';
 import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
+import DuoWorkflowAction from 'ee_component/ai/components/duo_workflow_action.vue';
 import DesignDropzone from '~/vue_shared/components/upload_dropzone/upload_dropzone.vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__, __ } from '~/locale';
@@ -24,6 +25,7 @@ import { sanitize } from '~/lib/dompurify';
 import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { keysFor, ISSUABLE_EDIT_DESCRIPTION } from '~/behaviors/shortcuts/keybindings';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
+import { buildApiUrl } from '~/api/api_utils';
 import {
   i18n,
   WIDGET_TYPE_ASSIGNEES,
@@ -139,6 +141,7 @@ export default {
     WorkItemVulnerabilities: () =>
       import('ee_component/work_items/components/work_item_vulnerabilities.vue'),
     WorkItemMetadataProvider,
+    DuoWorkflowAction,
   },
   mixins: [glFeatureFlagMixin(), trackingMixin],
   inject: ['groupPath', 'hasSubepicsFeature', 'hasLinkedItemsEpicsFeature'],
@@ -591,6 +594,18 @@ export default {
       return this.workItem?.commentTemplatesPaths?.length
         ? this.workItem.commentTemplatesPaths
         : this.newCommentTemplatePaths;
+    },
+    isDuoWorkflowEnabled() {
+      return this.glFeatures.aiDuoAgentIssueToMr;
+    },
+    projectIdAsNumber() {
+      return getIdFromGraphQLId(this.workItemProjectId);
+    },
+    agentPrivileges() {
+      return [1, 2, 5];
+    },
+    agentInvokePath() {
+      return buildApiUrl(`/api/:version/ai/duo_workflows/workflows`);
     },
   },
   beforeDestroy() {
@@ -1123,6 +1138,19 @@ export default {
                     @emoji-updated="$emit('work-item-emoji-updated', $event)"
                   />
                   <div class="gl-mt-2 gl-flex gl-flex-wrap gl-gap-3 gl-gap-y-3">
+                    <div class="sm:gl-ml-auto">
+                      <duo-workflow-action
+                        v-if="isDuoWorkflowEnabled"
+                        :project-id="projectIdAsNumber"
+                        :title="__('Generate MR with Duo')"
+                        :hover-message="__('Generate merge request with Duo')"
+                        :goal="workItem.webUrl"
+                        workflow-definition="issue_to_merge_request"
+                        :agent-privileges="agentPrivileges"
+                        :duo-workflow-invoke-path="agentInvokePath"
+                        size="medium"
+                      />
+                    </div>
                     <gl-intersection-observer
                       v-if="showUploadDesign"
                       @appear="isDesignUploadButtonInViewport = true"
